@@ -1,5 +1,7 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, lazy, Suspense } from 'react';
 import { ArrowLeft } from 'lucide-react';
+
+const EvacuationCanvas = lazy(() => import('../EvacuationGame/EvacuationCanvas'));
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import BlockEditor from './BlockEditor';
 import MissionPanel from './MissionPanel';
@@ -118,22 +120,37 @@ export default function Workspace() {
       setRunning(false);
       runningRef.current = false;
       addLog('⛔ Simulasi dihentikan.', 'warn');
+      useRuntimeStore.getState().resetPinStates();
       return;
     }
 
     clearLogs();
     setRunning(true);
     runningRef.current = true;
+    useRuntimeStore.getState().resetPinStates();
 
     // Build the runtime API
     const api = {
       print: (text: string, type: string = 'info') => {
         useRuntimeStore.getState().addLog(text, type as any);
+        // Digital Twin: detect servo/motor state from print messages
+        const store = useRuntimeStore.getState();
+        if (text.includes('Pintu Evakuasi Terbuka')) store.setPinState('SERVO', 'OPEN');
+        if (text.includes('Pintu Evakuasi Tertutup') || text.includes('Pintu Evakuasi Setengah')) store.setPinState('SERVO', 'CLOSED');
+        if (text.includes('Sirine berbunyi')) store.setPinState('BUZZER', 'ON');
+        if (text.includes('Sirine berhenti')) store.setPinState('BUZZER', 'OFF');
+        if (text.includes('Kipas Ventilasi Kencang')) store.setPinState('MOTOR', 'FAST');
+        if (text.includes('Kipas Ventilasi Sedang')) store.setPinState('MOTOR', 'MEDIUM');
+        if (text.includes('Kipas Ventilasi Pelan')) store.setPinState('MOTOR', 'SLOW');
+        if (text.includes('Kipas Ventilasi Mati')) store.setPinState('MOTOR', 'OFF');
       },
       setPin: (_pin: string, _state: string) => {
+        // WebSocket to ESP32 (Diorama Fisik)
         if (wsRef.current?.readyState === WebSocket.OPEN) {
           wsRef.current.send(`PIN:${_pin}:${_state}`);
         }
+        // Digital Twin: update pinStates in store
+        useRuntimeStore.getState().setPinState(_pin, _state);
       },
       getPin: (pin: string) => {
         const s = useRuntimeStore.getState().sensorValues;
@@ -196,6 +213,8 @@ export default function Workspace() {
       runningRef.current = false;
     }
   };
+
+  // State rightPanel dihapus karena sekarang game selalu tampil di atas
 
   return (
     <div className="h-screen w-full flex flex-col bg-surface text-on-surface">
@@ -302,19 +321,45 @@ export default function Workspace() {
         </div>
       </header>
 
-      {/* Main Layout — Blockly left, Console right */}
+      {/* Main Layout */}
       <main className="flex-1 flex overflow-hidden relative">
         {activeMission && <MissionPanel missionId={activeMission.id} />}
 
-        {/* Blockly Editor */}
-        <section className="flex-1 overflow-hidden">
-          <BlockEditor />
-        </section>
+        {/* RIGHT SIDE: Top/Bottom Split */}
+        <div className="flex-1 flex flex-col overflow-hidden relative">
+          {/* TOP: Evacuation Game View */}
+          <section className="h-[35vh] w-full shrink-0 border-b-2 border-outline-variant shadow-sm relative z-10">
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-full text-on-surface-variant text-xs flex-col gap-2">
+                <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                Memuat peta...
+              </div>
+            }>
+              <EvacuationCanvas />
+            </Suspense>
+          </section>
 
-        {/* Right: Console Output Panel */}
-        <aside className="w-80 shrink-0 border-l border-outline-variant overflow-hidden">
-          <ConsoleOutput />
-        </aside>
+          {/* BOTTOM: Blockly Editor & Console */}
+          <section className="flex-1 flex overflow-hidden relative bg-surface-container-lowest">
+            {/* Blockly Editor */}
+            <div className="flex-1 overflow-hidden relative">
+              <BlockEditor />
+            </div>
+
+            {/* Right Console Panel */}
+            <aside className="w-80 shrink-0 border-l border-outline-variant overflow-hidden flex flex-col bg-surface">
+              <div className="flex shrink-0 border-b border-outline-variant bg-surface-container-low">
+                <div className="flex-1 py-sm text-xs font-semibold flex items-center justify-center gap-2 text-primary border-b-2 border-primary">
+                  <span className="material-symbols-outlined" style={{fontSize:'16px'}}>receipt_long</span>
+                  Monitor Aktivitas
+                </div>
+              </div>
+              <div className="flex-1 overflow-hidden relative">
+                <ConsoleOutput />
+              </div>
+            </aside>
+          </section>
+        </div>
 
         {/* Floating Sensor Panel */}
         <SensorPanel />

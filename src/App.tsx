@@ -4,6 +4,7 @@ import Dashboard from './app/Dashboard';
 
 const Workspace = lazy(() => import('./app/Workspace'));
 const Mitigation = lazy(() => import('./app/Mitigation'));
+const EvacuationGame = lazy(() => import('./app/EvacuationGame'));
 
 function Loading() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/workspace" element={<Workspace />} />
           <Route path="/mitigation" element={<Mitigation />} />
+          <Route path="/evacuation" element={<EvacuationGame />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

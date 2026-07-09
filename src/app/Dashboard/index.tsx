@@ -447,6 +447,31 @@ export default function Dashboard() {
                   5 skenario tersedia
                 </div>
               </button>
+
+              {/* Simulasi Evakuasi — Digital Twin */}
+              <button
+                onClick={() => navigate('/evacuation')}
+                className="relative flex flex-col items-start text-left p-md rounded-2xl bg-[#0F172A] border-2 border-[#3B82F6] hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+              >
+                <div className="absolute top-sm right-sm px-xs py-[2px] rounded-full bg-[#3B82F6] text-white font-label-caps text-label-caps">
+                  Game Baru!
+                </div>
+                <div className="flex items-center gap-sm mb-sm">
+                  <span className="material-symbols-outlined text-[#60A5FA] text-3xl">map</span>
+                  <div>
+                    <div className="font-label-caps text-label-caps text-[#93C5FD] uppercase">Game Isometrik</div>
+                    <h3 className="font-title-md text-title-md font-bold text-white">Simulasi Evakuasi</h3>
+                  </div>
+                </div>
+                <p className="font-body-sm text-body-sm text-white/60 mb-md leading-relaxed">
+                  Game Digital Twin dioramamu. NPC warga bergerak otomatis sesuai blok kode yang kamu rancang!
+                </p>
+                <div className="flex items-center gap-xs text-[#60A5FA] font-label-sm text-label-sm">
+                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_forward</span>
+                  Buka Game Evakuasi
+                </div>
+              </button>
+
             </div>
           </div>
         </section>
@@ -512,7 +537,7 @@ export default function Dashboard() {
                       <h4 className="font-title-md text-title-md text-primary">{mission.title}</h4>
                     </div>
                     <button
-                      onClick={() => hasDraft ? navigate(`/workspace?mission=${mission.level}`) : setConfirmReplay(mission.id)}
+                      onClick={() => hasDraft ? navigate(`/workspace?mission=${mission.id}`) : setConfirmReplay(mission.id)}
                       className="bg-surface-container-high text-on-surface font-label-caps text-label-caps py-xs px-sm rounded tactile-btn shrink-0 border border-outline-variant"
                     >
                       {hasDraft ? 'LANJUTKAN' : 'ULANGI'}
