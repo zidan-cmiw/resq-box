@@ -4,7 +4,7 @@ import { useRuntimeStore } from '../../store/runtimeStore';
 const SENSORS = [
   {
     pin: 'A1' as const,
-    label: '🔔 Intensitas Gempa',
+    label: 'Intensitas Gempa',
     subtitle: 'Aman → Waspada → Kuat',
     min: 0,
     max: 1023,
@@ -16,7 +16,7 @@ const SENSORS = [
   },
   {
     pin: 'A2' as const,
-    label: '🌡️ Suhu Lingkungan',
+    label: 'Suhu Lingkungan',
     subtitle: 'Normal → Panas → Berbahaya',
     min: 0,
     max: 1023,
@@ -24,13 +24,13 @@ const SENSORS = [
     color: '#EF4444',
     isAnalog: true,
     minLabel: 'Normal',
-    maxLabel: '~50°C',
+    maxLabel: '~100°C',
   },
 ];
 
 const BUTTONS = [
-  { pin: 'D2' as const, label: '🔘 Darurat 1', subtitle: 'Tekan saat bahaya' },
-  { pin: 'D3' as const, label: '🔘 Darurat 2', subtitle: 'Tekan saat bahaya' },
+  { pin: 'D2' as const, label: 'Tombol Darurat 1', subtitle: 'Tekan saat bahaya' },
+  { pin: 'D3' as const, label: 'Tombol Darurat 2', subtitle: 'Tekan saat bahaya' },
 ];
 
 export default function SensorPanel() {
@@ -38,7 +38,7 @@ export default function SensorPanel() {
 
   if (!showSensorPanel) return null;
 
-  const tempCelsius = (sensorValues.A2 * 0.4887).toFixed(1);
+  const tempCelsius = ((sensorValues.A2 as number) / 1023 * 100).toFixed(1);
 
   return (
     <div

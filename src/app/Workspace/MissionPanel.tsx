@@ -39,7 +39,7 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
       const result = validateMission(mission, workspace, generatedCode);
       if (result.passed) {
         completeMission(mission.id);
-        setValidationResult('pass', 'Misi selesai! Instruksi penyelamatan kamu sudah benar! 🎉');
+        setValidationResult('pass', 'Misi selesai! Instruksi penyelamatan kamu sudah benar!');
       } else {
         setValidationResult('fail', result.failureReason ?? 'Terjadi kesalahan yang tidak diketahui.');
       }

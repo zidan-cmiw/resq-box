@@ -33,7 +33,7 @@ javascriptGenerator.forBlock['resq_led'] = function(block: Blockly.Block) {
 // ── resq_buzzer ─────────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_buzzer'] = function(block: Blockly.Block) {
   const ms = block.getFieldValue('MS');
-  return `await api.print('Sirine berbunyi selama ${ms}ms', 'info');\nawait api.delay(${ms});\n`;
+  return `await api.print('Sirine berbunyi selama ${ms}ms', 'info');\nawait api.delay(${ms});\nawait api.print('Sirine berhenti', 'info');\n`;
 };
 
 // ── resq_buzzer_stop ────────────────────────────────────────────
@@ -157,9 +157,9 @@ javascriptGenerator.forBlock['resq_alarm_darurat'] = function(block: Blockly.Blo
   const n = parseInt(block.getFieldValue('KALI') || '3');
   let code = '';
   for (let i = 0; i < Math.min(n, 5); i++) {
-    code += `await api.print('🚨 ALARM EVAKUASI! (${i + 1}/${n})', 'error');\nawait api.setPin('10', 'HIGH');\nawait api.delay(300);\nawait api.setPin('10', 'LOW');\nawait api.delay(200);\n`;
+    code += `await api.print('[ALARM] ALARM EVAKUASI! (${i + 1}/${n})', 'error');\nawait api.setPin('10', 'HIGH');\nawait api.print('Sirine berbunyi', 'error');\nawait api.delay(300);\nawait api.setPin('10', 'LOW');\nawait api.print('Sirine berhenti', 'error');\nawait api.delay(200);\n`;
   }
-  if (n > 5) code += `await api.print('🚨 ... +${n - 5} alarm lagi', 'error');\n`;
+  if (n > 5) code += `await api.print('[ALARM] ... +${n - 5} alarm lagi', 'error');\n`;
   return code;
 };
 

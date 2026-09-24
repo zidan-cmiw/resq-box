@@ -24,7 +24,7 @@ export default function EvacuationGame() {
           </button>
           <div className="h-5 w-px bg-white/20" />
           <div>
-            <h1 className="font-bold text-sm text-white">🗺️ Simulasi Evakuasi Diorama</h1>
+            <h1 className="font-bold text-sm text-white">Simulasi Evakuasi Diorama</h1>
             <p className="text-xs text-white/40">Simulasi Evakuasi Bencana — Respon warga terhadap sistem peringatan yang kamu rancang</p>
           </div>
         </div>
@@ -47,7 +47,7 @@ export default function EvacuationGame() {
           <div>
             <p className="font-semibold">Cara Melihat Simulasi Evakuasi:</p>
             <p className="text-xs text-amber-300/70 mt-0.5">
-              Susun blok kode di <strong>Ruang Simulasi</strong> (tab kiri), lalu tekan <strong>▶ Mulai</strong>. Sistem peringatan yang kamu rancang akan mempengaruhi pergerakan warga di sini!
+              Susun aturan peringatan di <strong>Ruang Simulasi</strong> (tab kiri), lalu tekan <strong>Mulai</strong>. Sistem peringatan yang kamu rancang akan mempengaruhi pergerakan warga di sini!
             </p>
           </div>
         </div>
@@ -69,11 +69,11 @@ export default function EvacuationGame() {
 
       {/* How-to Guide bottom bar */}
       <div className="shrink-0 px-4 pb-3 pt-2 border-t border-white/10 bg-black/30">
-        <div className="flex items-center gap-6 text-xs text-white/40 justify-center">
-          <span>🔴 LED Merah nyala → NPC panik & berlari</span>
-          <span>🟢 LED Hijau nyala → Jalur evakuasi menyala</span>
-          <span>🚪 Servo Terbuka → Gerbang terbuka, NPC bisa lewat</span>
-          <span>🔊 Sirine bunyi → NPC bergerak lebih cepat</span>
+        <div className="flex items-center gap-6 text-xs text-white/60 justify-center">
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> LED Merah → NPC panik & berlari</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> LED Hijau → Jalur evakuasi menyala</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-sm bg-amber-600 inline-block" /> Servo Terbuka → Gerbang terbuka</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-sky-400 inline-block" /> Sirine → NPC bergerak lebih cepat</span>
         </div>
       </div>
     </div>

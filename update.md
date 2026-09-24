@@ -36,4 +36,28 @@ Catatan perjalanan pengembangan aplikasi web RESQ-BOX.
 - Desain mengikuti color system yang sudah ada (primary, secondary-container, surface tokens Tailwind).
 
 
-test
+## [2026-09-08 / 2026-09-09] Pembaruan Sistem Autentikasi, Posko Guru & Visual 2D Pixel Art
+
+### 1. Autentikasi Multi-Role & Manajemen Kelas Terpadu (Supabase + Local Cache)
+- **Registrasi & Verifikasi Kelas Siswa**:
+  - Siswa dapat mendaftar mandiri dengan memasukkan Nama, Nomor Absen, Username, Password, dan **Kode Kelas** valid (contoh: `8b`, `8B`, `RESQ-8A`, `RESQ-8B`).
+  - Validasi kode kelas langsung terhubung ke database cloud Supabase (`classrooms` & `users`), dengan fallback penyimpanan lokal yang aman.
+  - Perbaikan sinkronisasi data siswa di **Posko Guru (`/teacher`)**: data siswa baru kelas 8B langsung tampil secara *real-time* di tabel daftar siswa kelas yang bersangkutan.
+- **Pembersihan Akun Demo & Standarisasi Akses Guru**:
+  - Akun demo lama (`std-budi`, `std-siti`) dibersihkan secara otomatis saat inisialisasi agar data kelas bersih.
+  - Kredensial akun resmi Guru distandarisasi ke username `guru` dan password `guru123`.
+- **Fitur Ganti Password Siswa Mandiri**:
+  - Menambahkan formulir dan mekanisme ganti password mandiri bagi siswa pada modal **Pengaturan Profil Siswa (`/profile`)**.
+  - Password baru langsung tersimpan ke Supabase dan localStorage dengan notifikasi audio retro dan konfirmasi visual.
+- **Proteksi Rute Cepat (Zero-Delay Route Guards)**:
+  - Pengguna yang belum login (`!currentUser`) langsung diarahkan (*immediate redirect*) ke halaman login (`/login`) saat mengakses halaman utama (`/`).
+  - Akses posko guru (`/teacher` dan `/guru`) terproteksi khusus untuk akun dengan role `teacher`.
+
+### 2. Peningkatan Visual 2D Pixel Art & Desain Latar Belakang
+- **Latar Belakang 2D Pixel Art Hutan Hujan Tropis Berkabut (Tropical Misty Cloud Forest)**:
+  - Mengimplementasikan pemandangan hutan tropis berkabut semirip mungkin dengan referensi alam pegunungan Indonesia.
+  - Efek atmosferik dinamis: kabut lembah mengalir (*drifting valley fog*), sinar matahari pagi (*god-rays shimmer*), dan partikel spora embun.
+- **Ikonografi 2D Pixel Art Murni (`PixelIcon`)**:
+  - Menggantikan seluruh emoji sistem operasi dengan ikon kustom 2D Pixel Art SVG (`PixelIcon`): Tas Siswa Pixel, Papan Tugas Guru, Kompas, Kunci, Profil Pengguna, Sekolah, Lencana ID, dan Panah Taktis.
+- **Plakat Komando Kayu Retro (*Expedition Command Slate Card*)**:
+  - Kotak login dan posko guru dipercantik dengan 4 baut emas pixel (*golden corner rivets*), border kayu timbul 3D, dan kontras warna tinggi yang ramah pandangan siswa.

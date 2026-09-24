@@ -26,11 +26,11 @@ function getNeighbors(row: number, col: number): [number, number][] {
 }
 
 function isWalkable(row: number, col: number, gateOpen: boolean): boolean {
-  // GATE tile: walkable only if gate is open
-  if (!gateOpen && MAP_DATA[row][col] === TILE.GATE) {
-    return false;
-  }
   const tile = MAP_DATA[row][col] as TileType;
+  // GATE tile: hanya bisa dilewati jika pintu terbuka
+  if (tile === TILE.GATE) {
+    return gateOpen;
+  }
   return WALKABLE_TILES.includes(tile);
 }
 

@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRuntimeStore } from '../../store/runtimeStore';
-import { renderMap } from './engine/renderer';
+import { renderMap, invalidateStaticCache } from './engine/renderer';
 import type { RenderState } from './engine/renderer';
 import { createNPCs, updateNPCs } from './engine/npc';
 import type { NPC } from './engine/npc';
@@ -32,13 +32,14 @@ export default function EvacuationCanvas() {
   const ledAman = pinStates['11'] === 'HIGH';
   const gateOpen = pinStates.SERVO === 'OPEN';
   const buzzerOn = pinStates.BUZZER;
-  const isEmergency = ledBahaya || buzzerOn || sensorValues.A1 > 500 || sensorValues.A2 > 700;
+  const isEmergency = ledBahaya || buzzerOn || sensorValues.A1 > 512 || sensorValues.A2 > 512;
 
   // Reset NPCs ketika simulasi dimulai dari awal
   useEffect(() => {
     if (isRunning) {
       npcsRef.current = createNPCs(NPC_SPAWN_POINTS);
       setStats({ safe: 0, total: NPC_SPAWN_POINTS.length, blocked: 0 });
+      invalidateStaticCache(); // paksa rebuild cache
     }
   }, [isRunning]);
 
@@ -74,12 +75,14 @@ export default function EvacuationCanvas() {
           shakeRef.current.y *= 0.8;
         }
 
-        // Update NPC AI — read latest pin states each frame
+        // Update NPC AI — hanya tiap 2 frame untuk hemat CPU
         const pins = useRuntimeStore.getState().pinStates;
         const sensors = useRuntimeStore.getState().sensorValues;
-        const emergency = pins['10'] === 'HIGH' || pins.BUZZER || sensors.A1 > 500 || sensors.A2 > 700;
+        const emergency = pins['10'] === 'HIGH' || pins.BUZZER || sensors.A1 > 512 || sensors.A2 > 512;
         const gate = pins.SERVO === 'OPEN';
-        npcsRef.current = updateNPCs(npcsRef.current, emergency, gate, 1);
+        if (frame % 2 === 1) {
+          npcsRef.current = updateNPCs(npcsRef.current, emergency, gate, 1);
+        }
 
         // Update stats
         if (frame % 10 === 0) {
@@ -120,7 +123,7 @@ export default function EvacuationCanvas() {
         } catch (e) {
           console.error('Render error:', e);
         }
-        
+
         ctx.restore();
 
         rafId = requestAnimationFrame(gameLoop);
@@ -189,7 +192,7 @@ export default function EvacuationCanvas() {
       <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
         {/* Status Panel */}
         <div className="bg-black/60 backdrop-blur rounded-xl px-4 py-3 border border-white/10 text-white text-sm">
-          <p className="font-bold text-xs text-white/60 uppercase tracking-wider mb-2">🗺️ Status Evakuasi</p>
+          <p className="font-bold text-xs text-white/60 uppercase tracking-wider mb-2">Status Evakuasi</p>
           <div className="flex gap-4">
             <div className="text-center">
               <p className="text-2xl font-bold text-emerald-400">{stats.safe}</p>
@@ -209,18 +212,17 @@ export default function EvacuationCanvas() {
         {/* Emergency Banner */}
         {isEmergency && (
           <div className="bg-red-500/80 backdrop-blur rounded-xl px-4 py-2 border border-red-400 text-white animate-pulse">
-            <p className="font-bold text-sm">🚨 KONDISI DARURAT AKTIF</p>
+            <p className="font-bold text-sm">KONDISI DARURAT AKTIF</p>
             <p className="text-xs opacity-80">NPC sedang mencari jalur evakuasi...</p>
           </div>
         )}
 
         {/* Gate Status */}
-        <div className={`rounded-xl px-3 py-2 backdrop-blur border text-xs font-semibold ${
-          gateOpen
+        <div className={`rounded-xl px-3 py-2 backdrop-blur border text-xs font-semibold ${gateOpen
             ? 'bg-emerald-500/70 border-emerald-400 text-white'
             : 'bg-red-900/70 border-red-700 text-white'
-        }`}>
-          {gateOpen ? '🚪 Gerbang Evakuasi TERBUKA' : '🔒 Gerbang Evakuasi TERTUTUP'}
+          }`}>
+          {gateOpen ? 'Gerbang Evakuasi: TERBUKA' : 'Gerbang Evakuasi: TERTUTUP'}
         </div>
       </div>
 
@@ -229,10 +231,22 @@ export default function EvacuationCanvas() {
         <div className="bg-black/60 backdrop-blur rounded-xl px-3 py-2 border border-white/10 text-xs text-white">
           <p className="font-bold text-white/50 uppercase text-xs mb-1">Status Sistem</p>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-            <span className={ledBahaya ? 'text-red-400' : 'text-white/30'}>🔴 LED Bahaya: {ledBahaya ? 'ON' : 'OFF'}</span>
-            <span className={ledAman ? 'text-emerald-400' : 'text-white/30'}>🟢 LED Aman: {ledAman ? 'ON' : 'OFF'}</span>
-            <span className={buzzerOn ? 'text-amber-400' : 'text-white/30'}>🔊 Sirine: {buzzerOn ? 'ON' : 'OFF'}</span>
-            <span className={gateOpen ? 'text-emerald-400' : 'text-red-400'}>🚪 Pintu: {gateOpen ? 'TERBUKA' : 'TERTUTUP'}</span>
+            <span className={`flex items-center gap-1.5 ${ledBahaya ? 'text-red-400' : 'text-white/30'}`}>
+              <span className={`w-2 h-2 rounded-full ${ledBahaya ? 'bg-red-500' : 'bg-slate-600'}`} />
+              LED Bahaya: {ledBahaya ? 'ON' : 'OFF'}
+            </span>
+            <span className={`flex items-center gap-1.5 ${ledAman ? 'text-emerald-400' : 'text-white/30'}`}>
+              <span className={`w-2 h-2 rounded-full ${ledAman ? 'bg-emerald-500' : 'bg-slate-600'}`} />
+              LED Aman: {ledAman ? 'ON' : 'OFF'}
+            </span>
+            <span className={`flex items-center gap-1.5 ${buzzerOn ? 'text-amber-400' : 'text-white/30'}`}>
+              <span className={`w-2 h-2 rounded-full ${buzzerOn ? 'bg-amber-500' : 'bg-slate-600'}`} />
+              Sirine: {buzzerOn ? 'ON' : 'OFF'}
+            </span>
+            <span className={`flex items-center gap-1.5 ${gateOpen ? 'text-emerald-400' : 'text-red-400'}`}>
+              <span className={`w-2 h-2 rounded-sm ${gateOpen ? 'bg-emerald-500' : 'bg-red-500'}`} />
+              Pintu: {gateOpen ? 'TERBUKA' : 'TERTUTUP'}
+            </span>
           </div>
         </div>
       </div>
@@ -240,11 +254,11 @@ export default function EvacuationCanvas() {
       {/* Legend */}
       <div className="absolute top-4 right-4 bg-black/60 backdrop-blur rounded-xl px-3 py-2 border border-white/10 text-xs text-white pointer-events-none">
         <p className="font-bold text-white/50 uppercase text-xs mb-1">Legenda NPC</p>
-        <div className="flex flex-col gap-1">
-          <span>🟠 Panik / Menghitung rute</span>
-          <span>🔵 Bergerak menuju titik kumpul</span>
-          <span>🟢 Selamat di titik kumpul</span>
-          <span>🔴 Terblokir (gerbang tertutup!)</span>
+        <div className="flex flex-col gap-1.5 text-[11px]">
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-orange-500" /> Panik / Menghitung rute</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500" /> Bergerak ke titik kumpul</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Selamat di titik kumpul</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500" /> Terblokir (gerbang tertutup!)</span>
         </div>
       </div>
     </div>

@@ -3,7 +3,17 @@
 // Titik Kumpul saat kondisi darurat terpicu (lampu merah / sirine).
 
 import { findPath } from './pathfinder';
-import { SAFE_ZONE_TILES } from '../mapData';
+import { SAFE_ZONE_TILES, MAP_DATA, MAP_ROWS, MAP_COLS, TILE } from '../mapData';
+
+const WALKABLE_VILLAGE_TILES: [number, number][] = [];
+for (let r = 0; r < MAP_ROWS; r++) {
+  for (let c = 0; c < MAP_COLS; c++) {
+    const t = MAP_DATA[r][c];
+    if (t === TILE.GRASS || t === TILE.PATH || t === TILE.DIRT_ROAD || t === TILE.BRIDGE) {
+      WALKABLE_VILLAGE_TILES.push([r, c]);
+    }
+  }
+}
 
 export type NPCState = 'idle' | 'panic' | 'moving' | 'safe' | 'blocked';
 
@@ -74,11 +84,11 @@ export function updateNPCs(
         // Trigger a new emote!
         newEmoteTimer = 90; // show for 1.5 seconds
         if (npc.state === 'idle' || npc.state === 'safe') {
-          newEmote = Math.random() > 0.5 ? '🙂' : '💬';
+          newEmote = Math.random() > 0.5 ? 'happy' : 'chat';
         } else if (npc.state === 'panic' || npc.state === 'moving') {
-          newEmote = Math.random() > 0.5 ? '😱' : '⚠️';
+          newEmote = Math.random() > 0.5 ? 'panic' : 'alert';
         } else if (npc.state === 'blocked') {
-          newEmote = Math.random() > 0.5 ? '🤬' : '❌';
+          newEmote = Math.random() > 0.5 ? 'angry' : 'blocked';
         }
       }
     }
@@ -109,19 +119,19 @@ export function updateNPCs(
           return { ...n, row: n.row + (dr / dist) * speed, col: n.col + (dc / dist) * speed };
         }
       } else {
-        // Pick a new random walkable tile in the village
-        // Village is approx rows 16..30, cols 12..30
-        let targetR = Math.floor(16 + Math.random() * 14);
-        let targetC = Math.floor(12 + Math.random() * 18);
-        
-        // Find path
-        let newPath = findPath(Math.round(n.row), Math.round(n.col), targetR, targetC, gateOpen);
-        if (newPath.length > 0) {
-          return { ...n, path: newPath, pathIndex: 1, wanderTimer: 0 };
-        } else {
-          // If no path found (e.g. tile is not walkable), wait briefly and retry
-          return { ...n, wanderTimer: 30, path: [] };
+        // Pick a new random walkable tile in the village from the precomputed list
+        if (WALKABLE_VILLAGE_TILES.length > 0) {
+          const randTile = WALKABLE_VILLAGE_TILES[Math.floor(Math.random() * WALKABLE_VILLAGE_TILES.length)];
+          let targetR = randTile[0];
+          let targetC = randTile[1];
+          
+          let newPath = findPath(Math.round(n.row), Math.round(n.col), targetR, targetC, gateOpen);
+          if (newPath.length > 0) {
+            return { ...n, path: newPath, pathIndex: 1, wanderTimer: 0 };
+          }
         }
+        // If no path found or no walkable tiles, wait briefly and retry
+        return { ...n, wanderTimer: 30, path: [] };
       }
     }
 
@@ -158,13 +168,23 @@ export function updateNPCs(
       if (n.panicTimer > 0) {
         return { ...n, panicTimer: n.panicTimer - 1 };
       }
-      // Find nearest safe zone
+      // Find nearest safe zone (Euclidean distance) to reduce A* calls
       let bestPath: [number, number][] = [];
-      let bestLen = Infinity;
-      for (const [sr, sc] of SAFE_ZONE_TILES) {
-        const path = findPath(Math.round(n.row), Math.round(n.col), sr, sc, gateOpen);
-        if (path.length > 0 && path.length < bestLen) {
-          bestLen = path.length;
+      if (SAFE_ZONE_TILES.length > 0) {
+        let closestSafeTile = SAFE_ZONE_TILES[0];
+        let minDist = Infinity;
+        for (const [sr, sc] of SAFE_ZONE_TILES) {
+          const dr = sr - n.row;
+          const dc = sc - n.col;
+          const dist = dr * dr + dc * dc;
+          if (dist < minDist) {
+            minDist = dist;
+            closestSafeTile = [sr, sc];
+          }
+        }
+        
+        const path = findPath(Math.round(n.row), Math.round(n.col), closestSafeTile[0], closestSafeTile[1], gateOpen);
+        if (path.length > 0) {
           bestPath = path;
         }
       }

@@ -10,8 +10,8 @@ export function defineCoreBlocks() {
 
   // ── 1. Sistem Utama ────────────────────────────────────────────
   Blockly.Blocks['resq_program'] = {
-    init() {
-      this.appendDummyInput().appendField('Program Penyelamat');
+    init: function () {
+      this.appendDummyInput().appendField('Sistem Mitigasi');
       this.appendStatementInput('SETUP').setCheck(null).appendField('Mulai Saat Dihidupkan');
       this.appendStatementInput('LOOP').setCheck(null).appendField('Jalankan Terus-Menerus');
       this.setColour('#fd761a');
@@ -54,7 +54,7 @@ export function defineCoreBlocks() {
   Blockly.Blocks['resq_buzzer'] = {
     init() {
       this.appendDummyInput()
-        .appendField('🔊 Sirine Peringatan')
+        .appendField('Sirine Peringatan')
         .appendField(new Blockly.FieldNumber(1000, 100), 'MS')
         .appendField('ms');
       this.setPreviousStatement(true, null);
@@ -71,7 +71,7 @@ export function defineCoreBlocks() {
   // ── 4. Sirine Berhenti ───────────────────────────────────────
   Blockly.Blocks['resq_buzzer_stop'] = {
     init() {
-      this.appendDummyInput().appendField('🔇 Sirine Berhenti');
+      this.appendDummyInput().appendField('Sirine Berhenti');
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour('#0D9488');
@@ -104,7 +104,7 @@ export function defineCoreBlocks() {
   Blockly.Blocks['resq_servo'] = {
     init() {
       this.appendDummyInput()
-        .appendField('🚪 Pintu Evakuasi')
+        .appendField('Pintu Evakuasi')
         .appendField(new Blockly.FieldDropdown([
           ['Tertutup', '0'], ['Setengah', '90'], ['Terbuka', '180'],
         ]), 'POS');
@@ -118,11 +118,11 @@ export function defineCoreBlocks() {
     return `// Pintu Evakuasi (pin 9)\nservo_9.write(${block.getFieldValue('POS')});\n`;
   };
 
-  // ── 7. Tunggu ────────────────────────────────────────────────
+  // ── 7. Jeda Sebentar ─────────────────────────────────────────
   Blockly.Blocks['resq_tunggu'] = {
     init() {
       this.appendDummyInput()
-        .appendField('⏱️ Jeda Sebentar')
+        .appendField('Jeda Sebentar')
         .appendField(new Blockly.FieldNumber(1000, 0), 'MS')
         .appendField('ms');
       this.setPreviousStatement(true, null);
@@ -138,7 +138,7 @@ export function defineCoreBlocks() {
   // ── 8. Laporkan ke Monitor ───────────────────────────────────
   Blockly.Blocks['resq_tampil'] = {
     init() {
-      this.appendValueInput('VALUE').setCheck(null).appendField('📋 Laporkan ke Monitor');
+      this.appendValueInput('VALUE').setCheck(null).appendField('Laporkan ke Monitor');
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
@@ -156,7 +156,7 @@ export function defineCoreBlocks() {
   // ── 10. Pantau Intensitas Gempa ──────────────────────────────
   Blockly.Blocks['resq_sensor_getar'] = {
     init() {
-      this.appendDummyInput().appendField('🔔 Pantau Intensitas Gempa');
+      this.appendDummyInput().appendField('Pantau Intensitas Gempa');
       this.setOutput(true, 'Number');
       this.setColour('#2563EB');
       this.setTooltip('Membaca intensitas getaran gempa. Semakin tinggi nilainya, gempa semakin kuat.');
@@ -169,7 +169,7 @@ export function defineCoreBlocks() {
   // ── 11. Pantau Suhu Lingkungan ───────────────────────────────
   Blockly.Blocks['resq_sensor_suhu'] = {
     init() {
-      this.appendDummyInput().appendField('🌡️ Pantau Suhu Lingkungan');
+      this.appendDummyInput().appendField('Pantau Suhu Lingkungan');
       this.setOutput(true, 'Number');
       this.setColour('#2563EB');
       this.setTooltip('Membaca suhu lingkungan dalam derajat Celsius.');
@@ -182,7 +182,7 @@ export function defineCoreBlocks() {
   // ── 12. Tombol Darurat 1 ─────────────────────────────────────
   Blockly.Blocks['resq_tombol_1'] = {
     init() {
-      this.appendDummyInput().appendField('🔘 Tombol Darurat 1 ditekan?');
+      this.appendDummyInput().appendField('Tombol Darurat 1 ditekan?');
       this.setOutput(true, 'Boolean');
       this.setColour('#2563EB');
       this.setTooltip('Mendeteksi apakah tombol darurat pertama sedang ditekan.');
@@ -195,7 +195,7 @@ export function defineCoreBlocks() {
   // ── 13. Tombol Darurat 2 ─────────────────────────────────────
   Blockly.Blocks['resq_tombol_2'] = {
     init() {
-      this.appendDummyInput().appendField('🔘 Tombol Darurat 2 ditekan?');
+      this.appendDummyInput().appendField('Tombol Darurat 2 ditekan?');
       this.setOutput(true, 'Boolean');
       this.setColour('#2563EB');
       this.setTooltip('Mendeteksi apakah tombol darurat kedua sedang ditekan.');
@@ -309,7 +309,7 @@ export function defineCoreBlocks() {
   Blockly.Blocks['resq_ulangi'] = {
     init() {
       this.appendDummyInput()
-        .appendField('🔁 Ulangi Aksi')
+        .appendField('Ulangi Aksi')
         .appendField(new Blockly.FieldNumber(3, 1, 100), 'KALI')
         .appendField('kali');
       this.appendStatementInput('DO').setCheck(null);
@@ -346,7 +346,7 @@ export function defineCoreBlocks() {
       this.appendValueInput('A').setCheck('Number');
       this.appendDummyInput().appendField(new Blockly.FieldDropdown([
         ['tambah (+)', '+'], ['kurang (-)', '-'],
-        ['kali (×)', '*'],  ['bagi (÷)', '/'],
+        ['kali (×)', '*'], ['bagi (÷)', '/'],
       ]), 'OP');
       this.appendValueInput('B').setCheck('Number');
       this.setInputsInline(true);
@@ -366,7 +366,7 @@ export function defineCoreBlocks() {
   Blockly.Blocks['resq_alarm_darurat'] = {
     init() {
       this.appendDummyInput()
-        .appendField('🚨 Alarm Evakuasi')
+        .appendField('Alarm Evakuasi')
         .appendField(new Blockly.FieldNumber(3, 1, 10), 'KALI')
         .appendField('kali');
       this.setPreviousStatement(true, null);
@@ -407,7 +407,7 @@ export function defineCoreBlocks() {
   // ── 25. Matikan Semua Lampu ──────────────────────────────────
   Blockly.Blocks['resq_semua_led_mati'] = {
     init() {
-      this.appendDummyInput().appendField('💡 Matikan Semua Lampu');
+      this.appendDummyInput().appendField('Matikan Semua Lampu');
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour('#0D9488');
@@ -422,7 +422,7 @@ export function defineCoreBlocks() {
   Blockly.Blocks['resq_buzzer_nada'] = {
     init() {
       this.appendDummyInput()
-        .appendField('🔊 Sirine Nada')
+        .appendField('Sirine Nada')
         .appendField(new Blockly.FieldDropdown([
           ['Darurat', '3000'], ['Peringatan', '1500'], ['Info', '500'],
         ]), 'FREQ')
@@ -446,7 +446,7 @@ export function defineCoreBlocks() {
   // ── 29. Gempa Terdeteksi Kuat? ───────────────────────────────
   Blockly.Blocks['resq_getar_kuat'] = {
     init() {
-      this.appendDummyInput().appendField('🔔 Gempa Terdeteksi Kuat?');
+      this.appendDummyInput().appendField('Gempa Terdeteksi Kuat?');
       this.setOutput(true, 'Boolean');
       this.setColour('#2563EB');
       this.setTooltip('Benar jika intensitas gempa terdeteksi KUAT.');
@@ -459,7 +459,7 @@ export function defineCoreBlocks() {
   // ── 30. Suhu Berbahaya? ──────────────────────────────────────
   Blockly.Blocks['resq_suhu_panas'] = {
     init() {
-      this.appendDummyInput().appendField('🌡️ Suhu Berbahaya? (>35°C)');
+      this.appendDummyInput().appendField('Suhu Berbahaya? (>35°C)');
       this.setOutput(true, 'Boolean');
       this.setColour('#2563EB');
       this.setTooltip('Benar jika suhu lingkungan di atas 35 derajat Celsius — berbahaya!');

@@ -30,7 +30,7 @@ export function validateMission(
     for (const requiredType of validation.requiredBlocks) {
       if (!blockTypes.includes(requiredType)) {
         const labels: Record<string, string> = {
-          resq_program: 'Program Penyelamat',
+          resq_program: 'Sistem Mitigasi',
           resq_led: 'Lampu Bahaya',
           resq_buzzer: 'Buzzer berbunyi',
           resq_buzzer_stop: 'Buzzer berhenti',
@@ -71,7 +71,7 @@ export function validateMission(
       const allInside = childBlocks.every((b) => hasAncestor(b, ancestorType));
       if (!allInside) {
         const labels: Record<string, string> = {
-          resq_program: 'Program Penyelamat',
+          resq_program: 'Sistem Mitigasi',
           resq_led: 'Lampu Bahaya',
           resq_jika: 'Kalau...Maka Lakukan',
           resq_jika_tidak: 'Kalau...Selain Itu',

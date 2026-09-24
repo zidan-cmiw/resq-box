@@ -2,26 +2,26 @@ import { useState, useEffect } from 'react';
 
 const ONBOARDING_STEPS = [
   {
-    title: 'Selamat Datang di RESQ-BOX! 🚀',
-    description: 'Mari belajar mitigasi bencana dengan memprogram alarm otomatis menggunakan sensor.',
+    title: 'Selamat Datang di RESQ-BOX!',
+    description: 'Mari belajar mitigasi bencana dengan merancang alarm otomatis menggunakan sensor.',
     icon: 'school',
     color: 'text-primary'
   },
   {
-    title: 'Panel Kiri: Susun Logika 🧩',
-    description: 'Tarik balok dari kategori di sebelah kiri dan susun di dalam blok Program RESQ-BOX untuk membuat aturan.',
+    title: 'Panel Kiri: Susun Logika',
+    description: 'Tarik komponen dari kategori di sebelah kiri dan susun di dalam area kerja untuk membuat aturan peringatan.',
     icon: 'extension',
     color: 'text-secondary-container'
   },
   {
-    title: 'Panel Sensor & Output 🎛️',
+    title: 'Panel Sensor & Output',
     description: 'Di bawah kanan, ada simulasi Output (Console) dan panel untuk mengatur nilai Sensor secara manual.',
     icon: 'sensors',
     color: 'text-tertiary-container'
   },
   {
-    title: 'Uji & Validasi! ✅',
-    description: 'Klik tombol "Run" di atas untuk mencoba programmu. Jika misimu selesai, klik tombol Validasi!',
+    title: 'Uji & Validasi!',
+    description: 'Klik tombol "Mulai" di atas untuk mencoba sistem peringatanmu. Jika misimu selesai, klik tombol Validasi!',
     icon: 'task_alt',
     color: 'text-[#16A34A]'
   }

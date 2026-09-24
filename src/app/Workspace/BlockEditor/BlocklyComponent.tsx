@@ -15,7 +15,7 @@ const INITIAL_TOOLBOX = {
   contents: [
     {
       kind: 'category',
-      name: '⚙️ Sistem',
+      name: 'Sistem',
       colour: '#fd761a',
       contents: [
         { kind: 'block', type: 'resq_program' },
@@ -26,7 +26,7 @@ const INITIAL_TOOLBOX = {
     },
     {
       kind: 'category',
-      name: '💡 Peringatan & Lampu',
+      name: 'Peringatan & Lampu',
       colour: '#0D9488',
       contents: [
         { kind: 'block', type: 'resq_led' },
@@ -40,7 +40,7 @@ const INITIAL_TOOLBOX = {
     },
     {
       kind: 'category',
-      name: '⚙️ Mekanik Evakuasi',
+      name: 'Mekanik Evakuasi',
       colour: '#7C3AED',
       contents: [
         { kind: 'block', type: 'resq_motor' },
@@ -49,7 +49,7 @@ const INITIAL_TOOLBOX = {
     },
     {
       kind: 'category',
-      name: '📡 Pemantauan Alam',
+      name: 'Pemantauan Alam',
       colour: '#2563EB',
       contents: [
         { kind: 'block', type: 'resq_sensor_getar' },
@@ -62,7 +62,7 @@ const INITIAL_TOOLBOX = {
     },
     {
       kind: 'category',
-      name: '🔀 Pengambilan Keputusan',
+      name: 'Pengambilan Keputusan',
       colour: '#DB2777',
       contents: [
         { kind: 'block', type: 'resq_jika' },

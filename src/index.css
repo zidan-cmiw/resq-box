@@ -1,51 +1,113 @@
 @import "tailwindcss";
 
+/* ─── Variables for Light and Dark Modes ─── */
+:root {
+  /* Brand */
+  --primary: #6366f1;
+  --primary-container: #e0e7ff;
+  --on-primary: #ffffff;
+  --on-primary-container: #312e81;
+
+  --secondary: #f97316;
+  --secondary-container: #ffedd5;
+  --on-secondary: #ffffff;
+  --on-secondary-container: #7c2d12;
+
+  /* Surface Scale (Light) */
+  --surface: #f8fafc;
+  --surface-dim: #f1f5f9;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f8fafc;
+  --surface-container: #f1f5f9;
+  --surface-container-high: #e2e8f0;
+  --surface-container-highest: #cbd5e1;
+  --surface-variant: #e2e8f0;
+
+  /* Content Colors (Light) */
+  --on-surface: #0f172a;
+  --on-surface-variant: #475569;
+  --outline: #94a3b8;
+  --outline-variant: #cbd5e1;
+
+  /* Error */
+  --error: #ef4444;
+  --on-error: #ffffff;
+  --error-container: #fee2e2;
+  --on-error-container: #991b1b;
+}
+
+.dark {
+  /* Brand */
+  --primary: #818cf8;
+  --primary-container: #312e81;
+  --on-primary: #1e1b4b;
+  --on-primary-container: #c7d2fe;
+
+  --secondary: #fb923c;
+  --secondary-container: #ea580c;
+  --on-secondary: #431407;
+  --on-secondary-container: #fff7ed;
+
+  /* Surface Scale (Dark) */
+  --surface: #0f172a;
+  --surface-dim: #0b1120;
+  --surface-bright: #1e293b;
+  --surface-container-lowest: #070d1a;
+  --surface-container-low: #0d1525;
+  --surface-container: #1a2332;
+  --surface-container-high: #1e293b;
+  --surface-container-highest: #273549;
+  --surface-variant: #1e293b;
+
+  /* Content Colors (Dark) */
+  --on-surface: #e2e8f0;
+  --on-surface-variant: #94a3b8;
+  --outline: #475569;
+  --outline-variant: #334155;
+
+  /* Error */
+  --error: #f87171;
+  --on-error: #450a0a;
+  --error-container: #991b1b;
+  --on-error-container: #fecaca;
+}
+
 @theme {
-  /* ─── Brand Colors ─── */
-  --color-primary: #091426;
-  --color-primary-container: #1e293b;
-  --color-on-primary: #ffffff;
-  --color-on-primary-container: #c8d6f0;   /* was #8590a6 — too low contrast */
+  /* Map theme colors to CSS variables */
+  --color-primary: var(--primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary: var(--on-primary);
+  --color-on-primary-container: var(--on-primary-container);
 
-  --color-secondary: #9d4300;
-  --color-secondary-container: #fd761a;
-  --color-on-secondary: #ffffff;
-  --color-on-secondary-container: #3b1800;  /* dark text on orange container */
+  --color-secondary: var(--secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary: var(--on-secondary);
+  --color-on-secondary-container: var(--on-secondary-container);
 
-  /* ─── Surface Scale ─── */
-  --color-surface: #fbf8fa;
-  --color-surface-dim: #dcd9db;
-  --color-surface-bright: #fbf8fa;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f5f3f4;
-  --color-surface-container: #f0edef;
-  --color-surface-container-high: #eae7e9;
-  --color-surface-container-highest: #e4e2e3;
-  --color-surface-variant: #e4e2e3;
+  --color-surface: var(--surface);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-surface-variant: var(--surface-variant);
 
-  /* ─── Content Colors ─── */
-  --color-on-surface: #1b1b1d;
-  --color-on-surface-variant: #45474c;
-  --color-outline: #75777d;
-  --color-outline-variant: #c5c6cd;
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
 
-  /* ─── Error ─── */
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
 
-  /* ─── Spacing ─── */
-  --spacing-xs: 4px;
-  --spacing-sm: 12px;
-  --spacing-base: 8px;
-  --spacing-md: 24px;
-  --spacing-lg: 48px;
-  --spacing-gutter: 16px;
-  --spacing-margin-mobile: 16px;
-  --spacing-margin-desktop: 32px;
-
-  /* ─── Typography Families ─── */
+  /* Typography Families */
+  --font-pixel-title: "Press Start 2P", monospace;
+  --font-pixel: "Pixelify Sans", sans-serif;
   --font-display-lg: "Inter", sans-serif;
   --font-headline-lg: "Inter", sans-serif;
   --font-title-md: "Inter", sans-serif;
@@ -59,15 +121,12 @@
   --font-code-sm: "JetBrains Mono", monospace;
   --font-code: "JetBrains Mono", monospace;
 
-  /* ─── Typography Sizes ─── */
-
-  /* Display */
+  /* Typography Sizes */
   --text-display-lg: 48px;
   --text-display-lg--line-height: 56px;
   --text-display-lg--letter-spacing: -0.02em;
   --text-display-lg--font-weight: 800;
 
-  /* Headline */
   --text-headline-lg: 32px;
   --text-headline-lg--line-height: 40px;
   --text-headline-lg--font-weight: 700;
@@ -75,7 +134,6 @@
   --text-headline-lg-mobile--line-height: 32px;
   --text-headline-lg-mobile--font-weight: 700;
 
-  /* Title */
   --text-title-md: 18px;
   --text-title-md--line-height: 24px;
   --text-title-md--font-weight: 600;
@@ -83,7 +141,6 @@
   --text-title-sm--line-height: 20px;
   --text-title-sm--font-weight: 600;
 
-  /* Label */
   --text-label-caps: 12px;
   --text-label-caps--line-height: 16px;
   --text-label-caps--letter-spacing: 0.05em;
@@ -98,7 +155,6 @@
   --text-label-sm--line-height: 16px;
   --text-label-sm--font-weight: 500;
 
-  /* Body */
   --text-body-base: 16px;
   --text-body-base--line-height: 24px;
   --text-body-base--font-weight: 400;
@@ -106,7 +162,6 @@
   --text-body-sm--line-height: 20px;
   --text-body-sm--font-weight: 400;
 
-  /* Code */
   --text-code-sm: 13px;
   --text-code-sm--line-height: 20px;
   --text-code-sm--font-weight: 500;
@@ -117,24 +172,25 @@
 
 @layer base {
   body {
-    @apply bg-surface text-on-surface font-body-base antialiased;
+    @apply bg-surface text-on-surface font-body-base antialiased transition-colors duration-300;
   }
 }
 
 /* ─── Layout Helpers ─── */
 .mission-canvas {
-  background-color: #F8FAFC;
-  background-image: linear-gradient(to right, #E2E8F0 1px, transparent 1px),
-                    linear-gradient(to bottom, #E2E8F0 1px, transparent 1px);
+  background-color: var(--surface);
+  background-image: linear-gradient(to right, rgba(51, 65, 85, 0.2) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(51, 65, 85, 0.2) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 /* ─── Interactive Button Feel ─── */
 .tactile-btn {
   border-bottom-width: 2px;
-  border-bottom-color: rgba(0, 0, 0, 0.2);
+  border-bottom-color: rgba(0, 0, 0, 0.3);
   transition: all 0.1s;
 }
+
 .tactile-btn:active {
   border-bottom-width: 0px;
   transform: translateY(2px);
@@ -142,13 +198,73 @@
 }
 
 .tactile-card {
-  border: 1px solid #E2E8F0;
+  border: 1px solid rgba(51, 65, 85, 0.6);
+}
+
+/* ─── Glassmorphism Card ─── */
+.glass-card {
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 50%, transparent);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+
+.dark .glass-card {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(99, 102, 241, 0.15);
+  box-shadow: none;
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.dark .glass-card-hover:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+/* ─── Glow Effects ─── */
+.glow-emerald {
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.3), 0 0 60px rgba(52, 211, 153, 0.1);
+}
+
+.glow-orange {
+  box-shadow: 0 0 20px rgba(251, 146, 60, 0.3), 0 0 60px rgba(251, 146, 60, 0.1);
+}
+
+.glow-indigo {
+  box-shadow: 0 0 20px rgba(129, 140, 248, 0.3), 0 0 60px rgba(129, 140, 248, 0.1);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(248, 113, 113, 0.3), 0 0 60px rgba(248, 113, 113, 0.1);
+}
+
+/* ─── Gradient Backgrounds ─── */
+.gradient-hero {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
+}
+
+.gradient-sidebar {
+  background: var(--surface-dim);
+}
+
+.dark .gradient-sidebar {
+  background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
 }
 
 /* ─── Notch Accent ─── */
 .notch-left {
   position: relative;
 }
+
 .notch-left::before {
   content: '';
   position: absolute;
@@ -157,31 +273,2032 @@
   transform: translateY(-50%);
   width: 8px;
   height: 16px;
-  background-color: #E2E8F0;
+  background-color: var(--outline-variant);
   border-radius: 0 4px 4px 0;
 }
 
 /* ─── Custom Scrollbar ─── */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  @apply bg-surface-container-low;
+  background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  @apply bg-outline-variant rounded-full;
+  background: color-mix(in srgb, var(--outline) 60%, transparent);
+  border-radius: 999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-outline;
+  background: var(--outline);
 }
 
 /* ─── Fix Blockly Ghost Scrollbar ─── */
-.blocklyFlyout[style*="display: none"] ~ .blocklyFlyoutScrollbar {
+.blocklyFlyout[style*="display: none"]~.blocklyFlyoutScrollbar {
   display: none !important;
 }
 
 /* ─── Slider Thumb Styling ─── */
 input[type='range'] {
-  accent-color: var(--color-secondary-container);
+  accent-color: var(--primary);
+}
+
+/* ─── Animations ─── */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-2px);
+  }
+
+  40% {
+    transform: translateX(2px);
+  }
+
+  60% {
+    transform: translateX(-1px);
+  }
+
+  80% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes shake-heavy {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10% {
+    transform: translateX(-4px) rotate(-0.5deg);
+  }
+
+  20% {
+    transform: translateX(4px) rotate(0.5deg);
+  }
+
+  30% {
+    transform: translateX(-4px) rotate(-0.3deg);
+  }
+
+  40% {
+    transform: translateX(4px) rotate(0.3deg);
+  }
+
+  50% {
+    transform: translateX(-3px);
+  }
+
+  60% {
+    transform: translateX(3px);
+  }
+
+  70% {
+    transform: translateX(-2px);
+  }
+
+  80% {
+    transform: translateX(2px);
+  }
+
+  90% {
+    transform: translateX(-1px);
+  }
+}
+
+/* ── Pixel Art Ambient Background Keyframe Animations ── */
+
+/* Smooth continuous horizontal scrolling (parallax) */
+@keyframes parallax-drift-clouds {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-1000px); }
+}
+
+@keyframes parallax-drift-clouds-slow {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(1000px); }
+}
+
+@keyframes parallax-scroll-bg-far {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-1000px); }
+}
+
+@keyframes parallax-scroll-bg-mid {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-1000px); }
+}
+
+@keyframes parallax-scroll-bg-near {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-1000px); }
+}
+
+/* Wispy volcanic steam plume trailing sideways */
+@keyframes pixel-steam-plume {
+  0% { transform: scaleX(0.9) scaleY(0.95) translateX(0); opacity: 0.65; }
+  50% { transform: scaleX(1.1) scaleY(1.05) translateX(12px); opacity: 0.85; }
+  100% { transform: scaleX(0.9) scaleY(0.95) translateX(0); opacity: 0.65; }
+}
+
+@keyframes pixel-steam-wisps {
+  0% { transform: translateX(0) translateY(0); opacity: 0.7; }
+  50% { transform: translateX(25px) translateY(-4px); opacity: 0.4; }
+  100% { transform: translateX(50px) translateY(-8px); opacity: 0; }
+}
+
+/* Natural slow firefly floating in 2D space */
+@keyframes pixel-firefly-wander-1 {
+  0% { transform: translate(0, 0); opacity: 0.3; }
+  25% { transform: translate(15px, -18px); opacity: 0.9; }
+  50% { transform: translate(-8px, -30px); opacity: 0.4; }
+  75% { transform: translate(-20px, -12px); opacity: 0.85; }
+  100% { transform: translate(0, 0); opacity: 0.3; }
+}
+
+@keyframes pixel-firefly-wander-2 {
+  0% { transform: translate(0, 0); opacity: 0.7; }
+  30% { transform: translate(-18px, -14px); opacity: 0.3; }
+  60% { transform: translate(12px, -28px); opacity: 0.95; }
+  85% { transform: translate(22px, -8px); opacity: 0.4; }
+  100% { transform: translate(0, 0); opacity: 0.7; }
+}
+
+@keyframes pixel-firefly-wander-3 {
+  0% { transform: translate(0, 0); opacity: 0.4; }
+  35% { transform: translate(20px, -10px); opacity: 0.9; }
+  70% { transform: translate(5px, -24px); opacity: 0.25; }
+  100% { transform: translate(0, 0); opacity: 0.4; }
+}
+
+/* Pixel birds gliding and flapping across sky */
+@keyframes pixel-bird-fly-left {
+  0% { transform: translateX(1100px) translateY(0); }
+  50% { transform: translateX(500px) translateY(-15px); }
+  100% { transform: translateX(-200px) translateY(5px); }
+}
+
+@keyframes pixel-bird-fly-right {
+  0% { transform: translateX(-200px) translateY(0); }
+  50% { transform: translateX(450px) translateY(-12px); }
+  100% { transform: translateX(1100px) translateY(8px); }
+}
+
+@keyframes pixel-star-twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* Class helper bindings */
+.anim-scroll-clouds {
+  animation: parallax-drift-clouds 75s linear infinite;
+  will-change: transform;
+}
+
+.anim-scroll-clouds-slow {
+  animation: parallax-drift-clouds 110s linear infinite;
+  will-change: transform;
+}
+
+.anim-scroll-clouds-rev {
+  animation: parallax-drift-clouds-slow 90s linear infinite;
+  will-change: transform;
+}
+
+.anim-scroll-bg-far {
+  animation: parallax-scroll-bg-far 140s linear infinite;
+  will-change: transform;
+}
+
+.anim-scroll-bg-mid {
+  animation: parallax-scroll-bg-mid 80s linear infinite;
+  will-change: transform;
+}
+
+.anim-scroll-bg-near {
+  animation: parallax-scroll-bg-near 45s linear infinite;
+  will-change: transform;
+}
+
+.anim-steam-main {
+  animation: pixel-steam-plume 8s ease-in-out infinite;
+  transform-origin: left center;
+}
+
+.anim-steam-wisp-1 {
+  animation: pixel-steam-wisps 6s ease-out infinite;
+}
+
+.anim-steam-wisp-2 {
+  animation: pixel-steam-wisps 6s ease-out infinite 3s;
+}
+
+.anim-firefly-1 {
+  animation: pixel-firefly-wander-1 12s ease-in-out infinite;
+}
+
+.anim-firefly-2 {
+  animation: pixel-firefly-wander-2 15s ease-in-out infinite 2s;
+}
+
+.anim-firefly-3 {
+  animation: pixel-firefly-wander-3 10s ease-in-out infinite 4s;
+}
+
+.anim-bird-flight-1 {
+  animation: pixel-bird-fly-left 32s linear infinite;
+}
+
+.anim-bird-flight-2 {
+  animation: pixel-bird-fly-left 28s linear infinite 14s;
+}
+
+.anim-bird-flight-sunset {
+  animation: pixel-bird-fly-right 36s linear infinite;
+}
+
+.anim-pixel-star-1 {
+  animation: pixel-star-twinkle 3s ease-in-out infinite;
+}
+
+.anim-pixel-star-2 {
+  animation: pixel-star-twinkle 4.5s ease-in-out infinite 1.5s;
+}
+
+.anim-pixel-star-3 {
+  animation: pixel-star-twinkle 2.5s ease-in-out infinite 0.8s;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.3s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out both;
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out infinite;
+}
+
+.animate-shake-heavy {
+  animation: shake-heavy 0.3s ease-in-out infinite;
+}
+
+/* staggered children */
+.stagger>*:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.stagger>*:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.stagger>*:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.stagger>*:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.stagger>*:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+.stagger>*:nth-child(6) {
+  animation-delay: 300ms;
+}
+
+/* ─── Sidebar Active Indicator ─── */
+.sidebar-item {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.sidebar-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 24px;
+  background: var(--primary);
+  border-radius: 0 4px 4px 0;
+  transition: transform 0.2s ease;
+}
+
+.sidebar-item.active::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+.sidebar-item.active {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   RETRO PIXEL GAME UI DESIGN SYSTEM (RESQ-BOX 8-BIT / 16-BIT THEME)
+   ════════════════════════════════════════════════════════════════════ */
+
+html, body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+@utility font-pixel-title {
+  font-family: 'Press Start 2P', cursive, monospace !important;
+  letter-spacing: -0.05em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+@utility font-pixel {
+  font-family: 'Pixelify Sans', system-ui, sans-serif !important;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.font-pixel-title {
+  font-family: 'Press Start 2P', cursive, monospace !important;
+  letter-spacing: -0.05em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+.font-pixel {
+  font-family: 'Pixelify Sans', system-ui, sans-serif !important;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Retro CRT scanline effect */
+.crt-overlay {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Pixel Card / Box Container */
+.pixel-card {
+  position: relative;
+  border: 3px solid #0f172a;
+  box-shadow: 
+    0 6px 0 #0f172a,
+    inset 2px 2px 0 rgba(255, 255, 255, 0.15),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pixel-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 0 #0f172a,
+    inset 2px 2px 0 rgba(255, 255, 255, 0.25),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Retro Arcade / RPG Buttons (Bevelled 3D Game Buttons) */
+.pixel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 3px solid #0f172a;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.1s ease;
+}
+
+.pixel-btn:active:not(:disabled) {
+  transform: translateY(4px);
+}
+
+/* Button Variants */
+.pixel-btn-primary {
+  background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%);
+  color: #ffffff;
+  box-shadow: 
+    0 6px 0 #1e1b4b,
+    inset 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+}
+.pixel-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+.pixel-btn-primary:active:not(:disabled) {
+  box-shadow: 0 2px 0 #1e1b4b;
+}
+
+/* Authentic Retro Wooden Plank Menu Buttons (ala 2D Pixel Game Main Menu) */
+.pixel-btn-wood-plank {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  max-width: 90vw;
+  min-width: 280px;
+  height: 60px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #d8a26e 0%, #ba814d 40%, #9c6332 80%, #7d491f 100%);
+  border: 4px solid #231206;
+  border-radius: 6px;
+  box-shadow: 
+    0 8px 0 #231206,
+    inset 0 4px 0 #f0c395,
+    inset 0 -4px 0 #522d10,
+    inset 4px 0 0 #e4b281,
+    inset -4px 0 0 #5e3414;
+  color: #231206;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: 
+    0 2px 0 #ecd2a6,
+    0 -1px 0 #4a2810,
+    -1px 0 0 #4a2810,
+    1px 0 0 #4a2810;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.1s ease, filter 0.15s ease;
+  overflow: hidden;
+}
+
+.pixel-btn-wood-plank.locked {
+  background: linear-gradient(180deg, #64748b 0%, #475569 50%, #334155 100%);
+  border-color: #0f172a;
+  color: #cbd5e1;
+  box-shadow: 0 6px 0 #0f172a, inset 0 3px 0 #94a3b8, inset 0 -3px 0 #1e293b;
+  text-shadow: 0 2px 0 #1e293b;
+  cursor: not-allowed;
+  opacity: 0.88;
+}
+
+/* Wood plank grain lines decoration */
+.pixel-btn-wood-plank::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 30px;
+  right: 30px;
+  height: 2px;
+  background: rgba(82, 45, 16, 0.4);
+  box-shadow: 
+    0 16px 0 rgba(82, 45, 16, 0.3),
+    0 28px 0 rgba(240, 195, 149, 0.25);
+  pointer-events: none;
+}
+
+/* Wood plank nail accents on left and right */
+.pixel-btn-wood-plank::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: #382010;
+  border: 1px solid #1a0b02;
+  box-shadow: 
+    calc(100% - 24px) 0 0 #382010,
+    0 1px 0 rgba(255,255,255,0.2),
+    calc(100% - 24px) 1px 0 rgba(255,255,255,0.2);
+  pointer-events: none;
+}
+
+.pixel-btn-wood-plank:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 11px 0 #231206,
+    inset 0 4px 0 #ffe0ba,
+    inset 0 -4px 0 #522d10;
+  filter: brightness(1.08);
+}
+
+.pixel-btn-wood-plank:active:not(:disabled) {
+  transform: translateY(6px) scale(0.99);
+  box-shadow: 
+    0 2px 0 #231206,
+    inset 0 2px 0 #f0c395,
+    inset 0 -2px 0 #522d10;
+}
+
+.pixel-btn-wood-plank.locked {
+  background: linear-gradient(180deg, #57534e 0%, #44403c 50%, #292524 100%);
+  border-color: #1c1917;
+  color: #a8a29e;
+  box-shadow: 0 6px 0 #0c0a09, inset 0 3px 0 #78716c, inset 0 -3px 0 #1c1917;
+  text-shadow: 0 2px 0 #0c0a09;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+/* Retro Game Title Logo */
+.pixel-title-logo {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  font-weight: 900;
+  color: #fbbf24;
+  letter-spacing: -0.02em;
+  text-shadow: 
+    0 5px 0 #92400e,
+    0 9px 0 #451a03,
+    0 12px 0 #1e0b02,
+    -3px -3px 0 #451a03,
+    3px -3px 0 #451a03,
+    -3px 3px 0 #451a03,
+    3px 3px 0 #451a03,
+    0 0 25px rgba(251, 191, 36, 0.6);
+  animation: pixel-title-float 3.5s ease-in-out infinite;
+}
+
+@keyframes pixel-title-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Wooden Notice Board Modal */
+.pixel-wood-board {
+  box-sizing: border-box;
+  background: #ecdcb9;
+  border: 6px solid #231206;
+  border-radius: 12px;
+  box-shadow: 
+    0 14px 0 #231206,
+    inset 0 6px 0 #d1b88a,
+    inset 0 -6px 0 #b39768,
+    inset 6px 0 0 #d1b88a,
+    inset -6px 0 0 #b39768;
+}
+
+.pixel-btn-cyan {
+  background: linear-gradient(180deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%);
+  color: #ffffff;
+  text-shadow: 0 2px 0 #164e63;
+  box-shadow: 
+    0 6px 0 #164e63,
+    inset 0 2px 0 #a5f3fc,
+    inset 0 -2px 0 #155e75;
+}
+.pixel-btn-cyan:hover:not(:disabled) {
+  background: linear-gradient(180deg, #22d3ee 0%, #06b6d4 50%, #0891b2 100%);
+}
+.pixel-btn-cyan:active:not(:disabled) {
+  box-shadow: 0 2px 0 #164e63;
+}
+
+.pixel-btn-emerald {
+  background: linear-gradient(180deg, #10b981 0%, #059669 50%, #047857 100%);
+  color: #ffffff;
+  text-shadow: 0 2px 0 #064e3b;
+  box-shadow: 
+    0 6px 0 #064e3b,
+    inset 0 2px 0 #a7f3d0,
+    inset 0 -2px 0 #065f46;
+}
+.pixel-btn-emerald:hover:not(:disabled) {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 50%, #059669 100%);
+}
+.pixel-btn-emerald:active:not(:disabled) {
+  box-shadow: 0 2px 0 #064e3b;
+}
+
+.pixel-btn-amber {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+  color: #ffffff;
+  text-shadow: 0 2px 0 #78350f;
+  box-shadow: 
+    0 6px 0 #78350f,
+    inset 0 2px 0 #fef3c7,
+    inset 0 -2px 0 #92400e;
+}
+.pixel-btn-amber:hover:not(:disabled) {
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+}
+.pixel-btn-amber:active:not(:disabled) {
+  box-shadow: 0 2px 0 #78350f;
+}
+
+.pixel-btn-locked {
+  background: #334155;
+  color: #94a3b8;
+  border-color: #1e293b;
+  box-shadow: 0 4px 0 #0f172a;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Pixel Level Card Portal */
+.pixel-level-card {
+  position: relative;
+  background: #1e293b;
+  border: 3px solid #0f172a;
+  border-radius: 14px;
+  box-shadow: 
+    0 8px 0 #0f172a,
+    inset 2px 2px 0 rgba(255, 255, 255, 0.12),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.35);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.pixel-level-card.unlocked:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 0 #0f172a,
+    inset 2px 2px 0 rgba(255, 255, 255, 0.2),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.4);
+}
+
+.pixel-level-card.locked {
+  background: #0f172a;
+  opacity: 0.75;
+  border-color: #1e293b;
+  box-shadow: 0 6px 0 #020617;
+}
+
+/* Retro EXP / Progress Bar */
+.pixel-exp-bar {
+  position: relative;
+  height: 16px;
+  background: #090d16;
+  border: 2px solid #0f172a;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.pixel-exp-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    #10b981,
+    #10b981 8px,
+    #059669 8px,
+    #059669 16px
+  );
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Pixel Badge */
+.pixel-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 2px solid #0f172a;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   LEVEL 1 INTERACTIVE LEARNING ANIMATIONS
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Drill Simulator ── */
+@keyframes drill-descend {
+  0% { transform: translateY(-8px); }
+  50% { transform: translateY(4px); }
+  100% { transform: translateY(-8px); }
+}
+
+@keyframes drill-bit-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ── Lava / Magma Convection Flow ── */
+@keyframes lava-flow-up {
+  0% { transform: translateY(0) scaleX(1); opacity: 0.7; }
+  50% { transform: translateY(-12px) scaleX(1.15); opacity: 1; }
+  100% { transform: translateY(-24px) scaleX(0.9); opacity: 0.3; }
+}
+
+@keyframes lava-flow-down {
+  0% { transform: translateY(0) scaleX(1); opacity: 0.7; }
+  50% { transform: translateY(12px) scaleX(0.85); opacity: 1; }
+  100% { transform: translateY(24px) scaleX(1.1); opacity: 0.3; }
+}
+
+@keyframes lava-blob {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+/* ── Metal Swirl (Outer Core) ── */
+@keyframes metal-swirl {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* ── Core Pulse (Inner Core) ── */
+@keyframes core-pulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.08); filter: brightness(1.4); }
+}
+
+@keyframes core-glow {
+  0%, 100% { opacity: 0.3; r: 18; }
+  50% { opacity: 0.7; r: 28; }
+}
+
+/* ── RPG Dialog Typewriter ── */
+@keyframes typewriter-cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes dialog-pop-in {
+  0% { transform: scale(0.85) translateY(10px); opacity: 0; }
+  60% { transform: scale(1.03) translateY(-2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes dialog-pop-out {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.9) translateY(10px); opacity: 0; }
+}
+
+/* ── Counter Roll (Gauge Numbers) ── */
+@keyframes counter-roll {
+  0% { transform: translateY(-100%); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* ── Plate Tectonics ── */
+@keyframes plate-converge-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(15px); }
+}
+
+@keyframes plate-converge-right {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-15px); }
+}
+
+@keyframes plate-diverge-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-12px); }
+}
+
+@keyframes plate-diverge-right {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(12px); }
+}
+
+@keyframes plate-transform-top {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(10px); }
+}
+
+@keyframes plate-transform-bottom {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-10px); }
+}
+
+@keyframes volcano-erupt {
+  0% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-18px) scale(1.6); opacity: 1; }
+  100% { transform: translateY(-30px) scale(0.8); opacity: 0; }
+}
+
+/* ── Magma Rising (Divergent Boundary) ── */
+@keyframes magma-rise {
+  0% { transform: translateY(20px); opacity: 0; }
+  50% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-8px); opacity: 0.4; }
+}
+
+/* ── Friction Sparks (Transform Boundary) ── */
+@keyframes friction-spark {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.5) rotate(180deg); opacity: 0.8; }
+  100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}
+
+/* ── Earthquake Crack Effect ── */
+@keyframes crack-appear {
+  0% { stroke-dashoffset: 100; opacity: 0; }
+  30% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes crack-fade {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ── Treasure Chest ── */
+@keyframes chest-bounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(-2deg); }
+  75% { transform: translateY(-3px) rotate(2deg); }
+}
+
+@keyframes chest-open {
+  0% { transform: rotateX(0deg); }
+  100% { transform: rotateX(-110deg); }
+}
+
+@keyframes treasure-sparkle {
+  0% { transform: scale(0) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+  100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}
+
+/* ── Ring of Fire Volcano Dot ── */
+@keyframes volcano-dot-pulse {
+  0%, 100% { r: 3; opacity: 0.5; }
+  50% { r: 5; opacity: 1; }
+}
+
+/* ── Glow Pulse Ring for Map Zones ── */
+@keyframes zone-glow-pulse {
+  0%, 100% { stroke-opacity: 0.2; stroke-width: 2; }
+  50% { stroke-opacity: 0.8; stroke-width: 5; }
+}
+
+/* ── Plate Arrow Animation ── */
+@keyframes arrow-pulse {
+  0%, 100% { opacity: 0.6; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(4px); }
+}
+
+/* ── Scale bounce for interactive clicks ── */
+@keyframes click-bounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.92); }
+  60% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+/* ── Pixel indicator bounce (small arrow or hint) ── */
+@keyframes hint-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── Gentle sway for floating elements ── */
+@keyframes gentle-sway {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+
+/* ── Bounce slight (for quake simulation) ── */
+@keyframes bounce-slight {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(-0.3deg); }
+  75% { transform: translateY(-1px) rotate(0.3deg); }
+}
+
+/* ════ CSS Utility Classes for Level 1 ════ */
+
+.anim-drill-descend {
+  animation: drill-descend 0.8s ease-in-out infinite;
+}
+
+.anim-drill-spin {
+  animation: drill-bit-spin 1.5s linear infinite;
+}
+
+.anim-lava-up-1 { animation: lava-flow-up 3s ease-in-out infinite; }
+.anim-lava-up-2 { animation: lava-flow-up 4s ease-in-out infinite 1s; }
+.anim-lava-up-3 { animation: lava-flow-up 3.5s ease-in-out infinite 2s; }
+.anim-lava-down-1 { animation: lava-flow-down 3.5s ease-in-out infinite 0.5s; }
+.anim-lava-down-2 { animation: lava-flow-down 4s ease-in-out infinite 1.5s; }
+.anim-lava-blob { animation: lava-blob 2.5s ease-in-out infinite; }
+
+.anim-metal-swirl { animation: metal-swirl 12s linear infinite; }
+.anim-core-pulse { animation: core-pulse 2s ease-in-out infinite; }
+.anim-core-glow { animation: core-glow 2s ease-in-out infinite; }
+
+.anim-dialog-in { animation: dialog-pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.anim-dialog-out { animation: dialog-pop-out 0.2s ease-in forwards; }
+.anim-typewriter-cursor { animation: typewriter-cursor-blink 0.6s step-end infinite; }
+
+.anim-counter-roll { animation: counter-roll 0.5s ease-out forwards; }
+
+.anim-plate-converge-l { animation: plate-converge-left 3s ease-in-out infinite alternate; }
+.anim-plate-converge-r { animation: plate-converge-right 3s ease-in-out infinite alternate; }
+.anim-plate-diverge-l { animation: plate-diverge-left 3s ease-in-out infinite alternate; }
+.anim-plate-diverge-r { animation: plate-diverge-right 3s ease-in-out infinite alternate; }
+.anim-plate-transform-t { animation: plate-transform-top 2.5s ease-in-out infinite alternate; }
+.anim-plate-transform-b { animation: plate-transform-bottom 2.5s ease-in-out infinite alternate; }
+
+.anim-volcano-erupt { animation: volcano-erupt 2s ease-out infinite; }
+.anim-magma-rise { animation: magma-rise 2.5s ease-in-out infinite; }
+.anim-friction-spark { animation: friction-spark 0.8s ease-out infinite; }
+
+.anim-crack-appear { 
+  stroke-dasharray: 100;
+  animation: crack-appear 0.6s ease-out forwards; 
+}
+.anim-crack-fade { animation: crack-fade 1.5s ease-out 0.8s forwards; }
+
+.anim-chest-bounce { animation: chest-bounce 2s ease-in-out infinite; }
+.anim-treasure-sparkle { animation: treasure-sparkle 1s ease-out forwards; }
+
+.anim-volcano-dot { animation: volcano-dot-pulse 2s ease-in-out infinite; }
+.anim-zone-glow { animation: zone-glow-pulse 2.5s ease-in-out infinite; }
+.anim-arrow-pulse { animation: arrow-pulse 1.5s ease-in-out infinite; }
+.anim-click-bounce { animation: click-bounce 0.3s ease-out; }
+.anim-hint-bounce { animation: hint-bounce 1.2s ease-in-out infinite; }
+.anim-gentle-sway { animation: gentle-sway 4s ease-in-out infinite; }
+.animate-bounce-slight { animation: bounce-slight 0.4s ease-in-out infinite; }
+
+/* ── RPG Dialog Box Styling ── */
+.rpg-dialog-box {
+  position: relative;
+  background: linear-gradient(180deg, #1a1533 0%, #0f0d24 100%);
+  border: 4px solid #fbbf24;
+  border-radius: 4px;
+  box-shadow: 
+    0 0 0 2px #0f0d24,
+    0 0 20px rgba(251, 191, 36, 0.15),
+    inset 0 1px 0 rgba(251, 191, 36, 0.1);
+  color: #fef3c7;
+  font-family: 'Pixelify Sans', sans-serif;
+  padding: 16px 20px;
+}
+
+.rpg-dialog-box::before {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 24px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 12px solid #fbbf24;
+}
+
+.rpg-dialog-box::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 28px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #0f0d24;
+}
+
+/* ── Pixel Gauge Styling ── */
+.pixel-gauge {
+  position: relative;
+  background: #0a0e1a;
+  border: 3px solid #334155;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pixel-gauge-fill {
+  transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              background-color 0.5s ease;
+}
+
+.pixel-gauge-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Interactive Layer Hover Effect ── */
+.layer-interactive {
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.15s ease;
+}
+
+.layer-interactive:hover {
+  filter: brightness(1.25);
+}
+
+.layer-interactive:active {
+  transform: scale(0.97);
+}
+
+/* ── Drag & Drop Mini Challenge Styling ── */
+.drag-layer-card {
+  background: linear-gradient(180deg, rgba(254, 243, 199, 0.95), rgba(254, 215, 170, 0.95));
+  border: 3px solid #451a03;
+  border-radius: 8px;
+  box-shadow: 0 4px 0 #231206;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-weight: 700;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.drag-layer-card:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.drag-layer-card.correct {
+  background: linear-gradient(180deg, #a7f3d0, #6ee7b7);
+  border-color: #065f46;
+  box-shadow: 0 4px 0 #064e3b, 0 0 12px rgba(52, 211, 153, 0.4);
+}
+
+.drag-layer-card.incorrect {
+  background: linear-gradient(180deg, #fecaca, #fca5a5);
+  border-color: #991b1b;
+  animation: shake 0.4s ease-in-out;
+}
+
+.drag-slot {
+  border: 3px dashed #78350f;
+  border-radius: 8px;
+  background: rgba(120, 53, 15, 0.08);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.drag-slot.active {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+  box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.2);
+}
+
+.drag-slot.filled {
+  border-style: solid;
+  border-color: #059669;
+  background: rgba(5, 150, 105, 0.1);
+}
+
+/* ── Treasure Chest Icon ── */
+.treasure-chest {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.treasure-chest:hover {
+  transform: scale(1.15);
+}
+
+.treasure-chest:active {
+  transform: scale(0.95);
+}
+
+/* ── Speed Control Slider (Pixel Style) ── */
+.pixel-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #1e293b;
+  border: 2px solid #334155;
+  border-radius: 0;
+  outline: none;
+}
+
+.pixel-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(180deg, #fbbf24, #d97706);
+  border: 3px solid #451a03;
+  border-radius: 0;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #231206;
+}
+
+.pixel-slider::-webkit-slider-thumb:hover {
+  background: linear-gradient(180deg, #fde047, #fbbf24);
+}
+
+.pixel-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(180deg, #fbbf24, #d97706);
+  border: 3px solid #451a03;
+  border-radius: 0;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #231206;
+}
+
+/* ── 2D Pixel Dynamic Background Keyframes ── */
+
+/* 1. Login Page: Radio Tower Pulse Waves */
+@keyframes radio-pulse-wave {
+  0% {
+    r: 4;
+    opacity: 0.9;
+    stroke-width: 2;
+  }
+  50% {
+    r: 28;
+    opacity: 0.5;
+    stroke-width: 1.5;
+  }
+  100% {
+    r: 55;
+    opacity: 0;
+    stroke-width: 0.5;
+  }
+}
+
+.anim-radio-wave-1 {
+  animation: radio-pulse-wave 3s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+  transform-origin: center;
+}
+
+.anim-radio-wave-2 {
+  animation: radio-pulse-wave 3s cubic-bezier(0.2, 0.8, 0.4, 1) infinite 1s;
+  transform-origin: center;
+}
+
+.anim-radio-wave-3 {
+  animation: radio-pulse-wave 3s cubic-bezier(0.2, 0.8, 0.4, 1) infinite 2s;
+  transform-origin: center;
+}
+
+@keyframes beacon-blink {
+  0%, 100% { opacity: 1; fill: #ef4444; }
+  50% { opacity: 0.15; fill: #991b1b; }
+}
+
+.anim-beacon {
+  animation: beacon-blink 1.2s steps(2, start) infinite;
+}
+
+@keyframes patrol-drone-fly {
+  0% { transform: translateX(-150px) translateY(0); }
+  25% { transform: translateX(250px) translateY(-8px); }
+  50% { transform: translateX(600px) translateY(4px); }
+  75% { transform: translateX(900px) translateY(-6px); }
+  100% { transform: translateX(1200px) translateY(0); }
+}
+
+.anim-patrol-drone {
+  animation: patrol-drone-fly 24s linear infinite;
+  will-change: transform;
+}
+
+@keyframes drone-propeller-spin {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(0.2); }
+}
+
+.anim-drone-propeller {
+  animation: drone-propeller-spin 0.1s linear infinite;
+  transform-origin: center;
+}
+
+/* 2. Teacher Dashboard: Command Center Radar & Seismograph */
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.anim-radar-sweep {
+  animation: radar-sweep 6s linear infinite;
+  transform-origin: 100px 100px;
+}
+
+@keyframes epicenter-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.6); opacity: 0.3; }
+}
+
+.anim-epicenter-1 {
+  animation: epicenter-pulse 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.anim-epicenter-2 {
+  animation: epicenter-pulse 2.8s ease-in-out infinite 0.9s;
+  transform-origin: center;
+}
+
+.anim-epicenter-3 {
+  animation: epicenter-pulse 3.4s ease-in-out infinite 1.8s;
+  transform-origin: center;
+}
+
+@keyframes seismic-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-500px); }
+}
+
+.anim-seismic-wave {
+  animation: seismic-scroll 12s linear infinite;
+  will-change: transform;
+}
+
+.anim-seismic-wave-fast {
+  animation: seismic-scroll 7s linear infinite;
+  will-change: transform;
+}
+
+@keyframes server-led-flicker-1 {
+  0%, 100% { opacity: 0.9; fill: #10b981; }
+  30% { opacity: 0.2; fill: #047857; }
+  70% { opacity: 1; fill: #34d399; }
+}
+
+@keyframes server-led-flicker-2 {
+  0%, 100% { opacity: 0.3; fill: #d97706; }
+  45% { opacity: 1; fill: #f59e0b; }
+  85% { opacity: 0.2; fill: #78350f; }
+}
+
+@keyframes server-led-flicker-3 {
+  0%, 100% { opacity: 1; fill: #06b6d4; }
+  20% { opacity: 0.1; fill: #0e7490; }
+  60% { opacity: 0.9; fill: #22d3ee; }
+}
+
+.anim-led-1 { animation: server-led-flicker-1 1.6s steps(3, start) infinite; }
+.anim-led-2 { animation: server-led-flicker-2 2.2s steps(3, start) infinite 0.4s; }
+.anim-led-3 { animation: server-led-flicker-3 1.9s steps(3, start) infinite 0.8s; }
+
+@keyframes scanline-drop {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+.anim-scanline {
+  animation: scanline-drop 8s linear infinite;
+  will-change: transform;
+}
+
+@keyframes data-packet-rise {
+  0% { transform: translateY(600px); opacity: 0; }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.7; }
+  100% { transform: translateY(-50px); opacity: 0; }
+}
+
+.anim-data-packet-1 { animation: data-packet-rise 9s linear infinite; }
+.anim-data-packet-2 { animation: data-packet-rise 12s linear infinite 3s; }
+.anim-data-packet-3 { animation: data-packet-rise 14s linear infinite 6s; }
+
+/* 3. Extra Rich Pixel Nature & Camp Animations */
+@keyframes campfire-flicker {
+  0%, 100% { transform: scaleY(1) scaleX(1); opacity: 0.95; }
+  25% { transform: scaleY(1.25) scaleX(0.85); opacity: 1; }
+  50% { transform: scaleY(0.9) scaleX(1.1); opacity: 0.85; }
+  75% { transform: scaleY(1.3) scaleX(0.95); opacity: 1; }
+}
+
+.anim-campfire {
+  animation: campfire-flicker 0.45s ease-in-out infinite alternate;
+  transform-origin: bottom center;
+}
+
+@keyframes campfire-spark-rise {
+  0% { transform: translateY(0) translateX(0); opacity: 1; }
+  50% { transform: translateY(-16px) translateX(3px); opacity: 0.8; }
+  100% { transform: translateY(-32px) translateX(-4px); opacity: 0; }
+}
+
+.anim-spark-1 { animation: campfire-spark-rise 1.2s ease-out infinite; }
+.anim-spark-2 { animation: campfire-spark-rise 1.5s ease-out infinite 0.6s; }
+
+@keyframes lava-glow-pulse {
+  0%, 100% { opacity: 0.5; fill: #ea580c; }
+  50% { opacity: 0.95; fill: #ef4444; filter: drop-shadow(0 0 6px #f97316); }
+}
+
+.anim-lava-glow {
+  animation: lava-glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes searchlight-sweep {
+  0% { transform: rotate(-35deg); opacity: 0.35; }
+  50% { transform: rotate(35deg); opacity: 0.55; }
+  100% { transform: rotate(-35deg); opacity: 0.35; }
+}
+
+.anim-searchlight {
+  animation: searchlight-sweep 7s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+@keyframes pixel-smoke-rise {
+  0% { transform: translateY(0) scale(1); opacity: 0.7; }
+  50% { transform: translateY(-20px) translateX(8px) scale(1.4); opacity: 0.45; }
+  100% { transform: translateY(-45px) translateX(18px) scale(2); opacity: 0; }
+}
+
+.anim-smoke-1 { animation: pixel-smoke-rise 4s ease-out infinite; }
+.anim-smoke-2 { animation: pixel-smoke-rise 4s ease-out infinite 2s; }
+
+/* 4. Tropical Cloud Forest & Misty Jungle Animations */
+@keyframes mist-drift-slow {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-1000px); }
+}
+
+.anim-mist-drift-slow {
+  animation: mist-drift-slow 65s linear infinite;
+  will-change: transform;
+}
+
+.anim-mist-drift-mid {
+  animation: mist-drift-slow 45s linear infinite;
+  will-change: transform;
+}
+
+@keyframes mist-billow-pulse {
+  0%, 100% { opacity: 0.45; transform: scaleY(1) translateY(0); }
+  50% { opacity: 0.8; transform: scaleY(1.15) translateY(-8px); }
+}
+
+.anim-mist-billow-1 {
+  animation: mist-billow-pulse 8s ease-in-out infinite;
+}
+
+.anim-mist-billow-2 {
+  animation: mist-billow-pulse 11s ease-in-out infinite 3.5s;
+}
+
+@keyframes palm-sway-right {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(2.5deg) translateY(-2px); }
+}
+
+.anim-palm-sway-right {
+  animation: palm-sway-right 5.5s ease-in-out infinite;
+  transform-origin: 1070px 380px;
+}
+
+@keyframes palm-sway-left {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-2deg) translateY(-1.5px); }
+}
+
+.anim-palm-sway-left {
+  animation: palm-sway-left 6s ease-in-out infinite 1s;
+  transform-origin: 170px 410px;
+}
+
+@keyframes fern-sway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(1.8deg); }
+}
+
+.anim-fern-sway {
+  animation: fern-sway 4s ease-in-out infinite alternate;
+  transform-origin: center bottom;
+}
+
+@keyframes godray-shimmer {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.35; }
+}
+
+.anim-godray-shimmer {
+  animation: godray-shimmer 7s ease-in-out infinite;
+}
+
+@keyframes jungle-spore-drift {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  20% { opacity: 0.8; }
+  80% { opacity: 0.8; }
+  100% { transform: translateY(-70px) translateX(25px); opacity: 0; }
+}
+
+.anim-spore-1 { animation: jungle-spore-drift 8s ease-out infinite; }
+.anim-spore-2 { animation: jungle-spore-drift 10s ease-out infinite 2.5s; }
+.anim-spore-3 { animation: jungle-spore-drift 12s ease-out infinite 5s; }
+
+/* 5. Stratovolcano & Sea of Clouds (Samudra Awan) Animations */
+@keyframes cirrus-drift-slow {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(35px); }
+  100% { transform: translateX(0); }
+}
+
+.anim-cirrus-drift-slow {
+  animation: cirrus-drift-slow 28s ease-in-out infinite;
+}
+
+@keyframes cirrus-drift-mid {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-45px); }
+  100% { transform: translateX(0); }
+}
+
+.anim-cirrus-drift-mid {
+  animation: cirrus-drift-mid 34s ease-in-out infinite;
+}
+
+@keyframes merapi-smoke-plume {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.85;
+  }
+  30% {
+    transform: translateY(-22px) translateX(12px) scale(1.35);
+    opacity: 0.7;
+  }
+  70% {
+    transform: translateY(-48px) translateX(32px) scale(1.8);
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateY(-75px) translateX(55px) scale(2.3);
+    opacity: 0;
+  }
+}
+
+.anim-merapi-smoke-1 {
+  animation: merapi-smoke-plume 5.5s ease-out infinite;
+}
+
+.anim-merapi-smoke-2 {
+  animation: merapi-smoke-plume 6s ease-out infinite 1.8s;
+}
+
+.anim-merapi-smoke-3 {
+  animation: merapi-smoke-plume 6.5s ease-out infinite 3.5s;
+}
+
+@keyframes cloud-sea-billow-slow {
+  0%, 100% {
+    transform: translateY(0) scaleY(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(-6px) scaleY(1.04);
+    opacity: 0.98;
+  }
+}
+
+.anim-cloud-sea-billow-1 {
+  animation: cloud-sea-billow-slow 12s ease-in-out infinite;
+}
+
+.anim-cloud-sea-billow-2 {
+  animation: cloud-sea-billow-slow 16s ease-in-out infinite 4s;
+}
+
+@keyframes cloud-sea-drift-left {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-25px); }
+  100% { transform: translateX(0); }
+}
+
+.anim-cloud-sea-drift-1 {
+  animation: cloud-sea-drift-left 22s ease-in-out infinite;
+}
+
+@keyframes sun-shimmer-highland {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.45; }
+}
+
+.anim-sun-shimmer-highland {
+  animation: sun-shimmer-highland 8s ease-in-out infinite;
+}
+
+/* ── UNIFIED PIXEL 3D FLIP-BOOK & PAGE-FLIP THEME ── */
+.pixel-book-desk-surface {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   OFFICIAL STPAGEFLIP ENGINE & 3D PIXEL BOOK INTEGRATION
+   ══════════════════════════════════════════════════════════════════════ */
+
+.stf__parent {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  transform: translateZ(0);
+  -ms-touch-action: pan-y;
+  touch-action: pan-y;
+  margin: 0 auto;
+  width: 980px;
+  height: 590px;
+}
+
+.stf__wrapper,
+.sft__wrapper {
+  position: relative;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 590px !important;
+  box-sizing: border-box;
+}
+
+.stf__parent canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.stf__block {
+  position: absolute;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 590px !important;
+  box-sizing: border-box;
+  perspective: 2000px;
+}
+
+.stf__item {
+  display: none;
+  position: absolute;
+  transform-style: preserve-3d;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.stf__outerShadow,
+.stf__innerShadow,
+.stf__hardShadow,
+.stf__hardInnerShadow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+/* Base Page Flip Item */
+.pixel-page-item {
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  image-rendering: pixelated;
+  height: 100%;
+  width: 100%;
+}
+
+/* Desk Surface Drop Shadow beneath physical book */
+.pixel-book-desk-shadow {
+  box-shadow: 
+    0 25px 50px -10px rgba(0, 0, 0, 0.8),
+    0 10px 25px rgba(28, 13, 2, 0.6);
+}
+
+/* Center Book Spine Seam & Lighting */
+.pixel-book-spine {
+  position: absolute;
+  left: calc(50% - 14px);
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.15) 35%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.15) 65%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+  z-index: 40;
+  pointer-events: none;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.6);
+}
+
+/* Central Spine Stitching accents */
+.pixel-book-spine::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 4px;
+  background: #f59e0b;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(245, 158, 11, 0.6);
+}
+
+.pixel-book-spine::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 4px;
+  background: #f59e0b;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(245, 158, 11, 0.6);
+}
+
+/* 3D Flipping Leaf */
+.pixel-book-leaf {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+/* Leaf Faces */
+.pixel-book-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.pixel-book-face-front {
+  transform: rotateY(0deg);
+}
+
+.pixel-book-face-back {
+  transform: rotateY(180deg);
+}
+
+/* Paper Stack Edge Ridges (Menunjukkan ketebalan lembaran kertas fisik) */
+.pixel-book-page-stack-left {
+  box-shadow: 
+    -2px 0 0 #f5eedb,
+    -4px 0 0 #e6dcbe,
+    -6px 0 0 #d4c69f,
+    -8px 0 0 #451a03;
+}
+
+.pixel-book-page-stack-right {
+  box-shadow: 
+    2px 0 0 #f5eedb,
+    4px 0 0 #e6dcbe,
+    6px 0 0 #d4c69f,
+    8px 0 0 #451a03;
+}
+
+/* Front Hardcover Page (Page 0) */
+.pixel-book-cover-page {
+  background: linear-gradient(135deg, #78350f 0%, #451a03 50%, #291002 100%);
+  border: 4px solid #b45309;
+  border-radius: 0 14px 14px 0;
+  box-shadow: 
+    inset 3px 3px 0px rgba(254, 240, 138, 0.4),
+    inset -4px -4px 0px rgba(0, 0, 0, 0.6),
+    8px 12px 28px rgba(0, 0, 0, 0.65);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Inside Left Pages (Spread Left: Page 1, Page 3) */
+.pixel-book-page-left {
+  background-color: #fdfbf7;
+  border-left: 6px solid #451a03;
+  border-top: 3px solid #78350f;
+  border-bottom: 4px solid #231206;
+  border-radius: 8px 0 0 8px;
+  box-shadow: 
+    inset 0 0 0 1px rgba(69, 26, 3, 0.12),
+    -8px 12px 24px rgba(0, 0, 0, 0.35);
+  background-image: linear-gradient(to left, rgba(69, 26, 3, 0.16) 0%, rgba(69, 26, 3, 0.04) 15%, transparent 35%);
+  box-sizing: border-box;
+}
+
+/* Inside Right Pages (Spread Right: Page 2, Page 4) */
+.pixel-book-page-right {
+  background-color: #fdfbf7;
+  border-right: 6px solid #451a03;
+  border-top: 3px solid #78350f;
+  border-bottom: 4px solid #231206;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 
+    inset 0 0 0 1px rgba(69, 26, 3, 0.12),
+    8px 12px 24px rgba(0, 0, 0, 0.35);
+  background-image: linear-gradient(to right, rgba(69, 26, 3, 0.16) 0%, rgba(69, 26, 3, 0.04) 15%, transparent 35%);
+  box-sizing: border-box;
+}
+
+/* Retro Pixel Scrollbars for Book Pages */
+.pixel-book-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.pixel-book-scroll::-webkit-scrollbar-track {
+  background: #f1e7d4;
+  border-left: 1px solid #78350f;
+}
+.pixel-book-scroll::-webkit-scrollbar-thumb {
+  background: #b45309;
+  border: 1px solid #451a03;
+}
+.pixel-book-scroll::-webkit-scrollbar-thumb:hover {
+  background: #92400e;
+}
+
+.pixel-page-shadow-forward {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(0,0,0,0.15), transparent 40%);
+}
+
+.pixel-page-shadow-backward {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to left, rgba(0,0,0,0.15), transparent 40%);
+}
+
+@keyframes book-flip-forward {
+  0% {
+    transform: rotateY(0deg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  50% {
+    transform: rotateY(-90deg) scale(0.98);
+    box-shadow: -24px 0 35px rgba(0, 0, 0, 0.45);
+  }
+  100% {
+    transform: rotateY(-180deg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes book-flip-backward {
+  0% {
+    transform: rotateY(0deg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  50% {
+    transform: rotateY(90deg) scale(0.98);
+    box-shadow: 24px 0 35px rgba(0, 0, 0, 0.45);
+  }
+  100% {
+    transform: rotateY(180deg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* Smooth Cover Swing Open Animation */
+@keyframes book-cover-open-smooth {
+  0% {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+  60% {
+    transform: rotateY(-110deg);
+    opacity: 0.85;
+  }
+  100% {
+    transform: rotateY(-180deg);
+    opacity: 0;
+  }
+}
+
+.anim-cover-open-smooth {
+  animation: book-cover-open-smooth 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+/* Rapid Multi-Page Flip Sequence (YTDown Style Opening) */
+@keyframes rapid-page-flutter {
+  0% {
+    transform: rotateY(0deg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  40% {
+    box-shadow: -15px 0 25px rgba(0, 0, 0, 0.35);
+  }
+  100% {
+    transform: rotateY(-180deg);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.anim-rapid-flip-1 {
+  animation: rapid-page-flutter 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+.anim-rapid-flip-2 {
+  animation: rapid-page-flutter 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+.anim-rapid-flip-3 {
+  animation: rapid-page-flutter 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+.anim-rapid-flip-4 {
+  animation: rapid-page-flutter 0.65s cubic-bezier(0.4, 0, 0.2, 1) 0.7s forwards;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+/* Exploded Earth 3D Wedge Slide Extraction Animation */
+@keyframes wedge-extract {
+  0% {
+    transform: translate(-90px, 30px) scale(0.2);
+    opacity: 0;
+  }
+  60% {
+    transform: translate(6px, -4px) scale(1.03);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+.anim-wedge-extract {
+  animation: wedge-extract 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Projection Lines Fade In */
+@keyframes projection-fade {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 25;
+  }
+  100% {
+    opacity: 0.75;
+    stroke-dashoffset: 0;
+  }
+}
+
+.anim-projection-lines {
+  animation: projection-fade 0.5s ease-out 0.2s forwards;
+}
+
+/* Pixel Bounce Down Arrow */
+@keyframes pixel-bounce-down {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(7px);
+  }
+}
+
+.anim-bounce-down {
+  animation: pixel-bounce-down 1.2s steps(4, end) infinite;
+}
+
+/* Exploded Earth Layers Motion */
+@keyframes earth-pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(254, 240, 138, 0.4)); }
+  50% { filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.85)); }
+}
+
+.anim-earth-pulse-glow {
+  animation: earth-pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* Subtle Micro-Bounce for Visual Novel Character Speaking Portrait */
+@keyframes microBounce {
+  0% {
+    transform: translateY(0) scale(0.98);
+  }
+  35% {
+    transform: translateY(-5px) scale(1.02);
+  }
+  65% {
+    transform: translateY(-1px) scale(1.005);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-microBounce {
+  animation: microBounce 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }

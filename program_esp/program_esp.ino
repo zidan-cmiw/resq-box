@@ -1,0 +1,795 @@
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <DFRobotDFPlayerMini.h>
+#include <WiFi.h>
+#include <WebSocketsServer.h>
+
+// =====================================================
+// KONFIGURASI WIFI & WEBSOCKET
+// Masukkan nama WiFi (SSID) dan Password di sini.
+// Jika dalam 10 detik WiFi tidak terhubung, ESP32 otomatis
+// membuat Hotspot AP mandiri "RESQ-BOX-ESP32" (IP: 192.168.4.1).
+// =====================================================
+const char* WIFI_SSID = "RESQ-BOX-DIORAMA";
+const char* WIFI_PASS = "12345678";
+
+// WebSocket Server berjalan di Port 81 (Sesuai Web App RESQ-BOX)
+WebSocketsServer webSocket = WebSocketsServer(81);
+
+// =====================================================
+// OLED SSD1306 (128x64 I2C)
+// =====================================================
+#define OLED_SDA       21
+#define OLED_SCL       22
+#define OLED_ADDRESS   0x3C
+
+#define SCREEN_WIDTH   128
+#define SCREEN_HEIGHT  64
+#define OLED_RESET     -1
+
+Adafruit_SSD1306 display(
+  SCREEN_WIDTH,
+  SCREEN_HEIGHT,
+  &Wire,
+  OLED_RESET
+);
+
+// =====================================================
+// DFPLAYER MINI (MP3 PLAYER)
+// DFPlayer TX -> ESP32 GPIO16
+// DFPlayer RX -> ESP32 GPIO17
+// =====================================================
+#define DF_RX 16
+#define DF_TX 17
+
+HardwareSerial dfSerial(2);
+DFRobotDFPlayerMini dfPlayer;
+
+bool dfPlayerReady = false;
+int currentVolume = 20;
+
+// =====================================================
+// BUZZER SFM-27 + TRANSISTOR 2N2222
+// GPIO25 -> resistor -> Base 2N2222
+// =====================================================
+#define BUZZER_PIN 25
+bool buzzerState = false;
+
+// =====================================================
+// MIST MAKER (PEMBUAT ASAP/KABUT) + 2N2222
+// GPIO26 -> resistor -> Base 2N2222
+// =====================================================
+#define MIST_PIN 26
+bool mistState = false;
+
+// =====================================================
+// RGB LED
+// R -> GPIO27
+// G -> GPIO32
+// B -> GPIO33
+//
+// COMMON ANODE: Common -> 3.3V (Active LOW)
+// COMMON CATHODE: Common -> GND (Active HIGH)
+// =====================================================
+#define RGB_R_PIN 27
+#define RGB_G_PIN 32
+#define RGB_B_PIN 33
+
+#define RGB_COMMON_ANODE true
+
+int rgbR = 0;
+int rgbG = 0;
+int rgbB = 0;
+
+// =====================================================
+// FUNCTION PROTOTYPES
+// =====================================================
+void oledMessage(String line1, String line2 = "", String line3 = "");
+void showTrack(int track);
+void buzzerON();
+void buzzerOFF();
+void testBuzzer();
+void mistON();
+void mistOFF();
+void testMist();
+void writeRGB(int r, int g, int b);
+void rgbOFF();
+void setRGBColor(String color);
+void testRGB();
+void testOLED();
+void playTrack(int track);
+void stopAudio();
+void stopAll();
+void testSpeaker();
+void testAll();
+void printMenu();
+void processCommand(String command, uint8_t clientNum = 255);
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length);
+
+// =====================================================
+// OLED DISPLAY FUNCTIONS
+// =====================================================
+void oledMessage(String line1, String line2, String line3) {
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+
+  // Header Title
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.println("RESQ-BOX DIORAMA");
+  display.drawLine(0, 10, 127, 10, SSD1306_WHITE);
+
+  // Line 1 (Large)
+  display.setTextSize(2);
+  display.setCursor(0, 16);
+  display.println(line1);
+
+  // Line 2 (Small)
+  display.setTextSize(1);
+  display.setCursor(0, 40);
+  display.println(line2);
+
+  // Line 3 (Small)
+  display.setCursor(0, 52);
+  display.println(line3);
+
+  display.display();
+}
+
+void showTrack(int track) {
+  display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
+
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.println("DFPLAYER MINI");
+  display.drawLine(0, 11, 127, 11, SSD1306_WHITE);
+
+  display.setTextSize(2);
+  display.setCursor(0, 18);
+  display.println("PLAYING");
+
+  display.setTextSize(3);
+  display.setCursor(20, 39);
+
+  if (track < 10) display.print("000");
+  else if (track < 100) display.print("00");
+  else if (track < 1000) display.print("0");
+  display.println(track);
+
+  display.display();
+}
+
+// =====================================================
+// BUZZER FUNCTIONS
+// =====================================================
+void buzzerON() {
+  digitalWrite(BUZZER_PIN, HIGH);
+  buzzerState = true;
+  Serial.println("BUZZER: ON");
+  oledMessage("BUZZER ON", "Sirine Aktif", "SFM-27 GPIO 25");
+}
+
+void buzzerOFF() {
+  digitalWrite(BUZZER_PIN, LOW);
+  buzzerState = false;
+  Serial.println("BUZZER: OFF");
+  oledMessage("BUZZER OFF", "Sirine Mati", "SFM-27 GPIO 25");
+}
+
+void testBuzzer() {
+  Serial.println("\n--- TEST BUZZER SFM-27 ---");
+  oledMessage("TEST BUZZER", "SFM-27 ON 1s...", "GPIO 25");
+  digitalWrite(BUZZER_PIN, HIGH);
+  delay(1000);
+  digitalWrite(BUZZER_PIN, LOW);
+  buzzerState = false;
+  delay(300);
+  Serial.println("Buzzer test selesai.");
+  oledMessage("BUZZER OK", "SFM-27 Siap", "2N2222 Driver");
+}
+
+// =====================================================
+// MIST MAKER FUNCTIONS (KABUT / ASAP / VENTILASI)
+// =====================================================
+void mistON() {
+  digitalWrite(MIST_PIN, HIGH);
+  mistState = true;
+  Serial.println("MIST MAKER: ON");
+  oledMessage("MIST ON", "Mist / Ventilasi", "GPIO 26 Aktif");
+}
+
+void mistOFF() {
+  digitalWrite(MIST_PIN, LOW);
+  mistState = false;
+  Serial.println("MIST MAKER: OFF");
+  oledMessage("MIST OFF", "Mist / Ventilasi", "GPIO 26 Mati");
+}
+
+void testMist() {
+  Serial.println("\n--- TEST MIST MAKER ---");
+  oledMessage("TEST MIST", "Mist Maker 3s...", "GPIO 26");
+  digitalWrite(MIST_PIN, HIGH);
+  mistState = true;
+  delay(3000);
+  digitalWrite(MIST_PIN, LOW);
+  mistState = false;
+  Serial.println("Mist test selesai.");
+  oledMessage("MIST OK", "Test Selesai", "GPIO 26");
+}
+
+// =====================================================
+// RGB LED FUNCTIONS
+// =====================================================
+void writeRGB(int r, int g, int b) {
+  r = constrain(r, 0, 255);
+  g = constrain(g, 0, 255);
+  b = constrain(b, 0, 255);
+
+  rgbR = r;
+  rgbG = g;
+  rgbB = b;
+
+  if (RGB_COMMON_ANODE) {
+    analogWrite(RGB_R_PIN, 255 - r);
+    analogWrite(RGB_G_PIN, 255 - g);
+    analogWrite(RGB_B_PIN, 255 - b);
+  } else {
+    analogWrite(RGB_R_PIN, r);
+    analogWrite(RGB_G_PIN, g);
+    analogWrite(RGB_B_PIN, b);
+  }
+}
+
+void rgbOFF() {
+  writeRGB(0, 0, 0);
+  Serial.println("RGB: OFF");
+  oledMessage("RGB OFF", "Semua Warna Mati", "LED Normal");
+}
+
+void setRGBColor(String color) {
+  color.trim();
+  color.toLowerCase();
+
+  if (color == "red" || color == "merah") {
+    writeRGB(255, 0, 0);
+    Serial.println("RGB: MERAH (BAHAYA)");
+    oledMessage("RGB MERAH", "Status: BAHAYA", "R=255 G=0 B=0");
+  }
+  else if (color == "green" || color == "hijau") {
+    writeRGB(0, 255, 0);
+    Serial.println("RGB: HIJAU (AMAN)");
+    oledMessage("RGB HIJAU", "Status: AMAN", "R=0 G=255 B=0");
+  }
+  else if (color == "blue" || color == "biru") {
+    writeRGB(0, 0, 255);
+    Serial.println("RGB: BIRU (INFO)");
+    oledMessage("RGB BIRU", "Status: INFO", "R=0 G=0 B=255");
+  }
+  else if (color == "yellow" || color == "kuning") {
+    writeRGB(255, 255, 0);
+    Serial.println("RGB: KUNING (WASPADA)");
+    oledMessage("RGB KUNING", "Status: WASPADA", "R=255 G=255 B=0");
+  }
+  else if (color == "cyan") {
+    writeRGB(0, 255, 255);
+    Serial.println("RGB: CYAN");
+    oledMessage("RGB CYAN", "R=0 G=255 B=255", "");
+  }
+  else if (color == "purple" || color == "ungu") {
+    writeRGB(255, 0, 255);
+    Serial.println("RGB: UNGU");
+    oledMessage("RGB UNGU", "R=255 G=0 B=255", "");
+  }
+  else if (color == "orange" || color == "oranye") {
+    writeRGB(255, 100, 0);
+    Serial.println("RGB: ORANYE");
+    oledMessage("RGB ORANYE", "R=255 G=100 B=0", "");
+  }
+  else if (color == "pink") {
+    writeRGB(255, 50, 150);
+    Serial.println("RGB: PINK");
+    oledMessage("RGB PINK", "R=255 G=50 B=150", "");
+  }
+  else if (color == "white" || color == "putih") {
+    writeRGB(255, 255, 255);
+    Serial.println("RGB: PUTIH");
+    oledMessage("RGB PUTIH", "R=255 G=255 B=255", "");
+  }
+  else if (color == "off" || color == "mati") {
+    rgbOFF();
+  }
+  else {
+    Serial.println("Warna RGB tidak dikenal: " + color);
+  }
+}
+
+void testRGB() {
+  Serial.println("\n--- TEST RGB LED ---");
+  oledMessage("TEST RGB", "Merah...", "");
+  writeRGB(255, 0, 0);
+  delay(800);
+  oledMessage("TEST RGB", "Hijau...", "");
+  writeRGB(0, 255, 0);
+  delay(800);
+  oledMessage("TEST RGB", "Biru...", "");
+  writeRGB(0, 0, 255);
+  delay(800);
+  oledMessage("TEST RGB", "Putih...", "");
+  writeRGB(255, 255, 255);
+  delay(800);
+  writeRGB(0, 0, 0);
+  Serial.println("RGB test selesai.");
+  oledMessage("RGB OK", "Test Selesai", "READY");
+}
+
+void testOLED() {
+  Serial.println("\n--- TEST OLED ---");
+  oledMessage("OLED OK", "SSD1306 128x64", "I2C 0x3C");
+  delay(2000);
+  oledMessage("READY", "OLED Normal", "WebSocket Ready");
+}
+
+// =====================================================
+// DFPLAYER (AUDIO) FUNCTIONS
+// =====================================================
+void playTrack(int track) {
+  if (!dfPlayerReady) {
+    Serial.println("ERROR: DFPlayer tidak siap!");
+    oledMessage("DFPLAYER ERR", "Tidak terdeteksi", "Cek SD Card");
+    return;
+  }
+  if (track < 1 || track > 9999) {
+    Serial.println("Nomor lagu tidak valid (1-9999).");
+    return;
+  }
+  Serial.print("PLAY TRACK: ");
+  Serial.println(track);
+  dfPlayer.volume(currentVolume);
+  dfPlayer.play(track);
+  showTrack(track);
+}
+
+void stopAudio() {
+  if (dfPlayerReady) {
+    dfPlayer.stop();
+  }
+  Serial.println("Speaker: STOP");
+  oledMessage("AUDIO STOP", "DFPlayer OFF", "Speaker Hening");
+}
+
+void stopAll() {
+  if (dfPlayerReady) {
+    dfPlayer.stop();
+  }
+  digitalWrite(BUZZER_PIN, LOW);
+  buzzerState = false;
+
+  digitalWrite(MIST_PIN, LOW);
+  mistState = false;
+
+  writeRGB(0, 0, 0);
+  rgbR = 0; rgbG = 0; rgbB = 0;
+
+  Serial.println("\n==============================");
+  Serial.println("SEMUA OUTPUT DIORAMA OFF");
+  Serial.println("==============================");
+  oledMessage("STOP ALL", "Semua Output Mati", "Sistem Siaga");
+}
+
+void testSpeaker() {
+  Serial.println("\n--- TEST SPEAKER ---");
+  if (!dfPlayerReady) {
+    Serial.println("ERROR: DFPlayer tidak siap!");
+    oledMessage("DFPLAYER ERR", "Tidak terdeteksi", "Cek wiring");
+    return;
+  }
+  playTrack(1);
+}
+
+void testAll() {
+  Serial.println("\n==============================");
+  Serial.println("         TEST SEMUA");
+  Serial.println("==============================");
+  oledMessage("TEST ALL", "1. OLED...", "");
+  delay(1000);
+
+  oledMessage("TEST ALL", "2. BUZZER...", "");
+  digitalWrite(BUZZER_PIN, HIGH);
+  delay(800);
+  digitalWrite(BUZZER_PIN, LOW);
+  buzzerState = false;
+
+  oledMessage("TEST ALL", "3. MIST MAKER...", "");
+  digitalWrite(MIST_PIN, HIGH);
+  delay(2000);
+  digitalWrite(MIST_PIN, LOW);
+  mistState = false;
+
+  oledMessage("TEST ALL", "4. RGB LED...", "");
+  writeRGB(255, 0, 0); delay(400);
+  writeRGB(0, 255, 0); delay(400);
+  writeRGB(0, 0, 255); delay(400);
+  writeRGB(0, 0, 0);
+
+  if (dfPlayerReady) {
+    oledMessage("TEST ALL", "5. DFPLAYER...", "Track 1");
+    dfPlayer.volume(currentVolume);
+    dfPlayer.play(1);
+    delay(4000);
+    dfPlayer.stop();
+  }
+
+  oledMessage("TEST ALL SELESAI", "Semua Perangkat OK", "READY");
+  Serial.println("Semua test selesai.");
+}
+
+void printMenu() {
+  Serial.println("\n========================================");
+  Serial.println("     RESQ-BOX ESP32 TEST SYSTEM");
+  Serial.println("========================================");
+  Serial.println("PERINTAH PROTOKOL BLOCK CODING (WEB):");
+  Serial.println("  PIN:10:HIGH / PIN:10:LOW   -> Lampu Bahaya (Merah)");
+  Serial.println("  PIN:11:HIGH / PIN:11:LOW   -> Lampu Aman (Hijau)");
+  Serial.println("  PIN:12:HIGH / PIN:12:LOW   -> Lampu Info (Biru)");
+  Serial.println("  PIN:13:HIGH / PIN:13:LOW   -> Lampu Bawaan (Kuning)");
+  Serial.println("  PIN:BUZZER:ON / OFF        -> Sirine Buzzer");
+  Serial.println("  PIN:MOTOR:FAST / OFF       -> Mist Maker / Asap");
+  Serial.println("  PIN:SERVO:OPEN / CLOSED    -> Pintu Evakuasi");
+  Serial.println("  PIN:ALL:OFF                -> Matikan Semua");
+  Serial.println("----------------------------------------");
+  Serial.println("PERINTAH TEXT LANGSUNG:");
+  Serial.println("  buzzer on / buzzer off / buzzer");
+  Serial.println("  mist on / mist off / mist");
+  Serial.println("  rgb red / green / blue / yellow / off");
+  Serial.println("  rgb 255 100 50 (custom RGB)");
+  Serial.println("  play <nomor_lagu> / stop / vol <0-30>");
+  Serial.println("  stopall / all / oled / rgbtest / help");
+  Serial.println("========================================\n");
+}
+
+// =====================================================
+// UNIFIED COMMAND PROCESSOR
+// Memproses perintah dari WebSocket dan Serial Monitor
+// =====================================================
+void processCommand(String command, uint8_t clientNum) {
+  command.trim();
+  if (command.length() == 0) return;
+
+  Serial.print("[COMMAND DITERIMA]: ");
+  Serial.println(command);
+
+  // ---------------------------------------------------
+  // 1. PROTOKOL BLOCK CODING RESQ-BOX (PIN:TARGET:VALUE)
+  // ---------------------------------------------------
+  if (command.startsWith("PIN:") || command.startsWith("pin:")) {
+    int firstColon = command.indexOf(':');
+    int secondColon = command.indexOf(':', firstColon + 1);
+
+    if (secondColon != -1) {
+      String target = command.substring(firstColon + 1, secondColon);
+      String value = command.substring(secondColon + 1);
+      target.toUpperCase();
+      value.toUpperCase();
+
+      // [A] LAMPU BAHAYA (Pin 10 -> RGB Merah)
+      if (target == "10") {
+        if (value == "HIGH" || value == "1" || value == "ON") {
+          setRGBColor("red");
+          oledMessage("LAMPU BAHAYA", "STATUS: NYALA", "LED Merah Aktif");
+        } else {
+          rgbOFF();
+          oledMessage("LAMPU BAHAYA", "STATUS: MATI", "LED Merah OFF");
+        }
+      }
+      // [B] LAMPU AMAN (Pin 11 -> RGB Hijau)
+      else if (target == "11") {
+        if (value == "HIGH" || value == "1" || value == "ON") {
+          setRGBColor("green");
+          oledMessage("LAMPU AMAN", "STATUS: NYALA", "LED Hijau Aktif");
+        } else {
+          rgbOFF();
+          oledMessage("LAMPU AMAN", "STATUS: MATI", "LED Hijau OFF");
+        }
+      }
+      // [C] LAMPU INFO (Pin 12 -> RGB Biru)
+      else if (target == "12") {
+        if (value == "HIGH" || value == "1" || value == "ON") {
+          setRGBColor("blue");
+          oledMessage("LAMPU INFO", "STATUS: NYALA", "LED Biru Aktif");
+        } else {
+          rgbOFF();
+          oledMessage("LAMPU INFO", "STATUS: MATI", "LED Biru OFF");
+        }
+      }
+      // [D] LAMPU BAWAAN / KUNING (Pin 13 -> RGB Kuning)
+      else if (target == "13") {
+        if (value == "HIGH" || value == "1" || value == "ON") {
+          setRGBColor("yellow");
+          oledMessage("LAMPU KUNING", "STATUS: NYALA", "LED Kuning Aktif");
+        } else {
+          rgbOFF();
+          oledMessage("LAMPU KUNING", "STATUS: MATI", "LED Kuning OFF");
+        }
+      }
+      // [E] SIRINE / BUZZER
+      else if (target == "BUZZER" || target == "5") {
+        if (value == "ON" || value == "HIGH" || value == "1") {
+          buzzerON();
+        } else {
+          buzzerOFF();
+        }
+      }
+      // [F] MOTOR / KIPAS VENTILASI -> Mengontrol Mist Maker (Asap/Ventilasi)
+      else if (target == "MOTOR" || target == "6" || target == "MIST") {
+        if (value == "OFF" || value == "0" || value == "LOW") {
+          mistOFF();
+        } else {
+          mistON();
+        }
+      }
+      // [G] SERVO / PINTU EVAKUASI
+      else if (target == "SERVO" || target == "9") {
+        if (value == "OPEN" || value == "180") {
+          oledMessage("PINTU EVAKUASI", "STATUS: TERBUKA", "Jalur Siap");
+          Serial.println("PINTU: TERBUKA");
+        } else if (value == "CLOSED" || value == "0") {
+          oledMessage("PINTU EVAKUASI", "STATUS: TERTUTUP", "Jalur Ditutup");
+          Serial.println("PINTU: TERTUTUP");
+        }
+      }
+      // [H] MATIKAN SEMUA
+      else if (target == "ALL" && value == "OFF") {
+        stopAll();
+      }
+    }
+
+    if (clientNum != 255) {
+      webSocket.sendTXT(clientNum, "ACK:" + command + "\n");
+    }
+    return;
+  }
+
+  // ---------------------------------------------------
+  // 2. PERINTAH TEXT MANUAL
+  // ---------------------------------------------------
+  String lowerCmd = command;
+  lowerCmd.toLowerCase();
+
+  // PLAY AUDIO
+  if (lowerCmd.startsWith("play ")) {
+    String numberString = lowerCmd.substring(5);
+    numberString.trim();
+    int track = numberString.toInt();
+    if (track > 0) playTrack(track);
+  }
+  // STOP AUDIO
+  else if (lowerCmd == "stop") {
+    stopAudio();
+  }
+  // STOP SEMUA
+  else if (lowerCmd == "stopall") {
+    stopAll();
+  }
+  // VOLUME AUDIO
+  else if (lowerCmd.startsWith("vol ")) {
+    String volumeString = lowerCmd.substring(4);
+    volumeString.trim();
+    int volume = volumeString.toInt();
+    if (volume >= 0 && volume <= 30) {
+      currentVolume = volume;
+      if (dfPlayerReady) dfPlayer.volume(currentVolume);
+      Serial.print("Volume = ");
+      Serial.println(currentVolume);
+      oledMessage("VOLUME", "Level: " + String(currentVolume), "DFPlayer");
+    }
+  }
+  // BUZZER
+  else if (lowerCmd == "buzzer on") {
+    buzzerON();
+  }
+  else if (lowerCmd == "buzzer off") {
+    buzzerOFF();
+  }
+  else if (lowerCmd == "buzzer") {
+    testBuzzer();
+  }
+  // MIST MAKER
+  else if (lowerCmd == "mist on") {
+    mistON();
+  }
+  else if (lowerCmd == "mist off") {
+    mistOFF();
+  }
+  else if (lowerCmd == "mist") {
+    testMist();
+  }
+  // RGB LED
+  else if (lowerCmd.startsWith("rgb ")) {
+    String rgbCommand = lowerCmd.substring(4);
+    rgbCommand.trim();
+    int firstSpace = rgbCommand.indexOf(' ');
+
+    if (firstSpace == -1) {
+      setRGBColor(rgbCommand);
+    } else {
+      int secondSpace = rgbCommand.indexOf(' ', firstSpace + 1);
+      if (secondSpace != -1) {
+        int r = rgbCommand.substring(0, firstSpace).toInt();
+        int g = rgbCommand.substring(firstSpace + 1, secondSpace).toInt();
+        int b = rgbCommand.substring(secondSpace + 1).toInt();
+        writeRGB(r, g, b);
+        oledMessage("RGB CUSTOM", "R:" + String(r) + " G:" + String(g), "B:" + String(b));
+      }
+    }
+  }
+  else if (lowerCmd == "rgbtest") {
+    testRGB();
+  }
+  else if (lowerCmd == "oled") {
+    testOLED();
+  }
+  else if (lowerCmd == "speaker") {
+    testSpeaker();
+  }
+  else if (lowerCmd == "all") {
+    testAll();
+  }
+  else if (lowerCmd == "help") {
+    printMenu();
+  }
+  else {
+    Serial.println("Perintah tidak dikenal: " + command);
+  }
+
+  if (clientNum != 255) {
+    webSocket.sendTXT(clientNum, "ACK:" + command + "\n");
+  }
+}
+
+// =====================================================
+// WEBSOCKET EVENT CALLBACK
+// =====================================================
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
+  switch (type) {
+    case WStype_DISCONNECTED:
+      Serial.printf("[WS] Klien #%u Terputus.\n", num);
+      oledMessage("WEB TERPUTUS", "Client #" + String(num), "Menunggu Koneksi");
+      break;
+
+    case WStype_CONNECTED: {
+      IPAddress ip = webSocket.remoteIP(num);
+      Serial.printf("[WS] Klien #%u Terhubung dari %d.%d.%d.%d\n", num, ip[0], ip[1], ip[2], ip[3]);
+      oledMessage("WEB TERHUBUNG!", "Klien: " + ip.toString(), "Port 81 Siap!");
+      webSocket.sendTXT(num, "CONNECTED_TO_ESP32\n");
+      break;
+    }
+
+    case WStype_TEXT: {
+      String msg = String((char*)payload);
+      msg.trim();
+      processCommand(msg, num);
+      break;
+    }
+
+    default:
+      break;
+  }
+}
+
+// =====================================================
+// SETUP
+// =====================================================
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  Serial.println("\n========================================");
+  Serial.println("      RESQ-BOX ESP32 DIORAMA SYSTEM     ");
+  Serial.println("========================================");
+
+  // 1. PIN OUTPUTS
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
+
+  pinMode(MIST_PIN, OUTPUT);
+  digitalWrite(MIST_PIN, LOW);
+
+  pinMode(RGB_R_PIN, OUTPUT);
+  pinMode(RGB_G_PIN, OUTPUT);
+  pinMode(RGB_B_PIN, OUTPUT);
+
+  // Matikan RGB saat booting
+  if (RGB_COMMON_ANODE) {
+    analogWrite(RGB_R_PIN, 255);
+    analogWrite(RGB_G_PIN, 255);
+    analogWrite(RGB_B_PIN, 255);
+  } else {
+    analogWrite(RGB_R_PIN, 0);
+    analogWrite(RGB_G_PIN, 0);
+    analogWrite(RGB_B_PIN, 0);
+  }
+
+  // 2. OLED DISPLAY
+  Wire.begin(OLED_SDA, OLED_SCL);
+  if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDRESS)) {
+    Serial.println("ERROR: OLED SSD1306 tidak ditemukan! Periksa wiring I2C.");
+  } else {
+    Serial.println("OLED SSD1306: OK");
+    oledMessage("BOOTING...", "Inisialisasi...", "RESQ-BOX");
+  }
+
+  // 3. DFPLAYER MINI
+  dfSerial.begin(9600, SERIAL_8N1, DF_RX, DF_TX);
+  Serial.println("Mencoba koneksi DFPlayer Mini...");
+
+  if (dfPlayer.begin(dfSerial)) {
+    dfPlayerReady = true;
+    Serial.println("DFPlayer Mini: OK");
+    dfPlayer.volume(currentVolume);
+    dfPlayer.EQ(DFPLAYER_EQ_NORMAL);
+    delay(300);
+  } else {
+    dfPlayerReady = false;
+    Serial.println("DFPlayer Mini: ERROR (Periksa wiring RX/TX dan SD Card)");
+  }
+
+  // 4. WIFI & WEBSOCKET SETUP
+  oledMessage("MENGHUBUNGKAN", "WiFi: " + String(WIFI_SSID), "Harap Tunggu...");
+  Serial.print("Menghubungkan ke WiFi: ");
+  Serial.println(WIFI_SSID);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+
+  unsigned long startAttempt = millis();
+  // Tunggu maksimal 10 detik untuk koneksi WiFi
+  while (WiFi.status() != WL_CONNECTED && millis() - startAttempt < 10000) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  String ipAddressStr = "";
+  if (WiFi.status() == WL_CONNECTED) {
+    ipAddressStr = WiFi.localIP().toString();
+    Serial.println("\nWiFi Berhasil Terhubung!");
+    Serial.print("Alamat IP ESP32: ");
+    Serial.println(ipAddressStr);
+
+    oledMessage("WIFI OK!", "IP: " + ipAddressStr, "PORT: 81 (WS)");
+  } else {
+    // Fallback: Aktifkan Access Point Mandiri jika WiFi tidak ada
+    Serial.println("\nWiFi STA tidak terhubung. Mengaktifkan Access Point mandiri...");
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP("RESQ-BOX-ESP32", "12345678");
+    ipAddressStr = WiFi.softAPIP().toString();
+
+    Serial.print("Hotspot AP: RESQ-BOX-ESP32 (Pass: 12345678)\nIP: ");
+    Serial.println(ipAddressStr);
+
+    oledMessage("HOTSPOT AP", "SSID:RESQ-BOX-ESP32", "IP: " + ipAddressStr);
+  }
+
+  // Mulai WebSocket Server
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
+  Serial.println("WebSocket Server berjalan di ws://" + ipAddressStr + ":81");
+
+  delay(2000);
+  printMenu();
+}
+
+// =====================================================
+// MAIN LOOP
+// =====================================================
+void loop() {
+  // 1. Layani komunikasi WebSocket dari browser Web App
+  webSocket.loop();
+
+  // 2. Layani perintah langsung dari Serial Monitor USB
+  if (Serial.available()) {
+    String command = Serial.readStringUntil('\n');
+    processCommand(command);
+  }
+}
