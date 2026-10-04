@@ -53,6 +53,11 @@ function EruptionSimulator() {
               <stop offset="0%" stopColor={phase >= 3 ? '#44403c' : '#0c4a6e'} />
               <stop offset="100%" stopColor={phase >= 3 ? '#78716c' : '#0369a1'} />
             </linearGradient>
+            <filter id="smoke-blur" x="-30%" y="-30%" width="160%" height="160%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+              <feGaussianBlur in="displaced" stdDeviation="4.5" />
+            </filter>
           </defs>
 
           {/* Ground */}
@@ -82,15 +87,23 @@ function EruptionSimulator() {
             </g>
           )}
 
-          {/* Phase 1+: Growing smoke */}
+          {/* Phase 1+: Growing smoke (realistic billowing clouds, not rigid circles) */}
           {phase >= 1 && (
-            <g>
-              {[0, 1, 2].map((i) => (
-                <circle key={`smoke-${i}`} cx={195 + i * 5} cy="48" r={8 + phase * 4} fill="#a8a29e" opacity={0.3 + phase * 0.05}>
-                  <animate attributeName="cy" from="48" to={-10 - phase * 15} dur={`${3 - phase * 0.3}s`} repeatCount="indefinite" />
-                  <animate attributeName="r" from={8 + phase * 3} to={20 + phase * 8} dur={`${3 - phase * 0.3}s`} repeatCount="indefinite" />
-                  <animate attributeName="opacity" from={0.4} to="0" dur={`${3 - phase * 0.3}s`} repeatCount="indefinite" />
-                </circle>
+            <g filter="url(#smoke-blur)">
+              {[0, 1, 2, 3].map((i) => (
+                <g key={`smoke-group-${i}`}>
+                  <ellipse cx={195 + i * 4} cy="48" rx={10 + phase * 6} ry={7 + phase * 4} fill={phase >= 3 ? '#44403c' : '#cbd5e1'} opacity={0.5}>
+                    <animate attributeName="cy" from="48" to={-15 - phase * 18} dur={`${3.2 - phase * 0.3}s`} begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                    <animate attributeName="rx" from={10 + phase * 4} to={28 + phase * 10} dur={`${3.2 - phase * 0.3}s`} begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                    <animate attributeName="ry" from={7 + phase * 3} to={18 + phase * 6} dur={`${3.2 - phase * 0.3}s`} begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                    <animate attributeName="opacity" from="0.65" to="0" dur={`${3.2 - phase * 0.3}s`} begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                  </ellipse>
+                  <circle cx={190 + i * 3} cy="46" r={8 + phase * 4} fill={phase >= 3 ? '#292524' : '#f1f5f9'} opacity={0.4}>
+                    <animate attributeName="cy" from="46" to={-18 - phase * 18} dur={`${3.2 - phase * 0.3}s`} begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                    <animate attributeName="r" from={8 + phase * 3} to={22 + phase * 8} dur={`${3.2 - phase * 0.3}s`} begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                    <animate attributeName="opacity" from="0.55" to="0" dur={`${3.2 - phase * 0.3}s`} begin={`${i * 0.5}s`} repeatCount="indefinite" />
+                  </circle>
+                </g>
               ))}
             </g>
           )}
@@ -264,7 +277,6 @@ export default function GunungMerapi() {
                 fill={activePart === 'lereng' ? 'rgba(255,255,255,0.15)' : 'transparent'}
                 stroke={activePart === 'lereng' ? 'white' : 'transparent'}
                 strokeWidth="1"
-                strokeDasharray="3 2"
                 className="cursor-pointer"
                 onClick={() => setActivePart(activePart === 'lereng' ? null : 'lereng')}
               />

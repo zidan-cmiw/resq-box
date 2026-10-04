@@ -498,7 +498,7 @@ export default function StrukturBumi() {
                           className="w-full sm:w-1/2 py-2.5 px-3 bg-amber-400 hover:bg-amber-300 text-amber-950 font-pixel-title text-[10px] font-bold rounded-xl border-2 border-amber-950 shadow-[0_2px_0_#451a03] active:translate-y-0.5 transition-all cursor-pointer flex items-center justify-center gap-1.5"
                         >
                           <span>Tahu!</span>
-                          <span>💡</span>
+                          <PixelIcon name="cursor" size={13} />
                         </button>
 
                         <button
@@ -509,7 +509,7 @@ export default function StrukturBumi() {
                           className="w-full sm:w-1/2 py-2.5 px-3 bg-orange-200 hover:bg-orange-300 text-orange-950 font-pixel-title text-[10px] font-bold rounded-xl border-2 border-amber-950 shadow-[0_2px_0_#78350f] active:translate-y-0.5 transition-all cursor-pointer flex items-center justify-center gap-1.5"
                         >
                           <span>Saya ingin tahu.</span>
-                          <span>🔍</span>
+                          <PixelIcon name="search" size={13} />
                         </button>
                       </div>
                     </div>

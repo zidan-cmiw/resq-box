@@ -123,6 +123,14 @@ export function buildArea1EarthquakeMitigation(): ZoneConfigL2 {
       py: 310,
     },
 
+    // Kristal 4: Di Dekat Meja Guru & Perlengkapan Siaga
+    {
+      id: 'l2_q_crystal_4',
+      type: 'crystal',
+      px: 420,
+      py: 310,
+    },
+
     // Pintu Keluar Ruang Kelas Menuju Area 2 (Simulasi Gempa Bumi)
     {
       id: 'l2_portal_to_area2',
@@ -291,13 +299,21 @@ export function buildArea3AssemblyField(): ZoneConfigL2 {
       py: 310,
     },
 
+    // Kristal Pascabencana 4: Di Tengah Lapangan Evakuasi Terbuka
+    {
+      id: 'l2_f_crystal_4',
+      type: 'crystal',
+      px: 840,
+      py: 310,
+    },
+
     // Pintu Gerbang Keluar Sekolah / Kapsul Ambulans Evakuasi Akhir
     {
       id: 'l2_portal_finish_level2',
       type: 'portal_exit',
       px: 2130,
       py: 360,
-      label: 'GERBANG AKHIR KELULUSAN',
+      label: 'JALUR MENUJU POS PENGAMATAN MERAPI',
     },
   ];
 
@@ -305,6 +321,265 @@ export function buildArea3AssemblyField(): ZoneConfigL2 {
     id: 'area-lapangan-evakuasi',
     name: 'Lapangan Evakuasi Sekolah',
     subtitle: 'Mitigasi Pascabencana Gempa, Titik Kumpul & Pertolongan Medis',
+    groundProfile,
+    platforms,
+    landSections,
+    chasmHazards,
+    objects,
+    playerSpawnX: 100,
+    playerSpawnY: 360,
+  };
+}
+
+// ── BUILD AREA 4: PRABENCANA ERUPSI MERAPI (POS PENGAMATAN PVMBG & KRB III) ──
+export function buildArea4VolcanoPrabencana(): ZoneConfigL2 {
+  // Profil tanah lereng pegunungan asri bergelombang halus (y: 350 - 360)
+  const groundPoints: [number, number][] = [
+    [0, 360],
+    [300, 358],
+    [550, 350],
+    [850, 352],
+    [1250, 358],
+    [1750, 360],
+    [2200, 360],
+  ];
+
+  const groundProfile = interpolateProfile(groundPoints, MAP_WIDTH_PX);
+  const platforms: PlatformL2[] = [];
+
+  const landSections: LandSection[] = [
+    { id: 'land_v0_entrance', x: 0, y: 360, w: 320, h: 120, label: 'BATAS JALUR LERENG MERAPI' },
+    { id: 'land_v1_monument', x: 320, y: 350, w: 480, h: 130, label: 'PLAZA DATA STATUS & RAMBU KRB III' },
+    { id: 'land_v2_pga', x: 800, y: 352, w: 450, h: 128, label: 'POS PENGAMATAN GUNUNG API (PGA)' },
+    { id: 'land_v3_village', x: 1250, y: 358, w: 500, h: 122, label: 'Desa TANGGUH BENCANA (DESTANA)' },
+    { id: 'land_v4_gate', x: 1750, y: 360, w: 450, h: 120, label: 'POSKO RELAWAN & JALUR EVAKUASI' },
+  ];
+
+  const chasmHazards: ChasmHazard[] = [];
+
+  const objects: MapObjectL2[] = [
+    // Pintu Kembali ke Area 3 (Lapangan Sekolah)
+    {
+      id: 'l2_volcano_portal_back',
+      type: 'portal_back',
+      px: 60,
+      py: 360,
+      label: 'KEMBALI KE LAPANGAN SEKOLAH',
+    },
+
+    // Kristal Vulkanik 1: Di Sekitar Plaza Status Merapi
+    {
+      id: 'l2_v_crystal_1',
+      type: 'crystal',
+      px: 590,
+      py: 310,
+    },
+
+    // Kristal Vulkanik 2: Di Samping Pos Pengamatan Merapi (PGA)
+    {
+      id: 'l2_v_crystal_2',
+      type: 'crystal',
+      px: 1040,
+      py: 310,
+    },
+
+    // Kristal Vulkanik 3: Di Dekat Balai Dusun Destana
+    {
+      id: 'l2_v_crystal_3',
+      type: 'crystal',
+      px: 1680,
+      py: 310,
+    },
+
+    // Gerbang Keluar / Pintu Jalur Evakuasi Menuju Area 5
+    {
+      id: 'l2_portal_volcano_to_sim',
+      type: 'portal_exit',
+      px: 2130,
+      py: 360,
+      label: 'JALUR MENUJU SIMULASI ERUPSI',
+    },
+  ];
+
+  return {
+    id: 'area-pos-pengamatan-merapi',
+    name: 'Pos Pengamatan Merapi',
+    subtitle: 'Prabencana Erupsi Merapi: Status PVMBG & Kesiapsiagaan KRB',
+    groundProfile,
+    platforms,
+    landSections,
+    chasmHazards,
+    objects,
+    playerSpawnX: 100,
+    playerSpawnY: 360,
+  };
+}
+
+// ── BUILD AREA 5: SIMULASI TANGGAP ERUPSI MERAPI (DUSUN DESTANA KRB III) ──
+export function buildArea5VolcanoSimulation(): ZoneConfigL2 {
+  // Profil tanah lereng pedesaan bergelombang halus (y: 350 - 360)
+  const groundPoints: [number, number][] = [
+    [0, 360],
+    [300, 358],
+    [550, 352],
+    [850, 350],
+    [1250, 356],
+    [1750, 360],
+    [2200, 360],
+  ];
+
+  const groundProfile = interpolateProfile(groundPoints, MAP_WIDTH_PX);
+  const platforms: PlatformL2[] = [];
+
+  const landSections: LandSection[] = [
+    { id: 'land_s5_0_entrance', x: 0, y: 360, w: 320, h: 120, label: 'BATAS DUSUN KRB III LERENG MERAPI' },
+    { id: 'land_s5_1_posko', x: 320, y: 352, w: 480, h: 128, label: 'BALAI DESTANA & POS RONDA KENTONGAN' },
+    { id: 'land_s5_2_houses', x: 800, y: 350, w: 500, h: 130, label: 'PEKARANGAN PEMUKIMAN WARGA LERENG' },
+    { id: 'land_s5_3_assembly', x: 1300, y: 356, w: 450, h: 124, label: 'TITIK KUMPUL SEMENTARA KELOMPOK RENTAN' },
+    { id: 'land_s5_4_road', x: 1750, y: 360, w: 450, h: 120, label: 'JALUR UTAMA & TRUK EVAKUASI BPBD' },
+  ];
+
+  const chasmHazards: ChasmHazard[] = [];
+
+  const objects: MapObjectL2[] = [
+    // Pintu Kembali ke Area 4 (Pos Pengamatan)
+    {
+      id: 'l2_sim5_portal_back',
+      type: 'portal_back',
+      px: 60,
+      py: 360,
+      label: 'KEMBALI KE POS PENGAMATAN',
+    },
+
+    // Kristal Simulasi Erupsi 1: Di Sekitar Balai Destana & Pos Kentongan
+    {
+      id: 'l2_s5_crystal_1',
+      type: 'crystal',
+      px: 560,
+      py: 310,
+    },
+
+    // Kristal Simulasi Erupsi 2: Di Samping Pekarangan Rumah Warga
+    {
+      id: 'l2_s5_crystal_2',
+      type: 'crystal',
+      px: 1120,
+      py: 310,
+    },
+
+    // Kristal Simulasi Erupsi 3: Di Dekat Titik Kumpul Sementara
+    {
+      id: 'l2_s5_crystal_3',
+      type: 'crystal',
+      px: 1620,
+      py: 310,
+    },
+
+    // Gerbang Keluar Menuju Tempat Evakuasi Akhir (TEA)
+    {
+      id: 'l2_portal_finish_volcano_sim',
+      type: 'portal_exit',
+      px: 2130,
+      py: 360,
+      label: 'JALUR MENUJU TEMPAT EVAKUASI AKHIR (TEA)',
+    },
+  ];
+
+  return {
+    id: 'area-simulasi-merapi',
+    name: 'Simulasi Erupsi Merapi',
+    subtitle: 'Simulasi Tanggap Erupsi: Fenomena Geologis, 4 Status PVMBG & Evakuasi Dusun',
+    groundProfile,
+    platforms,
+    landSections,
+    chasmHazards,
+    objects,
+    playerSpawnX: 100,
+    playerSpawnY: 360,
+  };
+}
+
+// ── BUILD AREA 6: PASCABENCANA ERUPSI MERAPI (BARAK PENGUNGSIAN & PEMULIHAN BAHAYA SEKUNDER) ──
+export function buildArea6ShelterRecovery(): ZoneConfigL2 {
+  // Dataran rendah zona aman KRB I (y: 360)
+  const groundPoints: [number, number][] = [
+    [0, 360],
+    [400, 360],
+    [900, 360],
+    [1400, 360],
+    [1800, 360],
+    [2200, 360],
+  ];
+
+  const groundProfile = interpolateProfile(groundPoints, MAP_WIDTH_PX);
+  const platforms: PlatformL2[] = [];
+
+  const landSections: LandSection[] = [
+    { id: 'land_s6_0_gate', x: 0, y: 360, w: 350, h: 120, label: 'GAPURA & POSKO PENDAFTARAN PENGUNGSI' },
+    { id: 'land_s6_1_tents', x: 350, y: 360, w: 450, h: 120, label: 'TENDA PLETON BPBD & TANDON AIR BERSIH TERTUTUP' },
+    { id: 'land_s6_2_medis', x: 800, y: 360, w: 450, h: 120, label: 'POSKO MEDIS PMI & PENANGANAN SANITASI' },
+    { id: 'land_s6_3_dapur', x: 1250, y: 360, w: 400, h: 120, label: 'DAPUR UMUM TAGANA & LOGISTIK MAKANAN' },
+    { id: 'land_s6_4_pemukiman', x: 1650, y: 360, w: 550, h: 120, label: 'PEMUKIMAN ATAP ABU & BANTARAN SUNGAI LAHAR DINGIN' },
+  ];
+
+  const chasmHazards: ChasmHazard[] = [];
+
+  const objects: MapObjectL2[] = [
+    // Pintu Kembali ke Area 5 (Simulasi Erupsi)
+    {
+      id: 'l2_s6_portal_back',
+      type: 'portal_back',
+      px: 60,
+      py: 360,
+      label: 'KEMBALI KE DUSUN DESTANA',
+    },
+
+    // Kristal Pemulihan 1: Di Sekitar Tenda Pleton BPBD
+    {
+      id: 'l2_s6_crystal_1',
+      type: 'crystal',
+      px: 580,
+      py: 310,
+    },
+
+    // Kristal Pemulihan 2: Di Samping Posko Medis PMI & Tandon Air
+    {
+      id: 'l2_s6_crystal_2',
+      type: 'crystal',
+      px: 1080,
+      py: 310,
+    },
+
+    // Kristal Pemulihan 3: Di Dekat Dapur Umum Tagana
+    {
+      id: 'l2_s6_crystal_3',
+      type: 'crystal',
+      px: 1540,
+      py: 310,
+    },
+
+    // Kristal Pemulihan 4: Di Pemukiman Warga & Titik Aman Pengungsian
+    {
+      id: 'l2_s6_crystal_4',
+      type: 'crystal',
+      px: 1850,
+      py: 310,
+    },
+
+    // Mobil Evakuasi BNPB Kemenangan Akhir Level 2 (Penuntas Ekspedisi 100%)
+    {
+      id: 'l2_portal_finish_level2',
+      type: 'lander_capsule',
+      px: 2130,
+      py: 360,
+      label: '★ MOBIL EVAKUASI BNPB ★',
+    },
+  ];
+
+  return {
+    id: 'area-barak-pengungsian',
+    name: 'Barak Pengungsian & Pemulihan',
+    subtitle: 'Pascabencana Erupsi: Barak Terpadu, Penanganan Abu & Waspada Lahar',
     groundProfile,
     platforms,
     landSections,
@@ -352,11 +627,20 @@ function snapObjectsToGroundL2(zone: ZoneConfigL2): void {
 
 // ── GET ZONE BY AREA INDEX ──
 export function getAreaZoneL2(areaIndex: number): ZoneConfigL2 {
-  const zone = areaIndex === 2
-    ? buildArea3AssemblyField()
-    : areaIndex === 1
-      ? buildArea2EarthquakeSimulation()
-      : buildArea1EarthquakeMitigation();
+  const zone = areaIndex === 5
+    ? buildArea6ShelterRecovery()
+    : areaIndex === 4
+      ? buildArea5VolcanoSimulation()
+      : areaIndex === 3
+        ? buildArea4VolcanoPrabencana()
+        : areaIndex === 2
+          ? buildArea3AssemblyField()
+          : areaIndex === 1
+            ? buildArea2EarthquakeSimulation()
+            : buildArea1EarthquakeMitigation();
   snapObjectsToGroundL2(zone);
   return zone;
 }
+
+// ── TOTAL KRISTAL LEVEL 2: 21 KRISTAL (4 DI AREA 1, 3 DI AREA 2, 4 DI AREA 3, 3 DI AREA 4, 3 DI AREA 5, 4 DI AREA 6) ──
+export const TOTAL_CRYSTALS_L2 = 21;

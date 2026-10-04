@@ -171,7 +171,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
           {/* MENDATAR (ACROSS) */}
           <div className="p-3.5 rounded-xl bg-slate-900 border-2 border-amber-900/40 text-slate-100">
             <span className="font-pixel-title text-[10px] text-amber-400 font-bold block mb-2">
-              ➡️ MENDATAR (ACROSS)
+              MENDATAR (ACROSS)
             </span>
             <div className="space-y-1.5">
               {CLUES.filter((c) => c.direction === 'across').map((c) => {
@@ -215,7 +215,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
           {/* MENURUN (DOWN) */}
           <div className="p-3.5 rounded-xl bg-slate-900 border-2 border-amber-900/40 text-slate-100">
             <span className="font-pixel-title text-[10px] text-sky-400 font-bold block mb-2">
-              ⬇️ MENURUN (DOWN)
+              MENURUN (DOWN)
             </span>
             <div className="space-y-1.5">
               {CLUES.filter((c) => c.direction === 'down').map((c) => {

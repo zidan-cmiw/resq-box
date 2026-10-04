@@ -260,9 +260,9 @@ export default function Mission2Before({ onComplete, isAlreadyCompleted = false 
                   {assignedId ? (
                     <div className="p-3 rounded-lg bg-amber-900 text-amber-100 border border-amber-950 w-full shadow text-xs">
                       <span className="font-bold block">
-                        {assignedId === 'prep' && '🧱 Penguatan Bangunan & Tas Siaga'}
-                        {assignedId === 'warning' && '📡 Sensor Seismograf & Sirine EWS'}
-                        {assignedId === 'evac' && '🗺️ Peta Jalur Evakuasi & Titik Kumpul'}
+                        {assignedId === 'prep' && 'Penguatan Bangunan & Tas Siaga'}
+                        {assignedId === 'warning' && 'Sensor Seismograf & Sirine EWS'}
+                        {assignedId === 'evac' && 'Peta Jalur Evakuasi & Titik Kumpul'}
                       </span>
                       <button
                         onClick={() => {
@@ -295,17 +295,17 @@ export default function Mission2Before({ onComplete, isAlreadyCompleted = false 
               {[
                 {
                   id: 'prep',
-                  title: '🧱 Penguatan Konstruksi & Tas Siaga',
+                  title: 'Penguatan Konstruksi & Tas Siaga',
                   desc: 'Memperkuat struktur dinding rumah dari retakan gempa serta menyiapkan tas siaga keluarga.',
                 },
                 {
                   id: 'warning',
-                  title: '📡 Sensor Seismograf & Sirine EWS',
+                  title: 'Sensor Seismograf & Sirine EWS',
                   desc: 'Memasang sensor seismograf BMKG di zona patahan dan menguji sirine peringatan dini.',
                 },
                 {
                   id: 'evac',
-                  title: '🗺️ Peta Jalur Evakuasi & Titik Kumpul',
+                  title: 'Peta Jalur Evakuasi & Titik Kumpul',
                   desc: 'Menandai rambu penunjuk arah jalan bebas reruntuhan dan menyepakati lokasi titik kumpul terbuka.',
                 },
               ].map((card) => {

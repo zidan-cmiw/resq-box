@@ -93,7 +93,7 @@ export default function FinalQuestModal({ onClose, resiliencePoints }: FinalQues
           <h2 className="text-xl md:text-2xl font-black text-amber-300 font-pixel-title tracking-wide">
             SELAMAT, CHIEF DISASTER ANALYST!
           </h2>
-          <p className="text-xs text-amber-200/80 max-w-md mx-auto leading-relaxed">
+          <p className="font-sans text-xs sm:text-sm text-amber-200/90 max-w-md mx-auto leading-relaxed font-medium">
             Kamu telah berhasil membuktikan pemahaman geologis dari pergeseran lempeng hingga mitigasi taktis kota.
             Seluruh warga Disaster City kini selamat dan siap menghadapi dinamika bumi!
           </p>
@@ -119,7 +119,7 @@ export default function FinalQuestModal({ onClose, resiliencePoints }: FinalQues
 
         {/* 4 Badges Earned */}
         <div className="space-y-2">
-          <span className="text-[10px] font-pixel-title text-amber-300 font-bold block text-left">
+          <span className="text-[10px] sm:text-xs font-pixel-title text-amber-300 font-bold block text-left">
             4 LENCANA KEHORMATAN DIANUGERAHKAN:
           </span>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
@@ -134,7 +134,7 @@ export default function FinalQuestModal({ onClose, resiliencePoints }: FinalQues
                 <span className="font-pixel-title text-[10px] text-amber-200 font-bold leading-tight block mb-1">
                   {b.title}
                 </span>
-                <span className="text-[8px] text-slate-400 leading-tight block">{b.desc}</span>
+                <span className="font-sans text-[10px] text-slate-300 leading-snug block font-medium">{b.desc}</span>
               </div>
             ))}
           </div>

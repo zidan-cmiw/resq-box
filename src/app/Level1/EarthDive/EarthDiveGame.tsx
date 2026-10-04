@@ -1,8 +1,3 @@
-// ── src/app/Level1/EarthDive/EarthDiveGame.tsx ──────────────────────────────────
-// Engine Utama Game Petualangan 2D "EARTH DIVE" (Level 1)
-// Tampilan Full 1 Layar Penuh (Viewport Penuh, Tanpa Background Luar, UX Ringkas & Bersih)
-// Terintegrasi Avatar Kustom Murid & Radar Preview Map Bumi (Penampang 3D Irisan Bumi)
-
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -15,6 +10,7 @@ import TelemetryHUD from './TelemetryHUD';
 import PixelEarthDiagram from '../PixelEarthDiagram';
 import DiscoveryModal from './DiscoveryModal';
 import CoreChallengeModal from './CoreChallengeModal';
+import { SuitMerchantModal } from './SuitMerchantModal';
 import VisualNovelDialogue from './VisualNovelDialogue';
 import { getDialogueTree, type DialogueTree } from './dialogueData';
 import { retroAudio } from '../../../utils/retroAudio';
@@ -33,13 +29,17 @@ import {
   onDiscoveryComplete,
   onChallengeComplete,
   onCoreChallengeComplete,
+  buyAndEquipSuit,
   triggerDiveDown,
   triggerAscendUp,
+  triggerDivergentSimulation,
+  triggerConvergentSimulation,
+  setConvergentMode,
   triggerTransformSimulation,
   handleCanvasClick,
   type GameState,
 } from './engine/gameEngine';
-import { getZone, ZONES, TILE } from './engine/zones';
+import { getZone, ZONES, TILE, type MapObject } from './engine/zones';
 import { getGameScale } from './engine/renderer';
 import { setMobileButton, resetInputKeys } from './engine/player';
 
@@ -57,7 +57,6 @@ const ZONE_GATE_QUESTIONS: Record<number, { word: string; hint: string }[]> = {
   ],
   2: [ // Mantle Gate (Sesuai materi SMP Kelas 8: Mantel, Panas, Konveksi)
     { word: 'MANTEL', hint: 'Lapisan di bawah kerak bumi yang merupakan lapisan paling tebal (2.900 km).' },
-    { word: 'PANAS', hint: 'Suhu tinggi di mantel bumi yang membuat batuan mengalir sangat kental.' },
     { word: 'KONVEKSI', hint: 'Arus perputaran panas di dalam mantel yang menggerakkan lempeng bumi.' },
   ],
   3: [ // Outer Core Gate (Sesuai materi SMP Kelas 8: Logam, Cair, Magnet)
@@ -66,9 +65,8 @@ const ZONE_GATE_QUESTIONS: Record<number, { word: string; hint: string }[]> = {
     { word: 'MAGNET', hint: 'Lapisan inti bumi luar menghasilkan medan... yang melindungi bumi dari radiasi matahari.' },
   ],
   4: [ // Inner Core Gate (Sesuai materi SMP Kelas 8: Padat, Tekanan, Pusat)
-    { word: 'BOLABESIPADAT', hint: 'Inti dalam bumi berbentuk...' },
-    { word: 'ENAMRIBU', hint: 'Suhu di inti dalam bumi bisa mencapai sekitar ... derajat Celsius (sepanas matahari).' },
     { word: 'INTIDALAM', hint: 'Lapisan terdalam planet bumi pada kedalaman 6.371 kilometer.' },
+    { word: 'PADAT', hint: 'Inti dalam berbentuk sangat ... karena tekanan yang sangat besar dari segala arah.' },
   ],
   5: [ // Batas Divergen Gate (Sesuai materi SMP Kelas 8: Pangea, Menjauh, Magma)
     { word: 'PANGEA', hint: 'Nama superbenua raksasa purba yang dulunya menyatukan seluruh daratan bumi.' },
@@ -76,14 +74,12 @@ const ZONE_GATE_QUESTIONS: Record<number, { word: string; hint: string }[]> = {
     { word: 'MAGMA', hint: 'Batuan cair panas dari mantel bumi yang menerobos naik mengisi celah rekahan lempeng.' },
   ],
   6: [ // Batas Konvergen Gate (Sesuai materi SMP Kelas 8: Subduksi, Palung, Merapi)
-    { word: 'SUBDUKSI', hint: 'Proses lempeng samudra yang lebih padat menunjam ke bawah lempeng benua.' },
     { word: 'PALUNG', hint: 'Jurang sempit yang sangat dalam di dasar samudra akibat penunjaman lempeng.' },
     { word: 'MERAPI', hint: 'Contoh gunung berapi aktif di Indonesia yang terbentuk dari jalur subduksi lempeng.' },
   ],
   7: [ // Batas Transform Gate (Sesuai materi SMP Kelas 8: Transform, San Andreas, Sismograf)
     { word: 'TRANSFORM', hint: 'Batas lempeng tektonik di mana dua lempeng saling bergesekan mendatar berlawanan arah.' },
-    { word: 'SANANDREAS', hint: 'Patahan mendatar terkenal di California yang membentang sepanjang 1.200 kilometer.' },
-    { word: 'SISMOGRAF', hint: 'Alat pencatat getaran gempa bumi dan perekam gelombang seismik lempeng.' },
+    { word: 'SANANDREAS', hint: 'Patahan mendatar terkenal di California yang membentang sepanjang 1.200 kilometer.' }
   ],
 };
 
@@ -167,6 +163,7 @@ export default function EarthDiveGame() {
     strataName: string;
     zoneIndex: number;
     nearObjectType: 'npc' | 'crystal' | 'discovery' | 'portal_down' | 'portal_up' | 'info_sign' | 'challenge_gate' | null;
+    nearNpcName?: string | null;
     areaDiscoveriesRead: number;
     areaDiscoveriesTotal: number;
   }>({
@@ -180,11 +177,32 @@ export default function EarthDiveGame() {
     strataName: 'PERMUKAAN BUMI',
     zoneIndex: 0,
     nearObjectType: null,
+    nearNpcName: null,
     areaDiscoveriesRead: 0,
     areaDiscoveriesTotal: 0,
   });
 
   const [playerHp, setPlayerHp] = useState<number>(100);
+  const [convergentMode, setConvergentModeState] = useState<'land' | 'ocean'>('land');
+
+  // Sinkronisasi convergentMode dari game state saat area berubah atau dimuat
+  useEffect(() => {
+    if (gameRef.current?.convergentMode) {
+      setConvergentModeState(gameRef.current.convergentMode);
+    }
+  }, [hudData.zoneIndex]);
+
+  const handleSelectConvergentMode = (mode: 'land' | 'ocean') => {
+    setConvergentModeState(mode);
+    if (gameRef.current) {
+      setConvergentMode(gameRef.current, mode);
+      showToast(
+        mode === 'land'
+          ? 'Kondisi 1: Tumbukan Benua Daratan aktif (Pegunungan Lipatan tanpa Palung Laut).'
+          : 'Kondisi 2: Subduksi Samudra-Benua aktif (Perahu Riset & Palung Laut Dalam).'
+      );
+    }
+  };
 
   const showToast = useCallback((msg: string) => {
     if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
@@ -200,6 +218,13 @@ export default function EarthDiveGame() {
   }, []);
 
   const [activeDialogue, setActiveDialogue] = useState<DialogueTree | null>(null);
+  const [activeSuitMerchant, setActiveSuitMerchant] = useState<MapObject | null>(null);
+  const [suitWarningModal, setSuitWarningModal] = useState<{
+    requiredSuit: string;
+    suitName: string;
+    zoneName: string;
+    reason: string;
+  } | null>(null);
 
   // Track if engine is paused (modal open)
   const isPaused =
@@ -209,7 +234,9 @@ export default function EarthDiveGame() {
     showWordleBonus ||
     isGateLockedModalOpen ||
     discoveryWarning !== null ||
-    activeDialogue !== null;
+    activeDialogue !== null ||
+    activeSuitMerchant !== null ||
+    suitWarningModal !== null;
 
   // ── INIT GAME (SCOPED TO ACTIVE USER) ──
   useEffect(() => {
@@ -220,6 +247,17 @@ export default function EarthDiveGame() {
     if (!gameRef.current || gameRef.current.userId !== activeUserId) {
       const newGame = createGameState(activeUserId);
       newGame.userId = activeUserId;
+      if (!newGame.unlockedGates.has('ic_challenge')) {
+        let hasReadLintang = false;
+        try {
+          hasReadLintang = localStorage.getItem(`resqbox_read_ic_disc2_${activeUserId}`) === 'true';
+        } catch {}
+        if (!hasReadLintang && newGame.discoveredPoints.has('ic_disc2')) {
+          newGame.discoveredPoints.delete('ic_disc2');
+          newGame.discoveredPoints.delete('disc_9');
+          saveEarthDiveProgress(newGame, activeUserId);
+        }
+      }
       gameRef.current = newGame;
       setHudData(prev => ({
         ...prev,
@@ -233,6 +271,20 @@ export default function EarthDiveGame() {
         areaDiscoveriesTotal: 0,
       }));
       setPlayerHp(newGame.player.health);
+    } else {
+      // Pembersihan instan untuk game state yang sudah aktif di memori
+      const activeGame = gameRef.current;
+      if (activeGame && !activeGame.unlockedGates.has('ic_challenge')) {
+        let hasReadLintang = false;
+        try {
+          hasReadLintang = localStorage.getItem(`resqbox_read_ic_disc2_${activeUserId}`) === 'true';
+        } catch {}
+        if (!hasReadLintang && activeGame.discoveredPoints.has('ic_disc2')) {
+          activeGame.discoveredPoints.delete('ic_disc2');
+          activeGame.discoveredPoints.delete('disc_9');
+          saveEarthDiveProgress(activeGame, activeUserId);
+        }
+      }
     }
   }, [activeUserId]);
 
@@ -389,6 +441,17 @@ export default function EarthDiveGame() {
           retroAudio.playError();
         }
 
+        if (game.pendingSuitMerchant) {
+          setActiveSuitMerchant(game.pendingSuitMerchant);
+          game.pendingSuitMerchant = null;
+        }
+
+        if (game.pendingSuitRequired) {
+          setSuitWarningModal(game.pendingSuitRequired);
+          game.pendingSuitRequired = null;
+          retroAudio.playError();
+        }
+
         if (game.pendingAreaUnderConstruction) {
           showToast(`Jalur menuju ${game.pendingAreaUnderConstruction} sedang disiapkan! Silakan jelajahi area ini terlebih dahulu.`);
           game.pendingAreaUnderConstruction = null;
@@ -408,11 +471,11 @@ export default function EarthDiveGame() {
           let dialogueId = (game.pendingNpcDialogue.data?.dialogueId as string) || 'prof_raditya_dialogue';
 
           // Dynamic routing untuk NPC Area 2 (Kerak Bumi)
-          if (dialogueId === 'prof_andini_dialogue') {
+          if (dialogueId === 'prof_andini_dialogue' || dialogueId === 'z1_lintang_dialogue') {
             if (game.discoveredPoints.has('crust_disc_compare')) {
               dialogueId = 'prof_andini_review_dialogue';
             }
-          } else if (dialogueId === 'komandan_hendra_dialogue') {
+          } else if (dialogueId === 'komandan_hendra_dialogue' || dialogueId === 'z1_bu_tyas_dialogue') {
             const hasDiscovery = game.discoveredPoints.has('crust_disc_compare');
             const isUnlocked = game.unlockedGates.has('crust_challenge');
             if (isUnlocked) {
@@ -424,15 +487,15 @@ export default function EarthDiveGame() {
             }
           }
           // Dynamic routing untuk NPC Area 3 (Mantel Bumi)
-          else if (dialogueId === 'prof_sarah_dialogue') {
+          else if (dialogueId === 'prof_sarah_dialogue' || dialogueId === 'z2_zahra_dialogue') {
             if (game.discoveredPoints.has('mantle_disc1')) {
               dialogueId = 'prof_sarah_review_dialogue';
             }
-          } else if (dialogueId === 'dr_danang_dialogue') {
+          } else if (dialogueId === 'dr_danang_dialogue' || dialogueId === 'z2_lintang_dialogue') {
             if (game.discoveredPoints.has('mantle_disc2')) {
               dialogueId = 'dr_danang_review_dialogue';
             }
-          } else if (dialogueId === 'komandan_surya_dialogue') {
+          } else if (dialogueId === 'komandan_surya_dialogue' || dialogueId === 'z2_bu_tyas_dialogue') {
             const hasDiscoveries = game.discoveredPoints.has('mantle_disc1') && game.discoveredPoints.has('mantle_disc2');
             const isUnlocked = game.unlockedGates.has('mantle_challenge');
             if (isUnlocked) {
@@ -444,15 +507,15 @@ export default function EarthDiveGame() {
             }
           }
           // Dynamic routing untuk NPC Area 4 (Inti Luar)
-          else if (dialogueId === 'prof_ratna_dialogue') {
+          else if (dialogueId === 'prof_ratna_dialogue' || dialogueId === 'z3_zahra_dialogue') {
             if (game.discoveredPoints.has('oc_disc1')) {
               dialogueId = 'prof_ratna_review_dialogue';
             }
-          } else if (dialogueId === 'dr_aris_dialogue') {
+          } else if (dialogueId === 'dr_aris_dialogue' || dialogueId === 'z3_lintang_dialogue') {
             if (game.discoveredPoints.has('oc_disc2')) {
               dialogueId = 'dr_aris_review_dialogue';
             }
-          } else if (dialogueId === 'komandan_teguh_dialogue') {
+          } else if (dialogueId === 'komandan_teguh_dialogue' || dialogueId === 'z3_bu_tyas_dialogue') {
             const hasDiscoveries = game.discoveredPoints.has('oc_disc1') && game.discoveredPoints.has('oc_disc2');
             const isUnlocked = game.unlockedGates.has('oc_challenge');
             if (isUnlocked) {
@@ -464,15 +527,15 @@ export default function EarthDiveGame() {
             }
           }
           // Dynamic routing untuk NPC Area 5 (Inti Dalam)
-          else if (dialogueId === 'prof_lestari_dialogue') {
+          else if (dialogueId === 'prof_lestari_dialogue' || dialogueId === 'z4_zahra_dialogue') {
             if (game.discoveredPoints.has('ic_disc1')) {
               dialogueId = 'prof_lestari_review_dialogue';
             }
-          } else if (dialogueId === 'dr_farhan_dialogue') {
+          } else if (dialogueId === 'dr_farhan_dialogue' || dialogueId === 'z4_lintang_dialogue') {
             if (game.discoveredPoints.has('ic_disc2')) {
               dialogueId = 'dr_farhan_review_dialogue';
             }
-          } else if (dialogueId === 'komandan_bintang_dialogue') {
+          } else if (dialogueId === 'komandan_bintang_dialogue' || dialogueId === 'z4_bu_tyas_dialogue') {
             const hasDiscoveries = game.discoveredPoints.has('ic_disc1') && game.discoveredPoints.has('ic_disc2');
             const isUnlocked = game.unlockedGates.has('ic_challenge');
             if (isUnlocked) {
@@ -484,23 +547,18 @@ export default function EarthDiveGame() {
             }
           }
           // Dynamic routing untuk NPC Area 6 (Batas Divergen & Lembah Retakan)
-          else if (dialogueId === 'prof_maya_dialogue') {
+          else if (dialogueId === 'prof_maya_dialogue' || dialogueId === 'z5_zahra_dialogue') {
             if (game.discoveredPoints.has('div_disc1')) {
               dialogueId = 'prof_maya_review_dialogue';
             }
-          } else if (dialogueId === 'dr_citra_dialogue') {
+          } else if (dialogueId === 'dr_citra_dialogue' || dialogueId === 'z5_lintang_dialogue') {
             if (game.discoveredPoints.has('div_disc2')) {
               dialogueId = 'dr_citra_review_dialogue';
             }
-          } else if (dialogueId === 'prof_ilham_dialogue') {
-            if (game.discoveredPoints.has('div_disc3')) {
-              dialogueId = 'prof_ilham_review_dialogue';
-            }
-          } else if (dialogueId === 'komandan_satria_dialogue') {
+          } else if (dialogueId === 'komandan_satria_dialogue' || dialogueId === 'z5_bu_tyas_dialogue') {
             const hasDiscoveries =
               game.discoveredPoints.has('div_disc1') &&
-              game.discoveredPoints.has('div_disc2') &&
-              game.discoveredPoints.has('div_disc3');
+              game.discoveredPoints.has('div_disc2');
             const isUnlocked = game.unlockedGates.has('divergent_challenge');
             if (isUnlocked) {
               dialogueId = 'komandan_satria_unlocked_dialogue';
@@ -511,15 +569,17 @@ export default function EarthDiveGame() {
             }
           }
           // Dynamic routing untuk NPC Area 7 (Batas Konvergen & Zona Subduksi)
-          else if (dialogueId === 'dr_farhan_conv_dialogue') {
+          else if (dialogueId === 'dr_farhan_conv_dialogue' || dialogueId === 'z6_zidane_dialogue') {
             if (game.discoveredPoints.has('conv_disc1')) {
               dialogueId = 'dr_farhan_conv_review_dialogue';
+            } else if (game.convergentMode === 'land') {
+              dialogueId = 'dr_farhan_conv_land_dialogue';
             }
-          } else if (dialogueId === 'prof_ratna_conv_dialogue') {
+          } else if (dialogueId === 'prof_ratna_conv_dialogue' || dialogueId === 'z6_zahra_dialogue') {
             if (game.discoveredPoints.has('conv_disc2')) {
               dialogueId = 'prof_ratna_conv_review_dialogue';
             }
-          } else if (dialogueId === 'komandan_arya_dialogue') {
+          } else if (dialogueId === 'komandan_arya_dialogue' || dialogueId === 'z6_bu_tyas_dialogue') {
             const hasDiscoveries =
               game.discoveredPoints.has('conv_disc1') &&
               game.discoveredPoints.has('conv_disc2');
@@ -533,15 +593,7 @@ export default function EarthDiveGame() {
             }
           }
           // Dynamic routing untuk NPC Area 8 (Batas Transform)
-          else if (dialogueId === 'prof_sarah_trans_dialogue') {
-            if (
-              game.discoveredPoints.has('trans_seismo') ||
-              game.discoveredPoints.has('trans_disc1') ||
-              game.discoveredPoints.has('disc_15')
-            ) {
-              dialogueId = 'prof_sarah_trans_review_dialogue';
-            }
-          } else if (dialogueId === 'dr_taufik_trans_dialogue') {
+          else if (dialogueId === 'dr_taufik_trans_dialogue' || dialogueId === 'z7_zahra_dialogue') {
             if (
               game.discoveredPoints.has('trans_sanandreas') ||
               game.discoveredPoints.has('trans_disc2') ||
@@ -549,16 +601,11 @@ export default function EarthDiveGame() {
             ) {
               dialogueId = 'dr_taufik_trans_review_dialogue';
             }
-          } else if (dialogueId === 'komandan_guntur_dialogue') {
-            const hasDisc1 =
-              game.discoveredPoints.has('trans_seismo') ||
-              game.discoveredPoints.has('trans_disc1') ||
-              game.discoveredPoints.has('disc_15');
-            const hasDisc2 =
+          } else if (dialogueId === 'komandan_guntur_dialogue' || dialogueId === 'z7_bu_tyas_dialogue') {
+            const hasDiscoveries =
               game.discoveredPoints.has('trans_sanandreas') ||
               game.discoveredPoints.has('trans_disc2') ||
               game.discoveredPoints.has('disc_16');
-            const hasDiscoveries = hasDisc1 && hasDisc2;
             const isUnlocked = game.unlockedGates.has('transform_challenge');
             if (isUnlocked) {
               dialogueId = 'komandan_guntur_unlocked_dialogue';
@@ -636,8 +683,7 @@ export default function EarthDiveGame() {
           } else if (game.currentZone === 5) {
             const hasDiscoveries =
               game.discoveredPoints.has('div_disc1') &&
-              game.discoveredPoints.has('div_disc2') &&
-              game.discoveredPoints.has('div_disc3');
+              game.discoveredPoints.has('div_disc2');
             const isUnlocked = game.unlockedGates.has('divergent_challenge');
             let dialogueId = 'komandan_satria_ready_dialogue';
             if (isUnlocked) dialogueId = 'komandan_satria_unlocked_dialogue';
@@ -655,15 +701,10 @@ export default function EarthDiveGame() {
             const tree = getDialogueTree(dialogueId);
             if (tree) setActiveDialogue(tree);
           } else if (game.currentZone === 7) {
-            const hasDisc1 =
-              game.discoveredPoints.has('trans_seismo') ||
-              game.discoveredPoints.has('trans_disc1') ||
-              game.discoveredPoints.has('disc_15');
-            const hasDisc2 =
+            const hasDiscoveries =
               game.discoveredPoints.has('trans_sanandreas') ||
               game.discoveredPoints.has('trans_disc2') ||
               game.discoveredPoints.has('disc_16');
-            const hasDiscoveries = hasDisc1 && hasDisc2;
             const isUnlocked = game.unlockedGates.has('transform_challenge');
             let dialogueId = 'komandan_guntur_ready_dialogue';
             if (isUnlocked) dialogueId = 'komandan_guntur_unlocked_dialogue';
@@ -745,10 +786,26 @@ export default function EarthDiveGame() {
         const areaDiscoveriesTotal = zoneDiscoveries.length;
         const areaDiscoveriesRead = zoneDiscoveries.filter((o) => {
           const key = (o.data?.discoveryKey as string) || o.id;
-          return game.discoveredPoints.has(key);
+          return (
+            game.discoveredPoints.has(key) ||
+            game.discoveredPoints.has(o.id) ||
+            (o.data?.discoveryId !== undefined && (
+              game.discoveredPoints.has(`disc_${o.data.discoveryId}`) ||
+              game.discoveredPoints.has(String(o.data.discoveryId))
+            )) ||
+            (zone.id === 'transform' && (
+              game.discoveredPoints.has('trans_sanandreas') ||
+              game.discoveredPoints.has('trans_disc2') ||
+              game.discoveredPoints.has('disc_16')
+            ))
+          );
         }).length;
         const isBoundaryZone = zone.id === 'divergent' || zone.id === 'convergent' || zone.id === 'transform';
         const tempString = isBoundaryZone ? undefined : (strataData?.tempRange ? strataData.tempRange.split('•')[0].trim() : `${strataData?.tempCelsius ?? 25}°C`);
+
+        const nearNpcName = game.nearObject?.type === 'npc'
+          ? ((game.nearObject.data?.name as string) || game.npcStates.get(game.nearObject.id)?.name || null)
+          : null;
 
         setHudData({
           depth: isBoundaryZone ? undefined : (strataData?.targetDepthKm ?? 0),
@@ -763,6 +820,7 @@ export default function EarthDiveGame() {
           areaDiscoveriesTotal,
           zoneIndex: game.currentZone,
           nearObjectType: game.nearObject?.type ?? null,
+          nearNpcName,
         });
       }
 
@@ -853,6 +911,22 @@ export default function EarthDiveGame() {
         syncEarthDiveProgress(game, student, false).catch(console.error);
         showToast('Selamat kamu berhasil menyelesaikan pertanyaan dari peneliti! Gerbang & Akses Turun Telah Terbuka!');
         retroAudio.playWin();
+
+        // Otomatis buka instruksi Bu Tyas untuk membeli baju pelindung ke Teknisi
+        let unlockedDialogueId = '';
+        if (game.currentZone === 1) unlockedDialogueId = 'komandan_hendra_unlocked_dialogue';
+        else if (game.currentZone === 2) unlockedDialogueId = 'komandan_surya_unlocked_dialogue';
+        else if (game.currentZone === 3) unlockedDialogueId = 'komandan_teguh_unlocked_dialogue';
+        else if (game.currentZone === 4) unlockedDialogueId = 'komandan_bintang_unlocked_dialogue';
+
+        if (unlockedDialogueId) {
+          const tree = getDialogueTree(unlockedDialogueId);
+          if (tree) {
+            setTimeout(() => {
+              setActiveDialogue(tree);
+            }, 350);
+          }
+        }
       }
     } else {
       syncEarthDiveProgress(game, student, false).catch(console.error);
@@ -864,19 +938,16 @@ export default function EarthDiveGame() {
     setActiveChallenge(null);
   }, [showToast, unlockLevel, student, activeUserId]);
 
+  const handleBuyAndEquipSuit = useCallback((suitType: string) => {
+    const game = gameRef.current;
+    if (!game) return;
+    buyAndEquipSuit(game, suitType);
+    showToast('Baju Pelindung berhasil dibeli & dipakai! Kamu siap melangkah aman.');
+    setActiveSuitMerchant(null);
+  }, [showToast]);
+
   const playerName = student?.name || currentUser?.name || currentUser?.username || 'Vincent';
 
-  // Auto-sync: jika pemain di Area 2 (Zone 1) sudah menyelesaikan tantangan peneliti (atau Vincent yang baru saja menyelesaikannya)
-  useEffect(() => {
-    const game = gameRef.current;
-    if (game && game.currentZone === 1 && game.discoveredPoints.has('crust_disc_compare')) {
-      if (typeof window !== 'undefined' && (localStorage.getItem('crust_challenge_solved') === 'true' || playerName === 'Vincent')) {
-        game.unlockedGates.add('crust_challenge');
-        game.completedChallenges.add('crust_challenge');
-        saveEarthDiveProgress(game, activeUserId);
-      }
-    }
-  }, [activeUserId, playerName, hudData.zoneIndex]);
 
   // ── INTRODUKSI AWAL MASKOT RESQY (ZONA 0 PERMUKAAN & ZONA 1 KERAK BUMI) ──
   useEffect(() => {
@@ -968,7 +1039,9 @@ export default function EarthDiveGame() {
       const hasSeenConvergent = sessionStorage.getItem(sessionConvergentKey);
       if (!hasSeenConvergent) {
         const timer = window.setTimeout(() => {
-          const convergentTree = getDialogueTree('mascot_convergent_intro');
+          const currentMode = gameRef.current?.convergentMode || convergentMode;
+          const introId = currentMode === 'ocean' ? 'mascot_convergent_intro_ocean' : 'mascot_convergent_intro_land';
+          const convergentTree = getDialogueTree(introId) || getDialogueTree('mascot_convergent_intro');
           if (convergentTree) {
             setActiveDialogue(convergentTree);
             sessionStorage.setItem(sessionConvergentKey, 'true');
@@ -1046,7 +1119,16 @@ export default function EarthDiveGame() {
                                       ? 'trans_sanandreas'
                                       : `disc_${discoveryIndex}`;
         onDiscoveryComplete(game, discKey);
-        if (discoveryIndex === 15) {
+        if (discoveryIndex === 8) {
+          game.discoveredPoints.add('ic_disc1');
+          game.discoveredPoints.add('disc_8');
+        } else if (discoveryIndex === 9) {
+          game.discoveredPoints.add('ic_disc2');
+          game.discoveredPoints.add('disc_9');
+          try {
+            localStorage.setItem(`resqbox_read_ic_disc2_${activeUserId}`, 'true');
+          } catch {}
+        } else if (discoveryIndex === 15) {
           game.discoveredPoints.add('trans_seismo');
           game.discoveredPoints.add('trans_disc1');
           game.discoveredPoints.add('disc_15');
@@ -1222,119 +1304,205 @@ export default function EarthDiveGame() {
       />
 
       {/* ── 2. TELEMETRY HUD INDIKATOR (RESPONSIF ZOOM & TABLET) ── */}
-      {/* Di desktop & tablet: Terpusat indah di tengah layar atas tanpa menabrak menu kiri atau radar kanan.
-          Di layar kecil: Dapat diciutkan secara responsif. */}
-      <div className="fixed top-2.5 sm:top-3 left-1/2 -translate-x-1/2 pointer-events-auto z-20 max-w-[calc(100vw-300px)] sm:max-w-none">
-        <TelemetryHUD
-          currentDepthKm={hudData.depth}
-          currentTempLabel={hudData.tempString}
-          currentPressureGpa={hudData.pressure}
-          crystalsCount={hudData.crystals}
-          totalCrystals={hudData.totalCrystals}
-          areaDiscoveriesRead={hudData.areaDiscoveriesRead}
-          areaDiscoveriesTotal={hudData.areaDiscoveriesTotal}
-          playerHp={playerHp}
-        />
-      </div>
+      {/* ── 2. TELEMETRY HUD INDIKATOR (RESPONSIF ZOOM & TABLET) ── */}
+      {/* Sesuai permintaan pengguna: Sembunyikan telemetri di Area Konvergen (zoneIndex === 6) agar tombol kontrol lempeng dapat ditaruh di atas */}
+      {hudData.zoneIndex !== 6 && (
+        <div className="fixed top-2.5 sm:top-3 left-1/2 -translate-x-1/2 pointer-events-auto z-20 max-w-[calc(100vw-300px)] sm:max-w-none">
+          <TelemetryHUD
+            currentDepthKm={hudData.depth}
+            currentTempLabel={hudData.tempString}
+            currentPressureGpa={hudData.pressure}
+            crystalsCount={hudData.crystals}
+            totalCrystals={hudData.totalCrystals}
+            areaDiscoveriesRead={hudData.areaDiscoveriesRead}
+            areaDiscoveriesTotal={hudData.areaDiscoveriesTotal}
+            playerHp={playerHp}
+          />
+        </div>
+      )}
 
       {/* ── 3. TOP CORNER WIDGETS (LEFT & RIGHT) ── */}
       <div className="fixed top-2 sm:top-2.5 left-2 sm:left-3 right-2 sm:right-3 flex items-start justify-between pointer-events-none z-20">
 
         {/* TOP LEFT: COMPACT NAVIGATION & UTILITY BUTTONS + STRATA PILL & REPLAY BUTTON */}
         <div className="flex flex-col items-start gap-1.5 pointer-events-auto">
-          {/* Row 1: Tombol Navigasi Menu, Sound, dan Layar Penuh */}
-          <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/85 backdrop-blur-md border-2 border-amber-800/80 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
-            {/* Back to Menu */}
-            <button
-              onClick={() => {
-                retroAudio.playSelect();
-                navigate('/');
-              }}
-              className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-pixel-title text-[11px] sm:text-xs flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#231206] whitespace-nowrap"
-              title="Kembali ke Menu Utama"
-            >
-              <span className="text-amber-400 font-bold">&lt;</span>
-              <span>MENU</span>
-            </button>
-
-            {/* Sound Toggle */}
-            <button
-              onClick={handleSoundToggle}
-              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl border flex items-center justify-center cursor-pointer transition-all ${soundOn
-                ? 'bg-amber-500 text-slate-950 border-amber-300 shadow-[0_2px_0_#78350f]'
-                : 'bg-slate-800 text-slate-400 border-slate-700'
-                }`}
-              title="Musik & Efek Suara"
-            >
-              <PixelIcon name={soundOn ? "sound-on" : "sound-off"} size={13} />
-            </button>
-
-            {/* Fullscreen Toggle */}
-            <button
-              onClick={handleFullscreenToggle}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center cursor-pointer transition-all active:translate-y-0.5"
-              title="Layar Penuh"
-            >
-              <PixelIcon name="fullscreen" size={13} />
-            </button>
-          </div>
-
-          {/* Row 2: Badge Lapisan Aktif & Tombol Simulasi (Rapi Tanpa Tumpang Tindih di Tablet/Desktop) */}
-          <div className="flex flex-col xl:flex-row items-start xl:items-center gap-1 sm:gap-1.5">
-            {/* Current Strata Badge Pill */}
-            <div className="bg-slate-950/95 backdrop-blur-md border-2 border-amber-700/90 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-amber-200 font-pixel text-[10px] sm:text-xs shadow-[0_4px_0_#231206] flex items-center gap-1.5 whitespace-nowrap">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-              <span className="font-bold text-amber-300 uppercase tracking-wide truncate max-w-[140px] sm:max-w-none">
-                {hudData.strataName}
-              </span>
-            </div>
-
-            {/* Tombol Replay Simulasi Tektonik untuk Area 8 (Batas Transform) */}
-            {hudData.zoneIndex === 7 && (
+          {/* Row 1: Tombol Navigasi Menu, Sound, Fullscreen, serta (khusus Batas Konvergen) Strata Badge & Tombol Kontrol Naik ke Atas */}
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/85 backdrop-blur-md border-2 border-amber-800/80 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
+              {/* Back to Menu */}
               <button
                 onClick={() => {
-                  if (gameRef.current) {
-                    triggerTransformSimulation(gameRef.current);
-                    showToast('Memutar ulang pergeseran mendatar Sesar San Andreas...');
-                  }
+                  retroAudio.playSelect();
+                  navigate('/');
                 }}
-                className="bg-amber-950/90 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/90 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-pixel text-[10px] sm:text-xs shadow-[0_4px_0_#231206] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 whitespace-nowrap"
-                title="Putar Ulang Animasi Sesar San Andreas"
+                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-sans font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#231206] whitespace-nowrap"
+                title="Kembali ke Menu Utama"
               >
-                <span className="text-amber-400 font-bold">↻</span>
-                <span>PUTAR ULANG PERGESERAN</span>
+                <span className="text-amber-400 font-bold">&lt;</span>
+                <span>MENU</span>
               </button>
-            )}
-          </div>
-        </div>
 
-        {/* TOP RIGHT: PREVIEW MAP BUMI (LEBIH BESAR, BERSIH TANPA LABEL PENGHALANG) */}
-        <div className="pointer-events-auto flex flex-col items-end gap-1">
-          <div className="bg-slate-950/90 backdrop-blur-md border-2 sm:border-3 border-[#78350f] rounded-2xl p-1.5 sm:p-2 shadow-[0_6px_0_#231206] flex flex-col items-center transition-all">
-            <button
-              onClick={() => setIsRadarOpen(!isRadarOpen)}
-              className="flex items-center justify-between gap-1.5 sm:gap-2 w-full px-1.5 sm:px-2 pb-1 text-[10px] sm:text-xs font-pixel text-amber-400 hover:text-amber-200 cursor-pointer select-none"
-              title={isRadarOpen ? "Kecilkan Radar" : "Buka Radar"}
-            >
-              <span className="flex items-center gap-1 font-bold whitespace-nowrap">
-                <PixelIcon name="globe" size={13} />
-                <span className="tracking-wide">RADAR BUMI</span>
-              </span>
-              <span className="text-amber-500 hover:text-amber-300 text-[9px] sm:text-[10px] font-bold ml-1.5">
-                {isRadarOpen ? '▲' : '▼'}
-              </span>
-            </button>
-            {isRadarOpen && (
-              <div className="pt-1.5 border-t border-amber-900/50">
-                <PixelEarthDiagram
-                  activeLayerId={previewConfig.activeLayerId}
-                  depthPercent={previewConfig.depthPercent}
-                  className="w-28 h-28 sm:w-34 sm:h-34 md:w-38 md:h-38 xl:w-42 xl:h-42"
-                />
+              {/* Sound Toggle */}
+              <button
+                onClick={handleSoundToggle}
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl border flex items-center justify-center cursor-pointer transition-all ${soundOn
+                  ? 'bg-amber-500 text-slate-950 border-amber-300 shadow-[0_2px_0_#78350f]'
+                  : 'bg-slate-800 text-slate-400 border-slate-700'
+                  }`}
+                title="Musik & Efek Suara"
+              >
+                <PixelIcon name={soundOn ? "sound-on" : "sound-off"} size={13} />
+              </button>
+
+              {/* Fullscreen Toggle */}
+              <button
+                onClick={handleFullscreenToggle}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center cursor-pointer transition-all active:translate-y-0.5"
+                title="Layar Penuh"
+              >
+                <PixelIcon name="fullscreen" size={13} />
+              </button>
+            </div>
+
+            </div>
+
+            {/* Row 2: Current Strata Badge Pill (Seragam untuk seluruh zona) */}
+            <div className="flex flex-col xl:flex-row items-start xl:items-center gap-1 sm:gap-1.5">
+              <div className="bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-amber-200 font-pixel text-xs sm:text-sm md:text-base font-bold shadow-[0_4px_0_#231206] flex items-center gap-2 whitespace-nowrap">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                <span className="font-bold text-amber-300 uppercase tracking-wider truncate max-w-[180px] sm:max-w-none">
+                  {hudData.strataName}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* TOP RIGHT: PREVIEW MAP BUMI (HANYA AREA 0-4) ATAU KONTROL KONDISI / SIMULASI TEKTONIK (AREA 5-7) */}
+          <div className="pointer-events-auto flex flex-col items-end gap-1 select-none">
+            {/* 1. Radar Bumi: Hanya untuk lapisan dalam bumi (Permukaan, Kerak, Mantel, Inti Luar, Inti Dalam: Zone 0-4) */}
+            {hudData.zoneIndex < 5 && (
+              <div className="bg-slate-950/90 backdrop-blur-md border-2 sm:border-3 border-[#78350f] rounded-2xl p-1.5 sm:p-2 shadow-[0_6px_0_#231206] flex flex-col items-center transition-all">
+                <button
+                  onClick={() => setIsRadarOpen(!isRadarOpen)}
+                  className="flex items-center justify-between gap-1.5 sm:gap-2 w-full px-1.5 sm:px-2 pb-1 text-[10px] sm:text-xs font-pixel text-amber-400 hover:text-amber-200 cursor-pointer select-none"
+                  title={isRadarOpen ? "Kecilkan Radar" : "Buka Radar"}
+                >
+                  <span className="flex items-center gap-1 font-bold whitespace-nowrap">
+                    <PixelIcon name="globe" size={13} />
+                    <span className="tracking-wide">RADAR BUMI</span>
+                  </span>
+                  <span className="text-amber-500 hover:text-amber-300 text-[9px] sm:text-[10px] font-bold ml-1.5">
+                    {isRadarOpen ? '▲' : '▼'}
+                  </span>
+                </button>
+                {isRadarOpen && (
+                  <div className="pt-1.5 border-t border-amber-900/50">
+                    <PixelEarthDiagram
+                      activeLayerId={previewConfig.activeLayerId}
+                      depthPercent={previewConfig.depthPercent}
+                      className="w-28 h-28 sm:w-34 sm:h-34 md:w-38 md:h-38 xl:w-42 xl:h-42"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 2. Tombol Pemilih Kondisi & Ulang Animasi untuk Batas Konvergen (Area 7 / Zone Index 6) - DI POJOK KANAN ATAS */}
+            {hudData.zoneIndex === 6 && (
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-amber-800/80 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
+                {/* Kondisi 1: Daratan (Tabrakan Benua & Pembentukan Gunung) */}
+                <button
+                  onClick={() => handleSelectConvergentMode('land')}
+                  className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${convergentMode === 'land'
+                    ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white border-2 border-yellow-300 shadow-[0_2px_0_#78350f] scale-105'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-amber-200/80 border border-amber-700/50 hover:text-amber-100'
+                    }`}
+                  title="Kondisi 1 (Daratan): Dua lempeng benua bertabrakan, lempeng terlipat membentuk pegunungan megah"
+                >
+                  <span>DARATAN (TUMBUKAN BENUA)</span>
+                  {convergentMode === 'land' && (
+                    <span className="text-[9px] bg-amber-950/90 text-yellow-300 px-1.5 py-0.5 rounded font-bold uppercase">
+                      AKTIF
+                    </span>
+                  )}
+                </button>
+
+                {/* Kondisi 2: Lautan & Pantai (Palung Samudra) */}
+                <button
+                  onClick={() => handleSelectConvergentMode('ocean')}
+                  className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${convergentMode === 'ocean'
+                    ? 'bg-gradient-to-r from-cyan-600 to-cyan-700 text-white border-2 border-cyan-200 shadow-[0_2px_0_#0e7490] scale-105'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-cyan-200/80 border border-cyan-700/50 hover:text-cyan-100'
+                    }`}
+                  title="Kondisi 2 (Lautan & Pantai): Lempeng samudra menunjam membentuk palung laut, lempeng benua kanan berupa pantai"
+                >
+                  <span>LAUTAN & PANTAI (PALUNG)</span>
+                  {convergentMode === 'ocean' && (
+                    <span className="text-[9px] bg-cyan-950/90 text-cyan-200 px-1.5 py-0.5 rounded font-bold uppercase">
+                      AKTIF
+                    </span>
+                  )}
+                </button>
+
+                {/* Tombol Replay Animasi */}
+                <button
+                  onClick={() => {
+                    if (gameRef.current) {
+                      triggerConvergentSimulation(gameRef.current);
+                      showToast(
+                        convergentMode === 'land'
+                          ? 'Memutar ulang animasi tumbukan dua lempeng benua & pembentukan gunung...'
+                          : 'Memutar ulang animasi subduksi lempeng samudra & pembentukan palung...'
+                      );
+                    }
+                  }}
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950/95 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-sans font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#451a03] whitespace-nowrap"
+                  title="Ulangi Animasi Tumbukan Lempeng Konvergen"
+                >
+                  <span className="text-amber-400 font-bold">↺</span>
+                  <span>ULANG</span>
+                </button>
+              </div>
+            )}
+
+            {/* 3. Tombol Ulang Animasi untuk Batas Divergen (Area 6 / Zone Index 5) - DI POJOK KANAN ATAS */}
+            {hudData.zoneIndex === 5 && (
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-rose-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
+                <button
+                  onClick={() => {
+                    if (gameRef.current) {
+                      triggerDivergentSimulation(gameRef.current);
+                      showToast('Memutar ulang animasi pemekaran lempeng & magma...');
+                    }
+                  }}
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-rose-950/95 hover:bg-rose-900 text-rose-200 border-2 border-rose-600/80 font-sans font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#4c0519] whitespace-nowrap"
+                  title="Ulangi Animasi Pemekaran Lempeng & Pembekuan Magma"
+                >
+                  <span className="text-rose-400 font-bold">↺</span>
+                  <span>ULANG ANIMASI</span>
+                </button>
+              </div>
+            )}
+
+            {/* 4. Tombol Replay Simulasi Tektonik untuk Batas Transform (Area 8 / Zone Index 7) - DI POJOK KANAN ATAS */}
+            {hudData.zoneIndex === 7 && (
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
+                <button
+                  onClick={() => {
+                    if (gameRef.current) {
+                      triggerTransformSimulation(gameRef.current);
+                      showToast('Memutar ulang pergeseran mendatar Sesar San Andreas...');
+                    }
+                  }}
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950/95 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-pixel-title text-[10px] sm:text-xs flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#451a03] whitespace-nowrap"
+                  title="Putar Ulang Animasi Sesar San Andreas"
+                >
+                  <span className="text-amber-400 font-bold">↻</span>
+                  <span>ULANG ANIMASI</span>
+                </button>
               </div>
             )}
           </div>
-        </div>
 
       </div>
 
@@ -1354,16 +1522,16 @@ export default function EarthDiveGame() {
         </div>
       )}
 
-      {/* ── 5. DYNAMIC FLOATING INTERACTION PROMPT (BOTTOM CENTER) ── */}
-      {hudData.nearObjectType && (
-        <div className="absolute bottom-28 sm:bottom-32 md:bottom-22 left-1/2 -translate-x-1/2 z-20 pointer-events-auto select-none">
+      {/* ── 5. DYNAMIC FLOATING INTERACTION PROMPT (BOTTOM CENTER) 100% PERSIS LEVEL 2 ── */}
+      {hudData.nearObjectType && !isPaused && (
+        <div className="absolute bottom-12 sm:bottom-14 left-1/2 -translate-x-1/2 z-20 pointer-events-auto select-none animate-bounce w-[min(94vw,860px)] px-2">
           {hudData.nearObjectType === 'portal_down' && (
             <button
               onClick={handleDiveClick}
-              className="bg-emerald-700 hover:bg-emerald-600 text-emerald-100 border-3 border-emerald-400 px-4 py-2 rounded-2xl font-pixel text-xs tracking-wide shadow-[0_6px_0_#064e3b] flex items-center gap-2 cursor-pointer animate-pulse active:translate-y-1"
+              className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-sm sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans cursor-pointer hover:border-amber-300 active:scale-95 transition-all"
             >
-              <PixelIcon name="pickaxe" size={14} />
-              <span>
+              <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+              <span className="uppercase tracking-wide font-black">
                 {hudData.zoneIndex === 4
                   ? 'TEKAN [E] / KLIK UNTUK MENUJU KE BATAS DIVERGEN'
                   : hudData.zoneIndex === 5
@@ -1374,17 +1542,16 @@ export default function EarthDiveGame() {
                         ? 'TEKAN [E] / KLIK UNTUK MEMASUKI KAPSUL EVAKUASI AKHIR (SELESAIKAN LEVEL 1)'
                         : 'TEKAN [E] / KLIK UNTUK TURUN MENUJU LAPISAN SELANJUTNYA'}
               </span>
-              <span>▼</span>
             </button>
           )}
 
           {hudData.nearObjectType === 'portal_up' && (
             <button
               onClick={handleAscendClick}
-              className="bg-cyan-800 hover:bg-cyan-700 text-cyan-100 border-3 border-cyan-400 px-4 py-2 rounded-2xl font-pixel text-xs tracking-wide shadow-[0_6px_0_#0e7490] flex items-center gap-2 cursor-pointer animate-pulse active:translate-y-1"
+              className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-sm sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans cursor-pointer hover:border-amber-300 active:scale-95 transition-all"
             >
-              <span className="font-bold">▲</span>
-              <span>
+              <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+              <span className="uppercase tracking-wide font-black">
                 {hudData.zoneIndex === 5
                   ? 'TEKAN [E] / KLIK UNTUK KEMBALI KE INTI DALAM'
                   : hudData.zoneIndex === 6
@@ -1397,23 +1564,29 @@ export default function EarthDiveGame() {
           )}
 
           {hudData.nearObjectType === 'discovery' && (
-            <div className="bg-amber-900/90 text-amber-100 border-2 border-amber-400 px-3.5 py-1.5 rounded-xl font-pixel text-xs shadow-lg flex items-center gap-2">
-              <PixelIcon name="search" size={13} />
-              <span>TEKAN [E] / KLIK UNTUK MEMERIKSA TEMUAN GEOLOGIS</span>
+            <div className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-sm sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans">
+              <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+              <span className="uppercase tracking-wide font-black">
+                TEKAN [E] / KLIK UNTUK MEMERIKSA TEMUAN GEOLOGIS
+              </span>
             </div>
           )}
 
           {hudData.nearObjectType === 'npc' && (
-            <div className="bg-slate-950/95 text-amber-300 border-2 border-amber-500 px-4 py-2 rounded-2xl font-pixel text-xs shadow-[0_4px_0_#451a03] flex items-center gap-2 animate-bounce">
-              <PixelIcon name="message" size={13} className="text-amber-400" />
-              <span>TEKAN [E] / KLIK UNTUK BERBICARA DENGAN PENELITI</span>
+            <div className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-sm sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans">
+              <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+              <span className="uppercase tracking-wide font-black">
+                TEKAN [E] / KLIK UNTUK BERBICARA DENGAN {hudData.nearNpcName ? hudData.nearNpcName.toUpperCase() : 'PENELITI'}
+              </span>
             </div>
           )}
 
           {hudData.nearObjectType === 'challenge_gate' && (
-            <div className="bg-rose-900/90 text-rose-100 border-2 border-rose-400 px-3.5 py-1.5 rounded-xl font-pixel text-xs shadow-lg flex items-center gap-2">
-              <PixelIcon name="lock" size={13} />
-              <span>TEKAN [E] / KLIK UNTUK MENGHADAPI TANTANGAN GERBANG</span>
+            <div className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-sm sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans">
+              <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+              <span className="uppercase tracking-wide font-black">
+                TEKAN [E] / KLIK UNTUK MENGHADAPI TANTANGAN GERBANG
+              </span>
             </div>
           )}
         </div>
@@ -1425,6 +1598,12 @@ export default function EarthDiveGame() {
           <>
             <span>W A S D / Panah (Gerak 4 Arah)</span>
             <span>[Spasi] Lompat Celah Sesar</span>
+            <span>[E] Interaksi</span>
+          </>
+        ) : hudData.zoneIndex === 5 ? (
+          <>
+            <span>W A S D / Panah (Renang 4 Arah)</span>
+            <span>[Spasi] Renang Naik</span>
             <span>[E] Interaksi</span>
           </>
         ) : (
@@ -1441,14 +1620,14 @@ export default function EarthDiveGame() {
       {(isTouchDevice || (typeof window !== 'undefined' && window.innerWidth <= 1024)) && (
         <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between pointer-events-none z-30 select-none">
           {/* Left 4-Way D-Pad (Atas, Bawah, Kiri, Kanan) */}
-          <div className="flex flex-col items-center pointer-events-auto bg-slate-950/75 p-1 sm:p-1.5 rounded-2xl border-2 border-slate-700/90 backdrop-blur-md shadow-[0_4px_0_#0f172a]">
+          <div className="flex flex-col items-center pointer-events-auto">
             {/* Up button */}
             <button
               onPointerDown={() => handleMobileBtnDown('up')}
               onPointerUp={() => handleMobileBtnUp('up')}
               onPointerLeave={() => handleMobileBtnUp('up')}
               className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
-              title={hudData.zoneIndex === 7 ? "Bergerak ke Atas (Utara)" : "Lompat ke Atas"}
+              title={hudData.zoneIndex === 7 ? "Bergerak ke Atas (Utara)" : hudData.zoneIndex === 5 ? "Berenang ke Atas" : "Lompat ke Atas"}
             >
               ▲
             </button>
@@ -1480,24 +1659,24 @@ export default function EarthDiveGame() {
               onPointerUp={() => handleMobileBtnUp('down')}
               onPointerLeave={() => handleMobileBtnUp('down')}
               className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
-              title={hudData.zoneIndex === 7 ? "Bergerak ke Bawah (Selatan)" : "Turun / Jongkok"}
+              title={hudData.zoneIndex === 7 ? "Bergerak ke Bawah (Selatan)" : hudData.zoneIndex === 5 ? "Berenang ke Bawah / Menyelam" : "Turun / Jongkok"}
             >
               ▼
             </button>
           </div>
 
           {/* Right Action Buttons: Dedicated Jump (LONCAT) & Interact (AKSI) */}
-          <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto bg-slate-950/75 p-1.5 sm:p-2 rounded-2xl border-2 border-slate-700/90 backdrop-blur-md shadow-[0_4px_0_#0f172a]">
-            {/* Tombol Loncat: Di area transform melompati celah, di area platformer melompat tinggi */}
+          <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
+            {/* Tombol Loncat: Di area transform melompati celah, di area divergent renang naik, di platformer melompat tinggi */}
             <button
               onPointerDown={() => handleMobileBtnDown('jump')}
               onPointerUp={() => handleMobileBtnUp('jump')}
               onPointerLeave={() => handleMobileBtnUp('jump')}
               className="w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-blue-700 to-blue-900 active:from-blue-600 active:to-blue-800 border-2 border-blue-400 text-blue-100 font-pixel text-[11px] sm:text-xs flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#1e3a8a] active:translate-y-0.5 cursor-pointer"
-              title="Lompat"
+              title={hudData.zoneIndex === 5 ? "Berenang Naik" : "Lompat"}
             >
               <span className="text-sm font-bold leading-none">▲</span>
-              <span className="text-[9px] font-pixel-title mt-0.5 tracking-wider">LONCAT</span>
+              <span className="text-[9px] font-pixel-title mt-0.5 tracking-wider">{hudData.zoneIndex === 5 ? "RENANG" : "LONCAT"}</span>
             </button>
 
             {/* Tombol Interaksi [E] */}
@@ -1539,21 +1718,33 @@ export default function EarthDiveGame() {
             depthRange={isBoundary ? '' : activeDiscovery.strata.depthRange}
             tempRange={isBoundary ? '' : activeDiscovery.strata.tempRange}
             composition={activeDiscovery.strata.composition}
-            onClose={() => setActiveDiscovery(null)}
+            onClose={() => {
+              const game = gameRef.current;
+              if (game && activeDiscovery) {
+                const ill = activeDiscovery.discovery.illustrationType;
+                if (ill === 'transform-sanandreas') {
+                  game.discoveredPoints.add('trans_sanandreas');
+                  game.discoveredPoints.add('trans_disc2');
+                  game.discoveredPoints.add('disc_16');
+                  saveEarthDiveProgress(game, activeUserId);
+                }
+              }
+              setActiveDiscovery(null);
+            }}
           />
         );
       })()}
 
       {/* ── POPUP PERINGATAN: AKSES TURUN TERKUNCI (TANTANGAN GERBANG BELUM SELESAI) ── */}
       {isGateLockedModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
-          <div className="relative w-full max-w-md bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl p-5 sm:p-6 shadow-[0_12px_0_#1c0d02] text-[#451a03] font-pixel text-center">
-            <h3 className="text-sm sm:text-base font-pixel-title text-rose-950 font-bold mb-2.5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
+          <div className="relative w-full max-w-xl bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-[0_16px_0_#1c0d02] text-[#451a03] font-pixel text-center">
+            <h3 className="text-base sm:text-lg md:text-xl font-pixel-title text-rose-950 font-bold mb-3">
               AKSES TURUN TERKUNCI!
             </h3>
 
-            <p className="text-xs sm:text-sm text-[#451a03] leading-relaxed mb-5 font-pixel">
-              Jalur turun menuju lapisan selanjutnya masih terkunci rapat. Kamu harus menyelesaikan tantangan dari peneliti di area ini terlebih dahulu untuk membuka akses turun!
+            <p className="font-sans text-base sm:text-lg md:text-xl font-bold text-[#351505] leading-relaxed mb-6">
+              Jalur menuju area selanjutnya masih terkunci rapat. Kamu harus menyelesaikan tantangan dari Bu Tyas di area ini terlebih dahulu untuk membuka akses turun!
             </p>
 
             <button
@@ -1561,7 +1752,7 @@ export default function EarthDiveGame() {
                 retroAudio.playSelect();
                 setIsGateLockedModalOpen(false);
               }}
-              className="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-xs font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
+              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-xs sm:text-sm md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
             >
               <span>SIAP, SELESAIKAN TANTANGAN PENELITI DULU</span>
             </button>
@@ -1571,14 +1762,14 @@ export default function EarthDiveGame() {
 
       {/* ── POPUP PERINGATAN: TEMUAN GEOLOGIS BELUM SELESAI ── */}
       {discoveryWarning && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
-          <div className="relative w-full max-w-md bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl p-5 sm:p-6 shadow-[0_12px_0_#1c0d02] text-[#451a03] font-pixel text-center">
-            <h3 className="text-sm sm:text-base font-pixel-title text-amber-950 font-bold mb-2.5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
+          <div className="relative w-full max-w-xl bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-[0_16px_0_#1c0d02] text-[#451a03] font-pixel text-center">
+            <h3 className="text-base sm:text-lg md:text-xl font-pixel-title text-amber-950 font-bold mb-3">
               TEMUAN GEOLOGIS BELUM SELESAI!
             </h3>
 
-            <p className="text-xs sm:text-sm text-[#451a03] leading-relaxed mb-5 font-pixel">
-              Kamu harus mengamati dan membaca seluruh Temuan Geologis di area ini (<span className="font-bold text-amber-800">{discoveryWarning.read}/{discoveryWarning.total}</span>) terlebih dahulu sebelum membuka Tantangan Gerbang!
+            <p className="font-sans text-base sm:text-lg md:text-xl font-bold text-[#351505] leading-relaxed mb-6">
+              Kamu harus mengamati dan membaca seluruh Temuan Geologis di area ini (<span className="text-amber-800 font-extrabold">{discoveryWarning.read}/{discoveryWarning.total}</span>) terlebih dahulu sebelum membuka Tantangan Gerbang!
             </p>
 
             <button
@@ -1586,7 +1777,7 @@ export default function EarthDiveGame() {
                 retroAudio.playSelect();
                 setDiscoveryWarning(null);
               }}
-              className="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-xs font-pixel-title cursor-pointer active:translate-y-0.5"
+              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-xs sm:text-sm md:text-base font-pixel-title cursor-pointer active:translate-y-0.5"
             >
               SIAP, AMATI TEMUAN DULU
             </button>
@@ -1595,8 +1786,8 @@ export default function EarthDiveGame() {
       )}
 
       {activeChallenge && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-xl bg-amber-50 border-4 border-amber-950 rounded-2xl p-4 shadow-[0_12px_0_#231206] max-h-[95vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-3xl sm:max-w-4xl bg-amber-50 border-4 border-amber-950 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-[0_16px_0_#231206] max-h-[96vh] overflow-y-auto">
             <Wordle
               customWords={activeChallenge.words}
               targetCount={activeChallenge.targetCount ?? 3}
@@ -1639,14 +1830,14 @@ export default function EarthDiveGame() {
           <div className="relative bg-[#fef3c7] border-3 sm:border-4 border-[#451a03] rounded-2xl p-3.5 sm:p-4 shadow-[0_8px_0_#1c0d02] text-[#451a03]">
             {/* Header */}
             <div className="flex items-center gap-1.5 border-b-2 border-[#78350f] pb-1.5 mb-2">
-              <PixelIcon name="clipboard" size={14} className="text-[#b45309] shrink-0" />
-              <span className="font-pixel-title text-[9px] sm:text-[10px] text-[#b45309] tracking-widest uppercase font-bold">
+              <PixelIcon name="clipboard" size={16} className="text-[#b45309] shrink-0" />
+              <span className="font-sans text-[11px] sm:text-xs text-[#b45309] tracking-wider uppercase font-bold">
                 CATATAN EKSPEDISI GEOLOGI
               </span>
             </div>
 
             {/* Content text */}
-            <p className="font-pixel text-[11px] sm:text-xs text-[#291305] leading-relaxed font-medium whitespace-pre-line">
+            <p className="font-sans text-xs sm:text-sm md:text-[14px] text-[#291305] leading-relaxed font-semibold whitespace-pre-line">
               {inWorldSign.text}
             </p>
 
@@ -1689,6 +1880,62 @@ export default function EarthDiveGame() {
         </div>
       )}
 
+      {/* ── MODAL TOKO BAJU PELINDUNG (SUIT MERCHANT) ── */}
+      {activeSuitMerchant && (
+        <SuitMerchantModal
+          isOpen={activeSuitMerchant !== null}
+          merchantNpc={activeSuitMerchant}
+          suitType={(activeSuitMerchant.data?.suitType as string) || 'mantle_suit'}
+          playerCrystals={gameRef.current?.collectedCrystals.size ?? 0}
+          hasPurchased={gameRef.current?.purchasedSuits.has((activeSuitMerchant.data?.suitType as string) || '') ?? false}
+          isEquipped={gameRef.current?.player.equippedSuit === ((activeSuitMerchant.data?.suitType as string) || '')}
+          onBuyAndEquip={handleBuyAndEquipSuit}
+          onClose={() => setActiveSuitMerchant(null)}
+        />
+      )}
+
+      {/* ── POPUP PERINGATAN: WAJIB MENGGUNAKAN BAJU PELINDUNG ── */}
+      {suitWarningModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md select-none animate-fadeIn font-sans">
+          <div className="relative w-full max-w-2xl sm:max-w-3xl bg-gradient-to-b from-slate-900 via-slate-950 to-amber-950 border-3 sm:border-4 border-amber-500 rounded-3xl p-7 sm:p-10 shadow-[0_0_50px_rgba(245,158,11,0.5)] text-white text-center overflow-hidden">
+            {/* Background Grid Pattern */}
+            <div
+              className="absolute inset-0 opacity-10 pointer-events-none"
+              style={{
+                backgroundImage:
+                  'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
+                backgroundSize: '24px 24px',
+              }}
+            />
+
+            <div className="relative z-10 w-20 h-20 mx-auto mb-4 rounded-2xl bg-amber-500/25 border-3 border-amber-400 flex items-center justify-center text-4xl sm:text-5xl shadow-lg">
+              ⚠️
+            </div>
+
+            <h3 className="relative z-10 text-2xl sm:text-3xl font-black text-amber-300 uppercase tracking-wide mb-3 font-mono drop-shadow-md">
+              PERINGATAN BAHAYA LINGKUNGAN EKSTREM!
+            </h3>
+
+            <div className="relative z-10 my-4 px-6 py-3.5 rounded-2xl bg-slate-950/80 border-2 border-amber-500/40 text-sm sm:text-base font-extrabold text-amber-200 shadow-inner">
+              Dibutuhkan: <span className="text-white underline font-black">{suitWarningModal.suitName}</span>
+            </div>
+
+            <p className="relative z-10 text-base sm:text-lg text-slate-100 leading-relaxed mb-8 font-medium max-w-2xl mx-auto">
+              {suitWarningModal.reason}
+            </p>
+
+            <button
+              onClick={() => {
+                retroAudio.playSelect();
+                setSuitWarningModal(null);
+              }}
+              className="relative z-10 w-full py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-base sm:text-lg border-2 border-yellow-200 shadow-[0_6px_25px_rgba(245,158,11,0.6)] transition-all cursor-pointer hover:scale-[1.02] active:scale-95 tracking-wide"
+            >
+              MENGERTI, BELI BAJU PELINDUNG DULU
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

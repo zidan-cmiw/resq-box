@@ -9,6 +9,11 @@ import type { PlayerState } from './player';
 export interface NpcState {
   id: string;
   npcType:
+    | 'zidane'
+    | 'zahra'
+    | 'ican'
+    | 'lintang'
+    | 'bu_tyas'
     | 'prof_raditya'
     | 'kapten_maya'
     | 'dr_gea'
@@ -53,113 +58,123 @@ export interface NpcState {
   stateTimer: number;
   isTalking: boolean;
   animFrame: number;
+  isFleeing?: boolean;
+  hasMaterial?: boolean;
+  discoveryKey?: string;
 }
 
 export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
   const map = new Map<string, NpcState>();
 
   if (zoneIndex === 0) {
-    // ── ZONA 0: PERMUKAAN BUMI ──
-    // NPC 1: Prof. Raditya (Dekat Base Awal, px: 180)
-    map.set('npc_raditya', {
-      id: 'npc_raditya',
-      npcType: 'prof_raditya',
-      name: 'Prof. Raditya',
-      dialogueId: 'prof_raditya_dialogue',
+    // ── ZONA 0: PERMUKAAN BUMI (TIM EKSPEDISI RESQ-BOX) ──
+    const zidane: NpcState = {
+      id: 'z0_npc_zidane',
+      npcType: 'zidane',
+      name: 'Zidane',
+      dialogueId: 'z0_zidane_dialogue',
       x: 180,
       y: 360,
       anchorX: 180,
-      patrolRange: 42,
+      patrolRange: 32,
       speed: 0.45,
       dir: 'right',
       state: 'idle_right',
       stateTimer: 60,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(zidane.id, zidane);
+    map.set('npc_raditya', zidane);
 
-    // NPC 2: Kapten Maya (Di atas jembatan kayu / dekat rig pemboran, px: 920)
-    map.set('npc_maya', {
-      id: 'npc_maya',
-      npcType: 'kapten_maya',
-      name: 'Kapten Maya',
-      dialogueId: 'kapten_maya_dialogue',
-      x: 920,
+    const zahra: NpcState = {
+      id: 'z0_npc_zahra',
+      npcType: 'zahra',
+      name: 'Zahra',
+      dialogueId: 'z0_zahra_dialogue',
+      x: 900,
       y: 325,
-      anchorX: 920,
-      patrolRange: 38,
-      speed: 0.45,
-      dir: 'left',
-      state: 'idle_left',
-      stateTimer: 75,
+      anchorX: 900,
+      patrolRange: 26,
+      speed: 0.35,
+      dir: 'right',
+      state: 'idle_right',
+      stateTimer: 80,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(zahra.id, zahra);
+    map.set('npc_maya', zahra);
+    map.set('z0_npc_lintang', zahra);
   } else if (zoneIndex === 1) {
     // ── ZONA 1: KERAK BUMI / LITOSFER ──
-    // NPC 1: Dr. Gea (Ahli Mineralogi Kerak, di lereng awal dekat portal turun)
-    map.set('npc_gea', {
-      id: 'npc_gea',
-      npcType: 'dr_gea',
-      name: 'Dr. Gea',
-      dialogueId: 'dr_gea_dialogue',
+    const zidane: NpcState = {
+      id: 'z1_npc_zidane',
+      npcType: 'zidane',
+      name: 'Zidane',
+      dialogueId: 'z1_zidane_dialogue',
       x: 170,
       y: 370,
       anchorX: 170,
-      patrolRange: 35,
+      patrolRange: 30,
       speed: 0.4,
       dir: 'right',
       state: 'idle_right',
       stateTimer: 65,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(zidane.id, zidane);
+    map.set('npc_gea', zidane);
 
-    // NPC 2: Prof. Andini (Peneliti Komparasi Kerak, di atas teras litosfer)
-    map.set('npc_andini', {
-      id: 'npc_andini',
-      npcType: 'prof_andini',
-      name: 'Prof. Andini',
-      dialogueId: 'prof_andini_dialogue',
+    const lintang: NpcState = {
+      id: 'z1_npc_lintang',
+      npcType: 'lintang',
+      name: 'Lintang',
+      dialogueId: 'z1_lintang_dialogue',
       x: 540,
       y: 295,
       anchorX: 540,
-      patrolRange: 28,
+      patrolRange: 24,
       speed: 0.35,
       dir: 'left',
       state: 'idle_left',
       stateTimer: 80,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'crust_disc_compare',
+    };
+    map.set(lintang.id, lintang);
+    map.set('npc_andini', lintang);
 
-    // NPC 3: Inspektur Budi (Geofisikawan Stasiun Moho, dekat sesar patahan)
-    map.set('npc_budi', {
-      id: 'npc_budi',
-      npcType: 'inspektur_budi',
-      name: 'Inspektur Budi',
-      dialogueId: 'inspektur_budi_dialogue',
+    const ican: NpcState = {
+      id: 'z1_npc_ican',
+      npcType: 'ican',
+      name: 'Ican',
+      dialogueId: 'z1_ican_dialogue',
       x: 860,
       y: 360,
       anchorX: 860,
-      patrolRange: 32,
+      patrolRange: 26,
       speed: 0.4,
       dir: 'right',
       state: 'idle_right',
       stateTimer: 70,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(ican.id, ican);
+    map.set('npc_budi', ican);
 
-    // NPC 4: Komandan Hendra (Kepala Penjaga Gerbang Seismik Moho)
-    map.set('npc_hendra', {
-      id: 'npc_hendra',
-      npcType: 'komandan_hendra',
-      name: 'Komandan Hendra',
-      dialogueId: 'komandan_hendra_dialogue',
-      x: 1060,
+    const buTyas: NpcState = {
+      id: 'z1_npc_bu_tyas',
+      npcType: 'bu_tyas',
+      name: 'Bu Tyas',
+      dialogueId: 'z1_bu_tyas_dialogue',
+      x: 1080,
       y: 320,
-      anchorX: 1060,
+      anchorX: 1080,
       patrolRange: 16,
       speed: 0.3,
       dir: 'left',
@@ -167,36 +182,117 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 90,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(buTyas.id, buTyas);
+    map.set('npc_hendra', buTyas);
+
+    const teknisiJoko: NpcState = {
+      id: 'crust_suit_merchant',
+      npcType: 'petugas_joko',
+      name: 'Teknisi Joko',
+      dialogueId: 'crust_merchant_dialogue',
+      x: 1150,
+      y: 340,
+      anchorX: 1150,
+      patrolRange: 8,
+      speed: 0.25,
+      dir: 'left',
+      state: 'idle_left',
+      stateTimer: 100,
+      isTalking: false,
+      animFrame: 0,
+    };
+    map.set(teknisiJoko.id, teknisiJoko);
   } else if (zoneIndex === 2) {
     // ── ZONA 2: MANTEL BUMI ──
-    // NPC 1: Dr. Bayu (Ahli Geologi Mantel, px: 260)
-    map.set('npc_bayu', {
-      id: 'npc_bayu',
-      npcType: 'dr_bayu',
-      name: 'Dr. Bayu',
-      dialogueId: 'dr_bayu_dialogue',
-      x: 260,
+    const zahra: NpcState = {
+      id: 'z2_npc_zahra',
+      npcType: 'zahra',
+      name: 'Zahra',
+      dialogueId: 'z2_zahra_dialogue',
+      x: 240,
       y: 320,
-      anchorX: 260,
-      patrolRange: 20,
+      anchorX: 240,
+      patrolRange: 18,
       speed: 0.35,
       dir: 'right',
       state: 'idle_right',
-      stateTimer: 80,
+      stateTimer: 65,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'mantle_disc1',
+    };
+    map.set(zahra.id, zahra);
+    map.set('npc_sarah', zahra);
 
-    // NPC 2: Prof. Sarah (Peneliti Arus Panas Mantel, px: 330)
-    map.set('npc_sarah', {
-      id: 'npc_sarah',
-      npcType: 'prof_sarah',
-      name: 'Prof. Sarah',
-      dialogueId: 'prof_sarah_dialogue',
-      x: 330,
+    const lintang: NpcState = {
+      id: 'z2_npc_lintang',
+      npcType: 'lintang',
+      name: 'Lintang',
+      dialogueId: 'z2_lintang_dialogue',
+      x: 700,
       y: 320,
-      anchorX: 330,
+      anchorX: 700,
+      patrolRange: 18,
+      speed: 0.35,
+      dir: 'left',
+      state: 'idle_left',
+      stateTimer: 75,
+      isTalking: false,
+      animFrame: 0,
+      hasMaterial: true,
+      discoveryKey: 'mantle_disc2',
+    };
+    map.set(lintang.id, lintang);
+    map.set('npc_danang', lintang);
+
+    const buTyas: NpcState = {
+      id: 'z2_npc_bu_tyas',
+      npcType: 'bu_tyas',
+      name: 'Bu Tyas',
+      dialogueId: 'z2_bu_tyas_dialogue',
+      x: 1130,
+      y: 320,
+      anchorX: 1130,
+      patrolRange: 14,
+      speed: 0.3,
+      dir: 'left',
+      state: 'idle_left',
+      stateTimer: 90,
+      isTalking: false,
+      animFrame: 0,
+    };
+    map.set(buTyas.id, buTyas);
+    map.set('npc_surya', buTyas);
+
+    const teknisiRudi: NpcState = {
+      id: 'mantle_suit_merchant',
+      npcType: 'petugas_rudi',
+      name: 'Teknisi Rudi',
+      dialogueId: 'mantle_merchant_dialogue',
+      x: 1175,
+      y: 320,
+      anchorX: 1175,
+      patrolRange: 8,
+      speed: 0.25,
+      dir: 'left',
+      state: 'idle_left',
+      stateTimer: 100,
+      isTalking: false,
+      animFrame: 0,
+    };
+    map.set(teknisiRudi.id, teknisiRudi);
+  } else if (zoneIndex === 3) {
+    // ── ZONA 3: INTI LUAR (OUTER CORE) ──
+    const zahra: NpcState = {
+      id: 'z3_npc_zahra',
+      npcType: 'zahra',
+      name: 'Zahra',
+      dialogueId: 'z3_zahra_dialogue',
+      x: 380,
+      y: 350,
+      anchorX: 380,
       patrolRange: 24,
       speed: 0.35,
       dir: 'right',
@@ -204,17 +300,79 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 65,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'oc_disc1',
+    };
+    map.set(zahra.id, zahra);
+    map.set('npc_ratna', zahra);
 
-    // NPC 3: Dr. Danang (Ahli Batuan Mantel, px: 730)
-    map.set('npc_danang', {
-      id: 'npc_danang',
-      npcType: 'dr_danang',
-      name: 'Dr. Danang',
-      dialogueId: 'dr_danang_dialogue',
-      x: 730,
-      y: 320,
-      anchorX: 730,
+    const lintang: NpcState = {
+      id: 'z3_npc_lintang',
+      npcType: 'lintang',
+      name: 'Lintang',
+      dialogueId: 'z3_lintang_dialogue',
+      x: 780,
+      y: 350,
+      anchorX: 780,
+      patrolRange: 24,
+      speed: 0.35,
+      dir: 'left',
+      state: 'idle_left',
+      stateTimer: 80,
+      isTalking: false,
+      animFrame: 0,
+      hasMaterial: true,
+      discoveryKey: 'oc_disc2',
+    };
+    map.set(lintang.id, lintang);
+    map.set('npc_aris', lintang);
+
+    const buTyas: NpcState = {
+      id: 'z3_npc_bu_tyas',
+      npcType: 'bu_tyas',
+      name: 'Bu Tyas',
+      dialogueId: 'z3_bu_tyas_dialogue',
+      x: 1080,
+      y: 350,
+      anchorX: 1080,
+      patrolRange: 18,
+      speed: 0.3,
+      dir: 'left',
+      state: 'idle_left',
+      stateTimer: 90,
+      isTalking: false,
+      animFrame: 0,
+    };
+    map.set(buTyas.id, buTyas);
+    map.set('npc_teguh', buTyas);
+
+    const teknisiDian: NpcState = {
+      id: 'oc_suit_merchant',
+      npcType: 'petugas_dian',
+      name: 'Teknisi Dian',
+      dialogueId: 'oc_merchant_dialogue',
+      x: 1140,
+      y: 350,
+      anchorX: 1140,
+      patrolRange: 8,
+      speed: 0.25,
+      dir: 'left',
+      state: 'idle_left',
+      stateTimer: 100,
+      isTalking: false,
+      animFrame: 0,
+    };
+    map.set(teknisiDian.id, teknisiDian);
+  } else if (zoneIndex === 4) {
+    // ── ZONA 4: INTI DALAM (INNER CORE) ──
+    const zahra: NpcState = {
+      id: 'z4_npc_zahra',
+      npcType: 'zahra',
+      name: 'Zahra',
+      dialogueId: 'z4_zahra_dialogue',
+      x: 330,
+      y: 310,
+      anchorX: 330,
       patrolRange: 22,
       speed: 0.35,
       dir: 'right',
@@ -222,32 +380,38 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 70,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'ic_disc1',
+    };
+    map.set(zahra.id, zahra);
+    map.set('npc_lestari', zahra);
 
-    // NPC 4: Petugas Rudi (Pengawas Suhu Mantel Bawah, px: 990)
-    map.set('npc_rudi', {
-      id: 'npc_rudi',
-      npcType: 'petugas_rudi',
-      name: 'Petugas Rudi',
-      dialogueId: 'petugas_rudi_dialogue',
-      x: 990,
-      y: 330,
-      anchorX: 990,
-      patrolRange: 20,
+    const lintang: NpcState = {
+      id: 'z4_npc_lintang',
+      npcType: 'lintang',
+      name: 'Lintang',
+      dialogueId: 'z4_lintang_dialogue',
+      x: 730,
+      y: 310,
+      anchorX: 730,
+      patrolRange: 22,
       speed: 0.35,
       dir: 'left',
       state: 'idle_left',
-      stateTimer: 80,
+      stateTimer: 75,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'ic_disc2',
+    };
+    map.set(lintang.id, lintang);
+    map.set('npc_farhan', lintang);
 
-    // NPC 5: Komandan Surya (Penjaga Pintu Inti Luar, px: 1100)
-    map.set('npc_surya', {
-      id: 'npc_surya',
-      npcType: 'komandan_surya',
-      name: 'Komandan Surya',
-      dialogueId: 'komandan_surya_dialogue',
+    const buTyas: NpcState = {
+      id: 'z4_npc_bu_tyas',
+      npcType: 'bu_tyas',
+      name: 'Bu Tyas',
+      dialogueId: 'z4_bu_tyas_dialogue',
       x: 1100,
       y: 330,
       anchorX: 1100,
@@ -258,203 +422,34 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 90,
       isTalking: false,
       animFrame: 0,
-    });
-  } else if (zoneIndex === 3) {
-    // ── ZONA 3: INTI LUAR ──
-    // NPC 1: Dr. Fajar (Ahli Geologi Inti Luar, px: 270)
-    map.set('npc_fajar', {
-      id: 'npc_fajar',
-      npcType: 'dr_fajar',
-      name: 'Dr. Fajar',
-      dialogueId: 'dr_fajar_dialogue',
-      x: 270,
-      y: 310,
-      anchorX: 270,
-      patrolRange: 20,
-      speed: 0.35,
-      dir: 'right',
-      state: 'idle_right',
-      stateTimer: 80,
-      isTalking: false,
-      animFrame: 0,
-    });
+    };
+    map.set(buTyas.id, buTyas);
+    map.set('npc_bintang', buTyas);
 
-    // NPC 2: Prof. Ratna (Peneliti Logam Cair Inti Luar, px: 330)
-    map.set('npc_ratna', {
-      id: 'npc_ratna',
-      npcType: 'prof_ratna',
-      name: 'Prof. Ratna',
-      dialogueId: 'prof_ratna_dialogue',
-      x: 330,
-      y: 310,
-      anchorX: 330,
-      patrolRange: 22,
-      speed: 0.35,
-      dir: 'right',
-      state: 'idle_right',
-      stateTimer: 70,
-      isTalking: false,
-      animFrame: 0,
-    });
-
-    // NPC 3: Dr. Aris (Ahli Medan Magnet Bumi, px: 730)
-    map.set('npc_aris', {
-      id: 'npc_aris',
-      npcType: 'dr_aris',
-      name: 'Dr. Aris',
-      dialogueId: 'dr_aris_dialogue',
-      x: 730,
-      y: 310,
-      anchorX: 730,
-      patrolRange: 24,
-      speed: 0.35,
-      dir: 'right',
-      state: 'idle_right',
-      stateTimer: 65,
-      isTalking: false,
-      animFrame: 0,
-    });
-
-    // NPC 4: Petugas Joko (Pengawas Radiasi Magnetik, px: 1020)
-    map.set('npc_joko', {
-      id: 'npc_joko',
-      npcType: 'petugas_joko',
-      name: 'Petugas Joko',
-      dialogueId: 'petugas_joko_dialogue',
-      x: 1020,
+    const teknisiArya: NpcState = {
+      id: 'ic_suit_merchant',
+      npcType: 'komandan_arya',
+      name: 'Teknisi Arya',
+      dialogueId: 'ic_merchant_dialogue',
+      x: 1160,
       y: 330,
-      anchorX: 1020,
-      patrolRange: 18,
-      speed: 0.35,
+      anchorX: 1160,
+      patrolRange: 8,
+      speed: 0.25,
       dir: 'left',
       state: 'idle_left',
-      stateTimer: 85,
+      stateTimer: 100,
       isTalking: false,
       animFrame: 0,
-    });
-
-    // NPC 5: Komandan Teguh (Penjaga Pintu Inti Dalam, px: 1120)
-    map.set('npc_teguh', {
-      id: 'npc_teguh',
-      npcType: 'komandan_teguh',
-      name: 'Komandan Teguh',
-      dialogueId: 'komandan_teguh_dialogue',
-      x: 1120,
-      y: 330,
-      anchorX: 1120,
-      patrolRange: 16,
-      speed: 0.3,
-      dir: 'left',
-      state: 'idle_left',
-      stateTimer: 90,
-      isTalking: false,
-      animFrame: 0,
-    });
-  } else if (zoneIndex === 4) {
-    // ══════════════════════════════════════════════════════════════════════════
-    // ZONA 4: INTI DALAM (Bola Besi Padat & Altar Pusat Bumi 6.371 KM)
-    // ══════════════════════════════════════════════════════════════════════════
-
-    // NPC 1: Dr. Bagus (Pemandu Geofisika Inti Dalam, px: 270)
-    map.set('npc_bagus', {
-      id: 'npc_bagus',
-      npcType: 'dr_bagus',
-      name: 'Dr. Bagus',
-      dialogueId: 'dr_bagus_dialogue',
-      x: 270,
-      y: 300,
-      anchorX: 270,
-      patrolRange: 18,
-      speed: 0.35,
-      dir: 'right',
-      state: 'idle_right',
-      stateTimer: 60,
-      isTalking: false,
-      animFrame: 0,
-    });
-
-    // NPC 2: Prof. Lestari (Peneliti Kristal Besi Inti Dalam, px: 340)
-    map.set('npc_lestari', {
-      id: 'npc_lestari',
-      npcType: 'prof_lestari',
-      name: 'Prof. Lestari',
-      dialogueId: 'prof_lestari_dialogue',
-      x: 340,
-      y: 300,
-      anchorX: 340,
-      patrolRange: 16,
-      speed: 0.3,
-      dir: 'right',
-      state: 'idle_right',
-      stateTimer: 80,
-      isTalking: false,
-      animFrame: 0,
-    });
-
-    // NPC 3: Dr. Farhan (Ahli Gravitasi Pusat Bumi, px: 680 di Altar Mahkota)
-    map.set('npc_farhan', {
-      id: 'npc_farhan',
-      npcType: 'dr_farhan',
-      name: 'Dr. Farhan',
-      dialogueId: 'dr_farhan_dialogue',
-      x: 680,
-      y: 240,
-      anchorX: 680,
-      patrolRange: 15,
-      speed: 0.35,
-      dir: 'left',
-      state: 'idle_left',
-      stateTimer: 75,
-      isTalking: false,
-      animFrame: 0,
-    });
-
-    // NPC 4: Petugas Dian (Pengawas Kapsul Evakuasi Inti, px: 900)
-    map.set('npc_dian', {
-      id: 'npc_dian',
-      npcType: 'petugas_dian',
-      name: 'Petugas Dian',
-      dialogueId: 'petugas_dian_dialogue',
-      x: 900,
-      y: 310,
-      anchorX: 900,
-      patrolRange: 18,
-      speed: 0.35,
-      dir: 'right',
-      state: 'idle_right',
-      stateTimer: 85,
-      isTalking: false,
-      animFrame: 0,
-    });
-
-    // NPC 5: Komandan Bintang (Kepala Ekspedisi Pusat Bumi, px: 1040)
-    map.set('npc_bintang', {
-      id: 'npc_bintang',
-      npcType: 'komandan_bintang',
-      name: 'Komandan Bintang',
-      dialogueId: 'komandan_bintang_dialogue',
-      x: 1040,
-      y: 310,
-      anchorX: 1040,
-      patrolRange: 16,
-      speed: 0.3,
-      dir: 'left',
-      state: 'idle_left',
-      stateTimer: 90,
-      isTalking: false,
-      animFrame: 0,
-    });
+    };
+    map.set(teknisiArya.id, teknisiArya);
   } else if (zoneIndex === 5) {
-    // ══════════════════════════════════════════════════════════════════════════
-    // ZONA 5: BATAS DIVERGEN & LEMBAH RETAKAN (East African Rift & Pangea)
-    // ══════════════════════════════════════════════════════════════════════════
-
-    // NPC 1: Dr. Taufik (Pemandu & Geologis Batas Divergen, px: 170)
-    map.set('npc_taufik', {
-      id: 'npc_taufik',
-      npcType: 'dr_taufik',
-      name: 'Dr. Taufik',
-      dialogueId: 'dr_taufik_dialogue',
+    // ── ZONA 5: BATAS DIVERGEN & LEMBAH RETAKAN ──
+    const zidane: NpcState = {
+      id: 'z5_npc_zidane',
+      npcType: 'zidane',
+      name: 'Zidane',
+      dialogueId: 'z5_zidane_dialogue',
       x: 170,
       y: 345,
       anchorX: 170,
@@ -465,14 +460,15 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 65,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(zidane.id, zidane);
+    map.set('npc_taufik', zidane);
 
-    // NPC 2: Prof. Maya (Ahli Teori Drift Benua & Superbenua Purba, px: 290)
-    map.set('npc_maya', {
-      id: 'npc_maya',
-      npcType: 'prof_maya',
-      name: 'Prof. Maya',
-      dialogueId: 'prof_maya_dialogue',
+    const zahra: NpcState = {
+      id: 'z5_npc_zahra',
+      npcType: 'zahra',
+      name: 'Zahra',
+      dialogueId: 'z5_zahra_dialogue',
       x: 290,
       y: 355,
       anchorX: 290,
@@ -483,32 +479,17 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 80,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'div_disc1',
+    };
+    map.set(zahra.id, zahra);
+    map.set('npc_maya', zahra);
 
-    // NPC 3: Dr. Citra (Peneliti Pegunungan Kembar, px: 600)
-    map.set('npc_citra', {
-      id: 'npc_citra',
-      npcType: 'dr_citra',
-      name: 'Dr. Citra',
-      dialogueId: 'dr_citra_dialogue',
-      x: 600,
-      y: 355,
-      anchorX: 600,
-      patrolRange: 15,
-      speed: 0.3,
-      dir: 'left',
-      state: 'idle_left',
-      stateTimer: 75,
-      isTalking: false,
-      animFrame: 0,
-    });
-
-    // NPC 4: Prof. Ilham (Pengamat Dinamika Pemekaran Divergen, px: 880)
-    map.set('npc_ilham', {
-      id: 'npc_ilham',
-      npcType: 'prof_ilham',
-      name: 'Prof. Ilham',
-      dialogueId: 'prof_ilham_dialogue',
+    const lintang: NpcState = {
+      id: 'z5_npc_lintang',
+      npcType: 'lintang',
+      name: 'Lintang',
+      dialogueId: 'z5_lintang_dialogue',
       x: 880,
       y: 345,
       anchorX: 880,
@@ -519,14 +500,17 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 70,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'div_disc2',
+    };
+    map.set(lintang.id, lintang);
+    map.set('npc_ilham', lintang);
 
-    // NPC 5: Komandan Satria (Kepala Pengawas Gerbang Patahan Divergen, px: 1140)
-    map.set('npc_satria', {
-      id: 'npc_satria',
-      npcType: 'komandan_satria',
-      name: 'Komandan Satria',
-      dialogueId: 'komandan_satria_dialogue',
+    const buTyas: NpcState = {
+      id: 'z5_npc_bu_tyas',
+      npcType: 'bu_tyas',
+      name: 'Bu Tyas',
+      dialogueId: 'z5_bu_tyas_dialogue',
       x: 1140,
       y: 355,
       anchorX: 1140,
@@ -537,18 +521,19 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 90,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(buTyas.id, buTyas);
+    map.set('npc_satria', buTyas);
   } else if (zoneIndex === 6) {
-    // ── ZONA 6: BATAS KONVERGEN (SUBDUKSI & PEGUNUNGAN VULKANIK) ──
-    // NPC 1: Dr. Farhan (Ahli Geologi Subduksi Lempeng, px: 620 di pesisir Kerak Benua)
-    map.set('npc_farhan', {
-      id: 'npc_farhan',
-      npcType: 'dr_farhan',
-      name: 'Dr. Farhan',
-      dialogueId: 'dr_farhan_conv_dialogue',
-      x: 620,
-      y: 360,
-      anchorX: 620,
+    // ── ZONA 6: BATAS KONVERGEN (SUBDUKSI & PEGUNUNGAN) ──
+    const zidane: NpcState = {
+      id: 'z6_npc_zidane',
+      npcType: 'zidane',
+      name: 'Zidane',
+      dialogueId: 'z6_zidane_dialogue',
+      x: 460,
+      y: 310,
+      anchorX: 460,
       patrolRange: 16,
       speed: 0.3,
       dir: 'right',
@@ -556,17 +541,20 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 80,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'conv_disc1',
+    };
+    map.set(zidane.id, zidane);
+    map.set('npc_farhan', zidane);
 
-    // NPC 2: Prof. Ratna (Ahli Vulkanologi & 3 Bentang Alam Tumbukan, px: 840 di lereng gunung)
-    map.set('npc_ratna', {
-      id: 'npc_ratna',
-      npcType: 'prof_ratna',
-      name: 'Prof. Ratna',
-      dialogueId: 'prof_ratna_conv_dialogue',
-      x: 840,
-      y: 280,
-      anchorX: 840,
+    const zahra: NpcState = {
+      id: 'z6_npc_zahra',
+      npcType: 'zahra',
+      name: 'Zahra',
+      dialogueId: 'z6_zahra_dialogue',
+      x: 740,
+      y: 310,
+      anchorX: 740,
       patrolRange: 15,
       speed: 0.3,
       dir: 'left',
@@ -574,34 +562,38 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 90,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'conv_disc2',
+    };
+    map.set(zahra.id, zahra);
+    map.set('npc_ratna', zahra);
 
-    // NPC 3: Dr. Bayu (Peneliti Vulkanologi & Teras Batuan Andesit, px: 1100 di lereng timur)
-    map.set('npc_bayu', {
-      id: 'npc_bayu',
-      npcType: 'dr_bayu',
-      name: 'Dr. Bayu',
-      dialogueId: 'dr_bayu_conv_dialogue',
-      x: 1100,
-      y: 280,
-      anchorX: 1100,
+    const ican: NpcState = {
+      id: 'z6_npc_ican',
+      npcType: 'ican',
+      name: 'Ican',
+      dialogueId: 'z6_ican_dialogue',
+      x: 960,
+      y: 310,
+      anchorX: 960,
       patrolRange: 14,
-      speed: 0.3,
+      speed: 0.35,
       dir: 'right',
       state: 'idle_right',
       stateTimer: 75,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(ican.id, ican);
+    map.set('npc_bayu', ican);
 
-    // NPC 4: Komandan Arya (Kepala Pengawas Altar Batas Konvergen, px: 1380 di altar akhir)
-    map.set('npc_arya', {
-      id: 'npc_arya',
-      npcType: 'komandan_arya',
-      name: 'Komandan Arya',
-      dialogueId: 'komandan_arya_dialogue',
+    const buTyas: NpcState = {
+      id: 'z6_npc_bu_tyas',
+      npcType: 'bu_tyas',
+      name: 'Bu Tyas',
+      dialogueId: 'z6_bu_tyas_dialogue',
       x: 1380,
-      y: 345,
+      y: 310,
       anchorX: 1380,
       patrolRange: 10,
       speed: 0.25,
@@ -610,33 +602,15 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 90,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(buTyas.id, buTyas);
+    map.set('npc_arya', buTyas);
   } else if (zoneIndex === 7) {
-    // ── ZONA 7 (AREA 8): BATAS TRANSFORM (SESAR SAN ANDREAS - TOP-DOWN PERSPECTIVE) ──
-    // NPC 1: Dr. Maya (Pemberhentian awal lempeng utara dekat perkemahan riset, px: 240, py: 160)
-    map.set('npc_maya_trans', {
-      id: 'npc_maya_trans',
-      npcType: 'dr_maya_trans',
-      name: 'Dr. Maya',
-      dialogueId: 'dr_maya_trans_dialogue',
-      x: 240,
-      y: 160,
-      anchorX: 240,
-      patrolRange: 12,
-      speed: 0.3,
-      dir: 'right',
-      state: 'idle_right',
-      stateTimer: 80,
-      isTalking: false,
-      animFrame: 0,
-    });
-
-    // NPC 2: Prof. Sarah (Di sebelah timur jalan terpotong lempeng utara, px: 560, py: 170)
-    map.set('npc_sarah_trans', {
-      id: 'npc_sarah_trans',
-      npcType: 'prof_sarah_trans',
-      name: 'Prof. Sarah',
-      dialogueId: 'prof_sarah_trans_dialogue',
+    const ican: NpcState = {
+      id: 'z7_npc_ican',
+      npcType: 'ican',
+      name: 'Ican',
+      dialogueId: 'z7_ican_dialogue',
       x: 560,
       y: 170,
       anchorX: 560,
@@ -647,16 +621,17 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 75,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(ican.id, ican);
+    map.set('npc_rudi_trans', ican);
 
-    // NPC 3: Dr. Taufik (Di dekat tikungan offset Wallace Creek lempeng selatan, px: 880, py: 310)
-    map.set('npc_taufik_trans', {
-      id: 'npc_taufik_trans',
-      npcType: 'dr_taufik_trans',
-      name: 'Dr. Taufik',
-      dialogueId: 'dr_taufik_trans_dialogue',
+    const zahra: NpcState = {
+      id: 'z7_npc_zahra',
+      npcType: 'zahra',
+      name: 'Zahra',
+      dialogueId: 'z7_zahra_dialogue',
       x: 880,
-      y: 310,
+      y: 160,
       anchorX: 880,
       patrolRange: 15,
       speed: 0.3,
@@ -665,32 +640,18 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 90,
       isTalking: false,
       animFrame: 0,
-    });
+      hasMaterial: true,
+      discoveryKey: 'trans_sanandreas',
+    };
+    map.set(zahra.id, zahra);
+    map.set('npc_sarah_trans', zahra);
+    map.set('npc_taufik_trans', zahra);
 
-    // NPC 4: Petugas Rudi (Pos pantau keselamatan zona patahan, px: 1140, py: 320)
-    map.set('npc_rudi_trans', {
-      id: 'npc_rudi_trans',
-      npcType: 'petugas_rudi_trans',
-      name: 'Petugas Rudi',
-      dialogueId: 'petugas_rudi_trans_dialogue',
-      x: 1140,
-      y: 320,
-      anchorX: 1140,
-      patrolRange: 12,
-      speed: 0.25,
-      dir: 'left',
-      state: 'idle_left',
-      stateTimer: 85,
-      isTalking: false,
-      animFrame: 0,
-    });
-
-    // NPC 5: Komandan Guntur (Kepala Sektor Sesar San Andreas & Gerbang Terakhir, px: 1360, py: 315 di tanah padat selatan)
-    map.set('npc_guntur_trans', {
-      id: 'npc_guntur_trans',
-      npcType: 'komandan_guntur',
-      name: 'Komandan Guntur',
-      dialogueId: 'komandan_guntur_dialogue',
+    const buTyas: NpcState = {
+      id: 'z7_npc_bu_tyas',
+      npcType: 'bu_tyas',
+      name: 'Bu Tyas',
+      dialogueId: 'z7_bu_tyas_dialogue',
       x: 1360,
       y: 315,
       anchorX: 1360,
@@ -701,7 +662,9 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 90,
       isTalking: false,
       animFrame: 0,
-    });
+    };
+    map.set(buTyas.id, buTyas);
+    map.set('npc_guntur_trans', buTyas);
   }
 
   return map;
@@ -717,6 +680,11 @@ export function updateNpcs(
 
   npcs.forEach((npc) => {
     npc.animFrame++;
+
+    if (npc.isFleeing) {
+      // NPC sedang dalam proses evakuasi darurat saat gempa konvergen
+      return;
+    }
 
     // Hitung jarak ke pemain
     const dx = player.x - npc.x;
@@ -775,6 +743,15 @@ export function updateNpcs(
 
     // Pada zona transform (top-down), pertahankan koordinat Y 2D masing-masing NPC
     if (zone.id === 'transform') {
+      return;
+    }
+
+    // Pada Batas Divergen (Area 6): NPC penyelam mengambang di air di atas dasar laut (buoyancy floating)
+    if (zone.id === 'divergent') {
+      const baseGroundY = getGroundY(zone, npc.x);
+      const npcSeed = (npc.anchorX * 13 + (npc.npcType ? npc.npcType.length * 7 : 0)) % 100;
+      const floatBob = Math.sin(npc.animFrame * 0.045 + npcSeed) * 4;
+      npc.y = Math.round(baseGroundY - 42 + floatBob);
       return;
     }
 

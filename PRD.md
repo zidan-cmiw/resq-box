@@ -8,11 +8,11 @@
 | Field | Detail |
 |---|---|
 | **Nama Proyek** | RESQ-BOX (Rescue Block) |
-| **Versi** | 3.0 — *Pixel Quest Edition* |
+| **Versi** | 3.10 — *Pixel Quest Edition* |
 | **Tim** | RESQ-TEAM |
 | **Kompetisi** | Divisi IPDP — LIDM 2026 (Tahap Finalis) |
 | **Target Rilis** | September 2026 |
-| **Terakhir Diperbarui** | 20 September 2026 |
+| **Terakhir Diperbarui** | 4 Oktober 2026 |
 
 ---
 
@@ -131,7 +131,7 @@ RESQ-BOX menghadirkan ekosistem pembelajaran IPA terpadu:
 ### 5.2 Level 1: Earth Explorer (Earth Dive Vertical Adventure)
 | Fitur | Deskripsi |
 |---|---|
-| **Engine Game Earth Dive** | Game eksplorasi vertikal menembus 8 zona geologis & batas tektonik bumi (0 km hingga batas lempeng transform) dengan kontur medan organik kontinu (*smooth cosine interpolation* ala Terraria), fisika lereng mulus, jembatan gantung patahan, lorong tambang batuan dalam (*Deep Mining Tunnel*), sel konveksi mantel bumi, lautan logam cair inti luar, istana kristal inti dalam, serta lembah retakan vulkanik divergen Afrika Timur dengan pegunungan kembar dan jurang magma aktif. |
+| **Engine Game Earth Dive** | Game eksplorasi vertikal menembus 8 zona geologis & batas tektonik bumi (0 km hingga batas lempeng transform) dengan kontur medan organik kontinu (*smooth cosine interpolation* ala Terraria), fisika lereng mulus, jembatan gantung patahan, lorong tambang batuan dalam (*Deep Mining Tunnel*), sel konveksi mantel bumi, lautan logam cair inti luar, istana kristal inti dalam, serta kawasan pemekaran samudra batas divergen bawah laut dalam (*deep-sea divergent boundary*) lengkap dengan ekosistem penyelam scuba, mantel magma aktif, dan kerak pillow basalt baru bergradasi termal. |
 | **Directional Spawning System** | Sistem transisi cerdas antar-area: saat menyelam ke lapisan berikutnya (`down`), pemain muncul di sisi awal (kiri) menghadap ke kanan; saat naik kembali ke lapisan atas (`up`), pemain muncul di sisi akhir (kanan) di samping portal turun keluar. |
 | **Penyelarasan Terminologi Navigasi** | Mengganti sebutan "Sumur Bor" menjadi **"Turun Menuju Lapisan Selanjutnya"** (Poros Turun Geotermal) dan "Elevator" menjadi **"Naik Menuju Lapisan Sebelumnya"** (Derek Naik Evakuasi) pada seluruh teks objek, HUD, dan dialog modal. |
 | **Gating Gerbang Murni & Modal Peringatan** | Akses turun diblokir ketat jika tantangan gerbang strata aktif belum tuntas. Memunculkan modal retro pixel *"AKSES TURUN DITOLAK! Tantangan Gerbang Belum Selesai"* dengan audio peringatan `retroAudio.playError()`. Evaluasi formatif terpusat murni di gerbang akhir lapisan (tanpa mini challenge di totem temuan). |
@@ -147,6 +147,11 @@ RESQ-BOX menghadirkan ekosistem pembelajaran IPA terpadu:
 | **D-Pad 4 Arah Tablet & Staf Peneliti Lapangan** | Kontrol sentuh D-Pad berlian 4 arah (Atas, Bawah, Kiri, Kanan) di kiri dan tombol aksi mandiri `LONCAT` & `AKSI [E]` di kanan. Staf peneliti lengkap (Dr. Maya, Prof. Sarah, Dr. Taufik, Petugas Rudi, Komandan Guntur) berdiri aman di tanah padat selatan ($Y = 315$). Evaluasi Wordle akhir (`TRANSFORM`, `SANANDREAS`, `SISMOGRAF`) membuka Kapsul Evakuasi Kemenangan Akhir Level 1. |
 | **Rendering Anti-Burem Resolusi Tinggi (High-DPI / DevicePixelRatio)** | Skalasi buffer internal kanvas otomatis mengikuti `window.devicePixelRatio` di `resizeCanvas` dan aturan tipografi anti-aliasing tajam di `index.css`, menjamin teks pixel dan grafis tetap tajam 100% saat di-zoom in hingga 250% maupun pada layar Retina tablet murid. |
 | **Multi-User Scoped State & Refresh Protection** | Penyimpanan sesi otomatis terisolasi per akun siswa (`resqbox_earthdive_progress_${userId}` dan `resqbox-unlocked-level_${userId}`), menjamin progres tidak hilang saat refresh dan mencegah kebocoran status antar-akun pada peramban yang sama. |
+| **Platforming Pilar Basal Mantel Bumi** | Topografi Zona 2 (Mantel Bumi) direkonstruksi menjadi platforming pilar basal terapung (`basalt_pillar`) di atas danau magma konveksi termal yang mendidih. Penempatan NPC (Zahra di $px=380$, Lintang di $px=700$, Bu Tyas di $px=1070$) dan Kristal Geologis di $px=540$ diselaraskan secara presisi di atas pilar aman bebas magma (zero-magma fall). |
+| **Penukaran Map Inti Luar vs Inti Dalam & Pembedaan Atmosfer** | Penukaran arsitektur map antara Inti Luar dan Inti Dalam: Inti Luar mengadopsi kubah batuan datar luas ($Y \approx 356$) dengan efek kilatan petir geodynamo dan loop medan magnetik kuning keemasan berpendar; Inti Dalam mengadopsi teras heksagonal purba melintasi jurang fluida bersuasana gelap pekat dan pendaran kristal logam padat kompresi >3,6 juta atm; serta penambahan 1 kristal energi baru di pematang tengah Inti Dalam ($px=590, py=280$). |
+| **Sistem Baju Pelindung Geologis & Ekonomi Kristal Energi** | Mengalihfungsikan kristal energi sebagai mata uang geologis untuk membeli setelan khusus: Baju Termal MK-1 (Mantel Bumi), Baju Elektromagnetik MK-2 (Inti Luar), Exo-Suit Adamantine MK-3 (Inti Dalam), dan Baju Penyelam Samudra Kedalaman (Batas Divergen). Disediakan oleh 4 NPC Teknisi (Joko, Rudi, Dian, Arya) via modal `SuitMerchantModal.tsx` seharga 1 kristal per baju. Gatekeeping portal memblokir akses ke lapisan berikutnya jika setelan belum dipakai disertai peringatan bahaya lingkungan ekstrem `suitWarningModal`. |
+| **Alur Dialog Bu Tyas Pasca-Wordle & Pengarahan Teknisi** | Alur dialog otomatis berkesinambungan bersama Bu Tyas begitu tebak kata Wordle selesai dijawab: Bu Tyas mengedukasi bahaya suhu/tekanan ekstrem zona berikutnya dan mengarahkan siswa menukar kristal ke Teknisi sebelum melompat ke portal bawah tanah. |
+| **Visual Sprite Sheet Avatar Baju Pelindung Dinamis** | Integrasi 4 variasi sprite avatar siswa di `studentAvatarSheet.ts` (`hazard_mantle`, `hazard_outer`, `hazard_inner`, `diver`) dengan helm khusus, visor, kisi pendingin termal, sirip medan fluks dinamo, mahkota kristal emas adamantine, dan helm kubah selam laut dalam. |
 
 ### 5.3 Level 2: Disaster Analyst — Mitigasi Tanggap Darurat Bencana Sekolah & Ruang Kelas SMP
 | Fitur | Deskripsi |
@@ -676,3 +681,292 @@ Bagian ini merekam seluruh instruksi, evaluasi, dan keputusan teknis yang telah 
       - Modul [`renderer.ts`](./src/app/Level2/engine/renderer.ts), [`gameEngine.ts`](./src/app/Level2/engine/gameEngine.ts), [`TectonicGame.tsx`](./src/app/Level2/engine/TectonicGame.tsx), [`dialogueDataL2.ts`](./src/app/Level2/dialogueDataL2.ts), [`npcManagerL2.ts`](./src/app/Level2/engine/npcManagerL2.ts), [`DiscoveryModal.tsx`](./src/app/Level2/DiscoveryModal.tsx), [`VisualNovelDialogueL2.tsx`](./src/app/Level2/VisualNovelDialogueL2.tsx), [`zones.ts`](./src/app/Level2/engine/zones.ts), dan [`level2Data.ts`](./src/app/Level2/level2Data.ts) telah diselaraskan penuh.
       - Alur evaluasi terkunci ketat hingga 2 materi dibaca, kuis TTS berfungsi mulus, dan kapsul kemenangan Level 2 terbuka tuntas.
       - Build verifikasi `npm run build` sukses bersih dengan 0 error kompilasi TypeScript.
+58. **Standarisasi Menyeluruh UI, Tombol Sentuh / D-Pad Analog, Kotak Percakapan, dan Kotak Materi Level 2 Selaras Level 1**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Tombol analog/kontrol sentuh di Level 2 tidak sama dengan Level 1 dan memerlukan zoom in ekstrem (250%) baru muncul. Dirombak agar sistem tombol dan visibilitasnya 100% persis Level 1.
+      2. Seluruh gaya visual (style) di Level 2 disamakan dengan Level 1: kotak menu atas, tombol navigasi, kotak percakapan visual novel, kotak materi (Discovery Modal), dan tombol aksi.
+      3. Sistem percakapan robot Resqy di Level 2 disamakan dengan Level 1 (percakapan interaktif RPG dengan pilihan jawaban, dan Resqy murni sebagai maskot terbang di belakang pundak tanpa duplikat NPC di tanah).
+    - **Hasil Implementasi & Verifikasi**:
+      - **Kontrol Sentuh & D-Pad**: Menghapus `sm:hidden` dan menggantinya dengan logika responsif Level 1: `isTouchDevice || (typeof window !== 'undefined' && window.innerWidth <= 1024)`. Tombol kini langsung muncul di perangkat layar sentuh dan lebar layar $\le$ 1024px tanpa zoom in.
+      - **4-Way D-Pad & Dual Action Buttons**: Mengadopsi D-Pad 4 arah di kiri (▲, ◀, dot tengah, ▶, ▼) dengan container rounded gelap (`bg-slate-950/75 border-2 border-slate-700/90 shadow-[0_4px_0_#0f172a]`), serta tombol aksi di kanan: **LONCAT** (gradasi biru + panah atas) dan **[E] AKSI** (gradasi amber). Menambahkan panduan keyboard desktop bawah (`← → Gerak`, `↑ / [Spasi] Lompat`, `[E] Interaksi`) dan balon petunjuk mengambang `nearInteractablePrompt`.
+      - **Kotak Menu HUD Atas**: Diselaraskan dengan Level 1: tombol `< MENU` berbingkai ganda (`bg-amber-950 border-2 border-amber-600/80 font-pixel-title text-[11px] sm:text-xs text-amber-200 shadow-[0_2px_0_#231206]`), tombol toggle Suara dan Layar Penuh berbasis PixelIcon SVG, serta badge zona aktif berteks tebal amber dengan lampu indikator hijau/merah.
+      - **Kotak Percakapan (VisualNovelDialogueL2)**: Penyelarasan label `[Klik / SPASI untuk Lanjut ▶]`, `▶ Auto (ON)` / `▷ Auto`, tombol riwayat `📜 RIWAYAT PERCAKAPAN` dan `✕ KEMBALI`, potret karakter 100% transparan tanpa kotak latar belakang kaku, serta pilihan percabangan RPG bernomor `[1]`, `[2]`.
+      - **Kotak Materi (DiscoveryModal)**: Lebar modal ditingkatkan menjadi `max-w-4xl`, kanvas ilustrasi sains diperbesar ke `h-[380px] sm:h-[450px] md:h-[500px]` dengan latar `#0c0a09`, tombol tutup `✕`, dan tata letak 2 kolom (`LOKASI PENELITIAN` & `FAKTA SAINS RESMI`).
+      - **Resolusi Bug NPC**: Menghapus duplikat NPC Resqy statis di tanah (Area 2 & 3), memperbaiki algoritma proksimitas NPC di `npcManagerL2.ts` sehingga hanya memilih 1 NPC terdekat untuk menghilangkan bug teks menumpuk `[E] [E] BICARA`, mengganti prompt menjadi pill kuning 56x14px (`[E] / Enter`), serta mengaktifkan interaksi klik langsung pada canvas untuk NPC dan pendamping Resqy.
+      - **Resolusi Duplikasi Key & Build Bersih**: Menghapus duplikasi key `resqy_briefing_area3` di `dialogueDataL2.ts` dan memperkaya pilihan respons percakapan. Hasil build `npm run build` sukses bersih dengan 0 error kompilasi TypeScript.
+59. **Simulasi Tanggap Erupsi Merapi (Area 5): Mekanika Pengawalan Warga Mengikuti Pemain, Jalur Hamburan Burung dari Puncak Gunung, dan Skalabilitas UI**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Warga dusun yang dievakuasi (Dani, Mbah Joyo, Bu Tejo) tidak boleh diam di tempat setelah ditolong; mereka harus ikut berjalan beriringan bersama pemain sampai naik ke bak truk evakuasi BPBD.
+      2. Urutan saat memasuki Area 5: popup memasuki area simulasi harus muncul dan tuntas terlebih dahulu sebelum robot Resqy memulai pengarahan taktis.
+      3. Burung-burung panik tidak boleh terbang searah dari kiri ke kanan; burung harus muncul dari arah puncak gunung berapi dan kabur menyebar ke arah kanan dan kiri, serta ukurannya diperkecil secara proporsional.
+      4. Kotak status gunung api di pojok kanan atas, kartu panel misi di sebelah kanan layar ("Tolong Dani", status evakuasi), dan popup QTE harus diperbesar agar terbaca jelas dan proporsional di layar.
+    - **Hasil Implementasi & Verifikasi**:
+      - **Mekanika Pengawalan Warga (Follower System)**: Mengimplementasikan sistem antrean pengikut berjenjang di `gameEngine.ts` di mana warga yang diselamatkan masuk ke state `following` dan melangkah mengikuti jejak pemain hingga ke truk BPBD di `x: 1840`.
+      - **Orkestrasi Transisi Masuk**: Popup banner selamat datang *"MEMASUKI AREA SIMULASI ERUPSI MERAPI"* berjalan mandiri hingga pudar sebelum dialog Resqy diinisialisasi.
+      - **Hamburan Burung Puncak Merapi**: Partikel burung terbang divergen dari koordinat puncak kawah Merapi (kiri-atas/tengah-atas) menyebar ke kiri dan kanan dengan ukuran 0.7x yang realistis.
+      - **Hierarki & Skalabilitas UI**: Panel status PVMBG (Waspada, Siaga, Awas), daftar misi penyelamatan, dan popup kartu QTE diperbesar dimensi serta ketebalan tipografinya.
+      - **Build Bersih**: Verifikasi `npx tsc -p tsconfig.app.json --noEmit` lolos tanpa kendala.
+60. **Kebijakan Anti-Pengulangan Evaluasi TTS & Standarisasi Dialog Unlocked NPC Level 2 Selaras Level 1 (Area 1, Area 3, dan Area 4)**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Ketika pemain sudah menyelesaikan Teka-Teki Silang (TTS) evaluasi gerbang di Area 4 dan gerbang sudah terbuka, pemain tidak boleh dapat mengulang atau membuka TTS lagi.
+      2. Mekanisme disamakan persis dengan konsep Level 1: ketika mengobrol kembali dengan NPC penguji, NPC berbicara ramah mengonfirmasi kelulusan dan mempersilakan lanjut ke area berikutnya.
+      3. Aturan ini harus berlaku konsisten untuk seluruh evaluasi Level 2: Area 1 (Kak Fajar, gerbang `l2_gate_gempa`), Area 3 (Komandan Satria, gerbang `l2_gate_pascabencana`), dan Area 4 (Komandan Satria, gerbang `l2_gate_volcano_prep`).
+    - **Hasil Implementasi & Verifikasi**:
+      - **Unlocked Dialogue Trees Level 2**: Di `dialogueDataL2.ts`, diintegrasikan dialog apresiasi kelulusan tanpa opsi tantangan: `kak_fajar_unlocked_dialogue` (Area 1), `satria_field_unlocked_dialogue` (Area 3), dan `satria_volcano_unlocked_dialogue` (Area 4).
+      - **Routing Sentral `getNpcDialogueTreeL2`**: Fungsi terpadu di `gameEngine.ts` mengevaluasi status `unlockedGates.has(...)` sebelum mengembalikan pohon percakapan ke UI.
+      - **Penguncian Ganda Modal TTS**: Komponen `TectonicGame.tsx` memagari pemicu `onTriggerCrossword`, `state.pendingCrossword`, dan rendering `<CrosswordModal />` dengan `!isCurrentGateUnlocked()`.
+      - **Verifikasi Build**: Kompilasi TypeScript sukses dengan 0 error (*exit code 0*).
+61. **Penskalaan Parameter Getaran Seismik, Pengurangan Material Runtuh & Konfigurasi Tuning Gempa Mandiri**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Getaran gempa besar dikecilkan karena guncangan sebelumnya terlalu ekstrem dan membuat pusing.
+      2. Disediakan lokasi pengaturan mandiri agar pengembang/guru dapat mengatur sendiri parameter amplitudo getaran gempa sedang dan gempa besar.
+      3. Jumlah material/puing plafon yang jatuh dikurangi menjadi sekitar ~8-10 puing dan jeda jatuhnya diatur teratur.
+    - **Hasil Implementasi & Verifikasi**:
+      - Menyediakan konstanta terpusat `EARTHQUAKE_TUNING` pada [`gameEngine.ts`](./src/app/Level2/engine/gameEngine.ts) dengan parameter `moderate` dan `severe`.
+      - Amplitudo gempa besar diturunkan menjadi `shakeIntensityX: 3.2` dan `shakeIntensityY: 2.4`.
+      - Batas maksimum debris jatuh dibatasi `maxDebris: 8` dengan jeda interval antar-jatuhan `debrisInterval: 60`.
+      - Build verifikasi `npm run build` sukses bersih dengan 0 error kompilasi TypeScript.
+62. **Penyempurnaan Area 3 & Area 4: Proporsi Pintu, Redesain Gerbang Lapangan Sederhana, Papan 4 Status Merapi Bebas Overflow, dan Modernisasi Font "Plus Jakarta Sans"**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Pintu awal Area 3 (dari ruang kelas ke lapangan) ketinggian dan menutupi jendela gedung sekolah; minta dikecilkan.
+      2. Teks materi di Area 3 over dari kotaknya dan kepanjangan hingga terpotong ke bawah.
+      3. Pintu keluar Area 3 diganti menjadi gerbang sederhana (bukan pintu dan bukan gerbang alay/fantasi, melainkan gerbang lapangan sederhana).
+      4. Tulisan di gerbang Area 4 over dari kotaknya, kotak latar diperlebar dan font diganti serasi font materi.
+      5. Teks di seluruh papan Area 4 diganti fontnya dan diperbesar agar terbaca, posisi jangan mepet border (termasuk status Merapi: Normal, Waspada, Siaga, Awas).
+      6. Font materi di Area 4 diperbesar dan teksnya diringkas.
+    - **Hasil Implementasi & Verifikasi**:
+      - Pintu awal Area 3 diturunkan menjadi `46px` tinggi sehingga jendela kaca gedung sekolah terlihat utuh.
+      - Pintu keluar Area 3 dirombak menjadi gerbang lapangan sederhana (`drawAssemblyFieldExitGate`), papan nama diperlebar menjadi `76px` dengan font `bold 9.5px "Plus Jakarta Sans", sans-serif`.
+      - Gerbang masuk Area 4 diperlebar ke `132px`, Papan 4 Status Merapi diperlebar ke `182x94px` dengan padding lega dan font modern sans-serif tebal.
+      - Materi edukasi di `DiscoveryModal.tsx` dan `level2Data.ts` diringkas padat dan fontnya diperbesar.
+      - Build verifikasi `npm run build` sukses bersih dengan 0 error kompilasi TypeScript.
+63. **Overhaul Alur Simulasi Gempa Area 2: Pacing Tremor 1 Detik Pra-Alert, Kurikulum IPA Struktur Lapisan Bumi, dan Retakan Dinding Atas Halus Area 2 & Area 3**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Alur simulasi di Area 2 diperbaiki: saat guru mengajar, terjadi gempa/getaran terlebih dahulu selama ~1 detik, baru kemudian Bu Rahma berteriak "Ada gempa!", lalu gempa berlanjut ke tahap QTE.
+      2. Materi yang dijelaskan oleh Bu Rahma diganti dari matematika ke materi IPA resmi: **Struktur Lapisan Bumi**.
+      3. Retakan dinding pada gempa besar di Area 2 jangan retak parah di seluruh dinding, melainkan dibuat kecil/halus di bagian atas dinding dekat plafon saja.
+      4. Retakan pada gedung sekolah di Area 3 juga dibuat kecil/halus di bagian atas dinding saja.
+    - **Hasil Implementasi & Verifikasi**:
+      - Naskah Bu Rahma (`intro_start`, `bu_rahma_teaching_cutscene`) dan papan tulis kelas diubah menjadi `IPA: STRUKTUR BUMI` (kerak bumi, mantel panas, inti bumi, lempeng tektonik).
+      - Menambahkan fase `quake_start` (60 frame / ~1 detik) di mana layar berguncang dan alarm mulai berbunyi sebelum Bu Rahma memicu dialog peringatan darurat.
+      - Fungsi `drawClassroomEarthquakeWallCracks` dirombak total: retakan dinding gempa besar di Area 2 menjadi retakan rambut tipis (`1.2px`) yang hanya berada di balok dinding atas ($y \le 50\text{px}$).
+      - Retakan gedung sekolah di Area 3 dibatasi hanya pada dinding atas ($y = 114..150\text{px}$).
+      - Penamaan resmi Area 3 diselaraskan menjadi `Lapangan Evakuasi Sekolah (Pasca Gempa Besar)`.
+      - Build verifikasi `npm run build` sukses bersih dengan 0 error kompilasi TypeScript.
+64. **Overhaul Lingkungan Lautan Penuh, Elevasi Lempeng Dasar Laut, Lapisan Mantel Magma, & Sekuens Dinamis (Gempa, Kenaikan Suhu, Ikan Panik & Tumbuhan Layu) di Batas Divergen (Level 1 Area 6)**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Mengubah lingkungan Area 6 dari daratan/senja menjadi lautan penuh dengan gradasi air laut biru muda di atas hingga gelap di dasar samudra.
+      2. Menaikkan posisi lempeng dasar laut ke $Y \approx 248$ sesuai garis merah atas referensi, dan menambahkan lapisan mantel magma di bawah $Y = 408$.
+      3. Patahan diperdalam menembus mantel, dan magma naik mengisi sepertiga kedalaman celah.
+      4. Sekuens dinamis: ikan berenang damai ➔ gempa seismik ➔ kenaikan suhu drastis (ikan panik melesat kabur, tumbuhan laut layu mengkerut gosong) ➔ lempeng membelah ➔ magma membeku.
+      5. Menghadirkan tombol replay `ULANG ANIMASI` di pojok kiri atas.
+    - **Hasil Implementasi & Verifikasi**:
+      - Modul [`zones.ts`](./src/app/Level1/EarthDive/engine/zones.ts), [`sprites.ts`](./src/app/Level1/EarthDive/engine/sprites.ts), [`renderer.ts`](./src/app/Level1/EarthDive/engine/renderer.ts), dan [`gameEngine.ts`](./src/app/Level1/EarthDive/engine/gameEngine.ts) diselaraskan penuh.
+      - State machine sekuensial multi-fase berjalan teratur dan dapat diulang kembali via tombol `ULANG ANIMASI`.
+      - Build verifikasi `npm run build` sukses bersih dengan 0 error kompilasi TypeScript.
+65. **Kostum Penyelam Scuba (Pemain & 4 NPC), Pembekuan Magma di Tempat Tanpa Turun ke Bawah, Kerak Basal dengan Gradasi Termal Magma, dan Simetrisasi Penuh Lempeng Divergen (Level 1 Area 6)**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Karakter pemain dan seluruh NPC di Batas Divergen wajib memakai pakaian penyelam scuba lengkap karena berada di bawah air laut dalam.
+      2. Saat pendinginan (`coolProgress`), magma TIDAK BOLEH ditarik turun kembali ke bawah dan diganti daratan baru; melainkan magma itu sendiri yang membeku di tempat menjadi daratan baru.
+      3. Daratan hasil pembekuan dibikin setebal area garis merah referensi pengguna ($y = 326..350$), dan bagian bawah daratan dibikin gradasi alami dengan magma di bawahnya sehingga seolah-olah bawahnya masih menyatu dengan magma mantel yang mendidih.
+      4. Celah magma terbuka di kaki tebing kiri dan kanan ditutup penuh oleh daratan tebing lempeng.
+      5. Tonjolan batuan bawah yang menggantung di kaki lempeng kiri dihapus agar lempeng barat dan timur simetris sempurna di kedua sisi rekahan.
+    - **Hasil Implementasi & Verifikasi**:
+      - **Kostum Penyelam Scuba**: Pemain (`studentAvatarSheet.ts`) dan 4 NPC peneliti (`npcSprites.ts`) mengenakan wetsuit neoprene, kacamata masker visor panorama cyan, corong regulator pernapasan, tangki tabung oksigen ganda di punggung, sirip sepatu katak fleksibel, serta efek gelembung napas berkala (`renderer.ts`).
+      - **Fisika Pembekuan Magma di Tempat**: Logika penurunan magma ke dasar mantel dihapus dari `zones.ts`; magma tetap stabil di celah rekahan $y = 326$.
+      - **Kerak Pillow Basalt Bergradasi Termal**: Bagian atas magma membeku menjadi batuan basal samudra padat di $y = 326..336$, bertransisi linier melalui batuan hangus kemerahan ($y = 338..344$), pijar jingga magma ($y = 346..350$), dan memudar 100% transparan menyatu ke magma mantel di bawah $y = 352$.
+      - **Penutupan Kaki Tebing**: Menghilangkan interpolasi kurva pemotong di bawah lereng tebing; batuan lempeng barat dan timur solid utuh hingga batas mantel bawah ($\approx 365\text{ px}$).
+      - **Simetrisasi Presisi Lempeng**: Dasar lempeng barat di area rekahan mencerminkan (*mirror*) bentuk dasar lempeng timur secara matematis (`refEastX`), kedua lempeng bertemu rekahan di kedalaman yang sama persis ($y = 346\text{ px}$) dengan dinding tebing $20\text{ px}$ yang identik, dan tonjolan asimetris terhapus bersih.
+      - **Verifikasi Build**: Lolos kompilasi TypeScript dan bundler Vite `npm run build` dengan 0 error (1.80s).
+66. **Mode Renang 4 Arah (Batas Divergen), Karakter & NPC Penyelam Mengambang di Air, Penebalan Lempeng Samudra, Penipisan Lapisan Mantel, & Percepatan Pembekuan Magma (5 Detik)**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Karakter pemain dan para NPC tidak menapak tanah, melainkan mengambang di air seperti sedang menyelam di laut dalam.
+      2. Kontrol pergerakan di Batas Divergen dibuat 4 arah (bisa berenang ke atas, bawah, kiri, dan kanan).
+      3. Animasi proses dari keluarnya magma setelah patahan terbuka sampai membeku dipercepat menjadi sekitar 5 detik.
+      4. Lapisan lempeng samudra ditebalkan ke bawah, dan lapisan mantel magma ditipiskan ke dasar kanvas karena sebelumnya terlalu tebal.
+    - **Hasil Implementasi & Verifikasi**:
+      - **Kontrol Renang 4 Arah**: Di [`player.ts`](./src/app/Level1/EarthDive/engine/player.ts), pada `zone.id === 'divergent'`, gravitasi tanah dimatikan (`player.onGround = false`). Tombol W/Up/Spasi untuk berenang ke atas, S/Down untuk menyelam ke bawah, A/Left & D/Right untuk meluncur horizontal dengan hambatan air dan gaya apung lembut (*buoyancy bobbing*).
+      - **Karakter & NPC Mengambang di Air**: Karakter dan seluruh 4 NPC (Dr. Taufik, Prof. Maya, Prof. Ilham, Komandan Satria) di [`npcManager.ts`](./src/app/Level1/EarthDive/engine/npcManager.ts) dan [`zones.ts`](./src/app/Level1/EarthDive/engine/zones.ts) mengambang $\approx 42\text{ px}$ di atas dasar laut dengan osilasi apung alami dan gerak renang horizontal.
+      - **Percepatan Pembekuan Magma 5 Detik**: Di [`gameEngine.ts`](./src/app/Level1/EarthDive/engine/gameEngine.ts), durasi pendinginan pasca-pemekaran dipangkas dari 14 detik menjadi 5 detik (100 tick magma mendidih aktif, 180 tick pembekuan pillow basalt utuh di $Y = 326$).
+      - **Penebalan Lempeng & Penipisan Mantel**: Di [`zones.ts`](./src/app/Level1/EarthDive/engine/zones.ts), batas mantel `getMantleBoundaryY` diturunkan ke baseline $Y = 428$. Lempeng samudra menebal menjadi $\approx 180\text{ px}$ ($Y = 248..428$), dan lapisan mantel magma menipis menjadi $\approx 52\text{ px}$ di dasar kanvas ($Y = 428..480$) dengan gradasi termal yang diselaraskan di [`sprites.ts`](./src/app/Level1/EarthDive/engine/sprites.ts).
+      - **Verifikasi Build**: Lolos kompilasi TypeScript dan bundler Vite `npm run build` dengan 0 error (2.08s).
+67. **Overhaul Total Pos Pengamatan Merapi (Area 4 Level 2): Penukaran Posisi Bangunan & NPC, Pemindahan Materi Status Merapi ke Relawan, Pasien Kasur Medis Area 3, Redesain Vektor Seismograf Mekanik, Penskalaan Furnitur Indoor 24px, Pemandangan Jendela Merapi, Ikon Pixel Art 2D SVG, Gelombang 4 Status Sesuai Sketsa Pensil, Prompt Pintu Luar [E] / Enter, Kontrol Sentuh Mobile Borderless Transparan (Level 1 & Level 2), Integrasi Peta Zonasi KRB Merapi (1.webp), serta Redesain Asap Vulkanik Cauliflower & Alur Magma Berkelok Organik**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Tambahkan pasien yang sedang dirawat di atas ranjang kasur lipat medis pada posko tenda evakuasi Area 3.
+      2. Tukar posisi bangunan di Area 4: Plaza Status Merapi beserta Relawan Mbak Rina di depan, dan gedung Pos Pengamatan Merapi beserta Pak Surya di belakang.
+      3. Pindahkan Materi 1 (Tingkat Status Aktivitas Merapi) dari Pak Surya ke Relawan Mbak Rina karena relawan yang menjaga bangunan status gunung tersebut.
+      4. Perbaiki keterbacaan materi alat seismograf di modal: gambar seismograf diperjelas dan diperbesar, hilangkan teks yang menumpuk.
+      5. Sesuaikan ukuran furnitur di dalam ruangan Pos PGA (meja, monitor, teropong bintang, pintu) agar tidak kegedean dan proporsional terhadap tinggi karakter ($24\text{px}$).
+      6. Samakan bentuk gunung di luar jendela observasi dengan bentuk Gunung Merapi di map luar.
+      7. Hapus seluruh emotikon sistem operasi modern dan ganti dengan ikon style pixel art 2D (perbaiki kemunculan titik hitam fallback dot).
+      8. Ubah bentuk gelombang seismogram monitor agar persis sesuai sketsa pensil 4 baris pengguna: Normal bergelombang landai halus, Waspada gelombang sedang, Siaga riak rapat berfrekuensi tinggi, Awas getaran tremor rapat kontinu ekstrem tanpa jeda datar.
+      9. Munculkan popup prompt interaksi `[E] / Enter` saat mendekati pintu masuk luar Pos Pengamatan Merapi.
+      10. Sinkronisasikan animasi jarum pena seismograf di meja ruangan indoor agar mengikuti gelombang halus status normal.
+      11. Hilangkan background kotak hitam pembungkus (bounding box) pada kontrol analog D-Pad dan tombol aksi/loncat agar melayang transparan langsung di atas kanvas permainan.
+      12. Pada modal Temuan 2 Area 4, tambahkan materi edukasi tentang Kawasan Rawan Bencana (KRB Merapi) dengan gambar visual peta dari berkas `1.webp` pada tab KRB, sedangkan materi lainnya (APD, Awan Panas, Lahar Hujan) menggunakan ilustrasi visual yang serasi dengan masing-masing materi; buat panel materi kanan bisa di-scroll, dan gambar kiri bisa diklik untuk tampilan penuh (lightbox fullscreen).
+      13. Pada tab Awan Panas (Temuan 2 Area 4), perbaiki tekstur asap vulkanik agar tidak menggunakan bulatan-bulatan kaku, melainkan kepulan asap realistis berstruktur kubah kembang kol (cauliflower billows) seperti pada pemandangan Pos Pengamatan Merapi, serta buat alur lelehan magma keluar dari kawah menjadi realistis dan berkelok alami dengan kubah lava dan kerak batuan (bukan garis lurus kaku).
+      14. Pada pintu keluar Area 4 (Pos Pengamatan Merapi) menuju Area 5 (Simulasi Erupsi Merapi), ubah bentuk pintu indoor kelas sekolah yang bertembok kuning menjadi gapura masuk pedesaan lereng Gunung Merapi / Desa Tangguh Bencana (Destana).
+    - **Hasil Implementasi & Verifikasi**:
+      - **Pasien Rawat Kasur Medis**: Menambahkan figur pasien pixel art berselimut dengan tiang infus di tenda medis Area 3 ([`renderer.ts`](./src/app/Level2/engine/renderer.ts)).
+      - **Pertukaran Bangunan & NPC Area 4**: Plaza Status Merapi & Mbak Rina dipindahkan ke depan ($X \approx 500..650$), Gedung PGA & Pak Surya dipindahkan ke belakang ($X \approx 900..1050$) di [`zones.ts`](./src/app/Level2/engine/zones.ts) dan [`renderer.ts`](./src/app/Level2/engine/renderer.ts).
+      - **Migrasi Materi 1 ke Mbak Rina**: Materi 4 Tingkat Aktivitas Gunung Merapi dipindahkan ke Mbak Rina di [`dialogueDataL2.ts`](./src/app/Level2/dialogueDataL2.ts) dan [`level2Data.ts`](./src/app/Level2/level2Data.ts).
+      - **Redesain Vektor Seismograf Keterbacaan Tinggi**: Membangun diagram vektor presisi tinggi (`viewBox="0 0 740 330"`) yang memvisualisasikan fondasi batuan, rangka kaku, pegas spiral, massa beban inersia silinder emas berpendar, lengan stylus, jarum tinta merah, drum berputar dengan kertas kisi milimeter, serta 3 kartu penjelasan edukatif hukum kelembaman, drum putar, dan sensor geofon radio FM 151.7 MHz di [`SeismographModal.tsx`](./src/app/Level2/SeismographModal.tsx).
+      - **Penskalaan Ergonomis Furnitur Indoor**: Meja observasi diturunkan ke elevasi pinggang ($y = 342$, tinggi meja $18\text{px}$), monitor ganda diperkecil ke $18\times 12\text{px}$, teleskop optik diatur sejajar mata ($y = 326$), dan pintu diperkecil ke $32\times 48\text{px}$ di [`renderer.ts`](./src/app/Level2/engine/renderer.ts).
+      - **Pemandangan Jendela Observasi Merapi Otentik**: Menampilkan kerucut Stratovolcano Merapi dengan takik kawah barat, kubah lava aktif, alur lahar Kali Gendol & Krasak, vegetasi lereng pinus, dan kepulan asap vulkanik organik `drawRealisticVolcanicSmoke` di [`renderer.ts`](./src/app/Level2/engine/renderer.ts).
+      - **Standarisasi Ikon Pixel Art 2D Kustom**: Menghapus seluruh emotikon OS dan menambahkan definisi ikon pixel kustom (`chart`/`activity`, `search`, `gear`, `cross`/`x`, `volcano`) di [`PixelIcon.tsx`](./src/components/PixelIcon.tsx), menuntaskan bug titik hitam fallback dot.
+      - **Formula Gelombang 4 Status Sketsa Pensil**: Mengimplementasikan persamaan gelombang matematis presisi 4 baris status Merapi di [`SeismographModal.tsx`](./src/app/Level2/SeismographModal.tsx) dan menghapus pola spike ECG pada monitor dinding di [`renderer.ts`](./src/app/Level2/engine/renderer.ts).
+      - **Prompt Interaksi Pintu Luar `[E] / Enter`**: Menambahkan prompt floating pixel retro `[E] / Enter` di pintu masuk luar Pos PGA ($dist < 52\text{px}$) di [`renderer.ts`](./src/app/Level2/engine/renderer.ts) dan [`gameEngine.ts`](./src/app/Level2/engine/gameEngine.ts).
+      - **Sinkronisasi Animasi Jarum Stylus**: Jarum tinta merah pada drum seismograf ruangan PGA bergerak vertikal real-time mengikuti gelombang normal halus di [`renderer.ts`](./src/app/Level2/engine/renderer.ts).
+      - **Kontrol Sentuh Mobile Borderless Transparan**: Menghapus container background gelap `bg-slate-950/75 border-2 rounded-2xl` pada D-Pad analog dan tombol aksi di [`EarthDiveGame.tsx`](./src/app/Level1/EarthDive/EarthDiveGame.tsx) dan [`TectonicGame.tsx`](./src/app/Level2/engine/TectonicGame.tsx).
+      - **Penyelarasan Visual Serasi, Lightbox Fullscreen & Panel Scrollable (Temuan 2 Area 4)**: Menghadirkan 4 tab edukatif (APD, Awan Panas Wedhus Gembel, Lahar Hujan Sungai & EWS, serta Peta Resmi Zonasi KRB Merapi `1.webp`) di [`DiscoveryModal.tsx`](./src/app/Level2/DiscoveryModal.tsx). Setiap materi dilengkapi visual yang serasi, gambar kiri dapat diklik untuk membuka modal Lightbox Fullscreen beresolusi tinggi, dan panel materi di sebelah kanan dapat di-scroll (`overflow-y-auto`) dengan scrollbar pixel retro kustom.
+      - **Asap Vulkanik Bergulung Alami & Magma Pijar Berkelok (Anti Bulat & Anti Lebay)**: Menggantikan 13 bulatan lingkaran kaku pada SVG Awan Panas dengan struktur kepulan awan piroklastik bergulung alami (*natural billowing ash plume*) 3 layer kedalaman yang menyatu padu dan proporsional (bebas bentuk aneh/lebay), aksen lengkungan puncak awan yang lembut, kubah kawah membara, serta alur lelehan magma kental berkelok dengan cabang sekunder dan percikan batu pijar.
+      - **Transformasi Portal Pintu Menjadi Gapura Lereng Merapi (`drawPosPgaExitGapura`)**: Menggantikan rendering pintu kelas indoor `drawClassroomExitDoor` dengan gapura pedesaan berornamen pilar batu andesit bertingkat & bata merah, atap limasan / mini joglo terakota dengan mahkota pataka puncak, lentera pos ronda hangat pada tiang kayu, plang berbingkai `JALUR SIMULASI / MENUJU AREA 5 ➔`, lorong jalan terbuka beraspal dengan panah hijau lantai `➔` (serta palang rintangan serong kuning-hitam saat terkunci), dan floating banner beranimasi `[JALUR MENUJU SIMULASI ERUPSI]` di [`renderer.ts`](./src/app/Level2/engine/renderer.ts).
+      - **Verifikasi Build**: Lolos kompilasi TypeScript dan bundler Vite `npm run build` dengan 0 error (2.17s).
+68. **Integrasi Foto Nyata Banjir Lahar Dingin, Penyesuaian Tangga Area 6, Eliminasi Emotikon ke Ikon Pixel Art 2D Lintas Level & Area, Perbaikan Bug Stale Closure Popup Interaksi NPC Level 2, serta Penyeragaman Penuh Gaya Popup Bawah & Prompt [E] / Enter (Level 1 & Level 2)**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Ganti foto materi banjir lahar dingin di modal temuan (Temuan 3 Area 6 dan Tab 3 Temuan 2 Area 4) menggunakan foto dokumentasi nyata `images.jpeg`.
+      2. Perbaiki posisi tangga di rumah pemukiman Area 6 agar menapak rapi di tanah dan bersandar alami pada lereng atap.
+      3. Jangan gunakan emotikon sistem operasi di semua level dan area, ganti dengan style pixel art 2D yang serasi.
+      4. Perbaiki bug popup interaksi NPC di Level 2 yang tetap menempel dan tidak mau hilang meskipun karakter pemain sudah berjalan jauh.
+      5. Samakan style popup bawah antara Level 1 dan Level 2 menggunakan card popup besar Level 2 yang tebal, beranimasi, dan berikon siaran.
+      6. Samakan style kotak dan teks `[E] Bicara` di atas NPC Level 1 menjadi `[E] / Enter` persis seperti di Level 2.
+      7. Samakan style banner portal dan hindari tabrakan teks dengan kotak `[E] / Enter` di Level 1 seperti yang ada di Level 2.
+    - **Hasil Implementasi & Verifikasi**:
+      - **Foto Nyata Lahar Dingin**: Disematkan ke `public/images.jpeg` dan dihubungkan ke [`DiscoveryModal.tsx`](./src/app/Level2/DiscoveryModal.tsx) untuk materi lahar hujan dan pascabencana Merapi, lengkap dengan dukungan Lightbox Fullscreen.
+      - **Presisi Tangga Pemukiman Area 6**: Di [`renderer.ts`](./src/app/Level2/engine/renderer.ts), kaki tangga menapak tanah pada $y: 354$ dengan bantalan dan bayangan, bersandar di genteng atap $y: 254$, dengan 7 rungs proporsional.
+      - **Ikon Pixel Art 2D Kustom**: Seluruh emoji OS dibersihkan dan digantikan dengan ikon SVG pixel 2D kustom (`rain`, `rock`, `prohibited`, `runner`, `siren`, `dot-yellow`, `dot-red`, `dot-orange`) di [`PixelIcon.tsx`](./src/components/PixelIcon.tsx).
+      - **Resolusi Stale Closure Popup NPC Level 2**: Di [`TectonicGame.tsx`](./src/app/Level2/engine/TectonicGame.tsx), menambahkan `nearPromptRef` dan `discoveredInAreaRef` untuk memutus stale closure di dalam RAF loop, memastikan `setNearInteractablePrompt(null)` terpanggil seketika saat pemain menjauh. Radius interaksi di [`npcManagerL2.ts`](./src/app/Level2/engine/npcManagerL2.ts) diperketat ke 46px.
+      - **Card Popup Bawah Besar Level 1**: Di [`EarthDiveGame.tsx`](./src/app/Level1/EarthDive/EarthDiveGame.tsx), tombol/pill kecil digantikan oleh card popup besar Level 2 (`w-[min(94vw,860px)]`, border amber 3.5px, background slate-950/98, ikon siaran `<PixelIcon name="broadcast" size={24} />`, teks Plus Jakarta Sans tebal kapital, dan animasi pantulan lembut).
+      - **Standarisasi Kotak `[E] / Enter`**: Teks `[E] BICARA` digantikan dengan `[E] / Enter` di Level 1 [`renderer.ts`](./src/app/Level1/EarthDive/engine/renderer.ts), dengan styling kotak pill hitam berbingkai kuning `#facc15` 1.5px dan font Plus Jakarta Sans tanpa segitiga balon ucapan, seragam dengan Level 2.
+      - **Pemisahan Vertikal Banner Portal & Kotak Prompt**: Di [`sprites.ts`](./src/app/Level1/EarthDive/engine/sprites.ts), banner portal dinaikkan ke $y - 38 + \text{bob}$ dengan desain rounded badge Level 2, dan kotak prompt diposisikan di $y - 10 + \text{bounce}$, menghilangkan tabrakan teks sepenuhnya.
+      - **Verifikasi Build**: Lolos kompilasi TypeScript dan bundler Vite `npm run build` dengan 0 error (2.44s).
+69. **Standardisasi Karakter NPC Lintas Level (5 Anggota Tim Resmi), Preservasi 16 Siswa Ruang Kelas SMP (Level 2 Area 2), Evaluator Gerbang Tunggal Bu Tyas, Sistem Floating Badge Pixel Kaca Pembesar [🔍], dan Redesain Maskot Resqy Burung Hantu 2D Pixel**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Standardisasi karakter NPC di seluruh area Level 1 dan Level 2 menjadi 5 karakter tetap: **Zidane, Zahra, Ican, Lintang, dan Bu Tyas**.
+      2. Pengecualian khusus: Level 2 Area 2 (Ruang Kelas SMP) mempertahankan 16 murid kelas dengan guru Bu Tyas, M.Pd.
+      3. Karakteristik & profil visual:
+         - **Zidane**: Kulit putih, rambut agak berantakan, kacamata cool, baju hitam, sifat pintar & cool.
+         - **Zahra**: Cantik, imut, gemesin, kacamata bulat emas, kerudung biru, baju pink, sifat ceria.
+         - **Ican**: Rambut ikal mengembang, sifat agak ngeselin / playful tapi edukatif.
+         - **Lintang**: Kerudung hijau (ijo), sifat pintar & analitis/sistematis.
+         - **Bu Tyas**: Kacamata dosen, kerudung hitam anggun, sifat dosen pembimbing & evaluator bijaksana.
+      4. Otoritas evaluasi: Bu Tyas menguji tantangan Wordle di gerbang Level 1 dan TTS Crossword di gerbang Level 2 (Area 1, 3, 4, 6).
+      5. Materi edukasi diakses lewat NPC; NPC pemegang materi wajib memiliki floating badge 2D pixel **kaca pembesar [🔍]** di atas kepala (emas berdenyut jika belum dibaca, hijau centang jika sudah dibaca).
+      6. Redesain maskot Resqy dari robot menjadi burung hantu bijak 2D pixel ("Kuk-kuuk!").
+      7. Preservasi outfit khusus Level 1: baju tambang (Kerak Bumi), cryo hazard suit (Mantel, Inti Luar, Inti Dalam), scuba gear (Divergen), kasual/formal (Permukaan, Konvergen, Transform, Level 2).
+    - **Hasil Implementasi & Verifikasi**:
+      - **Sprite & Bust Portraits 5 Karakter**: Generator sprite dinamis dan bust portrait transparan (`getZidanePortrait`, `getZahraPortrait`, `getIcanPortrait`, `getLintangPortrait`, `getBuTyasPortrait`) di Level 1 ([`npcSprites.ts`](./src/app/Level1/EarthDive/engine/npcSprites.ts)) dan Level 2 ([`npcSpritesL2.ts`](./src/app/Level2/engine/npcSpritesL2.ts)).
+      - **Floating Badge Kaca Pembesar [🔍]**: Indikator material melayang diimplementasikan di renderer Level 1 ([`renderer.ts`](./src/app/Level1/EarthDive/engine/renderer.ts)) dan Level 2 ([`renderer.ts`](./src/app/Level2/engine/renderer.ts)) dengan animasi denyut emas (belum dibaca) dan hijau zamrud centang (sudah dibaca).
+      - **Preservasi 16 Siswa Kelas SMP**: Seluruh 16 murid di Level 2 Area 2 tetap aktif di semua fase mitigasi (duduk, merunduk di kolong meja dengan tas ransel di kepala, dan evakuasi keluar) dengan guru Bu Tyas, M.Pd. di [`npcManagerL2.ts`](./src/app/Level2/engine/npcManagerL2.ts), [`renderer.ts`](./src/app/Level2/engine/renderer.ts), dan [`dialogueDataL2.ts`](./src/app/Level2/dialogueDataL2.ts).
+      - **Evaluator Bu Tyas**: Dialog dan pemicu evaluasi Wordle Level 1 (Zona 1-7) dan TTS Level 2 (Area 1, 3, 4, 6) dialihkan kepada Bu Tyas, M.Pd.
+      - **Maskot Burung Hantu Resqy**: Sprite in-world, ikon profil, dan naskah briefing Maskot Resqy diredesain menjadi burung hantu pixel cerdas berseru *"Kuk-kuuk!"*.
+      - **Distribusi Alami Jumlah NPC per Area**: Mengeliminasi pemaksaan 5 NPC di setiap zona/area demi menghindari penumpukan visual. Jumlah NPC disesuaikan dengan proporsi orisinalnya (Level 1 Zona 0: 2 NPC [Zidane, Zahra], Zona 1: 4 NPC, Zona 2: 5 NPC, Zona 3: 5 NPC, Zona 4 Inti Dalam: 3 NPC [Zidane, Zahra, Bu Tyas], Zona 5: 5 NPC, Zona 6: 4 NPC, Zona 7: 4 NPC; Level 2 Area 1: 5 NPC, Area 2: 16 Siswa + Bu Tyas + Resqy, Area 3: 4 NPC, Area 4: 4 NPC, Area 5: Warga Destana, Area 6: 5 NPC) dengan karakter yang selalu dipilih secara konsisten dari 5 karakter inti.
+      - **Zero-Regression Compatibility**: Seluruh ID legacy NPC dipetakan sebagai alias di `CHARACTER_PROFILES`, `DIALOGUE_REGISTRY`, dan `npcManager` menjamin keamanan progres siswa.
+      - **Verifikasi Build**: Lolos kompilasi TypeScript dan bundler Vite `npm run build` dengan 0 error (4.21s).
+70. **Penyelarasan Materi Sains, Distribusi Proporsional NPC Lapisan Dalam (Mantel s.d. Inti Dalam), Koreksi Proksimitas Interaksi & Mismatch Dialog Batas Konvergen/Transform, Isolasi State Inti Dalam, Penyembunyian Radar Batas Tektonik, Relokasi Kontrol Kondisi Konvergen, dan Eliminasi NPC Zidane & Sismograf di Batas Transform**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Di area Kerak Bumi, materi sains hanya boleh ada di Lintang, jangan ada duplikasi di Zahra.
+      2. Jangan gunakan sebutan generik "Peneliti" di dialog dan prompt interaksi, sesuaikan dengan nama asli karakter NPC.
+      3. Di lapisan mantel ke dalam sampai inti dalam, kurangi jumlah NPC secara bertahap (makin dalam lapisannya, makin sedikit NPC-nya); di lapisan dalam cukup NPC pembawa materi dan Bu Tyas saja.
+      4. Di Batas Divergen, hapus duplikasi materi pada NPC Ican, materi cukup di Lintang.
+      5. Di Batas Konvergen, perbaiki anomali posisi dan proksimitas interaksi NPC Zidane dan Zahra agar tidak bisa ditekan [E] dari kejauhan.
+      6. Di Inti Dalam, perbaiki bug di mana membaca satu materi langsung menandai kedua materi terbaca.
+      7. Di Batas Konvergen, perbaiki dialog Resqy tentang 2 kondisi tumbukan lempeng dan hapus tombol ekstra `[🦉 INFO 2 KONDISI]`.
+      8. Perbaiki dialog tertukar (bicara ke Zidane muncul Zahra, bicara ke Ican muncul Zidane) di Batas Konvergen dan Transform.
+      9. Hilangkan radar mini-map di area-area batas tektonik (Divergen, Konvergen, Transform).
+      10. Pindahkan tombol pilihan kondisi konvergen (`DARATAN`, `LAUTAN`, `ULANG`) ke pojok kanan atas seperti kontrol simulasi di Level 2.
+      11. Di Batas Transform, hapus NPC Zidane dan materi "Temuan 1: Sismograf & Bukti 20 Lempeng Bumi". Syarat gerbang Bu Tyas hanya membutuhkan materi Zahra (Sesar San Andreas).
+    - **Hasil Implementasi & Verifikasi**:
+      - **Penyelarasan Materi Kerak Bumi**: Duplikasi materi di Zahra dihapus; Lintang menjadi pemegang tunggal Discovery 0 (`trans_seismo` / Kerak Benua vs Samudra).
+      - **Standarisasi Nama Asli Karakter**: Teks label generik "Peneliti" dibersihkan 100% dari seluruh dialog, floating prompt, dan title bar.
+      - **Distribusi Proporsional Kedalaman**: Mantel (Zona 2) 3 NPC (Zahra [🔍], Lintang [🔍], Bu Tyas); Inti Luar (Zona 3) 3 NPC (Zahra [🔍], Lintang [🔍], Bu Tyas); Inti Dalam (Zona 4) 3 NPC (Zidane [🔍], Zahra [🔍], Bu Tyas).
+      - **Pembersihan Materi Divergen**: Ican di Batas Divergen murni sebagai pemandu keselamatan tanpa materi duplikat.
+      - **Koreksi Proksimitas Konvergen**: Ambang batas deteksi interaksi diperketat dan diselaraskan ke posisi fisik NPC Zidane dan Zahra.
+      - **Isolasi State Inti Dalam**: State `ic_disc1` dan `ic_disc2` dipisahkan secara independen baik in-memory maupun di `localStorage`.
+      - **Narasi 2 Kondisi Resqy & Clean HUD**: Penjelasan Resqy mencakup Benua-Benua dan Samudra-Benua; tombol ekstra `[🦉 INFO 2 KONDISI]` dihapus.
+      - **Resolusi Mismatch Dialog**: Relasi ID speaker dan pohon dialog di [`dialogueData.ts`](./src/app/Level1/EarthDive/dialogueData.ts) diselaraskan 100%.
+      - **Radar Mini-Map Tersembunyi**: Kondisi `hudData.zoneIndex >= 5` di [`EarthDiveGame.tsx`](./src/app/Level1/EarthDive/EarthDiveGame.tsx) menyembunyikan radar pada ketiga zona batas tektonik.
+      - **Relokasi Tombol Kondisi**: Tombol `DARATAN`, `LAUTAN`, dan `ULANG` dipindahkan ke pojok kanan atas dengan layout vertikal rapi.
+      - **Eliminasi Zidane & Sismograf di Batas Transform**: `z7_npc_zidane` dihapus dari [`zones.ts`](./src/app/Level1/EarthDive/engine/zones.ts) dan [`npcManager.ts`](./src/app/Level1/EarthDive/engine/npcManager.ts). Syarat gerbang Bu Tyas di [`EarthDiveGame.tsx`](./src/app/Level1/EarthDive/EarthDiveGame.tsx) hanya memerlukan Temuan 16 (Zahra). Dialog diselaraskan bebas sismograf.
+      - **Penyeragaman Desain Floating Badge Materi Edukasi [🔍] Level 2 Menjadi Identik Level 1**: Menggantikan desain pin lingkaran lama di Level 2 (`drawNpcMaterialBadgeL2`) dengan kartu pill badge melayang (`pillW: 68, pillH: 17`) berbingkai emas/zamrud dengan pointer segitiga ke kepala NPC, ikon pixel art kaca pembesar, dan teks status `MATERI` / `BACA ✓` persis seperti di Level 1.
+      - **Verifikasi Build**: Lolos kompilasi TypeScript `npx tsc --noEmit` dengan 0 error dan `npm run build` sukses 100%.
+71. **Transformasi Area 4, 5, dan 6 Level 2: Relokasi & Konsistensi NPC Pos PGA (Zidane & Zahra), Perbesaran Tipografi Materi Edukasi & Integrasi Foto Nyata Wedhus Gembel, Penonaktifan Interaksi NPC Selama Simulasi Erupsi, Presisi Plang Posko BPBD, dan Konversi Kapsul Akhir Menjadi Mobil Truk Evakuasi Resmi BNPB/BPBD**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Di Area 4 (Pos Pengamatan Merapi), font materi edukasi diperbesar lagi agar mudah dibaca, dan gambar materi diperbesar proporsional mengisi kotak.
+      2. Seluruh materi di Area Pos Pengamatan Merapi (Temuan 1 Zahra, Seismograf Lab Indoor, Temuan 2 Lintang) font-nya diperbesar terutama di sebelah kanan gambar, serta gambar ilustrasi diagram Wedhus Gembel diganti foto asli dari berkas `images (1).jpeg`.
+      3. Di Area 5 (Simulasi Gunung Meletus), saat simulasi erupsi aktif dibuat agar pemain tidak bisa berinteraksi/terdistraksi dialog santai dengan NPC.
+      4. Di Area 5 (Map 3 Kantor BPBD), perbaiki tulisan plang nama posko agar sesuai di dalam bingkai dan tidak keluar dari kotak plang.
+      5. Di Area 6 (Evakuasi Akhir), bentuk kapsul fiksi ilmiah diganti menjadi mobil truk evakuasi resmi BNPB/BPBD yang sama persis dengan mobil truk penyelamatan di area simulasi erupsi.
+    - **Hasil Implementasi & Verifikasi**:
+      - **Relokasi NPC Pos PGA & Hapus Karakter Asing**: Zidane ditempatkan di dalam ruang observasi PGA di depan instrumen seismograf telemetri menggantikan Pak Surya (Pak Surya dihapus 100%). Zahra diposisikan di lereng luar (`x: 380`) memandu data seismik Merapi. Zahra dan Lintang mengenakan seragam medis lapangan (`medical_field`), Bu Tyas mengenakan kebaya guru formal (`teacher_kebaya`).
+      - **Tipografi Materi & Foto Nyata Wedhus Gembel**: Seluruh font teks edukasi di sebelah kanan gambar diperbesar di [`DiscoveryModal.tsx`](./src/app/Level2/DiscoveryModal.tsx) dan [`SeismographModal.tsx`](./src/app/Level2/SeismographModal.tsx). Ilustrasi awan panas diganti foto dokumentasi asli erupsi Merapi [`public/wedhus_gembel.jpg`](./public/wedhus_gembel.jpg) yang tampil penuh di kotak visual.
+      - **Guard Interaksi NPC Saat Simulasi Erupsi**: Ditambahkan parameter `allowInteraction` di [`npcManagerL2.ts`](./src/app/Level2/engine/npcManagerL2.ts). Saat `isVolcanoSimActive` di [`gameEngine.ts`](./src/app/Level2/engine/gameEngine.ts), NPC berpatroli santai tanpa menghadapkan pandangan ke pemain, balon dialog `[E]` disembunyikan di [`renderer.ts`](./src/app/Level2/engine/renderer.ts), dan klik canvas pada NPC diabaikan di [`TectonicGame.tsx`](./src/app/Level2/engine/TectonicGame.tsx) agar fokus murni pada instruksi darurat simulasi.
+      - **Presisi Plang Posko BPBD**: Papan plang diperlebar ke 146px × 24px, badge oranye BPBD 28px × 18px (`maxWidth: 22px`), dan teks baris ganda `POSKO UTAMA BENCANA` / `KABUPATEN SLEMAN / YOGYAKARTA` (`maxWidth: 105px`) di [`renderer.ts`](./src/app/Level2/engine/renderer.ts) menjamin estetika bebas clipping.
+      - **Mobil Truk Evakuasi Resmi BPBD Area 6**: Objek kapsul akhir dirombak total menjadi Truk Evakuasi Rescue BPBD via pemanggilan langsung `drawEvacuationRescueTruck` di `drawFinalEvacuationCapsuleL2`, lengkap dengan bodi oranye, lis chevron kuning-hitam, supir di kabin, kanopi, sirine rotator merah-biru, sorot lampu LED kristal saat terbuka, serta floating badge `MOBIL EVAKUASI`.
+      - **Penyelarasan Warna Garis Gunung Merapi Area 5**: Garis lembah alur lahar di Area 5 yang sebelumnya berwarna cokelat kemerahan (`#451a03`) pada kondisi pasca-erupsi diganti menjadi warna slate alami `#334155` yang 100% serasi dan identik dengan tampilan siluet Gunung Merapi di Area 6.
+      - **Animasi Lelehan Magma Letusan Eksplosif**: Mengimplementasikan sistem progresi lelehan magma dinamis (`magmaFlowProgress`) yang mengalir turun dari puncak kawah menuruni lereng saat letusan eksplosif meledak (Fase 4 AWAS), membentuk cabang kiri dengan lidah kolam teras dan kolam dasar, cabang kanan melengkung dengan lidah magma tengah dan kolam dasar luas membara, serta 4 busur semburan lava puncak (*crater lava spray arcs*), didukung visual multi-layer dan gelembung permukaan di [`renderer.ts`](./src/app/Level2/engine/renderer.ts) dan [`gameEngine.ts`](./src/app/Level2/engine/gameEngine.ts).
+      - **Verifikasi Build**: Lolos pengujian kompilasi TypeScript dan Vite build `npm run build` dengan 0 error (exit code 0).
+72. **Implementasi Skenario Erupsi Efusif Area 5 Level 2, Overhaul Animasi Lelehan Magma Seamless, Lanskap Hilir Sungai Dinamis Multi-Submap, Kepulan Asap Amorf Vulkanik Abu-Abu Kehitaman, dan Stabilisasi Tremor Evakuasi**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Tambahkan animasi lelehan magma yang keluar saat gunung meletus pada letusan eksplosif sesuai sketsa referensi, mengalir pelan (~14s) dari atas ke bawah, dan hilangkan garis pinggir (border) agar tekstur menyatu mulus (*seamless*).
+      2. Buat tipe letusan efusif berdampingan dengan tipe eksplosif pada simulasi Area 5. Efusif bercirikan: tekanan gas rendah, magma cair encer, minim ledakan (tanpa busur percikan dan tanpa bom vulkanik jatuh), dan gempa tremor ringan konstan.
+      3. Tambahkan latar pemandangan hilir sungai dekat gunung di skenario efusif dengan perspektif bertahap (Map 1 dekat sungai, Map 2 menjauh, Map 3 sangat jauh) dan evolusi kekeruhan air dinamis (jernih -> mulai keruh -> keruh pekat sedimen vulkanik alami, tanpa warna merah menyala).
+      4. Perbaiki masalah sungai melayang di Map 3 agar menapak menyatu dengan bukit dan pemukiman.
+      5. Ganti bentuk kepulan asap dari bulatan-bulatan kaku lingkaran menjadi kepulan realistis yang melimpah dan amorf bergelombang, dengan warna abu-abu kehitaman pekat.
+      6. Selaraskan intensitas gempa saat seluruh warga selesai dievakuasi menuju mobil evakuasi (`fase4_awas_truck`) agar tetap bergetar ringan konstan (tanpa lonjakan mendadak).
+      7. Di area simulasi gunung meletus, pasang papan jalur evakuasi dengan panah ke kanan di ketiga map dan pada kedua kondisi (eksplosif dan efusif).
+    - **Hasil Implementasi & Verifikasi**:
+      - **Overhaul Animasi Lelehan Magma Merapi**: Mengalir perlahan (~14 detik) menelusuri lereng kiri dan kanan sesuai sketsa referensi pengguna, dirender dengan sistem multi-pass tanpa garis tepi kaku sehingga menyatu sempurna.
+      - **Skenario Erupsi Efusif Lengkap**: Tombol switcher HUD `EKSPLOSIF` / `EFUSIF` aktif; letusan efusif murni menampilkan danau lava kawah dan lelehan menuruni lereng tanpa efek ledakan kawah, tanpa bom vulkanik jatuh, serta diiringi getaran tremor vulkanik ringan stabil (`0.7 - 0.8 SR`).
+      - **Lanskap Hilir Sungai Alami & Zero Floating**: Penataan urutan render (bukit latar belakang digambar duluan) dan pemanjangan lereng bantaran depan (*near bank slope*) ke seluruh submap (1, 2, dan 3) menyambung penuh dari bibir bawah sungai ($Y=254$) langsung ke lantai pemukiman ($Y=360$), mengeliminasi 100% celah abu-abu di Map 3. Kekeruhan air berevolusi dinamis dari jernih ke sedimen vulkanik keruh pekat (`#292524`, `#44403c`, `#334155`) dengan riak gelombang sinusoidal alami.
+      - **Kepulan Asap Amorf Vulkanik Realistis**: Mengganti `ctx.arc` dengan 28 kluster cumulus *Harmonic Perturbed Amorphous Polygons* 10-titik ber-radial gradient warna abu-abu kehitaman pekat (`rgba(87, 83, 78)` hingga `rgba(28, 25, 23)`).
+      - **Konsistensi Tremor Fase Evakuasi Mobil**: Getaran gempa saat lari menuju mobil evakuasi (`fase4_awas_truck`) dikunci pada tremor vulkanik ringan (`0.7 + Math.sin(animTick * 0.2) * 0.25`), menyatu mulus tanpa lonjakan getaran.
+      - **Rambu Resmi Jalur Evakuasi BNPB (Panah Kanan ➔)**: Papan rambu jalur evakuasi resmi BNPB (`drawRambuJalurEvakuasiMerapi`) terpasang kokoh di tiang baja pada ketiga submap (Map 1, Map 2, Map 3) pada kedua kondisi erupsi di koordinat `x: 680`, `x: 1220`, dan `x: 1720`, lengkap dengan piktogram *running man*, panah ke kanan berdenyut, teks panduan arah adaptif, dan prompt proksimitas.
+      - **Verifikasi Build**: Lolos kompilasi TypeScript dan Vite build `npm run build` dengan 0 error (exit code 0).
+73. **Puncak Merapi Rusak/Kroak Pasca-Letusan Eksplosif, Aliran Lava Efusif 10 Cabang Tanpa Offset & Animasi Merayap Halus, Redesain Modal Status Merapi Krem Hangat, Lelehan Magma Area 6, Timer 15 Detik Evakuasi Warga, dan Modal Gagal Evakuasi**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Di kondisi eksplosif Area 5, saat gunung meletus buat gunungnya agak rusak/kroak (*caldera collapse*) pasca-letusan.
+      2. Di skenario efusif, perbanyak aliran lava yang keluar dari gunung sesuai sketsa garis merah pengguna, dan animasi turunnya diperlambat lagi jangan cepat-cepat.
+      3. Ganti skema warna kotak popup status fase Merapi (Fase 1-4) menjadi seperti gambar ketiga (Discovery Modal: nuansa perkamen krem hangat dan kayu retro).
+      4. Di Area 6 (Barak Pengungsian & Pemulihan), buat gunung di kejauhan tampak masih ada magmanya tipis-tipis sesuai sketsa garis merah gambar keempat.
+      5. Pada fase evakuasi warga (Fase 4 Awas), waktu 15 detik yang sebelumnya beku/stuck harus berjalan mundur dinamis (*countdown timer*), dan jika waktu habis sebelum ketiga warga diselamatkan, terjadi kegagalan (modal gagal evakuasi) dengan tombol ulangi/coba lagi (*retry*).
+      6. Pastikan banyak aliran lava hanya ada di skenario efusif, sedangkan skenario eksplosif tetap mempertahankan 3 aliran lava klasik seperti semula.
+      7. Perbaiki offset/celah pada aliran lava kawah agar berhulu pas di dalam danau kawah magma, dan perlambat lagi animasi turunnya lava.
+    - **Hasil Implementasi & Verifikasi**:
+      - **Puncak Merapi Rusak / Kroak Eksplosif**: Mengimplementasikan `isExplosiveErupted` di `drawVolcanoSimulationAtmosphere` ([`renderer.ts`](./src/app/Level2/engine/renderer.ts)) yang merender takik kaldera runtuh bergerigi (*jagged caldera notch*) dengan batuan andesit gelap (`#18181b`), tebing rekahan (`#27272a`), dan garis retakan (`#09090b`), serta merelokasi asal semburan kolom abu letusan ke rekahan takik kaldera.
+      - **Aliran Lava Efusif 10 Cabang Tanpa Offset**: Mengintegrasikan 10 cabang aliran lava menuruni lereng (`farLeftRidgePoints`, `leftFlankPoints`, `leftMidBranchPoints`, `trunkPoints`, `centerLeftPoints`, `centerRightPoints`, `rightFlankPoints`, `rightMidBranchPoints`, `rightLowerBranchPoints`, `farRightRidgePoints`) dan 7 kolam delta di [`renderer.ts`](./src/app/Level2/engine/renderer.ts) khusus pada skenario efusif, mengeliminasi offset bibir kawah (`topX - 24 * s` dan `topX + 22 * s`), serta mempertahankan 3 cabang klasik pada skenario eksplosif.
+      - **Deselerasi Aliran Lava (~55 Detik)**: Menurunkan laju aliran `flowRate` efusif ke `0.00030` per frame dan initial progress `0.01` di [`gameEngine.ts`](./src/app/Level2/engine/gameEngine.ts), menghasilkan pergerakan lava kental andesitik yang merayap perlahan dan anggun (~55 detik total).
+      - **Redesain Modal Status Merapi Krem Hangat**: Mengubah palet warna [`VolcanoPhaseModal.tsx`](./src/app/Level2/VolcanoPhaseModal.tsx) menjadi perkamen krem hangat (`#fef3c7`, `#fffbeb`, `#fef9c3`) dengan bingkai kayu retro (`#78350f`, `#b45309`, `#451a03`), paku rivet kuningan, pita status warna resmi PVMBG berbingkai kayu, teks kontras tinggi, dan tombol kayu interaktif.
+      - **Lelehan Magma Tipis Area 6**: Mengimplementasikan `drawArea6DistantLavaVeins` di [`renderer.ts`](./src/app/Level2/engine/renderer.ts) dengan 3-pass rendering halus (oranye transparan, merah-oranye, dan kilau inti kuning emas) pada siluet kejauhan Gunung Merapi di Area 6 sesuai sketsa pengguna.
+      - **Timer Hitung Mundur 15 Detik Evakuasi Warga**: Mengaktifkan pengurangan `sim.qteTimer -= 1` per frame pada `fase4_awas_rescue` di [`gameEngine.ts`](./src/app/Level2/engine/gameEngine.ts) (15 detik = 900 frame) dengan tampilan detik real-time di HUD telemetri.
+      - **Sistem & Modal Gagal Evakuasi (`VolcanoRescueFailedModal.tsx`)**: Mengalihkan simulasi ke state `failed` saat waktu habis, memicu audio darurat, menampilkan modal gagal bernuansa kayu-krem hangat dengan tips mitigasi BNPB, dan menyediakan tombol coba lagi instan `[ ↺ ] ULANGI EVAKUASI WARGA (15 DETIK)` via `retryVolcanoRescuePhase(state)` tanpa mereset seluruh fase dari awal.
+      - **Verifikasi Build**: Lolos kompilasi TypeScript dan Vite build `npm run build` dengan 0 error (exit code 0 dalam 2.22s).
+74. **Platforming Parkour Pilar Basal Mantel Bumi, Penukaran Map & Atmosfer Inti Luar vs Inti Dalam, Sistem Pembelian Baju Pelindung Geologis Berbasis Kristal Energi, Alur Dialog Pasca-Wordle Bu Tyas, dan Pembesaran Modal Peringatan Bahaya Ekstrem**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Di Level 1 area mantel bumi, buat lintasan platform parkur dengan danau magma di bawahnya; sesuaikan letak NPC dan kristal agar berada di atas platform aman (jangan sampai di dalam magma).
+      2. Tukar map antara Inti Luar dan Inti Dalam (mapnya saja), dengan efek magnet dan lucutan petir tetap berada di Inti Luar.
+      3. Ubah warna dan suasana kondisi: Inti Luar tetap kuning keemasan (seperti kondisi Inti Dalam sebelumnya), dan Inti Dalam dibuat agak gelap tanahnya dan magmanya (seperti kondisi Inti Luar sebelumnya).
+      4. Alihfungsikan kristal energi agar berguna untuk membeli baju pelindung geologis. Di Kerak Bumi sediakan NPC Teknisi setelah Bu Tyas untuk membeli baju pelindung termal mantel bumi menggunakan kristal kerak; setelah menjawab pertanyaan Bu Tyas, Bu Tyas berbicara lagi mengarahkan ke NPC Teknisi tersebut.
+      5. Terapkan konsep serupa secara bertahap: di Mantel Bumi beli baju pelindung untuk ke Inti Luar, di Inti Luar beli baju pelindung untuk ke Inti Dalam, dan di Inti Dalam beli baju selam untuk ke Batas Divergen. Harga baju pelindung seharga 1 kristal yang didapat di area terkait.
+      6. Hapus kotak narasi teknisi pada modal pembelian baju dan perbesar font teksnya agar mudah dibaca.
+      7. Perbesar ukuran popup peringatan bahaya ekstrem beserta font-nya saat pemain mencoba melompat ke portal tanpa memakai baju pelindung yang sesuai.
+    - **Hasil Implementasi & Verifikasi**:
+      - **Platforming Pilar Basal Mantel Bumi**: Topografi Zona 2 di [`zones.ts`](./src/app/Level1/EarthDive/engine/zones.ts) dirombak menjadi deretan pilar basal hitam (`basalt_pillar`) terapung di atas danau lava konveksi. NPC Zahra ($px=380$), Lintang ($px=700$), Bu Tyas ($px=1070$), dan Kristal Energi ($px=540$) ditata aman di atas pilar.
+      - **Penukaran Map Inti Luar vs Inti Dalam**: Map Zona 3 mengadopsi kubah batuan datar dengan efek lucutan listrik dan medan magnetik kuning hangat; Map Zona 4 mengadopsi teras heksagonal purba melintasi jurang fluida dengan nuansa gelap pekat; serta penambahan kristal energi baru di Inti Dalam ($px=590, py=280$).
+      - **Sistem Merchant Baju Pelindung Geologis**: 4 NPC Teknisi (Joko di Kerak, Rudi di Mantel, Dian di Inti Luar, Arya di Inti Dalam) terpasang di samping Bu Tyas sebelum Portal Turun. Modal transaksi [`SuitMerchantModal.tsx`](./src/app/Level1/EarthDive/SuitMerchantModal.tsx) melayani penukaran Baju Termal MK-1, Baju Elektromagnetik MK-2, Exo-Suit Adamantine MK-3, dan Baju Selam Scuba dengan auto-equip dan persistensi per user ID.
+      - **Gatekeeper Portal & Dialog Berkesinambungan Bu Tyas**: Dialog kelanjutan otomatis Bu Tyas pasca-Wordle di [`dialogueData.ts`](./src/app/Level1/EarthDive/dialogueData.ts) dan [`EarthDiveGame.tsx`](./src/app/Level1/EarthDive/EarthDiveGame.tsx) mengarahkan siswa ke Teknisi. Portal memblokir akses ke area berikutnya jika baju belum dipakai.
+      - **Avatar Sheet 4 Tingkat Baju Pelindung**: Desain rendering sprite dinamis di [`studentAvatarSheet.ts`](./src/utils/studentAvatarSheet.ts) untuk mode `hazard_mantle`, `hazard_outer`, `hazard_inner`, dan `diver`.
+      - **UI Modal Refinement**: Kotak narasi teknisi dihapus dari `SuitMerchantModal.tsx`, font diperbesar; modal peringatan `suitWarningModal` di `EarthDiveGame.tsx` diperbesar menjadi `max-w-2xl sm:max-w-3xl` dengan ikon 80x80px dan font sains yang lebih besar.
+      - **Verifikasi Build**: Lolos kompilasi TypeScript dan Vite build `npm run build` dengan 0 error (exit code 0 dalam 2.73s).
+75. **Audit Komprehensif Alur Dialog Interaktif, Resolusi Bug Freeze Cabang Pilihan, dan Penyelarasan Penuh Identitas & Potret NPC Lintas Level 1 & Level 2**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Selesaikan masalah saat pemain memilih opsi kedua pada percabangan dialog yang menyebabkan game langsung membeku (freeze) dan hanya bisa lanjut setelah spasi ditekan.
+      2. Periksa seluruh percakapan di Level 1 dan Level 2 untuk memastikan tidak ada lagi error atau aliran dialog yang buntu.
+      3. Periksa dan benerin ketidaksesuaian NPC di Level 1 dan Level 2: ada beberapa NPC yang di percakapannya menyebut nama tertentu (misal Zidane), tetapi bentuk/potret NPC-nya malah karakter lain (misal Lintang).
+    - **Hasil Implementasi & Verifikasi**:
+      - **Resolusi Bug Freeze Pilihan Kedua**: Menambahkan node terminal `done` yang hilang pada `PROF_ANDINI_DIALOGUE`, mengoreksi case-sensitivity `start_tour_one` di `INSPEKTUR_BUDI_DIALOGUE`, serta menyambungkan percabangan di `PROF_RADITYA_DIALOGUE`.
+      - **Audit Integritas Pohon Dialog**: Menjalankan automated traversal script ke 38 pohon dialog Level 1 dan 28 pohon dialog Level 2. Hasil: 0 broken transitions.
+      - **Penyelarasan NPC Level 1**: Profil `prof_sarah` di Zona 2 diperbaiki ke Zahra (`#f472b6`, potret `zahra`), `prof_lestari` di Zona 4 diperbaiki ke Zahra, `dr_farhan` di Zona 4 diperbaiki ke Lintang (`#4ade80`, potret `lintang`), dan `PETUGAS_RUDI_TRANS_DIALOGUE` di Zona 7 diperbaiki ke pembicara `lintang`.
+      - **Penyelarasan NPC Level 2**: Profil `pak_joko` di Area 5 dikembalikan ke Pak Joko Destana (`#22c55e`, potret `pak_joko`), profil `mbak_rina` di Area 5 dikembalikan ke Mbak Rina Warga Siaga (`#f87171`, potret `mbak_rina`), NPC `l2_sim5_npc_satria` dihubungkan ke Komandan Satria (`#f97316`, potret `komandan_satria`) dengan dialog kemenangan `satria_sim_victory`, NPC `l2_shelter_npc_ican` di Area 6 dihubungkan ke dialog Ican `dani_shelter_dialogue`, profil `bu_rahma` dan tipe map Area 3 diselaraskan ke `bu_tyas`, serta profil warisan `pak_slamet` dan `pak_hendra` dirapikan.
+      - **Refinement Antarmuka Modal & Edukasi**: Mempercantik visual `SuitMerchantModal.tsx`, merapikan narasi briefing Resqy, dan menyempurnakan istilah geologi menjadi *"punggungan tengah samudra (mid-ocean ridge)"*.
+      - **Verifikasi Build**: Lolos kompilasi TypeScript `npx tsc --noEmit` dengan 0 error dan `npm run build` sukses 100%.

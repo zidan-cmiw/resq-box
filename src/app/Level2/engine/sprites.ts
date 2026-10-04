@@ -227,7 +227,7 @@ export function drawPlatformL2(
 
     if (plat.label) {
       ctx.fillStyle = '#f59e0b';
-      ctx.font = "6px 'Press Start 2P', monospace";
+      ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(plat.label, w / 2, -5);
     }
@@ -282,7 +282,7 @@ export function drawPlatformL2(
 
     if (plat.label) {
       ctx.fillStyle = '#38bdf8';
-      ctx.font = "6px 'Press Start 2P', monospace";
+      ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(plat.label, w / 2, -16);
     }
@@ -334,7 +334,7 @@ export function drawPlatformL2(
 
     if (plat.label) {
       ctx.fillStyle = '#fde047';
-      ctx.font = "6px 'Press Start 2P', monospace";
+      ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(plat.label, w / 2, -14);
     }
@@ -606,7 +606,7 @@ export function drawDeepTrenchWater(
 
   // Label Peringatan Jurang Palung Laut
   ctx.fillStyle = '#38bdf8';
-  ctx.font = "6px 'Press Start 2P', monospace";
+  ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('PALUNG LAUT DALAM', x + w / 2, y + h - 14);
 
@@ -726,7 +726,7 @@ export function drawLanderCapsule(
   ctx.fillStyle = '#0f172a';
   ctx.fillRect(-26, -56, 52, 11);
   ctx.fillStyle = '#38bdf8';
-  ctx.font = "6px 'Press Start 2P', monospace";
+  ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('', 0, -48);
 
@@ -806,7 +806,7 @@ export function drawDiscoveryTotem(
   // Label Banner
   const bob = Math.sin(animTick * 0.08) * 3;
   ctx.fillStyle = '#f59e0b';
-  ctx.font = "6px 'Press Start 2P', monospace";
+  ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('TEMUAN GEOLOGI', x, y - 6 + bob);
 
@@ -913,14 +913,16 @@ export function drawGeothermalShaftPortal(
 
   // Banner hologram penanda tujuan
   const bob = Math.sin(animTick * 0.08) * 3;
+  ctx.font = 'bold 8.5px "Plus Jakarta Sans", sans-serif';
+  const textW = ctx.measureText(labelText).width;
+  const bannerW = Math.max(90, Math.round(textW + 18));
   ctx.fillStyle = isUnlocked ? 'rgba(6, 78, 59, 0.95)' : 'rgba(15, 23, 42, 0.95)';
-  ctx.fillRect(-65, -55 + bob, 130, 15);
+  ctx.fillRect(-bannerW / 2, -56 + bob, bannerW, 16);
   ctx.strokeStyle = isUnlocked ? '#34d399' : '#f59e0b';
   ctx.lineWidth = 1.5;
-  ctx.strokeRect(-65, -55 + bob, 130, 15);
+  ctx.strokeRect(-bannerW / 2, -56 + bob, bannerW, 16);
 
   ctx.fillStyle = isUnlocked ? '#fef08a' : '#facc15';
-  ctx.font = "bold 6px 'Press Start 2P', monospace";
   ctx.textAlign = 'center';
   ctx.fillText(labelText, 0, -44 + bob);
 
@@ -967,14 +969,16 @@ export function drawAscentHoistPortal(
 
   // Banner hologram ke atas
   const bob = Math.sin(animTick * 0.08) * 3;
+  ctx.font = 'bold 8.5px "Plus Jakarta Sans", sans-serif';
+  const textW2 = ctx.measureText(labelText).width;
+  const bannerW2 = Math.max(90, Math.round(textW2 + 18));
   ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
-  ctx.fillRect(-60, -75 + bob, 120, 15);
+  ctx.fillRect(-bannerW2 / 2, -76 + bob, bannerW2, 16);
   ctx.strokeStyle = '#38bdf8';
   ctx.lineWidth = 1.5;
-  ctx.strokeRect(-60, -75 + bob, 120, 15);
+  ctx.strokeRect(-bannerW2 / 2, -76 + bob, bannerW2, 16);
 
   ctx.fillStyle = '#7dd3fc';
-  ctx.font = "bold 6px 'Press Start 2P', monospace";
   ctx.textAlign = 'center';
   ctx.fillText(labelText, 0, -64 + bob);
 
@@ -1053,7 +1057,7 @@ export function drawSeismicVaultGate(
     ctx.strokeRect(-35, -42, 70, 14);
 
     ctx.fillStyle = '#4ade80';
-    ctx.font = "bold 6.5px 'Press Start 2P', monospace";
+    ctx.font = '900 10.5px "Plus Jakarta Sans", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('TERBUKA', 0, -32);
   } else {
@@ -1085,7 +1089,7 @@ export function drawSeismicVaultGate(
     ctx.strokeRect(-55, -45, 110, 16);
 
     ctx.fillStyle = '#fca5a5';
-    ctx.font = "bold 6px 'Press Start 2P', monospace";
+    ctx.font = '900 9.5px "Plus Jakarta Sans", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(label, 0, -34);
   }

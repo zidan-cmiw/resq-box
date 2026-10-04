@@ -154,9 +154,9 @@ export default function PixelEarthExploded({
                 y="4"
                 textAnchor="middle"
                 fill="#451a03"
-                fontFamily="'Press Start 2P', monospace"
-                fontSize="8"
-                fontWeight="bold"
+                fontFamily="'Plus Jakarta Sans', sans-serif"
+                fontSize="11"
+                fontWeight="900"
                 pointerEvents="none"
               >
                 KLIK BUMI ➔ LIHAT IRISAN
@@ -260,7 +260,6 @@ export default function PixelEarthExploded({
             <g
               stroke="#94a3b8"
               strokeWidth="1.8"
-              strokeDasharray="4 3"
               className="anim-projection-lines"
               pointerEvents="none"
             >
@@ -466,7 +465,7 @@ export default function PixelEarthExploded({
                 className="cursor-pointer hover:brightness-125"
               >
                 <path d="M 0 -8 L 6 -8 L 6 10 L 0 10" fill="none" stroke={isLitosferActive ? '#f59e0b' : '#94a3b8'} strokeWidth="1.5" />
-                <text x="10" y="3" fill={isLitosferActive ? '#facc15' : '#cbd5e1'} fontFamily="'Press Start 2P', monospace" fontSize="5.5" fontWeight="bold">
+                <text x="10" y="3" fill={isLitosferActive ? '#facc15' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="8" fontWeight="bold">
                   LITOSFER
                 </text>
               </g>
@@ -481,7 +480,7 @@ export default function PixelEarthExploded({
                 className="cursor-pointer hover:brightness-125"
               >
                 <path d="M 0 -36 L 6 -36 L 6 36 L 0 36" fill="none" stroke={isAstenosferActive ? '#f97316' : '#94a3b8'} strokeWidth="1.5" />
-                <text x="10" y="4" fill={isAstenosferActive ? '#f97316' : '#cbd5e1'} fontFamily="'Press Start 2P', monospace" fontSize="5.5" fontWeight="bold">
+                <text x="10" y="4" fill={isAstenosferActive ? '#f97316' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="8" fontWeight="bold">
                   ASTENOSFER
                 </text>
               </g>
@@ -496,7 +495,7 @@ export default function PixelEarthExploded({
                 className="cursor-pointer hover:brightness-125"
               >
                 <path d="M 0 -32 L 6 -32 L 6 32 L 0 32" fill="none" stroke={isBarisferActive ? '#eab308' : '#94a3b8'} strokeWidth="1.5" />
-                <text x="10" y="4" fill={isBarisferActive ? '#fde047' : '#cbd5e1'} fontFamily="'Press Start 2P', monospace" fontSize="5.5" fontWeight="bold">
+                <text x="10" y="4" fill={isBarisferActive ? '#fde047' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="8" fontWeight="bold">
                   BARISFER
                 </text>
               </g>
@@ -509,8 +508,8 @@ export default function PixelEarthExploded({
                   y="81"
                   textAnchor="middle"
                   fill="#ffffff"
-                  fontFamily="'Press Start 2P', monospace"
-                  fontSize="5"
+                  fontFamily="'Plus Jakarta Sans', sans-serif"
+                  fontSize="7.5"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
                 >
@@ -521,8 +520,8 @@ export default function PixelEarthExploded({
                   y="91"
                   textAnchor="middle"
                   fill="#fef08a"
-                  fontFamily="'Press Start 2P', monospace"
-                  fontSize="4.5"
+                  fontFamily="'Plus Jakarta Sans', sans-serif"
+                  fontSize="6.5"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
                 >
@@ -535,8 +534,8 @@ export default function PixelEarthExploded({
                   y="141"
                   textAnchor="middle"
                   fill="#ffffff"
-                  fontFamily="'Press Start 2P', monospace"
-                  fontSize="5"
+                  fontFamily="'Plus Jakarta Sans', sans-serif"
+                  fontSize="7.5"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
                 >
@@ -549,8 +548,8 @@ export default function PixelEarthExploded({
                   y="190"
                   textAnchor="middle"
                   fill="#ffffff"
-                  fontFamily="'Press Start 2P', monospace"
-                  fontSize="4.2"
+                  fontFamily="'Plus Jakarta Sans', sans-serif"
+                  fontSize="7"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
                 >
@@ -569,7 +568,7 @@ export default function PixelEarthExploded({
           <div className="grid grid-cols-3 gap-1.5 w-full">
             <button
               onClick={() => onSelectLayer('kerak-benua')}
-              className={`py-1.5 px-2 rounded-lg border-2 text-[8.5px] font-pixel-title cursor-pointer transition-all text-center ${isLitosferActive
+              className={`py-1.5 px-2 rounded-lg border-2 text-[10px] sm:text-xs font-sans font-bold cursor-pointer transition-all text-center ${isLitosferActive
                 ? 'bg-amber-400 text-amber-950 border-amber-950 shadow-[0_2px_0_#78350f]'
                 : 'bg-amber-100 text-amber-900 border-amber-950/40 hover:bg-amber-200'
                 }`}
@@ -578,7 +577,7 @@ export default function PixelEarthExploded({
             </button>
             <button
               onClick={() => onSelectLayer('mantel-atas')}
-              className={`py-1.5 px-2 rounded-lg border-2 text-[8.5px] font-pixel-title cursor-pointer transition-all text-center ${isAstenosferActive
+              className={`py-1.5 px-2 rounded-lg border-2 text-[10px] sm:text-xs font-sans font-bold cursor-pointer transition-all text-center ${isAstenosferActive
                 ? 'bg-orange-500 text-white border-amber-950 shadow-[0_2px_0_#451a03]'
                 : 'bg-amber-100 text-amber-900 border-amber-950/40 hover:bg-amber-200'
                 }`}
@@ -587,7 +586,7 @@ export default function PixelEarthExploded({
             </button>
             <button
               onClick={() => onSelectLayer('inti-luar')}
-              className={`py-1.5 px-2 rounded-lg border-2 text-[8.5px] font-pixel-title cursor-pointer transition-all text-center ${isBarisferActive
+              className={`py-1.5 px-2 rounded-lg border-2 text-[10px] sm:text-xs font-sans font-bold cursor-pointer transition-all text-center ${isBarisferActive
                 ? 'bg-yellow-400 text-amber-950 border-amber-950 shadow-[0_2px_0_#78350f]'
                 : 'bg-amber-100 text-amber-900 border-amber-950/40 hover:bg-amber-200'
                 }`}

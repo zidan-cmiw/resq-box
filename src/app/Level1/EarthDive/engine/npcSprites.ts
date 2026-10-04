@@ -26,6 +26,11 @@ export function clearPortraitCache(): void {
 // 1. MENGGAMBAR NPC DI DALAM DUNIA GAME (CANVAS WORLD)
 // ══════════════════════════════════════════════════════════════════════════
 export type NpcWorldType =
+  | 'zidane'
+  | 'zahra'
+  | 'ican'
+  | 'lintang'
+  | 'bu_tyas'
   | 'prof_raditya'
   | 'kapten_maya'
   | 'dr_gea'
@@ -77,7 +82,849 @@ export function drawNpcOnWorld(
   const walkStep = isWalking ? Math.floor(frame / 8) % 2 : 0;
   const breathY = !isWalking ? Math.sin(frame * 0.06) * 1 : 0;
 
-  if (type === 'prof_raditya') {
+  if (type === 'zidane') {
+    // ── ZIDANE (KETUA & DEV UTAMA: KULIT PUTIH, RAMBUT BERANTAKAN, KACAMATA, BAJU HITAM, COOL) ──
+    const drawX = -12;
+    const drawY = -32 + breathY;
+    const isMining = zoneId === 'crust';
+    const isHazard = zoneId === 'mantle' || zoneId === 'outerCore' || zoneId === 'innerCore';
+    const isScuba = zoneId === 'divergent';
+
+    if (isScuba) {
+      // Kostum Penyelam Scuba Scuba Diver Zidane
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 5);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 5);
+      ctx.fillStyle = '#06b6d4'; // Fin sepatu katak cyan
+      ctx.fillRect(drawX + 4, drawY + 29, 7, 2);
+      ctx.fillRect(drawX + 13, drawY + 29, 7, 2);
+
+      // Wetsuit Neoprene Hitam Cool
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#0284c7'; // Garis aksen cyan
+      ctx.fillRect(drawX + 10, drawY + 11, 4, 15);
+
+      // Tabung Oksigen Kembar Kuning di Punggung
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(drawX + 3, drawY + 7, 2, 2);
+
+      // Masker Kacamata Selam Panorama & Rambut Hitam Berantakan
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 5, drawY - 1, 14, 11);
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 9, drawY + 2, 7, 6);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 10, drawY + 3, 5, 4);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 10, drawY + 3, 2, 1);
+      // Rambut berantakan di atas hood
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(drawX + 6, drawY - 4, 11, 4);
+      ctx.fillRect(drawX + 4, drawY - 2, 3, 3);
+      ctx.fillRect(drawX + 15, drawY - 3, 3, 3);
+    } else if (isMining) {
+      // ── KOSTUM TAMBANG: ROMPI SAFETY & HELM SENTER ──
+      // Sepatu tambang
+      ctx.fillStyle = '#1c1917';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      // Celana kerja tambang abu gelap
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#fde047'; // Pita reflektor celana
+      ctx.fillRect(drawX + 6, drawY + 23, 12, 1);
+
+      // Kaos hitam Zidane di dalam rompi tambang
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 10);
+      // Rompi oranye tambang
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(drawX + 5, drawY + 10, 4, 10);
+      ctx.fillRect(drawX + 15, drawY + 10, 4, 10);
+      ctx.fillStyle = '#cbd5e1'; // Reflektor silver
+      ctx.fillRect(drawX + 5, drawY + 14, 14, 2);
+
+      // Tangan putih
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(drawX + 4, drawY + 18, 2, 3);
+      ctx.fillRect(drawX + 18, drawY + 18, 2, 3);
+
+      // Wajah putih & kacamata hitam cool
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(drawX + 6, drawY + 2, 12, 7);
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 8, drawY + 4, 4, 3);
+      ctx.fillRect(drawX + 13, drawY + 4, 4, 3);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 9, drawY + 5, 2, 1);
+      ctx.fillRect(drawX + 14, drawY + 5, 2, 1);
+
+      // Helm tambang kuning dengan senter kepala
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 6);
+      ctx.fillStyle = '#ca8a04';
+      ctx.fillRect(drawX + 3, drawY + 1, 18, 2);
+      // Senter kepala & pancaran cahaya
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(drawX + 10, drawY - 3, 4, 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 11, drawY - 2, 2, 2);
+
+      // Rambut hitam berantakan menyembul di sisi helm
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(drawX + 4, drawY + 2, 2, 3);
+      ctx.fillRect(drawX + 17, drawY + 2, 2, 3);
+      ctx.fillRect(drawX + 6, drawY + 1, 3, 2);
+    } else if (isHazard) {
+      // ── KOSTUM PELINDUNG BERTEKNOLOGI TINGGI (CRYO HAZARD SUIT) ──
+      // Sepatu pelindung termal
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      ctx.fillStyle = '#06b6d4'; // Sol bercahaya cyan
+      ctx.fillRect(drawX + 6, drawY + 30, 5, 2);
+      ctx.fillRect(drawX + 13, drawY + 30, 5, 2);
+
+      // Baju pelindung putih-perak tahan panas ekstrem
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#06b6d4'; // Pipa pendingin cair cyan
+      ctx.fillRect(drawX + 7, drawY + 12, 2, 14);
+      ctx.fillRect(drawX + 15, drawY + 12, 2, 14);
+      ctx.fillStyle = '#09090b'; // Core dada
+      ctx.fillRect(drawX + 10, drawY + 12, 4, 5);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 11, drawY + 13, 2, 3);
+
+      // Tabung pendingin termal di punggung
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+
+      // Helm pelindung berteknologi tinggi dengan visor transparan cyan
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 14);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 1, 12, 8);
+      // Kacamata & rambut Zidane terlihat di balik visor
+      ctx.fillStyle = '#00f5ff';
+      ctx.fillRect(drawX + 7, drawY + 2, 10, 6);
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 8, drawY + 3, 3, 2);
+      ctx.fillRect(drawX + 13, drawY + 3, 3, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 8, drawY + 3, 1, 1);
+    } else {
+      // 1. Sepatu Kets Sneakers Hitam-Putih
+      ctx.fillStyle = '#09090b';
+      if (walkStep === 0) {
+        ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+        ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+        ctx.fillStyle = '#ffffff'; // Sol putih
+        ctx.fillRect(drawX + 6, drawY + 30, 5, 2);
+        ctx.fillRect(drawX + 13, drawY + 30, 5, 2);
+      } else {
+        ctx.fillRect(drawX + 4, drawY + 25, 5, 7);
+        ctx.fillRect(drawX + 15, drawY + 27, 5, 5);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(drawX + 4, drawY + 30, 5, 2);
+        ctx.fillRect(drawX + 15, drawY + 30, 5, 2);
+      }
+
+      // 2. Celana Panjang Slim Charcoal
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 11, drawY + 19, 2, 8);
+
+      // 3. Badan: Jaket/Kaos Hitam Cool Minimalis
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 6, drawY + 9, 12, 11);
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(drawX + 7, drawY + 10, 10, 9);
+      // Kerah / Resleting halus
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(drawX + 11, drawY + 9, 2, 10);
+
+      // Lengan Hitam & Tangan Putih
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 4, drawY + 10, 2, 8);
+      ctx.fillRect(drawX + 18, drawY + 10, 2, 8);
+      ctx.fillStyle = '#fef08a'; // Kulit putih
+      ctx.fillRect(drawX + 4, drawY + 18, 2, 3);
+      ctx.fillRect(drawX + 18, drawY + 18, 2, 3);
+
+      // 4. Wajah & Kulit Putih
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(drawX + 6, drawY + 1, 12, 8);
+
+      // 5. Kacamata Cool Persegi Hitam dengan Glint
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 8, drawY + 3, 4, 3);
+      ctx.fillRect(drawX + 13, drawY + 3, 4, 3);
+      ctx.fillRect(drawX + 11, drawY + 4, 3, 1); // Bridge
+      // Lensa & pantulan cahaya
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 9, drawY + 4, 2, 1);
+      ctx.fillRect(drawX + 14, drawY + 4, 2, 1);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 9, drawY + 3, 1, 1);
+      ctx.fillRect(drawX + 14, drawY + 3, 1, 1);
+
+      // 6. Rambut Hitam Agak Berantakan (Messy Cool Hair)
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(drawX + 5, drawY - 4, 14, 5);
+      ctx.fillRect(drawX + 4, drawY - 2, 3, 4); // Cambang
+      ctx.fillRect(drawX + 17, drawY - 2, 2, 4);
+      // Tuft rambut berantakan
+      ctx.fillRect(drawX + 7, drawY - 6, 4, 3);
+      ctx.fillRect(drawX + 13, drawY - 5, 4, 2);
+      ctx.fillRect(drawX + 9, drawY - 1, 5, 2); // Poni depan
+    }
+  } else if (type === 'zahra') {
+    // ── ZAHRA (CANTIK, IMUT, GEMESIN, KACAMATA, KERUDUNG BIRU, BAJU PINK, CERIA) ──
+    const drawX = -12;
+    const drawY = -32 + breathY;
+    const isMining = zoneId === 'crust';
+    const isHazard = zoneId === 'mantle' || zoneId === 'outerCore' || zoneId === 'innerCore';
+    const isScuba = zoneId === 'divergent';
+
+    if (isScuba) {
+      // Kostum Selam Scuba Zahra (Pink & Biru)
+      ctx.fillStyle = '#0284c7'; // Fins biru
+      ctx.fillRect(drawX + 4, drawY + 29, 7, 2);
+      ctx.fillRect(drawX + 13, drawY + 29, 7, 2);
+
+      // Wetsuit Pink Manis
+      ctx.fillStyle = '#ec4899';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#f472b6';
+      ctx.fillRect(drawX + 7, drawY + 11, 10, 15);
+
+      // Tabung Oksigen Penyelam
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(drawX + 3, drawY + 7, 2, 2);
+
+      // Kerudung Selam Biru Langit & Masker
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 5, drawY - 2, 14, 13);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 9, drawY + 2, 7, 6);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 10, drawY + 3, 2, 1);
+    } else if (isMining) {
+      // ── KOSTUM TAMBANG ZAHRA: ROMPI SAFETY DI ATAS BAJU PINK & HELM SENTER DI ATAS KERUDUNG BIRU ──
+      ctx.fillStyle = '#be185d';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+
+      // Rok/celana navy
+      ctx.fillStyle = '#1e3a8a';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 6, drawY + 23, 12, 1);
+
+      // Baju pink dengan rompi tambang oranye
+      ctx.fillStyle = '#ec4899';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 10);
+      ctx.fillStyle = '#ea580c'; // Rompi
+      ctx.fillRect(drawX + 5, drawY + 10, 4, 10);
+      ctx.fillRect(drawX + 15, drawY + 10, 4, 10);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(drawX + 5, drawY + 14, 14, 2);
+
+      // Kerudung biru cerah & Wajah imut
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 5, drawY - 1, 14, 11);
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 3, 10, 6);
+
+      // Kacamata bulat emas & senyum
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(drawX + 8, drawY + 4, 4, 3);
+      ctx.fillRect(drawX + 13, drawY + 4, 4, 3);
+      ctx.fillStyle = '#e11d48';
+      ctx.fillRect(drawX + 11, drawY + 7, 3, 1);
+
+      // Helm tambang kuning di atas kerudung biru
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 6);
+      ctx.fillStyle = '#ca8a04';
+      ctx.fillRect(drawX + 3, drawY + 1, 18, 2);
+      ctx.fillStyle = '#ffffff'; // Senter helm
+      ctx.fillRect(drawX + 11, drawY - 2, 2, 2);
+    } else if (isHazard) {
+      // ── CRYO HAZARD SUIT ZAHRA (PUTIH-PINK DENGAN KERUDUNG BIRU PELINDUNG) ──
+      ctx.fillStyle = '#831843';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(drawX + 6, drawY + 30, 5, 2);
+      ctx.fillRect(drawX + 13, drawY + 30, 5, 2);
+
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#ec4899'; // Garis pink
+      ctx.fillRect(drawX + 7, drawY + 11, 10, 15);
+      ctx.fillStyle = '#00f5ff'; // Pendingin
+      ctx.fillRect(drawX + 10, drawY + 12, 4, 4);
+
+      // Tabung pendingin
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+
+      // Helm berkerudung biru termal dengan visor
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 14);
+      ctx.fillStyle = '#00f5ff';
+      ctx.fillRect(drawX + 7, drawY + 2, 10, 6);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 8, drawY + 3, 2, 1);
+    } else {
+      // 1. Sepatu Imut Pink Tua
+      ctx.fillStyle = '#be185d';
+      if (walkStep === 0) {
+        ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+        ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      } else {
+        ctx.fillRect(drawX + 4, drawY + 25, 5, 7);
+        ctx.fillRect(drawX + 15, drawY + 27, 5, 5);
+      }
+
+      // 2. Rok / Celana Panjang Navy
+      ctx.fillStyle = '#1e3a8a';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#172554';
+      ctx.fillRect(drawX + 11, drawY + 19, 2, 8);
+
+      // 3. Baju Pink Manis Ceria (Pink Blouse)
+      ctx.fillStyle = '#ec4899';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 10);
+      ctx.fillStyle = '#f472b6';
+      ctx.fillRect(drawX + 7, drawY + 11, 10, 8);
+
+      // Lengan Pink & Tangan
+      ctx.fillStyle = '#ec4899';
+      ctx.fillRect(drawX + 4, drawY + 11, 2, 7);
+      ctx.fillRect(drawX + 18, drawY + 11, 2, 7);
+      ctx.fillStyle = '#fed7aa'; // Kulit manis
+      ctx.fillRect(drawX + 4, drawY + 18, 2, 3);
+      ctx.fillRect(drawX + 18, drawY + 18, 2, 3);
+
+      // 4. Kerudung Biru Cerah (Sky Blue Hijab)
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 4, drawY - 3, 16, 14);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 5, drawY - 2, 14, 6); // Lipatan atas
+      ctx.fillRect(drawX + 7, drawY + 8, 10, 4);
+
+      // 5. Wajah Imut & Cantik
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 1, 10, 7);
+
+      // 6. Kacamata Bulat Imut Emas
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(drawX + 8, drawY + 2, 4, 3);
+      ctx.fillRect(drawX + 13, drawY + 2, 4, 3);
+      ctx.fillRect(drawX + 11, drawY + 3, 3, 1);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 9, drawY + 3, 2, 2);
+      ctx.fillRect(drawX + 14, drawY + 3, 2, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 9, drawY + 3, 1, 1);
+      ctx.fillRect(drawX + 14, drawY + 3, 1, 1);
+
+      // Senyum Ceria Pink
+      ctx.fillStyle = '#e11d48';
+      ctx.fillRect(drawX + 11, drawY + 6, 3, 1);
+    }
+  } else if (type === 'ican') {
+    // ── ICAN (RAMBUT IKAL, SIFAT AGAK NGESELIN / USIL, CASUAL SPORTY) ──
+    const drawX = -12;
+    const drawY = -32 + breathY;
+    const isMining = zoneId === 'crust';
+    const isHazard = zoneId === 'mantle' || zoneId === 'outerCore' || zoneId === 'innerCore';
+    const isScuba = zoneId === 'divergent';
+
+    if (isScuba) {
+      // Kostum Selam Scuba Ican
+      ctx.fillStyle = '#ea580c'; // Fin oranye
+      ctx.fillRect(drawX + 4, drawY + 29, 7, 2);
+      ctx.fillRect(drawX + 13, drawY + 29, 7, 2);
+
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(drawX + 8, drawY + 11, 8, 15);
+
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(drawX + 3, drawY + 7, 2, 2);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 5, drawY - 1, 14, 11);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 9, drawY + 2, 7, 6);
+      ctx.fillStyle = '#27272a';
+      ctx.fillRect(drawX + 6, drawY - 4, 12, 4);
+    } else if (isMining) {
+      // ── KOSTUM TAMBANG ICAN: ROMPI ORANYE & HELM TAMBANG DENGAN RAMBUT IKAL MENYEMBUL ──
+      ctx.fillStyle = '#1c1917';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+
+      ctx.fillStyle = '#1d4ed8'; // Jeans
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 6, drawY + 23, 12, 1);
+
+      ctx.fillStyle = '#ea580c'; // Rompi tambang
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 10);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(drawX + 6, drawY + 14, 12, 2);
+
+      // Wajah & smirk usil
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(drawX + 6, drawY + 3, 12, 7);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 8, drawY + 5, 3, 2);
+      ctx.fillRect(drawX + 14, drawY + 5, 3, 2);
+      ctx.fillStyle = '#7c2d12';
+      ctx.fillRect(drawX + 12, drawY + 8, 3, 1);
+
+      // Helm tambang miring & rambut ikal keluar di bawah helm
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 6);
+      ctx.fillStyle = '#ca8a04';
+      ctx.fillRect(drawX + 3, drawY + 1, 18, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 11, drawY - 2, 2, 2);
+      // Ikal rambut Ican menyembul di samping
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(drawX + 3, drawY + 1, 3, 4);
+      ctx.fillRect(drawX + 17, drawY + 1, 3, 4);
+    } else if (isHazard) {
+      // ── CRYO HAZARD SUIT ICAN (ORANYE & PERAK TEKNO) ──
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(drawX + 6, drawY + 30, 5, 2);
+      ctx.fillRect(drawX + 13, drawY + 30, 5, 2);
+
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(drawX + 8, drawY + 11, 8, 15);
+      ctx.fillStyle = '#00f5ff';
+      ctx.fillRect(drawX + 10, drawY + 12, 4, 4);
+
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 14);
+      ctx.fillStyle = '#00f5ff';
+      ctx.fillRect(drawX + 7, drawY + 2, 10, 6);
+      // Ikal terlihat di luar helm
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(drawX + 3, drawY - 2, 3, 3);
+      ctx.fillRect(drawX + 17, drawY - 2, 3, 3);
+    } else {
+      // 1. Sepatu Sneakers Sporty
+      ctx.fillStyle = '#334155';
+      if (walkStep === 0) {
+        ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+        ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      } else {
+        ctx.fillRect(drawX + 4, drawY + 25, 5, 7);
+        ctx.fillRect(drawX + 15, drawY + 27, 5, 5);
+      }
+
+      // 2. Celana Jeans Denim
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#1e40af';
+      ctx.fillRect(drawX + 11, drawY + 19, 2, 8);
+
+      // 3. Kaos Sporty Oranye-Abu (Hardware Tech Casual)
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 10);
+      ctx.fillStyle = '#fb923c';
+      ctx.fillRect(drawX + 8, drawY + 11, 8, 8);
+
+      // Lengan & Tangan Sawo Matang
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(drawX + 4, drawY + 11, 2, 7);
+      ctx.fillRect(drawX + 18, drawY + 11, 2, 7);
+      ctx.fillStyle = '#f59e0b'; // Kulit sawo matang / natural
+      ctx.fillRect(drawX + 4, drawY + 18, 2, 3);
+      ctx.fillRect(drawX + 18, drawY + 18, 2, 3);
+
+      // 4. Wajah & Ekspresi Smirk Usil
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(drawX + 6, drawY + 2, 12, 8);
+
+      // Mata santai usil
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 8, drawY + 4, 3, 2);
+      ctx.fillRect(drawX + 14, drawY + 4, 3, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 9, drawY + 4, 1, 1);
+      ctx.fillRect(drawX + 15, drawY + 4, 1, 1);
+
+      // Senyum miring usil (smirk)
+      ctx.fillStyle = '#7c2d12';
+      ctx.fillRect(drawX + 11, drawY + 7, 4, 1);
+      ctx.fillRect(drawX + 14, drawY + 6, 1, 1);
+
+      // 5. Rambut Ikal Khas (Curly Voluminous Hair)
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(drawX + 5, drawY - 4, 14, 6);
+      ctx.fillRect(drawX + 4, drawY - 6, 4, 4);
+      ctx.fillRect(drawX + 9, drawY - 7, 5, 4);
+      ctx.fillRect(drawX + 15, drawY - 6, 4, 4);
+      ctx.fillStyle = '#27272a';
+      ctx.fillRect(drawX + 5, drawY - 5, 2, 2);
+      ctx.fillRect(drawX + 11, drawY - 6, 2, 2);
+      ctx.fillRect(drawX + 16, drawY - 5, 2, 2);
+    }
+  } else if (type === 'lintang') {
+    // ── LINTANG (KERUDUNG HIJAU, PINTAR, ANALITIS, RUNTUT) ──
+    const drawX = -12;
+    const drawY = -32 + breathY;
+    const isMining = zoneId === 'crust';
+    const isHazard = zoneId === 'mantle' || zoneId === 'outerCore' || zoneId === 'innerCore';
+    const isScuba = zoneId === 'divergent';
+
+    if (isScuba) {
+      // Kostum Selam Lintang (Hijau Zamrud & Emerald)
+      ctx.fillStyle = '#16a34a'; // Fins hijau
+      ctx.fillRect(drawX + 4, drawY + 29, 7, 2);
+      ctx.fillRect(drawX + 13, drawY + 29, 7, 2);
+
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(drawX + 8, drawY + 11, 8, 15);
+
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(drawX + 3, drawY + 7, 2, 2);
+
+      ctx.fillStyle = '#166534';
+      ctx.fillRect(drawX + 5, drawY - 2, 14, 13);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 9, drawY + 2, 7, 6);
+    } else if (isMining) {
+      // ── KOSTUM TAMBANG LINTANG: ROMPI SAFETY & TABLET GEOLOGI & HELM DI ATAS KERUDUNG HIJAU ──
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 6, drawY + 23, 12, 1);
+
+      ctx.fillStyle = '#0d9488'; // Blus toska
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 10);
+      ctx.fillStyle = '#ea580c'; // Rompi
+      ctx.fillRect(drawX + 5, drawY + 10, 4, 10);
+      ctx.fillRect(drawX + 15, drawY + 10, 4, 10);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(drawX + 5, drawY + 14, 14, 2);
+
+      // Tablet geologis di tangan
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 16, drawY + 15, 5, 6);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 17, drawY + 16, 3, 4);
+
+      // Kerudung hijau zamrud di bawah helm
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(drawX + 5, drawY - 1, 14, 11);
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 3, 10, 6);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 9, drawY + 4, 2, 2);
+      ctx.fillRect(drawX + 14, drawY + 4, 2, 2);
+
+      // Helm tambang kuning
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 6);
+      ctx.fillStyle = '#ca8a04';
+      ctx.fillRect(drawX + 3, drawY + 1, 18, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 11, drawY - 2, 2, 2);
+    } else if (isHazard) {
+      // ── CRYO HAZARD SUIT LINTANG (HIJAU EMERALD & PERAK) ──
+      ctx.fillStyle = '#064e3b';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(drawX + 6, drawY + 30, 5, 2);
+      ctx.fillRect(drawX + 13, drawY + 30, 5, 2);
+
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(drawX + 8, drawY + 11, 8, 15);
+      ctx.fillStyle = '#00f5ff';
+      ctx.fillRect(drawX + 10, drawY + 12, 4, 4);
+
+      ctx.fillStyle = '#16a34a';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 14);
+      ctx.fillStyle = '#00f5ff';
+      ctx.fillRect(drawX + 7, drawY + 2, 10, 6);
+    } else {
+      // 1. Sepatu Formal Anggun
+      ctx.fillStyle = '#1e293b';
+      if (walkStep === 0) {
+        ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+        ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      } else {
+        ctx.fillRect(drawX + 4, drawY + 25, 5, 7);
+        ctx.fillRect(drawX + 15, drawY + 27, 5, 5);
+      }
+
+      // 2. Rok / Celana Panjang Charcoal
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(drawX + 11, drawY + 19, 2, 8);
+
+      // 3. Tunik / Blus Elegan Toska Muda
+      ctx.fillStyle = '#0d9488';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 10);
+      ctx.fillStyle = '#14b8a6';
+      ctx.fillRect(drawX + 7, drawY + 11, 10, 8);
+
+      // Lengan & Tangan Membawa Notes Peneliti
+      ctx.fillStyle = '#0d9488';
+      ctx.fillRect(drawX + 4, drawY + 11, 2, 7);
+      ctx.fillRect(drawX + 18, drawY + 11, 2, 7);
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 4, drawY + 18, 2, 3);
+      ctx.fillRect(drawX + 18, drawY + 18, 2, 3);
+      // Buku catatan IPA kecil di tangan
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(drawX + 17, drawY + 16, 4, 5);
+      ctx.fillStyle = '#16a34a';
+      ctx.fillRect(drawX + 17, drawY + 16, 1, 5);
+
+      // 4. Kerudung Hijau Emerald (Green Hijab)
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(drawX + 4, drawY - 3, 16, 14);
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(drawX + 5, drawY - 2, 14, 6);
+      ctx.fillRect(drawX + 7, drawY + 8, 10, 4);
+
+      // 5. Wajah Pintar & Ramah
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 1, 10, 7);
+
+      // Mata jernih pintar
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 9, drawY + 3, 2, 2);
+      ctx.fillRect(drawX + 14, drawY + 3, 2, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 9, drawY + 3, 1, 1);
+      ctx.fillRect(drawX + 14, drawY + 3, 1, 1);
+
+      // Senyum ramah
+      ctx.fillStyle = '#991b1b';
+      ctx.fillRect(drawX + 10, drawY + 6, 3, 1);
+    }
+  } else if (type === 'bu_tyas') {
+    // ── BU TYAS (DOSEN PEMBIMBING: KACAMATA, KERUDUNG HITAM, AKADEMISI, BIJAKSANA & EVALUATOR) ──
+    const drawX = -12;
+    const drawY = -32 + breathY;
+    const isMining = zoneId === 'crust';
+    const isHazard = zoneId === 'mantle' || zoneId === 'outerCore' || zoneId === 'innerCore';
+    const isScuba = zoneId === 'divergent';
+
+    if (isScuba) {
+      // Kostum Selam Bu Tyas
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 4, drawY + 29, 7, 2);
+      ctx.fillRect(drawX + 13, drawY + 29, 7, 2);
+
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#eab308'; // Strip emas dosen
+      ctx.fillRect(drawX + 11, drawY + 11, 2, 15);
+
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(drawX + 3, drawY + 7, 2, 2);
+
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 5, drawY - 2, 14, 13);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 9, drawY + 2, 7, 6);
+    } else if (isMining) {
+      // ── KOSTUM TAMBANG BU TYAS (INSPEKTUR/KETUA PEMBIMBING: HELM PUTIH PENGAWAS & CLIPBOARD EVALUASI) ──
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 6, drawY + 23, 12, 1);
+
+      ctx.fillStyle = '#881337'; // Kemeja maroon dosen
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 10);
+      ctx.fillStyle = '#ea580c'; // Rompi pengawas tambang
+      ctx.fillRect(drawX + 5, drawY + 10, 4, 10);
+      ctx.fillRect(drawX + 15, drawY + 10, 4, 10);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(drawX + 5, drawY + 14, 14, 2);
+
+      // Map berkas evaluasi Wordle di tangan
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(drawX + 16, drawY + 15, 5, 6);
+      ctx.fillStyle = '#fde68a';
+      ctx.fillRect(drawX + 17, drawY + 16, 3, 4);
+
+      // Kerudung hitam anggun & kacamata emas
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 5, drawY - 1, 14, 11);
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 3, 10, 6);
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(drawX + 8, drawY + 4, 4, 3);
+      ctx.fillRect(drawX + 13, drawY + 4, 4, 3);
+
+      // Helm tambang putih pengawas ekspedisi (supervisor white hardhat)
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 6);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(drawX + 3, drawY + 1, 18, 2);
+      ctx.fillStyle = '#facc15'; // Lambang lencana pengawas emas
+      ctx.fillRect(drawX + 11, drawY - 2, 2, 2);
+    } else if (isHazard) {
+      // ── CRYO HAZARD SUIT BU TYAS (DOSEN PEMBIMBING LEVEL KOMANDO: PUTIH-MAROON & GOLD) ──
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(drawX + 6, drawY + 30, 5, 2);
+      ctx.fillRect(drawX + 13, drawY + 30, 5, 2);
+
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 17);
+      ctx.fillStyle = '#881337'; // Aksen maroon komando
+      ctx.fillRect(drawX + 8, drawY + 11, 8, 15);
+      ctx.fillStyle = '#facc15'; // Pin emas
+      ctx.fillRect(drawX + 11, drawY + 13, 2, 2);
+
+      // Map evaluasi digital
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 16, drawY + 15, 5, 6);
+
+      // Tabung pendingin ganda
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+
+      // Helm pelindung berkerudung hitam dengan visor emas-cyan
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 4, drawY - 4, 16, 14);
+      ctx.fillStyle = '#00f5ff';
+      ctx.fillRect(drawX + 7, drawY + 2, 10, 6);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 8, drawY + 3, 2, 1);
+    } else {
+      // 1. Sepatu Pantofel Formal Hitam
+      ctx.fillStyle = '#09090b';
+      if (walkStep === 0) {
+        ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+        ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      } else {
+        ctx.fillRect(drawX + 4, drawY + 25, 5, 7);
+        ctx.fillRect(drawX + 15, drawY + 27, 5, 5);
+      }
+
+      // 2. Rok Panjang Formal Hitam / Maroon
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 18, 12, 9);
+
+      // 3. Blazer Formal Dosen Maroon / Navy Berwibawa
+      ctx.fillStyle = '#881337'; // Maroon tua elegan
+      ctx.fillRect(drawX + 6, drawY + 9, 12, 11);
+      ctx.fillStyle = '#9f1239';
+      ctx.fillRect(drawX + 7, drawY + 10, 10, 9);
+      // Kemeja dalam putih & Pin Dosen Emas di dada
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 11, drawY + 9, 2, 5);
+      ctx.fillStyle = '#facc15'; // Pin Emas
+      ctx.fillRect(drawX + 8, drawY + 11, 2, 2);
+
+      // Lengan Blazer & Map Berkas Evaluasi
+      ctx.fillStyle = '#881337';
+      ctx.fillRect(drawX + 4, drawY + 10, 2, 8);
+      ctx.fillRect(drawX + 18, drawY + 10, 2, 8);
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 4, drawY + 18, 2, 3);
+      ctx.fillRect(drawX + 18, drawY + 18, 2, 3);
+      // Map evaluasi Wordle/TTS di tangan
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(drawX + 16, drawY + 15, 5, 6);
+      ctx.fillStyle = '#fde68a';
+      ctx.fillRect(drawX + 17, drawY + 16, 3, 4);
+
+      // 4. Kerudung Hitam Anggun Berwibawa (Black Hijab)
+      ctx.fillStyle = '#09090b';
+      ctx.fillRect(drawX + 4, drawY - 3, 16, 14);
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(drawX + 5, drawY - 2, 14, 6);
+      ctx.fillRect(drawX + 7, drawY + 8, 10, 4);
+
+      // 5. Wajah Bijaksana & Berwibawa
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 1, 10, 7);
+
+      // 6. Kacamata Dosen Elegan Bingkai Emas
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(drawX + 8, drawY + 2, 4, 3);
+      ctx.fillRect(drawX + 13, drawY + 2, 4, 3);
+      ctx.fillRect(drawX + 11, drawY + 3, 3, 1);
+      // Mata bijak mengayomi
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 9, drawY + 3, 2, 2);
+      ctx.fillRect(drawX + 14, drawY + 3, 2, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 9, drawY + 3, 1, 1);
+      ctx.fillRect(drawX + 14, drawY + 3, 1, 1);
+
+      // Senyum ramah bijaksana
+      ctx.fillStyle = '#991b1b';
+      ctx.fillRect(drawX + 10, drawY + 6, 3, 1);
+    }
+  } else if (type === 'prof_raditya') {
     // ── PROF. RADITYA (AHLI GEOLOGI SENIOR) ──
     const drawX = -12;
     const drawY = -32 + breathY;
@@ -843,55 +1690,187 @@ export function drawNpcOnWorld(
     // ── DR. TAUFIK (PEMANDU GEOLOGIS PANGEA) ──
     const drawX = -12;
     const drawY = -32 + breathY;
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
-    ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
-    ctx.fillStyle = '#92400e';
-    ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
-    // Jaket lapangan safari safari khaki & kantong kompas
-    ctx.fillStyle = '#d97706';
-    ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
-    ctx.fillStyle = '#b45309';
-    ctx.fillRect(drawX + 7, drawY + 13, 4, 4);
-    ctx.fillRect(drawX + 13, drawY + 13, 4, 4);
-    // Wajah
-    ctx.fillStyle = '#fed7aa';
-    ctx.fillRect(drawX + 7, drawY + 3, 10, 8);
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(drawX + 12, drawY + 6, 2, 2);
-    // Topi rimba penjelajah safari
-    ctx.fillStyle = '#b45309';
-    ctx.fillRect(drawX + 4, drawY + 1, 16, 3);
-    ctx.fillRect(drawX + 6, drawY - 2, 12, 3);
-    ctx.fillStyle = '#fef08a';
-    ctx.fillRect(drawX + 6, drawY + 1, 12, 1);
+
+    if (zoneId === 'divergent') {
+      // PAKAIAN PENYELAM LAUT DALAM (DEEP SEA SCUBA DIVER SUIT)
+      // Sepatu katak selam khaki-amber & kaki
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 5);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 5);
+      ctx.fillStyle = '#d97706'; // Fins
+      ctx.fillRect(drawX + 4, drawY + 29, 7, 2);
+      ctx.fillRect(drawX + 13, drawY + 29, 7, 2);
+
+      // Celana Neoprene Selam
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#b45309'; // Pelindung lutut selam
+      ctx.fillRect(drawX + 7, drawY + 21, 3, 3);
+      ctx.fillRect(drawX + 14, drawY + 21, 3, 3);
+
+      // Tabung Oksigen Penyelam di Punggung (Twin Yellow Cylinders)
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+      ctx.fillStyle = '#94a3b8'; // Katup valve
+      ctx.fillRect(drawX + 3, drawY + 7, 2, 2);
+      ctx.fillStyle = '#475569'; // Selang pernapasan
+      ctx.fillRect(drawX + 5, drawY + 8, 4, 2);
+
+      // Wetsuit Selam Amber-Safari & Sabuk Pemberat
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
+      ctx.fillStyle = '#0f172a'; // Harness sabuk dada & pemberat
+      ctx.fillRect(drawX + 6, drawY + 17, 12, 2);
+      ctx.fillStyle = '#38bdf8'; // Depth gauge konsol dada
+      ctx.fillRect(drawX + 8, drawY + 12, 3, 3);
+
+      // Helm & Masker Selam Kaca Laut Dalam
+      ctx.fillStyle = '#0f172a'; // Hood neoprene
+      ctx.fillRect(drawX + 5, drawY - 1, 14, 11);
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(drawX + 4, drawY + 2, 2, 7);
+      // Kaca masker selam cyan transparan
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 9, drawY + 2, 7, 6);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 10, drawY + 3, 5, 4);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 11, drawY + 3, 3, 1);
+      // Regulator pernapasan
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(drawX + 11, drawY + 8, 4, 3);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 12, drawY + 9, 2, 2);
+
+      // Gelembung napas kecil sesekali melayang ke atas
+      const bProg = ((frame * 0.4 + 10) % 70) / 70;
+      if (bProg < 0.75) {
+        ctx.fillStyle = `rgba(224, 242, 254, ${0.7 * (1 - bProg)})`;
+        ctx.beginPath();
+        ctx.arc(drawX + 13, drawY + 6 - bProg * 26, 1.5 + bProg * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else {
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      ctx.fillStyle = '#92400e';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      // Jaket lapangan safari safari khaki & kantong kompas
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(drawX + 7, drawY + 13, 4, 4);
+      ctx.fillRect(drawX + 13, drawY + 13, 4, 4);
+      // Wajah
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 3, 10, 8);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 12, drawY + 6, 2, 2);
+      // Topi rimba penjelajah safari
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(drawX + 4, drawY + 1, 16, 3);
+      ctx.fillRect(drawX + 6, drawY - 2, 12, 3);
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(drawX + 6, drawY + 1, 12, 1);
+    }
   } else if (type === 'prof_maya') {
     // ── PROF. MAYA (AHLI REKONSTRUKSI SUPERBENUA PANGEA) ──
     const drawX = -12;
     const drawY = -32 + breathY;
-    ctx.fillStyle = '#3b0764';
-    ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
-    ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
-    ctx.fillStyle = '#581c87';
-    ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
-    // Mantel ungu terpelajar & syal perak
-    ctx.fillStyle = '#7e22ce';
-    ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(drawX + 9, drawY + 10, 6, 4);
-    // Wajah & Kacamata sains cyan
-    ctx.fillStyle = '#fed7aa';
-    ctx.fillRect(drawX + 7, drawY + 3, 10, 8);
-    ctx.fillStyle = '#0284c7';
-    ctx.fillRect(drawX + 11, drawY + 5, 4, 3);
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(drawX + 12, drawY + 6, 2, 2);
-    // Rambut sanggul rapi gelap dengan jepit perak
-    ctx.fillStyle = '#1e1b4b';
-    ctx.fillRect(drawX + 6, drawY + 1, 12, 4);
-    ctx.fillRect(drawX + 7, drawY - 2, 10, 3);
-    ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(drawX + 5, drawY + 3, 2, 2);
+
+    if (zoneId === 'divergent') {
+      // PAKAIAN PENYELAM LAUT DALAM PROF. MAYA (UNGU-VIOLET ROYAL DIVER)
+      // Sepatu katak selam ungu & kaki
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 5);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 5);
+      ctx.fillStyle = '#7e22ce'; // Fins ungu
+      ctx.fillRect(drawX + 4, drawY + 29, 7, 2);
+      ctx.fillRect(drawX + 13, drawY + 29, 7, 2);
+
+      // Celana Neoprene Selam
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#581c87';
+      ctx.fillRect(drawX + 7, drawY + 21, 3, 3);
+      ctx.fillRect(drawX + 14, drawY + 21, 3, 3);
+
+      // Tabung Oksigen Penyelam di Punggung (Twin Lavender Cylinders)
+      ctx.fillStyle = '#c084fc';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#e9d5ff';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+      ctx.fillStyle = '#94a3b8'; // Katup valve
+      ctx.fillRect(drawX + 3, drawY + 7, 2, 2);
+      ctx.fillStyle = '#475569'; // Selang pernapasan
+      ctx.fillRect(drawX + 5, drawY + 8, 4, 2);
+
+      // Wetsuit Selam Ungu Violet & Garis Reflektor Perak
+      ctx.fillStyle = '#7e22ce';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
+      ctx.fillStyle = '#e2e8f0'; // Strip perak
+      ctx.fillRect(drawX + 6, drawY + 13, 12, 1);
+      ctx.fillStyle = '#0f172a'; // Sabuk pemberat
+      ctx.fillRect(drawX + 6, drawY + 17, 12, 2);
+
+      // Papan catat riset tahan air di tangan
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(drawX + 4, drawY + 14, 3, 4);
+
+      // Helm & Masker Selam Kaca Laut Dalam
+      ctx.fillStyle = '#0f172a'; // Hood neoprene
+      ctx.fillRect(drawX + 5, drawY - 1, 14, 11);
+      ctx.fillStyle = '#7e22ce';
+      ctx.fillRect(drawX + 4, drawY + 2, 2, 7);
+      // Kaca masker selam cyan transparan
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 9, drawY + 2, 7, 6);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 10, drawY + 3, 5, 4);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 11, drawY + 3, 3, 1);
+      // Regulator pernapasan
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(drawX + 11, drawY + 8, 4, 3);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 12, drawY + 9, 2, 2);
+
+      // Gelembung napas kecil
+      const bProg = ((frame * 0.4 + 35) % 70) / 70;
+      if (bProg < 0.75) {
+        ctx.fillStyle = `rgba(224, 242, 254, ${0.7 * (1 - bProg)})`;
+        ctx.beginPath();
+        ctx.arc(drawX + 13, drawY + 6 - bProg * 26, 1.5 + bProg * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else {
+      ctx.fillStyle = '#3b0764';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      ctx.fillStyle = '#581c87';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      // Mantel ungu terpelajar & syal perak
+      ctx.fillStyle = '#7e22ce';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(drawX + 9, drawY + 10, 6, 4);
+      // Wajah & Kacamata sains cyan
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 3, 10, 8);
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 11, drawY + 5, 4, 3);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 12, drawY + 6, 2, 2);
+      // Rambut sanggul rapi gelap dengan jepit perak
+      ctx.fillStyle = '#1e1b4b';
+      ctx.fillRect(drawX + 6, drawY + 1, 12, 4);
+      ctx.fillRect(drawX + 7, drawY - 2, 10, 3);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(drawX + 5, drawY + 3, 2, 2);
+    }
   } else if (type === 'dr_citra') {
     // ── DR. CITRA (PENELITI RANTAI PEGUNUNGAN KEMBAR) ──
     const drawX = -12;
@@ -919,55 +1898,200 @@ export function drawNpcOnWorld(
     // ── PROF. ILHAM (AHLI PEMEKARAN KERAK SAMUDRA BARU) ──
     const drawX = -12;
     const drawY = -32 + breathY;
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
-    ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
-    // Jas laboratorium biru samudra dengan sensor termal cyan
-    ctx.fillStyle = '#1d4ed8';
-    ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
-    ctx.fillStyle = '#06b6d4';
-    ctx.fillRect(drawX + 9, drawY + 12, 6, 2);
-    // Wajah
-    ctx.fillStyle = '#fed7aa';
-    ctx.fillRect(drawX + 7, drawY + 3, 10, 8);
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(drawX + 12, drawY + 6, 2, 2);
-    // Visor sensor kepala cyan bercahaya
-    ctx.fillStyle = '#334155';
-    ctx.fillRect(drawX + 6, drawY + 1, 12, 3);
-    ctx.fillRect(drawX + 7, drawY - 2, 10, 3);
-    ctx.fillStyle = '#06b6d4';
-    ctx.fillRect(drawX + 11, drawY + 1, 5, 2);
+
+    if (zoneId === 'divergent') {
+      // PAKAIAN PENYELAM LAUT DALAM PROF. ILHAM (HIGH-TECH OCEANOGRAPHER DIVER)
+      // Sepatu katak selam biru samudra & kaki
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 5);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 5);
+      ctx.fillStyle = '#1d4ed8'; // Fins biru
+      ctx.fillRect(drawX + 4, drawY + 29, 7, 2);
+      ctx.fillRect(drawX + 13, drawY + 29, 7, 2);
+
+      // Celana Neoprene Selam
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 7, drawY + 21, 3, 3);
+      ctx.fillRect(drawX + 14, drawY + 21, 3, 3);
+
+      // Tabung Oksigen Penyelam di Punggung (Twin Ocean Blue Cylinders)
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+      ctx.fillStyle = '#94a3b8'; // Katup valve
+      ctx.fillRect(drawX + 3, drawY + 7, 2, 2);
+      ctx.fillStyle = '#475569'; // Selang pernapasan
+      ctx.fillRect(drawX + 5, drawY + 8, 4, 2);
+
+      // Wetsuit Selam Biru Samudra & Sensor Termal Oseanografi
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
+      ctx.fillStyle = '#06b6d4'; // Strip sensor cyan
+      ctx.fillRect(drawX + 8, drawY + 12, 8, 2);
+      ctx.fillStyle = '#0f172a'; // Sabuk pemberat
+      ctx.fillRect(drawX + 6, drawY + 17, 12, 2);
+
+      // Sensor probe suhu di pergelangan tangan
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(drawX + 4, drawY + 15, 3, 3);
+
+      // Helm & Masker Selam Kaca Laut Dalam dengan Lampu Senter Kepala
+      ctx.fillStyle = '#0f172a'; // Hood neoprene
+      ctx.fillRect(drawX + 5, drawY - 1, 14, 11);
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(drawX + 4, drawY + 2, 2, 7);
+      // Kaca masker selam cyan transparan
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 9, drawY + 2, 7, 6);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 10, drawY + 3, 5, 4);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 11, drawY + 3, 3, 1);
+      // Senter kepala laut dalam di dahi
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(drawX + 11, drawY - 1, 4, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 12, drawY - 1, 2, 1);
+      // Regulator pernapasan
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(drawX + 11, drawY + 8, 4, 3);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 12, drawY + 9, 2, 2);
+
+      // Gelembung napas kecil
+      const bProg = ((frame * 0.4 + 20) % 70) / 70;
+      if (bProg < 0.75) {
+        ctx.fillStyle = `rgba(224, 242, 254, ${0.7 * (1 - bProg)})`;
+        ctx.beginPath();
+        ctx.arc(drawX + 13, drawY + 6 - bProg * 26, 1.5 + bProg * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else {
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      // Jas laboratorium biru samudra dengan sensor termal cyan
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(drawX + 9, drawY + 12, 6, 2);
+      // Wajah
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 3, 10, 8);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 12, drawY + 6, 2, 2);
+      // Visor sensor kepala cyan bercahaya
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(drawX + 6, drawY + 1, 12, 3);
+      ctx.fillRect(drawX + 7, drawY - 2, 10, 3);
+      ctx.fillStyle = '#06b6d4';
+      ctx.fillRect(drawX + 11, drawY + 1, 5, 2);
+    }
   } else if (type === 'komandan_satria' || type === 'komandan_arya') {
     // ── KOMANDAN SATRIA & KOMANDAN ARYA (KEPALA PENJAGA GERBANG) ──
     const drawX = -12;
     const drawY = -32 + breathY;
-    ctx.fillStyle = '#1c1917';
-    ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
-    ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
-    ctx.fillStyle = '#292524';
-    ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
-    // Zirah komando taktis crimson-obsidian & ornamen epaulet perak
-    ctx.fillStyle = '#881337';
-    ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
-    ctx.fillStyle = '#e2e8f0'; // Epaulet perak
-    ctx.fillRect(drawX + 4, drawY + 10, 4, 2);
-    ctx.fillRect(drawX + 14, drawY + 10, 4, 2);
-    ctx.fillStyle = '#f43f5e'; // Lencana perisai tektonik di dada
-    ctx.fillRect(drawX + 9, drawY + 12, 4, 4);
-    // Wajah tegas
-    ctx.fillStyle = '#fed7aa';
-    ctx.fillRect(drawX + 7, drawY + 3, 10, 8);
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(drawX + 13, drawY + 6, 2, 2);
-    // Topi perwira baret komando crimson dengan emblem perak
-    ctx.fillStyle = '#4c0519';
-    ctx.fillRect(drawX + 5, drawY + 1, 14, 3);
-    ctx.fillRect(drawX + 6, drawY - 2, 12, 4);
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(drawX + 10, drawY - 1, 3, 3);
+
+    if (zoneId === 'divergent') {
+      // PAKAIAN PENYELAM TAKTIS KOMANDAN SATRIA (TACTICAL COMBAT DIVER)
+      // Sepatu katak selam taktis hitam-crimson & kaki
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 5);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 5);
+      ctx.fillStyle = '#881337'; // Fins crimson
+      ctx.fillRect(drawX + 4, drawY + 29, 7, 2);
+      ctx.fillRect(drawX + 13, drawY + 29, 7, 2);
+
+      // Celana Neoprene Taktis Selam
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      ctx.fillStyle = '#9f1239';
+      ctx.fillRect(drawX + 7, drawY + 21, 3, 3);
+      ctx.fillRect(drawX + 14, drawY + 21, 3, 3);
+      // Pisau selam militer di betis
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(drawX + 17, drawY + 22, 2, 5);
+
+      // Tabung Oksigen Penyelam di Punggung (Heavy Duty Crimson Tanks)
+      ctx.fillStyle = '#881337';
+      ctx.fillRect(drawX + 2, drawY + 9, 4, 11);
+      ctx.fillStyle = '#f43f5e';
+      ctx.fillRect(drawX + 3, drawY + 10, 2, 9);
+      ctx.fillStyle = '#e2e8f0'; // Katup valve perak
+      ctx.fillRect(drawX + 3, drawY + 7, 2, 2);
+      ctx.fillStyle = '#475569'; // Selang pernapasan
+      ctx.fillRect(drawX + 5, drawY + 8, 4, 2);
+
+      // Wetsuit Selam Crimson Taktis & Lencana Komando
+      ctx.fillStyle = '#881337';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
+      ctx.fillStyle = '#f43f5e'; // Lencana perisai
+      ctx.fillRect(drawX + 9, drawY + 12, 4, 3);
+      ctx.fillStyle = '#e2e8f0'; // Epaulet perak bahu
+      ctx.fillRect(drawX + 4, drawY + 10, 4, 2);
+      ctx.fillRect(drawX + 14, drawY + 10, 4, 2);
+      ctx.fillStyle = '#0f172a'; // Sabuk taktis
+      ctx.fillRect(drawX + 6, drawY + 17, 12, 2);
+
+      // Helm & Masker Selam Taktis Kaca Laut Dalam
+      ctx.fillStyle = '#0f172a'; // Hood neoprene
+      ctx.fillRect(drawX + 5, drawY - 1, 14, 11);
+      ctx.fillStyle = '#4c0519'; // List baret komando crimson di helm
+      ctx.fillRect(drawX + 5, drawY - 2, 14, 3);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(drawX + 9, drawY - 1, 3, 2);
+      // Kaca masker selam cyan HUD taktis
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(drawX + 9, drawY + 2, 7, 6);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(drawX + 10, drawY + 3, 5, 4);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(drawX + 11, drawY + 3, 3, 1);
+      // Regulator pernapasan
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(drawX + 11, drawY + 8, 4, 3);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 12, drawY + 9, 2, 2);
+
+      // Gelembung napas kecil
+      const bProg = ((frame * 0.4 + 50) % 70) / 70;
+      if (bProg < 0.75) {
+        ctx.fillStyle = `rgba(224, 242, 254, ${0.7 * (1 - bProg)})`;
+        ctx.beginPath();
+        ctx.arc(drawX + 13, drawY + 6 - bProg * 26, 1.5 + bProg * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else {
+      ctx.fillStyle = '#1c1917';
+      ctx.fillRect(drawX + 6, drawY + 26, 5, 6);
+      ctx.fillRect(drawX + 13, drawY + 26, 5, 6);
+      ctx.fillStyle = '#292524';
+      ctx.fillRect(drawX + 6, drawY + 19, 12, 8);
+      // Zirah komando taktis crimson-obsidian & ornamen epaulet perak
+      ctx.fillStyle = '#881337';
+      ctx.fillRect(drawX + 6, drawY + 10, 12, 9);
+      ctx.fillStyle = '#e2e8f0'; // Epaulet perak
+      ctx.fillRect(drawX + 4, drawY + 10, 4, 2);
+      ctx.fillRect(drawX + 14, drawY + 10, 4, 2);
+      ctx.fillStyle = '#f43f5e'; // Lencana perisai tektonik di dada
+      ctx.fillRect(drawX + 9, drawY + 12, 4, 4);
+      // Wajah tegas
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(drawX + 7, drawY + 3, 10, 8);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(drawX + 13, drawY + 6, 2, 2);
+      // Topi perwira baret komando crimson dengan emblem perak
+      ctx.fillStyle = '#4c0519';
+      ctx.fillRect(drawX + 5, drawY + 1, 14, 3);
+      ctx.fillRect(drawX + 6, drawY - 2, 12, 4);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(drawX + 10, drawY - 1, 3, 3);
+    }
   } else if (
     type === 'dr_maya_trans' ||
     type === 'prof_sarah_trans' ||
@@ -1220,50 +2344,102 @@ export function drawMascotWorld(
   ctx.translate(hoverX, hoverY);
   if (playerDir === 'left') ctx.scale(-1, 1);
 
-  // 1. Semburan Ion Biru Pendorong Bawah
-  const thrusterH = 4 + (frame % 3) * 2;
-  ctx.fillStyle = '#38bdf8';
-  ctx.fillRect(-2, 10, 4, thrusterH);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(-1, 10, 2, Math.max(2, thrusterH - 2));
+  // Animasi kepakan sayap burung hantu (flapping wings)
+  const wingFlap = Math.sin(frame * 0.18) * 3;
 
-  // 2. Bodi Bulat Resqy (Oranye Penyelamat RESQ-BOX)
-  ctx.fillStyle = '#0f172a'; // Outline
-  ctx.fillRect(-9, -7, 18, 17);
-  ctx.fillRect(-8, -8, 16, 19);
-
-  ctx.fillStyle = '#f97316'; // Casing Oranye
-  ctx.fillRect(-7, -6, 14, 15);
-  ctx.fillStyle = '#ea580c';
-  ctx.fillRect(-7, 5, 14, 4); // Shading bawah
-
-  // Strip Kuning Keselamatan
-  ctx.fillStyle = '#facc15';
-  ctx.fillRect(-7, 2, 14, 2);
-
-  // 3. Layar Digital CRT Cyan
-  ctx.fillStyle = '#0f172a';
-  ctx.fillRect(-5, -4, 10, 6);
-  ctx.fillStyle = '#06b6d4';
-  ctx.fillRect(-4, -3, 8, 4);
-
-  // Mata Piksel Berkedip Ceria
-  const isBlink = frame % 140 > 132;
-  ctx.fillStyle = '#ffffff';
-  if (!isBlink) {
-    ctx.fillRect(-3, -2, 2, 2);
-    ctx.fillRect(1, -2, 2, 2);
+  // 1. Partikel Kilau Ajaib Pemandu di sekitar Resqy
+  const sparklePhase = (frame % 40) / 40;
+  if (sparklePhase < 0.5) {
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(8, -6, 2, 2);
+    ctx.fillStyle = '#67e8f9';
+    ctx.fillRect(-10, 4, 1, 1);
   } else {
-    ctx.fillRect(-3, -1, 2, 1);
-    ctx.fillRect(1, -1, 2, 1);
+    ctx.fillStyle = '#67e8f9';
+    ctx.fillRect(10, 2, 1, 1);
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(-8, -4, 2, 2);
   }
 
-  // 4. Antena Radar Mini di Kepala
+  // 2. Bayangan Bulu Luar / Outline Cokelat Tua
+  ctx.fillStyle = '#451a03';
+  ctx.fillRect(-9, -8, 18, 18);
+  ctx.fillRect(-8, -9, 16, 20);
+
+  // 3. Telinga Bulu Burung Hantu (Ear Tufts) di kiri & kanan kepala
+  ctx.fillStyle = '#78350f';
+  ctx.fillRect(-7, -12, 3, 4);
+  ctx.fillRect(4, -12, 3, 4);
+  ctx.fillStyle = '#b45309';
+  ctx.fillRect(-6, -11, 2, 3);
+  ctx.fillRect(4, -11, 2, 3);
+
+  // 4. Badan Utama Berbulu Cokelat Keemasan (Tawny Owl Body)
+  ctx.fillStyle = '#b45309';
+  ctx.fillRect(-8, -7, 16, 16);
+  ctx.fillStyle = '#d97706';
+  ctx.fillRect(-7, -6, 14, 14);
+
+  // 5. Dada Bulu Lembut Krem / Beige (Chest Feather Patch)
+  ctx.fillStyle = '#fef3c7';
+  ctx.fillRect(-4, 0, 8, 8);
+  ctx.fillStyle = '#fde68a';
+  ctx.fillRect(-3, 1, 6, 6);
+  // Motif bulu dada burung hantu kecil (V-chevron feather markings)
+  ctx.fillStyle = '#b45309';
+  ctx.fillRect(-2, 3, 1, 1);
+  ctx.fillRect(1, 3, 1, 1);
+  ctx.fillRect(-1, 5, 2, 1);
+
+  // 6. Sayap Kiri & Kanan Beranimasi Mengepak Lembut
+  ctx.fillStyle = '#78350f';
+  ctx.fillRect(-11, -2 + wingFlap, 4, 8);
+  ctx.fillRect(7, -2 - wingFlap, 4, 8);
+  ctx.fillStyle = '#92400e';
+  ctx.fillRect(-10, -1 + wingFlap, 3, 6);
+  ctx.fillRect(7, -1 - wingFlap, 3, 6);
+
+  // 7. Mata Bulat Burung Hantu yang Bijak & Lebar (Wise Owl Eyes)
+  // Lingkar mata hitam
   ctx.fillStyle = '#0f172a';
-  ctx.fillRect(-1, -11, 2, 4);
-  const radarGlow = Math.sin(frame * 0.15) > 0 ? '#facc15' : '#fb923c';
-  ctx.fillStyle = radarGlow;
-  ctx.fillRect(-2, -13, 4, 2);
+  ctx.fillRect(-6, -5, 5, 5);
+  ctx.fillRect(1, -5, 5, 5);
+  // Lensa mata emas bercahaya
+  ctx.fillStyle = '#fef08a';
+  ctx.fillRect(-5, -4, 4, 4);
+  ctx.fillRect(1, -4, 4, 4);
+  // Kacamata Bulat Peneliti Emas (Smart Scholar Spectacles)
+  ctx.fillStyle = '#d97706';
+  ctx.fillRect(-6, -6, 6, 1);
+  ctx.fillRect(0, -6, 6, 1);
+  ctx.fillRect(-1, -4, 2, 1); // Jembatan kacamata
+  // Pupil mata & Kedip
+  const isBlink = frame % 120 > 112;
+  if (!isBlink) {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(-4, -3, 2, 3);
+    ctx.fillRect(2, -3, 2, 3);
+    // Glint pantulan putih
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-4, -4, 1, 1);
+    ctx.fillRect(2, -4, 1, 1);
+  } else {
+    // Garis mata terpejam imut saat berkedip
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(-5, -3, 4, 1);
+    ctx.fillRect(1, -3, 4, 1);
+  }
+
+  // 8. Paruh Segitiga Oranye Kecil (Beak)
+  ctx.fillStyle = '#ea580c';
+  ctx.fillRect(-1, -1, 2, 2);
+  ctx.fillStyle = '#f97316';
+  ctx.fillRect(0, 0, 1, 1);
+
+  // 9. Cakar Burung Hantu Kecil di Bawah (Tiny Yellow Talons)
+  ctx.fillStyle = '#f59e0b';
+  ctx.fillRect(-4, 9, 3, 2);
+  ctx.fillRect(1, 9, 3, 2);
 
   ctx.restore();
 }
@@ -1406,55 +2582,431 @@ export function getKaptenMayaPortrait(): HTMLCanvasElement {
   });
 }
 
-// ── 3C. POTRET BESAR MASKOT RESQY (TRANSPARAN) ──
+// ── 3C. POTRET BESAR MASKOT RESQY BURUNG HANTU (TRANSPARAN 120x120) ──
 export function getResqyPortrait(): HTMLCanvasElement {
-  return getOrCreateCanvas('portrait_resqy_trans', 120, 120, (ctx) => {
+  return getOrCreateCanvas('portrait_resqy_owl_trans', 120, 120, (ctx) => {
     // 100% Transparan tanpa kotak latar belakang
     const p = 4;
-    const offX = 22;
-    const offY = 20;
+    const offX = 20;
+    const offY = 16;
 
-    // Antena Pemancar Radar Mini
+    // 1. Telinga Bulu Burung Hantu (Ear Tufts)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(offX + 2 * p, offY - 4 * p, 4 * p, 6 * p);
+    ctx.fillRect(offX + 14 * p, offY - 4 * p, 4 * p, 6 * p);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(offX + 3 * p, offY - 3 * p, 2 * p, 4 * p);
+    ctx.fillRect(offX + 15 * p, offY - 3 * p, 2 * p, 4 * p);
+
+    // 2. Kepala & Bodi Utama (Tawny Feather Contour)
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(offX + 2 * p, offY + 0 * p, 16 * p, 18 * p);
+    ctx.fillRect(offX + 1 * p, offY + 2 * p, 18 * p, 14 * p);
+
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(offX + 3 * p, offY + 1 * p, 14 * p, 16 * p);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(offX + 4 * p, offY + 2 * p, 12 * p, 14 * p);
+
+    // 3. Bulu Pipi & Wajah Bulat (Facial Disk)
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(offX + 3 * p, offY + 4 * p, 6 * p, 7 * p);
+    ctx.fillRect(offX + 11 * p, offY + 4 * p, 6 * p, 7 * p);
+
+    // 4. Sayap Burung Hantu di Sisi (Folded Wings)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(offX + 1 * p, offY + 8 * p, 3 * p, 9 * p);
+    ctx.fillRect(offX + 16 * p, offY + 8 * p, 3 * p, 9 * p);
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(offX + 2 * p, offY + 9 * p, 2 * p, 7 * p);
+    ctx.fillRect(offX + 16 * p, offY + 9 * p, 2 * p, 7 * p);
+
+    // 5. Dada Bulu Lembut Krem & Chevron
+    ctx.fillStyle = '#fef3c7';
+    ctx.fillRect(offX + 5 * p, offY + 9 * p, 10 * p, 8 * p);
+    ctx.fillStyle = '#fde68a';
+    ctx.fillRect(offX + 6 * p, offY + 10 * p, 8 * p, 6 * p);
+    // Motif V-chevron bulu dada
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(offX + 7 * p, offY + 11 * p, 2 * p, 1 * p);
+    ctx.fillRect(offX + 11 * p, offY + 11 * p, 2 * p, 1 * p);
+    ctx.fillRect(offX + 9 * p, offY + 13 * p, 2 * p, 1 * p);
+
+    // 6. Mata Bulat Besar Burung Hantu (Huge Expressive Wise Eyes)
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(offX + 9 * p, offY - 3 * p, 1 * p, 3 * p);
-    ctx.fillStyle = '#facc15';
-    ctx.fillRect(offX + 8 * p, offY - 5 * p, 3 * p, 2 * p);
+    ctx.fillRect(offX + 4 * p, offY + 4 * p, 5 * p, 5 * p);
+    ctx.fillRect(offX + 11 * p, offY + 4 * p, 5 * p, 5 * p);
+
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(offX + 5 * p, offY + 5 * p, 4 * p, 4 * p);
+    ctx.fillRect(offX + 11 * p, offY + 5 * p, 4 * p, 4 * p);
+
+    // Kacamata Bulat Peneliti Emas (Gold Scholar Glasses)
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(offX + 3 * p, offY + 3 * p, 6 * p, 1 * p);
+    ctx.fillRect(offX + 11 * p, offY + 3 * p, 6 * p, 1 * p);
+    ctx.fillRect(offX + 9 * p, offY + 6 * p, 2 * p, 1 * p); // Jembatan kacamata
+    ctx.fillRect(offX + 3 * p, offY + 4 * p, 1 * p, 5 * p);
+    ctx.fillRect(offX + 16 * p, offY + 4 * p, 1 * p, 5 * p);
+
+    // Pupil Hitam & Glint
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(offX + 6 * p, offY + 6 * p, 2 * p, 3 * p);
+    ctx.fillRect(offX + 12 * p, offY + 6 * p, 2 * p, 3 * p);
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(offX + 9 * p, offY - 5 * p, 1 * p, 1 * p);
+    ctx.fillRect(offX + 6 * p, offY + 5 * p, 1 * p, 1 * p);
+    ctx.fillRect(offX + 12 * p, offY + 5 * p, 1 * p, 1 * p);
 
-    // Bodi Robotik Oranye Penyelamat (Chassis)
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(offX + 2 * p, offY + 0 * p, 15 * p, 15 * p);
-
-    ctx.fillStyle = '#f97316';
-    ctx.fillRect(offX + 3 * p, offY + 1 * p, 13 * p, 13 * p);
+    // 7. Paruh Emas-Oranye (Beak)
     ctx.fillStyle = '#ea580c';
-    ctx.fillRect(offX + 3 * p, offY + 10 * p, 13 * p, 4 * p);
+    ctx.fillRect(offX + 9 * p, offY + 7 * p, 2 * p, 3 * p);
+    ctx.fillStyle = '#f97316';
+    ctx.fillRect(offX + 9 * p, offY + 8 * p, 2 * p, 1 * p);
 
-    // Garis Keselamatan Kuning Reflektif
-    ctx.fillStyle = '#facc15';
-    ctx.fillRect(offX + 3 * p, offY + 8 * p, 13 * p, 2 * p);
-
-    // Layar Kaca CRT Hitam Glossy
-    ctx.fillStyle = '#020617';
-    ctx.fillRect(offX + 5 * p, offY + 2 * p, 9 * p, 6 * p);
-    ctx.fillStyle = '#0891b2';
-    ctx.fillRect(offX + 6 * p, offY + 3 * p, 7 * p, 4 * p);
-
-    // Mata Digital Piksel Cyan Ceria (Happy Expressive Face)
-    ctx.fillStyle = '#67e8f9';
-    ctx.fillRect(offX + 7 * p, offY + 4 * p, 2 * p, 2 * p);
-    ctx.fillRect(offX + 10 * p, offY + 4 * p, 2 * p, 2 * p);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(offX + 7 * p, offY + 4 * p, 1 * p, 1 * p);
-    ctx.fillRect(offX + 10 * p, offY + 4 * p, 1 * p, 1 * p);
-
-    // Pendorong Hover Bawah
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(offX + 7 * p, offY + 15 * p, 5 * p, 2 * p);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(offX + 8 * p, offY + 15 * p, 3 * p, 1 * p);
+    // 8. Cakar Kuning Imut di Bawah
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(offX + 6 * p, offY + 17 * p, 3 * p, 2 * p);
+    ctx.fillRect(offX + 11 * p, offY + 17 * p, 3 * p, 2 * p);
   });
+}
+
+// ── 3C-1. POTRET BESAR ZIDANE (KETUA & DEV UTAMA: KACAMATA, RAMBUT BERANTAKAN, BAJU HITAM) ──
+export function getZidanePortrait(): HTMLCanvasElement {
+  return getOrCreateCanvas('portrait_zidane_trans', 120, 120, (ctx) => {
+    const p = 4;
+    const offX = 20;
+    const offY = 16;
+
+    // Bahu & Baju Hitam Cool
+    ctx.fillStyle = '#09090b';
+    ctx.fillRect(offX + 1 * p, offY + 16 * p, 18 * p, 8 * p);
+    ctx.fillStyle = '#18181b';
+    ctx.fillRect(offX + 3 * p, offY + 17 * p, 14 * p, 7 * p);
+    ctx.fillStyle = '#334155'; // Kerah dalam
+    ctx.fillRect(offX + 8 * p, offY + 16 * p, 4 * p, 5 * p);
+
+    // Leher & Dagu (Kulit Putih)
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(offX + 7 * p, offY + 13 * p, 6 * p, 3 * p);
+
+    // Wajah
+    ctx.fillRect(offX + 5 * p, offY + 6 * p, 10 * p, 8 * p);
+
+    // Kacamata Persegi Modern Hitam & Glint Cyan
+    ctx.fillStyle = '#09090b';
+    ctx.fillRect(offX + 5 * p, offY + 7 * p, 4 * p, 3 * p);
+    ctx.fillRect(offX + 11 * p, offY + 7 * p, 4 * p, 3 * p);
+    ctx.fillRect(offX + 9 * p, offY + 8 * p, 2 * p, 1 * p); // Bridge
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(offX + 6 * p, offY + 8 * p, 2 * p, 2 * p);
+    ctx.fillRect(offX + 12 * p, offY + 8 * p, 2 * p, 2 * p);
+    ctx.fillStyle = '#ffffff'; // Glint
+    ctx.fillRect(offX + 6 * p, offY + 8 * p, 1 * p, 1 * p);
+    ctx.fillRect(offX + 12 * p, offY + 8 * p, 1 * p, 1 * p);
+
+    // Senyum Tenang Cool
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(offX + 8 * p, offY + 12 * p, 4 * p, 1 * p);
+
+    // Rambut Hitam Berantakan Stylish (Messy Hair)
+    ctx.fillStyle = '#09090b';
+    ctx.fillRect(offX + 3 * p, offY + 3 * p, 14 * p, 4 * p);
+    ctx.fillRect(offX + 2 * p, offY + 5 * p, 3 * p, 5 * p); // Sisi kiri
+    ctx.fillRect(offX + 15 * p, offY + 5 * p, 3 * p, 5 * p); // Sisi kanan
+    // Spikes ikal atas berantakan
+    ctx.fillRect(offX + 5 * p, offY - 1 * p, 4 * p, 4 * p);
+    ctx.fillRect(offX + 11 * p, offY - 2 * p, 4 * p, 5 * p);
+    ctx.fillRect(offX + 8 * p, offY + 0 * p, 3 * p, 4 * p);
+    ctx.fillStyle = '#27272a'; // Highlight rambut
+    ctx.fillRect(offX + 6 * p, offY + 1 * p, 2 * p, 2 * p);
+    ctx.fillRect(offX + 12 * p, offY + 0 * p, 2 * p, 2 * p);
+  });
+}
+
+// ── 3C-2. POTRET BESAR ZAHRA (UI/UX: CANTIK, IMUT, GEMESIN, KACAMATA, KERUDUNG BIRU, BAJU PINK, CERIA) ──
+export function getZahraPortrait(): HTMLCanvasElement {
+  return getOrCreateCanvas('portrait_zahra_trans', 120, 120, (ctx) => {
+    const p = 4;
+    const offX = 20;
+    const offY = 16;
+
+    // Baju Pink Manis & Bahu
+    ctx.fillStyle = '#ec4899';
+    ctx.fillRect(offX + 1 * p, offY + 16 * p, 18 * p, 8 * p);
+    ctx.fillStyle = '#f472b6';
+    ctx.fillRect(offX + 3 * p, offY + 17 * p, 14 * p, 7 * p);
+
+    // Kerudung Biru Cerah (Sky Blue Hijab) Folds di Leher & Dada
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(offX + 6 * p, offY + 13 * p, 8 * p, 6 * p);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(offX + 7 * p, offY + 14 * p, 6 * p, 4 * p);
+
+    // Kerudung Biru Utama Melingkari Kepala
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(offX + 3 * p, offY + 2 * p, 14 * p, 13 * p);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(offX + 4 * p, offY + 1 * p, 12 * p, 4 * p); // Puncak kerudung
+
+    // Wajah Cantik Imut & Berseri
+    ctx.fillStyle = '#fed7aa';
+    ctx.fillRect(offX + 6 * p, offY + 5 * p, 8 * p, 8 * p);
+
+    // Pipi Merona Pink Manis (Blush)
+    ctx.fillStyle = '#fda4af';
+    ctx.fillRect(offX + 5 * p, offY + 10 * p, 2 * p, 2 * p);
+    ctx.fillRect(offX + 13 * p, offY + 10 * p, 2 * p, 2 * p);
+
+    // Kacamata Bulat Imut Emas
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(offX + 5 * p, offY + 7 * p, 4 * p, 3 * p);
+    ctx.fillRect(offX + 11 * p, offY + 7 * p, 4 * p, 3 * p);
+    ctx.fillRect(offX + 9 * p, offY + 8 * p, 2 * p, 1 * p); // Bridge
+    // Mata berbinar ceria
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(offX + 6 * p, offY + 8 * p, 2 * p, 2 * p);
+    ctx.fillRect(offX + 12 * p, offY + 8 * p, 2 * p, 2 * p);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(offX + 6 * p, offY + 8 * p, 1 * p, 1 * p);
+    ctx.fillRect(offX + 12 * p, offY + 8 * p, 1 * p, 1 * p);
+
+    // Senyum Ceria Cantik
+    ctx.fillStyle = '#e11d48';
+    ctx.fillRect(offX + 8 * p, offY + 11 * p, 4 * p, 2 * p);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(offX + 9 * p, offY + 11 * p, 2 * p, 1 * p);
+  });
+}
+
+// ── 3C-3. POTRET BESAR ICAN (HARDWARE ENGINEER: RAMBUT IKAL, SIFAT AGAK NGESELIN / USIL, CASUAL SPORTY) ──
+export function getIcanPortrait(): HTMLCanvasElement {
+  return getOrCreateCanvas('portrait_ican_trans', 120, 120, (ctx) => {
+    const p = 4;
+    const offX = 20;
+    const offY = 16;
+
+    // Kaos Sporty Oranye-Abu
+    ctx.fillStyle = '#ea580c';
+    ctx.fillRect(offX + 1 * p, offY + 16 * p, 18 * p, 8 * p);
+    ctx.fillStyle = '#fb923c';
+    ctx.fillRect(offX + 4 * p, offY + 17 * p, 12 * p, 7 * p);
+    ctx.fillStyle = '#334155'; // Kerah dalam
+    ctx.fillRect(offX + 8 * p, offY + 16 * p, 4 * p, 4 * p);
+
+    // Leher Sawo Matang Natural
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(offX + 7 * p, offY + 13 * p, 6 * p, 3 * p);
+
+    // Wajah
+    ctx.fillRect(offX + 5 * p, offY + 6 * p, 10 * p, 8 * p);
+
+    // Mata Santai Usil
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(offX + 6 * p, offY + 8 * p, 3 * p, 2 * p);
+    ctx.fillRect(offX + 11 * p, offY + 8 * p, 3 * p, 2 * p);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(offX + 7 * p, offY + 8 * p, 1 * p, 1 * p);
+    ctx.fillRect(offX + 12 * p, offY + 8 * p, 1 * p, 1 * p);
+
+    // Senyum Miring Usil (Playful Smirk)
+    ctx.fillStyle = '#7c2d12';
+    ctx.fillRect(offX + 8 * p, offY + 12 * p, 4 * p, 1 * p);
+    ctx.fillRect(offX + 12 * p, offY + 11 * p, 1 * p, 1 * p); // Ujung bibir terangkat
+
+    // Rambut Ikal Mengembang Khas (Voluminous Curly Hair)
+    ctx.fillStyle = '#18181b';
+    ctx.fillRect(offX + 3 * p, offY + 2 * p, 14 * p, 5 * p);
+    // Gumpalan ikal di atas & pelipis
+    ctx.fillRect(offX + 2 * p, offY - 2 * p, 5 * p, 5 * p);
+    ctx.fillRect(offX + 7 * p, offY - 4 * p, 6 * p, 6 * p);
+    ctx.fillRect(offX + 13 * p, offY - 2 * p, 5 * p, 5 * p);
+    ctx.fillStyle = '#27272a'; // Texture highlight ikal
+    ctx.fillRect(offX + 3 * p, offY - 1 * p, 2 * p, 2 * p);
+    ctx.fillRect(offX + 9 * p, offY - 3 * p, 3 * p, 2 * p);
+    ctx.fillRect(offX + 14 * p, offY - 1 * p, 2 * p, 2 * p);
+  });
+}
+
+// ── 3C-4. POTRET BESAR LINTANG (MATERI IPA: KERUDUNG HIJAU, PINTAR, ANALITIS, RUNTUT) ──
+export function getLintangPortrait(): HTMLCanvasElement {
+  return getOrCreateCanvas('portrait_lintang_trans', 120, 120, (ctx) => {
+    const p = 4;
+    const offX = 20;
+    const offY = 16;
+
+    // Tunik Elegan Toska Muda
+    ctx.fillStyle = '#0d9488';
+    ctx.fillRect(offX + 1 * p, offY + 16 * p, 18 * p, 8 * p);
+    ctx.fillStyle = '#14b8a6';
+    ctx.fillRect(offX + 3 * p, offY + 17 * p, 14 * p, 7 * p);
+
+    // Kerudung Hijau Emerald (Green Hijab) Folds di Dada
+    ctx.fillStyle = '#15803d';
+    ctx.fillRect(offX + 6 * p, offY + 13 * p, 8 * p, 6 * p);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(offX + 7 * p, offY + 14 * p, 6 * p, 4 * p);
+
+    // Kerudung Hijau Utama Melingkari Kepala
+    ctx.fillStyle = '#15803d';
+    ctx.fillRect(offX + 3 * p, offY + 2 * p, 14 * p, 13 * p);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(offX + 4 * p, offY + 1 * p, 12 * p, 4 * p);
+
+    // Wajah Bersih & Cerdas
+    ctx.fillStyle = '#fed7aa';
+    ctx.fillRect(offX + 6 * p, offY + 5 * p, 8 * p, 8 * p);
+
+    // Mata Jernih Berwawasan
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(offX + 7 * p, offY + 8 * p, 2 * p, 2 * p);
+    ctx.fillRect(offX + 11 * p, offY + 8 * p, 2 * p, 2 * p);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(offX + 7 * p, offY + 8 * p, 1 * p, 1 * p);
+    ctx.fillRect(offX + 11 * p, offY + 8 * p, 1 * p, 1 * p);
+
+    // Senyum Ramah & Percaya Diri
+    ctx.fillStyle = '#991b1b';
+    ctx.fillRect(offX + 8 * p, offY + 11 * p, 4 * p, 1 * p);
+  });
+}
+
+// ── 3C-5. POTRET BESAR BU TYAS (DOSEN PEMBIMBING: KACAMATA, KERUDUNG HITAM, DOSEN BIJAKSANA) ──
+export function getBuTyasPortrait(): HTMLCanvasElement {
+  return getOrCreateCanvas('portrait_bu_tyas_trans', 120, 120, (ctx) => {
+    const p = 4;
+    const offX = 20;
+    const offY = 16;
+
+    // Blazer Dosen Formal Maroon Tua & Bahu
+    ctx.fillStyle = '#881337';
+    ctx.fillRect(offX + 1 * p, offY + 16 * p, 18 * p, 8 * p);
+    ctx.fillStyle = '#9f1239';
+    ctx.fillRect(offX + 3 * p, offY + 17 * p, 14 * p, 7 * p);
+    // Kemeja dalam putih & Pin Bros Emas
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(offX + 8 * p, offY + 16 * p, 4 * p, 5 * p);
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(offX + 4 * p, offY + 18 * p, 2 * p, 2 * p);
+
+    // Kerudung Hitam Anggun Folds di Leher
+    ctx.fillStyle = '#09090b';
+    ctx.fillRect(offX + 6 * p, offY + 13 * p, 8 * p, 5 * p);
+    ctx.fillStyle = '#18181b';
+    ctx.fillRect(offX + 7 * p, offY + 14 * p, 6 * p, 4 * p);
+
+    // Kerudung Hitam Utama Melingkari Kepala
+    ctx.fillStyle = '#09090b';
+    ctx.fillRect(offX + 3 * p, offY + 2 * p, 14 * p, 13 * p);
+    ctx.fillStyle = '#18181b';
+    ctx.fillRect(offX + 4 * p, offY + 1 * p, 12 * p, 4 * p);
+
+    // Wajah Bijaksana & Berwibawa
+    ctx.fillStyle = '#fed7aa';
+    ctx.fillRect(offX + 6 * p, offY + 5 * p, 8 * p, 8 * p);
+
+    // Kacamata Dosen Elegan Emas
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(offX + 5 * p, offY + 7 * p, 4 * p, 3 * p);
+    ctx.fillRect(offX + 11 * p, offY + 7 * p, 4 * p, 3 * p);
+    ctx.fillRect(offX + 9 * p, offY + 8 * p, 2 * p, 1 * p); // Bridge
+    // Mata Bijak Mengayomi
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(offX + 6 * p, offY + 8 * p, 2 * p, 2 * p);
+    ctx.fillRect(offX + 12 * p, offY + 8 * p, 2 * p, 2 * p);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(offX + 6 * p, offY + 8 * p, 1 * p, 1 * p);
+    ctx.fillRect(offX + 12 * p, offY + 8 * p, 1 * p, 1 * p);
+
+    // Senyum Hangat Mengayomi
+    ctx.fillStyle = '#991b1b';
+    ctx.fillRect(offX + 8 * p, offY + 11 * p, 4 * p, 1 * p);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// INDIKATOR KACA PEMBESAR MATERI EDUKASI (FLOATING DISCOVERY INDICATOR)
+// ══════════════════════════════════════════════════════════════════════════
+export function drawNpcMaterialBadge(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  frame: number,
+  isDiscovered: boolean = false,
+): void {
+  const bob = Math.sin(frame * 0.08) * 3;
+  const bx = Math.round(x);
+  const by = Math.round(y - 8 + bob);
+
+  ctx.save();
+  const pillW = 68;
+  const pillH = 17;
+  const px = bx - pillW / 2;
+  const py = by - pillH / 2;
+
+  // Background and border
+  if (isDiscovered) {
+    ctx.fillStyle = 'rgba(6, 78, 59, 0.92)';
+    ctx.fillRect(px, py, pillW, pillH);
+    ctx.strokeStyle = '#34d399';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(px, py, pillW, pillH);
+  } else {
+    const pulseAlpha = 0.85 + Math.sin(frame * 0.12) * 0.15;
+    ctx.fillStyle = `rgba(69, 26, 3, ${pulseAlpha})`;
+    ctx.fillRect(px, py, pillW, pillH);
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(px, py, pillW, pillH);
+  }
+
+  // Pointer segitiga ke arah kepala NPC
+  ctx.fillStyle = isDiscovered ? '#34d399' : '#f59e0b';
+  ctx.beginPath();
+  ctx.moveTo(bx - 4, py + pillH);
+  ctx.lineTo(bx + 4, py + pillH);
+  ctx.lineTo(bx, py + pillH + 4);
+  ctx.closePath();
+  ctx.fill();
+
+  // ── 2D PIXEL ART KACA PEMBESAR (MAGNIFYING GLASS) ──
+  const mx = px + 4;
+  const my = py + 3;
+
+  // Gagang kaca pembesar (handle cokelat/emas diagonal)
+  ctx.fillStyle = isDiscovered ? '#10b981' : '#d97706';
+  ctx.fillRect(mx + 7, my + 7, 2, 2);
+  ctx.fillRect(mx + 8, my + 8, 2, 2);
+  ctx.fillStyle = isDiscovered ? '#065f46' : '#78350f';
+  ctx.fillRect(mx + 9, my + 9, 2, 2);
+
+  // Bingkai lingkaran lensa (lens rim)
+  ctx.fillStyle = isDiscovered ? '#34d399' : '#fbbf24';
+  ctx.fillRect(mx + 2, my + 0, 5, 1);
+  ctx.fillRect(mx + 1, my + 1, 1, 5);
+  ctx.fillRect(mx + 7, my + 1, 1, 5);
+  ctx.fillRect(mx + 2, my + 6, 5, 1);
+
+  // Kaca lensa cyan transparan
+  ctx.fillStyle = isDiscovered ? '#a7f3d0' : '#38bdf8';
+  ctx.fillRect(mx + 2, my + 1, 5, 5);
+  // Specular shine lensa kaca pembesar putih
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(mx + 2, my + 2, 2, 1);
+  ctx.fillRect(mx + 3, my + 1, 1, 1);
+
+  // Teks label status
+  ctx.font = 'bold 8.5px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  if (isDiscovered) {
+    ctx.fillStyle = '#6ee7b7';
+    ctx.fillText('BACA ✓', mx + 13, by + 0.5);
+  } else {
+    ctx.fillStyle = '#fef08a';
+    ctx.fillText('MATERI', mx + 13, by + 0.5);
+  }
+
+  ctx.restore();
 }
 
 // ── 3D. POTRET BESAR DR. GEA (MINERALOGI - TRANSPARAN) ──
@@ -2471,6 +4023,16 @@ export function getKomandanGunturPortrait(): HTMLCanvasElement {
 // ── HELPER DASAR: MENGAMBIL PORTRAIT MENTAH NPC ──
 function getRawNpcPortrait(type: string): HTMLCanvasElement {
   switch (type) {
+    case 'zidane':
+      return getZidanePortrait();
+    case 'zahra':
+      return getZahraPortrait();
+    case 'ican':
+      return getIcanPortrait();
+    case 'lintang':
+      return getLintangPortrait();
+    case 'bu_tyas':
+      return getBuTyasPortrait();
     case 'kapten_maya':
       return getKaptenMayaPortrait();
     case 'resqy':

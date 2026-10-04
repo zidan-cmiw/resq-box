@@ -73,7 +73,26 @@ export type PixelIconType =
   | 'music'
   | 'fullscreen'
   | 'heart'
-  | 'layers';
+  | 'layers'
+  | 'chart'
+  | 'activity'
+  | 'seismogram'
+  | 'cpu'
+  | 'zap'
+  | 'x'
+  | 'close'
+  | 'rain'
+  | 'cloud-rain'
+  | 'rock'
+  | 'boulder'
+  | 'prohibited'
+  | 'ban'
+  | 'runner'
+  | 'evacuate'
+  | 'siren'
+  | 'dot-yellow'
+  | 'dot-red'
+  | 'dot-orange';
 
 interface PixelIconProps {
   name: PixelIconType | string;
@@ -429,6 +448,8 @@ export default function PixelIcon({ name, size = 16, className = '', color }: Pi
       );
 
     case 'cross':
+    case 'x':
+    case 'close':
       return (
         <svg
           viewBox="0 0 16 16"
@@ -505,6 +526,7 @@ export default function PixelIcon({ name, size = 16, className = '', color }: Pi
       );
 
     case 'lightning':
+    case 'zap':
       return (
         <svg
           viewBox="0 0 16 16"
@@ -1322,6 +1344,234 @@ export default function PixelIcon({ name, size = 16, className = '', color }: Pi
           <polygon points="8,2 14,6 8,10 2,6" fill={color || '#38bdf8'} />
           <polygon points="8,5 14,9 8,13 2,9" fill={color || '#0284c7'} opacity="0.7" />
           <polygon points="8,8 14,12 8,16 2,12" fill={color || '#075985'} opacity="0.5" />
+        </svg>
+      );
+
+    case 'chart':
+    case 'activity':
+    case 'seismogram':
+      return (
+        <svg
+          viewBox="0 0 16 16"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          {/* Axis / Base */}
+          <rect x="1" y="2" width="1" height="12" fill={color || '#64748b'} />
+          <rect x="1" y="13" width="14" height="1" fill={color || '#64748b'} />
+          {/* Bar 1 - Green (Normal) */}
+          <rect x="3" y="9" width="2" height="4" fill="#22c55e" />
+          <rect x="3" y="8" width="2" height="1" fill="#86efac" />
+          {/* Bar 2 - Yellow (Waspada) */}
+          <rect x="6" y="6" width="2" height="7" fill="#eab308" />
+          <rect x="6" y="5" width="2" height="1" fill="#fef08a" />
+          {/* Bar 3 - Orange (Siaga) */}
+          <rect x="9" y="4" width="2" height="9" fill="#f97316" />
+          <rect x="9" y="3" width="2" height="1" fill="#fed7aa" />
+          {/* Bar 4 - Red (Awas) */}
+          <rect x="12" y="2" width="2" height="11" fill="#ef4444" />
+          <rect x="12" y="1" width="2" height="1" fill="#fca5a5" />
+        </svg>
+      );
+
+    case 'cpu':
+      return (
+        <svg
+          viewBox="0 0 16 16"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          <rect x="3" y="3" width="10" height="10" fill="#1e293b" />
+          <rect x="4" y="4" width="8" height="8" fill="#334155" />
+          <rect x="6" y="6" width="4" height="4" fill="#0284c7" />
+          <rect x="5" y="1" width="1" height="2" fill="#facc15" />
+          <rect x="7" y="1" width="1" height="2" fill="#facc15" />
+          <rect x="9" y="1" width="1" height="2" fill="#facc15" />
+          <rect x="5" y="13" width="1" height="2" fill="#facc15" />
+          <rect x="7" y="13" width="1" height="2" fill="#facc15" />
+          <rect x="9" y="13" width="1" height="2" fill="#facc15" />
+          <rect x="1" y="5" width="2" height="1" fill="#facc15" />
+          <rect x="1" y="7" width="2" height="1" fill="#facc15" />
+          <rect x="1" y="9" width="2" height="1" fill="#facc15" />
+          <rect x="13" y="5" width="2" height="1" fill="#facc15" />
+          <rect x="13" y="7" width="2" height="1" fill="#facc15" />
+          <rect x="13" y="9" width="2" height="1" fill="#facc15" />
+        </svg>
+      );
+
+    case 'rain':
+    case 'cloud-rain':
+      return (
+        <svg
+          viewBox="0 0 16 16"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          {/* Awan Pixel Abu-Biru */}
+          <rect x="5" y="2" width="6" height="2" fill="#cbd5e1" />
+          <rect x="3" y="4" width="10" height="4" fill="#94a3b8" />
+          <rect x="2" y="6" width="12" height="3" fill="#64748b" />
+          <rect x="4" y="3" width="2" height="2" fill="#f8fafc" />
+          {/* Butiran Hujan Pixel */}
+          <rect x="3" y="10" width="1" height="3" fill="#38bdf8" />
+          <rect x="6" y="11" width="1" height="3" fill="#38bdf8" />
+          <rect x="9" y="10" width="1" height="3" fill="#38bdf8" />
+          <rect x="12" y="11" width="1" height="3" fill="#38bdf8" />
+          <rect x="4" y="14" width="1" height="1" fill="#7dd3fc" />
+          <rect x="7" y="15" width="1" height="1" fill="#7dd3fc" />
+          <rect x="10" y="14" width="1" height="1" fill="#7dd3fc" />
+        </svg>
+      );
+
+    case 'rock':
+    case 'boulder':
+      return (
+        <svg
+          viewBox="0 0 16 16"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          {/* Batu Andesit Bertekstur 2D Pixel */}
+          <rect x="4" y="3" width="7" height="2" fill="#94a3b8" />
+          <rect x="3" y="5" width="10" height="7" fill="#64748b" />
+          <rect x="2" y="7" width="12" height="5" fill="#475569" />
+          <rect x="3" y="12" width="10" height="2" fill="#334155" />
+          <rect x="5" y="4" width="3" height="2" fill="#cbd5e1" />
+          <rect x="4" y="7" width="2" height="2" fill="#334155" />
+          <rect x="9" y="8" width="3" height="2" fill="#1e293b" />
+        </svg>
+      );
+
+    case 'prohibited':
+    case 'ban':
+      return (
+        <svg
+          viewBox="0 0 16 16"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          {/* Lingkaran Larangan Merah dengan Garis Silang */}
+          <rect x="4" y="1" width="8" height="2" fill="#ef4444" />
+          <rect x="2" y="3" width="12" height="2" fill="#ef4444" />
+          <rect x="1" y="4" width="2" height="8" fill="#ef4444" />
+          <rect x="13" y="4" width="2" height="8" fill="#ef4444" />
+          <rect x="2" y="11" width="12" height="2" fill="#ef4444" />
+          <rect x="4" y="13" width="8" height="2" fill="#ef4444" />
+          {/* Garis Silang Diagonal */}
+          <rect x="3" y="3" width="3" height="3" fill="#ef4444" />
+          <rect x="5" y="5" width="3" height="3" fill="#ef4444" />
+          <rect x="7" y="7" width="2" height="2" fill="#ef4444" />
+          <rect x="8" y="8" width="3" height="3" fill="#ef4444" />
+          <rect x="10" y="10" width="3" height="3" fill="#ef4444" />
+          {/* Latar Putih Transparan */}
+          <rect x="4" y="4" width="3" height="3" fill="#fee2e2" />
+          <rect x="9" y="5" width="3" height="3" fill="#fee2e2" />
+        </svg>
+      );
+
+    case 'runner':
+    case 'evacuate':
+      return (
+        <svg
+          viewBox="0 0 16 16"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          {/* Kepala Pelari */}
+          <rect x="10" y="1" width="3" height="3" fill="#34d399" />
+          {/* Tubuh Miring */}
+          <rect x="7" y="4" width="4" height="4" fill="#10b981" />
+          {/* Lengan Depan & Belakang */}
+          <rect x="12" y="5" width="3" height="2" fill="#34d399" />
+          <rect x="4" y="4" width="3" height="2" fill="#059669" />
+          {/* Kaki Berlari */}
+          <rect x="8" y="8" width="2" height="3" fill="#047857" />
+          <rect x="10" y="10" width="3" height="2" fill="#34d399" />
+          <rect x="12" y="12" width="2" height="2" fill="#059669" />
+          <rect x="5" y="8" width="3" height="2" fill="#047857" />
+          <rect x="3" y="10" width="3" height="2" fill="#059669" />
+          <rect x="1" y="12" width="3" height="2" fill="#34d399" />
+        </svg>
+      );
+
+    case 'siren':
+      return (
+        <svg
+          viewBox="0 0 16 16"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          {/* Kubah Sirine EWS Merah / Kuning */}
+          <rect x="5" y="3" width="6" height="3" fill="#ef4444" />
+          <rect x="4" y="6" width="8" height="4" fill="#dc2626" />
+          <rect x="6" y="4" width="2" height="2" fill="#fca5a5" />
+          {/* Dudukan Sirine */}
+          <rect x="3" y="10" width="10" height="2" fill="#475569" />
+          <rect x="4" y="12" width="8" height="2" fill="#1e293b" />
+          {/* Sinar Gelombang Peringatan */}
+          <rect x="2" y="2" width="2" height="1" fill="#facc15" />
+          <rect x="12" y="2" width="2" height="1" fill="#facc15" />
+          <rect x="1" y="5" width="1" height="2" fill="#facc15" />
+          <rect x="14" y="5" width="1" height="2" fill="#facc15" />
+        </svg>
+      );
+
+    case 'dot-yellow':
+      return (
+        <svg
+          viewBox="0 0 12 12"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          <rect x="1" y="1" width="10" height="10" fill="#78350f" />
+          <rect x="2" y="2" width="8" height="8" fill="#facc15" />
+          <rect x="3" y="3" width="3" height="3" fill="#fef08a" />
+        </svg>
+      );
+
+    case 'dot-red':
+      return (
+        <svg
+          viewBox="0 0 12 12"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          <rect x="1" y="1" width="10" height="10" fill="#4c0519" />
+          <rect x="2" y="2" width="8" height="8" fill="#f43f5e" />
+          <rect x="3" y="3" width="3" height="3" fill="#fecdd3" />
+        </svg>
+      );
+
+    case 'dot-orange':
+      return (
+        <svg
+          viewBox="0 0 12 12"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          <rect x="1" y="1" width="10" height="10" fill="#7c2d12" />
+          <rect x="2" y="2" width="8" height="8" fill="#f97316" />
+          <rect x="3" y="3" width="3" height="3" fill="#ffedd5" />
         </svg>
       );
 

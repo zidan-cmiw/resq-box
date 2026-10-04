@@ -38,8 +38,14 @@ javascriptGenerator.forBlock['resq_buzzer'] = function(block: Blockly.Block) {
 
 // ── resq_buzzer_stop ────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_buzzer_stop'] = function() {
-  return `await api.print('Sirine berhenti', 'warn');\n`;
+  return `await api.setBuzzer(false);\nawait api.print('Sirine berhenti', 'warn');\n`;
 };
+
+// ── resq_sirine_stop ────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_sirine_stop'] = function() {
+  return `await api.setBuzzer(false);\nawait api.print('Sirine Peringatan dimatikan', 'info');\n`;
+};
+
 
 // ── resq_motor ──────────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_motor'] = function(block: Blockly.Block) {
@@ -197,4 +203,140 @@ javascriptGenerator.forBlock['resq_suhu_panas'] = function() {
   return [`(api.getSensor('A2') * 0.4887) > 35.0`, 0];
 };
 
+// ── resq_lampu_status ───────────────────────────────────────────
+javascriptGenerator.forBlock['resq_lampu_status'] = function(block: Blockly.Block) {
+  const status = block.getFieldValue('STATUS');
+  const labelMap: Record<string, string> = {
+    green: 'Aman (Hijau)',
+    yellow: 'Waspada (Kuning)',
+    orange: 'Siaga (Oranye)',
+    red: 'Awas (Merah)',
+    off: 'Mati',
+  };
+  const label = labelMap[status] || status;
+  return `await api.setRgb('${status}');\nawait api.print('Lampu Status Mitigasi: ${label}', 'success');\n`;
+};
+
+// ── resq_sirine_ews ─────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_sirine_ews'] = function(block: Blockly.Block) {
+  const s = parseInt(block.getFieldValue('DETIK') || '3');
+  return `await api.setBuzzer(true);\nawait api.print('Sirine Peringatan Dini (EWS) berbunyi selama ${s} detik!', 'warn');\nawait api.delay(${s * 1000});\nawait api.setBuzzer(false);\nawait api.print('Sirine EWS selesai', 'info');\n`;
+};
+
+// ── resq_gempa_sim ──────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_gempa_sim'] = function(block: Blockly.Block) {
+  const lvl = parseInt(block.getFieldValue('LEVEL') || '1');
+  const lvlNames: Record<number, string> = {
+    1: 'Ringan (3-4 SR)',
+    2: 'Sedang (5-6 SR)',
+    3: 'Kuat (>7 SR)',
+  };
+  const label = lvlNames[lvl] || `Level ${lvl}`;
+  return `await api.simGempa(${lvl});\nawait api.print('Simulasi Gempa Bumi: ${label} aktif! (Motor getar & audio berbunyi)', 'error');\n`;
+};
+
+// ── resq_gunung_sim ─────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_gunung_sim'] = function(block: Blockly.Block) {
+  const stMap: Record<string, string> = { '1': 'WASPADA', '2': 'SIAGA', '3': 'AWAS' };
+  const st = stMap[block.getFieldValue('STATUS')] || 'WASPADA';
+  const tipe = block.getFieldValue('TIPE') || 'EKSPLOSIF';
+  return `await api.simGunung('${st}', '${tipe}');\nawait api.print('Simulasi Erupsi Merapi: Status ${st} (Tipe ${tipe}) aktif!', 'error');\n`;
+};
+
+// ── resq_tipe_letusan ───────────────────────────────────────────
+javascriptGenerator.forBlock['resq_tipe_letusan'] = function(block: Blockly.Block) {
+  return [`"${block.getFieldValue('TIPE')}"`, 0];
+};
+
+// ── resq_jalur_evakuasi ─────────────────────────────────────────
+javascriptGenerator.forBlock['resq_jalur_evakuasi'] = function(block: Blockly.Block) {
+  const jalur = block.getFieldValue('JALUR');
+  const jalurNames: Record<string, string> = {
+    'LINGKAR_UTAMA': 'Jalur Lingkar Utama (Bebas Lahar)',
+    'LEMBAH_SUNGAI': 'Jalur Lembah Sungai (Rawan Lahar)',
+    'LAPANGAN_TERBUKA': 'Jalur Lapangan Terbuka',
+  };
+  const label = jalurNames[jalur] || jalur;
+  const logType = jalur === 'LEMBAH_SUNGAI' ? 'error' : 'success';
+  return `await api.setEvacRoute('${label}');\nawait api.print('Jalur Evakuasi ditetapkan: ${label}', '${logType}');\n`;
+};
+
+// ── resq_posko ──────────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_posko'] = function(block: Blockly.Block) {
+  const posko = block.getFieldValue('POSKO');
+  const poskoNames: Record<string, string> = {
+    'BARAK_KRB1': 'Barak Pengungsian Terpadu (KRB I)',
+    'POSKO_MEDIS': 'Posko Medis BPBD',
+    'LAPANGAN': 'Titik Kumpul Lapangan',
+  };
+  const label = poskoNames[posko] || posko;
+  return `await api.setActiveShelter('${label}');\nawait api.print('Posko Evakuasi dibuka: ${label}', 'success');\n`;
+};
+
+// ── resq_lokasi_mitigasi ────────────────────────────────────────
+javascriptGenerator.forBlock['resq_lokasi_mitigasi'] = function(block: Blockly.Block) {
+  const loc = block.getFieldValue('LOKASI');
+  const locNames: Record<string, string> = {
+    'SEKOLAH': 'Gedung Sekolah',
+    'RUMAH': 'Pemukiman Warga',
+    'RS': 'Rumah Sakit',
+    'JEMBATAN': 'Dekat Jembatan Sungai',
+  };
+  const label = locNames[loc] || loc;
+  return `await api.setLocation('${label}');\nawait api.print('Lokasi Mitigasi: ${label}', 'info');\n`;
+};
+
+// ── resq_layar_oled ─────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_layar_oled'] = function(block: Blockly.Block) {
+  const txt = block.getFieldValue('TEXT') || '';
+  return `await api.setOledMessage('${txt}');\nawait api.print('Layar Informasi OLED: "${txt}"', 'info');\n`;
+};
+
+// ── resq_sensor_seismik ─────────────────────────────────────────
+javascriptGenerator.forBlock['resq_sensor_seismik'] = function() {
+  return [`api.getSensor('A1')`, 0];
+};
+
+// ── resq_stopall ────────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_stopall'] = function() {
+  return `await api.stopAll();\nawait api.print('Semua perangkat & simulasi dihentikan (STOP ALL)', 'warn');\n`;
+};
+
+// ── resq_mist ───────────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_mist'] = function(block: Blockly.Block) {
+  const state = block.getFieldValue('STATE');
+  const isOn = state === 'ON';
+  return `await api.setMist(${isOn});\nawait api.print('Asap Erupsi (Mist Maker) ${isOn ? 'AKTIF (Menyembur)' : 'MATI'}', '${isOn ? 'error' : 'info'}');\n`;
+};
+
+// ── resq_audio ──────────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_audio'] = function(block: Blockly.Block) {
+  const track = parseInt(block.getFieldValue('TRACK') || '1');
+  const trackNames: Record<number, string> = {
+    1: 'Gempa Bumi (Track 1)',
+    2: 'Gemuruh Erupsi (Track 2)',
+    3: 'Sirine Evakuasi (Track 3)',
+    0: 'Hentikan Suara',
+  };
+  const label = trackNames[track] || `Track ${track}`;
+  if (track === 0) {
+    return `await api.stopAudio();\nawait api.print('Audio speaker dihentikan', 'info');\n`;
+  }
+  return `await api.playAudio(${track});\nawait api.print('Memutar audio speaker: ${label}', 'warn');\n`;
+};
+
+// ── resq_motor_getar ────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_motor_getar'] = function(block: Blockly.Block) {
+  const speed = block.getFieldValue('SPEED');
+  const labelMap: Record<string, string> = {
+    '20': 'Ringan (PWM 20)',
+    '35': 'Sedang (PWM 35)',
+    '50': 'Kuat (PWM 50)',
+    '0': 'Berhenti',
+  };
+  const label = labelMap[speed] || speed;
+  return `await api.setMotor('${speed}');\nawait api.print('Motor getar diorama: ${label}', 'info');\n`;
+};
+
 export { javascriptGenerator };
+

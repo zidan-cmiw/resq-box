@@ -14,8 +14,13 @@ import {
   clearLevel2Progress,
   switchAreaL2,
   startSimulationArea2,
+  startSimulationArea5,
+  retryVolcanoPhase,
+  retryVolcanoRescuePhase,
+  getNpcDialogueTreeL2,
   type GameStateL2,
 } from './gameEngine';
+import { TOTAL_CRYSTALS_L2 } from './zones';
 import { renderTectonicGameL2 } from './renderer';
 import {
   initPlayerInputL2,
@@ -28,7 +33,11 @@ import DiscoveryModal from '../DiscoveryModal';
 import CrosswordModal from '../CrosswordModal';
 import MiniChallengeModal from '../MiniChallengeModal';
 import TectonicVictoryModal from '../TectonicVictoryModal';
+import SeismographModal from '../SeismographModal';
+import Wordle from '../../Level1/Wordle';
 import VisualNovelDialogueL2 from '../VisualNovelDialogueL2';
+import { VolcanoPhaseModal, type VolcanoPhaseType } from '../VolcanoPhaseModal';
+import { VolcanoRescueFailedModal } from '../VolcanoRescueFailedModal';
 import { DIALOGUE_TREES_L2, type DialogueTreeL2 } from '../dialogueDataL2';
 import PixelIcon from '../../../components/PixelIcon';
 import TelemetryHUD from '../../Level1/EarthDive/TelemetryHUD';
@@ -75,8 +84,23 @@ export default function TectonicGame() {
   const [showCrossword, setShowCrossword] = useState(false);
   const [showMiniChallenge, setShowMiniChallenge] = useState(false);
   const [showVictoryModal, setShowVictoryModal] = useState(false);
+  const [showSeismographModal, setShowSeismographModal] = useState(false);
+  const [showPgaWordle, setShowPgaWordle] = useState(false);
   const [isGateLockedModalOpen, setIsGateLockedModalOpen] = useState(false);
   const [discoveryWarning, setDiscoveryWarning] = useState<{ read: number; total: number } | null>(null);
+
+  // Cek apakah gerbang evaluasi TTS / tantangan di area saat ini sudah berhasil diselesaikan & terbuka
+  const isCurrentGateUnlocked = useCallback(() => {
+    const state = gameStateRef.current;
+    if (!state) return false;
+    if (currentAreaIndex === 0) return state.unlockedGates.has('l2_gate_gempa');
+    if (currentAreaIndex === 1) return state.unlockedGates.has('l2_gate_gempa_sim');
+    if (currentAreaIndex === 2) return state.unlockedGates.has('l2_gate_pascabencana');
+    if (currentAreaIndex === 3) return state.unlockedGates.has('l2_gate_volcano_prep');
+    if (currentAreaIndex === 4) return state.unlockedGates.has('l2_gate_volcano_sim');
+    if (currentAreaIndex === 5) return state.unlockedGates.has('l2_gate_shelter_recovery');
+    return false;
+  }, [currentAreaIndex]);
 
   // HUD States (Dimuat langsung dari save data akun aktif)
   const [playerHp, setPlayerHp] = useState(() => {
@@ -85,13 +109,85 @@ export default function TectonicGame() {
   });
   const [collectedCount, setCollectedCount] = useState(() => {
     const saved = loadLevel2Progress(activeUserId);
-    return saved?.collectedCrystals?.length ?? 0;
+    return Math.min(TOTAL_CRYSTALS_L2, saved?.collectedCrystals?.length ?? 0);
   });
-  const [totalCrystals] = useState(9); // 3 kristal per area × 3 area = total 9 kristal di Level 2
+  const [totalCrystals] = useState(TOTAL_CRYSTALS_L2); // Total 21 kristal (4 di Area 1, 3 di Area 2, 4 di Area 3, 3 di Area 4, 3 di Area 5, 4 di Area 6)
   const [discoveredInArea, setDiscoveredInArea] = useState(0);
   const [simPhase, setSimPhase] = useState<string>('idle');
+  const [activeScenario, setActiveScenario] = useState<'moderate' | 'severe'>('moderate');
+  const [activeVolcanoScenario, setActiveVolcanoScenario] = useState<'explosive' | 'effusive'>('explosive');
+  const [activeVolcanoPhaseModal, setActiveVolcanoPhaseModal] = useState<VolcanoPhaseType | null>(null);
+  const [isVolcanoFailed, setIsVolcanoFailed] = useState(false);
+  const [volcanoFailureReason, setVolcanoFailureReason] = useState<string | undefined>(undefined);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [nearInteractablePrompt, setNearInteractablePrompt] = useState<string | null>(null);
+  const nearPromptRef = useRef<string | null>(null);
+  const discoveredInAreaRef = useRef<number>(0);
+
+  // Handler memilih dan menjalankan skenario simulasi gempa (Gempa Sedang / Gempa Besar)
+  const handleSelectScenario = useCallback((scenario: 'moderate' | 'severe') => {
+    retroAudio.playSelect();
+    setActiveScenario(scenario);
+    if (gameStateRef.current) {
+      startSimulationArea2(gameStateRef.current, scenario);
+      setSimPhase('teaching');
+      if (gameStateRef.current.activeDialogueTree) {
+        setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+      }
+    }
+  }, []);
+
+  // Handler memilih dan menjalankan skenario simulasi erupsi gunung api (Eksplosif / Efusif)
+  const handleSelectVolcanoScenario = useCallback((scenario: 'explosive' | 'effusive') => {
+    retroAudio.playSelect();
+    setActiveVolcanoScenario(scenario);
+    if (gameStateRef.current) {
+      if (gameStateRef.current.volcanoSim) {
+        gameStateRef.current.volcanoSim.scenario = scenario;
+      }
+      startSimulationArea5(gameStateRef.current, scenario);
+      setActiveVolcanoPhaseModal('NORMAL');
+    }
+  }, []);
+
+  // Handler transisi melanjutkan fase status Merapi dari modal popup
+  const handleContinueVolcanoPhase = useCallback(() => {
+    retroAudio.playSelect();
+    const currentModal = activeVolcanoPhaseModal;
+    setActiveVolcanoPhaseModal(null);
+    const state = gameStateRef.current;
+    if (!state || !state.volcanoSim) return;
+
+    if (currentModal === 'NORMAL') {
+      state.volcanoSim.phase = 'fase1_normal_exploring';
+      state.volcanoSim.fase1Timer = 120; // 2 detik mengamati keindahan lereng normal
+    } else if (currentModal === 'WASPADA') {
+      state.volcanoSim.phase = 'fase2_waspada_evac';
+      state.volcanoSim.statusLevel = 'WASPADA';
+      state.volcanoSim.volcanoPlume = 'white_steam';
+    } else if (currentModal === 'SIAGA') {
+      state.volcanoSim.phase = 'fase3_siaga_migration';
+      state.volcanoSim.statusLevel = 'SIAGA';
+      state.volcanoSim.volcanoPlume = 'dark_ash';
+      state.volcanoSim.skyDimFactor = 0.65;
+      state.volcanoSim.vegetationWither = 0.45;
+    } else if (currentModal === 'AWAS') {
+      state.volcanoSim.phase = 'fase4_awas_earthquake';
+      state.volcanoSim.statusLevel = 'AWAS';
+      state.volcanoSim.earthquakeTimer = 120; // 2 detik gempa bumi besar 5.2 SR
+      state.volcanoSim.skyDimFactor = 1.0;
+      state.volcanoSim.vegetationWither = 0.85;
+    }
+  }, [activeVolcanoPhaseModal]);
+
+  // Handler retry untuk mengulang evakuasi 3 warga dusun saat batas 15 detik habis
+  const handleRetryVolcanoRescue = useCallback(() => {
+    retroAudio.playSelect();
+    setIsVolcanoFailed(false);
+    if (gameStateRef.current) {
+      retryVolcanoRescuePhase(gameStateRef.current);
+    }
+  }, []);
 
   // Deteksi perangkat sentuh / tablet persis Level 1
   useEffect(() => {
@@ -121,10 +217,14 @@ export default function TectonicGame() {
     showCrossword ||
     showMiniChallenge ||
     showVictoryModal ||
+    showSeismographModal ||
+    showPgaWordle ||
     discoveryWarning !== null ||
     isGateLockedModalOpen ||
     activeDialogueTree !== null ||
-    simPhase === 'failed';
+    activeVolcanoPhaseModal !== null ||
+    simPhase === 'failed' ||
+    isVolcanoFailed;
 
   // ── INIT GAME STATE & INPUTS (SCOPED TO ACTIVE USER) ──
   useEffect(() => {
@@ -135,7 +235,7 @@ export default function TectonicGame() {
     gameStateRef.current = state;
     setCurrentAreaIndex(state.currentAreaIndex);
     setPlayerHp(state.player.health);
-    setCollectedCount(state.collectedCrystals.size);
+    setCollectedCount(Math.min(TOTAL_CRYSTALS_L2, state.collectedCrystals.size));
   }, [activeUserId]);
 
   // ── RESQY STORY TUTOR DI AWAL AREA (PERSIS SEPERTI DI LEVEL 1) ──
@@ -152,7 +252,7 @@ export default function TectonicGame() {
             setActiveDialogueTree(tree);
             try {
               localStorage.setItem(seenKey, 'true');
-            } catch {}
+            } catch { }
           }
         }, 650);
         return () => window.clearTimeout(timer);
@@ -167,7 +267,7 @@ export default function TectonicGame() {
             setActiveDialogueTree(tree);
             try {
               localStorage.setItem(seenKey, 'true');
-            } catch {}
+            } catch { }
           }
         }, 650);
         return () => window.clearTimeout(timer);
@@ -182,7 +282,40 @@ export default function TectonicGame() {
             setActiveDialogueTree(tree);
             try {
               localStorage.setItem(seenKey, 'true');
-            } catch {}
+            } catch { }
+          }
+        }, 650);
+        return () => window.clearTimeout(timer);
+      }
+    } else if (currentAreaIndex === 3) {
+      const seenKey = `resqbox_l2_mascot_area3_seen_${activeUserId}`;
+      const hasSeen = localStorage.getItem(seenKey);
+      if (!hasSeen) {
+        const timer = window.setTimeout(() => {
+          const tree = DIALOGUE_TREES_L2['resqy_briefing_area4'];
+          if (tree) {
+            setActiveDialogueTree(tree);
+            try {
+              localStorage.setItem(seenKey, 'true');
+            } catch { }
+          }
+        }, 650);
+        return () => window.clearTimeout(timer);
+      }
+    } else if (currentAreaIndex === 4) {
+      // Area 5 (Simulasi Erupsi Merapi): Resqy akan otomatis menyapa dan memberikan pilihan simulasi
+      // tepat setelah banner nama area selesai ditampilkan (ditangani oleh updateGameEngineL2)
+    } else if (currentAreaIndex === 5) {
+      const seenKey = `resqbox_l2_mascot_area5_seen_${activeUserId}`;
+      const hasSeen = localStorage.getItem(seenKey);
+      if (!hasSeen) {
+        const timer = window.setTimeout(() => {
+          const tree = DIALOGUE_TREES_L2['resqy_briefing_area6'];
+          if (tree) {
+            setActiveDialogueTree(tree);
+            try {
+              localStorage.setItem(seenKey, 'true');
+            } catch { }
           }
         }, 650);
         return () => window.clearTimeout(timer);
@@ -240,9 +373,22 @@ export default function TectonicGame() {
         setCurrentAreaIndex(areaIdx);
       }
     };
-    (window as any).__startSimulationArea2 = () => {
+    (window as any).__startSimulationArea2 = (scenario: 'moderate' | 'severe' = 'moderate') => {
       if (gameStateRef.current) {
-        startSimulationArea2(gameStateRef.current);
+        startSimulationArea2(gameStateRef.current, scenario);
+        setActiveScenario(scenario);
+        setSimPhase('teaching');
+        if (gameStateRef.current.activeDialogueTree) {
+          setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+        }
+      }
+    };
+    (window as any).__startSimulationArea5 = () => {
+      if (gameStateRef.current) {
+        startSimulationArea5(gameStateRef.current);
+        if (gameStateRef.current.activeDialogueTree) {
+          setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+        }
       }
     };
     (window as any).__showVictoryL2 = () => setShowVictoryModal(true);
@@ -251,13 +397,14 @@ export default function TectonicGame() {
       try {
         localStorage.removeItem(`resqbox_l2_mascot_area0_seen_${activeUserId}`);
         localStorage.removeItem(`resqbox_l2_mascot_area1_seen_${activeUserId}`);
-      } catch {}
+      } catch { }
       window.location.reload();
     };
     return () => {
       delete (window as any).__openDiscoveryL2;
       delete (window as any).__switchAreaL2;
       delete (window as any).__startSimulationArea2;
+      delete (window as any).__startSimulationArea5;
       delete (window as any).__showVictoryL2;
       delete (window as any).__resetLevel2;
     };
@@ -321,9 +468,31 @@ export default function TectonicGame() {
           setCurrentAreaIndex(state.currentAreaIndex);
         }
         setPlayerHp(state.player.health);
-        setCollectedCount(state.collectedCrystals.size);
+        const clampedCrystals = Math.min(TOTAL_CRYSTALS_L2, state.collectedCrystals.size);
+        setCollectedCount(clampedCrystals);
         if (state.simulation.phase !== simPhase) {
           setSimPhase(state.simulation.phase);
+        }
+
+        // Sinkronisasi status fase modal popup simulasi erupsi Merapi
+        if (state.volcanoSim) {
+          if (state.volcanoSim.phase === 'fase1_normal_popup' && activeVolcanoPhaseModal !== 'NORMAL') {
+            setActiveVolcanoPhaseModal('NORMAL');
+          } else if (state.volcanoSim.phase === 'fase2_waspada_popup' && activeVolcanoPhaseModal !== 'WASPADA') {
+            setActiveVolcanoPhaseModal('WASPADA');
+          } else if (state.volcanoSim.phase === 'fase3_siaga_popup' && activeVolcanoPhaseModal !== 'SIAGA') {
+            setActiveVolcanoPhaseModal('SIAGA');
+          } else if (state.volcanoSim.phase === 'fase4_awas_popup' && activeVolcanoPhaseModal !== 'AWAS') {
+            setActiveVolcanoPhaseModal('AWAS');
+          }
+
+          const volcanoFailedNow = state.volcanoSim.phase === 'failed';
+          if (volcanoFailedNow !== isVolcanoFailed) {
+            setIsVolcanoFailed(volcanoFailedNow);
+            if (volcanoFailedNow) {
+              setVolcanoFailureReason(state.volcanoSim.failureReason);
+            }
+          }
         }
 
         if (state.pendingGateLocked) {
@@ -332,8 +501,8 @@ export default function TectonicGame() {
         }
 
         // Sinkronisasi status HUD real-time (Kristal, HP, dan Temuan di Area Ini)
-        if (state.collectedCrystals.size !== collectedCount) {
-          setCollectedCount(state.collectedCrystals.size);
+        if (clampedCrystals !== collectedCount) {
+          setCollectedCount(clampedCrystals);
         }
         if (state.player.health !== playerHp) {
           setPlayerHp(state.player.health);
@@ -349,16 +518,25 @@ export default function TectonicGame() {
         } else if (state.currentAreaIndex === 2) {
           if (state.discoveredPoints.has('disc-post-safety')) readInArea++;
           if (state.discoveredPoints.has('disc-post-coordination')) readInArea++;
+        } else if (state.currentAreaIndex === 3) {
+          if (state.discoveredPoints.has('disc-volcano-status')) readInArea++;
+          if (state.discoveredPoints.has('disc-volcano-response')) readInArea++;
+        } else if (state.currentAreaIndex === 5) {
+          if (state.discoveredPoints.has('disc-post-ash')) readInArea++;
+          if (state.discoveredPoints.has('disc-post-sanitation')) readInArea++;
+          if (state.discoveredPoints.has('disc-post-lahar')) readInArea++;
         } else {
           const currentAreaObj = LEVEL2_AREAS[state.currentAreaIndex] || LEVEL2_AREAS[0];
           readInArea = currentAreaObj.discoveries.filter((d) => state.discoveredPoints.has(d.id)).length;
         }
-        if (readInArea !== discoveredInArea) {
+        if (readInArea !== discoveredInAreaRef.current) {
+          discoveredInAreaRef.current = readInArea;
           setDiscoveredInArea(readInArea);
         }
 
-        // Sync near interactable prompt
-        if (state.nearInteractablePrompt !== nearInteractablePrompt) {
+        // Sync near interactable prompt (menggunakan ref untuk mencegah stale closure di RAF loop)
+        if (state.nearInteractablePrompt !== nearPromptRef.current) {
+          nearPromptRef.current = state.nearInteractablePrompt;
           setNearInteractablePrompt(state.nearInteractablePrompt);
         }
 
@@ -424,7 +602,9 @@ export default function TectonicGame() {
         }
 
         if (state.pendingCrossword) {
-          setShowCrossword(true);
+          if (!isCurrentGateUnlocked()) {
+            setShowCrossword(true);
+          }
           state.pendingCrossword = false;
         }
 
@@ -433,22 +613,30 @@ export default function TectonicGame() {
           state.pendingMiniChallenge = false;
         }
 
+        if (state.pendingPgaWordle) {
+          setShowPgaWordle(true);
+          state.pendingPgaWordle = false;
+        }
+
         if (state.isAreaCompleted) {
           state.isAreaCompleted = false;
 
           // Save final progress Level 2 ke Supabase & Teacher Dashboard
           syncLevel2Progress(student, {
             score: 100,
-            currentMission: 3,
-            completedMissions: [1, 2, 3],
+            currentMission: 6,
+            completedMissions: [1, 2, 3, 4, 5, 6],
             resiliencePoints: 100,
             badges: [
               'earthquake-prep',
               'earthquake-action',
               'post-disaster-master',
+              'volcano-prep-master',
+              'volcano-sim-hero',
+              'volcano-recovery-master',
             ],
             isCompleted: true,
-            statusText: 'TUNTAS',
+            statusText: 'TUNTAS: MASTER MITIGASI GEMPA & ERUPSI',
           });
           useAuthStore.getState().unlockLevel(3);
           saveLevel2Progress(state, activeUserId);
@@ -466,7 +654,7 @@ export default function TectonicGame() {
     return () => cancelAnimationFrame(rafRef.current);
   }, [isPaused, student, avatarConfig, activeUserId, currentAreaIndex]);
 
-  // ── CROSSWORD PUZZLE SUCCESS HANDLER (AREA 1, AREA 2, AREA 3) ──
+  // ── CROSSWORD PUZZLE SUCCESS HANDLER (AREA 1, AREA 2, AREA 3, AREA 4, AREA 6) ──
   const handleCrosswordSuccess = () => {
     const state = gameStateRef.current;
     if (state) {
@@ -498,24 +686,62 @@ export default function TectonicGame() {
         state.unlockedGates.add('l2_gate_pascabencana');
         saveLevel2Progress(state, activeUserId);
         syncLevel2Progress(student, {
-          score: 100,
+          score: 85,
           currentMission: 3,
           completedMissions: [1, 2, 3],
-          resiliencePoints: 100,
+          resiliencePoints: 85,
           badges: [
             'earthquake-prep',
             'earthquake-action',
             'post-disaster-master',
           ],
-          isCompleted: true,
-          statusText: 'TUNTAS',
+          isCompleted: false,
+          statusText: 'Area 3 Tuntas (85 Poin)',
         });
-        useAuthStore.getState().unlockLevel(3);
         retroAudio.playWin();
         setShowCrossword(false);
-        setTimeout(() => {
-          setShowVictoryModal(true);
-        }, 400);
+        return;
+      } else if (currentAreaIndex === 3) {
+        state.unlockedGates.add('l2_gate_volcano_prep');
+        saveLevel2Progress(state, activeUserId);
+        syncLevel2Progress(student, {
+          score: 100,
+          currentMission: 4,
+          completedMissions: [1, 2, 3, 4],
+          resiliencePoints: 100,
+          badges: [
+            'earthquake-prep',
+            'earthquake-action',
+            'post-disaster-master',
+            'volcano-prep-master',
+          ],
+          isCompleted: false,
+          statusText: 'Area 4 Tuntas: Pos Pengamatan Merapi (100 Poin)',
+        });
+        retroAudio.playWin();
+        setShowCrossword(false);
+        return;
+      } else if (currentAreaIndex === 5) {
+        state.unlockedGates.add('l2_gate_shelter_recovery');
+        saveLevel2Progress(state, activeUserId);
+        syncLevel2Progress(student, {
+          score: 100,
+          currentMission: 6,
+          completedMissions: [1, 2, 3, 4, 5, 6],
+          resiliencePoints: 100,
+          badges: [
+            'earthquake-prep',
+            'earthquake-action',
+            'post-disaster-master',
+            'volcano-prep-master',
+            'volcano-sim-hero',
+            'volcano-recovery-master',
+          ],
+          isCompleted: false,
+          statusText: 'Area 6 Tuntas: Barak Pengungsian & Pemulihan (100 Poin)',
+        });
+        retroAudio.playWin();
+        setShowCrossword(false);
         return;
       }
     }
@@ -584,7 +810,55 @@ export default function TectonicGame() {
     const worldX = camX + clickX / scale;
     const worldY = clickY / scale;
 
-    // 1. Cek klik pada maskot Resqy melayang di belakang pundak pemain
+    // 0a. Cek klik/tap layar saat fase Simulasi Gempa (Area 2)
+    const isEarthquakeSimActive =
+      state.currentAreaIndex === 1 &&
+      Boolean(
+        state.simulation &&
+        state.simulation.phase !== 'idle' &&
+        state.simulation.phase !== 'completed'
+      );
+
+    if (isEarthquakeSimActive) {
+      if (state.simulation.phase === 'qte_cover') {
+        const inputState = readPlayerInputL2();
+        inputState.interactJustPressed = true;
+      }
+      return; // Jangan buka dialog Resqy atau NPC saat simulasi gempa sedang aktif!
+    }
+
+    // 0b. Cek klik/tap layar saat fase Simulasi Erupsi Merapi (Area 5)
+    const isVolcanoSimActive =
+      state.currentAreaIndex === 4 &&
+      Boolean(
+        state.volcanoSim &&
+        state.volcanoSim.phase !== 'idle' &&
+        state.volcanoSim.phase !== 'volcano_completed'
+      );
+
+    if (isVolcanoSimActive && state.volcanoSim) {
+      const vSim = state.volcanoSim;
+      if (vSim.phase === 'failed') {
+        retroAudio.playSelect();
+        retryVolcanoPhase(state);
+        return;
+      }
+      if (
+        vSim.phase === 'fase3_siaga_prep_evac' ||
+        vSim.phase === 'fase4_awas_siren' ||
+        vSim.phase === 'fase4_awas_rescue' ||
+        vSim.phase === 'qte_run_kentongan' ||
+        vSim.phase === 'qte_rescue_villagers'
+      ) {
+        const inputState = readPlayerInputL2();
+        inputState.interactJustPressed = true;
+        return;
+      }
+      // Selama fase simulasi lainnya, jangan izinkan interaksi atau dialog dengan NPC/Resqy
+      return;
+    }
+
+    // 1. Cek klik pada maskot Resqy melayang di belakang pundak pemain (hanya saat simulasi TIDAK berjalan)
     const resqyOffX = state.player.dir === 'right' ? -18 : 18;
     const resqyX = state.player.x + resqyOffX;
     const resqyY = state.player.y - 42;
@@ -594,8 +868,14 @@ export default function TectonicGame() {
         state.currentAreaIndex === 0
           ? 'resqy_briefing_area1'
           : state.currentAreaIndex === 1
-          ? 'resqy_briefing_area2'
-          : 'resqy_briefing_area3';
+            ? 'resqy_briefing_area2'
+            : state.currentAreaIndex === 2
+              ? 'resqy_briefing_area3'
+              : state.currentAreaIndex === 3
+                ? 'resqy_briefing_area4'
+                : state.currentAreaIndex === 4
+                  ? 'resqy_briefing_area5'
+                  : 'resqy_briefing_area6';
       const tree = DIALOGUE_TREES_L2[dialogueId];
       if (tree) {
         state.activeDialogueTree = tree;
@@ -604,13 +884,13 @@ export default function TectonicGame() {
       return;
     }
 
-    // 2. Cek klik pada NPC terdekat
+    // 2. Cek klik pada NPC terdekat (hanya saat simulasi TIDAK berjalan)
     if (state.npcs) {
       for (const npc of state.npcs.values()) {
-        if (Math.hypot(worldX - npc.x, worldY - (npc.y - 20)) < 38) {
-          if (Math.hypot(state.player.x - npc.x, state.player.y - npc.y) < 85) {
+        if (Math.hypot(worldX - npc.x, worldY - (npc.y - 20)) < 42) {
+          if (Math.hypot(state.player.x - npc.x, state.player.y - npc.y) < 130) {
             retroAudio.playSelect();
-            const tree = DIALOGUE_TREES_L2[npc.dialogueId];
+            const tree = getNpcDialogueTreeL2(state, npc);
             if (tree) {
               state.activeDialogueTree = tree;
               setActiveDialogueTree(tree);
@@ -632,7 +912,7 @@ export default function TectonicGame() {
       />
 
       {/* ── 2. TOP HUD BAR (100% PERSIS DENGAN LEVEL 1) ── */}
-      <div className="fixed top-2 sm:top-2.5 left-2 sm:left-3 right-2 sm:right-3 flex items-start justify-between pointer-events-none z-20">
+      <div className="fixed top-2 sm:top-2.5 left-2 sm:left-3 right-2 sm:right-3 flex flex-wrap items-start justify-between gap-1.5 pointer-events-none z-20">
         {/* TOP LEFT: COMPACT NAVIGATION & UTILITY BUTTONS + AREA PILL (GAYA LEVEL 1) */}
         <div className="flex flex-col items-start gap-1.5 pointer-events-auto">
           {/* Row 1: Tombol Navigasi Menu, Sound, dan Layar Penuh */}
@@ -646,7 +926,7 @@ export default function TectonicGame() {
                 }
                 navigate('/');
               }}
-              className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-pixel-title text-[11px] sm:text-xs flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#231206] whitespace-nowrap"
+              className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-sans font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#231206] whitespace-nowrap"
               title="Kembali ke Menu Utama"
             >
               <span className="text-amber-400 font-bold">&lt;</span>
@@ -673,27 +953,195 @@ export default function TectonicGame() {
             >
               <PixelIcon name="fullscreen" size={13} />
             </button>
+
+            {/* Tombol Ulangi Simulasi (Reset) untuk Area 2 dan Area 5 (Gaya Seragam) */}
+            {(currentAreaIndex === 1 || currentAreaIndex === 4) && (
+              <button
+                onClick={() => {
+                  retroAudio.playSelect();
+                  if (gameStateRef.current) {
+                    if (currentAreaIndex === 4) {
+                      startSimulationArea5(gameStateRef.current, activeVolcanoScenario);
+                      if (gameStateRef.current.activeDialogueTree) {
+                        setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+                      }
+                    } else {
+                      startSimulationArea2(gameStateRef.current, activeScenario);
+                      setSimPhase('teaching');
+                      if (gameStateRef.current.activeDialogueTree) {
+                        setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+                      }
+                    }
+                  }
+                }}
+                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-rose-950 hover:bg-rose-900 text-rose-200 border-2 border-rose-600/80 font-sans font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#4c0519] whitespace-nowrap"
+                title="Ulangi Simulasi dari Awal"
+              >
+                <span className="text-rose-400 font-bold">↺</span>
+                <span className="hidden 2xl:inline">ULANG SIMULASI</span>
+                <span className="hidden sm:inline 2xl:hidden">ULANG</span>
+              </button>
+            )}
           </div>
 
-          {/* Row 2: Current Area Badge Pill (Persis Ukuran & Font Level 1) */}
-          <div className="bg-slate-950/95 backdrop-blur-md border-2 border-amber-700/90 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-amber-200 font-pixel text-[10px] sm:text-xs shadow-[0_4px_0_#231206] flex items-center gap-1.5 whitespace-nowrap">
-            <span
-              className={`w-2 h-2 rounded-full ${currentAreaIndex === 1
-                ? 'bg-rose-500 animate-ping'
-                : 'bg-emerald-400 animate-pulse'
-                } shrink-0`}
-            />
-            <span className="font-bold text-amber-300 uppercase tracking-wide truncate max-w-[160px] sm:max-w-none">
-              {activeArea.name}
-            </span>
-          </div>
+          {/* Row 2: Current Area Badge Pill (Disembunyikan saat simulasi sedang aktif agar tidak menutupi QTE & status gunung) */}
+          {!(
+            (currentAreaIndex === 1 && simPhase !== 'idle' && simPhase !== 'completed') ||
+            (currentAreaIndex === 4 && gameStateRef.current?.volcanoSim && gameStateRef.current.volcanoSim.phase !== 'idle' && gameStateRef.current.volcanoSim.phase !== 'volcano_completed')
+          ) && (
+              <div
+                onClick={() => {
+                  if (currentAreaIndex === 1 && simPhase === 'idle') {
+                    const tree = DIALOGUE_TREES_L2['resqy_briefing_area2'];
+                    if (tree) {
+                      retroAudio.playSelect();
+                      setActiveDialogueTree(tree);
+                      if (gameStateRef.current) gameStateRef.current.activeDialogueTree = tree;
+                    }
+                  } else if (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle')) {
+                    if (gameStateRef.current) {
+                      startSimulationArea5(gameStateRef.current, activeVolcanoScenario);
+                      if (gameStateRef.current.activeDialogueTree) {
+                        setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+                      }
+                    }
+                  }
+                }}
+                className={`bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl text-amber-200 font-pixel text-xs sm:text-sm md:text-base font-bold shadow-[0_4px_0_#231206] flex items-center gap-2 whitespace-nowrap ${(currentAreaIndex === 1 && simPhase === 'idle') || (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle'))
+                    ? 'cursor-pointer hover:border-amber-400 hover:scale-105 transition-all'
+                    : ''
+                  }`}
+                title={
+                  currentAreaIndex === 1 && simPhase === 'idle'
+                    ? 'Klik untuk Pengarahan Resqy & Mulai Simulasi'
+                    : currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle')
+                      ? 'Klik untuk Pengarahan Pak Joko & Mulai Simulasi Erupsi'
+                      : undefined
+                }
+              >
+                <span
+                  className={`w-2.5 h-2.5 rounded-full ${currentAreaIndex === 1 || currentAreaIndex === 4
+                      ? 'bg-rose-500 animate-ping'
+                      : 'bg-emerald-400 animate-pulse'
+                    } shrink-0`}
+                />
+                <span className="font-bold text-amber-300 uppercase tracking-wider truncate max-w-[160px] sm:max-w-none">
+                  {activeArea.name}
+                </span>
+                {((currentAreaIndex === 1 && simPhase === 'idle') || (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle'))) && (
+                  <span className="text-[10px] sm:text-xs bg-rose-900/80 text-rose-200 px-2 py-0.5 rounded border border-rose-600 animate-pulse font-bold">
+                    MULAI
+                  </span>
+                )}
+              </div>
+            )}
         </div>
 
-        {/* TOP CENTER: STREAMLINED REAL-TIME TELEMETRY PILL (Gaya Level 1 - Disembunyikan di Area 2 Simulasi) */}
-        {currentAreaIndex !== 1 && (
+        {/* TOP CENTER/RIGHT: SKENARIO SIMULASI GEMPA (AREA 2) */}
+        {currentAreaIndex === 1 && (
+          <div className="pointer-events-auto z-20 flex flex-col items-center gap-1 animate-fadeIn select-none">
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
+              <div className="items-center gap-1 px-1.5 sm:px-2 border-r border-amber-800/60 hidden 2xl:flex">
+                <PixelIcon name="broadcast" size={13} className="text-amber-400 shrink-0" />
+                <span className="font-sans text-[11px] sm:text-xs text-amber-300 font-bold uppercase tracking-wider">
+                  SKENARIO GEMPA:
+                </span>
+              </div>
+
+              {/* Tombol Gempa Sedang */}
+              <button
+                onClick={() => handleSelectScenario('moderate')}
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeScenario === 'moderate'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 border-2 border-yellow-200 shadow-[0_3px_0_#78350f] scale-105'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-amber-200/80 border border-amber-700/50 hover:text-amber-100'
+                  }`}
+                title="Skenario Gempa Sedang: Evakuasi cepat dengan tas melindungi kepala"
+              >
+                <PixelIcon name="dot-yellow" size={11} className="shrink-0" />
+                <span className="hidden 2xl:inline">GEMPA </span><span>SEDANG</span>
+                {activeScenario === 'moderate' && (
+                  <span className="text-[9px] sm:text-[10px] bg-amber-900/90 text-amber-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
+                    AKTIF
+                  </span>
+                )}
+              </button>
+
+              {/* Tombol Gempa Besar */}
+              <button
+                onClick={() => handleSelectScenario('severe')}
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeScenario === 'severe'
+                    ? 'bg-gradient-to-r from-rose-600 to-rose-700 text-white border-2 border-rose-300 shadow-[0_3px_0_#881337] scale-105'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-rose-200/80 border border-rose-700/50 hover:text-rose-100'
+                  }`}
+                title="Skenario Gempa Besar: Drop, Cover, Hold On di kolong meja lalu evakuasi"
+              >
+                <PixelIcon name="dot-red" size={11} className="shrink-0" />
+                <span className="hidden 2xl:inline">GEMPA </span><span>BESAR</span>
+                {activeScenario === 'severe' && (
+                  <span className="text-[9px] sm:text-[10px] bg-rose-950/90 text-rose-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
+                    AKTIF
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* TOP CENTER/RIGHT: SKENARIO SIMULASI ERUPSI MERAPI (AREA 5) */}
+        {currentAreaIndex === 4 && (
+          <div className="pointer-events-auto z-20 flex flex-col items-center gap-1 animate-fadeIn select-none">
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-orange-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
+              <div className="items-center gap-1 px-1.5 sm:px-2 border-r border-orange-800/60 hidden 2xl:flex">
+                <PixelIcon name="broadcast" size={13} className="text-orange-400 shrink-0" />
+                <span className="font-sans text-[11px] sm:text-xs text-orange-300 font-bold uppercase tracking-wider">
+                  SKENARIO ERUPSI:
+                </span>
+              </div>
+
+              {/* Tombol Ledakan Eksplosif */}
+              <button
+                onClick={() => handleSelectVolcanoScenario('explosive')}
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeVolcanoScenario === 'explosive'
+                    ? 'bg-gradient-to-r from-rose-600 to-rose-700 text-white border-2 border-rose-300 shadow-[0_3px_0_#881337] scale-105'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-rose-200/80 border border-rose-700/50 hover:text-rose-100'
+                  }`}
+                title="Skenario Ledakan Eksplosif: Tekanan gas sangat tinggi, awan panas, lontaran bom batuan piroklastik & hujan abu"
+              >
+                <PixelIcon name="dot-red" size={11} className="shrink-0" />
+                <span className="hidden 2xl:inline">LEDAKAN </span><span>EKSPLOSIF</span>
+                {activeVolcanoScenario === 'explosive' && (
+                  <span className="text-[9px] sm:text-[10px] bg-rose-950/90 text-rose-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
+                    AKTIF
+                  </span>
+                )}
+              </button>
+
+              {/* Tombol Ledakan Efusif */}
+              <button
+                onClick={() => handleSelectVolcanoScenario('effusive')}
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeVolcanoScenario === 'effusive'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 border-2 border-yellow-200 shadow-[0_3px_0_#78350f] scale-105'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-amber-200/80 border border-amber-700/50 hover:text-amber-100'
+                  }`}
+                title="Skenario Ledakan Efusif: Aliran lava kental / cair berpijar perlahan mengalir di lembah"
+              >
+                <PixelIcon name="dot-orange" size={11} className="shrink-0" />
+                <span className="hidden 2xl:inline">LEDAKAN </span><span>EFUSIF</span>
+                {activeVolcanoScenario === 'effusive' && (
+                  <span className="text-[9px] sm:text-[10px] bg-amber-900/90 text-amber-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
+                    AKTIF
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* TOP CENTER: STREAMLINED REAL-TIME TELEMETRY PILL (Gaya Level 1 - Disembunyikan di Area 2 & Area 5 Simulasi) */}
+        {currentAreaIndex !== 1 && currentAreaIndex !== 4 && (
           <div className="pointer-events-auto z-20">
             <TelemetryHUD
-              crystalsCount={collectedCount}
+              crystalsCount={Math.min(totalCrystals, collectedCount)}
               totalCrystals={totalCrystals}
               areaDiscoveriesRead={discoveredInArea}
               areaDiscoveriesTotal={activeArea.discoveries.length}
@@ -701,9 +1149,6 @@ export default function TectonicGame() {
             />
           </div>
         )}
-
-        {/* TOP RIGHT: Spacer */}
-        <div className="pointer-events-none w-6 sm:w-12" />
       </div>
 
       {/* ── 3. DISCREET KEYBOARD CONTROLS GUIDE (Desktop Bottom Persis Level 1) ── */}
@@ -715,10 +1160,10 @@ export default function TectonicGame() {
 
       {/* ── 4. FLOATING INTERACTION HINT (BOTTOM CENTER PERSIS LEVEL 1) ── */}
       {nearInteractablePrompt && !isPaused && (
-        <div className="absolute bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 pointer-events-auto z-20 select-none animate-bounce">
-          <div className="bg-slate-900/90 text-amber-200 border-2 border-amber-500/80 px-3.5 py-1.5 rounded-xl font-pixel text-xs shadow-lg flex items-center gap-2">
-            <PixelIcon name="broadcast" size={13} />
-            <span className="uppercase tracking-wide">{nearInteractablePrompt}</span>
+        <div className="absolute bottom-12 sm:bottom-14 left-1/2 -translate-x-1/2 pointer-events-auto z-20 select-none animate-bounce w-[min(94vw,860px)] px-2">
+          <div className="bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-sm sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug">
+            <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+            <span className="uppercase tracking-wide font-black">{nearInteractablePrompt}</span>
           </div>
         </div>
       )}
@@ -727,7 +1172,7 @@ export default function TectonicGame() {
       {(isTouchDevice || (typeof window !== 'undefined' && window.innerWidth <= 1024)) && (
         <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between pointer-events-none z-30 select-none">
           {/* Left 4-Way D-Pad (Atas, Bawah, Kiri, Kanan) */}
-          <div className="flex flex-col items-center pointer-events-auto bg-slate-950/75 p-1 sm:p-1.5 rounded-2xl border-2 border-slate-700/90 backdrop-blur-md shadow-[0_4px_0_#0f172a]">
+          <div className="flex flex-col items-center pointer-events-auto">
             {/* Up button */}
             <button
               onPointerDown={() => handleMobileBtnDown('up')}
@@ -773,7 +1218,7 @@ export default function TectonicGame() {
           </div>
 
           {/* Right Action Buttons: Dedicated Jump (LONCAT) & Interact (AKSI) */}
-          <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto bg-slate-950/75 p-1.5 sm:p-2 rounded-2xl border-2 border-slate-700/90 backdrop-blur-md shadow-[0_4px_0_#0f172a]">
+          <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
             {/* Tombol Loncat: LONCAT */}
             <button
               onPointerDown={() => handleMobileBtnDown('jump')}
@@ -803,14 +1248,14 @@ export default function TectonicGame() {
 
       {/* ── POPUP PERINGATAN: AKSES TURUN / AREA TERKUNCI (100% PERSIS LEVEL 1) ── */}
       {isGateLockedModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
-          <div className="relative w-full max-w-md bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl p-5 sm:p-6 shadow-[0_12px_0_#1c0d02] text-[#451a03] font-pixel text-center">
-            <h3 className="text-sm sm:text-base font-pixel-title text-rose-950 font-bold mb-2.5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
+          <div className="relative w-full max-w-xl bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-[0_16px_0_#1c0d02] text-[#451a03] font-pixel text-center">
+            <h3 className="text-base sm:text-lg md:text-xl font-pixel-title text-rose-950 font-bold mb-3">
               AKSES TURUN TERKUNCI!
             </h3>
 
-            <p className="text-xs sm:text-sm text-[#451a03] leading-relaxed mb-5 font-pixel">
-              Jalur turun menuju lapisan selanjutnya masih terkunci rapat. Kamu harus menyelesaikan tantangan dari peneliti di area ini terlebih dahulu untuk membuka akses turun!
+            <p className="font-sans text-base sm:text-lg md:text-xl font-bold text-[#351505] leading-relaxed mb-6">
+              Jalur menuju area selanjutnya masih terkunci rapat. Kamu harus menyelesaikan tantangan dari Bu Tyas di area ini terlebih dahulu untuk membuka akses turun!
             </p>
 
             <button
@@ -818,7 +1263,7 @@ export default function TectonicGame() {
                 retroAudio.playSelect();
                 setIsGateLockedModalOpen(false);
               }}
-              className="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-xs font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
+              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-xs sm:text-sm md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
             >
               <span>SIAP, SELESAIKAN TANTANGAN PENELITI DULU</span>
             </button>
@@ -826,38 +1271,49 @@ export default function TectonicGame() {
         </div>
       )}
 
-      {/* ── POPUP SIMULASI GAGAL: TELAT MERUNDUK DI BAWAH MEJA (ULANGI DARI AWAL) ── */}
+      {/* ── POPUP SIMULASI GAGAL (AREA 2: GEMPA SEDANG / GEMPA BESAR) ── */}
       {simPhase === 'failed' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-pixel">
-          <div className="relative w-full max-w-md bg-[#1e1b4b] border-4 border-rose-600 rounded-2xl p-5 sm:p-6 shadow-[0_12px_0_#4c0519] text-white text-center">
-            <div className="w-14 h-14 mx-auto mb-3 rounded-xl bg-rose-950/80 border-3 border-rose-500 flex items-center justify-center text-rose-300 font-pixel-title text-xl font-bold shadow-[0_4px_0_#4c0519] animate-pulse">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-pixel">
+          <div className="relative w-full max-w-xl sm:max-w-2xl bg-[#1e1b4b] border-4 border-rose-500 rounded-3xl p-6 sm:p-8 shadow-[0_16px_0_#4c0519] text-white text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-rose-950/80 border-3 border-rose-400 flex items-center justify-center text-rose-300 font-pixel-title text-2xl font-bold shadow-[0_4px_0_#4c0519] animate-pulse">
               [!]
             </div>
 
-            <h3 className="text-sm sm:text-base font-pixel-title text-rose-400 font-bold mb-2">
-              SIMULASI GAGAL! WAKTU HABIS!
+            <h3 className="text-base sm:text-lg md:text-xl font-pixel-title text-rose-300 font-bold mb-3 tracking-wide">
+              {activeScenario === 'moderate'
+                ? 'SIMULASI GEMPA SEDANG: EVAKUASI TERLAMBAT!'
+                : 'SIMULASI GEMPA BESAR: TERLAMBAT BERLINDUNG!'}
             </h3>
 
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed mb-4">
-              Kamu terlambat merunduk dan berlindung di bawah meja saat gempa bumi terjadi.
+            <p className="font-sans text-base sm:text-lg md:text-xl font-bold text-slate-100 leading-relaxed mb-5">
+              {activeScenario === 'moderate'
+                ? 'Kamu terlambat mengambil tas sekolah dan memulai evakuasi tertib saat gempa sedang terjadi.'
+                : 'Kamu terlambat merunduk dan berlindung di bawah meja saat gempa bumi besar terjadi.'}
             </p>
 
-            <div className="bg-rose-950/70 border border-rose-800/80 rounded-xl p-3 mb-5 text-left text-xs text-rose-200">
-              <span className="font-bold text-rose-400 block mb-1 font-pixel-title text-[10px]">[TIPS KESIAPSIAGAAN]</span>
-              Saat gempa mengguncang, jangan panik atau berdiri mematung! Segera terapkan protokol <strong className="text-amber-300">Drop, Cover, and Hold On</strong> di bawah meja kokoh dalam detik-detik pertama!
+            <div className="bg-rose-950/80 border-2 border-rose-700/80 rounded-2xl p-4 sm:p-5 mb-6 text-left">
+              <span className="font-bold text-rose-400 block mb-1.5 font-pixel-title text-xs sm:text-sm">[TIPS KESIAPSIAGAAN]</span>
+              <p className="font-sans text-sm sm:text-base md:text-lg text-rose-100 leading-relaxed font-medium">
+                {activeScenario === 'moderate'
+                  ? 'Saat gempa bumi berkekuatan sedang, segera lindungi kepala menggunakan tas sekolah atau benda tebal lainnya dan jangan panik! Segera berbaris tertib mengikuti arahan guru menuju pintu keluar dan lapangan terbuka.'
+                  : 'Saat gempa bumi besar mengguncang, jangan panik atau berdiri mematung! Segera terapkan protokol Drop, Cover, and Hold On di bawah meja kokoh dalam detik-detik pertama!'}
+              </p>
             </div>
 
             <button
               onClick={() => {
                 retroAudio.playSelect();
                 if (gameStateRef.current) {
-                  startSimulationArea2(gameStateRef.current);
+                  startSimulationArea2(gameStateRef.current, activeScenario);
+                  if (gameStateRef.current.activeDialogueTree) {
+                    setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+                  }
                 }
                 setSimPhase('teaching');
               }}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white border-3 border-rose-400 shadow-[0_4px_0_#881337] text-xs font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
+              className="w-full py-4 sm:py-4.5 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white border-3 border-rose-400 shadow-[0_5px_0_#881337] text-xs sm:text-sm md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 font-bold"
             >
-              <span>[ULANG] ULANGI SIMULASI DARI AWAL</span>
+              <span>[ULANG] ULANGI SKENARIO GEMPA {activeScenario === 'moderate' ? 'SEDANG' : 'BESAR'}</span>
             </button>
           </div>
         </div>
@@ -871,8 +1327,8 @@ export default function TectonicGame() {
               TEMUAN GEOLOGIS BELUM SELESAI!
             </h3>
 
-            <p className="text-xs sm:text-sm text-[#451a03] leading-relaxed mb-5 font-pixel">
-              Kamu harus mengamati dan membaca seluruh Temuan Geologis di area ini (<span className="font-bold text-amber-800">{discoveryWarning.read}/{discoveryWarning.total}</span>) terlebih dahulu sebelum membuka Evaluasi Gerbang!
+            <p className="font-sans text-base sm:text-lg md:text-xl font-bold text-[#351505] leading-relaxed mb-6">
+              Kamu harus mengamati dan membaca seluruh Temuan Geologis di area ini (<span className="text-amber-800 font-extrabold">{discoveryWarning.read}/{discoveryWarning.total}</span>) terlebih dahulu sebelum membuka Evaluasi Gerbang!
             </p>
 
             <button
@@ -928,9 +1384,17 @@ export default function TectonicGame() {
           playerName={student?.name || currentUser?.name || 'Vincent'}
           avatarConfig={avatarConfig}
           onClose={() => {
+            const closingTreeId = activeDialogueTree?.id;
             setActiveDialogueTree(null);
             if (gameStateRef.current) {
               gameStateRef.current.activeDialogueTree = null;
+            }
+            if (closingTreeId === 'satria_sim_victory') {
+              // Otomatis langsung teleport/berangkat ke Area 6 (Barak Pengungsian)!
+              if (gameStateRef.current) {
+                switchAreaL2(gameStateRef.current, 5, true);
+                setCurrentAreaIndex(5);
+              }
             }
           }}
           onMarkDiscovery={(discoveryId) => {
@@ -954,6 +1418,13 @@ export default function TectonicGame() {
               } else if (currentAreaIndex === 2) {
                 if (state.discoveredPoints.has('disc-post-safety')) readInArea++;
                 if (state.discoveredPoints.has('disc-post-coordination')) readInArea++;
+              } else if (currentAreaIndex === 3) {
+                if (state.discoveredPoints.has('disc-volcano-status')) readInArea++;
+                if (state.discoveredPoints.has('disc-volcano-response')) readInArea++;
+              } else if (currentAreaIndex === 5) {
+                if (state.discoveredPoints.has('disc-post-ash')) readInArea++;
+                if (state.discoveredPoints.has('disc-post-sanitation')) readInArea++;
+                if (state.discoveredPoints.has('disc-post-lahar')) readInArea++;
               } else {
                 readInArea = activeArea.discoveries.filter((d) => state.discoveredPoints.has(d.id)).length;
               }
@@ -964,13 +1435,29 @@ export default function TectonicGame() {
             setActiveDiscoveryIndex(discoveryIndex);
           }}
           onTriggerCrossword={() => {
-            setShowCrossword(true);
-          }}
-          onTriggerSimulation={() => {
-            if (gameStateRef.current) {
-              startSimulationArea2(gameStateRef.current);
+            if (!isCurrentGateUnlocked()) {
+              setShowCrossword(true);
             }
           }}
+          onTriggerSimulation={(scenario) => {
+            const chosenScenario = scenario || activeScenario;
+            setActiveScenario(chosenScenario);
+            if (gameStateRef.current) {
+              if (currentAreaIndex === 4) {
+                startSimulationArea5(gameStateRef.current, activeVolcanoScenario);
+                if (gameStateRef.current.activeDialogueTree) {
+                  setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+                }
+              } else {
+                startSimulationArea2(gameStateRef.current, chosenScenario);
+                setSimPhase('teaching');
+                if (gameStateRef.current.activeDialogueTree) {
+                  setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+                }
+              }
+            }
+          }}
+          onTriggerSeismograph={() => setShowSeismographModal(true)}
         />
       )}
 
@@ -990,6 +1477,13 @@ export default function TectonicGame() {
               } else if (currentAreaIndex === 2) {
                 if (activeDiscoveryIndex === 0) gameStateRef.current.discoveredPoints.add('disc-post-safety');
                 if (activeDiscoveryIndex === 1) gameStateRef.current.discoveredPoints.add('disc-post-coordination');
+              } else if (currentAreaIndex === 3) {
+                if (activeDiscoveryIndex === 0) gameStateRef.current.discoveredPoints.add('disc-volcano-status');
+                if (activeDiscoveryIndex === 1) gameStateRef.current.discoveredPoints.add('disc-volcano-response');
+              } else if (currentAreaIndex === 5) {
+                if (activeDiscoveryIndex === 0) gameStateRef.current.discoveredPoints.add('disc-post-ash');
+                if (activeDiscoveryIndex === 1) gameStateRef.current.discoveredPoints.add('disc-post-sanitation');
+                if (activeDiscoveryIndex === 2) gameStateRef.current.discoveredPoints.add('disc-post-lahar');
               }
               saveLevel2Progress(gameStateRef.current, activeUserId);
 
@@ -1000,6 +1494,13 @@ export default function TectonicGame() {
               } else if (currentAreaIndex === 2) {
                 if (gameStateRef.current.discoveredPoints.has('disc-post-safety')) readInArea++;
                 if (gameStateRef.current.discoveredPoints.has('disc-post-coordination')) readInArea++;
+              } else if (currentAreaIndex === 3) {
+                if (gameStateRef.current.discoveredPoints.has('disc-volcano-status')) readInArea++;
+                if (gameStateRef.current.discoveredPoints.has('disc-volcano-response')) readInArea++;
+              } else if (currentAreaIndex === 5) {
+                if (gameStateRef.current.discoveredPoints.has('disc-post-ash')) readInArea++;
+                if (gameStateRef.current.discoveredPoints.has('disc-post-sanitation')) readInArea++;
+                if (gameStateRef.current.discoveredPoints.has('disc-post-lahar')) readInArea++;
               } else {
                 readInArea = activeArea.discoveries.filter((d) => gameStateRef.current!.discoveredPoints.has(d.id)).length;
               }
@@ -1010,8 +1511,8 @@ export default function TectonicGame() {
         />
       )}
 
-      {/* ── 7. TEKA-TEKI SILANG (TTS) GERBANG EVALUASI (AREA 1 & AREA 2) ── */}
-      {showCrossword && (
+      {/* ── 7. TEKA-TEKI SILANG (TTS) GERBANG EVALUASI (AREA 1, AREA 3 & AREA 4) ── */}
+      {showCrossword && !isCurrentGateUnlocked() && (
         <CrosswordModal
           areaIndex={currentAreaIndex}
           onSuccess={handleCrosswordSuccess}
@@ -1031,9 +1532,97 @@ export default function TectonicGame() {
       {/* ── 9. LEVEL 2 VICTORY MODAL (SEPERTI LEVEL 1 CORE CHALLENGE VICTORY) ── */}
       {showVictoryModal && (
         <TectonicVictoryModal
-          collectedCrystals={collectedCount}
+          collectedCrystals={Math.min(totalCrystals, collectedCount)}
           totalCrystals={totalCrystals}
           onClose={() => setShowVictoryModal(false)}
+        />
+      )}
+
+      {/* ── 10. MODAL PEMBELAJARAN SEISMOGRAF & 4 BENTUK GELOMBANG STATUS MERAPI ── */}
+      {showSeismographModal && (
+        <SeismographModal onClose={() => setShowSeismographModal(false)} />
+      )}
+
+      {/* ── 11. KUIS WORDLE KELUAR POS PENGAMATAN MERAPI (STATUS AWAS GELOMBANG SANGAT RAPAT) ── */}
+      {showPgaWordle && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in overflow-y-auto">
+          <div className="w-full max-w-xl flex flex-col items-center">
+            {/* Kartu Visual Seismogram Status AWAS */}
+            <div className="w-full mb-3 p-3.5 sm:p-4 rounded-2xl bg-slate-900 border-2 border-red-500 shadow-lg text-white">
+              <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-red-500 animate-ping" />
+                  <span className="font-pixel-title text-xs sm:text-sm text-red-400">
+                    TELEMETRI SEISMOGRAF POS PGA
+                  </span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded bg-red-950 text-red-300 font-pixel text-[10px] border border-red-800">
+                  KUIS AKSES KELUAR
+                </span>
+              </div>
+
+              {/* Visual Waveform Mini SVG */}
+              <div className="w-full h-16 sm:h-20 bg-slate-950 rounded-xl border border-red-900/50 p-2 flex flex-col justify-center relative overflow-hidden">
+                <div className="absolute top-1 left-2 text-[9px] font-mono text-red-400/80">
+                  TREMOR MENERUS SANGAT RAPAT (CONTINUOUS TREMOR)
+                </div>
+                <svg className="w-full h-10 stroke-red-500" viewBox="0 0 400 40" fill="none">
+                  <path
+                    d="M0,20 Q5,5 10,35 T20,20 T30,2 T40,38 T50,20 T60,5 T70,35 T80,20 T90,2 T100,38 T110,20 T120,5 T130,35 T140,20 T150,2 T160,38 T170,20 T180,5 T190,35 T200,20 T210,2 T220,38 T230,20 T240,5 T250,35 T260,20 T270,2 T280,38 T290,20 T300,5 T310,35 T320,20 T330,2 T340,38 T350,20 T360,5 T370,35 T380,20 T390,2 T400,38"
+                    strokeWidth="1.8"
+                  />
+                </svg>
+              </div>
+
+              <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed font-pixel">
+                <span className="text-amber-400 font-bold">SOAL:</span> Gelombang seismogram berfluktuasi <span className="text-red-400 font-bold">SANGAT RAPAT</span> tanpa jeda dan beramplitudo tinggi. Magma mendesak kuat ke permukaan. Status Merapi apakah ini? (4 Huruf)
+              </p>
+            </div>
+
+            <Wordle
+              targetCount={1}
+              isGateChallenge={true}
+              gateTitle="KUIS GELOMBANG STATUS GUNUNG API"
+              customWords={[
+                {
+                  word: 'AWAS',
+                  hint: 'Gelombang tremor menerus sangat rapat tanpa jeda, erupsi utama sedang atau segera terjadi! (Level IV)',
+                },
+              ]}
+              onSuccess={() => {
+                const state = gameStateRef.current;
+                if (state) {
+                  state.pgaRoomQuizSolved = true;
+                  state.isInsidePgaRoom = false;
+                  state.player.x = 946;
+                  state.player.y = 350;
+                  saveLevel2Progress(state, state.userId);
+                }
+                setShowPgaWordle(false);
+                retroAudio.playPowerup();
+              }}
+              onClose={() => {
+                setShowPgaWordle(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ── 12. MODAL TRANSISI 4 FASE STATUS GUNUNG MERAPI (SCREENSHOT 2 STYLE) ── */}
+      {activeVolcanoPhaseModal && (
+        <VolcanoPhaseModal
+          phase={activeVolcanoPhaseModal}
+          scenario={activeVolcanoScenario}
+          onContinue={handleContinueVolcanoPhase}
+        />
+      )}
+
+      {/* ── 13. POPUP MODAL KEGAGALAN EVAKUASI MERAPI (FASE 4 AWAS 15 DETIK) ── */}
+      {isVolcanoFailed && (
+        <VolcanoRescueFailedModal
+          reason={volcanoFailureReason}
+          onRetry={handleRetryVolcanoRescue}
         />
       )}
     </div>

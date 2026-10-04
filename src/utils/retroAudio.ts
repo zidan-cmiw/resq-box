@@ -292,5 +292,166 @@ export const retroAudio = {
     } catch {
       // ignore
     }
+  },
+
+  // Suara Ketukan Kentongan Bambu Tradisional (Resonant Wooden Slit Drum)
+  playKentongan() {
+    if (!this.isEnabled()) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      // Resonan Rongga Bambu
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(540, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(320, ctx.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.14);
+
+      // Ketukan Kayu Tajam (Click Transient)
+      const clickOsc = ctx.createOscillator();
+      const clickGain = ctx.createGain();
+      clickOsc.type = 'triangle';
+      clickOsc.frequency.setValueAtTime(1200, ctx.currentTime);
+      clickOsc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.03);
+
+      clickGain.gain.setValueAtTime(0.12, ctx.currentTime);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+
+      osc.connect(gain);
+      clickOsc.connect(clickGain);
+      gain.connect(ctx.destination);
+      clickGain.connect(ctx.destination);
+
+      osc.start();
+      clickOsc.start();
+      osc.stop(ctx.currentTime + 0.15);
+      clickOsc.stop(ctx.currentTime + 0.04);
+    } catch {
+      // ignore
+    }
+  },
+
+  // Suara Gemuruh Seismik Gempa Bumi (Earthquake Rumble)
+  playEarthquakeRumble() {
+    if (!this.isEnabled()) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(60, ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(32, ctx.currentTime + 1.4);
+
+      gain.gain.setValueAtTime(0.18, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.4);
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(150, ctx.currentTime);
+      filter.frequency.linearRampToValueAtTime(45, ctx.currentTime + 1.4);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 1.45);
+    } catch {
+      // ignore
+    }
+  },
+
+  // Suara Dentuman Dahsyat Letusan Magma Merapi (Massive Volcanic Eruption Boom)
+  playVolcanoBoom() {
+    if (!this.isEnabled()) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      // 1. Sub-bass rumble boom
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(75, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(24, ctx.currentTime + 1.2);
+
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+
+      // Low-pass filter untuk resonansi gemuruh tanah
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(220, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 1.0);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 1.25);
+
+      // 2. Ledakan Noise Pecahan Kawah (Eruption blast)
+      const bufferSize = ctx.sampleRate * 0.8;
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      const whiteNoise = ctx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+
+      const noiseFilter = ctx.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.setValueAtTime(350, ctx.currentTime);
+      noiseFilter.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.8);
+      noiseFilter.Q.setValueAtTime(1.5, ctx.currentTime);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.18, ctx.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+
+      whiteNoise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+
+      whiteNoise.start();
+      whiteNoise.stop(ctx.currentTime + 0.82);
+    } catch {
+      // ignore
+    }
+  },
+
+  // Suara Sirine Peringatan Dini Bencana EWS (Emergency Warning Siren)
+  playEwsSiren() {
+    if (!this.isEnabled()) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      const now = ctx.currentTime;
+      osc.frequency.setValueAtTime(550, now);
+      osc.frequency.linearRampToValueAtTime(880, now + 0.35);
+      osc.frequency.linearRampToValueAtTime(550, now + 0.7);
+
+      gain.gain.setValueAtTime(0.16, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.72);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(now + 0.75);
+    } catch {
+      // ignore
+    }
   }
 };

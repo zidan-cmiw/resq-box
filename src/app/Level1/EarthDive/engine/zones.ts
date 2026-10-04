@@ -1,11 +1,5 @@
-// ── src/app/Level1/EarthDive/engine/zones.ts ─────────────────────────────
-// Definisi 5 zona geologi bumi dengan kontur medan organik kontinu
-// (Continuous Ground & Ceiling Profile ala Terraria & TheoTown)
-// Menghilangkan tangga piramida kotak 32px kaku secara tuntas.
-
 export const TILE = 32;
 
-// ── TILE TYPE IDS (Backwards Compatibility) ──
 export const T = {
   AIR: 0,
   GROUND: 1,
@@ -161,9 +155,9 @@ function buildSurface(): ZoneConfig {
       x: 6, y: 10,
       id: 'npc_raditya',
       data: {
-        npcType: 'prof_raditya',
-        name: 'Prof. Raditya',
-        dialogueId: 'prof_raditya_dialogue',
+        npcType: 'zidane',
+        name: 'Zidane',
+        dialogueId: 'z0_zidane_dialogue',
       },
     },
     {
@@ -174,13 +168,13 @@ function buildSurface(): ZoneConfig {
     },
     {
       type: 'npc',
-      px: 920, py: 293, // Berdiri di atas jembatan kayu mendekati rig bor
-      x: 29, y: 9,
+      px: 900, py: 293, // Di atas jembatan kayu mendekati rig bor
+      x: 28, y: 9,
       id: 'npc_maya',
       data: {
-        npcType: 'kapten_maya',
-        name: 'Kapten Maya',
-        dialogueId: 'kapten_maya_dialogue',
+        npcType: 'zahra',
+        name: 'Zahra',
+        dialogueId: 'z0_zahra_dialogue',
       },
     },
     {
@@ -250,9 +244,9 @@ function buildCrust(): ZoneConfig {
       x: 5, y: 10,
       id: 'npc_gea',
       data: {
-        npcType: 'dr_gea',
-        name: 'Dr. Gea',
-        dialogueId: 'dr_gea_dialogue',
+        npcType: 'zidane',
+        name: 'Zidane',
+        dialogueId: 'z1_zidane_dialogue',
       },
     },
     {
@@ -261,9 +255,10 @@ function buildCrust(): ZoneConfig {
       x: 17, y: 8,
       id: 'npc_andini',
       data: {
-        npcType: 'prof_andini',
-        name: 'Prof. Andini',
-        dialogueId: 'prof_andini_dialogue',
+        npcType: 'lintang',
+        name: 'Lintang',
+        dialogueId: 'z1_lintang_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 0,
         discoveryKey: 'crust_disc_compare',
@@ -281,9 +276,9 @@ function buildCrust(): ZoneConfig {
       x: 27, y: 10,
       id: 'npc_budi',
       data: {
-        npcType: 'inspektur_budi',
-        name: 'Inspektur Budi',
-        dialogueId: 'inspektur_budi_dialogue',
+        npcType: 'ican',
+        name: 'Ican',
+        dialogueId: 'z1_ican_dialogue',
       },
     },
     {
@@ -292,11 +287,25 @@ function buildCrust(): ZoneConfig {
       x: 34, y: 9,
       id: 'npc_hendra',
       data: {
-        npcType: 'komandan_hendra',
-        name: 'Komandan Hendra',
-        dialogueId: 'komandan_hendra_dialogue',
+        npcType: 'bu_tyas',
+        name: 'Bu Tyas',
+        dialogueId: 'z1_bu_tyas_dialogue',
         isGateNpc: true,
         gateId: 'crust_challenge',
+      },
+    },
+    {
+      type: 'npc',
+      px: 1150, py: 310,
+      x: 36, y: 10,
+      id: 'crust_suit_merchant',
+      data: {
+        npcType: 'petugas_joko',
+        name: 'Teknisi Joko',
+        dialogueId: 'crust_merchant_dialogue',
+        isSuitMerchant: true,
+        suitType: 'mantle_suit',
+        price: 1,
       },
     },
     {
@@ -331,20 +340,20 @@ function buildCrust(): ZoneConfig {
 // ══════════════════════════════════════════════════════════════════════════
 function buildMantle(): ZoneConfig {
   // Kontur tanah dengan teras batuan silikat datar untuk tumpuan presisi seluruh objek
-  // Menghilangkan kemiringan di bawah kaki instrumen/papan agar menempel 100% tanpa melayang/melesak
+  // Diselingi danau magma membara lebar yang dilintasi platform pilar parkour bertingkat
   const groundPoints: [number, number][] = [
-    [0, 360],
-    [160, 360],    // Area spawn & portal up (px=70)
-    [210, 320],    // Tanjakan ke Teras Silikat 1
-    [360, 320],    // Teras Datar Silikat 1: menampung discovery 1 (px=260) & info_sign 1 (px=310)
-    [410, 400],    // Tebing patahan curam turun ke Jurang Magma 1
-    [530, 400],    // Dasar Jurang Magma 1
-    [590, 320],    // Tebing naik ke Pematang Bridgmanite Tengah
-    [780, 320],    // Teras Datar Tengah: menampung crystal (px=680) & discovery 2 (px=730)
-    [830, 400],    // Tebing patahan curam turun ke Jurang Magma 2
-    [940, 400],    // Dasar Jurang Magma 2
-    [990, 330],    // Tebing naik ke Teras Gerbang Seismik
-    [1280, 330],   // Teras Datar Akhir: menampung info_sign 2 (px=1020), challenge_gate (px=1120), portal_down (px=1220)
+    [0, 330],
+    [150, 330],    // Area spawn & portal up (px=60)
+    [180, 320],    // Tanjakan ke Teras Silikat 1 (Zahra)
+    [300, 320],    // Teras Datar Silikat 1: menampung Zahra (px=240)
+    [330, 410],    // Tebing patahan curam turun ke Danau Magma 1
+    [610, 410],    // Dasar Danau Magma 1 (penampung pilar parkour 1, 2, 3)
+    [640, 320],    // Tebing naik ke Pulau Bridgmanite Tengah (Lintang)
+    [760, 320],    // Teras Datar Tengah: menampung Lintang (px=700)
+    [790, 410],    // Tebing patahan curam turun ke Danau Magma 2
+    [1050, 410],   // Dasar Danau Magma 2 (penampung pilar parkour 4, 5, 6)
+    [1080, 320],   // Tebing naik ke Teras Altar Akhir (Bu Tyas)
+    [1280, 320],   // Teras Datar Akhir: menampung Bu Tyas (px=1130) & portal_down (px=1220)
   ];
 
   const ceilingPoints: [number, number][] = [
@@ -362,34 +371,31 @@ function buildMantle(): ZoneConfig {
   const ceilingProfile = interpolateProfile(ceilingPoints);
   const tiles = generateTilesFromProfiles(groundProfile, ceilingProfile);
 
-  // Pilar struktur mineral silikat masif (Bridgmanite Monoliths) melintasi jurang magma
+  // Pilar struktur mineral silikat masif (Bridgmanite & Basalt Pillars) melintasi danau magma
   const platforms: Platform[] = [
-    { x1: 430, x2: 520, y: 350, h: 14, type: 'basalt_pillar' },
-    { x1: 840, x2: 930, y: 350, h: 14, type: 'basalt_pillar' },
+    // Sektor Parkour 1: Melintasi Danau Magma Barat
+    { x1: 340, x2: 405, y: 345, h: 14, type: 'basalt_pillar' },
+    { x1: 440, x2: 510, y: 305, h: 14, type: 'basalt_pillar' }, // Pilar tinggi tempat kristal
+    { x1: 545, x2: 610, y: 340, h: 14, type: 'basalt_pillar' },
+
+    // Sektor Parkour 2: Melintasi Danau Magma Timur
+    { x1: 800, x2: 865, y: 345, h: 14, type: 'basalt_pillar' },
+    { x1: 895, x2: 960, y: 300, h: 14, type: 'basalt_pillar' }, // Pilar tinggi bertingkat
+    { x1: 995, x2: 1055, y: 335, h: 14, type: 'basalt_pillar' },
   ];
 
   const objects: MapObject[] = [
-    { type: 'portal_up', px: 70, py: 328, x: 2, y: 10, id: 'mantle_portal_up' },
+    { type: 'portal_up', px: 60, py: 294, x: 2, y: 9, id: 'mantle_portal_up' },
     {
       type: 'npc',
-      px: 260, py: 288,
-      x: 8, y: 9,
-      id: 'npc_bayu',
-      data: {
-        npcType: 'dr_bayu',
-        name: 'Dr. Bayu',
-        dialogueId: 'dr_bayu_dialogue',
-      },
-    },
-    {
-      type: 'npc',
-      px: 330, py: 288,
-      x: 10, y: 9,
+      px: 240, py: 320,
+      x: 7, y: 10,
       id: 'npc_sarah',
       data: {
-        npcType: 'prof_sarah',
-        name: 'Prof. Sarah',
-        dialogueId: 'prof_sarah_dialogue',
+        npcType: 'zahra',
+        name: 'Zahra',
+        dialogueId: 'z2_zahra_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 4,
         discoveryKey: 'mantle_disc1',
@@ -397,19 +403,20 @@ function buildMantle(): ZoneConfig {
     },
     {
       type: 'crystal',
-      px: 680, py: 296,
-      x: 21, y: 9,
+      px: 475, py: 281, // Di atas pilar tinggi parkour 2 (x1: 440, x2: 510, y: 305)
+      x: 15, y: 9,
       id: 'mantle_crystal',
     },
     {
       type: 'npc',
-      px: 730, py: 288,
-      x: 22, y: 9,
-      id: 'npc_danang',
+      px: 700, py: 320,
+      x: 22, y: 10,
+      id: 'z2_npc_lintang',
       data: {
-        npcType: 'dr_danang',
-        name: 'Dr. Danang',
-        dialogueId: 'dr_danang_dialogue',
+        npcType: 'lintang',
+        name: 'Lintang',
+        dialogueId: 'z2_lintang_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 5,
         discoveryKey: 'mantle_disc2',
@@ -417,32 +424,35 @@ function buildMantle(): ZoneConfig {
     },
     {
       type: 'npc',
-      px: 990, py: 298,
-      x: 30, y: 10,
-      id: 'npc_rudi',
-      data: {
-        npcType: 'petugas_rudi',
-        name: 'Petugas Rudi',
-        dialogueId: 'petugas_rudi_dialogue',
-      },
-    },
-    {
-      type: 'npc',
-      px: 1100, py: 298,
-      x: 34, y: 10,
+      px: 1130, py: 320,
+      x: 35, y: 10,
       id: 'npc_surya',
       data: {
-        npcType: 'komandan_surya',
-        name: 'Komandan Surya',
-        dialogueId: 'komandan_surya_dialogue',
+        npcType: 'bu_tyas',
+        name: 'Bu Tyas',
+        dialogueId: 'z2_bu_tyas_dialogue',
         isGateNpc: true,
         gateId: 'mantle_challenge',
       },
     },
     {
+      type: 'npc',
+      px: 1175, py: 320,
+      x: 36, y: 10,
+      id: 'mantle_suit_merchant',
+      data: {
+        npcType: 'petugas_rudi',
+        name: 'Teknisi Rudi',
+        dialogueId: 'mantle_merchant_dialogue',
+        isSuitMerchant: true,
+        suitType: 'outer_core_suit',
+        price: 1,
+      },
+    },
+    {
       type: 'portal_down',
-      px: 1220, py: 298,
-      x: 38, y: 10,
+      px: 1220, py: 284,
+      x: 38, y: 9,
       id: 'mantle_portal_down',
     },
   ];
@@ -461,11 +471,11 @@ function buildMantle(): ZoneConfig {
     platforms,
     objects,
     hazards: [
-      { x: 400, y: 370, w: 160, h: 50, damage: 25, type: 'molten_lava' },
-      { x: 820, y: 370, w: 150, h: 50, damage: 25, type: 'molten_lava' },
+      { x: 310, y: 370, w: 320, h: 50, damage: 25, type: 'molten_lava' },
+      { x: 770, y: 370, w: 300, h: 50, damage: 25, type: 'molten_lava' },
     ],
     playerSpawnX: 80,
-    playerSpawnY: 360,
+    playerSpawnY: 330,
   };
 }
 
@@ -473,69 +483,36 @@ function buildMantle(): ZoneConfig {
 // ZONA 3: INTI LUAR (Lautan Logam Cair & Dinamo Medan Magnet Bumi)
 // ══════════════════════════════════════════════════════════════════════════
 function buildOuterCore(): ZoneConfig {
-  // Profil tanah Inti Luar: Teras-teras pelat logam padat mengapung di atas samudra besi-nikel cair
-  // Semua titik penempatan objek berada di atas platform datar sempurna (y1 == y2) agar menapak rata 100%
+  // Profil tanah Inti Luar: Datar padat (flat solid iron-nickel bedrock) dengan kubah terbuka
+  // Menampilkan busur kurva torus medan magnet bumi (Geomagnetic Dipole Loops) dan kilatan listrik
   const groundPoints: [number, number][] = [
-    [0, 360],
-    [160, 360],    // Area spawn & elevator naik (px=70)
-    [210, 310],    // Tanjakan pelat logam padat 1
-    [380, 310],    // Teras Pelat Logam 1: discovery 1 (px=270) & info_sign 1 (px=330)
-    [390, 310],    // Tebing barat Chasm 1 tempat tumpuan jembatan kristal
-    [415, 400],    // Dinding curam turun ke Samudra Logam Cair 1
-    [545, 400],    // Dasar Samudra Logam Cair 1
-    [570, 310],    // Tebing timur Chasm 1 tempat tumpuan jembatan kristal
-    [590, 310],    // Pematang Pelat Logam Tengah
-    [780, 310],    // Teras Pelat Logam Tengah: crystal (px=680) & discovery 2 (px=730)
-    [790, 310],    // Tebing barat Chasm 2 tempat tumpuan jembatan kristal
-    [815, 400],    // Dinding curam turun ke Samudra Logam Cair 2
-    [945, 400],    // Dasar Samudra Logam Cair 2
-    [970, 310],    // Tebing timur Chasm 2 tempat tumpuan jembatan kristal
-    [1010, 330],   // Tanjakan halus ke Teras Gerbang Seismik Inti
-    [1280, 330],   // Teras Pelat Logam Akhir: info_sign 2 (px=1020), challenge_gate (px=1120), portal_down (px=1220)
+    [0, 350],
+    [1280, 350],
   ];
 
   const ceilingPoints: [number, number][] = [
-    [0, 60],
-    [220, 75],
-    [420, 45],
-    [640, 80],
-    [850, 50],
-    [1050, 75],
-    [1280, 60],
+    [0, 0],
+    [1280, 0],
   ];
 
   const groundProfile = interpolateProfile(groundPoints);
   const ceilingProfile = interpolateProfile(ceilingPoints);
   const tiles = generateTilesFromProfiles(groundProfile, ceilingProfile);
 
-  // Pelat logam terapung elektromagnetik yang menjembatani samudra besi-nikel cair melintasi tebing
-  const platforms: Platform[] = [
-    { x1: 390, x2: 570, y: 310, h: 12, type: 'crystal_bridge' },
-    { x1: 790, x2: 970, y: 310, h: 12, type: 'crystal_bridge' },
-  ];
+  const platforms: Platform[] = [];
 
   const objects: MapObject[] = [
-    { type: 'portal_up', px: 70, py: 324, x: 2, y: 10, id: 'oc_portal_up' },
+    { type: 'portal_up', px: 70, py: 314, x: 2, y: 10, id: 'oc_portal_up' },
     {
       type: 'npc',
-      px: 270, py: 276,
-      x: 8, y: 9,
-      id: 'npc_fajar',
-      data: {
-        npcType: 'dr_fajar',
-        name: 'Dr. Fajar',
-        dialogueId: 'dr_fajar_dialogue',
-      },
-    },
-    {
-      type: 'npc',
-      px: 330, py: 276,
-      x: 10, y: 9,
+      px: 380, py: 350,
+      x: 12, y: 10,
       id: 'npc_ratna',
       data: {
-        npcType: 'prof_ratna',
-        name: 'Prof. Ratna',
-        dialogueId: 'prof_ratna_dialogue',
+        npcType: 'zahra',
+        name: 'Zahra',
+        dialogueId: 'z3_zahra_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 6,
         discoveryKey: 'oc_disc1',
@@ -543,19 +520,20 @@ function buildOuterCore(): ZoneConfig {
     },
     {
       type: 'crystal',
-      px: 680, py: 286,
-      x: 21, y: 9,
+      px: 600, py: 326,
+      x: 19, y: 10,
       id: 'oc_crystal',
     },
     {
       type: 'npc',
-      px: 730, py: 276,
-      x: 22, y: 9,
+      px: 780, py: 350,
+      x: 24, y: 10,
       id: 'npc_aris',
       data: {
-        npcType: 'dr_aris',
-        name: 'Dr. Aris',
-        dialogueId: 'dr_aris_dialogue',
+        npcType: 'lintang',
+        name: 'Lintang',
+        dialogueId: 'z3_lintang_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 7,
         discoveryKey: 'oc_disc2',
@@ -563,31 +541,35 @@ function buildOuterCore(): ZoneConfig {
     },
     {
       type: 'npc',
-      px: 1020, py: 298,
-      x: 31, y: 10,
-      id: 'npc_joko',
+      px: 1080, py: 350,
+      x: 34, y: 10,
+      id: 'npc_teguh',
       data: {
-        npcType: 'petugas_joko',
-        name: 'Petugas Joko',
-        dialogueId: 'petugas_joko_dialogue',
+        npcType: 'bu_tyas',
+        name: 'Bu Tyas',
+        dialogueId: 'z3_bu_tyas_dialogue',
+        isGateNpc: true,
+        challengeId: 'oc_challenge',
+        gateId: 'oc_challenge',
       },
     },
     {
       type: 'npc',
-      px: 1120, py: 294,
-      x: 35, y: 9,
-      id: 'npc_teguh',
+      px: 1140, py: 350,
+      x: 36, y: 10,
+      id: 'oc_suit_merchant',
       data: {
-        npcType: 'komandan_teguh',
-        name: 'Komandan Teguh',
-        dialogueId: 'komandan_teguh_dialogue',
-        isGateNpc: true,
-        challengeId: 'oc_challenge',
+        npcType: 'petugas_dian',
+        name: 'Teknisi Dian',
+        dialogueId: 'oc_merchant_dialogue',
+        isSuitMerchant: true,
+        suitType: 'inner_core_suit',
+        price: 1,
       },
     },
     {
       type: 'portal_down',
-      px: 1220, py: 294,
+      px: 1200, py: 314,
       x: 38, y: 10,
       id: 'oc_portal_down',
     },
@@ -606,12 +588,8 @@ function buildOuterCore(): ZoneConfig {
     ceilingProfile,
     platforms,
     objects,
-    hazards: [
-      { x: 400, y: 370, w: 160, h: 50, damage: 25, type: 'molten_lava' },
-      { x: 810, y: 370, w: 160, h: 50, damage: 25, type: 'molten_lava' },
-    ],
     playerSpawnX: 80,
-    playerSpawnY: 360,
+    playerSpawnY: 350,
   };
 }
 
@@ -619,15 +597,34 @@ function buildOuterCore(): ZoneConfig {
 // ZONA 4: INTI DALAM (Istana Kristal Logam Heksagonal Padat 6.000°C - 6.371 KM)
 // ══════════════════════════════════════════════════════════════════════════
 function buildInnerCore(): ZoneConfig {
-  // Profil tanah Inti Dalam: Datar sempurna (flat solid iron-nickel sphere)
-  // Bentuk bola besi padat murni tanpa ada naik-turun kontur
+  // Profil tanah Inti Dalam: Teras-teras batuan kristal emas padat yang membentang melintasi jurang fluida emas
+  // Dihubungkan oleh Jembatan Kristal Emas bercahaya transparan
   const groundPoints: [number, number][] = [
-    [0, 350],
-    [1280, 350],
+    [0, 360],
+    [160, 360],    // Area spawn & portal up (px=70)
+    [210, 310],    // Tanjakan teras kristal emas 1
+    [380, 310],    // Teras Kristal Emas 1: menampung Zahra (px=330)
+    [390, 310],    // Tebing barat Chasm 1 tumpuan jembatan kristal
+    [415, 400],    // Jurang fluida inti dalam 1
+    [545, 400],    // Dasar Jurang 1
+    [570, 310],    // Tebing timur Chasm 1 tumpuan jembatan kristal
+    [590, 310],    // Pematang Kristal Emas Tengah
+    [780, 310],    // Teras Tengah: menampung Lintang (px=730)
+    [790, 310],    // Tebing barat Chasm 2 tumpuan jembatan kristal
+    [815, 400],    // Jurang fluida inti dalam 2
+    [945, 400],    // Dasar Jurang 2
+    [970, 310],    // Tebing timur Chasm 2 tumpuan jembatan kristal
+    [1010, 330],   // Tanjakan ke Teras Altar Akhir
+    [1280, 330],   // Teras Altar Akhir: menampung Bu Tyas (px=1100) & Kapsul Akhir (px=1220)
   ];
 
   const ceilingPoints: [number, number][] = [
     [0, 60],
+    [220, 75],
+    [420, 45],
+    [640, 80],
+    [850, 50],
+    [1050, 75],
     [1280, 60],
   ];
 
@@ -635,44 +632,45 @@ function buildInnerCore(): ZoneConfig {
   const ceilingProfile = interpolateProfile(ceilingPoints);
   const tiles = generateTilesFromProfiles(groundProfile, ceilingProfile);
 
-  const platforms: Platform[] = [];
+  // Jembatan medan fluks kristal emas berlabuh ke kedua tebing melintasi jurang
+  const platforms: Platform[] = [
+    { x1: 390, x2: 570, y: 310, h: 12, type: 'crystal_bridge' },
+    { x1: 790, x2: 970, y: 310, h: 12, type: 'crystal_bridge' },
+  ];
 
   const objects: MapObject[] = [
-    { type: 'portal_up', px: 70, py: 314, x: 2, y: 10, id: 'ic_portal_up' },
+    { type: 'portal_up', px: 70, py: 324, x: 2, y: 10, id: 'ic_portal_up' },
     {
       type: 'npc',
-      px: 270, py: 350,
-      x: 8, y: 10,
-      id: 'npc_bagus',
+      px: 330, py: 310,
+      x: 10, y: 9,
+      id: 'z4_npc_zahra',
       data: {
-        npcType: 'dr_bagus',
-        name: 'Dr. Bagus',
-        dialogueId: 'dr_bagus_dialogue',
-      },
-    },
-    {
-      type: 'npc',
-      px: 340, py: 350,
-      x: 10, y: 10,
-      id: 'npc_lestari',
-      data: {
-        npcType: 'prof_lestari',
-        name: 'Prof. Lestari',
-        dialogueId: 'prof_lestari_dialogue',
+        npcType: 'zahra',
+        name: 'Zahra',
+        dialogueId: 'z4_zahra_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 8,
         discoveryKey: 'ic_disc1',
       },
     },
     {
+      type: 'crystal',
+      px: 590, py: 280,
+      x: 18, y: 9,
+      id: 'ic_crystal',
+    },
+    {
       type: 'npc',
-      px: 680, py: 350,
-      x: 21, y: 10,
-      id: 'npc_farhan',
+      px: 730, py: 310,
+      x: 22, y: 9,
+      id: 'z4_npc_lintang',
       data: {
-        npcType: 'dr_farhan',
-        name: 'Dr. Farhan',
-        dialogueId: 'dr_farhan_dialogue',
+        npcType: 'lintang',
+        name: 'Lintang',
+        dialogueId: 'z4_lintang_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 9,
         discoveryKey: 'ic_disc2',
@@ -680,32 +678,36 @@ function buildInnerCore(): ZoneConfig {
     },
     {
       type: 'npc',
-      px: 900, py: 350,
-      x: 28, y: 10,
-      id: 'npc_dian',
+      px: 1100, py: 330,
+      x: 34, y: 10,
+      id: 'npc_bintang',
       data: {
-        npcType: 'petugas_dian',
-        name: 'Petugas Dian',
-        dialogueId: 'petugas_dian_dialogue',
+        npcType: 'bu_tyas',
+        name: 'Bu Tyas',
+        dialogueId: 'z4_bu_tyas_dialogue',
+        isGateNpc: true,
+        challengeId: 'ic_challenge',
+        gateId: 'ic_challenge',
       },
     },
     {
       type: 'npc',
-      px: 1040, py: 350,
-      x: 32, y: 10,
-      id: 'npc_bintang',
+      px: 1160, py: 330,
+      x: 36, y: 10,
+      id: 'ic_suit_merchant',
       data: {
-        npcType: 'komandan_bintang',
-        name: 'Komandan Bintang',
-        dialogueId: 'komandan_bintang_dialogue',
-        isGateNpc: true,
-        challengeId: 'ic_challenge',
+        npcType: 'komandan_arya',
+        name: 'Teknisi Arya',
+        dialogueId: 'ic_merchant_dialogue',
+        isSuitMerchant: true,
+        suitType: 'diver_suit',
+        price: 1,
       },
     },
     {
       type: 'portal_down',
-      px: 1180, py: 314,
-      x: 37, y: 10,
+      px: 1220, py: 294,
+      x: 38, y: 10,
       id: 'ic_portal_exit',
     },
   ];
@@ -714,7 +716,7 @@ function buildInnerCore(): ZoneConfig {
     id: 'innerCore',
     name: 'Inti Dalam',
     depthLabel: '5.150–6.371 km (750 mil)',
-    temperature: '5.500°C – 6.000°C (Sepanas Matahari)',
+    temperature: '5.500°C – 6.000°C',
     pressure: '>3,6 Juta atm (360 GPa)',
     cols: COLS,
     rows: ROWS,
@@ -723,8 +725,12 @@ function buildInnerCore(): ZoneConfig {
     ceilingProfile,
     platforms,
     objects,
+    hazards: [
+      { x: 400, y: 370, w: 160, h: 50, damage: 25, type: 'molten_lava' },
+      { x: 810, y: 370, w: 160, h: 50, damage: 25, type: 'molten_lava' },
+    ],
     playerSpawnX: 80,
-    playerSpawnY: 350,
+    playerSpawnY: 360,
   };
 }
 
@@ -739,11 +745,11 @@ function buildDivergentZone(): ZoneConfig {
   const divergentWidth = 1350;
   const divergentCols = Math.ceil(divergentWidth / TILE); // 43 cols
 
-  // Baseline profil bergelombang alami
-  const groundProfile = new Array<number>(divergentWidth).fill(360);
-  const ceilingProfile = new Array<number>(divergentWidth).fill(0); // Langit terbuka celah benua
+  // Baseline profil bergelombang alami di dasar lautan (ditinggikan se-garis merah pada y ~ 248)
+  const groundProfile = new Array<number>(divergentWidth).fill(248);
+  const ceilingProfile = new Array<number>(divergentWidth).fill(0); // Lautan terbuka bebas
 
-  // Hitung kontur awal tanah (sebelum terbelah, tanah tersambung utuh dengan gundukan alami)
+  // Hitung kontur awal tanah (sebelum terbelah, lempeng dasar laut tersambung utuh dengan gundukan alami)
   for (let x = 0; x < divergentWidth; x++) {
     groundProfile[x] = getDivergentTerrainElevation(x, 450, 0);
   }
@@ -753,118 +759,103 @@ function buildDivergentZone(): ZoneConfig {
   // Tidak ada platform di tengah magma — celah dibuat murni menganga bersih dan dramatis
   const platforms: Platform[] = [];
 
-  // Hazard celah magma aktif di antara dua lempeng (x: 390..510)
-  const hazards: HazardArea[] = [
-    { x: 390, y: 385, w: 120, h: 60, damage: 100, type: 'molten_lava' },
-  ];
+  // Hazard celah magma baru aktif secara dinamis saat celah terbuka dan magma naik dari mantel
+  const hazards: HazardArea[] = [];
 
   const objects: MapObject[] = [
-    // 1. Portal Naik ke Inti Dalam
+    // 1. Portal Naik ke Inti Dalam (di dasar laut barat)
     {
       type: 'portal_up',
-      px: 60, py: 350,
-      x: 2, y: 11,
+      px: 60, py: 212,
+      x: 2, y: 7,
       id: 'div_portal_up',
     },
-    // 2. NPC 1: Dr. Taufik (Pemandu & Saksi Dinamika Pembelahan Tektonik - di puncak bukit barat)
+    // 2. NPC 1: Zidane (di puncak bukit lempeng barat - Pemandu Lembah Retakan)
     {
       type: 'npc',
-      px: 170, py: 345,
-      x: 5, y: 10,
+      px: 170, py: 248,
+      x: 5, y: 8,
       id: 'npc_taufik',
       data: {
-        npcType: 'dr_taufik',
-        name: 'Dr. Taufik',
-        dialogueId: 'dr_taufik_dialogue',
+        npcType: 'zidane',
+        name: 'Zidane',
+        dialogueId: 'z5_zidane_dialogue',
       },
     },
     // 3. Kristal Geologi 1
     {
       type: 'crystal',
-      px: 230, py: 310,
-      x: 7, y: 9,
+      px: 230, py: 220,
+      x: 7, y: 7,
       id: 'div_crystal_1',
     },
-    // 4. NPC 2: Prof. Maya (Ahli Pangea & Benua Purba - Temuan 10 - di lembah sebelum celah)
+    // 4. NPC 2: Zahra (di lembah sebelum celah - Temuan 10: Superbenua Pangea)
     {
       type: 'npc',
-      px: 290, py: 355,
-      x: 9, y: 11,
+      px: 290, py: 248,
+      x: 9, y: 8,
       id: 'npc_maya',
       data: {
-        npcType: 'prof_maya',
-        name: 'Prof. Maya',
-        dialogueId: 'prof_maya_dialogue',
+        npcType: 'zahra',
+        name: 'Zahra',
+        dialogueId: 'z5_zahra_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 10,
         discoveryKey: 'div_disc1',
       },
     },
-    // (Celah Magma Divergen di x: 395..505 — Bebas dari NPC & Tanpa Platform Tengah)
-    // 5. NPC 3: Dr. Citra (Peneliti Pegunungan Kembar - Temuan 11 - menyambut di seberang celah)
+    // (Celah Magma Divergen di x: 395..505 — Tempat Magma dari Mantel Mengisi 1/3 Patahan & Membeku Membentuk Kerak Samudra Baru)
+    // 5. Kristal Geologi 2 (di lereng bukit timur)
+    {
+      type: 'crystal',
+      px: 680, py: 220,
+      x: 21, y: 7,
+      id: 'div_crystal_2',
+    },
+    // 6. NPC 3: Lintang (di lereng timur - Temuan 11: Pegunungan Kembar)
     {
       type: 'npc',
-      px: 600, py: 355,
-      x: 18, y: 11,
-      id: 'npc_citra',
+      px: 880, py: 248,
+      x: 27, y: 8,
+      id: 'npc_ilham',
       data: {
-        npcType: 'dr_citra',
-        name: 'Dr. Citra',
-        dialogueId: 'dr_citra_dialogue',
+        npcType: 'lintang',
+        name: 'Lintang',
+        dialogueId: 'z5_lintang_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 11,
         discoveryKey: 'div_disc2',
       },
     },
-    // 6. Kristal Geologi 2 (di lereng bukit timur)
-    {
-      type: 'crystal',
-      px: 750, py: 300,
-      x: 23, y: 9,
-      id: 'div_crystal_2',
-    },
-    // 7. NPC 4: Prof. Ilham (Pengamat Dinamika Pemekaran Divergen - Temuan 12 - di dataran bukit timur)
-    {
-      type: 'npc',
-      px: 880, py: 345,
-      x: 27, y: 10,
-      id: 'npc_ilham',
-      data: {
-        npcType: 'prof_ilham',
-        name: 'Prof. Ilham',
-        dialogueId: 'prof_ilham_dialogue',
-        isDiscoveryNpc: true,
-        discoveryId: 12,
-        discoveryKey: 'div_disc3',
-      },
-    },
     // 8. Kristal Geologi 3
     {
       type: 'crystal',
-      px: 1020, py: 320,
-      x: 31, y: 10,
+      px: 1020, py: 220,
+      x: 31, y: 7,
       id: 'div_crystal_3',
     },
-    // 9. NPC 5: Komandan Satria (Penjaga Akses Menuju Batas Konvergen)
+    // 9. NPC 5: Bu Tyas (Penjaga Akses Menuju Batas Konvergen)
     {
       type: 'npc',
-      px: 1140, py: 355,
-      x: 35, y: 11,
+      px: 1140, py: 248,
+      x: 35, y: 8,
       id: 'npc_satria',
       data: {
-        npcType: 'komandan_satria',
-        name: 'Komandan Satria',
-        dialogueId: 'komandan_satria_dialogue',
+        npcType: 'bu_tyas',
+        name: 'Bu Tyas',
+        dialogueId: 'z5_bu_tyas_dialogue',
         isGateNpc: true,
         gateId: 'divergent_challenge',
         challengeId: 'divergent_challenge',
       },
     },
-    // 10. Portal Turun ke Batas Konvergen
+    // 9. Portal Turun ke Batas Konvergen
     {
       type: 'portal_down',
-      px: 1240, py: 355,
-      x: 38, y: 11,
+      px: 1240, py: 212,
+      x: 38, y: 7,
       id: 'div_portal_down',
     },
   ];
@@ -884,62 +875,187 @@ function buildDivergentZone(): ZoneConfig {
     objects,
     hazards,
     playerSpawnX: 80,
-    playerSpawnY: 355,
+    playerSpawnY: 195,
   };
 }
 
-// ── FUNGSI ELEVASI MEDAN BERGELOMBANG ORGANIK AREA 6 (100% MULUS & KONTINU) ──
-export function getDivergentTerrainElevation(x: number, splitCenter: number = 450, p: number = 1.0): number {
+// ── FUNGSI KONTUR BERGELOMBANG BATAS MANTEL ASTENOSFER (AREA 6) ──
+// Lapisan lempeng ditebalkan ke bawah, dan lapisan mantel ditipiskan ke dasar kanvas (baseline y ~ 428, tebal mantel ~52px)
+export function getMantleBoundaryY(x: number): number {
+  const wave1 = Math.sin((x / 240) * Math.PI) * 8;
+  const wave2 = Math.cos((x / 130) * Math.PI) * 4;
+  const wave3 = Math.sin((x / 75) * Math.PI) * 2;
+  return Math.round(428 + wave1 + wave2 + wave3);
+}
+
+// ── FUNGSI KONTUR DINAMIS MANTEL PEMEKARAN DIVERGEN (AREA 6) ──
+// Mantel di bawah lempeng ikut membelah dan bergeser bersama lempeng kiri & kanan,
+// dan menyatu mulus 100% sebagai satu lapisan dengan magma yang membumbung di celah
+export function getDivergentMantleY(
+  x: number,
+  splitCenter: number = 450,
+  p: number = 1.0,
+  _coolProgress: number = 0,
+): number {
   const maxGap = 110;
   const gap = p * maxGap;
   const leftEdge = Math.round(splitCenter - gap / 2);
   const rightEdge = Math.round(splitCenter + gap / 2);
-  const flareMax = 14 * p;
+  const slopeW = Math.min(38, Math.max(14, Math.round(gap * 0.35)));
+  const lavaLeft = leftEdge + slopeW;
+  const lavaRight = rightEdge - slopeW;
+  const floorY = 372; // Elevasi magma sebatas garis merah referensi pengguna
 
-  // Jika x berada di dalam celah rekahan magma yang terbuka
-  if (gap > 4 && x > leftEdge && x < rightEdge) {
-    return 455; // Jurang magma di dasar
-  }
+  // Titik referensi dasar lempeng di bibir rekahan timur (lavaRight)
+  const refEastX = Math.round(lavaRight - gap * 0.5);
 
-  // Kontur dasar Lempeng Barat (0 .. leftEdge) — Kurva mulus kontinu tanpa patahan
-  if (x <= leftEdge) {
-    // Gelombang harmonik lembut: bukit landai di x~120..170, lembah di x~260..290
-    const hillWave = Math.sin((x / 240) * Math.PI) * 16 + Math.sin((x / 110) * Math.PI) * 4;
-    let base = 372 - hillWave;
-
-    // Bibir tebing terangkat menganga dengan Cosine S-Curve halus
-    if (x >= leftEdge - 60) {
-      const t = (x - (leftEdge - 60)) / 60;
-      const sCurve = (1 - Math.cos(t * Math.PI)) / 2;
-      base -= sCurve * flareMax;
+  if (x <= lavaLeft) {
+    const distFromRift = lavaLeft - x;
+    const symBaseY = getMantleBoundaryY(refEastX + distFromRift);
+    if (x >= 250) {
+      return symBaseY;
     }
-    return Math.round(base);
+    // Bertransisi mulus ke profil alami lempeng barat di x < 250
+    const blendT = Math.min(1, Math.max(0, (250 - x) / 100));
+    const smoothT = (1 - Math.cos(blendT * Math.PI)) / 2;
+    const westNaturalY = getMantleBoundaryY(x + gap * 0.5);
+    return Math.round(symBaseY * (1 - smoothT) + westNaturalY * smoothT);
   }
 
-  // Kontur dasar Lempeng Timur (rightEdge .. 1350) — Kurva mulus kontinu tanpa patahan
-  const relX = x - rightEdge;
-  // Gelombang bukit harmonik: bukit tektonik di relX~240 (x~740), teras di relX~380 (x~880), dataran di relX>550
-  const eastWave = Math.sin((relX / 300) * Math.PI) * 18 + Math.sin((relX / 140) * Math.PI) * 4;
-  let base = 372 - eastWave;
+  // 2. Lempeng Timur (x >= lavaRight): Dasar lempeng timur alami
+  if (x >= lavaRight) {
+    return getMantleBoundaryY(x - gap * 0.5);
+  }
 
-  // Bibir tebing timur terangkat menganga dengan Cosine S-Curve halus
-  if (relX <= 60) {
-    const t = 1 - relX / 60;
+  // 3. Celah magma tengah (lavaLeft < x < lavaRight)
+  // Magma dari mantel membumbung mengisi celah hingga ke garis merah (floorY = 372)
+  const baseM = getMantleBoundaryY(refEastX); // ~428px
+
+  let centerMagmaY = baseM;
+  if (p >= 0.45) {
+    const magmaRise = Math.min(1, (p - 0.45) / 0.55);
+    centerMagmaY = baseM - magmaRise * (baseM - floorY);
+  }
+
+  return Math.round(centerMagmaY);
+}
+
+// ── FUNGSI ELEVASI MEDAN BERGELOMBANG ORGANIK AREA 6 (DENGAN TEBING MIRING BERTEKSTUR) ──
+export function getDivergentTerrainElevation(
+  x: number,
+  splitCenter: number = 450,
+  p: number = 1.0,
+  coolProgress: number = 0,
+): number {
+  const maxGap = 110;
+  const gap = p * maxGap;
+  const leftEdge = Math.round(splitCenter - gap / 2);
+  const rightEdge = Math.round(splitCenter + gap / 2);
+
+  // Fungsi elevasi kontur alami lempeng dasar laut barat (y ~ 248)
+  const getWestBase = (px: number) => {
+    const hillWave = Math.sin((px / 240) * Math.PI) * 10 + Math.sin((px / 110) * Math.PI) * 3;
+    return 248 - hillWave;
+  };
+
+  // Fungsi elevasi kontur alami lempeng dasar laut timur
+  const getEastBase = (px: number) => {
+    const relX = px - rightEdge;
+    const eastWave = Math.sin((relX / 300) * Math.PI) * 12 + Math.sin((relX / 140) * Math.PI) * 3;
+    return 248 - eastWave;
+  };
+
+  // Saat lempeng belum membelah: satu kesatuan kontur utuh tanpa patahan
+  if (gap <= 4) {
+    if (x <= splitCenter) return Math.round(getWestBase(x));
+    return Math.round(getEastBase(x));
+  }
+
+  // Dataran Lempeng Barat (x <= leftEdge)
+  if (x <= leftEdge) {
+    const distToLip = leftEdge - x;
+    const droop = distToLip < 16 ? (1 - distToLip / 16) * 6 : 0;
+    return Math.round(getWestBase(x) + droop);
+  }
+
+  // Dataran Lempeng Timur (x >= rightEdge)
+  if (x >= rightEdge) {
+    const distToLip = x - rightEdge;
+    const droop = distToLip < 16 ? (1 - distToLip / 16) * 6 : 0;
+    return Math.round(getEastBase(x) + droop);
+  }
+
+  // ── DI DALAM JURANG REKAHAN NGARAI (leftEdge < x < rightEdge) ──
+  // Tebing miring alami bertingkat tembus sampai ke bawah (garis merah floorY = 372)
+  const westLipY = Math.round(getWestBase(leftEdge)) + 6;
+  const eastLipY = Math.round(getEastBase(rightEdge)) + 6;
+  const floorY = 372; // Magma mengisi dan membeku sebatas garis merah referensi pengguna
+  const slopeW = Math.min(38, Math.max(14, Math.round(gap * 0.35)));
+  const lavaLeft = leftEdge + slopeW;
+  const lavaRight = rightEdge - slopeW;
+
+  // 1. Lereng ngarai patahan barat (miring alami dari bibir atas westLipY melandai ke lantai ngarai floorY = 372)
+  if (x <= lavaLeft) {
+    const t = (x - leftEdge) / Math.max(1, lavaLeft - leftEdge);
     const sCurve = (1 - Math.cos(t * Math.PI)) / 2;
-    base -= sCurve * flareMax;
+    // Undakan batuan alami bertingkat patahan normal tektonik melandai tembus sampai ke dasar
+    const stepLedge = Math.sin(t * Math.PI * 4.5) * (1 - t * 0.7) * 2;
+    return Math.round(westLipY + sCurve * (floorY - westLipY) + stepLedge);
   }
-  return Math.round(base);
+
+  // 2. Lereng ngarai patahan timur (miring alami dari lantai ngarai floorY = 372 melandai ke bibir atas eastLipY)
+  if (x >= lavaRight) {
+    const t = (rightEdge - x) / Math.max(1, rightEdge - lavaRight);
+    const sCurve = (1 - Math.cos(t * Math.PI)) / 2;
+    const stepLedge = Math.sin(t * Math.PI * 4.5) * (1 - t * 0.7) * 2;
+    return Math.round(eastLipY + sCurve * (floorY - eastLipY) + stepLedge);
+  }
+
+  // 3. Palung tengah antara kedua lereng ngarai (lavaLeft < x < lavaRight)
+  // Ketika magma membeku (coolProgress >= 1), membeku menjadi daratan pillow basalt padat baru di y = 372
+  if (coolProgress >= 1) {
+    return floorY;
+  }
+
+  // Ketika magma naik dari mantel (p >= 0.45): elevasi mengikuti permukaan magma yang naik
+  if (p >= 0.45) {
+    const mantleBaseY = getMantleBoundaryY(splitCenter);
+    const magmaRise = Math.min(1, (p - 0.45) / 0.55);
+    return Math.round(mantleBaseY - magmaRise * (mantleBaseY - floorY));
+  }
+
+  // Ketika masih celah awal sebelum magma naik (p < 0.45): permukaan adalah batas atas mantel di getDivergentMantleY
+  return getDivergentMantleY(x, splitCenter, p, coolProgress);
 }
 
 // ── PENGUPDATE PROFIL MEDAN DINAMIS PEMEKARAN DIVERGEN (AREA 6) ──
-export function updateDivergentGroundProfile(zone: ZoneConfig, progress: number): void {
+export function updateDivergentGroundProfile(
+  zone: ZoneConfig,
+  progress: number,
+  coolProgress: number = 0,
+): void {
   if (!zone.groundProfile || zone.id !== 'divergent') return;
   const p = Math.max(0, Math.min(1, progress));
   const splitCenter = 450;
+  const maxGap = 110;
+  const gap = p * maxGap;
+  const leftEdge = Math.round(splitCenter - gap / 2);
+  const rightEdge = Math.round(splitCenter + gap / 2);
+  const slopeW = Math.min(38, Math.max(14, Math.round(gap * 0.35)));
 
   for (let x = 0; x < zone.groundProfile.length; x++) {
-    zone.groundProfile[x] = getDivergentTerrainElevation(x, splitCenter, p);
+    zone.groundProfile[x] = getDivergentTerrainElevation(x, splitCenter, p, coolProgress);
   }
+
+  // Magma hazard aktif di dasar ngarai tengah saat magma naik (p >= 0.45) dan belum membeku (coolProgress < 0.7)
+  const hazardLeft = leftEdge + slopeW;
+  const hazardRight = rightEdge - slopeW;
+  const hazardW = Math.max(14, hazardRight - hazardLeft);
+
+  zone.hazards = (gap > 12 && p >= 0.45 && coolProgress < 0.7) ? [
+    { x: hazardLeft, y: 370, w: hazardW, h: 60, damage: 25, type: 'molten_lava' }
+  ] : [];
+
   snapObjectsToGround(zone);
 }
 
@@ -969,96 +1085,101 @@ export function buildConvergentZone(): ZoneConfig {
   const hazards: HazardArea[] = [];
 
   const objects: MapObject[] = [
-    // 1. Portal Naik Kembali ke Area 6 (Batas Divergen) di perairan samudra barat
+    // 1. Portal Naik Kembali ke Area 6 (Batas Divergen) di daratan lempeng barat
     {
       type: 'portal_up',
-      px: 60, py: 360,
-      x: 2, y: 11,
+      px: 60, py: 310,
+      x: 2, y: 9,
       id: 'conv_portal_up',
     },
 
+    // 2. Kristal Geologi 1 (di dataran benua barat)
     {
       type: 'crystal',
-      px: 340, py: 340,
-      x: 10, y: 10,
+      px: 180, py: 310,
+      x: 5, y: 9,
       id: 'conv_crystal_1',
     },
 
+    // 3. Papan Informasi Tumbukan Benua & Pembentukan Gunung
     {
       type: 'info_sign',
-      px: 540, py: 360,
-      x: 17, y: 11,
+      px: 330, py: 310,
+      x: 10, y: 9,
       id: 'conv_sign_dock',
       data: {
-        text: '"Lempeng samudra yang lebih padat menunjam miring ke bawah lempeng benua di palung laut. Selamat datang di daratan benua, silakan teliti batuan lipatan dan gunung berapi!"',
+        text: '"Dua lempeng benua saling bertabrakan (Batas Konvergen)! Lempeng kiri menunjam ke bawah, gaya kompresi melipat kerak bumi dan membentuk gunung dengan dapur magma di dalamnya."',
       },
     },
 
+    // 4. NPC 1: Zidane (Menganalisis Zona Subduksi Palung Jawa)
     {
       type: 'npc',
-      px: 620, py: 360,
-      x: 19, y: 11,
-      id: 'npc_farhan',
+      px: 460, py: 310,
+      x: 14, y: 9,
+      id: 'z6_npc_zidane',
       data: {
-        npcType: 'dr_farhan',
-        name: 'Dr. Farhan',
-        dialogueId: 'dr_farhan_conv_dialogue',
+        npcType: 'zidane',
+        name: 'Zidane',
+        dialogueId: 'z6_zidane_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 13,
         discoveryKey: 'conv_disc1',
       },
     },
-    // 5. Kristal Geologi 2 (di lereng bukit kaki gunung)
+    // 5. Kristal Geologi 2 (di puncak gunung yang megah!)
     {
       type: 'crystal',
-      px: 780, py: 320,
-      x: 24, y: 10,
+      px: 620, py: 155,
+      x: 19, y: 5,
       id: 'conv_crystal_2',
     },
-    // 6. NPC 2: Prof. Ratna (Ahli Vulkanologi & 3 Bentang Alam Tumbukan - Temuan 14 - di lereng gunung)
+    // 6. NPC 2: Zahra (Meneliti Busur Vulkanik & Erupsi)
     {
       type: 'npc',
-      px: 840, py: 280,
-      x: 26, y: 9,
-      id: 'npc_ratna',
+      px: 740, py: 310,
+      x: 23, y: 9,
+      id: 'z6_npc_zahra',
       data: {
-        npcType: 'prof_ratna',
-        name: 'Prof. Ratna',
-        dialogueId: 'prof_ratna_conv_dialogue',
+        npcType: 'zahra',
+        name: 'Zahra',
+        dialogueId: 'z6_zahra_dialogue',
+        hasMaterial: true,
         isDiscoveryNpc: true,
         discoveryId: 14,
         discoveryKey: 'conv_disc2',
       },
     },
-    // 7. NPC 3: Dr. Bayu (Peneliti Vulkanologi & Teras Batuan Andesit)
+    // 7. NPC 3: Ican (Pengamat Deformasi Lempeng)
     {
       type: 'npc',
-      px: 1100, py: 280,
-      x: 34, y: 8,
-      id: 'npc_bayu',
+      px: 960, py: 310,
+      x: 30, y: 9,
+      id: 'z6_npc_ican',
       data: {
-        npcType: 'dr_bayu',
-        name: 'Dr. Bayu',
-        dialogueId: 'dr_bayu_conv_dialogue',
+        npcType: 'ican',
+        name: 'Ican',
+        dialogueId: 'z6_ican_dialogue',
       },
     },
-    // 8. Kristal Geologi 3 (di teras altar timur)
+    // 8. Kristal Geologi 3 (di dataran timur)
     {
       type: 'crystal',
-      px: 1240, py: 325,
-      x: 38, y: 10,
+      px: 1260, py: 310,
+      x: 39, y: 9,
       id: 'conv_crystal_3',
     },
-    // 9. NPC 4: Komandan Arya (Penjaga Akses Menuju Batas Transform)
+    // 10. NPC 5: Bu Tyas (Evaluator Ujian Geologi Batas Konvergen & Penjaga Akses)
     {
       type: 'npc',
-      px: 1380, py: 345,
-      x: 43, y: 10,
-      id: 'npc_arya',
+      px: 1380, py: 310,
+      x: 43, y: 9,
+      id: 'z6_npc_bu_tyas',
       data: {
-        npcType: 'komandan_arya',
-        name: 'Komandan Arya',
-        dialogueId: 'komandan_arya_dialogue',
+        npcType: 'bu_tyas',
+        name: 'Bu Tyas',
+        dialogueId: 'z6_bu_tyas_dialogue',
         isGateNpc: true,
         gateId: 'convergent_challenge',
         challengeId: 'convergent_challenge',
@@ -1067,8 +1188,8 @@ export function buildConvergentZone(): ZoneConfig {
     // 10. Portal Turun ke Batas Transform di ujung Altar Konvergen
     {
       type: 'portal_down',
-      px: 1470, py: 345,
-      x: 46, y: 10,
+      px: 1470, py: 310,
+      x: 46, y: 9,
       id: 'conv_portal_down',
     },
   ];
@@ -1088,61 +1209,232 @@ export function buildConvergentZone(): ZoneConfig {
     objects,
     hazards,
     playerSpawnX: 80,
-    playerSpawnY: 360,
+    playerSpawnY: 310,
   };
 }
 
 // ── FUNGSI ELEVASI MEDAN DINAMIS AREA 7 (BATAS KONVERGEN) ──
-export function getConvergentTerrainElevation(x: number, progress: number = 1.0): number {
+// Mendukung 2 Kondisi:
+// 1. 'land' (Konvergen Tabrakan Benua): Lempeng benua kiri menunjam miring ke kanan bawah,
+//    lempeng benua kanan bergeser ke kiri dan bertabrakan membentuk gunung dengan dapur magma di dalamnya.
+// ══════════════════════════════════════════════════════════════════════
+// ── FUNGSI KONTUR BERGELOMBANG MANTEL & MAGMA TERPADU (AREA 7) ──
+// SAMA PERSIS DENGAN KONSEP BATAS DIVERGEN:
+// - Di luar gunung: Atas mantel bergelombang organik natural (baseline ~424px).
+// - Di dalam gunung: Saat lempeng bertabrakan (p > 0.05), magma dari mantel membumbung naik
+//   mengisi rongga perut gunung hingga membentuk dapur magma terpadu.
+export function getConvergentMantleY(
+  x: number,
+  progress: number = 0,
+  mode: 'land' | 'ocean' = 'land',
+): number {
+  const wave1 = Math.sin((x / 240) * Math.PI) * 7;
+  const wave2 = Math.cos((x / 130) * Math.PI) * 3.5;
+  const wave3 = Math.sin((x / 75) * Math.PI) * 2;
+  const baseMantle = Math.round(424 + wave1 + wave2 + wave3);
+
+  if (mode !== 'land') {
+    return baseMantle;
+  }
+
+  const p = Math.max(0, Math.min(1, progress));
+  if (p <= 0.05) {
+    return baseMantle;
+  }
+
+  // Geometri Dapur Magma Terpadu di dalam Gunung (SAMA PERSIS KONSEP BATAS DIVERGEN)
+  // Magma dari mantel membumbung naik mengisi perut gunung saat lempeng saling bertabrakan
+  const leftShiftX = Math.round(p * 80);
+  const contactX = 380 + leftShiftX;
+  const mountainPeakX = contactX + 200;
+  const chamberLeftX = contactX - 15;
+  const chamberRightX = mountainPeakX + 190;
+  const chamberApexX = mountainPeakX;
+
+  if (x <= chamberLeftX || x >= chamberRightX) {
+    return baseMantle;
+  }
+
+  const baseY = 310;
+  const mountainLift = p * 155;
+  const chamberApexY = Math.round(baseY - mountainLift * 0.60);
+
+  // Bentuk kubah dapur magma di dalam gunung (bell curve halus C1)
+  const halfW = x <= chamberApexX ? (chamberApexX - chamberLeftX) : (chamberRightX - chamberApexX);
+  const u = Math.min(1, Math.abs(x - chamberApexX) / halfW);
+  const bell = Math.cos(u * (Math.PI / 2));
+  const ceilingY = Math.round(baseMantle - Math.pow(bell, 1.35) * (baseMantle - chamberApexY));
+
+  // Magma perlahan naik dari mantel mengisi perut gunung seiring tabrakan (p: 0.10 -> 1.0)
+  const magmaRiseProg = Math.max(0, Math.min(1, (p - 0.10) / 0.90));
+  const currentLiquidSurfaceY = Math.round(baseMantle - magmaRiseProg * (baseMantle - chamberApexY));
+
+  // Permukaan magma yang naik dari mantel
+  const magmaY = Math.max(currentLiquidSurfaceY, ceilingY);
+  return Math.min(baseMantle, Math.round(magmaY));
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ELEVASI PERMUKAAN LEMPENG BENUA KIRI (SLAB SUBDUKSI MENUNJAM KE KANAN BAWAH)
+// Dataran benua barat yang melengkung mulus menunjam langsung ke dasar mantel bumi.
+// ══════════════════════════════════════════════════════════════════════
+export function getSubductingPlateTopY(x: number, progress: number = 1.0): number {
+  const p = Math.max(0, Math.min(1, progress));
+  const leftShiftX = Math.round(p * 80);
+  const leftShiftY = Math.round(p * 28);
+  const contactX = 380 + leftShiftX;
+  const curveStartX = 200 + leftShiftX;
+  const baseY = 310;
+  const slabSlope = 0.60;
+
+  if (x <= curveStartX) {
+    // Dataran lempeng benua barat (elevasi stabil rata)
+    return baseY;
+  }
+  if (x <= contactX) {
+    // Lengkungan lempeng menunjam mulus (Hermite Spline C1) dari horizontal ke slabSlope
+    const dx = contactX - curveStartX;
+    const u = (x - curveStartX) / dx;
+    const y0 = baseY;
+    const y1 = baseY + leftShiftY;
+    const h00 = 2 * u * u * u - 3 * u * u + 1;
+    const h01 = -2 * u * u * u + 3 * u * u;
+    const h11 = u * u * u - u * u;
+    return Math.round(h00 * y0 + h01 * y1 + h11 * dx * slabSlope);
+  }
+  // Menunjam mulus dan semakin curam langsung ke dasar mantel bumi (full tembus ke bawah)
+  const rx = x - contactX;
+  return Math.round(baseY + leftShiftY + rx * slabSlope + Math.pow(rx / 135, 1.85) * 45);
+}
+
+export function getConvergentTerrainElevation(
+  x: number,
+  progress: number = 1.0,
+  mode: 'land' | 'ocean' = 'land',
+): number {
   const p = Math.max(0, Math.min(1, progress));
 
-  // 1. Zona Perairan Samudra & Palung Terisi Air Penuh (x: 0 .. 530)
-  // Permukaan laut stabil di y = 360 untuk navigasi perahu riset
-  if (x <= 530) {
-    return 360;
+  if (mode === 'land') {
+    // ══════════════════════════════════════════════════════════════════════
+    // KONDISI 1: KONVERGEN DARATAN (TABRAKAN BENUA & PEMBENTUKAN GUNUNG)
+    // Sesuai Konsep Video Referensi:
+    // Dua lempeng benua: lempeng kiri menunjam miring ke kanan bawah (↘),
+    // lempeng kanan bergeser ke kiri (←) dan bertabrakan membentuk gunung
+    // yang di dalamnya terisi dapur magma.
+    // ══════════════════════════════════════════════════════════════════════
+    const leftShiftX = Math.round(p * 80);
+    const contactX = 380 + leftShiftX;
+
+    // Lempeng kiri menunjam ke kanan bawah (x <= contactX)
+    if (x <= contactX) {
+      return getSubductingPlateTopY(x, p);
+    }
+
+    // Lempeng kanan: Pembentukan gunung hasil tabrakan kedua lempeng benua (x > contactX)
+    return Math.round(getConvergentLandRightElevation(x, p));
+  } else {
+    // ══════════════════════════════════════════════════════════════════════
+    // KONDISI 2: KONVERGEN LAUTAN & PANTAI (PALUNG SAMUDRA & PANTAI BENUA)
+    // Sesuai Arahan Pengguna & Sketsa:
+    // - x <= 580: Zona Perairan Samudra (permukaan laut stabil di y = 300 untuk perahu riset)
+    // - x > 580: Lempeng Benua dibuat lebih tinggi dari lempeng samudra (y ≈ 280 .. 290)
+    //   dengan kontur bukit pasir pesisir yang bergelombang alami (rolling sand dunes)
+    // ══════════════════════════════════════════════════════════════════════
+    const seaLevelY = 300;
+    const coastX = 580;
+
+    if (x <= coastX) {
+      return seaLevelY;
+    }
+
+    const relX = x - coastX;
+    // Kontur bukit pasir pesisir bergelombang lembut alami
+    const duneWave1 = Math.sin((relX / 90) * Math.PI) * 7.5;
+    const duneWave2 = Math.sin((relX / 175) * Math.PI) * 4.5;
+    let baseElev = 286 - duneWave1 - duneWave2;
+
+    // Transisi melandai mulus di bibir pantai dari air laut (y = 300 di x = 580) ke perbukitan pasir
+    if (relX < 45) {
+      const t = relX / 45;
+      const s = (1 - Math.cos(t * Math.PI)) / 2;
+      baseElev = seaLevelY * (1 - s) + baseElev * s;
+    }
+
+    // Transisi mulus ke teras altar portal timur (x >= 1350)
+    if (x >= 1350 && x <= 1450) {
+      const t = (x - 1350) / 100;
+      const s = (1 - Math.cos(t * Math.PI)) / 2;
+      baseElev = baseElev * (1 - s) + 300 * s;
+    } else if (x > 1450) {
+      baseElev = 300;
+    }
+
+    return Math.round(baseElev);
   }
+}
 
-  // 2. Kerak Benua & Terangkatnya Gunung Berapi (x: 530 .. 1536)
-  const relX = x - 530;
+// Elevasi lempeng benua kanan pada mode daratan:
+// Tabrakan kedua lempeng benua melipat kerak dan membentuk gunung megah secara dinamis
+function getConvergentLandRightElevation(x: number, p: number): number {
+  const base = 310;
+  const leftShiftX = Math.round(p * 80);
+  const leftShiftY = Math.round(p * 28);
+  const contactX = 380 + leftShiftX;
+  const mountainWidth = 460;
+  const mountainPeakX = contactX + 200;
+  const mountainEndX = contactX + mountainWidth;
 
-  // Lipatan pegunungan vulkanik (puncak di x ~ 980)
+  // Pembentukan gunung dinamis dari hasil tabrakan kedua lempeng benua (p: 0 -> 1)
+  // Di p=0, tanah datar murni (base = 310)
+  // Saat tabrakan p: 0 -> 1, lempeng terlipat membentuk gunung menjulang setinggi 155px (peak = 155)
   let mountainLift = 0;
-  if (x >= 740 && x <= 1220) {
-    const dist = Math.abs(x - 980);
-    const bell = Math.max(0, Math.cos((dist / 240) * (Math.PI / 2)));
-    mountainLift = Math.pow(bell, 1.6) * 135 * p; // Naik dari y=360 ke puncak y=225
+  if (x >= contactX && x <= mountainEndX) {
+    const dist = x - mountainPeakX;
+    const halfW = dist < 0 ? (mountainPeakX - contactX) : (mountainEndX - mountainPeakX);
+    const u = Math.min(1, Math.abs(dist) / halfW);
+    const bell = Math.cos(u * (Math.PI / 2));
+    const currentLift = p * 155;
+    mountainLift = Math.pow(bell, 1.35) * currentLift;
+
+    // Variasi lipatan tektonik alami pada lereng gunung
+    const foldWave = Math.sin(((x - contactX) / 80) * Math.PI) * (p * 2.5) * Math.sin(bell * Math.PI);
+    mountainLift += foldWave;
   }
 
-  // Gelombang lipatan tektonik benua harmonik
-  const foldWave = (Math.sin((relX / 160) * Math.PI) * 10 + Math.sin((relX / 80) * Math.PI) * 4) * p;
-
-  let baseElevation = 360 - mountainLift - foldWave;
-
-  // Transisi mulus dari pantai dermaga (x: 530 .. 570)
-  if (x >= 530 && x <= 570) {
-    const t = (x - 530) / 40;
-    baseElevation = 360 + (baseElevation - 360) * t;
+  // Di titik kontak contactX, pastikan elevasi tepat menyatu dengan lempeng kiri
+  let elev = base - Math.max(0, mountainLift);
+  if (x === contactX) {
+    elev = base + leftShiftY;
+  } else if (x > contactX && x < contactX + 25) {
+    // Transisi sangat halus di titik kontak
+    const t = (x - contactX) / 25;
+    const leftY = getSubductingPlateTopY(contactX, p);
+    elev = leftY * (1 - t) + elev * t;
   }
 
-  // Transisi mulus menuju teras altar akhir (x: 1220 .. 1340) — Tanpa patahan tajam
+  // Transisi mulus menuju teras altar akhir (x: 1220 .. 1340)
   if (x >= 1220 && x < 1340) {
     const t = (x - 1220) / 120;
     const sCurve = (1 - Math.cos(t * Math.PI)) / 2;
-    baseElevation = baseElevation * (1 - sCurve) + 345 * sCurve;
+    elev = elev * (1 - sCurve) + 310 * sCurve;
   } else if (x >= 1340) {
-    baseElevation = 345;
+    elev = 310;
   }
 
-  return Math.round(baseElevation);
+  return elev;
 }
 
 // ── PENGUPDATE PROFIL MEDAN DINAMIS PENUMBUKAN KONVERGEN (AREA 7) ──
-export function updateConvergentGroundProfile(zone: ZoneConfig, progress: number): void {
+export function updateConvergentGroundProfile(
+  zone: ZoneConfig,
+  progress: number,
+  mode: 'land' | 'ocean' = 'land',
+): void {
   if (!zone.groundProfile || zone.id !== 'convergent') return;
   const p = Math.max(0, Math.min(1, progress));
 
   for (let x = 0; x < zone.groundProfile.length; x++) {
-    zone.groundProfile[x] = getConvergentTerrainElevation(x, p);
+    zone.groundProfile[x] = getConvergentTerrainElevation(x, p, mode);
   }
   snapObjectsToGround(zone);
 }
@@ -1170,20 +1462,6 @@ function buildTransformZone(): ZoneConfig {
       y: 9,
       id: 'trans_portal_up',
     },
-    // 2. NPC 1: Dr. Maya (Pemandu Ekspedisi Patahan Gurun)
-    {
-      type: 'npc',
-      px: 240,
-      py: 180,
-      x: 7,
-      y: 5,
-      id: 'npc_maya_trans',
-      data: {
-        npcType: 'dr_maya_trans',
-        name: 'Dr. Maya',
-        dialogueId: 'dr_maya_trans_dialogue',
-      },
-    },
     // 3. Kristal Geologi 1 (di Lempeng Pasifik utara)
     {
       type: 'crystal',
@@ -1193,34 +1471,21 @@ function buildTransformZone(): ZoneConfig {
       y: 4,
       id: 'trans_crystal_1',
     },
-    // 4. Titik Temuan 1: Sismograf & Bukti 20 Lempeng Tektonik (ID: 15)
-    {
-      type: 'discovery',
-      px: 540,
-      py: 320,
-      x: 16,
-      y: 10,
-      id: 'trans_disc1',
-      data: { discoveryId: 15, discoveryKey: 'trans_seismo' },
-    },
-    // 5. NPC 2: Prof. Sarah (Peneliti Sismograf & 20 Lempeng Bumi)
+    // 4. NPC 2: Ican (Pengawas Deformasi & Patahan Batuan)
     {
       type: 'npc',
-      px: 540,
-      py: 320,
-      x: 16,
-      y: 10,
-      id: 'npc_sarah_trans',
+      px: 560,
+      py: 170,
+      x: 17,
+      y: 5,
+      id: 'z7_npc_ican',
       data: {
-        npcType: 'prof_sarah_trans',
-        name: 'Prof. Sarah',
-        dialogueId: 'prof_sarah_trans_dialogue',
-        discoveryId: 15,
-        discoveryKey: 'trans_seismo',
-        isDiscoveryNpc: true,
+        npcType: 'ican',
+        name: 'Ican',
+        dialogueId: 'z7_ican_dialogue',
       },
     },
-    // 6. Kristal Geologi 2 (di Lempeng Amerika Utara selatan, aman di tanah solid)
+    // 5. Kristal Geologi 2 (di Lempeng Amerika Utara selatan, aman di tanah solid)
     {
       type: 'crystal',
       px: 720,
@@ -1229,34 +1494,25 @@ function buildTransformZone(): ZoneConfig {
       y: 9,
       id: 'trans_crystal_2',
     },
-    // 7. Titik Temuan 2: Batas Transform & Sesar San Andreas (ID: 16)
-    {
-      type: 'discovery',
-      px: 880,
-      py: 160,
-      x: 27,
-      y: 5,
-      id: 'trans_disc2',
-      data: { discoveryId: 16, discoveryKey: 'trans_sanandreas' },
-    },
-    // 8. NPC 3: Dr. Taufik (Peneliti Sesar San Andreas & Wallace Creek)
+    // 6. NPC 3: Zahra (Meneliti Sesar San Andreas & Wallace Creek)
     {
       type: 'npc',
       px: 880,
       py: 160,
       x: 27,
       y: 5,
-      id: 'npc_taufik_trans',
+      id: 'z7_npc_zahra',
       data: {
-        npcType: 'dr_taufik_trans',
-        name: 'Dr. Taufik',
-        dialogueId: 'dr_taufik_trans_dialogue',
+        npcType: 'zahra',
+        name: 'Zahra',
+        dialogueId: 'z7_zahra_dialogue',
+        hasMaterial: true,
         discoveryId: 16,
         discoveryKey: 'trans_sanandreas',
         isDiscoveryNpc: true,
       },
     },
-    // 9. Kristal Geologi 3 (di Lempeng Amerika Utara selatan)
+    // 7. Kristal Geologi 3 (di Lempeng Amerika Utara selatan)
     {
       type: 'crystal',
       px: 1040,
@@ -1265,32 +1521,18 @@ function buildTransformZone(): ZoneConfig {
       y: 10,
       id: 'trans_crystal_3',
     },
-    // 10. NPC 4: Petugas Rudi (Pengawas Peringatan Dini Gempa Sesar)
-    {
-      type: 'npc',
-      px: 1180,
-      py: 320,
-      x: 36,
-      y: 10,
-      id: 'npc_rudi_trans',
-      data: {
-        npcType: 'petugas_rudi_trans',
-        name: 'Petugas Rudi',
-        dialogueId: 'petugas_rudi_trans_dialogue',
-      },
-    },
-    // 11. NPC 5: Komandan Guntur (Kepala Pengawas Batas Transform & Pintu Akhir - di tanah solid selatan)
+    // 8. NPC 4: Bu Tyas (Evaluator Akhir Level 1 & Penjaga Kapsul Evakuasi)
     {
       type: 'npc',
       px: 1360,
       py: 315,
       x: 42,
       y: 9,
-      id: 'npc_guntur_trans',
+      id: 'z7_npc_bu_tyas',
       data: {
-        npcType: 'komandan_guntur',
-        name: 'Komandan Guntur',
-        dialogueId: 'komandan_guntur_dialogue',
+        npcType: 'bu_tyas',
+        name: 'Bu Tyas',
+        dialogueId: 'z7_bu_tyas_dialogue',
         isGateNpc: true,
         gateId: 'transform_challenge',
         challengeId: 'transform_challenge',
@@ -1373,8 +1615,13 @@ function snapObjectsToGround(zone: ZoneConfig): void {
       }
     }
 
-    const objH = OBJECT_HEIGHTS[obj.type] ?? TILE;
-    obj.py = surfaceY - objH;
+    // Di Batas Divergen (Area 6): NPC penyelam mengambang di air (~42px di atas dasar lempeng)
+    if (zone.id === 'divergent' && obj.type === 'npc') {
+      obj.py = surfaceY - 42;
+    } else {
+      const objH = OBJECT_HEIGHTS[obj.type] ?? TILE;
+      obj.py = surfaceY - objH;
+    }
   }
 }
 
@@ -1460,4 +1707,30 @@ export function tileAtPx(zone: ZoneConfig, px: number, py: number): number {
   const row = Math.floor(py / TILE);
   if (col < 0 || col >= zone.cols || row < 0 || row >= zone.rows) return T.WALL;
   return zone.tiles[row][col];
+}
+
+// ── IKAN-IKAN LAUT AREA 6 (BATAS DIVERGEN) ──
+export interface DivergentFish {
+  id: number;
+  x: number;
+  y: number;
+  baseY: number;
+  vx: number;
+  dir: 'left' | 'right';
+  color: string;
+  accentColor: string;
+  size: number;
+}
+
+export function createInitialDivergentFish(): DivergentFish[] {
+  return [
+    { id: 1, x: 180, y: 110, baseY: 110, vx: 0.7, dir: 'right', color: '#f97316', accentColor: '#ffffff', size: 14 },
+    { id: 2, x: 280, y: 80, baseY: 80, vx: -0.6, dir: 'left', color: '#0284c7', accentColor: '#facc15', size: 16 },
+    { id: 3, x: 380, y: 145, baseY: 145, vx: 0.8, dir: 'right', color: '#eab308', accentColor: '#ffffff', size: 12 },
+    { id: 4, x: 540, y: 90, baseY: 90, vx: -0.7, dir: 'left', color: '#06b6d4', accentColor: '#38bdf8', size: 15 },
+    { id: 5, x: 670, y: 130, baseY: 130, vx: 0.6, dir: 'right', color: '#f43f5e', accentColor: '#fda4af', size: 13 },
+    { id: 6, x: 820, y: 95, baseY: 95, vx: -0.8, dir: 'left', color: '#10b981', accentColor: '#a7f3d0', size: 14 },
+    { id: 7, x: 980, y: 125, baseY: 125, vx: 0.7, dir: 'right', color: '#a855f7', accentColor: '#e9d5ff', size: 15 },
+    { id: 8, x: 1120, y: 105, baseY: 105, vx: -0.6, dir: 'left', color: '#38bdf8', accentColor: '#ffffff', size: 13 },
+  ];
 }

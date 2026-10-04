@@ -6,6 +6,7 @@ import { validateMission } from '../../missions/engine/validationEngine';
 import * as Blockly from 'blockly/core';
 import { javascriptGenerator } from '../../engine/blockly/jsGenerator';
 import { useWorkspaceStore } from '../../store/workspaceStore';
+import { retroAudio } from '../../utils/retroAudio';
 
 export default function MissionPanel({ missionId }: { missionId: string }) {
   const navigate = useNavigate();
@@ -18,9 +19,9 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
 
   if (!mission) {
     return (
-      <div className="w-72 bg-surface-container border-r border-outline-variant flex items-center justify-center text-on-surface-variant p-md">
-        <p className="font-body-sm text-body-sm">Misi tidak ditemukan.</p>
-      </div>
+      <aside aria-label="Panduan Misi" className="w-80 bg-[#16120e] border-r-2 border-amber-950 flex items-center justify-center text-amber-200/60 p-4 font-pixel text-xs">
+        <p>Misi tidak ditemukan.</p>
+      </aside>
     );
   }
 
@@ -31,6 +32,7 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
   const isFirstStep = currentStep === 0;
 
   const handleValidate = () => {
+    retroAudio.playSelect();
     setValidationResult('checking', '');
     setTimeout(() => {
       const workspace = Blockly.getMainWorkspace();
@@ -39,227 +41,199 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
       const result = validateMission(mission, workspace, generatedCode);
       if (result.passed) {
         completeMission(mission.id);
-        setValidationResult('pass', 'Misi selesai! Instruksi penyelamatan kamu sudah benar!');
+        retroAudio.playWin();
+        setValidationResult('pass', 'Luar biasa! Seluruh instruksi mitigasimu sudah benar dan diverifikasi!');
       } else {
-        setValidationResult('fail', result.failureReason ?? 'Terjadi kesalahan yang tidak diketahui.');
+        retroAudio.playHurt();
+        setValidationResult('fail', result.failureReason ?? 'Rangkaian blok belum sesuai dengan kriteria misi.');
       }
     }, 600);
   };
 
   const handleFinish = () => {
+    retroAudio.playSelect();
     useWorkspaceStore.getState().clearDraft(mission.id);
-    navigate('/');
+    navigate('/level3');
   };
 
   const isChecking = validationStatus === 'checking';
   const isPassed = validationStatus === 'pass';
   const isFailed = validationStatus === 'fail';
 
-  // Step colors based on step type
-  const stepAccent =
-    step.icon === 'auto_stories'
-      ? { bg: 'bg-[#EFF6FF]', iconBg: 'bg-[#3B82F6]', border: 'border-[#93C5FD]' }
-      : step.icon === 'inventory_2'
-      ? { bg: 'bg-[#FFF7ED]', iconBg: 'bg-[#F97316]', border: 'border-[#FED7AA]' }
-      : step.icon === 'cable'
-      ? { bg: 'bg-[#F0FDF4]', iconBg: 'bg-[#16A34A]', border: 'border-[#86EFAC]' }
-      : step.icon === 'extension'
-      ? { bg: 'bg-[#FDF4FF]', iconBg: 'bg-[#A855F7]', border: 'border-[#D8B4FE]' }
-      : { bg: 'bg-[#FFF7ED]', iconBg: 'bg-secondary-container', border: 'border-[#FED7AA]' };
+  const categoryObj = CATEGORIES.find((c) => c.id === mission.category);
 
   return (
-    <div className="w-72 bg-surface-container border-r border-outline-variant flex flex-col overflow-hidden shrink-0">
-      {/* ── Header ── */}
-      <div className="p-sm border-b border-outline-variant" style={{ background: 'rgba(253,118,26,0.08)' }}>
-        <div className="flex items-center gap-xs mb-1">
-          <span
-            className="material-symbols-outlined text-secondary-container"
-            style={{ fontSize: '18px' }}
-          >
-            {mission.icon}
-          </span>
-          <span className="font-label-caps text-label-caps text-secondary-container">
-            {CATEGORIES.find((c) => c.id === mission.category)?.title.toUpperCase()} • {mission.category === 'proyek' ? 'KASUS' : 'LEVEL'} {mission.level}
+    <aside aria-label="Panduan Misi" className="w-80 bg-[#fffbeb] border-r-4 border-[#78350f] flex flex-col overflow-hidden shrink-0 font-pixel text-[#1c1917] shadow-xl">
+      {/* ── 1. HEADER MISSION CARD (SS 3 Warm Parchment) ── */}
+      <div className="p-3.5 border-b-2 border-[#b45309] bg-[#fef3c7]">
+        <div className="flex items-center justify-between gap-1 mb-1.5">
+          <div className="flex items-center gap-1.5">
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#b45309] text-white shadow-sm font-pixel">
+              {categoryObj?.title.toUpperCase()} • {mission.category === 'proyek' ? 'KASUS' : 'LEVEL'} {mission.level}
+            </span>
+          </div>
+
+          <span className="text-[10px] text-[#78350f] font-bold">
+            {currentStep + 1} / {totalSteps}
           </span>
         </div>
-        <h2 className="font-title-md text-title-md text-primary leading-tight">{mission.title}</h2>
 
-        {/* Progress bar steps */}
-        <div className="flex items-center gap-[3px] mt-sm">
+        <h2 className="text-sm font-bold text-[#451a03] leading-snug font-sans">
+          {mission.title}
+        </h2>
+
+        {/* Step Progression Pips */}
+        <div className="flex items-center gap-1.5 mt-2.5">
           {steps.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrentStep(i)}
-              className={`h-[5px] rounded-full transition-all duration-300 ${
+              onClick={() => {
+                retroAudio.playSelect();
+                setCurrentStep(i);
+              }}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                 i < currentStep
-                  ? 'bg-[#16A34A] flex-1'
+                  ? 'bg-[#15803d] flex-1'
                   : i === currentStep
-                  ? 'bg-secondary-container flex-[2]'
-                  : 'bg-outline-variant flex-1'
+                  ? 'bg-[#b45309] flex-[2] ring-2 ring-[#78350f]'
+                  : 'bg-[#d6d3d1] border border-[#a8a29e] flex-1'
               }`}
+              title={`Langkah ${i + 1}: ${steps[i].title}`}
             />
           ))}
         </div>
-        <p className="font-label-caps text-label-caps text-on-surface-variant mt-xs">
-          LANGKAH {currentStep + 1} DARI {totalSteps}
-        </p>
       </div>
 
-      {/* ── Step Content ── */}
-      <div className="flex-1 overflow-y-auto p-sm flex flex-col gap-sm">
-        {/* Step Card */}
-        <div
-          className={`rounded-xl border ${stepAccent.border} ${stepAccent.bg} p-sm flex flex-col gap-sm`}
-        >
-          {/* Step Icon + Title */}
-          <div className="flex items-center gap-sm">
-            <div
-              className={`h-10 w-10 rounded-xl ${stepAccent.iconBg} flex items-center justify-center shrink-0`}
-            >
-              <span
-                className="material-symbols-outlined text-white"
-                style={{ fontSize: '20px', fontVariationSettings: "'FILL' 1" }}
-              >
+      {/* ── 2. SCROLLABLE MISSION BRIEF & STEP CONTENT ── */}
+      <div className="flex-1 overflow-y-auto p-3.5 flex flex-col gap-3 font-sans bg-[#fffbeb]">
+        {/* Step Card: Warm High-Contrast Parchment (SS 3 Style) */}
+        <div className="rounded-xl border-2 border-[#b45309] bg-[#fefce8] p-3.5 flex flex-col gap-2.5 shadow-sm text-[#1c1917]">
+          {/* Step Icon & Title */}
+          <div className="flex items-center gap-2.5 pb-2 border-b border-[#b45309]/20">
+            <div className="w-8 h-8 rounded-lg bg-[#b45309] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
+              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
                 {step.icon}
               </span>
             </div>
-            <h3 className="font-title-md text-title-md text-on-surface leading-tight">
+            <h3 className="font-bold text-[#451a03] text-xs sm:text-sm leading-tight">
               {step.title}
             </h3>
           </div>
 
-          {/* Description — support newlines */}
-          <div className="font-body-sm text-body-sm text-on-surface leading-relaxed whitespace-pre-line">
+          {/* Description — crisp dark text with high contrast */}
+          <div className="text-xs text-[#292524] leading-relaxed whitespace-pre-line font-medium">
             {step.description}
           </div>
         </div>
 
-        {/* Tip box (optional) */}
+        {/* Tip Box (SS 3 Style Fact Box) */}
         {step.tip && (
-          <div className="flex items-start gap-xs bg-[#FFFBEB] border border-[#FDE68A] rounded-lg p-sm">
-            <span
-              className="material-symbols-outlined text-[#D97706] shrink-0"
-              style={{ fontSize: '16px', fontVariationSettings: "'FILL' 1" }}
-            >
-              lightbulb
-            </span>
-            <p className="font-body-sm text-body-sm text-[#92400E] leading-relaxed">{step.tip}</p>
+          <div className="flex items-start gap-2 bg-[#fef3c7] border-2 border-[#d97706] rounded-xl p-2.5 text-[#78350f] shadow-sm">
+            <span className="text-[#b45309] text-sm shrink-0 mt-0.5">💡</span>
+            <p className="text-[11px] text-[#78350f] font-semibold leading-relaxed">
+              {step.tip}
+            </p>
           </div>
         )}
 
-        {/* Step dots indicator */}
-        <div className="flex items-center justify-center gap-xs mt-auto pt-xs">
-          {steps.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentStep(i)}
-              className={`rounded-full transition-all duration-200 ${
-                i === currentStep
-                  ? 'w-5 h-2 bg-secondary-container'
-                  : i < currentStep
-                  ? 'w-2 h-2 bg-[#16A34A]'
-                  : 'w-2 h-2 bg-outline-variant'
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Validation Result (shown on last step) */}
+        {/* Validation Result Box */}
         {isLastStep && (isPassed || isFailed) && (
           <div
-            className={`rounded-lg p-sm border flex items-start gap-xs ${
+            className={`rounded-xl p-3 border-2 flex items-start gap-2.5 shadow-md ${
               isPassed
-                ? 'border-[#16A34A] text-[#16A34A]'
-                : 'border-error text-error'
+                ? 'bg-[#f0fdf4] border-[#16a34a] text-[#15803d]'
+                : 'bg-[#fff1f2] border-[#e11d48] text-[#be123c]'
             }`}
-            style={{ background: isPassed ? 'rgba(22,163,74,0.08)' : 'rgba(186,26,26,0.08)' }}
           >
-            <span
-              className="material-symbols-outlined shrink-0"
-              style={{ fontSize: '18px', fontVariationSettings: "'FILL' 1" }}
-            >
-              {isPassed ? 'check_circle' : 'error'}
+            <span className="text-base shrink-0 mt-0.5">
+              {isPassed ? '🏆' : '⚠️'}
             </span>
-            <p className="font-body-sm text-body-sm leading-relaxed">{validationMessage}</p>
+            <div className="flex-1">
+              <p className="text-xs font-bold leading-tight mb-1">
+                {isPassed ? 'MISI BERHASIL TUNTAS!' : 'PERLU PENYESUAIAN BLOK'}
+              </p>
+              <p className="text-[11px] leading-relaxed font-medium">
+                {validationMessage}
+              </p>
+            </div>
           </div>
         )}
       </div>
 
-      {/* ── Footer Navigation ── */}
-      <div className="p-sm border-t border-outline-variant flex flex-col gap-xs">
-        {/* Prev / Next navigation */}
+      {/* ── 3. BOTTOM FOOTER NAVIGATION ── */}
+      <div className="p-3 border-t-2 border-[#b45309] bg-[#fef3c7] flex flex-col gap-2 font-pixel">
+        {/* Navigation / Validation Buttons */}
         {!isPassed && (
-          <div className="flex gap-xs">
+          <div className="flex gap-2">
             <button
-              onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
+              onClick={() => {
+                retroAudio.playSelect();
+                setCurrentStep((s) => Math.max(0, s - 1));
+              }}
               disabled={isFirstStep}
-              className={`flex-1 py-sm px-sm font-label-caps text-label-caps rounded tactile-btn flex items-center justify-center gap-xs transition-colors ${
+              className={`flex-1 py-2 px-2.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 border-2 transition-colors ${
                 isFirstStep
-                  ? 'bg-surface-variant text-on-surface-variant opacity-40 cursor-not-allowed'
-                  : 'bg-surface-container-high border border-outline-variant text-on-surface hover:bg-surface-container-highest'
+                  ? 'bg-[#e7e5e4] border-[#d6d3d1] text-[#a8a29e] cursor-not-allowed'
+                  : 'bg-[#e7e5e4] hover:bg-[#d6d3d1] border-[#a8a29e] text-[#44403c]'
               }`}
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                arrow_back
-              </span>
-              KEMBALI
+              <span>◀</span>
+              <span>SEBELUM</span>
             </button>
 
             {isLastStep ? (
-              /* Validate button on last step */
+              /* Validate button on last step (SS 3 Style Orange-Amber) */
               <button
                 onClick={handleValidate}
                 disabled={isChecking}
-                className={`flex-[2] py-sm px-sm font-label-caps text-label-caps rounded tactile-btn flex items-center justify-center gap-xs transition-colors ${
+                className={`flex-[2] py-2 px-3 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-md transition-all border-2 border-[#7c2d12] ${
                   isChecking
-                    ? 'bg-surface-variant text-on-surface-variant cursor-not-allowed'
-                    : 'bg-primary text-on-primary hover:opacity-90'
+                    ? 'bg-[#b45309] text-white cursor-not-allowed animate-pulse'
+                    : 'bg-gradient-to-r from-[#c2410c] to-[#b45309] hover:from-[#ea580c] hover:to-[#c2410c] text-white'
                 }`}
               >
-                <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                  {isChecking ? 'hourglass_empty' : 'verified'}
-                </span>
-                {isChecking ? 'MENGECEK...' : 'VALIDASI!'}
+                <span>⭐</span>
+                <span>{isChecking ? 'MENGECEK...' : 'VALIDASI MISI!'}</span>
               </button>
             ) : (
               /* Next step button */
               <button
-                onClick={() => setCurrentStep((s) => Math.min(totalSteps - 1, s + 1))}
-                className="flex-[2] py-sm px-sm bg-secondary-container text-on-secondary-container font-label-caps text-label-caps rounded tactile-btn flex items-center justify-center gap-xs hover:opacity-90"
+                onClick={() => {
+                  retroAudio.playSelect();
+                  setCurrentStep((s) => Math.min(totalSteps - 1, s + 1));
+                }}
+                className="flex-[2] py-2 px-3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-[11px] rounded-lg shadow-md flex items-center justify-center gap-1 border-2 border-emerald-700"
               >
-                LANGKAH BERIKUTNYA
-                <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-                  arrow_forward
-                </span>
+                <span>LANJUT</span>
+                <span>➔</span>
               </button>
             )}
           </div>
         )}
 
-        {/* Selesai button setelah passed */}
+        {/* When passed: Large celebratory return to map button */}
         {isPassed && (
           <button
             onClick={handleFinish}
-            className="w-full py-sm px-md bg-[#16A34A] text-white font-label-caps text-label-caps rounded tactile-btn flex items-center justify-center gap-xs"
+            className="w-full py-2.5 px-3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 border-2 border-emerald-700 animate-bounce"
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-              emoji_events
-            </span>
-            SELESAI! KEMBALI KE DASHBOARD
+            <span>🏆</span>
+            <span>KEMBALI KE PETA LEVEL 3 ➔</span>
           </button>
         )}
 
-        {/* Back to dashboard link */}
+        {/* Return to Level 3 Map link */}
         <button
-          onClick={() => navigate('/')}
-          className="w-full py-xs px-md text-on-surface-variant font-label-caps text-label-caps hover:text-on-surface flex items-center justify-center gap-xs"
+          onClick={() => {
+            retroAudio.playSelect();
+            navigate('/level3');
+          }}
+          className="w-full py-1 text-[10px] text-[#78350f] hover:text-[#451a03] font-bold flex items-center justify-center gap-1 transition-colors"
         >
-          <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
-            home
-          </span>
-          Keluar ke Dashboard
+          <span>🗺️</span>
+          <span>Kembali ke Peta Level 3</span>
         </button>
       </div>
-    </div>
+    </aside>
   );
 }

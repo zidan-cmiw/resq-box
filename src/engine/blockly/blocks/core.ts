@@ -82,6 +82,20 @@ export function defineCoreBlocks() {
     return `noTone(5);\n`;
   };
 
+  Blockly.Blocks['resq_sirine_stop'] = {
+    init() {
+      this.appendDummyInput().appendField('Hentikan Sirine Peringatan');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#0D9488');
+      this.setTooltip('Hentikan bunyi sirine peringatan dini evakuasi.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_sirine_stop'] = function () {
+    return `buzzerOFF();\n`;
+  };
+
+
   // ── 5. Kipas Ventilasi ───────────────────────────────────────
   Blockly.Blocks['resq_motor'] = {
     init() {
@@ -468,4 +482,282 @@ export function defineCoreBlocks() {
   arduinoGenerator.forBlock['resq_suhu_panas'] = function () {
     return [`(analogRead(A2) * 0.4887) > 35.0`, 0];
   };
+
+  // ── 31. Lampu Status Bencana (RGB) ───────────────────────────
+  Blockly.Blocks['resq_lampu_status'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Atur Lampu Status ke')
+        .appendField(new Blockly.FieldDropdown([
+          ['Aman (Hijau)', 'green'],
+          ['Waspada (Kuning)', 'yellow'],
+          ['Siaga (Oranye)', 'orange'],
+          ['Awas (Merah)', 'red'],
+          ['Mati', 'off'],
+        ]), 'STATUS');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#0D9488');
+      this.setTooltip('Nyalakan lampu status bencana (Hijau/Kuning/Oranye/Merah) di posko/diorama.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_lampu_status'] = function (block: Blockly.Block) {
+    const status = block.getFieldValue('STATUS');
+    return `setRGBColor("${status}");\n`;
+  };
+
+  // ── 32. Sirine Peringatan Dini (EWS) ─────────────────────────
+  Blockly.Blocks['resq_sirine_ews'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Bunyikan Sirine EWS selama')
+        .appendField(new Blockly.FieldNumber(3, 1, 60), 'DETIK')
+        .appendField('detik');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#0D9488');
+      this.setTooltip('Bunyikan sirine peringatan dini evakuasi.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_sirine_ews'] = function (block: Blockly.Block) {
+    const s = block.getFieldValue('DETIK');
+    return `buzzerON();\ndelay(${s} * 1000);\nbuzzerOFF();\n`;
+  };
+
+  // ── 33. Simulasi Getaran Gempa (Motor + Audio Speaker) ───────
+  Blockly.Blocks['resq_gempa_sim'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Simulasi Getaran Gempa')
+        .appendField(new Blockly.FieldDropdown([
+          ['Ringan (3-4 SR)', '1'],
+          ['Sedang (5-6 SR)', '2'],
+          ['Kuat (>7 SR)', '3'],
+        ]), 'LEVEL');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#DC2626');
+      this.setTooltip('Simulasi guncangan gempa bumi. Motor getar dan suara speaker aktif bersamaan!');
+    },
+  };
+  arduinoGenerator.forBlock['resq_gempa_sim'] = function (block: Blockly.Block) {
+    const lvl = block.getFieldValue('LEVEL');
+    return `startSimulation(MODE_GEMPA, ${lvl});\n`;
+  };
+
+  // ── 34. Simulasi Aktivitas Gunung Merapi ─────────────────────
+  Blockly.Blocks['resq_gunung_sim'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Simulasi Erupsi Merapi')
+        .appendField(new Blockly.FieldDropdown([
+          ['Waspada (Fase 1)', '1'],
+          ['Siaga (Fase 2)', '2'],
+          ['Awas / Erupsi (Fase 3)', '3'],
+        ]), 'STATUS')
+        .appendField('Tipe')
+        .appendField(new Blockly.FieldDropdown([
+          ['Eksplosif (Ledakan & Abu)', 'EKSPLOSIF'],
+          ['Efusif (Lelehan Lava Pijar)', 'EFUSIF'],
+        ]), 'TIPE');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#DC2626');
+      this.setTooltip('Simulasi aktivitas letusan Gunung Merapi. Mist maker menyemburkan kabut asap uap!');
+    },
+  };
+  arduinoGenerator.forBlock['resq_gunung_sim'] = function (block: Blockly.Block) {
+    const status = block.getFieldValue('STATUS');
+    return `startSimulation(MODE_GUNUNG, ${status});\n`;
+  };
+
+  // ── 35. Tipe Letusan ─────────────────────────────────────────
+  Blockly.Blocks['resq_tipe_letusan'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Tipe Letusan:')
+        .appendField(new Blockly.FieldDropdown([
+          ['Eksplosif (Ledakan & Kolom Abu)', 'EKSPLOSIF'],
+          ['Efusif (Lelehan Kubah Lava)', 'EFUSIF'],
+        ]), 'TIPE');
+      this.setOutput(true, 'String');
+      this.setColour('#DC2626');
+      this.setTooltip('Pilih karakteristik letusan gunung api: Eksplosif atau Efusif.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_tipe_letusan'] = function (block: Blockly.Block) {
+    return [`"${block.getFieldValue('TIPE')}"`, 0];
+  };
+
+  // ── 36. Penentuan Jalur Evakuasi ─────────────────────────────
+  Blockly.Blocks['resq_jalur_evakuasi'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Tentukan Jalur Evakuasi ke')
+        .appendField(new Blockly.FieldDropdown([
+          ['Jalur Lingkar Utama (Bebas Lahar)', 'LINGKAR_UTAMA'],
+          ['Jalur Lembah Sungai (Rawan Lahar)', 'LEMBAH_SUNGAI'],
+          ['Jalur Lapangan Terbuka', 'LAPANGAN_TERBUKA'],
+        ]), 'JALUR');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#7C3AED');
+      this.setTooltip('Tentukan arah dan jalur evakuasi warga yang paling aman di peta.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_jalur_evakuasi'] = function (block: Blockly.Block) {
+    return `// Jalur Evakuasi: ${block.getFieldValue('JALUR')}\n`;
+  };
+
+  // ── 37. Buka Posko Pengungsian ───────────────────────────────
+  Blockly.Blocks['resq_posko'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Buka Posko Pengungsian')
+        .appendField(new Blockly.FieldDropdown([
+          ['Barak Pengungsian Terpadu (KRB I)', 'BARAK_KRB1'],
+          ['Posko Medis BPBD', 'POSKO_MEDIS'],
+          ['Titik Kumpul Lapangan', 'LAPANGAN'],
+        ]), 'POSKO');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#7C3AED');
+      this.setTooltip('Buka dan siapkan tenda posko evakuasi bagi warga yang mengungsi.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_posko'] = function (block: Blockly.Block) {
+    return `// Aktifkan Posko: ${block.getFieldValue('POSKO')}\n`;
+  };
+
+  // ── 38. Lokasi Mitigasi ──────────────────────────────────────
+  Blockly.Blocks['resq_lokasi_mitigasi'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Lokasi Kejadian:')
+        .appendField(new Blockly.FieldDropdown([
+          ['Gedung Sekolah', 'SEKOLAH'],
+          ['Pemukiman Warga', 'RUMAH'],
+          ['Rumah Sakit', 'RS'],
+          ['Dekat Jembatan Sungai', 'JEMBATAN'],
+        ]), 'LOKASI');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#2563EB');
+      this.setTooltip('Pilih konteks lokasi tempat mitigasi bencana dijalankan.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_lokasi_mitigasi'] = function (block: Blockly.Block) {
+    return `// Lokasi: ${block.getFieldValue('LOKASI')}\n`;
+  };
+
+  // ── 39. Layar OLED Informasi ─────────────────────────────────
+  Blockly.Blocks['resq_layar_oled'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Tampilkan di Layar Informasi')
+        .appendField(new Blockly.FieldTextInput('SIAP SIAGA'), 'TEXT');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#fd761a');
+      this.setTooltip('Tampilkan informasi publik pada layar OLED SSD1306.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_layar_oled'] = function (block: Blockly.Block) {
+    const text = block.getFieldValue('TEXT');
+    return `oledMessage("INFO MITIGASI", "${text}");\n`;
+  };
+
+  // ── 40. Sensor Getaran Seismik (Nilai) ───────────────────────
+  Blockly.Blocks['resq_sensor_seismik'] = {
+    init() {
+      this.appendDummyInput().appendField('Tingkat Getaran Seismik');
+      this.setOutput(true, 'Number');
+      this.setColour('#2563EB');
+      this.setTooltip('Membaca intensitas getaran seismik gempa bumi.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_sensor_seismik'] = function () {
+    return [`analogRead(A1)`, 0];
+  };
+
+  // ── 41. Hentikan Semua (STOP ALL) ─────────────────────────────
+  Blockly.Blocks['resq_stopall'] = {
+    init() {
+      this.appendDummyInput().appendField('Hentikan Semua Perangkat (STOP ALL)');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#EF4444');
+      this.setTooltip('Hentikan semua simulasi, getaran motor, kabut asap, sirine, audio, dan matikan lampu.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_stopall'] = function () {
+    return `stopAll();\n`;
+  };
+
+  // ── 42. Asap Erupsi (Mist Maker) ──────────────────────────────
+  Blockly.Blocks['resq_mist'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Asap Erupsi (Mist Maker)')
+        .appendField(new Blockly.FieldDropdown([
+          ['Nyalakan (Sembur Asap)', 'ON'],
+          ['Matikan', 'OFF'],
+        ]), 'STATE');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#DC2626');
+      this.setTooltip('Nyalakan atau matikan pembuat asap kabut uap erupsi gunung api.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_mist'] = function (block: Blockly.Block) {
+    const state = block.getFieldValue('STATE');
+    return state === 'ON' ? `mistON();\n` : `mistOFF();\n`;
+  };
+
+  // ── 43. Putar Suara Speaker (DFPlayer) ────────────────────────
+  Blockly.Blocks['resq_audio'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Putar Suara Speaker')
+        .appendField(new Blockly.FieldDropdown([
+          ['Gempa Bumi (Track 1)', '1'],
+          ['Gemuruh Erupsi (Track 2)', '2'],
+          ['Sirine Evakuasi (Track 3)', '3'],
+          ['Hentikan Suara', '0'],
+        ]), 'TRACK');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#DC2626');
+      this.setTooltip('Putar efek suara simulasi bencana atau pengumuman melalui modul DFPlayer Mini.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_audio'] = function (block: Blockly.Block) {
+    const track = block.getFieldValue('TRACK');
+    if (track === '0') return `stopAudio();\n`;
+    return `playTrack(${track});\n`;
+  };
+
+  // ── 44. Motor Getar Diorama ──────────────────────────────────
+  Blockly.Blocks['resq_motor_getar'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Motor Getar Diorama')
+        .appendField(new Blockly.FieldDropdown([
+          ['Ringan (PWM 20)', '20'],
+          ['Sedang (PWM 35)', '35'],
+          ['Kuat (PWM 50)', '50'],
+          ['Berhenti', '0'],
+        ]), 'SPEED');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#DC2626');
+      this.setTooltip('Atur kekuatan motor penggetar fisik meja simulasi gempa.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_motor_getar'] = function (block: Blockly.Block) {
+    const speed = block.getFieldValue('SPEED');
+    if (speed === '0') return `motorStop();\n`;
+    return `analogWrite(MOTOR_AIN1, ${speed});\ndigitalWrite(MOTOR_AIN2, LOW);\n`;
+  };
 }
+

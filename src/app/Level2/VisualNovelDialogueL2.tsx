@@ -11,6 +11,7 @@ import { CHARACTER_PROFILES_L2 } from './dialogueDataL2';
 import { getNpcPortraitL2, getPlayerPortraitL2 } from './engine/npcSpritesL2';
 import type { CustomAvatarConfig } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
+import PixelIcon from '../../components/PixelIcon';
 
 interface VisualNovelDialogueL2Props {
   dialogueTree: DialogueTreeL2;
@@ -20,7 +21,8 @@ interface VisualNovelDialogueL2Props {
   onMarkDiscovery?: (discoveryId: string) => void;
   onTriggerDiscovery?: (discoveryIndex: number) => void;
   onTriggerCrossword?: () => void;
-  onTriggerSimulation?: () => void;
+  onTriggerSimulation?: (scenario?: 'moderate' | 'severe') => void;
+  onTriggerSeismograph?: () => void;
 }
 
 export default function VisualNovelDialogueL2({
@@ -32,6 +34,7 @@ export default function VisualNovelDialogueL2({
   onTriggerDiscovery,
   onTriggerCrossword,
   onTriggerSimulation,
+  onTriggerSeismograph,
 }: VisualNovelDialogueL2Props) {
   const [currentNodeId, setCurrentNodeId] = useState(dialogueTree.startNodeId);
   const [displayedText, setDisplayedText] = useState('');
@@ -143,9 +146,17 @@ export default function VisualNovelDialogueL2({
     };
   }, [currentNodeId, currentNode, speakerProfile.name, speakerProfile.nameColor]);
 
+  // Jika node saat ini tidak ditemukan di pohon dialog, tutup secara aman agar game tidak stuck
+  useEffect(() => {
+    if (!currentNode) {
+      console.warn(`[VisualNovelDialogueL2] Current node "${currentNodeId}" not found in tree "${dialogueTree.id}". Closing dialogue safely.`);
+      onClose();
+    }
+  }, [currentNode, currentNodeId, dialogueTree.id, onClose]);
+
   // ── AUTO PLAY EFFECT ──
   useEffect(() => {
-    if (autoPlay && !isTyping && currentNode?.nextNodeId && !currentNode.choices) {
+    if (autoPlay && !isTyping && currentNode?.nextNodeId && !currentNode?.choices) {
       autoPlayTimerRef.current = window.setTimeout(() => {
         handleAdvance();
       }, 2500);
@@ -171,6 +182,12 @@ export default function VisualNovelDialogueL2({
 
     // 3. Jika ada node berikutnya, lanjutkan
     if (currentNode?.nextNodeId) {
+      if (!dialogueTree.nodes[currentNode.nextNodeId]) {
+        console.warn(`[VisualNovelDialogueL2] Next node "${currentNode.nextNodeId}" not found in tree "${dialogueTree.id}". Closing dialogue.`);
+        retroAudio.playSelect();
+        onClose();
+        return;
+      }
       retroAudio.playSelect();
       setCurrentNodeId(currentNode.nextNodeId);
       return;
@@ -207,11 +224,23 @@ export default function VisualNovelDialogueL2({
     // 3.5 Jika memilih memulai simulasi gempa Area 2
     if (choice.triggerSimulation && onTriggerSimulation) {
       onClose();
-      onTriggerSimulation();
+      onTriggerSimulation(choice.simulationScenario);
+      return;
+    }
+
+    // 3.6 Jika memilih membuka modal pembelajaran seismograf & gelombang
+    if (choice.triggerSeismographModal && onTriggerSeismograph) {
+      onClose();
+      onTriggerSeismograph();
       return;
     }
 
     // 4. Lanjut ke node dialog berikutnya
+    if (!dialogueTree.nodes[choice.nextNodeId]) {
+      console.warn(`[VisualNovelDialogueL2] Target node "${choice.nextNodeId}" not found in tree "${dialogueTree.id}". Closing dialogue.`);
+      onClose();
+      return;
+    }
     setCurrentNodeId(choice.nextNodeId);
   };
 
@@ -246,7 +275,7 @@ export default function VisualNovelDialogueL2({
         <div className="absolute inset-4 md:inset-12 z-50 bg-slate-950/95 border border-slate-700 rounded-2xl p-4 sm:p-6 flex flex-col shadow-2xl">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
             <h3 className="text-slate-200 text-xs sm:text-sm font-bold tracking-wider flex items-center gap-2">
-              <span>📜</span> RIWAYAT PERCAKAPAN
+              <PixelIcon name="book" size={14} className="text-amber-400" /> RIWAYAT PERCAKAPAN
             </h3>
             <button
               type="button"
@@ -336,34 +365,34 @@ export default function VisualNovelDialogueL2({
           <div className="flex items-center justify-between mb-2 sm:mb-2.5">
             <div className="flex items-baseline gap-2">
               <span
-                className="text-sm sm:text-base md:text-lg font-bold tracking-wide transition-all drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+                className="text-base sm:text-lg md:text-xl font-bold tracking-wide transition-all drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
                 style={{ color: speakerProfile.nameColor }}
               >
                 {speakerProfile.name}
               </span>
-              <span className="text-[9px] sm:text-[10px] text-slate-400 font-normal tracking-wide hidden sm:inline">
+              <span className="text-xs sm:text-sm text-slate-300 font-medium tracking-wide hidden sm:inline">
                 • {speakerProfile.title}
               </span>
             </div>
 
             {/* Indikator Lanjut / Spasi */}
-            <span className="text-[9px] sm:text-[10px] text-slate-400/80 font-mono tracking-wider hidden sm:inline">
+            <span className="text-xs sm:text-sm text-amber-300/90 font-mono tracking-wider hidden sm:inline">
               [Klik / SPASI untuk Lanjut ▶]
             </span>
           </div>
 
           {/* AREA TEKS PERCAKAPAN DENGAN TYPEWRITER EFFECT */}
-          <div className="flex-1 my-1">
-            <p className="text-xs sm:text-sm text-slate-100 leading-relaxed sm:leading-loose font-medium select-none tracking-wide">
+          <div className="flex-1 my-1.5">
+            <p className="text-base sm:text-lg md:text-xl lg:text-[22px] text-slate-100 leading-relaxed sm:leading-relaxed md:leading-loose font-medium select-none tracking-normal">
               &ldquo;{displayedText}&rdquo;
               {isTyping && (
-                <span className="inline-block w-2 h-3.5 ml-1 bg-slate-300 animate-ping align-middle" />
+                <span className="inline-block w-2.5 h-4 ml-1 bg-amber-400 animate-ping align-middle" />
               )}
             </p>
           </div>
 
           {/* ── PILIHAN PERCABANGAN RESPON PEMAIN (TOMBOL WARNA BIASA, TIDAK GONJRENG) ── */}
-          {currentNode.choices && currentNode.choices.length > 0 && !isTyping && (
+          {currentNode?.choices && currentNode.choices.length > 0 && !isTyping && (
             <div
               className="mt-3 pt-3 border-t border-slate-800 flex flex-col sm:flex-row gap-2.5 z-20"
               onClick={(e) => e.stopPropagation()}
@@ -372,7 +401,7 @@ export default function VisualNovelDialogueL2({
                 <button
                   key={choice.id}
                   onClick={() => handleChoiceClick(choice)}
-                  className="flex-1 px-4 py-2.5 sm:py-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-500 font-pixel text-xs tracking-wide shadow-md transition-all active:translate-y-0.5 flex items-center justify-start gap-2.5 cursor-pointer group"
+                  className="flex-1 px-4 py-3 sm:py-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-500 font-pixel text-sm sm:text-base tracking-wide shadow-md transition-all active:translate-y-0.5 flex items-center justify-start gap-2.5 cursor-pointer group"
                 >
                   <span className="text-amber-400 font-mono font-bold shrink-0">[{idx + 1}]</span>
                   <span className="group-hover:translate-x-0.5 transition-transform text-left">
@@ -385,7 +414,7 @@ export default function VisualNovelDialogueL2({
 
           {/* ── TOOLBAR BAWAH (PERSIS LEVEL 1) ── */}
           <div
-            className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800/80 text-[9px] sm:text-[10px] text-slate-400"
+            className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800/80 text-xs sm:text-sm text-slate-300"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 sm:gap-4">
@@ -405,7 +434,7 @@ export default function VisualNovelDialogueL2({
               <button
                 onClick={() => {
                   retroAudio.playSelect();
-                  if (currentNode.nextNodeId) {
+                  if (currentNode?.nextNodeId && dialogueTree.nodes[currentNode.nextNodeId]) {
                     setCurrentNodeId(currentNode.nextNodeId);
                   } else {
                     onClose();

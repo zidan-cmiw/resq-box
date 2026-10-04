@@ -47,60 +47,115 @@ export default function TectonicVictoryModal({
         {/* Gate Unlocked Status Pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 border border-emerald-500 text-emerald-800 text-[10px] font-pixel mb-2 shadow-sm font-bold">
           <PixelIcon name="star" size={14} className="text-emerald-600" />
-          <span>3 ZONA MITIGASI GEMPA BUMI TUNTAS!</span>
+          <span>★ 6 ZONA MITIGASI GEMPA & ERUPSI MERAPI TUNTAS 100%! ★</span>
         </div>
 
         {/* Level Title */}
         <h1 className="text-base sm:text-xl md:text-2xl font-pixel-title text-[#451a03] font-bold mb-3 tracking-wide">
-          LEVEL 2: DISASTER ANALYST TUNTAS 100%!
+          LEVEL 2: MASTER DISASTER ANALYST TUNTAS!
         </h1>
 
-        {/* Badges and Crystals Showcase (3 Master Badges) */}
-        <div className="bg-[#fffbeb] border-3 border-[#b45309] rounded-2xl p-3.5 max-w-xl mx-auto mb-4 shadow-inner">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3">
+        {/* Badges and Crystals Showcase (6 Master Badges across 2 Disaster Clusters) */}
+        <div className="bg-[#fffbeb] border-3 border-[#b45309] rounded-2xl p-3 sm:p-4 max-w-xl mx-auto mb-4 shadow-inner">
+          {/* Klaster 1: Mitigasi Gempa Bumi */}
+          <div className="text-left mb-1.5 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-sky-500 inline-block" />
+            <span className="font-pixel-title text-[9px] text-sky-950 font-bold uppercase tracking-wider">
+              Klaster 1: Mitigasi Gempa Bumi
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
             {/* Badge 1: Earthquake Prep */}
-            <div className="p-2.5 rounded-xl bg-sky-100 border-2 border-sky-500 text-center shadow-sm flex flex-col items-center">
-              <div className="w-9 h-9 rounded-lg bg-sky-200 border border-sky-400 flex items-center justify-center shrink-0 mb-1.5">
-                <PixelIcon name="shield" size={20} className="text-sky-700" />
+            <div className="p-2 rounded-xl bg-sky-100 border-2 border-sky-500 text-center shadow-sm flex flex-col items-center">
+              <div className="w-8 h-8 rounded-lg bg-sky-200 border border-sky-400 flex items-center justify-center shrink-0 mb-1">
+                <PixelIcon name="shield" size={18} className="text-sky-700" />
               </div>
-              <span className="text-[9px] font-pixel-title text-sky-950 font-bold block leading-tight">
+              <span className="text-[8.5px] font-pixel-title text-sky-950 font-bold block leading-tight">
                 PRABENCANA
               </span>
-              <span className="text-[7.5px] font-pixel text-sky-800 block mt-0.5">
+              <span className="text-[7px] font-pixel text-sky-800 block mt-0.5">
                 Tas Siaga 72 Jam
               </span>
             </div>
 
             {/* Badge 2: Earthquake Action */}
-            <div className="p-2.5 rounded-xl bg-amber-100 border-2 border-amber-500 text-center shadow-sm flex flex-col items-center">
-              <div className="w-9 h-9 rounded-lg bg-amber-200 border border-amber-400 flex items-center justify-center shrink-0 mb-1.5">
-                <PixelIcon name="star" size={20} className="text-amber-700" />
+            <div className="p-2 rounded-xl bg-amber-100 border-2 border-amber-500 text-center shadow-sm flex flex-col items-center">
+              <div className="w-8 h-8 rounded-lg bg-amber-200 border border-amber-400 flex items-center justify-center shrink-0 mb-1">
+                <PixelIcon name="star" size={18} className="text-amber-700" />
               </div>
-              <span className="text-[9px] font-pixel-title text-amber-950 font-bold block leading-tight">
-                TANGGAP BENCANA
+              <span className="text-[8.5px] font-pixel-title text-amber-950 font-bold block leading-tight">
+                TANGGAP GEMPA
               </span>
-              <span className="text-[7.5px] font-pixel text-amber-800 block mt-0.5">
+              <span className="text-[7px] font-pixel text-amber-800 block mt-0.5">
                 Drop-Cover-Hold On
               </span>
             </div>
 
             {/* Badge 3: Post-Disaster Master */}
-            <div className="p-2.5 rounded-xl bg-emerald-100 border-2 border-emerald-500 text-center shadow-sm flex flex-col items-center">
-              <div className="w-9 h-9 rounded-lg bg-emerald-200 border border-emerald-400 flex items-center justify-center shrink-0 mb-1.5">
-                <PixelIcon name="heart" size={20} className="text-emerald-700" />
+            <div className="p-2 rounded-xl bg-emerald-100 border-2 border-emerald-500 text-center shadow-sm flex flex-col items-center">
+              <div className="w-8 h-8 rounded-lg bg-emerald-200 border border-emerald-400 flex items-center justify-center shrink-0 mb-1">
+                <PixelIcon name="heart" size={18} className="text-emerald-700" />
               </div>
-              <span className="text-[9px] font-pixel-title text-emerald-950 font-bold block leading-tight">
+              <span className="text-[8.5px] font-pixel-title text-emerald-950 font-bold block leading-tight">
                 PASCABENCANA
               </span>
-              <span className="text-[7.5px] font-pixel text-emerald-800 block mt-0.5">
+              <span className="text-[7px] font-pixel text-emerald-800 block mt-0.5">
                 Titik Kumpul &amp; P3K
+              </span>
+            </div>
+          </div>
+
+          {/* Klaster 2: Mitigasi Erupsi Merapi */}
+          <div className="text-left mb-1.5 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" />
+            <span className="font-pixel-title text-[9px] text-rose-950 font-bold uppercase tracking-wider">
+              Klaster 2: Mitigasi Erupsi Merapi
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+            {/* Badge 4: Volcano Prep */}
+            <div className="p-2 rounded-xl bg-rose-100 border-2 border-rose-500 text-center shadow-sm flex flex-col items-center">
+              <div className="w-8 h-8 rounded-lg bg-rose-200 border border-rose-400 flex items-center justify-center shrink-0 mb-1">
+                <PixelIcon name="broadcast" size={18} className="text-rose-700" />
+              </div>
+              <span className="text-[8.5px] font-pixel-title text-rose-950 font-bold block leading-tight">
+                PRABENCANA
+              </span>
+              <span className="text-[7px] font-pixel text-rose-800 block mt-0.5">
+                Status PVMBG &amp; KRB
+              </span>
+            </div>
+
+            {/* Badge 5: Volcano Sim */}
+            <div className="p-2 rounded-xl bg-orange-100 border-2 border-orange-500 text-center shadow-sm flex flex-col items-center">
+              <div className="w-8 h-8 rounded-lg bg-orange-200 border border-orange-400 flex items-center justify-center shrink-0 mb-1">
+                <PixelIcon name="flame" size={18} className="text-orange-700" />
+              </div>
+              <span className="text-[8.5px] font-pixel-title text-orange-950 font-bold block leading-tight">
+                TANGGAP ERUPSI
+              </span>
+              <span className="text-[7px] font-pixel text-orange-800 block mt-0.5">
+                Evakuasi Dusun KRB III
+              </span>
+            </div>
+
+            {/* Badge 6: Volcano Recovery Master */}
+            <div className="p-2 rounded-xl bg-teal-100 border-2 border-teal-500 text-center shadow-sm flex flex-col items-center">
+              <div className="w-8 h-8 rounded-lg bg-teal-200 border border-teal-400 flex items-center justify-center shrink-0 mb-1">
+                <PixelIcon name="trophy" size={18} className="text-teal-700" />
+              </div>
+              <span className="text-[8.5px] font-pixel-title text-teal-950 font-bold block leading-tight">
+                PEMULIHAN AKHIR
+              </span>
+              <span className="text-[7px] font-pixel text-teal-800 block mt-0.5">
+                Barak &amp; Bahaya Lahar
               </span>
             </div>
           </div>
 
           <div className="text-xs font-pixel text-cyan-800 bg-cyan-100 py-1.5 px-3.5 rounded-xl border border-cyan-400 inline-flex items-center gap-2 font-bold shadow-sm">
             <PixelIcon name="crystal" size={13} />
-            <span>{collectedCrystals}/{totalCrystals} Kristal Mitigasi</span>
+            <span>{Math.min(totalCrystals, collectedCrystals)}/{totalCrystals} Kristal Mitigasi</span>
             <span>•</span>
             <PixelIcon name="star" size={13} />
             <span>Skor Sempurna 100 XP</span>
@@ -113,7 +168,7 @@ export default function TectonicVictoryModal({
             JEMBATAN MISI TARUNA RESQ:
           </span>
           <p className="font-pixel text-xs leading-relaxed text-amber-100 italic">
-            &ldquo;Selamat Chief Disaster Analyst! Kamu telah menuntaskan kesiapsiagaan darurat gempa 72 jam, membuktikan keahlian refleks Drop-Cover-Hold On di kelas, serta menguasai prosedur titik kumpul dan koordinasi medis pascabencana secara menyeluruh. Pilih kelanjutan misimu sekarang:&rdquo;
+            &ldquo;Selamat Chief Disaster Analyst! Kamu telah menuntaskan seluruh kurikulum mitigasi bencana geologis secara paripurna: kesiapsiagaan gempa 72 jam, simulasi refleks Drop-Cover-Hold On, tanggap darurat erupsi Merapi di KRB III, tata tertib barak pengungsian, sanitasi air bersih, gotong royong pembersihan atap, hingga kewaspadaan bahaya sekunder lahar dingin. Kapsul evakuasi akhir RESQ-BOX telah mengorbitkan hasil penelitianmu ke pusat komando. Akses menuju Level 3 kini telah TERBUKA PENUH!&rdquo;
           </p>
         </div>
 

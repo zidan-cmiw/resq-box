@@ -1322,7 +1322,7 @@ export default function TeacherDashboard() {
                         <div>Capaian Misi: <strong>{sub2.details.stage_label}</strong></div>
                       )}
                       {sub2?.details?.crystals !== undefined && (
-                        <div>Kristal Dikumpulkan: <strong>{sub2.details.crystals} / 9 Kristal</strong></div>
+                        <div>Kristal Dikumpulkan: <strong>{sub2.details.crystals} / 21 Kristal</strong></div>
                       )}
                     </div>
                   </div>

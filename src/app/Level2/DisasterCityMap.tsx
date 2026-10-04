@@ -205,6 +205,13 @@ export default function DisasterCityMap({
               <stop offset="50%" stopColor="#dc2626" />
               <stop offset="100%" stopColor="#7f1d1d" />
             </linearGradient>
+
+            {/* Realistic Volcanic Smoke Turbulence Filter */}
+            <filter id="citySmokeFilter" x="-40%" y="-40%" width="180%" height="180%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+              <feGaussianBlur in="displaced" stdDeviation="4.5" />
+            </filter>
           </defs>
 
           {/* 1. Backdrop Sky */}
@@ -246,21 +253,23 @@ export default function DisasterCityMap({
               {/* Eruption Smoke Plume / Ash Cloud */}
               {isErupting ? (
                 <g className="animate-pulse">
-                  {/* Huge Ash Cloud billows */}
-                  <rect x="440" y="-10" width="120" height="70" rx="20" fill="#292524" opacity="0.9" />
-                  <rect x="410" y="20" width="180" height="50" rx="16" fill="#44403c" opacity="0.85" />
-                  <rect x="460" y="-30" width="140" height="60" rx="24" fill="#1c1917" opacity="0.95" />
+                  {/* Huge Ash Cloud billows with realistic fluid filter */}
+                  <g filter="url(#citySmokeFilter)">
+                    <rect x="440" y="-10" width="120" height="70" rx="20" fill="#292524" opacity="0.9" />
+                    <rect x="410" y="20" width="180" height="50" rx="16" fill="#44403c" opacity="0.85" />
+                    <rect x="460" y="-30" width="140" height="60" rx="24" fill="#1c1917" opacity="0.95" />
+                  </g>
                   {/* Pyroclastic flow glow */}
-                  <line x1="500" y1="80" x2="525" y2="280" stroke="#ef4444" strokeWidth="6" strokeDasharray="8 4" />
-                  <line x1="495" y1="80" x2="480" y2="260" stroke="#f97316" strokeWidth="4" strokeDasharray="6 3" />
+                  <line x1="500" y1="80" x2="525" y2="280" stroke="#ef4444" strokeWidth="6" />
+                  <line x1="495" y1="80" x2="480" y2="260" stroke="#f97316" strokeWidth="4" />
                   {/* Flying volcanic bombs */}
                   <circle cx="430" cy="90" r="4" fill="#ea580c" />
                   <circle cx="560" cy="110" r="5" fill="#ef4444" />
                   <circle cx="470" cy="40" r="3" fill="#facc15" />
                 </g>
               ) : (
-                /* Calm wispy steam */
-                <g opacity="0.6">
+                /* Calm wispy steam with realistic fluid filter */
+                <g opacity="0.75" filter="url(#citySmokeFilter)">
                   <rect x="495" y="48" width="12" height="18" fill="#ffffff" rx="4" />
                   <rect x="502" y="28" width="18" height="16" fill="#f1f5f9" rx="6" />
                   <rect x="490" y="12" width="26" height="14" fill="#e2e8f0" rx="6" />
@@ -287,14 +296,14 @@ export default function DisasterCityMap({
                       opacity="0.85"
                     />
                     {/* Seismic shockwaves */}
-                    <circle cx="500" cy="355" r="40" fill="none" stroke="#f59e0b" strokeWidth="2" strokeDasharray="4 2" />
-                    <circle cx="500" cy="355" r="90" fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="6 3" />
+                    <circle cx="500" cy="355" r="40" fill="none" stroke="#f59e0b" strokeWidth="2" />
+                    <circle cx="500" cy="355" r="90" fill="none" stroke="#ef4444" strokeWidth="2" />
                   </>
                 )}
                 {/* Geological Fault Label */}
                 <rect x="420" y="335" width="160" height="18" fill="#1c1917" rx="3" stroke="#f59e0b" strokeWidth="1" />
                 <text x="500" y="347" textAnchor="middle" fill="#fef08a" fontSize="8" fontWeight="bold">
-                  ⚠️ ZONA SESAR AKTIF (TRANSFORM)
+                  ZONA SESAR AKTIF (TRANSFORM)
                 </text>
               </g>
 
@@ -314,8 +323,8 @@ export default function DisasterCityMap({
                 strokeWidth="1.5"
               />
               {/* Road center dash markings */}
-              <line x1="280" y1="580" x2="375" y2="380" stroke="#facc15" strokeWidth="2" strokeDasharray="12 10" />
-              <line x1="360" y1="455" x2="780" y2="505" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="8 8" />
+              <line x1="280" y1="580" x2="375" y2="380" stroke="#facc15" strokeWidth="2" />
+              <line x1="360" y1="455" x2="780" y2="505" stroke="#ffffff" strokeWidth="1.5" />
 
               {/* ── 6. BUILDINGS & CITY INFRASTRUCTURE ── */}
               {/* 6a. SEKOLAH (School) */}
@@ -378,7 +387,6 @@ export default function DisasterCityMap({
                   fill="#15803d"
                   stroke="#4ade80"
                   strokeWidth="3"
-                  strokeDasharray="8 4"
                 />
                 {/* Safe Zone Banner */}
                 <rect x="40" y="-12" width="200" height="22" rx="4" fill="#047857" stroke="#34d399" strokeWidth="1.5" />
@@ -406,8 +414,8 @@ export default function DisasterCityMap({
                 <g key={id} transform={`translate(${item.x * 10}, ${item.y * 6})`}>
                   <circle cx="0" cy="0" r="14" fill="#f59e0b" stroke="#ffffff" strokeWidth="2" />
                   <rect x="-8" y="-8" width="16" height="16" fill="#1c1917" rx="3" />
-                  <text x="0" y="4" textAnchor="middle" fill="#fef08a" fontSize="8" fontWeight="bold">
-                    {item.type === 'siren' ? '📢' : item.type === 'zone' ? '📍' : item.type === 'medic' ? '🏥' : '🚧'}
+                  <text x="0" y="3" textAnchor="middle" fill="#fef08a" fontSize="7" fontWeight="bold">
+                    {item.type === 'siren' ? 'EWS' : item.type === 'zone' ? 'SAFE' : item.type === 'medic' ? 'MED' : 'BAR'}
                   </text>
                 </g>
               ))}
@@ -470,13 +478,13 @@ export default function DisasterCityMap({
                 opacity="0.9"
               />
               <text x="530" y="240" fill="#f97316" fontSize="9" fontWeight="bold">
-                Saluran Magma Menuju Puncak Merapi 🌋
+                Saluran Magma Menuju Puncak Merapi
               </text>
 
               {/* Transform Fault Cut */}
-              <line x1="200" y1="70" x2="350" y2="330" stroke="#f43f5e" strokeWidth="6" strokeDasharray="10 5" />
+              <line x1="200" y1="70" x2="350" y2="330" stroke="#f43f5e" strokeWidth="6" />
               <text x="140" y="220" fill="#f43f5e" fontSize="9" fontWeight="bold">
-                Patahan Sesar Geser (Transform) ⚡
+                Patahan Sesar Geser (Transform)
               </text>
             </g>
           )}
@@ -538,7 +546,7 @@ export default function DisasterCityMap({
               </div>
               <p className="text-[11px] text-slate-300 mt-1">{selectedHotspot.desc}</p>
               <p className="text-[10px] text-amber-400/90 font-mono mt-0.5">
-                🔬 <strong>Konteks Geologis:</strong> {selectedHotspot.geologyNote}
+                <strong>Konteks Geologis:</strong> {selectedHotspot.geologyNote}
               </p>
             </div>
           </div>

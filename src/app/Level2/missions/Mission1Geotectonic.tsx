@@ -156,7 +156,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                   : 'bg-amber-500 hover:bg-amber-400 text-slate-950 border-amber-950 shadow-[0_4px_0_#78350f]'
               }`}
             >
-              {pangeaMerged ? '✓ PANGEA TERSATUKAN!' : '🧩 GABUNGKAN KEPINGAN BENUA (PANGEA)'}
+              {pangeaMerged ? '✓ PANGEA TERSATUKAN!' : 'GABUNGKAN KEPINGAN BENUA (PANGEA)'}
             </button>
           </div>
 
@@ -307,7 +307,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                     <polygon points="120,60 140,50 140,70" fill="#facc15" />
 
                     {/* Fault Line Fissure */}
-                    <line x1="60" y1="95" x2="540" y2="95" stroke="#ef4444" strokeWidth="4" strokeDasharray="10 5" />
+                    <line x1="60" y1="95" x2="540" y2="95" stroke="#ef4444" strokeWidth="4" />
                     <text x="300" y="92" textAnchor="middle" fill="#f87171" fontSize="9" fontWeight="bold">
                       GARIS SESAR GESER (STRIKE-SLIP FAULT: SAN ANDREAS / OPAK)
                     </text>
@@ -345,7 +345,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                 onClick={handleTriggerSeismic}
                 className="px-3 py-2 rounded-lg bg-rose-700 hover:bg-rose-600 text-white font-pixel-title text-[10px] shrink-0 border border-rose-950 shadow cursor-pointer active:translate-y-0.5"
               >
-                ⚡ PICU GETARAN
+                PICU GETARAN
               </button>
             </div>
 

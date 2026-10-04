@@ -56,10 +56,10 @@ const FACILITY_SLOTS: FacilitySlot[] = [
 ];
 
 const AVAILABLE_ITEMS = [
-  { id: 'siren', name: '📢 Sirine EWS (Peringatan Dini)', desc: 'Alarm berkekuatan 120 dB yang dapat didengar radius 5 km.' },
-  { id: 'barricade', name: '🚧 Rambu Barikade & Jalur Alternatif', desc: 'Menutup jalan yang terancam retakan sesar tektonik.' },
-  { id: 'medic', name: '🏥 Pos Medis & Tenda Triase P3K', desc: 'Tempat penanganan cepat korban sebelum dirujuk ke RS.' },
-  { id: 'safe_zone', name: '📍 Titik Kumpul Lapangan Aman', desc: 'Area luas berumput bebas bahaya listrik dan kaca gedung.' },
+  { id: 'siren', name: 'Sirine EWS (Peringatan Dini)', desc: 'Alarm berkekuatan 120 dB yang dapat didengar radius 5 km.' },
+  { id: 'barricade', name: 'Rambu Barikade & Jalur Alternatif', desc: 'Menutup jalan yang terancam retakan sesar tektonik.' },
+  { id: 'medic', name: 'Pos Medis & Tenda Triase P3K', desc: 'Tempat penanganan cepat korban sebelum dirujuk ke RS.' },
+  { id: 'safe_zone', name: 'Titik Kumpul Lapangan Aman', desc: 'Area luas berumput bebas bahaya listrik dan kaca gedung.' },
 ];
 
 export default function Mission5BuildPlan({ onComplete, isAlreadyCompleted = false }: Mission5Props) {
@@ -214,7 +214,7 @@ export default function Mission5BuildPlan({ onComplete, isAlreadyCompleted = fal
             </div>
             <div className="p-2.5 rounded-lg bg-amber-950 border border-amber-500/40">
               <span className="text-[10px] text-amber-400 block">Mengalami Keterlambatan</span>
-              <span className="text-base font-bold text-amber-300">⚠️ {simResult.delayedCount} Warga</span>
+              <span className="text-base font-bold text-amber-300">{simResult.delayedCount} Warga</span>
             </div>
           </div>
 

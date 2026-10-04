@@ -2,30 +2,27 @@
 // Modal Pop-Up Interaktif Titik Temuan Sains (Discovery Point) pada Earth Dive
 // Menampilkan ilustrasi geologis realistik bergaya 2D retro pixel art murni tanpa emoji OS
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { DiscoveryPoint } from './earthDiveData';
 import { retroAudio } from '../../../utils/retroAudio';
 import PixelIcon from '../../../components/PixelIcon';
-import { SeismographPlatesIllustration, TransformSanAndreasIllustration } from '../../Level2/DiscoveryModal';
+import { SeismographPlatesIllustration, TransformSanAndreasIllustration, ConvergentSubductionIllustration, TRANSFORM_POINTS_DATA } from '../../Level2/DiscoveryModal';
 
 interface DiscoveryModalProps {
   discovery: DiscoveryPoint;
-  strataName: string;
-  depthRange: string;
-  tempRange: string;
-  composition: string;
+  strataName?: string;
+  depthRange?: string;
+  tempRange?: string;
+  composition?: string;
   onClose: () => void;
 }
 
 export default function DiscoveryModal({
   discovery,
-  strataName,
-  depthRange,
-  tempRange,
-  composition,
   onClose,
 }: DiscoveryModalProps) {
   const [isSimulating, setIsSimulating] = useState(false);
+  const [selectedLandform, setSelectedLandform] = useState<'trench' | 'mountains' | 'volcano'>('trench');
 
   const handleSimulate = () => {
     setIsSimulating(true);
@@ -37,19 +34,16 @@ export default function DiscoveryModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
 
       {/* ── MAIN PIXEL PARCHMENT BOARD ── */}
-      <div className="relative w-full max-w-4xl bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl p-4 sm:p-6 shadow-[0_12px_0_#1c0d02] text-[#451a03] font-pixel max-h-[96vh] overflow-y-auto">
+      <div className="relative w-full max-w-5xl xl:max-w-6xl bg-[#fef3c7] border-4 sm:border-[5px] border-[#451a03] rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-[0_12px_0_#1c0d02] text-[#451a03] font-pixel max-h-[96vh] overflow-y-auto">
 
         {/* Top Header */}
-        <div className="flex items-center justify-between border-b-3 border-[#78350f] pb-3 mb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#b45309]/20 border border-[#b45309] flex items-center justify-center shrink-0">
-              <PixelIcon name="search" size={16} className="text-[#92400e]" />
+        <div className="flex items-center justify-between border-b-3 border-[#78350f] pb-3 sm:pb-4 mb-3 sm:mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309]/20 border-2 border-[#b45309] flex items-center justify-center shrink-0 shadow-inner">
+              <PixelIcon name="search" size={20} className="text-[#92400e]" />
             </div>
             <div>
-              <span className="text-[10px] text-[#b45309] font-pixel uppercase tracking-widest block">
-                {[strataName, depthRange, tempRange].filter(Boolean).join(' • ')}
-              </span>
-              <h2 className="text-xs sm:text-sm md:text-base text-[#451a03] font-pixel-title font-bold">
+              <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#451a03] font-pixel-title font-bold mt-0.5 tracking-wide">
                 {discovery.title}
               </h2>
             </div>
@@ -59,7 +53,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-8 h-8 rounded-lg bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-xs flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-sm sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_#451a03] shrink-0 transition-colors"
             title="Tutup"
           >
             ✕
@@ -67,55 +61,108 @@ export default function DiscoveryModal({
         </div>
 
         {/* ── VISUAL ILLUSTRATION AREA (2D PIXEL ART SCIENTIFIC DIAGRAM) ── */}
-        <div className="w-full h-[380px] sm:h-[450px] md:h-[500px] bg-[#0c0a09] border-3 border-[#78350f] rounded-xl overflow-hidden relative mb-3.5 flex items-center justify-center shadow-inner">
-          {renderIllustration(discovery.illustrationType, isSimulating, handleSimulate)}
+        <div className="w-full h-[400px] sm:h-[460px] md:h-[520px] bg-[#0c0a09] border-3 sm:border-4 border-[#78350f] rounded-xl sm:rounded-2xl overflow-hidden relative mb-4 sm:mb-5 flex items-center justify-center shadow-inner">
+          {renderIllustration(discovery.illustrationType, isSimulating, handleSimulate, selectedLandform, setSelectedLandform)}
         </div>
 
-        {/* ── SCIENCE FACT CONTENT (100% 2D PIXEL FONT) ── */}
-        <div className="space-y-2.5 text-xs sm:text-sm text-[#291305]">
-          <div className="bg-[#fde68a]/80 p-3 rounded-xl border-2 border-[#b45309]/50 shadow-xs">
-            <p className="font-pixel text-xs sm:text-sm leading-relaxed text-[#291305] font-medium">
-              {discovery.shortDesc}
-            </p>
+        {/* ── PENJELASAN MATERI (RINGKAS & MUDAH DIPAHAMI UNTUK SMP) ── */}
+        <div className="bg-[#fef9c3] p-4 sm:p-6 md:p-7 rounded-2xl border-3 border-[#b45309]/60 shadow-md text-[#291305] space-y-3 sm:space-y-4">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-1 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-xs sm:text-sm font-bold tracking-wider shadow-sm">
+              MATERI PEMBELAJARAN
+            </span>
           </div>
+          <p className="font-sans text-base sm:text-lg md:text-xl lg:text-[22px] leading-relaxed md:leading-loose text-[#291305] font-semibold tracking-wide">
+            {discovery.shortDesc}
+          </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <div className="bg-[#fffbeb] p-2.5 rounded-lg border-2 border-[#d97706]/40">
-              <div className="flex items-center gap-1.5 mb-1">
-                <PixelIcon name="mountain" size={12} className="text-[#b45309]" />
-                <span className="font-pixel-title text-[9px] text-[#b45309]">
-                  KOMPOSISI BATUAN
+          {/* Khusus untuk convergent-landforms: Penjelasan 3 Poin Kunci Bentang Alam yang sedang dipilih dengan ukuran besar & jelas */}
+          {discovery.illustrationType === 'convergent-landforms' && (
+            <div className="mt-3 pt-3.5 border-t-2 border-[#b45309]/30 space-y-3">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
+                  <span className="font-pixel-title text-sm sm:text-base md:text-lg font-bold text-[#78350f]">
+                    {CONVERGENT_LANDFORMS_DATA[selectedLandform].title}
+                  </span>
+                </div>
+                <span className="text-xs sm:text-sm font-pixel font-bold uppercase text-[#78350f] bg-amber-200/80 px-2.5 py-1 rounded-lg border border-[#b45309]/40">
+                  {CONVERGENT_LANDFORMS_DATA[selectedLandform].subtitle}
                 </span>
               </div>
-              <p className="font-pixel text-xs text-[#451a03] leading-normal font-semibold">
-                {composition}
-              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                {CONVERGENT_LANDFORMS_DATA[selectedLandform].points.map((pt, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3.5 sm:p-4 shadow-sm flex items-start gap-3 hover:bg-amber-100 transition-colors"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-[#b45309]/20 border border-[#b45309]/50 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
+                      <PixelIcon name={pt.icon as any} size={15} className="text-[#92400e]" />
+                    </div>
+                    <p className="font-sans text-sm sm:text-base md:text-[17px] leading-relaxed text-[#291305] font-semibold">
+                      {pt.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
+          )}
 
-            <div className="bg-[#fffbeb] p-2.5 rounded-lg border-2 border-[#d97706]/40">
-              <div className="flex items-center gap-1.5 mb-1">
-                <PixelIcon name="bulb" size={12} className="text-[#b45309]" />
-                <span className="font-pixel-title text-[9px] text-[#b45309]">
-                  FAKTA GEOLOGI RESMI
+          {/* Khusus untuk transform-sanandreas: Penjelasan 3 Karakteristik Utama Batas Transform dengan ukuran besar & jelas */}
+          {discovery.illustrationType === 'transform-sanandreas' && (
+            <div className="mt-3 pt-3.5 border-t-2 border-[#b45309]/30 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
+                <span className="font-pixel-title text-sm sm:text-base md:text-lg font-bold text-[#78350f]">
+                  3 KARAKTERISTIK UTAMA BATAS TRANSFORM
                 </span>
               </div>
-              <p className="font-pixel text-xs text-[#451a03] leading-normal italic">
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                {TRANSFORM_POINTS_DATA.map((pt, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3.5 sm:p-4 shadow-sm flex items-start gap-3 hover:bg-amber-100 transition-colors"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-[#b45309]/20 border border-[#b45309]/50 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
+                      <PixelIcon name={pt.icon as any} size={15} className="text-[#92400e]" />
+                    </div>
+                    <div className="space-y-1">
+                      <span className="font-pixel-title text-xs sm:text-sm font-bold text-[#78350f] block">
+                        {pt.title}
+                      </span>
+                      <p className="font-sans text-sm sm:text-base md:text-[17px] leading-relaxed text-[#291305] font-semibold">
+                        {pt.text}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {discovery.fact && (
+            <div className="pt-3 border-t-2 border-[#b45309]/25 flex items-start gap-2.5 sm:gap-3">
+              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[10px] sm:text-xs md:text-sm font-bold shrink-0 mt-0.5">
+                FAKTA KUNCI
+              </span>
+              <p className="font-sans text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-[#451a03] font-medium italic">
                 {discovery.fact}
               </p>
             </div>
-          </div>
+          )}
         </div>
 
         {/* ── ACTION BUTTONS ── */}
-        <div className="mt-4 pt-3 border-t-2 border-[#b45309]/40 flex justify-end">
+        <div className="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t-2 border-[#b45309]/40 flex justify-end">
           <button
             onClick={() => {
               retroAudio.playSelect();
               onClose();
             }}
-            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-xs font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2"
+            className="px-8 py-3 sm:px-10 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-sm sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all"
           >
-            <PixelIcon name="check" size={13} className="text-amber-200" />
+            <PixelIcon name="check" size={18} className="text-amber-200" />
             <span>SAYA MENGERTI!</span>
           </button>
         </div>
@@ -126,11 +173,704 @@ export default function DiscoveryModal({
   );
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// 1. ILUSTRASI REALISTIK KOMPARASI KERAK BUMI: KERAK BENUA VS KERAK SAMUDRA
+// ══════════════════════════════════════════════════════════════════════════
+function CrustComparisonIllustration() {
+  const [activeFeature, setActiveFeature] = useState<'continental' | 'oceanic' | 'moho' | 'mountain' | null>(null);
+
+  const featureDetails = {
+    continental: {
+      title: 'KERAK BENUA (DARATAN)',
+      desc: 'Tebal mencapai 30–100 km (tebal & berakar dalam). Terdiri dari batuan granit ringan (kaya Silika & Aluminium / SiAl). Membentuk seluruh daratan tempat manusia hidup.',
+      color: '#f59e0b',
+    },
+    oceanic: {
+      title: 'KERAK SAMUDRA (DASAR LAUT)',
+      desc: 'Jauh lebih tipis (hanya 5–15 km), namun jauh lebih padat dan berat. Terdiri dari batuan basal gelap (kaya Silika & Magnesium / SiMa) di bawah samudra luas.',
+      color: '#38bdf8',
+    },
+    moho: {
+      title: 'BATAS MOHO (MOHOROVIČIĆ)',
+      desc: 'Garis batas seismik pemisah antara kerak bumi padat dengan mantel bumi astenosfer di bawahnya. Gelombang gempa melesat jauh lebih cepat melewati lapisan ini.',
+      color: '#f97316',
+    },
+    mountain: {
+      title: 'GUNUNG & DARATAN TINGGI',
+      desc: 'Hasil desakan lipatan tektonik. Memiliki "akar" kerak benua yang menghujam sangat dalam ke lapisan mantel bumi untuk menopang beban tingginya.',
+      color: '#22c55e',
+    },
+  };
+
+  return (
+    <div className="relative w-full h-full flex flex-col items-center justify-between select-none">
+      {/* Quick Interactive Selection Tabs at Top */}
+      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-xs sm:text-sm">
+        <button
+          onClick={() => setActiveFeature(activeFeature === 'continental' ? null : 'continental')}
+          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
+            activeFeature === 'continental'
+              ? 'bg-amber-400 text-slate-950 shadow'
+              : 'bg-amber-950/60 text-amber-200 border border-amber-700/50 hover:bg-amber-900/60'
+          }`}
+        >
+          1. Kerak Benua (~100 km)
+        </button>
+        <button
+          onClick={() => setActiveFeature(activeFeature === 'oceanic' ? null : 'oceanic')}
+          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
+            activeFeature === 'oceanic'
+              ? 'bg-sky-400 text-slate-950 shadow'
+              : 'bg-sky-950/60 text-sky-200 border border-sky-700/50 hover:bg-sky-900/60'
+          }`}
+        >
+          2. Kerak Samudra (5–15 km)
+        </button>
+        <button
+          onClick={() => setActiveFeature(activeFeature === 'moho' ? null : 'moho')}
+          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
+            activeFeature === 'moho'
+              ? 'bg-orange-500 text-slate-950 shadow'
+              : 'bg-orange-950/60 text-orange-200 border border-orange-700/50 hover:bg-orange-900/60'
+          }`}
+        >
+          3. Batas Moho
+        </button>
+      </div>
+
+      {/* SVG Canvas */}
+      <div className="relative w-full flex-1 flex items-center justify-center overflow-hidden">
+        <svg viewBox="0 0 540 240" className="w-full h-full object-contain" shapeRendering="geometricPrecision">
+          <defs>
+            {/* Gradien Kolom Air Samudra */}
+            <linearGradient id="oceanColumnGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0ea5e9" />
+              <stop offset="35%" stopColor="#0284c7" />
+              <stop offset="70%" stopColor="#0369a1" />
+              <stop offset="100%" stopColor="#082f49" />
+            </linearGradient>
+
+            {/* Gradien Mantel Astenosfer */}
+            <linearGradient id="asthenosphereGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#3e1806" />
+              <stop offset="50%" stopColor="#7c2d12" />
+              <stop offset="100%" stopColor="#ea580c" />
+            </linearGradient>
+
+            {/* Gradien Langit Daratan */}
+            <linearGradient id="continentalSkyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0f172a" />
+              <stop offset="60%" stopColor="#1e293b" />
+              <stop offset="100%" stopColor="#334155" />
+            </linearGradient>
+
+            {/* Gradien Langit Samudra */}
+            <linearGradient id="oceanSkyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#020617" />
+              <stop offset="100%" stopColor="#0c2340" />
+            </linearGradient>
+          </defs>
+
+          {/* Latar Belakang Dasar */}
+          <rect x="0" y="0" width="540" height="240" fill="#020617" />
+
+          {/* ══════════════════════════════════════════════════════════════════
+              PANEL KIRI: KERAK BENUA (DARATAN, GUNUNG, STRATA SOLID TANPA CELAH)
+              ══════════════════════════════════════════════════════════════════ */}
+          <g
+            id="panel-kerak-benua"
+            className="cursor-pointer"
+            onClick={() => setActiveFeature(activeFeature === 'continental' ? null : 'continental')}
+          >
+            {/* Langit Daratan (Meluas hingga ke belakang rumput untuk mencegah celah hitam) */}
+            <rect x="4" y="4" width="262" height="95" fill="url(#continentalSkyGrad)" />
+
+            {/* Matahari & Awan Halus */}
+            <circle cx="28" cy="30" r="7" fill="#fbbf24" opacity="0.9" />
+            <path d="M 180,24 Q 192,20 205,24 Q 215,22 225,26 Q 215,30 200,30 Q 188,30 180,24 Z" fill="#64748b" opacity="0.5" />
+
+            {/* Asap Kawah Merapi Halus Organik */}
+            <path d="M 134,36 Q 130,26 136,18 Q 142,24 138,36 Z" fill="#cbd5e1" opacity="0.8" />
+            <circle cx="137" cy="16" r="4" fill="#f1f5f9" opacity="0.7" />
+
+            {/* Kerucut Gunung Berapi / Lipatan Alami */}
+            <polygon points="50,78 134,36 218,78" fill="#475569" />
+            <polygon points="134,36 218,78 134,78" fill="#334155" />
+            {/* Lereng Bayangan & Kawah */}
+            <polygon points="120,44 134,36 148,44 134,48" fill="#1e293b" />
+            <line x1="134" y1="36" x2="134" y2="44" stroke="#f97316" strokeWidth="1.5" />
+
+            {/* ── ARSITEKTUR LAYER BERTUMPUK (BEBAS CELAH HITAM) ── */}
+            {/* Strata 3 (Dasar): Batuan Kristalin Padat Arang Kokoh (y: 76 sampai 195) */}
+            <rect x="4" y="76" width="262" height="119" fill="#475569" />
+
+            {/* Strata 2: Batuan Granit / SiAl (Abu-abu Hangat Batu Alam) */}
+            <path
+              d="M 4,76 L 266,76 L 266,160 Q 200,163 135,158 T 4,160 Z"
+              fill="#786c5f"
+            />
+
+            {/* Strata 1: Sedimen & Tanah Subur (Cokelat Organik Hangat) */}
+            <path
+              d="M 4,76 L 266,76 L 266,118 Q 200,121 135,116 T 4,118 Z"
+              fill="#8d5b4c"
+            />
+
+            {/* Lereng Hijau Alami Bergelombang Halus (Natural Terrain) */}
+            <path
+              d="M 4,78 Q 40,74 75,77 T 145,76 T 215,79 T 266,77 L 266,92 L 4,92 Z"
+              fill="#15803d"
+            />
+            {/* Garis Rumput Permukaan */}
+            <path
+              d="M 4,78 Q 40,74 75,77 T 145,76 T 215,79 T 266,77"
+              fill="none"
+              stroke="#22c55e"
+              strokeWidth="2"
+            />
+
+            {/* Garis Batas Moho Solid Bersih (Bawah Kerak Benua) */}
+            <line x1="4" y1="195" x2="266" y2="195" stroke="#f97316" strokeWidth="2.5" />
+
+            {/* Astenosfer (Mantel Atas) */}
+            <rect x="4" y="196" width="262" height="40" fill="url(#asthenosphereGrad)" />
+
+            {/* Indikator Ketebalan Kerak Benua di Tepi Kiri (Ramping, Tidak Menutupi Gambar) */}
+            <g id="thickness-continental">
+              <line x1="18" y1="80" x2="18" y2="195" stroke="#facc15" strokeWidth="2" />
+              <polygon points="18,80 14,88 22,88" fill="#facc15" />
+              <polygon points="18,195 14,187 22,187" fill="#facc15" />
+              {/* Badge Ramping Bersih */}
+              <rect x="24" y="130" width="104" height="22" rx="4" fill="#0f172a" fillOpacity="0.9" stroke="#facc15" strokeWidth="1.2" />
+              <text x="76" y="145" fill="#fef08a" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+                Tebal: ~100 km
+              </text>
+            </g>
+
+            {/* Label Identitas Panel Kiri */}
+            <rect x="12" y="8" width="168" height="22" rx="5" fill="#1e293b" fillOpacity="0.92" stroke="#f59e0b" strokeWidth="1.5" />
+            <text x="96" y="23" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+              1. KERAK BENUA (DARATAN)
+            </text>
+          </g>
+
+          {/* ══════════════════════════════════════════════════════════════════
+              GARIS PEMISAH VERTIKAL DUA PANEL (DIVIDER EMAS ELEGAN)
+              ══════════════════════════════════════════════════════════════════ */}
+          <line x1="270" y1="4" x2="270" y2="236" stroke="#f59e0b" strokeWidth="2.5" />
+
+          {/* ══════════════════════════════════════════════════════════════════
+              PANEL KANAN: KERAK SAMUDRA (DASAR LAUT, GELOMBANG AIR SOLID, BASAL TIPIS)
+              ══════════════════════════════════════════════════════════════════ */}
+          <g
+            id="panel-kerak-samudra"
+            className="cursor-pointer"
+            onClick={() => setActiveFeature(activeFeature === 'oceanic' ? null : 'oceanic')}
+          >
+            {/* Langit di Atas Samudra (Meluas hingga ke belakang gelombang untuk mencegah celah hitam) */}
+            <rect x="274" y="4" width="262" height="60" fill="url(#oceanSkyGrad)" />
+
+            {/* Permukaan Laut dengan Gelombang Air Lembut & Solid */}
+            <path
+              d="M 274,40 Q 290,37 308,41 T 344,38 T 380,41 T 416,38 T 452,41 T 488,38 T 524,41 L 536,40 L 536,180 L 274,180 Z"
+              fill="url(#oceanColumnGrad)"
+            />
+            {/* Buih Ombak Putih di Puncak Gelombang */}
+            <path
+              d="M 274,40 Q 290,37 308,41 T 344,38 T 380,41 T 416,38 T 452,41 T 488,38 T 524,41 L 536,40"
+              fill="none"
+              stroke="#bae6fd"
+              strokeWidth="2"
+            />
+
+            {/* Dasar Lautan (Sedimen Laut Halus) */}
+            <rect x="274" y="176" width="262" height="4" fill="#52525b" />
+
+            {/* ── LAPISAN KERAK SAMUDRA TIPIS (BASAL PADAT / SiMa: 5–15 KM) ── */}
+            <rect x="274" y="180" width="262" height="15" fill="#1e293b" />
+
+            {/* Batas Moho Solid Bersih di Bawah Kerak Samudra */}
+            <line x1="274" y1="195" x2="536" y2="195" stroke="#f97316" strokeWidth="2.5" />
+
+            {/* Astenosfer (Mantel Atas di Bawah Samudra) */}
+            <rect x="274" y="196" width="262" height="40" fill="url(#asthenosphereGrad)" />
+
+            {/* Indikator Ketebalan Kerak Samudra di Tepi Kanan (Ramping, Terbaca Jelas) */}
+            <g id="thickness-oceanic">
+              <line x1="520" y1="180" x2="520" y2="195" stroke="#38bdf8" strokeWidth="2" />
+              <polygon points="520,180 516,185 524,185" fill="#38bdf8" />
+              <polygon points="520,195 516,190 524,190" fill="#38bdf8" />
+              {/* Badge Ramping Bersih */}
+              <rect x="408" y="174" width="106" height="22" rx="4" fill="#082f49" fillOpacity="0.9" stroke="#38bdf8" strokeWidth="1.2" />
+              <text x="461" y="189" fill="#7dd3fc" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+                Tebal: 5–15 km
+              </text>
+            </g>
+
+            {/* Label Identitas Panel Kanan */}
+            <rect x="284" y="8" width="176" height="22" rx="5" fill="#082f49" fillOpacity="0.92" stroke="#38bdf8" strokeWidth="1.5" />
+            <text x="372" y="23" fill="#7dd3fc" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+              2. KERAK SAMUDRA (DASAR LAUT)
+            </text>
+          </g>
+
+          {/* Label Batas Moho & Mantel Bawah yang Melintang Halus */}
+          <rect x="180" y="218" width="180" height="18" rx="4" fill="#0c0a09" fillOpacity="0.88" stroke="#f97316" strokeWidth="1" />
+          <text x="270" y="231" fill="#fed7aa" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            ASTENOSFER (MANTEL BUMI)
+          </text>
+        </svg>
+      </div>
+
+      {/* Interactive Tooltip & Status Bar (Rapi & Tidak Menutupi Gambar) */}
+      <div className="w-full bg-[#1c1917]/95 border-t border-[#78350f] px-3.5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 min-h-[50px]">
+        {activeFeature ? (
+          <div className="flex items-center gap-2.5 w-full animate-fadeIn">
+            <span
+              className="px-2.5 py-1 rounded text-xs sm:text-sm font-bold shrink-0 text-slate-900 shadow"
+              style={{ backgroundColor: featureDetails[activeFeature].color }}
+            >
+              {featureDetails[activeFeature].title}
+            </span>
+            <p className="text-sm sm:text-base text-amber-100 font-medium leading-relaxed">
+              {featureDetails[activeFeature].desc}
+            </p>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center gap-2 w-full text-center text-xs sm:text-sm text-amber-200/90 font-medium">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping inline-block" />
+            <span>Pilih tombol di atas atau ketuk panel untuk detail komparasi geologis!</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 2. ILUSTRASI REALISTIK ARUS KONVEKSI MANTEL BUMI (SMP KELAS 8)
+// ══════════════════════════════════════════════════════════════════════════
+function MantleConvectionIllustration() {
+  const [activeFeature, setActiveFeature] = useState<'rising' | 'sinking' | 'plates' | 'core' | null>(null);
+
+  const featureDetails = {
+    rising: {
+      title: 'ARUS PANAS NAIK (MANTLE PLUME)',
+      desc: 'Magma di dasar mantel dipanaskan inti bumi hingga 3.700°C. Karena panas, magma memuai, massa jenisnya berkurang (lebih ringan), lalu perlahan mengapung naik ke atas.',
+      color: '#f97316',
+    },
+    plates: {
+      title: 'MESIN PENGGERAK LEMPENG TEKTONIK',
+      desc: 'Saat magma panas mencapai dasar kerak bumi, alirannya berbelok ke samping seperti ban berjalan (conveyor belt), menyeret lempeng benua dan samudra bergerak memisah atau bertubrukan.',
+      color: '#fbbf24',
+    },
+    sinking: {
+      title: 'ARUS DINGIN TENGGELAM (SUBDUKSI)',
+      desc: 'Di dekat permukaan kerak, magma melepas kalornya dan mendingin. Batuan yang mendingin menjadi lebih padat dan berat, sehingga tenggelam kembali ke dasar mantel.',
+      color: '#38bdf8',
+    },
+    core: {
+      title: 'PEMANAS DARI INTI BUMI (3.700°C)',
+      desc: 'Suhu dahsyat dari inti bumi (3.700°C – 5.000°C) memanaskan dasar mantel tanpa henti, menjaga putaran siklus konveksi ini terus bekerja selama miliaran tahun.',
+      color: '#ef4444',
+    },
+  };
+
+  return (
+    <div className="relative w-full h-full flex flex-col items-center justify-between select-none">
+      {/* Interactive Quick Select Filter Pills at Top */}
+      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-xs sm:text-sm">
+        <button
+          onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
+          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
+            activeFeature === 'rising'
+              ? 'bg-orange-500 text-slate-950 shadow'
+              : 'bg-orange-950/60 text-orange-200 border border-orange-700/50 hover:bg-orange-900/60'
+          }`}
+        >
+          1. Arus Panas Naik
+        </button>
+        <button
+          onClick={() => setActiveFeature(activeFeature === 'plates' ? null : 'plates')}
+          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
+            activeFeature === 'plates'
+              ? 'bg-amber-400 text-slate-950 shadow'
+              : 'bg-amber-950/60 text-amber-200 border border-amber-700/50 hover:bg-amber-900/60'
+          }`}
+        >
+          2. Gerak Lempeng
+        </button>
+        <button
+          onClick={() => setActiveFeature(activeFeature === 'sinking' ? null : 'sinking')}
+          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
+            activeFeature === 'sinking'
+              ? 'bg-sky-400 text-slate-950 shadow'
+              : 'bg-sky-950/60 text-sky-200 border border-sky-700/50 hover:bg-sky-900/60'
+          }`}
+        >
+          3. Arus Dingin Turun
+        </button>
+        <button
+          onClick={() => setActiveFeature(activeFeature === 'core' ? null : 'core')}
+          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
+            activeFeature === 'core'
+              ? 'bg-red-500 text-slate-950 shadow'
+              : 'bg-red-950/60 text-red-200 border border-red-700/50 hover:bg-red-900/60'
+          }`}
+        >
+          4. Pemanas Inti
+        </button>
+      </div>
+
+      {/* SVG Canvas Illustration */}
+      <div className="relative w-full flex-1 flex items-center justify-center overflow-hidden">
+        <svg viewBox="0 0 540 240" className="w-full h-full object-contain" shapeRendering="geometricPrecision">
+          <style>{`
+            @keyframes convectiveFlowCCW {
+              0% { stroke-dashoffset: 160; }
+              100% { stroke-dashoffset: 0; }
+            }
+            @keyframes convectiveFlowCW {
+              0% { stroke-dashoffset: 0; }
+              100% { stroke-dashoffset: 160; }
+            }
+            @keyframes upwellingStream {
+              0% { stroke-dashoffset: 80; }
+              100% { stroke-dashoffset: 0; }
+            }
+            @keyframes arrowPulse {
+              0%, 100% { opacity: 0.88; transform: scale(1); }
+              50% { opacity: 1; transform: scale(1.12); }
+            }
+            @keyframes pulseHeat {
+              0%, 100% { opacity: 0.8; transform: scaleY(0.97); }
+              50% { opacity: 1; transform: scaleY(1.03); }
+            }
+            .anim-flow-ccw { stroke-dasharray: 22 14; animation: convectiveFlowCCW 2.6s linear infinite; }
+            .anim-flow-cw { stroke-dasharray: 22 14; animation: convectiveFlowCW 2.6s linear infinite; }
+            .anim-upwelling-flow { stroke-dasharray: 18 12; animation: upwellingStream 1.6s linear infinite; }
+            .anim-arrow-pulse { animation: arrowPulse 2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .anim-core-heat { animation: pulseHeat 3s ease-in-out infinite; transform-origin: 270px 225px; }
+          `}</style>
+
+          <defs>
+            <linearGradient id="mantleBgFluid" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#1a0503" />
+              <stop offset="35%" stopColor="#3d0905" />
+              <stop offset="70%" stopColor="#7c1d06" />
+              <stop offset="100%" stopColor="#c2410c" />
+            </linearGradient>
+
+            <linearGradient id="upwellingPlume" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#facc15" />
+              <stop offset="40%" stopColor="#f97316" />
+              <stop offset="85%" stopColor="#ef4444" />
+              <stop offset="100%" stopColor="#fef08a" />
+            </linearGradient>
+
+            <linearGradient id="downwellingCool" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#38bdf8" />
+              <stop offset="45%" stopColor="#0284c7" />
+              <stop offset="80%" stopColor="#1e3a8a" />
+              <stop offset="100%" stopColor="#3b0704" />
+            </linearGradient>
+
+            <radialGradient id="centralPlumeBulge" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#fde047" stopOpacity="0.8" />
+              <stop offset="50%" stopColor="#ea580c" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#ea580c" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+
+          {/* Latar Belakang Fluida Mantel Astinosfer */}
+          <rect x="0" y="0" width="540" height="240" fill="url(#mantleBgFluid)" />
+
+          {/* ══════════════════════════════════════════════════════════════════
+              ATAS: LEMPENG TEKTONIK BERGERAK (CRUST / LITHOSPHERE SLABS)
+              ══════════════════════════════════════════════════════════════════ */}
+          {/* Panah Indikator Arah Gerak Lempeng */}
+          {/* Lempeng Kiri Bergerak Menjauh ke Kiri */}
+          <g>
+            <line x1="120" y1="8" x2="60" y2="8" stroke="#fbbf24" strokeWidth="2.5" />
+            <polygon points="50,8 62,3 62,13" fill="#fbbf24" />
+            <text x="135" y="11" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">
+              GERAK KE KIRI
+            </text>
+          </g>
+
+          {/* Lempeng Kanan Bergerak Menjauh ke Kanan */}
+          <g>
+            <line x1="420" y1="8" x2="480" y2="8" stroke="#fbbf24" strokeWidth="2.5" />
+            <polygon points="490,8 478,3 478,13" fill="#fbbf24" />
+            <text x="405" y="11" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="end">
+              GERAK KE KANAN
+            </text>
+          </g>
+
+          {/* 1. Lempeng Benua Kiri (y: 16 - 38) */}
+          <g
+            className="cursor-pointer"
+            onClick={() => setActiveFeature(activeFeature === 'plates' ? null : 'plates')}
+          >
+            <rect x="15" y="16" width="180" height="22" rx="3" fill="#78350f" stroke="#92400e" strokeWidth="1" />
+            <rect x="15" y="16" width="180" height="4" rx="2" fill="#15803d" />
+            <text x="105" y="31" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+              LEMPENG BENUA A
+            </text>
+          </g>
+
+          {/* 2. Celah Retakan Tengah (Mid-Ocean Ridge / Rift) tempat Magma Menerobos */}
+          <g>
+            <polygon points="255,16 270,36 285,16" fill="#ea580c" />
+            <polygon points="262,16 270,30 278,16" fill="#fef08a" />
+            {/* Kolom air samudra di atas retakan */}
+            <rect x="202" y="16" width="136" height="7" fill="#0284c7" fillOpacity="0.85" />
+            <line x1="202" y1="16" x2="338" y2="16" stroke="#38bdf8" strokeWidth="1.5" />
+            {/* Lempeng samudra tipis membentang di celah */}
+            <rect x="202" y="23" width="136" height="15" fill="#1e293b" />
+            <text x="270" y="34" fill="#7dd3fc" fontSize="8" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+              LEMPENG SAMUDRA
+            </text>
+          </g>
+
+          {/* 3. Lempeng Benua Kanan (y: 16 - 38) */}
+          <g
+            className="cursor-pointer"
+            onClick={() => setActiveFeature(activeFeature === 'plates' ? null : 'plates')}
+          >
+            <rect x="345" y="16" width="180" height="22" rx="3" fill="#78350f" stroke="#92400e" strokeWidth="1" />
+            <rect x="345" y="16" width="180" height="4" rx="2" fill="#15803d" />
+            <text x="435" y="31" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+              LEMPENG BENUA B
+            </text>
+          </g>
+
+          {/* ══════════════════════════════════════════════════════════════════
+              TENGAH: SIKLUS SIRKULASI ARUS KONVEKSI (STREAMLINES & PLUMES)
+              ══════════════════════════════════════════════════════════════════ */}
+
+          {/* Pendaran Panas Kolom Tengah (Upwelling Hotspot Glow) */}
+          <circle cx="270" cy="120" r="75" fill="url(#centralPlumeBulge)" />
+
+          {/* ── ARUS PANAS NAIK (TENGAH) ── */}
+          <g
+            className="cursor-pointer"
+            onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
+          >
+            {/* Jalur Panas Memancar Naik */}
+            <path
+              d="M 270,215 Q 266,130 255,50"
+              stroke="url(#upwellingPlume)"
+              strokeWidth="9"
+              strokeLinecap="round"
+              fill="none"
+              opacity="0.9"
+            />
+            <path
+              d="M 270,215 Q 274,130 285,50"
+              stroke="url(#upwellingPlume)"
+              strokeWidth="9"
+              strokeLinecap="round"
+              fill="none"
+              opacity="0.9"
+            />
+            {/* Inti Pijar Tengah Solid */}
+            <path
+              d="M 270,215 L 270,45"
+              stroke="#fef08a"
+              strokeWidth="4.5"
+              strokeLinecap="round"
+              fill="none"
+            />
+            {/* Animasi Arus Panas Mengalir Naik */}
+            <path
+              d="M 270,215 L 270,45"
+              stroke="#ffffff"
+              strokeWidth="3"
+              strokeLinecap="round"
+              fill="none"
+              className="anim-upwelling-flow"
+            />
+
+            {/* Anak Panah Naik Jelas & Menonjol (3 Tingkat) */}
+            <g className="anim-arrow-pulse">
+              <polygon points="270,40 258,56 282,56" fill="#ffffff" stroke="#451a03" strokeWidth="1.2" />
+              <polygon points="270,110 259,126 281,126" fill="#ffffff" stroke="#78350f" strokeWidth="1" />
+              <polygon points="270,170 260,185 280,185" fill="#fef08a" stroke="#78350f" strokeWidth="1" />
+            </g>
+          </g>
+
+          {/* ── SEL KONVEKSI KIRI (BERPUTAR BERLAWANAN ARAH JARUM JAM / CCW) ── */}
+          <g
+            className="cursor-pointer"
+            onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
+          >
+            {/* Loop Sirkulasi Streamline Kiri Solid */}
+            <path
+              d="M 260,60 C 190,56 120,60 80,85 C 45,115 45,165 75,190 C 110,210 185,212 255,205"
+              fill="none"
+              stroke="#f97316"
+              strokeWidth="5"
+              opacity="0.9"
+            />
+            {/* Overlay Animasi Aliran Sirkulasi CCW */}
+            <path
+              d="M 260,60 C 190,56 120,60 80,85 C 45,115 45,165 75,190 C 110,210 185,212 255,205"
+              fill="none"
+              stroke="#fef08a"
+              strokeWidth="2.5"
+              className="anim-flow-ccw"
+            />
+
+            {/* Aliran Horisontal Menyeret Lempeng Kiri */}
+            <path
+              d="M 255,52 Q 180,50 100,54"
+              fill="none"
+              stroke="#f59e0b"
+              strokeWidth="3.5"
+            />
+
+            {/* Anak Panah Sirkulasi Kiri Jelas & Menonjol */}
+            {/* 1. Atas: Aliran ke kiri menyeret lempeng */}
+            <polygon points="120,54 136,46 136,62" fill="#fbbf24" stroke="#451a03" strokeWidth="1" />
+            <polygon points="195,52 211,44 211,60" fill="#fef08a" stroke="#451a03" strokeWidth="1" />
+
+            {/* 2. Samping: Aliran turun */}
+            <polygon points="52,148 44,132 60,132" fill="#38bdf8" stroke="#0c2340" strokeWidth="1" />
+
+            {/* 3. Bawah: Aliran kembali ke tengah pemanas */}
+            <polygon points="150,208 134,200 134,216" fill="#ea580c" stroke="#451a03" strokeWidth="1" />
+            <polygon points="215,206 199,198 199,214" fill="#f97316" stroke="#451a03" strokeWidth="1" />
+          </g>
+
+          {/* ── ARUS DINGIN TURUN KIRI (SLAB SUBDUKSI) ── */}
+          <g
+            className="cursor-pointer"
+            onClick={() => setActiveFeature(activeFeature === 'sinking' ? null : 'sinking')}
+          >
+            <path
+              d="M 68,75 Q 50,130 70,185"
+              stroke="url(#downwellingCool)"
+              strokeWidth="9"
+              strokeLinecap="round"
+              fill="none"
+              opacity="0.85"
+            />
+            {/* Anak Panah Turun Kiri Sangat Jelas */}
+            <polygon points="70,186 60,170 78,170" fill="#38bdf8" stroke="#0c2340" strokeWidth="1" />
+            <polygon points="60,122 52,106 68,106" fill="#7dd3fc" stroke="#0c2340" strokeWidth="1" />
+          </g>
+
+          {/* ── SEL KONVEKSI KANAN (BERPUTAR SEARAH JARUM JAM / CW) ── */}
+          <g
+            className="cursor-pointer"
+            onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
+          >
+            {/* Loop Sirkulasi Streamline Kanan Solid */}
+            <path
+              d="M 280,60 C 350,56 420,60 460,85 C 495,115 495,165 465,190 C 430,210 355,212 285,205"
+              fill="none"
+              stroke="#f97316"
+              strokeWidth="5"
+              opacity="0.9"
+            />
+            {/* Overlay Animasi Aliran Sirkulasi CW */}
+            <path
+              d="M 280,60 C 350,56 420,60 460,85 C 495,115 495,165 465,190 C 430,210 355,212 285,205"
+              fill="none"
+              stroke="#fef08a"
+              strokeWidth="2.5"
+              className="anim-flow-cw"
+            />
+
+            {/* Aliran Horisontal Menyeret Lempeng Kanan */}
+            <path
+              d="M 285,52 Q 360,50 440,54"
+              fill="none"
+              stroke="#f59e0b"
+              strokeWidth="3.5"
+            />
+
+            {/* Anak Panah Sirkulasi Kanan Jelas & Menonjol */}
+            {/* 1. Atas: Aliran ke kanan menyeret lempeng */}
+            <polygon points="345,52 329,44 329,60" fill="#fef08a" stroke="#451a03" strokeWidth="1" />
+            <polygon points="420,54 404,46 404,62" fill="#fbbf24" stroke="#451a03" strokeWidth="1" />
+
+            {/* 2. Samping: Aliran turun */}
+            <polygon points="488,148 480,132 496,132" fill="#38bdf8" stroke="#0c2340" strokeWidth="1" />
+
+            {/* 3. Bawah: Aliran kembali ke tengah pemanas */}
+            <polygon points="390,208 406,200 406,216" fill="#ea580c" stroke="#451a03" strokeWidth="1" />
+            <polygon points="325,206 341,198 341,214" fill="#f97316" stroke="#451a03" strokeWidth="1" />
+          </g>
+
+          {/* ── ARUS DINGIN TURUN KANAN (SLAB SUBDUKSI) ── */}
+          <g
+            className="cursor-pointer"
+            onClick={() => setActiveFeature(activeFeature === 'sinking' ? null : 'sinking')}
+          >
+            <path
+              d="M 472,75 Q 490,130 470,185"
+              stroke="url(#downwellingCool)"
+              strokeWidth="9"
+              strokeLinecap="round"
+              fill="none"
+              opacity="0.85"
+            />
+            {/* Anak Panah Turun Kanan Sangat Jelas */}
+            <polygon points="470,186 462,170 480,170" fill="#38bdf8" stroke="#0c2340" strokeWidth="1" />
+            <polygon points="480,122 472,106 488,106" fill="#7dd3fc" stroke="#0c2340" strokeWidth="1" />
+          </g>
+
+          {/* ══════════════════════════════════════════════════════════════════
+              BAWAH: BATAS INTI LUAR - MANTEL (CORE-MANTLE BOUNDARY / SUMBER PANAS 3.700°C)
+              ══════════════════════════════════════════════════════════════════ */}
+          <g
+            className="cursor-pointer anim-core-heat"
+            onClick={() => setActiveFeature(activeFeature === 'core' ? null : 'core')}
+          >
+            <rect x="0" y="215" width="540" height="25" fill="#ea580c" />
+            <rect x="0" y="225" width="540" height="15" fill="#fef08a" />
+            <line x1="0" y1="215" x2="540" y2="215" stroke="#ffffff" strokeWidth="2" />
+            <text x="270" y="235" fill="#450a0a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+              SUMBER PANAS: INTI BUMI (SUHU 3.700°C – 5.000°C)
+            </text>
+          </g>
+        </svg>
+      </div>
+
+      {/* Interactive Tooltip & Status Bar (Rapi & Tidak Menutupi Gambar) */}
+      <div className="w-full bg-[#1c1917]/95 border-t border-[#78350f] px-3.5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 min-h-[50px]">
+        {activeFeature ? (
+          <div className="flex items-center gap-2.5 w-full animate-fadeIn">
+            <span
+              className="px-2.5 py-1 rounded text-xs sm:text-sm font-bold shrink-0 text-slate-900 shadow"
+              style={{ backgroundColor: featureDetails[activeFeature].color }}
+            >
+              {featureDetails[activeFeature].title}
+            </span>
+            <p className="text-sm sm:text-base text-amber-100 font-medium leading-relaxed">
+              {featureDetails[activeFeature].desc}
+            </p>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center gap-2 w-full text-center text-xs sm:text-sm text-amber-200/90 font-medium">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping inline-block" />
+            <span>Pilih tombol di atas atau ketuk bagian siklus konveksi untuk penjelasannya!</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── 2D RETRO PIXEL SVG ILLUSTRATIONS (REALISTIC SCIENTIFIC CROSS-SECTIONS) ───
 function renderIllustration(
   type: DiscoveryPoint['illustrationType'],
   isSimulating: boolean = false,
   onSimulate?: () => void,
+  selectedLandform?: 'trench' | 'mountains' | 'volcano',
+  onSelectLandform?: (lf: 'trench' | 'mountains' | 'volcano') => void,
 ) {
   switch (type) {
     // ═════════════════════════════════════════════════════════════════════════
@@ -152,7 +892,12 @@ function renderIllustration(
       return <ConvergentSubductionIllustration />;
 
     case 'convergent-landforms':
-      return <ConvergentLandformsIllustration />;
+      return (
+        <ConvergentLandformsIllustration
+          selectedLandform={selectedLandform}
+          onSelectLandform={onSelectLandform}
+        />
+      );
 
     // ═════════════════════════════════════════════════════════════════════════
     // BATAS TRANSFORM (PERSIS LEVEL 2): SISMOGRAF & SESAR SAN ANDREAS
@@ -164,139 +909,9 @@ function renderIllustration(
       return <TransformSanAndreasIllustration />;
 
     // ── 1. KERAK BUMI & LITOSFER (0 - 100 KM) ──────────────────────────────────
-    // Komparasi Bersih: KERAK BENUA (Gunung Merapi, Tebal ~100 km) vs KERAK SAMUDRA (Lautan Samudra, Tebal 5-15 km)
+    // Komparasi Realistik: KERAK BENUA (Daratan, Tebal ~100 km) vs KERAK SAMUDRA (Dasar Laut, Tebal 5-15 km)
     case 'crust':
-      return (
-        <svg viewBox="0 0 540 240" className="w-full h-full object-contain" shapeRendering="crispEdges">
-          {/* Latar Belakang Kanvas */}
-          <rect x="0" y="0" width="540" height="240" fill="#020617" />
-
-          {/* ══════════════════════════════════════════════════════════════════════════
-              PANEL KIRI: KERAK BENUA (DI BAWAH DARATAN - GUNUNG MERAPI & STRATA 100 KM)
-              ══════════════════════════════════════════════════════════════════════════ */}
-          <g id="panel-kerak-benua">
-            {/* Langit Daratan */}
-            <rect x="4" y="4" width="262" height="84" fill="#1e293b" />
-            <rect x="4" y="55" width="262" height="33" fill="#334155" opacity="0.4" />
-
-            {/* Matahari & Awan Merapi */}
-            <rect x="18" y="34" width="10" height="10" fill="#fbbf24" />
-            <rect x="190" y="32" width="34" height="6" fill="#64748b" opacity="0.6" />
-
-            {/* Kepulan Asap Kawah Merapi */}
-            <rect x="128" y="24" width="12" height="10" fill="#cbd5e1" opacity="0.85" />
-            <rect x="132" y="16" width="14" height="8" fill="#f1f5f9" />
-
-            {/* Kerucut Gunung Merapi */}
-            <polygon points="52,88 134,36 216,88" fill="#475569" />
-            <polygon points="134,36 216,88 134,88" fill="#334155" />
-            {/* Rekahan Kawah Magma */}
-            <rect x="130" y="35" width="8" height="3" fill="#ea580c" />
-            <line x1="134" y1="38" x2="134" y2="48" stroke="#f97316" strokeWidth="1.5" />
-
-            {/* Lereng Hijau & Vegetasi Permukaan */}
-            <polygon points="40,88 72,78 104,88" fill="#15803d" />
-            <polygon points="164,88 196,78 228,88" fill="#166534" />
-            <line x1="4" y1="88" x2="266" y2="88" stroke="#22c55e" strokeWidth="2.5" />
-
-            {/* ── Lapisan Strata Batuan Kerak Benua ── */}
-            {/* Strata 1: Lapisan Sedimen & Tanah Permukaan */}
-            <rect x="4" y="90" width="262" height="32" fill="#b45309" />
-            <line x1="4" y1="106" x2="266" y2="106" stroke="#92400e" strokeWidth="1.5" strokeDasharray="8 4" />
-
-            {/* Strata 2: Kerak Benua Atas (Granit / SiAl) */}
-            <rect x="4" y="122" width="262" height="40" fill="#78350f" />
-            <line x1="4" y1="142" x2="266" y2="142" stroke="#5c2508" strokeWidth="1.5" strokeDasharray="12 6" />
-
-            {/* Strata 3: Kerak Benua Bawah (Kristalin Padat Menuju Moho) */}
-            <rect x="4" y="162" width="262" height="33" fill="#4a044e" opacity="0.85" />
-
-            {/* Batas Moho (Batas Bawah Kerak Benua) */}
-            <line x1="4" y1="195" x2="266" y2="195" stroke="#f97316" strokeWidth="2.5" strokeDasharray="6 3" />
-
-            {/* Mantel Bumi / Astenosfer di Bawah Kerak Benua */}
-            <rect x="4" y="196" width="262" height="40" fill="#3e1806" />
-            <line x1="4" y1="216" x2="266" y2="216" stroke="#ea580c" strokeWidth="1" strokeDasharray="8 6" />
-
-            {/* ── Indikator Ketebalan Kerak Benua (~100 KM) ── */}
-            <line x1="20" y1="90" x2="20" y2="195" stroke="#facc15" strokeWidth="2.5" />
-            <polygon points="20,90 15,96 25,96" fill="#facc15" />
-            <polygon points="20,195 15,189 25,189" fill="#facc15" />
-
-            {/* Badge Keterangan Ketebalan Kerak Benua (Bersih, Rapi, Terpisah Sempurna) */}
-            <rect x="32" y="124" width="224" height="38" rx="4" fill="#0f172a" stroke="#facc15" strokeWidth="1.5" />
-            <text x="144" y="140" fill="#fef08a" fontSize="8" fontFamily="'Press Start 2P', monospace" textAnchor="middle">TEBAL: ~100 KM</text>
-            <text x="144" y="153" fill="#fed7aa" fontSize="6.5" fontFamily="'Press Start 2P', monospace" textAnchor="middle">(50 MIL - DI BAWAH DARATAN)</text>
-
-            {/* Judul Panel Kiri */}
-            <rect x="14" y="8" width="242" height="22" rx="4" fill="#2e1065" stroke="#f59e0b" strokeWidth="1.5" />
-            <text x="135" y="23" fill="#fef08a" fontSize="9" fontFamily="'Press Start 2P', monospace" textAnchor="middle">1. KERAK BENUA</text>
-          </g>
-
-          {/* ══════════════════════════════════════════════════════════════════════════
-              GARIS PEMISAH VERTIKAL DUA PANEL (DIVIDER EMAS TEGAS)
-              ══════════════════════════════════════════════════════════════════════════ */}
-          <rect x="268" y="4" width="4" height="232" fill="#f59e0b" />
-          <rect x="269" y="6" width="2" height="228" fill="#fef08a" />
-
-          {/* ══════════════════════════════════════════════════════════════════════════
-              PANEL KANAN: KERAK SAMUDRA (DI BAWAH LAUTAN - AIR SAMUDRA & BASAL 5-15 KM)
-              ══════════════════════════════════════════════════════════════════════════ */}
-          <g id="panel-kerak-samudra">
-            {/* Udara di Atas Lautan */}
-            <rect x="274" y="4" width="262" height="34" fill="#0f172a" />
-
-            {/* Permukaan Lautan Samudra */}
-            <rect x="274" y="38" width="262" height="4" fill="#e0f2fe" />
-            <line x1="274" y1="38" x2="536" y2="38" stroke="#ffffff" strokeWidth="2" strokeDasharray="8 4" />
-
-            {/* Kolom Air Samudra Biru Dalam Menghujam ke Bawah */}
-            <rect x="274" y="42" width="262" height="44" fill="#0ea5e9" />
-            <rect x="274" y="86" width="262" height="44" fill="#0284c7" />
-            <rect x="274" y="130" width="262" height="45" fill="#0369a1" />
-
-            {/* Sinar Cahaya Menembus Air Laut */}
-            <line x1="290" y1="42" x2="330" y2="120" stroke="#bae6fd" strokeWidth="1" opacity="0.3" strokeDasharray="6 4" />
-            <line x1="470" y1="42" x2="510" y2="120" stroke="#bae6fd" strokeWidth="1" opacity="0.3" strokeDasharray="6 4" />
-
-            {/* Label Kolom Lautan Samudra (Bersih, Rapi, Terpisah Sempurna) */}
-            <rect x="316" y="80" width="180" height="38" rx="4" fill="#082f49" stroke="#38bdf8" strokeWidth="1.5" />
-            <text x="406" y="96" fill="#ffffff" fontSize="8" fontFamily="'Press Start 2P', monospace" textAnchor="middle">LAUTAN SAMUDRA</text>
-            <text x="406" y="109" fill="#7dd3fc" fontSize="6.5" fontFamily="'Press Start 2P', monospace" textAnchor="middle">(KOLOM AIR DALAM)</text>
-
-            {/* Dasar Lautan (Seafloor Sediments) */}
-            <rect x="274" y="175" width="262" height="4" fill="#475569" />
-
-            {/* ── Lapisan Kerak Samudra Tipis (Basal / SiMa - Bersih Tanpa Ovals/Bulat-Bulat) ── */}
-            <rect x="274" y="179" width="262" height="16" fill="#0f172a" stroke="#1e293b" strokeWidth="1" />
-            <line x1="274" y1="187" x2="536" y2="187" stroke="#334155" strokeWidth="1" strokeDasharray="10 5" />
-
-            {/* Batas Moho di Bawah Kerak Samudra */}
-            <line x1="274" y1="195" x2="536" y2="195" stroke="#f97316" strokeWidth="2.5" strokeDasharray="6 3" />
-
-            {/* Mantel Bumi / Astenosfer di Bawah Kerak Samudra */}
-            <rect x="274" y="196" width="262" height="40" fill="#3e1806" />
-            <line x1="274" y1="216" x2="536" y2="216" stroke="#ea580c" strokeWidth="1" strokeDasharray="8 6" />
-
-            {/* ── Indikator Ketebalan Kerak Samudra (5 - 15 KM) ── */}
-            <line x1="290" y1="179" x2="290" y2="195" stroke="#38bdf8" strokeWidth="2.5" />
-            <polygon points="290,179 285,184 295,184" fill="#38bdf8" />
-            <polygon points="290,195 285,190 295,190" fill="#38bdf8" />
-
-            {/* Badge Keterangan Ketebalan Kerak Samudra (Bersih, Rapi, Terpisah Sempurna) */}
-            <rect x="304" y="168" width="224" height="38" rx="4" fill="#0f172a" stroke="#38bdf8" strokeWidth="1.5" />
-            <text x="416" y="184" fill="#38bdf8" fontSize="8" fontFamily="'Press Start 2P', monospace" textAnchor="middle">TEBAL: 5 - 15 KM</text>
-            <text x="416" y="197" fill="#bae6fd" fontSize="6.5" fontFamily="'Press Start 2P', monospace" textAnchor="middle">(3 MIL - PADAT &amp; BERAT)</text>
-
-            {/* Judul Panel Kanan */}
-            <rect x="284" y="8" width="242" height="22" rx="4" fill="#0c4a6e" stroke="#38bdf8" strokeWidth="1.5" />
-            <text x="405" y="23" fill="#7dd3fc" fontSize="9" fontFamily="'Press Start 2P', monospace" textAnchor="middle">2. KERAK SAMUDRA</text>
-          </g>
-
-          {/* Label Batas Moho & Mantel Bawah yang Membentang */}
-          <text x="270" y="228" z="100000" fill="#ffffffff" fontSize="7" fontFamily="'Press Start 2P', monospace" textAnchor="middle">ASTENOSFER (MANTEL BUMI)</text>
-        </svg>
-      );
+      return <CrustComparisonIllustration />;
 
     // ── 2. DINAMIKA LEMPENG & ASTENOSFER (100 - 660 KM) ────────────────────────
     // Rekonstruksi Realistis Zona Subduksi, Palung Laut Dalam, Gunung Berapi & Wadati-Benioff Zone!
@@ -344,23 +959,23 @@ function renderIllustration(
 
           {/* Convection Roll Left (Arus Konveksi Astenosfer) */}
           <g transform="translate(90, 165)">
-            <circle cx="0" cy="0" r="32" fill="none" stroke="#ea580c" strokeWidth="8" strokeDasharray="14 6" opacity="0.8" />
+            <circle cx="0" cy="0" r="32" fill="none" stroke="#ea580c" strokeWidth="8" opacity="0.8" />
             <polygon points="-32,-6 -40,10 -24,10" fill="#ef4444" />
             <polygon points="32,6 40,-10 24,-10" fill="#38bdf8" />
-            <text x="-25" y="4" fill="#ffffff" fontSize="7" fontFamily="'Press Start 2P'">KONVEKSI</text>
+            <text x="-28" y="4" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">KONVEKSI</text>
           </g>
 
           {/* Convection Roll Right */}
           <g transform="translate(420, 175)">
-            <circle cx="0" cy="0" r="30" fill="none" stroke="#ea580c" strokeWidth="8" strokeDasharray="14 6" opacity="0.8" />
+            <circle cx="0" cy="0" r="30" fill="none" stroke="#ea580c" strokeWidth="8" opacity="0.8" />
             <polygon points="30,-6 38,10 22,10" fill="#ef4444" />
             <polygon points="-30,6 -38,-10 -22,-10" fill="#38bdf8" />
-            <text x="-25" y="4" fill="#ffffff" fontSize="7" fontFamily="'Press Start 2P'">KONVEKSI</text>
+            <text x="-28" y="4" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">KONVEKSI</text>
           </g>
 
           {/* ── DEHYDRATION MELTING & RISING MAGMA DIAPIRS ── */}
           {/* Magma Plumes rising to feed the volcano */}
-          <path d="M 280,160 Q 300,100 310,55" fill="none" stroke="#f97316" strokeWidth="5" strokeDasharray="6 3" />
+          <path d="M 280,160 Q 300,100 310,55" fill="none" stroke="#f97316" strokeWidth="5" />
           <circle cx="285" cy="150" r="8" fill="#ea580c" />
           <circle cx="298" cy="105" r="11" fill="#f97316" stroke="#fef08a" strokeWidth="1.5" /> {/* Magma chamber */}
           <circle cx="310" cy="55" r="7" fill="#ef4444" />
@@ -374,33 +989,33 @@ function renderIllustration(
 
           {/* ── LABELS WITH CRISP RETRO BADGES ── */}
           {/* Deep Sea Trench Label */}
-          <g transform="translate(100, 38)">
-            <rect x="0" y="0" width="135" height="15" fill="#082f49" rx="3" stroke="#38bdf8" strokeWidth="1" />
-            <text x="6" y="11" fill="#38bdf8" fontSize="7" fontFamily="'Press Start 2P'">PALUNG LAUT DALAM</text>
+          <g transform="translate(85, 34)">
+            <rect x="0" y="0" width="165" height="20" fill="#082f49" rx="4" stroke="#38bdf8" strokeWidth="1.5" />
+            <text x="10" y="14" fill="#38bdf8" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">PALUNG LAUT DALAM</text>
           </g>
 
           {/* Volcanic Arc Label */}
-          <g transform="translate(325, 24)">
-            <rect x="0" y="0" width="165" height="15" fill="#450a0a" rx="3" stroke="#f97316" strokeWidth="1" />
-            <text x="6" y="11" fill="#fef08a" fontSize="7" fontFamily="'Press Start 2P'">BUSUR GUNUNG BERAPI</text>
+          <g transform="translate(315, 20)">
+            <rect x="0" y="0" width="180" height="20" fill="#450a0a" rx="4" stroke="#f97316" strokeWidth="1.5" />
+            <text x="10" y="14" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">BUSUR GUNUNG BERAPI</text>
           </g>
 
           {/* Subducting Plate Label */}
-          <g transform="translate(15, 115)">
-            <rect x="0" y="0" width="155" height="15" fill="#0f172a" rx="3" stroke="#64748b" strokeWidth="1" />
-            <text x="6" y="11" fill="#cbd5e1" fontSize="7" fontFamily="'Press Start 2P'">LEMPENG MENUNJAM</text>
+          <g transform="translate(15, 110)">
+            <rect x="0" y="0" width="165" height="20" fill="#0f172a" rx="4" stroke="#64748b" strokeWidth="1.5" />
+            <text x="10" y="14" fill="#cbd5e1" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">LEMPENG MENUNJAM</text>
           </g>
 
           {/* Wadati-Benioff earthquakes label */}
-          <g transform="translate(230, 85)">
-            <rect x="0" y="0" width="165" height="14" fill="#7f1d1d" rx="2" stroke="#ef4444" strokeWidth="1" />
-            <text x="5" y="10" fill="#fef08a" fontSize="6.5" fontFamily="'Press Start 2P'">FOKUS GEMPA SUBDUKSI</text>
+          <g transform="translate(225, 82)">
+            <rect x="0" y="0" width="180" height="18" fill="#7f1d1d" rx="3" stroke="#ef4444" strokeWidth="1.5" />
+            <text x="8" y="13" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">FOKUS GEMPA SUBDUKSI</text>
           </g>
 
           {/* Bottom Asthenosphere Label */}
-          <g transform="translate(150, 222)">
-            <rect x="0" y="0" width="200" height="14" fill="#1c1917" rx="3" opacity="0.9" />
-            <text x="6" y="10" fill="#fb923c" fontSize="7" fontFamily="'Press Start 2P'">ARUS KONVEKSI (540°C–1.600°C)</text>
+          <g transform="translate(120, 218)">
+            <rect x="0" y="0" width="260" height="18" fill="#1c1917" rx="4" stroke="#fb923c" strokeWidth="1" opacity="0.95" />
+            <text x="12" y="13" fill="#fb923c" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">ARUS KONVEKSI (540°C–1.600°C)</text>
           </g>
         </svg>
       );
@@ -460,9 +1075,9 @@ function renderIllustration(
           </g>
 
           {/* Panah Konveksi Melengkung (Arus Mantel Naik & Memisah) */}
-          <path d="M 255,175 Q 255,145 235,140" fill="none" stroke="#fed7aa" strokeWidth="2" strokeDasharray="3 2" />
+          <path d="M 255,175 Q 255,145 235,140" fill="none" stroke="#fed7aa" strokeWidth="2" />
           <polygon points="230,140 238,136 237,144" fill="#fed7aa" />
-          <path d="M 255,175 Q 255,145 275,140" fill="none" stroke="#fed7aa" strokeWidth="2" strokeDasharray="3 2" />
+          <path d="M 255,175 Q 255,145 275,140" fill="none" stroke="#fed7aa" strokeWidth="2" />
           <polygon points="280,140 272,136 273,144" fill="#fed7aa" />
 
           {/* ── BALOK KIRI (LEMPENG 1 - BERGERAK KE KIRI MENJAUH DENGAN ANIMASI LOOP) ── */}
@@ -676,8 +1291,8 @@ function renderIllustration(
             {/* Sisi Sesar Geser (Bidang Patahan yang Bergerak Bersama Balok Kiri) */}
             <polygon points="245,118 283,72 283,185 245,185" fill="#2d150b" stroke="#1c0a02" strokeWidth="1" />
             {/* Guratan Sesar Mendatar (Horizontal Striations) */}
-            <line x1="247" y1="126" x2="280" y2="82" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="5 3" />
-            <line x1="247" y1="148" x2="280" y2="104" stroke="#fed7aa" strokeWidth="1" strokeDasharray="5 3" />
+            <line x1="247" y1="126" x2="280" y2="82" stroke="#cbd5e1" strokeWidth="1" />
+            <line x1="247" y1="148" x2="280" y2="104" stroke="#fed7aa" strokeWidth="1" />
 
             {/* Panah Merah Menunjuk MAJU / KE BAWAH searah pergeseran sesar transform */}
             <g>
@@ -731,175 +1346,7 @@ function renderIllustration(
     // ── 3A. ARUS KONVEKSI PANAS MANTEL BUMI (TERMAL 1.000°C - 3.700°C & 20 LEMPENG) ──
     // ══════════════════════════════════════════════════════════════════════════
     case 'mantle-convection':
-      return (
-        <svg viewBox="0 0 540 240" className="w-full h-full object-contain" shapeRendering="crispEdges">
-          <style>{`
-            @keyframes mantleCycle {
-              0% { stroke-dashoffset: 48; }
-              100% { stroke-dashoffset: 0; }
-            }
-            @keyframes thermalPulse {
-              0%, 100% { opacity: 0.75; transform: scaleY(0.96); }
-              50% { opacity: 1; transform: scaleY(1.04); }
-            }
-            .anim-mantle-flow { animation: mantleCycle 4s linear infinite; }
-            .anim-thermal-pulse { animation: thermalPulse 3.5s ease-in-out infinite; transform-origin: 270px 220px; }
-          `}</style>
-
-          {/* Kanvas Latar Belakang - Gradien Mantel Bumi */}
-          <rect x="0" y="0" width="540" height="240" fill="#090201" />
-
-          <defs>
-            <linearGradient id="mantleBgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#1a0604" />
-              <stop offset="40%" stopColor="#450a0a" />
-              <stop offset="85%" stopColor="#7c2d12" />
-              <stop offset="100%" stopColor="#ea580c" />
-            </linearGradient>
-            <linearGradient id="risingThermalGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="#ef4444" />
-              <stop offset="50%" stopColor="#f97316" />
-              <stop offset="100%" stopColor="#fef08a" />
-            </linearGradient>
-            <linearGradient id="sinkingColdGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#38bdf8" />
-              <stop offset="50%" stopColor="#1e3a8a" />
-              <stop offset="100%" stopColor="#450a0a" />
-            </linearGradient>
-          </defs>
-
-          {/* Latar Belakang Gradien Termal Mantel */}
-          <rect x="0" y="0" width="540" height="240" fill="url(#mantleBgGrad)" opacity="0.9" />
-
-          {/* ══════════════════════════════════════════════════════════════════════════
-              ATAS: LITOSFER & 20 LEMPENG TEKTONIK (SUHU ~540°C)
-              ══════════════════════════════════════════════════════════════════════════ */}
-          {/* Panah Gerak Lempeng di Atas (Hanya di Lempeng A dan Lempeng C, Sejajar di y=7) */}
-          {/* Gerak Lempeng A (Menjauh ke Kiri) */}
-          <line x1="82" y1="7" x2="118" y2="7" stroke="#fbbf24" strokeWidth="2" />
-          <polygon points="74,7 82,3 82,11" fill="#fbbf24" />
-
-          {/* Gerak Lempeng C (Menjauh ke Kanan) */}
-          <line x1="422" y1="7" x2="458" y2="7" stroke="#fbbf24" strokeWidth="2" />
-          <polygon points="466,7 458,3 458,11" fill="#fbbf24" />
-
-          {/* ── 1. LEMPENG A: KERAK BENUA KIRI (y: 14 - 36, Bersih & Rapi) ── */}
-          <g id="plate-a-continental">
-            {/* Badan Batuan Granit Kerak Benua */}
-            <rect x="20" y="14" width="155" height="22" fill="#78350f" stroke="#451a03" strokeWidth="1" />
-            {/* Lapisan Tanah & Vegetasi Hijau Permukaan */}
-            <rect x="20" y="14" width="155" height="3.5" fill="#15803d" />
-            <line x1="20" y1="14" x2="175" y2="14" stroke="#22c55e" strokeWidth="1" />
-            {/* Label Lempeng A */}
-            <text x="97" y="29" fill="#fef08a" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">LEMPENG A</text>
-          </g>
-
-          {/* ── 2. LEMPENG B: KERAK SAMUDRA TENGAH (y: 14 - 36, Bersih Tanpa Celah Aneh) ── */}
-          <g id="plate-b-oceanic">
-            {/* Kolom Air Samudra Biru di Atas Kerak */}
-            <rect x="181" y="14" width="178" height="7" fill="#0284c7" />
-            <line x1="181" y1="14" x2="359" y2="14" stroke="#38bdf8" strokeWidth="1.5" />
-            {/* Batuan Basal Kerak Samudra Padat */}
-            <rect x="181" y="21" width="178" height="15" fill="#1e293b" stroke="#0f172a" strokeWidth="1" />
-            <line x1="181" y1="21" x2="359" y2="21" stroke="#334155" strokeWidth="1" strokeDasharray="8 4" />
-            {/* Label Lempeng B (Samudra) */}
-            <text x="270" y="30" fill="#7dd3fc" fontSize="6.5" fontFamily="'Press Start 2P'" textAnchor="middle">LEMPENG B (SAMUDRA)</text>
-          </g>
-
-          {/* ── 3. LEMPENG C: KERAK BENUA KANAN (y: 14 - 36, Bersih & Rapi) ── */}
-          <g id="plate-c-continental">
-            {/* Badan Batuan Granit Kerak Benua */}
-            <rect x="365" y="14" width="155" height="22" fill="#78350f" stroke="#451a03" strokeWidth="1" />
-            {/* Lapisan Tanah & Vegetasi Hijau Permukaan */}
-            <rect x="365" y="14" width="155" height="3.5" fill="#15803d" />
-            <line x1="365" y1="14" x2="520" y2="14" stroke="#22c55e" strokeWidth="1" />
-            {/* Label Lempeng C */}
-            <text x="442" y="29" fill="#fef08a" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">LEMPENG C</text>
-          </g>
-
-          {/* ══════════════════════════════════════════════════════════════════════════
-              TENGAH: DUA SEL ARUS KONVEKSI TERMAL RAKSASA (SEL KIRI & SEL KANAN)
-              ══════════════════════════════════════════════════════════════════════════ */}
-          {/* SEL 1: Konveksi Kiri (Counter-Clockwise) */}
-          <g id="convection-cell-left">
-            {/* Jalur Lingkaran Aliran Konveksi */}
-            <path
-              d="M 180,205 C 180,120 180,80 120,60 C 60,80 60,140 60,185 C 60,215 120,225 180,205 Z"
-              fill="none"
-              stroke="#fb923c"
-              strokeWidth="6"
-              strokeDasharray="14 6"
-              className="anim-mantle-flow"
-              opacity="0.85"
-            />
-            {/* Kolom Termal Panas Naik di Kanan Sel 1 */}
-            <path d="M 170,210 Q 185,130 180,50" stroke="url(#risingThermalGrad)" strokeWidth="8" fill="none" opacity="0.7" />
-            {/* Kolom Batuan Dingin Tenggelam di Kiri Sel 1 */}
-            <path d="M 60,60 Q 55,130 65,190" stroke="url(#sinkingColdGrad)" strokeWidth="6" fill="none" opacity="0.6" />
-
-            {/* Panah Indikator Arah Aliran Panas Naik */}
-            <polygon points="180,110 174,122 186,122" fill="#fef08a" />
-            <polygon points="180,75 174,87 186,87" fill="#ffffff" />
-            {/* Panah Indikator Arah Dingin Turun */}
-            <polygon points="60,130 54,118 66,118" fill="#38bdf8" />
-
-            {/* Label Pusat Sel */}
-            <rect x="82" y="125" width="76" height="20" rx="3" fill="#1c0f08" stroke="#f97316" strokeWidth="1" />
-            <text x="120" y="139" fill="#fed7aa" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">SEL 1</text>
-          </g>
-
-          {/* SEL 2: Konveksi Kanan (Clockwise) */}
-          <g id="convection-cell-right">
-            {/* Jalur Lingkaran Aliran Konveksi */}
-            <path
-              d="M 360,205 C 360,120 360,80 420,60 C 480,80 480,140 480,185 C 480,215 420,225 360,205 Z"
-              fill="none"
-              stroke="#fb923c"
-              strokeWidth="6"
-              strokeDasharray="14 6"
-              className="anim-mantle-flow"
-              opacity="0.85"
-            />
-            {/* Kolom Termal Panas Naik di Kiri Sel 2 (Pusat Mantle Plume Upwelling) */}
-            <path d="M 370,210 Q 355,130 360,50" stroke="url(#risingThermalGrad)" strokeWidth="8" fill="none" opacity="0.7" />
-            {/* Kolom Batuan Dingin Tenggelam di Kanan Sel 2 */}
-            <path d="M 480,60 Q 485,130 475,190" stroke="url(#sinkingColdGrad)" strokeWidth="6" fill="none" opacity="0.6" />
-
-            {/* Panah Indikator Arah Aliran Panas Naik */}
-            <polygon points="360,110 354,122 366,122" fill="#fef08a" />
-            <polygon points="360,75 354,87 366,87" fill="#ffffff" />
-            {/* Panah Indikator Arah Dingin Turun */}
-            <polygon points="480,130 474,118 486,118" fill="#38bdf8" />
-
-            {/* Label Pusat Sel */}
-            <rect x="382" y="125" width="76" height="20" rx="3" fill="#1c0f08" stroke="#f97316" strokeWidth="1" />
-            <text x="420" y="139" fill="#fed7aa" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">SEL 2</text>
-          </g>
-
-          {/* ══════════════════════════════════════════════════════════════════════════
-              BAWAH: BATAS INTI LUAR - MANTEL (CORE-MANTLE BOUNDARY / D'') - 3.700°C
-              ══════════════════════════════════════════════════════════════════════════ */}
-          <g className="anim-thermal-pulse">
-            <rect x="0" y="210" width="540" height="30" fill="#ea580c" />
-            <rect x="0" y="222" width="540" height="18" fill="#fef08a" />
-            <line x1="0" y1="210" x2="540" y2="210" stroke="#ffffff" strokeWidth="2" strokeDasharray="8 4" />
-          </g>
-
-          {/* ══════════════════════════════════════════════════════════════════════════
-              RETRO PIXEL LABELS & SCIENTIFIC DATA
-              ══════════════════════════════════════════════════════════════════════════ */}
-          {/* Upwelling Panas Tengah */}
-          <rect x="215" y="80" width="110" height="24" rx="3" fill="#450a0a" stroke="#f97316" strokeWidth="1.5" />
-          <text x="270" y="93" fill="#fef08a" fontSize="6.5" fontFamily="'Press Start 2P'" textAnchor="middle">ARUS PANAS NAIK</text>
-          <text x="270" y="101" fill="#fed7aa" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">(MEMUAI &amp; RINGAN)</text>
-
-          {/* Sinking Kiri & Kanan */}
-          <rect x="8" y="160" width="105" height="22" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
-          <text x="60" y="171" fill="#7dd3fc" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">BATUAN MENIKUK</text>
-          <text x="60" y="179" fill="#bae6fd" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">DINGIN TENGGELAM</text>
-
-        </svg>
-      );
+      return <MantleConvectionIllustration />;
 
     // ══════════════════════════════════════════════════════════════════════════
     // ── 3B. BATUAN BRIDGMANITE & TEKANAN EKSTREM (860 KM DEPTH, SILIKAT PADAT SEPERTI BETON) ──
@@ -942,9 +1389,9 @@ function renderIllustration(
 
           {/* Rekahan Fissure Dinding Mantel dengan Urat Lava Magma Membara */}
           <path d="M 0,35 Q 80,45 150,20 Q 220,5 280,30 Q 360,15 540,40" stroke="#7f1d1d" strokeWidth="8" fill="none" />
-          <path d="M 0,35 Q 80,45 150,20 Q 220,5 280,30 Q 360,15 540,40" stroke="#ea580c" strokeWidth="2" fill="none" strokeDasharray="12 8" />
+          <path d="M 0,35 Q 80,45 150,20 Q 220,5 280,30 Q 360,15 540,40" stroke="#ea580c" strokeWidth="2" fill="none" />
           <path d="M 0,205 Q 120,195 240,215 Q 360,200 540,210" stroke="#7f1d1d" strokeWidth="10" fill="none" />
-          <path d="M 0,205 Q 120,195 240,215 Q 360,200 540,210" stroke="#f97316" strokeWidth="3" fill="none" strokeDasharray="16 6" />
+          <path d="M 0,205 Q 120,195 240,215 Q 360,200 540,210" stroke="#f97316" strokeWidth="3" fill="none" />
 
           {/* ══════════════════════════════════════════════════════════════════════════
               PUSAT: MONOLIT KRISTAL BRIDGMANITE KUBIK (STRUKTUR PEROVSKITE PADAT SEPERTI BETON)
@@ -975,8 +1422,8 @@ function renderIllustration(
               <polygon points="130,75 170,60 155,48 115,63" fill="#92400e" />
 
               {/* Label Formula Kimia di Kubus */}
-              <rect x="25" y="65" width="90" height="22" rx="3" fill="#1c0a02" stroke="#facc15" strokeWidth="1.5" />
-              <text x="70" y="80" fill="#fef08a" fontSize="7.5" fontFamily="'Press Start 2P'" textAnchor="middle">(Mg,Fe)SiO3</text>
+              <rect x="15" y="62" width="110" height="26" rx="4" fill="#1c0a02" stroke="#facc15" strokeWidth="2" />
+              <text x="70" y="80" fill="#fef08a" fontSize="9.5" fontFamily="'Press Start 2P'" textAnchor="middle">(Mg,Fe)SiO3</text>
             </g>
           </g>
 
@@ -1024,7 +1471,7 @@ function renderIllustration(
 
           {/* Top Discontinuity Line (660 km Boundary) */}
           <rect x="0" y="0" width="500" height="24" fill="#78350f" />
-          <line x1="0" y1="24" x2="500" y2="24" stroke="#f59e0b" strokeWidth="2" strokeDasharray="8 4" />
+          <line x1="0" y1="24" x2="500" y2="24" stroke="#f59e0b" strokeWidth="2" />
           <text x="15" y="16" fill="#fef08a" fontSize="8" fontFamily="'Press Start 2P'">BATAS MANTEL ATAS (660 KM DISKONTINUITAS)</text>
 
           {/* High-Pressure Mineral Matrix (Peridotit / Bridgmanit & Perovscite) */}
@@ -1037,7 +1484,6 @@ function renderIllustration(
               y2={45 + r * 30}
               stroke="#7f1d1d"
               strokeWidth="2"
-              strokeDasharray="18 10"
               opacity="0.6"
             />
           ))}
@@ -1064,28 +1510,30 @@ function renderIllustration(
           <rect x="0" y="200" width="500" height="40" fill="#7c2d12" />
           <rect x="0" y="215" width="500" height="25" fill="#d97706" />
           <line x1="0" y1="200" x2="500" y2="200" stroke="#f59e0b" strokeWidth="2" />
-          <line x1="0" y1="215" x2="500" y2="215" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="6 3" />
+          <line x1="0" y1="215" x2="500" y2="215" stroke="#ffffff" strokeWidth="1.5" />
 
           {/* ── LABELS WITH RETRO PIXEL BACKINGS ── */}
-          <g transform="translate(15, 60)">
-            <text x="6" y="11" fill="#fef08a" fontSize="7.5" fontFamily="'Press Start 2P'">TEBAL: 2.900 KM (TERTEBAL!)</text>
+          <g transform="translate(15, 56)">
+            <rect x="0" y="0" width="195" height="20" fill="#450a0a" rx="4" stroke="#f59e0b" strokeWidth="1.5" />
+            <text x="8" y="14" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">TEBAL: 2.900 KM (TERTEBAL!)</text>
           </g>
 
-          <g transform="translate(15, 82)">
-            <text x="0" y="0" fill="#fed7aa" fontSize="9" fontFamily="'Pixelify Sans'">Batuan padat mengalir kental (arus konveksi lambat)</text>
+          <g transform="translate(15, 84)">
+            <text x="0" y="0" fill="#fed7aa" fontSize="10.5" fontWeight="500" fontFamily="sans-serif">Batuan padat mengalir kental (arus konveksi lambat)</text>
           </g>
 
-          <g transform="translate(325, 45)">
-            <rect x="0" y="0" width="165" height="15" fill="#7c2d12" rx="3" stroke="#fbbf24" strokeWidth="1" />
-            <text x="6" y="11" fill="#fef08a" fontSize="7" fontFamily="'Press Start 2P'">MANTLE PLUME (HOTSPOT)</text>
+          <g transform="translate(305, 42)">
+            <rect x="0" y="0" width="185" height="20" fill="#7c2d12" rx="4" stroke="#fbbf24" strokeWidth="1.5" />
+            <text x="8" y="14" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">MANTLE PLUME (HOTSPOT)</text>
           </g>
-          <g transform="translate(325, 68)">
-            <text x="0" y="0" fill="#fed7aa" fontSize="8.5" fontFamily="'Pixelify Sans'">Pipa panas dari batas inti bumi</text>
+          <g transform="translate(305, 70)">
+            <text x="0" y="0" fill="#fed7aa" fontSize="10" fontWeight="500" fontFamily="sans-serif">Pipa panas dari batas inti bumi</text>
           </g>
 
           {/* CMB Bottom Label */}
-          <g transform="translate(120, 226)">
-            <text x="0" y="0" fill="#1c1917" fontSize="8" fontFamily="'Press Start 2P'">BATAS INTI-MANTEL (D&apos;&apos;) • ~3.700°C / 136 GPa</text>
+          <g transform="translate(100, 226)">
+            <rect x="-10" y="-13" width="320" height="18" fill="#fef08a" rx="3" />
+            <text x="150" y="0" fill="#1c1917" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">BATAS INTI-MANTEL (D&apos;&apos;) • ~3.700°C / 136 GPa</text>
           </g>
         </svg>
       );
@@ -1176,8 +1624,8 @@ function renderIllustration(
           <g id="panel-termal-kiri" transform="translate(14, 10)">
             {/* Bingkai Panel Termal */}
             <rect x="0" y="0" width="205" height="220" rx="4" fill="#180603" stroke="#f97316" strokeWidth="1.5" />
-            <rect x="0" y="0" width="205" height="22" rx="4" fill="#450a0a" />
-            <text x="102" y="15" fill="#fef08a" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">SKALA TITIK LELEH</text>
+            <rect x="0" y="0" width="205" height="24" rx="4" fill="#450a0a" />
+            <text x="102" y="16" fill="#fef08a" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">SKALA TITIK LELEH</text>
 
             {/* Kolom Termometer Digital Retro */}
             <rect x="18" y="32" width="14" height="170" rx="4" fill="#080201" stroke="#451a03" strokeWidth="1" />
@@ -1186,33 +1634,33 @@ function renderIllustration(
 
             {/* Garis Penanda 1: Titik Leleh Nikel (Ni) -> 1.455°C */}
             <line x1="12" y1="148" x2="38" y2="148" stroke="#38bdf8" strokeWidth="2" />
-            <rect x="42" y="139" width="154" height="20" rx="3" fill="#0c1d33" stroke="#38bdf8" strokeWidth="1" />
-            <text x="47" y="149" fill="#7dd3fc" fontSize="5.5" fontFamily="'Press Start 2P'">LELEH NIKEL (Ni)</text>
-            <text x="47" y="156" fill="#bae6fd" fontSize="5.5" fontFamily="'Press Start 2P'">1.455°C (TITIK LELEH)</text>
+            <rect x="42" y="137" width="154" height="23" rx="3" fill="#0c1d33" stroke="#38bdf8" strokeWidth="1" />
+            <text x="47" y="148" fill="#7dd3fc" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">LELEH NIKEL (Ni)</text>
+            <text x="47" y="157" fill="#bae6fd" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">1.455°C (TITIK LELEH)</text>
 
             {/* Garis Penanda 2: Titik Leleh Besi (Fe) -> 1.538°C */}
             <line x1="12" y1="116" x2="38" y2="116" stroke="#fbbf24" strokeWidth="2" />
-            <rect x="42" y="107" width="154" height="20" rx="3" fill="#2e1403" stroke="#fbbf24" strokeWidth="1" />
-            <text x="47" y="117" fill="#fde047" fontSize="5.5" fontFamily="'Press Start 2P'">LELEH BESI (Fe)</text>
-            <text x="47" y="124" fill="#fed7aa" fontSize="5.5" fontFamily="'Press Start 2P'">1.538°C (TITIK LELEH)</text>
+            <rect x="42" y="105" width="154" height="23" rx="3" fill="#2e1403" stroke="#fbbf24" strokeWidth="1" />
+            <text x="47" y="116" fill="#fde047" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">LELEH BESI (Fe)</text>
+            <text x="47" y="125" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">1.538°C (TITIK LELEH)</text>
 
             {/* Garis Penanda 3: SUHU INTI LUAR -> ~5.000°C */}
             <line x1="12" y1="42" x2="38" y2="42" stroke="#ef4444" strokeWidth="3" />
-            <rect x="42" y="33" width="154" height="26" rx="3" fill="#450a0a" stroke="#ef4444" strokeWidth="1.5" className="anim-heat-glow" />
-            <text x="47" y="44" fill="#fca5a5" fontSize="6" fontFamily="'Press Start 2P'">INTI LUAR: ~5.000°C</text>
-            <text x="47" y="54" fill="#ffffff" fontSize="5" fontFamily="'Press Start 2P'">(MELELEH JADI CAIRAN!)</text>
+            <rect x="42" y="31" width="154" height="28" rx="4" fill="#450a0a" stroke="#ef4444" strokeWidth="1.5" className="anim-heat-glow" />
+            <text x="47" y="44" fill="#fca5a5" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">INTI LUAR: ~5.000°C</text>
+            <text x="47" y="56" fill="#ffffff" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">(MELELEH JADI CAIRAN!)</text>
 
             {/* Indikator Panah Lampaui Titik Leleh */}
-            <path d="M 120,64 L 120,100" stroke="#f87171" strokeWidth="2" strokeDasharray="3 2" />
+            <path d="M 120,64 L 120,100" stroke="#f87171" strokeWidth="2" />
             <polygon points="120,62 116,68 124,68" fill="#ef4444" />
-            <text x="120" y="85" fill="#fca5a5" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">JAUH MELAMPAUI</text>
-            <text x="120" y="93" fill="#fef08a" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">TITIK LEBUR LOGAM</text>
+            <text x="120" y="84" fill="#fca5a5" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">JAUH MELAMPAUI</text>
+            <text x="120" y="94" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">TITIK LEBUR LOGAM</text>
 
             {/* Rangkuman Kesimpulan Bawah */}
-            <rect x="8" y="174" width="189" height="36" rx="3" fill="#080201" stroke="#f97316" strokeWidth="1" />
-            <text x="102" y="186" fill="#fef08a" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">BUKAN BATUAN PADAT!</text>
-            <text x="102" y="196" fill="#fed7aa" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">LOGAM BESI &amp; NIKEL CAIR</text>
-            <text x="102" y="205" fill="#fca5a5" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">MELELEH SECARA TOTAL</text>
+            <rect x="8" y="172" width="189" height="40" rx="4" fill="#080201" stroke="#f97316" strokeWidth="1" />
+            <text x="102" y="185" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">BUKAN BATUAN PADAT!</text>
+            <text x="102" y="197" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">LOGAM BESI &amp; NIKEL CAIR</text>
+            <text x="102" y="207" fill="#fca5a5" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">MELELEH SECARA TOTAL</text>
           </g>
 
           {/* ══════════════════════════════════════════════════════════════════════════
@@ -1260,7 +1708,7 @@ function renderIllustration(
               <path d="M 148,186 L 148,82" stroke="url(#upwellingGrad)" strokeWidth="16" opacity="0.45" className="anim-plume-glow" />
               <path d="M 148,186 L 148,82" stroke="#ffffff" strokeWidth="6" opacity="0.65" className="anim-plume-glow" />
               {/* Garis Aliran Vektor Naik Berpendar Animasi */}
-              <line x1="148" y1="184" x2="148" y2="84" stroke="#ffffff" strokeWidth="2.5" strokeDasharray="10 5" className="anim-stream-cycle" />
+              <line x1="148" y1="184" x2="148" y2="84" stroke="#ffffff" strokeWidth="2.5" className="anim-stream-cycle" />
               <polygon points="148,78 142,88 154,88" fill="#ffffff" />
               <polygon points="148,126 143,134 153,134" fill="#fef08a" />
               <polygon points="148,162 144,170 152,170" fill="#fef08a" />
@@ -1272,7 +1720,6 @@ function renderIllustration(
                 fill="none"
                 stroke="#fef08a"
                 strokeWidth="2"
-                strokeDasharray="8 5"
                 className="anim-stream-cycle"
                 opacity="0.9"
               />
@@ -1282,7 +1729,6 @@ function renderIllustration(
                 fill="none"
                 stroke="#fef08a"
                 strokeWidth="2"
-                strokeDasharray="8 5"
                 className="anim-stream-cycle"
                 opacity="0.9"
               />
@@ -1301,7 +1747,7 @@ function renderIllustration(
                   {/* Lengan 3 - Jingga Termal (Rotasi 240 deg) */}
                   <path d="M 0,0 Q -8,14 0,24 Q 14,32 26,20 Q 34,4 28,-16 Q 18,-34 -6,-36 Q -30,-34 -34,-6" fill="none" stroke="#f97316" strokeWidth="2" opacity="0.75" />
                   {/* Cincin Elektromagnetik */}
-                  <circle cx="0" cy="0" r="30" fill="none" stroke="#fef08a" strokeWidth="1.2" strokeDasharray="8 6" opacity="0.7" />
+                  <circle cx="0" cy="0" r="30" fill="none" stroke="#fef08a" strokeWidth="1.2" opacity="0.7" />
                   {/* Partikel Listrik Statis Berputar */}
                   <circle cx="20" cy="-18" r="1.5" fill="#67e8f9" />
                   <circle cx="-22" cy="12" r="1.5" fill="#ffffff" />
@@ -1324,7 +1770,7 @@ function renderIllustration(
                   {/* Lengan 3 - Jingga Termal (Rotasi 240 deg) */}
                   <path d="M 0,0 Q 8,14 0,24 Q -14,32 -26,20 Q -34,4 -28,-16 Q -18,-34 6,-36 Q 30,-34 34,-6" fill="none" stroke="#f97316" strokeWidth="2" opacity="0.75" />
                   {/* Cincin Elektromagnetik */}
-                  <circle cx="0" cy="0" r="30" fill="none" stroke="#fef08a" strokeWidth="1.2" strokeDasharray="8 6" opacity="0.7" />
+                  <circle cx="0" cy="0" r="30" fill="none" stroke="#fef08a" strokeWidth="1.2" opacity="0.7" />
                   {/* Partikel Listrik Statis Berputar */}
                   <circle cx="-20" cy="-18" r="1.5" fill="#67e8f9" />
                   <circle cx="22" cy="12" r="1.5" fill="#ffffff" />
@@ -1338,13 +1784,13 @@ function renderIllustration(
               </g>
 
               {/* 7. Badge Keterangan Bawah Panel Kanan (Berada di Dasar, Terpisah Bersih) */}
-              <rect x="18" y="192" width="260" height="20" rx="3" fill="#080201" stroke="#f59e0b" strokeWidth="1.5" />
-              <text x="148" y="205" fill="#fef08a" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">GEODYNAMO: PUSARAN BESI-NIKEL 5.000°C</text>
+              <rect x="18" y="190" width="260" height="24" rx="4" fill="#080201" stroke="#f59e0b" strokeWidth="1.5" />
+              <text x="148" y="206" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">GEODYNAMO: PUSARAN BESI-NIKEL 5.000°C</text>
             </g>
 
             {/* Header Kotak Kanan (Digambar di atas agar garis batasnya selalu tajam) */}
-            <rect x="0" y="0" width="296" height="22" rx="4" fill="#78350f" stroke="#f59e0b" strokeWidth="1.5" />
-            <text x="148" y="15" fill="#fef08a" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">LAUTAN LOGAM CAIR 5.000°C</text>
+            <rect x="0" y="0" width="296" height="24" rx="4" fill="#78350f" stroke="#f59e0b" strokeWidth="1.5" />
+            <text x="148" y="16" fill="#fef08a" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">LAUTAN LOGAM CAIR 5.000°C</text>
           </g>
         </svg>
       );
@@ -1354,23 +1800,23 @@ function renderIllustration(
     // ══════════════════════════════════════════════════════════════════════════
     case 'geodynamo':
       return (
-        <svg viewBox="0 0 540 240" className="w-full h-full object-contain" shapeRendering="crispEdges">
+        <svg viewBox="0 0 540 240" className="w-full h-full object-contain" shapeRendering="geometricPrecision">
           <style>{`
             @keyframes solarWindFlow {
               0% { stroke-dashoffset: 48; }
               100% { stroke-dashoffset: 0; }
             }
             @keyframes magneticPulse {
-              0%, 100% { stroke-width: 2; opacity: 0.7; }
-              50% { stroke-width: 3.2; opacity: 1; }
+              0%, 100% { stroke-width: 2.2; opacity: 0.75; }
+              50% { stroke-width: 3.6; opacity: 1; filter: drop-shadow(0 0 5px #38bdf8); }
             }
-            @keyframes dynamoSpin {
+            @keyframes dynamoSpinCCW {
               0% { stroke-dashoffset: 0; }
-              100% { stroke-dashoffset: 32; }
+              100% { stroke-dashoffset: 48; }
             }
-            .anim-solar-wind { animation: solarWindFlow 1.8s linear infinite; }
-            .anim-mag-field { animation: magneticPulse 3.2s ease-in-out infinite; }
-            .anim-dynamo-spin { animation: dynamoSpin 2.4s linear infinite; }
+            .anim-solar-wind { stroke-dasharray: 14 8; animation: solarWindFlow 1.6s linear infinite; }
+            .anim-mag-field { animation: magneticPulse 2.8s ease-in-out infinite; }
+            .anim-dynamo-spin { stroke-dasharray: 8 4; animation: dynamoSpinCCW 2s linear infinite; }
           `}</style>
 
           {/* Latar Belakang Luar Angkasa Gelap Total dengan Bintang */}
@@ -1383,22 +1829,37 @@ function renderIllustration(
 
           {/* ── ALIRAN ANGIN MATAHARI DARI KIRI (SOLAR WIND & COSMIC RADIATION) ── */}
           {Array.from({ length: 7 }).map((_, i) => (
-            <line
-              key={i}
-              x1="0"
-              y1={35 + i * 28}
-              x2="145"
-              y2={35 + i * 28}
-              stroke="#fbbf24"
-              strokeWidth="2.5"
-              strokeDasharray="12 6"
-              className="anim-solar-wind"
-            />
+            <g key={i}>
+              <line
+                x1="0"
+                y1={35 + i * 28}
+                x2="145"
+                y2={35 + i * 28}
+                stroke="#fbbf24"
+                strokeWidth="2.5"
+                className="anim-solar-wind"
+              />
+              <polygon
+                points={`140,${35 + i * 28} 130,${31 + i * 28} 130,${39 + i * 28}`}
+                fill="#fde047"
+              />
+            </g>
           ))}
 
-          {/* Label Angin Matahari */}
-          <rect x="8" y="10" width="165" height="18" rx="3" fill="#451a03" stroke="#fbbf24" strokeWidth="1" />
-          <text x="90" y="22" fill="#fbbf24" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">ANGIN SURYA MEMATIKAN</text>
+          {/* ── DUA BADGE HEADER TERPISAH BERSIH (TIDAK BERTABRAKAN / MENYAMBUNG) ── */}
+          {/* Label 1: Angin Matahari (Kiri) */}
+          <rect x="12" y="10" width="165" height="24" rx="4" fill="#451a03" stroke="#fbbf24" strokeWidth="1.5" />
+          <text x="94" y="26" fill="#fbbf24" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            ANGIN SURYA MEMATIKAN
+          </text>
+
+          {/* Label 2: Perisai Magnetosfer (Kanan - Berjarak Nyata 33px) */}
+          <g transform="translate(210, 10)">
+            <rect x="0" y="0" width="175" height="24" rx="4" fill="#082f49" stroke="#38bdf8" strokeWidth="1.5" />
+            <text x="87" y="16" fill="#38bdf8" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+              PERISAI MAGNETOSFER
+            </text>
+          </g>
 
           {/* ── GELOMBANG KEJUT BUSUR MAGNETOSFER (BOW SHOCK WAVE) ── */}
           <path
@@ -1406,51 +1867,44 @@ function renderIllustration(
             fill="none"
             stroke="#38bdf8"
             strokeWidth="3.5"
-            strokeDasharray="10 4"
             className="anim-mag-field"
           />
           {/* Efek pembelokan garis radiasi di sepanjang bow shock */}
-          <path d="M 145,63 Q 165,40 210,12" fill="none" stroke="#fde047" strokeWidth="2" strokeDasharray="6 3" />
-          <path d="M 145,175 Q 165,200 210,228" fill="none" stroke="#fde047" strokeWidth="2" strokeDasharray="6 3" />
+          <path d="M 145,63 Q 165,40 210,12" fill="none" stroke="#fde047" strokeWidth="2.5" />
+          <path d="M 145,175 Q 165,200 210,228" fill="none" stroke="#fde047" strokeWidth="2.5" />
 
           {/* ── POTONGAN BUMI & INTI BUMI DI TENGAH (EARTH CROSS SECTION) ── */}
           {/* Kerak & Mantel Luar */}
           <circle cx="330" cy="120" r="88" fill="#78350f" stroke="#92400e" strokeWidth="2" />
           {/* Lapisan Kerak Benua & Samudra di Permukaan Bumi */}
-          <circle cx="330" cy="120" r="88" fill="none" stroke="#22c55e" strokeWidth="3" strokeDasharray="24 16" />
-          <circle cx="330" cy="120" r="88" fill="none" stroke="#0284c7" strokeWidth="3" strokeDasharray="16 24" />
+          <circle cx="330" cy="120" r="88" fill="none" stroke="#22c55e" strokeWidth="3" />
+          <circle cx="330" cy="120" r="88" fill="none" stroke="#0284c7" strokeWidth="3" />
 
           {/* INTI LUAR CAIR MEMBARA (MOLTEN FE-NI AT 5.000°C - DINAMO GENERATOR) */}
           <circle cx="330" cy="120" r="62" fill="#ea580c" stroke="#f59e0b" strokeWidth="3" />
 
           {/* Pusaran Arus Putaran Dinamo di Inti Luar */}
-          <ellipse cx="330" cy="94" rx="28" ry="11" fill="none" stroke="#fef08a" strokeWidth="3" strokeDasharray="8 4" className="anim-dynamo-spin" />
-          <ellipse cx="330" cy="146" rx="28" ry="11" fill="none" stroke="#fef08a" strokeWidth="3" strokeDasharray="8 4" className="anim-dynamo-spin" />
+          <ellipse cx="330" cy="94" rx="28" ry="11" fill="none" stroke="#fef08a" strokeWidth="3" className="anim-dynamo-spin" />
+          <ellipse cx="330" cy="146" rx="28" ry="11" fill="none" stroke="#fef08a" strokeWidth="3" className="anim-dynamo-spin" />
 
           {/* INTI DALAM PADAT KRISTALIN DI PUSAT */}
           <circle cx="330" cy="120" r="26" fill="#fef08a" stroke="#ffffff" strokeWidth="2" />
-          <text x="330" y="123" fill="#78350f" fontSize="6.5" fontFamily="'Press Start 2P'" textAnchor="middle">INTI</text>
+          <text x="330" y="124" fill="#78350f" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            INTI
+          </text>
 
           {/* ── GARIS GAYA MEDAN MAGNETIK BUMI (DIPOLAR MAGNETIC FIELD LOOPS) ── */}
           {/* Loop Utama Luar */}
-          <path d="M 330,28 C 170,-45 170,285 330,212" fill="none" stroke="#38bdf8" strokeWidth="2.5" strokeDasharray="14 5" className="anim-mag-field" />
-          <path d="M 330,28 C 490,-45 490,285 330,212" fill="none" stroke="#38bdf8" strokeWidth="2.5" strokeDasharray="14 5" className="anim-mag-field" />
+          <path d="M 330,28 C 170,-45 170,285 330,212" fill="none" stroke="#38bdf8" strokeWidth="2.5" className="anim-mag-field" />
+          <path d="M 330,28 C 490,-45 490,285 330,212" fill="none" stroke="#38bdf8" strokeWidth="2.5" className="anim-mag-field" />
 
           {/* Loop Dalam Sekunder */}
-          <path d="M 330,52 C 215,8 215,232 330,188" fill="none" stroke="#818cf8" strokeWidth="2" strokeDasharray="10 4" />
-          <path d="M 330,52 C 445,8 445,232 330,188" fill="none" stroke="#818cf8" strokeWidth="2" strokeDasharray="10 4" />
+          <path d="M 330,52 C 215,8 215,232 330,188" fill="none" stroke="#818cf8" strokeWidth="2" />
+          <path d="M 330,52 C 445,8 445,232 330,188" fill="none" stroke="#818cf8" strokeWidth="2" />
 
           {/* Cahaya Aurora di Kutub Magnetik */}
           <ellipse cx="330" cy="34" rx="16" ry="4" fill="#34d399" opacity="0.85" />
           <ellipse cx="330" cy="206" rx="16" ry="4" fill="#34d399" opacity="0.85" />
-
-          {/* ── RETRO PIXEL BADGES DENGAN INFORMASI LENGKAP ── */}
-          {/* Badge Perisai Magnetosfer */}
-          <g transform="translate(185, 12)">
-            <rect x="0" y="0" width="168" height="18" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1.5" />
-            <text x="84" y="12" fill="#38bdf8" fontSize="6" fontFamily="'Press Start 2P'" textAnchor="middle">PERISAI MAGNETOSFER</text>
-          </g>
-
         </svg>
       );
 
@@ -1472,18 +1926,18 @@ function renderIllustration(
             {/* Lapisan Batas Inti Luar Cair di Atas dan Bawah (Lehmann Discontinuity) */}
             <rect x="0" y="0" width="540" height="32" fill="#7c1d06" />
             <rect x="0" y="208" width="540" height="32" fill="#7c1d06" />
-            <line x1="0" y1="32" x2="540" y2="32" stroke="#f59e0b" strokeWidth="2" strokeDasharray="10 4" />
-            <line x1="0" y1="208" x2="540" y2="208" stroke="#f59e0b" strokeWidth="2" strokeDasharray="10 4" />
+            <line x1="0" y1="32" x2="540" y2="32" stroke="#f59e0b" strokeWidth="2" />
+            <line x1="0" y1="208" x2="540" y2="208" stroke="#f59e0b" strokeWidth="2" />
 
             {/* Riak Fluida Logam Meleleh di Inti Luar */}
-            <line x1="10" y1="16" x2="160" y2="16" stroke="#fbbf24" strokeWidth="1.5" strokeDasharray="16 8" />
-            <line x1="380" y1="16" x2="530" y2="16" stroke="#fbbf24" strokeWidth="1.5" strokeDasharray="16 8" />
-            <line x1="20" y1="224" x2="180" y2="224" stroke="#fbbf24" strokeWidth="1.5" strokeDasharray="16 8" />
-            <line x1="360" y1="224" x2="520" y2="224" stroke="#fbbf24" strokeWidth="1.5" strokeDasharray="16 8" />
+            <line x1="10" y1="16" x2="160" y2="16" stroke="#fbbf24" strokeWidth="1.5" />
+            <line x1="380" y1="16" x2="530" y2="16" stroke="#fbbf24" strokeWidth="1.5" />
+            <line x1="20" y1="224" x2="180" y2="224" stroke="#fbbf24" strokeWidth="1.5" />
+            <line x1="360" y1="224" x2="520" y2="224" stroke="#fbbf24" strokeWidth="1.5" />
 
             {/* Label Batas Diskontinuitas Lehmann */}
-            <rect x="180" y="6" width="180" height="18" rx="3" fill="#450a0a" stroke="#f97316" strokeWidth="1" />
-            <text x="270" y="18" fill="#fef08a" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">DISKONTINUITAS LEHMANN</text>
+            <rect x="150" y="5" width="240" height="24" rx="4" fill="#450a0a" stroke="#f97316" strokeWidth="1.5" />
+            <text x="270" y="21" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">DISKONTINUITAS LEHMANN</text>
 
             {/* ── BOLA BESI PADAT DI PUSAT (SOLID Fe-Ni INNER CORE) ── */}
             {/* Cincin Radiasi Cahaya Panas 6.000°C (Sepanas Matahari) */}
@@ -1552,29 +2006,29 @@ function renderIllustration(
 
             {/* ── RETRO PIXEL BADGES DENGAN INFORMASI LENGKAP ── */}
             {/* Panel Kiri: Tekanan Ekstrem */}
-            <g transform="translate(10, 88)">
-              <rect x="0" y="0" width="128" height="64" rx="4" fill="#450a0a" stroke="#ef4444" strokeWidth="1.5" />
-              <rect x="4" y="4" width="120" height="15" rx="2" fill="#7f1d1d" />
-              <text x="64" y="15" fill="#fca5a5" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">TEKANAN EKSTREM</text>
-              <text x="64" y="32" fill="#ffffff" fontSize="7.5" fontFamily="'Press Start 2P'" textAnchor="middle">&gt;3,6 JUTA ATM</text>
-              <text x="64" y="44" fill="#fef08a" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">(360 GIGAPASCAL)</text>
-              <text x="64" y="56" fill="#fed7aa" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">KUNCI ATOM TETAP PADAT</text>
+            <g transform="translate(8, 74)">
+              <rect x="0" y="0" width="142" height="88" rx="6" fill="#450a0a" stroke="#ef4444" strokeWidth="2" />
+              <rect x="4" y="4" width="134" height="20" rx="3" fill="#7f1d1d" />
+              <text x="71" y="18" fill="#fca5a5" fontSize="10" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">TEKANAN EKSTREM</text>
+              <text x="71" y="42" fill="#ffffff" fontSize="14" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">&gt;3,6 JUTA ATM</text>
+              <text x="71" y="60" fill="#fef08a" fontSize="10" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">(360 GIGAPASCAL)</text>
+              <text x="71" y="78" fill="#fed7aa" fontSize="9.5" fontWeight="600" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">Kunci Atom Tetap Padat</text>
             </g>
 
             {/* Panel Kanan: Suhu Ekstrem */}
-            <g transform="translate(402, 88)">
-              <rect x="0" y="0" width="128" height="64" rx="4" fill="#78350f" stroke="#fbbf24" strokeWidth="1.5" />
-              <rect x="4" y="4" width="120" height="15" rx="2" fill="#92400e" />
-              <text x="64" y="15" fill="#fef08a" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">SUHU EKSTREM</text>
-              <text x="64" y="32" fill="#ffffff" fontSize="7.5" fontFamily="'Press Start 2P'" textAnchor="middle">~6.000°C</text>
-              <text x="64" y="44" fill="#fed7aa" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">(5.500°C – 6.000°C)</text>
-              <text x="64" y="56" fill="#fde047" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">SEPANAS MATAHARI!</text>
+            <g transform="translate(390, 74)">
+              <rect x="0" y="0" width="142" height="88" rx="6" fill="#78350f" stroke="#fbbf24" strokeWidth="2" />
+              <rect x="4" y="4" width="134" height="20" rx="3" fill="#92400e" />
+              <text x="71" y="18" fill="#fef08a" fontSize="10" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">SUHU EKSTREM</text>
+              <text x="71" y="42" fill="#ffffff" fontSize="14" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">~6.000°C</text>
+              <text x="71" y="60" fill="#fed7aa" fontSize="10" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">(5.500°C – 6.000°C)</text>
+              <text x="71" y="78" fill="#fde047" fontSize="9.5" fontWeight="600" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">Sepanas Matahari!</text>
             </g>
 
             {/* Banner Bawah: Dimensi Inti Dalam */}
-            <g transform="translate(110, 212)">
-              <rect x="-31" y="0" width="380" height="22" rx="3" fill="#0c0a09" stroke="#f59e0b" strokeWidth="1.5" />
-              <text x="160" y="15" fill="#fef08a" fontSize="6.5" fontFamily="'Press Start 2P'" textAnchor="middle">
+            <g transform="translate(70, 208)">
+              <rect x="0" y="0" width="400" height="26" rx="4" fill="#0c0a09" stroke="#f59e0b" strokeWidth="1.5" />
+              <text x="200" y="18" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">
                 BOLA BESI PADAT: DIAMETER 1.200 - 1.250 KM (750 MIL)
               </text>
             </g>
@@ -1604,38 +2058,38 @@ function renderIllustration(
               <rect x="10" y="8" width="180" height="224" rx="4" fill="#0f0502" stroke="#d97706" strokeWidth="1.5" />
 
               {/* Judul Panel Kiri */}
-              <rect x="18" y="14" width="164" height="18" rx="2" fill="#451a03" stroke="#f59e0b" strokeWidth="1" />
-              <text x="100" y="26" fill="#fef08a" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">PENAMPANG KEDALAMAN</text>
+              <rect x="18" y="14" width="164" height="20" rx="3" fill="#451a03" stroke="#f59e0b" strokeWidth="1" />
+              <text x="100" y="28" fill="#fef08a" fontSize="10" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">PENAMPANG KEDALAMAN</text>
 
               {/* Batang Strata Kedalaman */}
               {/* 1. Kerak Bumi (0 - 100 km) */}
               <rect x="22" y="38" width="50" height="14" fill="#15803d" />
               <rect x="74" y="38" width="110" height="14" fill="#1e293b" />
-              <text x="78" y="48" fill="#86efac" fontSize="5" fontFamily="'Press Start 2P'">0-100 KM KERAK</text>
+              <text x="78" y="49" fill="#86efac" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">0-100 KM KERAK</text>
 
               {/* 2. Mantel Bumi (100 - 2.900 km) */}
               <rect x="22" y="54" width="50" height="38" fill="#b45309" />
               <rect x="74" y="54" width="110" height="38" fill="#261005" />
-              <text x="78" y="70" fill="#fed7aa" fontSize="5" fontFamily="'Press Start 2P'">2.900 KM</text>
-              <text x="78" y="82" fill="#f97316" fontSize="5" fontFamily="'Press Start 2P'">MANTEL PADAT</text>
+              <text x="78" y="68" fill="#fed7aa" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">2.900 KM</text>
+              <text x="78" y="82" fill="#f97316" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">MANTEL PADAT</text>
 
               {/* 3. Inti Luar (2.900 - 5.150 km) */}
               <rect x="22" y="94" width="50" height="36" fill="#ea580c" />
               <rect x="74" y="94" width="110" height="36" fill="#3a0d04" />
-              <text x="78" y="109" fill="#fed7aa" fontSize="5" fontFamily="'Press Start 2P'">5.150 KM</text>
-              <text x="78" y="121" fill="#fde047" fontSize="5" fontFamily="'Press Start 2P'">INTI LUAR CAIR</text>
+              <text x="78" y="108" fill="#fed7aa" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">5.150 KM</text>
+              <text x="78" y="122" fill="#fde047" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">INTI LUAR CAIR</text>
 
               {/* 4. Inti Dalam (5.150 - 6.371 km) */}
               <rect x="22" y="132" width="50" height="42" fill="#fef08a" />
               <rect x="74" y="132" width="110" height="42" fill="#451a03" />
-              <text x="78" y="148" fill="#fef08a" fontSize="5" fontFamily="'Press Start 2P'">6.371 KM</text>
-              <text x="78" y="160" fill="#ffffff" fontSize="5.5" fontFamily="'Press Start 2P'">INTI DALAM</text>
-              <text x="78" y="170" fill="#fbbf24" fontSize="5" fontFamily="'Press Start 2P'">BOLA PADAT</text>
+              <text x="78" y="146" fill="#fef08a" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">6.371 KM</text>
+              <text x="78" y="159" fill="#ffffff" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">INTI DALAM</text>
+              <text x="78" y="170" fill="#fbbf24" fontSize="8" fontWeight="600" fontFamily="'Plus Jakarta Sans', sans-serif">BOLA PADAT</text>
 
               {/* Garis Penanda Titik Pusat Mutlak */}
               <rect x="18" y="180" width="164" height="44" rx="3" fill="#2e1065" stroke="#a855f7" strokeWidth="1" />
-              <text x="100" y="196" fill="#fef08a" fontSize="6.5" fontFamily="'Press Start 2P'" textAnchor="middle">PUSAT BUMI</text>
-              <text x="100" y="210" fill="#e9d5ff" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">6.371 KILOMETER</text>
+              <text x="100" y="198" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">PUSAT BUMI</text>
+              <text x="100" y="214" fill="#e9d5ff" fontSize="9.5" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">6.371 KILOMETER</text>
             </g>
 
             {/* ══════════════════════════════════════════════════════════════════════════
@@ -1645,14 +2099,14 @@ function renderIllustration(
               <rect x="198" y="8" width="332" height="224" rx="4" fill="#0f0502" stroke="#d97706" strokeWidth="1.5" />
 
               {/* Garis Poros Rotasi Bumi (Sumbu Kutub Utara - Selatan) */}
-              <line x1="364" y1="12" x2="364" y2="228" stroke="#38bdf8" strokeWidth="1.5" strokeDasharray="6 3" />
+              <line x1="364" y1="12" x2="364" y2="228" stroke="#38bdf8" strokeWidth="1.5" />
 
               {/* Label Poros Sumbu Rotasi */}
-              <rect x="290" y="14" width="150" height="16" rx="2" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
-              <text x="365" y="25" fill="#7dd3fc" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">▲ KUTUB UTARA</text>
+              <rect x="290" y="14" width="150" height="18" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
+              <text x="365" y="26" fill="#7dd3fc" fontSize="9.5" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">▲ KUTUB UTARA</text>
 
-              <rect x="290" y="210" width="150" height="16" rx="2" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
-              <text x="365" y="221" fill="#7dd3fc" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">▼ KUTUB SELATAN</text>
+              <rect x="290" y="210" width="150" height="18" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
+              <text x="365" y="222" fill="#7dd3fc" fontSize="9.5" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">▼ KUTUB SELATAN</text>
 
               {/* Pendaran Cahaya Altar Kristal di Pusat */}
               <circle cx="364" cy="118" r="76" fill="#b45309" opacity="0.2" />
@@ -1666,7 +2120,7 @@ function renderIllustration(
                 <polygon points="-8,-34 8,-34 14,-20 14,20 8,34 -8,34 -14,20 -14,-20" fill="#fef08a" stroke="#ffffff" strokeWidth="2" />
 
                 {/* Sinar P-Wave Seismik Merambat Cepat Searah Sumbu Kristal */}
-                <line x1="0" y1="-62" x2="0" y2="62" stroke="#ffffff" strokeWidth="3" strokeDasharray="8 4" />
+                <line x1="0" y1="-62" x2="0" y2="62" stroke="#ffffff" strokeWidth="3" />
 
                 {/* Titik Singularity Pusat Mutlak Bumi */}
                 <circle cx="0" cy="0" r="7" fill="#ffffff" stroke="#fbbf24" strokeWidth="2" />
@@ -1674,31 +2128,29 @@ function renderIllustration(
 
               {/* Rambatan Gelombang Seismik P-Wave Melintasi Kutub */}
               <g transform="translate(230, 80)">
-                <line x1="0" y1="0" x2="0" y2="76" stroke="#38bdf8" strokeWidth="2" strokeDasharray="6 3" />
+                <line x1="0" y1="0" x2="0" y2="76" stroke="#38bdf8" strokeWidth="2" />
                 <polygon points="0,0 -4,10 4,10" fill="#38bdf8" />
                 <polygon points="0,76 -4,66 4,66" fill="#38bdf8" />
-                <rect x="8" y="24" width="76" height="28" rx="2" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
-                <text x="46" y="36" fill="#38bdf8" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">GELOMBANG</text>
-                <text x="46" y="46" fill="#ffffff" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">P-WAVE CEPAT</text>
+                <rect x="8" y="24" width="85" height="32" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
+                <text x="50" y="37" fill="#38bdf8" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">GELOMBANG</text>
+                <text x="50" y="49" fill="#ffffff" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">P-WAVE CEPAT</text>
               </g>
 
               {/* ── RETRO PIXEL BADGES PENJELASAN ── */}
               {/* Badge Gravitasi Netto Nol */}
-              <g transform="translate(422, 60)">
-                <rect x="0" y="0" width="100" height="52" rx="3" fill="#1e1b4b" stroke="#818cf8" strokeWidth="1.5" />
-                <text x="50" y="14" fill="#a5b4fc" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">GAYA GRAVITASI</text>
-                <text x="50" y="28" fill="#ffffff" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">NETTO = 0</text>
-                <text x="50" y="40" fill="#c7d2fe" fontSize="4.5" fontFamily="'Press Start 2P'" textAnchor="middle">TARIKAN SEIMBANG</text>
-                <text x="50" y="48" fill="#c7d2fe" fontSize="4.5" fontFamily="'Press Start 2P'" textAnchor="middle">DARI SEGALA ARAH</text>
+              <g transform="translate(420, 58)">
+                <rect x="0" y="0" width="105" height="56" rx="4" fill="#1e1b4b" stroke="#818cf8" strokeWidth="1.5" />
+                <text x="52" y="15" fill="#a5b4fc" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">GRAVITASI NETTO</text>
+                <text x="52" y="32" fill="#ffffff" fontSize="12" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">NETTO = 0</text>
+                <text x="52" y="47" fill="#c7d2fe" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">Tarikan Seimbang</text>
               </g>
 
               {/* Badge Anisotropi Kristal */}
-              <g transform="translate(422, 126)">
-                <rect x="0" y="0" width="100" height="52" rx="3" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
-                <text x="50" y="14" fill="#fef08a" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">ANISOTROPI</text>
-                <text x="50" y="26" fill="#ffffff" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">KRISTAL BESI</text>
-                <text x="50" y="38" fill="#fed7aa" fontSize="4.5" fontFamily="'Press Start 2P'" textAnchor="middle">TERORIENTASI KE</text>
-                <text x="50" y="47" fill="#fde047" fontSize="4.5" fontFamily="'Press Start 2P'" textAnchor="middle">POROS ROTASI</text>
+              <g transform="translate(420, 124)">
+                <rect x="0" y="0" width="105" height="56" rx="4" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
+                <text x="52" y="15" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">ANISOTROPI</text>
+                <text x="52" y="30" fill="#ffffff" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">KRISTAL BESI</text>
+                <text x="52" y="47" fill="#fed7aa" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">Poros Rotasi Kutub</text>
               </g>
             </g>
           </g>
@@ -1732,8 +2184,8 @@ function renderIllustration(
 
             {/* Samudra Panthalassa di Sekeliling Pangea */}
             <rect x="14" y="34" width="247" height="156" fill="#0369a1" opacity="0.65" />
-            <line x1="20" y1="50" x2="60" y2="50" stroke="#7dd3fc" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
-            <line x1="180" y1="170" x2="230" y2="170" stroke="#7dd3fc" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
+            <line x1="20" y1="50" x2="60" y2="50" stroke="#7dd3fc" strokeWidth="1" opacity="0.4" />
+            <line x1="180" y1="170" x2="230" y2="170" stroke="#7dd3fc" strokeWidth="1" opacity="0.4" />
 
             {/* Superbenua Raksasa Pangea Tunggal di Tengah */}
             <polygon
@@ -1747,30 +2199,30 @@ function renderIllustration(
             <polygon points="120,90 135,82 145,95" fill="#ca8a04" />
 
             {/* Garis Rekahan Awal Pemisahan (Rift Zone) */}
-            <line x1="130" y1="65" x2="132" y2="165" stroke="#ef4444" strokeWidth="2" strokeDasharray="5 3" />
+            <line x1="130" y1="65" x2="132" y2="165" stroke="#ef4444" strokeWidth="2" />
 
             {/* Panah Pemisahan Divergen di Pangea */}
             <polygon points="110,115 95,115 102,108 102,122" fill="#fef08a" />
             <polygon points="152,115 167,115 160,108 160,122" fill="#fef08a" />
 
             {/* Judul Panel Kiri */}
-            <rect x="18" y="14" width="239" height="18" rx="3" fill="#1e3a8a" stroke="#60a5fa" strokeWidth="1" />
-            <text x="137" y="26" fill="#fef08a" fontSize="6" fontFamily="'Press Start 2P'" textAnchor="middle">
+            <rect x="18" y="12" width="239" height="22" rx="4" fill="#1e3a8a" stroke="#60a5fa" strokeWidth="1" />
+            <text x="137" y="27" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
               300 JUTA TAHUN LALU: PANGEA
             </text>
 
             {/* Keterangan Bawah Panel Kiri */}
-            <rect x="18" y="194" width="239" height="32" rx="3" fill="#0f172a" stroke="#3b82f6" strokeWidth="1" />
-            <text x="137" y="206" fill="#ffffff" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">
+            <rect x="18" y="190" width="239" height="38" rx="4" fill="#0f172a" stroke="#3b82f6" strokeWidth="1.5" />
+            <text x="137" y="205" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
               SATU KESATUAN DARATAN
             </text>
-            <text x="137" y="218" fill="#7dd3fc" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">
-              DIKELILINGI SAMUDRA PANTHALASSA
+            <text x="137" y="220" fill="#7dd3fc" fontSize="9" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+              Dikelilingi Samudra Panthalassa
             </text>
           </g>
 
           {/* ── DIVIDER TENGAH ── */}
-          <line x1="270" y1="8" x2="270" y2="232" stroke="#f59e0b" strokeWidth="2" strokeDasharray="6 4" />
+          <line x1="270" y1="8" x2="270" y2="232" stroke="#f59e0b" strokeWidth="2" />
 
           {/* ── PANEL KANAN: BUMI SAAT INI (TERPECAH AKIBAT BATAS DIVERGEN) ── */}
           <g id="panel-benua-modern">
@@ -1783,38 +2235,38 @@ function renderIllustration(
             <g className="anim-drift-left">
               <polygon points="310,75 345,70 340,110 325,115 315,100" fill="#15803d" stroke="#22c55e" strokeWidth="1.5" />
               <polygon points="325,120 348,125 340,165 320,155" fill="#166534" stroke="#22c55e" strokeWidth="1.5" />
-              <text x="330" y="95" fill="#ffffff" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">AMERIKA</text>
+              <text x="330" y="96" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">AMERIKA</text>
               {/* Panah Gerak Menjauh ke Kiri */}
               <polygon points="305,118 290,118 298,111 298,125" fill="#ef4444" />
             </g>
 
             {/* Punggung Tengah Samudra Atlantik (Mid-Atlantic Ridge) di Tengah */}
-            <path d="M 370,55 Q 365,110 375,175" fill="none" stroke="#ea580c" strokeWidth="3" strokeDasharray="6 3" />
+            <path d="M 370,55 Q 365,110 375,175" fill="none" stroke="#ea580c" strokeWidth="3" />
             <path d="M 370,55 Q 365,110 375,175" fill="none" stroke="#fef08a" strokeWidth="1" />
 
             {/* Benua Afrika & Eurasia (Bergerak ke Kanan) */}
             <g className="anim-drift-right">
               <polygon points="395,65 470,60 480,95 440,105 390,95" fill="#15803d" stroke="#22c55e" strokeWidth="1.5" />
               <polygon points="395,108 435,105 445,150 415,165 390,135" fill="#166534" stroke="#22c55e" strokeWidth="1.5" />
-              <text x="430" y="80" fill="#ffffff" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">EURASIA</text>
-              <text x="418" y="130" fill="#ffffff" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">AFRIKA</text>
+              <text x="430" y="80" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">EURASIA</text>
+              <text x="418" y="130" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">AFRIKA</text>
               {/* Panah Gerak Menjauh ke Kanan */}
               <polygon points="460,118 475,118 467,111 467,125" fill="#ef4444" />
             </g>
 
             {/* Judul Panel Kanan */}
-            <rect x="283" y="14" width="239" height="18" rx="3" fill="#7c2d12" stroke="#f97316" strokeWidth="1" />
-            <text x="402" y="26" fill="#fef08a" fontSize="6" fontFamily="'Press Start 2P'" textAnchor="middle">
+            <rect x="283" y="12" width="239" height="22" rx="4" fill="#7c2d12" stroke="#f97316" strokeWidth="1" />
+            <text x="402" y="27" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
               SEKARANG: 7 BENUA TERPISAH
             </text>
 
             {/* Keterangan Bawah Panel Kanan */}
-            <rect x="283" y="194" width="239" height="32" rx="3" fill="#0f172a" stroke="#f97316" strokeWidth="1" />
-            <text x="402" y="206" fill="#ffffff" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">
+            <rect x="283" y="190" width="239" height="38" rx="4" fill="#0f172a" stroke="#f97316" strokeWidth="1.5" />
+            <text x="402" y="205" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
               LEMPENG BERGERAK MENJAUH
             </text>
-            <text x="402" y="218" fill="#fed7aa" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">
-              MEMBENTUK SAMUDRA BARU (ATLANTIK)
+            <text x="402" y="220" fill="#fed7aa" fontSize="9" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+              Membentuk Samudra Baru (Atlantik)
             </text>
           </g>
         </svg>
@@ -1847,7 +2299,7 @@ function renderIllustration(
 
           {/* Langit Lembah Retakan Afrika Timur */}
           <rect x="6" y="6" width="528" height="70" fill="#1c1917" />
-          <line x1="10" y1="45" x2="530" y2="45" stroke="#7c2d12" strokeWidth="1" strokeDasharray="8 4" opacity="0.4" />
+          <line x1="10" y1="45" x2="530" y2="45" stroke="#7c2d12" strokeWidth="1" opacity="0.4" />
 
           {/* Semburat Cahaya Senja Horizon */}
           <rect x="6" y="55" width="528" height="22" fill="#451a03" opacity="0.6" />
@@ -1867,13 +2319,13 @@ function renderIllustration(
             <polygon points="75,48 110,38 145,55 125,76 85,76" fill="#71717a" />
             {/* Strata Kerak Benua Barat */}
             <rect x="6" y="145" width="210" height="40" fill="#27272a" />
-            <line x1="6" y1="165" x2="216" y2="165" stroke="#52525b" strokeWidth="2" strokeDasharray="8 6" />
+            <line x1="6" y1="165" x2="216" y2="165" stroke="#52525b" strokeWidth="2" />
             {/* Bidang Sesar Normal Miring (Fault Plane) */}
             <line x1="185" y1="76" x2="230" y2="185" stroke="#ea580c" strokeWidth="2.5" />
 
             {/* Panah Merah Tarikan ke Kiri (Menjauh) */}
             <polygon points="120,105 70,105 70,98 45,112 70,126 70,119 120,119" fill="#ef4444" stroke="#991b1b" strokeWidth="1" />
-            <text x="95" y="65" fill="#fef08a" fontSize="6" fontFamily="'Press Start 2P'" textAnchor="middle">
+            <text x="95" y="65" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
               TEBING BARAT
             </text>
           </g>
@@ -1882,7 +2334,7 @@ function renderIllustration(
           <polygon points="210,135 330,135 315,185 225,185" fill="#18181b" stroke="#ea580c" strokeWidth="1.5" />
           {/* Batuan Basalt Magma Beku di Lantai Retakan */}
           <rect x="220" y="136" width="100" height="14" fill="#09090b" />
-          <line x1="220" y1="140" x2="320" y2="140" stroke="#f97316" strokeWidth="1.5" strokeDasharray="4 2" />
+          <line x1="220" y1="140" x2="320" y2="140" stroke="#f97316" strokeWidth="1.5" />
 
           {/* ── BLOK SESAR KANAN (GUNUNG KEMBAR SISI TIMUR - MENJAUH KE KANAN) ── */}
           <g className="anim-rift-right">
@@ -1891,40 +2343,40 @@ function renderIllustration(
             <polygon points="395,55 430,38 465,48 455,76 415,76" fill="#71717a" />
             {/* Strata Kerak Benua Timur */}
             <rect x="324" y="145" width="210" height="40" fill="#27272a" />
-            <line x1="324" y1="165" x2="534" y2="165" stroke="#52525b" strokeWidth="2" strokeDasharray="8 6" />
+            <line x1="324" y1="165" x2="534" y2="165" stroke="#52525b" strokeWidth="2" />
             {/* Bidang Sesar Normal Miring (Fault Plane) */}
             <line x1="355" y1="76" x2="310" y2="185" stroke="#ea580c" strokeWidth="2.5" />
 
             {/* Panah Merah Tarikan ke Kanan (Menjauh) */}
             <polygon points="420,105 470,105 470,98 495,112 470,126 470,119 420,119" fill="#ef4444" stroke="#991b1b" strokeWidth="1" />
-            <text x="445" y="65" fill="#fef08a" fontSize="6" fontFamily="'Press Start 2P'" textAnchor="middle">
+            <text x="445" y="65" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
               TEBING TIMUR
             </text>
           </g>
 
           {/* ── RETRO PIXEL BADGES LENGKAP ── */}
           {/* Header Atas */}
-          <rect x="80" y="10" width="380" height="20" rx="3" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
-          <text x="270" y="23" fill="#fef08a" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">
+          <rect x="70" y="8" width="400" height="24" rx="4" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
+          <text x="270" y="24" fill="#fef08a" fontSize="11" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
             EAST AFRICAN RIFT: LEMBAH RETAKAN
           </text>
 
           {/* Badge Lembah Ambles */}
-          <rect x="180" y="102" width="180" height="24" rx="3" fill="#09090b" stroke="#f97316" strokeWidth="1.5" />
-          <text x="270" y="113" fill="#fef08a" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">
+          <rect x="175" y="98" width="190" height="30" rx="4" fill="#09090b" stroke="#f97316" strokeWidth="1.5" />
+          <text x="270" y="112" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
             ▼ LEMBAH AMBLES (GRABEN)
           </text>
-          <text x="270" y="122" fill="#fed7aa" fontSize="4.5" fontFamily="'Press Start 2P'" textAnchor="middle">
-            CALON SAMUDRA BARU MASA DEPAN
+          <text x="270" y="124" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+            Calon Samudra Baru Masa Depan
           </text>
 
           {/* Banner Bawah */}
-          <rect x="30" y="196" width="480" height="26" rx="3" fill="#0c0a09" stroke="#ea580c" strokeWidth="1.5" />
-          <text x="270" y="208" fill="#ffffff" fontSize="6" fontFamily="'Press Start 2P'" textAnchor="middle">
+          <rect x="30" y="194" width="480" height="34" rx="4" fill="#0c0a09" stroke="#ea580c" strokeWidth="1.5" />
+          <text x="270" y="209" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
             KERAK DITARIK SALING MENJAUH ➔ TANAH AMBLES
           </text>
-          <text x="270" y="218" fill="#fde047" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">
-            DIAPIT OLEH PEGUNUNGAN KEMBAR DI KEDUA SISINYA
+          <text x="270" y="222" fill="#fde047" fontSize="9" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+            Diapit oleh pegunungan kembar di kedua sisinya
           </text>
         </svg>
       );
@@ -1959,8 +2411,8 @@ function renderIllustration(
           <rect x="6" y="60" width="528" height="56" fill="#0c4a6e" opacity="0.8" />
 
           {/* Sinar Cahaya Tipis Menembus Laut Dalam */}
-          <line x1="80" y1="6" x2="110" y2="90" stroke="#bae6fd" strokeWidth="1" strokeDasharray="8 6" opacity="0.25" />
-          <line x1="420" y1="6" x2="450" y2="90" stroke="#bae6fd" strokeWidth="1" strokeDasharray="8 6" opacity="0.25" />
+          <line x1="80" y1="6" x2="110" y2="90" stroke="#bae6fd" strokeWidth="1" opacity="0.25" />
+          <line x1="420" y1="6" x2="450" y2="90" stroke="#bae6fd" strokeWidth="1" opacity="0.25" />
 
           {/* ── MANTEL BUMI & INTRUSI MAGMA DI SUMBU TENGAH (CENTRAL RIFT AXIS) ── */}
           <rect x="6" y="170" width="528" height="64" fill="#350702" />
@@ -1986,7 +2438,7 @@ function renderIllustration(
 
             {/* Panah Pemekaran ke Kiri */}
             <polygon points="170,142 120,142 120,136 95,148 120,160 120,154 170,154" fill="#38bdf8" stroke="#0284c7" strokeWidth="1" />
-            <text x="135" y="105" fill="#7dd3fc" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">
+            <text x="135" y="105" fill="#7dd3fc" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
               KERAK SAMUDRA KIRI
             </text>
           </g>
@@ -2002,34 +2454,34 @@ function renderIllustration(
 
             {/* Panah Pemekaran ke Kanan */}
             <polygon points="370,142 420,142 420,136 445,148 420,160 420,154 370,154" fill="#38bdf8" stroke="#0284c7" strokeWidth="1" />
-            <text x="405" y="105" fill="#7dd3fc" fontSize="5.5" fontFamily="'Press Start 2P'" textAnchor="middle">
+            <text x="405" y="105" fill="#7dd3fc" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
               KERAK SAMUDRA KANAN
             </text>
           </g>
 
           {/* ── RETRO PIXEL BADGES PENJELASAN ── */}
           {/* Header Atas */}
-          <rect x="70" y="10" width="400" height="20" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1.5" />
-          <text x="270" y="23" fill="#ffffff" fontSize="6.5" fontFamily="'Press Start 2P'" textAnchor="middle">
+          <rect x="60" y="8" width="420" height="24" rx="4" fill="#082f49" stroke="#38bdf8" strokeWidth="1.5" />
+          <text x="270" y="24" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
             SEAFLOOR SPREADING: PEMEKARAN DASAR LAUT
           </text>
 
           {/* Label Tengah Ridge Axis */}
-          <rect x="200" y="65" width="140" height="22" rx="3" fill="#1c0402" stroke="#ea580c" strokeWidth="1.5" />
-          <text x="270" y="76" fill="#fef08a" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">
+          <rect x="185" y="62" width="170" height="28" rx="4" fill="#1c0402" stroke="#ea580c" strokeWidth="1.5" />
+          <text x="270" y="75" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
             MAGMA NAIK MEMBEKU
           </text>
-          <text x="270" y="84" fill="#fed7aa" fontSize="4.5" fontFamily="'Press Start 2P'" textAnchor="middle">
-            MENJADI BATUAN BASAL
+          <text x="270" y="86" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+            Menjadi Batuan Basal Baru
           </text>
 
           {/* Banner Bawah */}
-          <rect x="30" y="196" width="480" height="26" rx="3" fill="#0c0a09" stroke="#38bdf8" strokeWidth="1.5" />
-          <text x="270" y="208" fill="#7dd3fc" fontSize="6" fontFamily="'Press Start 2P'" textAnchor="middle">
+          <rect x="30" y="194" width="480" height="34" rx="4" fill="#0c0a09" stroke="#38bdf8" strokeWidth="1.5" />
+          <text x="270" y="209" fill="#7dd3fc" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
             LANTAI LAUTAN TERUS MELEBAR SETIAP TAHUN
           </text>
-          <text x="270" y="218" fill="#fef08a" fontSize="5" fontFamily="'Press Start 2P'" textAnchor="middle">
-            MEMBENTUK PUNGGUNG TENGAH SAMUDRA (MID-OCEAN RIDGE)
+          <text x="270" y="222" fill="#fef08a" fontSize="9" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+            Membentuk Punggung Tengah Samudra (Mid-Ocean Ridge)
           </text>
         </svg>
       );
@@ -2043,229 +2495,310 @@ function PangeaIllustration() {
   const [selectedPlate, setSelectedPlate] = useState<string | null>(null);
 
   const colors = {
-    ocean: '#93c5fd', // Light Azure Ocean
-    shelf: '#475569', // Dark Gray Continental Shelf
-    eurasia: '#c084fc', // Purple
-    northAmerica: '#fb923c', // Coral Orange
-    southAmerica: '#facc15', // Gold Yellow
-    africa: '#84cc16', // Lime Green
-    india: '#2dd4bf', // Turquoise
-    antarctica: '#ea580c', // Deep Orange
-    australia: '#3b82f6', // Royal Blue
-    stroke: '#0f172a',
+    ocean: '#93c5fd', // Pale Azure Ocean (Screenshot 3)
+    land: '#8ec591', // Uniform Sage Green (Screenshot 3)
+    landHover: '#a7f3d0', // Glowing Luminous Mint on hover
+    stroke: '#1e293b', // Slate Charcoal Boundary Lines (Screenshot 3)
+    strokeHover: '#047857',
+    suture: '#264a38', // Faint internal terrane sutures
   };
 
   const plateDetails: Record<string, { title: string; desc: string }> = {
     eurasia: {
       title: 'EURASIA (Eropa & Asia)',
-      desc: 'Massa daratan raksasa utara Pangea. Teluk Samudra Tethys menjorok ke sisi selatannya, dengan semenanjung panjang melengkung ke timur.',
+      desc: 'Massa daratan raksasa utara Pangea. Teluk Samudra Tethys menjorok ke sisi selatannya, dengan semenanjung panjang melengkung ke timur membungkus teluk purba.',
     },
     northAmerica: {
       title: 'AMERIKA UTARA',
-      desc: 'Menyatu erat dengan Eurasia di timur laut dan berhadapan langsung dengan pesisir barat laut Afrika.',
+      desc: 'Dahulu menempel erat dengan Eurasia di timur laut (Greenland & Skotlandia) dan berhadapan langsung dengan pesisir barat laut Afrika.',
     },
     southAmerica: {
       title: 'AMERIKA SELATAN',
-      desc: 'Bukti paling ikonik: Tonjolan timur Brasil mengunci secara presisi ke dalam Teluk Guinea di pesisir barat Afrika seperti teka-teki (puzzle)!',
+      desc: 'Bukti puzzle paling ikonik Wegener: Tonjolan timur Brasil mengunci secara presisi ke dalam lekukan Teluk Guinea di pesisir barat Afrika!',
     },
     africa: {
       title: 'AFRIKA',
-      desc: 'Pusat poros Pangea! Bersentuhan langsung dengan Amerika Utara, Amerika Selatan, Eurasia, India, dan Antartika.',
+      desc: 'Pusat poros utama superkontinen Pangea! Bersentuhan langsung dengan Amerika Utara, Amerika Selatan, Eurasia, India, dan Antartika.',
     },
     india: {
       title: 'INDIA',
-      desc: 'Kepingan benua yang terjepit di antara Afrika dan Antartika sebelum bergerak cepat melintasi Samudra Hindia menabrak Eurasia.',
+      desc: 'Kepingan benua yang terjepit di antara Afrika dan Antartika sebelum bergerak cepat melintasi Samudra Hindia menabrak Eurasia membentuk Pegunungan Himalaya.',
     },
     antarctica: {
       title: 'ANTARTIKA',
-      desc: 'Massa daratan di kutub selatan Pangea, dahulu beriklim tropis-hangat dan bersatu rapat dengan Australia.',
+      desc: 'Massa daratan di kutub selatan Pangea. Dahulu beriklim tropis-hangat (terbukti dari fosil pakis purba Glossopteris) dan bersatu rapat dengan Australia.',
     },
     australia: {
       title: 'AUSTRALIA',
-      desc: 'Melekat di pesisir timur benua Antartika sebelum retakan divergen memisahkannya ratusan juta tahun kemudian.',
+      desc: 'Melekat di pesisir timur benua Antartika sebelum retakan divergen memisahkannya ratusan juta tahun kemudian menuju posisinya saat ini.',
     },
   };
 
   const activePlateInfo = selectedPlate ? plateDetails[selectedPlate] : null;
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-between bg-[#93c5fd] select-none p-1 sm:p-2 font-pixel overflow-hidden rounded-lg">
+    <div className="relative w-full h-full flex flex-col items-center justify-between bg-[#93c5fd] select-none p-2 sm:p-3 overflow-hidden rounded-xl" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {/* Top Header Mode Toggle */}
-      <div className="w-full flex items-center justify-between px-3 py-1.5 bg-slate-900/95 border border-amber-500/70 rounded-xl text-xs z-10 shadow-md">
-        <span className="text-amber-300 font-pixel-title font-bold flex items-center gap-2">
-          <PixelIcon name="globe" size={15} className="text-amber-400" />
-          <span>SUPERKONTINEN PANGEA (250 JUTA TAHUN LALU)</span>
+      <div className="w-full flex items-center justify-between px-3.5 py-2 bg-slate-900/95 border border-amber-500/70 rounded-xl z-10 shadow-lg">
+        <span className="text-amber-300 font-bold text-sm sm:text-base flex items-center gap-2 tracking-wide">
+          <PixelIcon name="globe" size={18} className="text-amber-400" />
+          <span>SUPERKONTINEN PANGEA (~250 JUTA TAHUN LALU)</span>
+        </span>
+        <span className="hidden sm:inline-block text-[11px] text-slate-300 font-medium bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700">
+          Teori Alfred Wegener (1912)
         </span>
       </div>
 
-      {/* Main SVG Pangea Map */}
+      {/* Main SVG Pangea Map matching Screenshot 3 */}
       <div className="w-full flex-1 relative flex items-center justify-center overflow-hidden my-1">
         <svg
-          viewBox="45 15 450 475"
+          viewBox="30 20 540 600"
           className="w-full h-full object-contain drop-shadow-xl"
         >
           {/* Lautan Samudra Panthalassa */}
-          <rect x="-100" y="-100" width="800" height="800" fill={colors.ocean} />
+          <rect x="-50" y="-50" width="700" height="720" fill={colors.ocean} />
 
           {/* Garis Grid Samudra Halus */}
-          <line x1="0" y1="250" x2="540" y2="250" stroke="#60a5fa" strokeWidth="1" strokeDasharray="6 4" opacity="0.4" />
-          <line x1="270" y1="0" x2="270" y2="500" stroke="#60a5fa" strokeWidth="1" strokeDasharray="6 4" opacity="0.4" />
-          <text x="525" y="246" fill="#1e3a8a" fontSize="8" fontStyle="italic" textAnchor="end" opacity="0.6">Khatulistiwa Purba</text>
-          <text x="25" y="35" fill="#1e3a8a" fontSize="10" fontWeight="bold" opacity="0.7">SAMUDRA PANTHALASSA</text>
+          <line x1="0" y1="300" x2="600" y2="300" stroke="#60a5fa" strokeWidth="1" opacity="0.45" />
+          <line x1="280" y1="0" x2="280" y2="640" stroke="#60a5fa" strokeWidth="1" opacity="0.45" />
+          <text x="560" y="295" fill="#1e3a8a" fontSize="10" fontStyle="italic" textAnchor="end" opacity="0.75" fontWeight="600">
+            Khatulistiwa Purba
+          </text>
+          <text x="45" y="45" fill="#1e3a8a" fontSize="12" fontWeight="800" opacity="0.8" letterSpacing="1">
+            SAMUDRA PANTHALASSA
+          </text>
 
           {/* Teluk Tethys Label */}
-          <g transform="translate(345, 235)">
-            <text x="0" y="0" fill="#1e3a8a" fontSize="9" fontWeight="bold" opacity="0.75" fontStyle="italic">
+          <g transform="translate(390, 290)">
+            <text x="0" y="0" fill="#1e3a8a" fontSize="12" fontWeight="bold" opacity="0.85" fontStyle="italic">
               Teluk Tethys
             </text>
-            <path d="M -10 6 Q 15 2, 40 6" fill="none" stroke="#2563eb" strokeWidth="1.5" opacity="0.6" />
+            <path d="M -15 6 Q 25 1, 65 6" fill="none" stroke="#2563eb" strokeWidth="1.8" opacity="0.7" />
           </g>
 
-          {/* Continental Shelf Margin */}
-          <path
-            d="M 170 30 C 220 20, 280 20, 340 38 C 390 55, 420 90, 440 120 C 465 145, 455 175, 430 185 C 405 190, 375 190, 340 205 C 310 220, 290 240, 280 265 C 310 285, 345 310, 360 335 C 385 370, 385 405, 360 440 C 335 465, 290 480, 240 475 C 195 470, 160 450, 140 430 C 110 400, 80 355, 65 310 C 55 265, 60 220, 60 175 C 60 135, 80 100, 110 75 C 135 55, 150 40, 170 30 Z"
-            fill={colors.shelf}
-            stroke={colors.stroke}
-            strokeWidth="2.5"
-            strokeLinejoin="round"
-          />
-
-          {/* EURASIA */}
+          {/* ── 1. EURASIA (Bagian Utara & Ekor Semenanjung Melengkung) ── */}
           <g
             onMouseEnter={() => setSelectedPlate('eurasia')}
             onMouseLeave={() => setSelectedPlate(null)}
             onClick={() => setSelectedPlate('eurasia')}
-            className="cursor-pointer transition-all hover:brightness-110"
+            className="cursor-pointer transition-all"
           >
             <path
-              d="M 145 68 C 165 48, 195 35, 230 30 C 275 25, 325 35, 365 60 C 395 80, 420 110, 435 135 C 450 160, 445 185, 425 190 C 410 190, 400 175, 380 170 C 350 175, 320 185, 290 195 C 260 205, 240 210, 230 205 C 215 200, 205 185, 190 165 C 175 145, 160 120, 145 95 C 140 85, 138 75, 145 68 Z"
-              fill={colors.eurasia}
-              stroke={selectedPlate === 'eurasia' ? '#fbbf24' : colors.stroke}
-              strokeWidth={selectedPlate === 'eurasia' ? '3.5' : '2'}
+              d="M 185 115 
+                 C 195 85, 235 52, 295 44 
+                 C 355 42, 415 62, 455 95 
+                 C 485 125, 498 155, 488 190 
+                 C 478 215, 505 208, 528 230 
+                 C 538 244, 532 258, 518 258 
+                 C 495 245, 475 235, 450 230 
+                 C 415 232, 375 245, 335 245 
+                 C 295 245, 270 240, 252 235 
+                 C 240 225, 230 212, 222 195 
+                 C 212 180, 198 160, 188 140 
+                 C 182 128, 182 120, 185 115 Z"
+              fill={selectedPlate === 'eurasia' ? colors.landHover : colors.land}
+              stroke={selectedPlate === 'eurasia' ? colors.strokeHover : colors.stroke}
+              strokeWidth={selectedPlate === 'eurasia' ? '3.5' : '2.4'}
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+            {/* Pulau Kecil / Fragmen di Ujung Semenanjung Eurasia (Persis Screenshot 3) */}
+            <path
+              d="M 536 270 C 546 260, 554 270, 548 285 C 542 295, 532 290, 536 270 Z"
+              fill={selectedPlate === 'eurasia' ? colors.landHover : colors.land}
+              stroke={selectedPlate === 'eurasia' ? colors.strokeHover : colors.stroke}
+              strokeWidth="2.2"
               strokeLinejoin="round"
             />
-            <text x="290" y="95" fill="#0f172a" fontSize="13" fontWeight="bold" textAnchor="middle">
+            {/* Garis Sutur/Patahan Internal Eurasia (Persis Tekstur Screenshot 3) */}
+            <path d="M 255 52 C 272 82, 290 120, 308 145" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+            <path d="M 345 46 C 362 85, 370 135, 375 180" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+            <path d="M 420 72 C 435 110, 438 160, 432 200" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+            <path d="M 220 78 C 240 95, 245 115, 255 135" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+
+            <text x="340" y="135" fill="#0f172a" fontSize="18" fontWeight="800" textAnchor="middle">
               Eurasia
             </text>
           </g>
 
-          {/* NORTH AMERICA */}
+          {/* ── 2. NORTH AMERICA (Kiri Atas Pangea) ── */}
           <g
             onMouseEnter={() => setSelectedPlate('northAmerica')}
             onMouseLeave={() => setSelectedPlate(null)}
             onClick={() => setSelectedPlate('northAmerica')}
-            className="cursor-pointer transition-all hover:brightness-110"
+            className="cursor-pointer transition-all"
           >
             <path
-              d="M 145 68 C 130 78, 110 78, 95 88 C 75 103, 65 128, 70 158 C 60 188, 65 218, 75 248 C 80 263, 90 278, 105 283 C 125 283, 140 278, 150 263 C 160 243, 155 218, 170 183 C 175 163, 165 138, 155 115 C 150 95, 140 80, 145 68 Z"
-              fill={colors.northAmerica}
-              stroke={selectedPlate === 'northAmerica' ? '#fbbf24' : colors.stroke}
-              strokeWidth={selectedPlate === 'northAmerica' ? '3.5' : '2'}
+              d="M 185 115 
+                 C 165 98, 138 105, 118 120 
+                 C 92 142, 78 175, 82 215 
+                 C 72 245, 78 285, 92 315 
+                 C 108 335, 132 340, 158 340 
+                 C 178 330, 192 310, 202 280 
+                 C 212 250, 222 195, 202 162 
+                 C 192 145, 185 125, 185 115 Z"
+              fill={selectedPlate === 'northAmerica' ? colors.landHover : colors.land}
+              stroke={selectedPlate === 'northAmerica' ? colors.strokeHover : colors.stroke}
+              strokeWidth={selectedPlate === 'northAmerica' ? '3.5' : '2.4'}
               strokeLinejoin="round"
+              strokeLinecap="round"
             />
-            <text x="105" y="195" fill="#0f172a" fontSize="11" fontWeight="bold" textAnchor="middle">
+            {/* Garis Sutur Internal Amerika Utara (Persis Screenshot 3) */}
+            <path d="M 152 125 C 158 165, 162 210, 168 250" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+            <path d="M 118 190 C 138 210, 158 230, 172 270" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+
+            <text x="135" y="240" fill="#0f172a" fontSize="15" fontWeight="800" textAnchor="middle">
               North
             </text>
-            <text x="105" y="210" fill="#0f172a" fontSize="11" fontWeight="bold" textAnchor="middle">
+            <text x="135" y="260" fill="#0f172a" fontSize="15" fontWeight="800" textAnchor="middle">
               America
             </text>
           </g>
 
-          {/* SOUTH AMERICA */}
+          {/* ── 3. SOUTH AMERICA (Kiri Bawah Pangea, Mengunci dengan Afrika) ── */}
           <g
             onMouseEnter={() => setSelectedPlate('southAmerica')}
             onMouseLeave={() => setSelectedPlate(null)}
             onClick={() => setSelectedPlate('southAmerica')}
-            className="cursor-pointer transition-all hover:brightness-110"
+            className="cursor-pointer transition-all"
           >
             <path
-              d="M 105 283 C 85 288, 70 303, 75 328 C 80 353, 90 383, 110 413 C 125 433, 145 438, 155 428 C 165 408, 160 378, 170 348 C 180 328, 185 308, 175 293 C 165 278, 145 273, 125 283 Z"
-              fill={colors.southAmerica}
-              stroke={selectedPlate === 'southAmerica' ? '#fbbf24' : colors.stroke}
-              strokeWidth={selectedPlate === 'southAmerica' ? '3.5' : '2'}
+              d="M 158 340 
+                 C 128 345, 102 360, 88 390 
+                 C 78 430, 82 470, 98 510 
+                 C 112 545, 132 570, 152 580 
+                 C 168 580, 178 570, 182 555 
+                 C 188 525, 192 490, 198 460 
+                 C 212 440, 228 420, 232 395 
+                 C 228 370, 208 355, 188 345 
+                 C 172 340, 158 340, 158 340 Z"
+              fill={selectedPlate === 'southAmerica' ? colors.landHover : colors.land}
+              stroke={selectedPlate === 'southAmerica' ? colors.strokeHover : colors.stroke}
+              strokeWidth={selectedPlate === 'southAmerica' ? '3.5' : '2.4'}
               strokeLinejoin="round"
+              strokeLinecap="round"
             />
-            <text x="110" y="340" fill="#0f172a" fontSize="11" fontWeight="bold" textAnchor="middle">
+            {/* Garis Sutur Internal Amerika Selatan (Persis Screenshot 3) */}
+            <path d="M 138 370 C 148 420, 152 480, 148 540" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+
+            <text x="145" y="440" fill="#0f172a" fontSize="15" fontWeight="800" textAnchor="middle">
               South
             </text>
-            <text x="110" y="355" fill="#0f172a" fontSize="11" fontWeight="bold" textAnchor="middle">
+            <text x="145" y="460" fill="#0f172a" fontSize="15" fontWeight="800" textAnchor="middle">
               America
             </text>
           </g>
 
-          {/* AFRICA */}
+          {/* ── 4. AFRICA (Pusat Poros Tengah Pangea) ── */}
           <g
             onMouseEnter={() => setSelectedPlate('africa')}
             onMouseLeave={() => setSelectedPlate(null)}
             onClick={() => setSelectedPlate('africa')}
-            className="cursor-pointer transition-all hover:brightness-110"
+            className="cursor-pointer transition-all"
           >
             <path
-              d="M 150 263 C 165 278, 175 293, 170 328 C 160 358, 165 388, 180 413 C 200 423, 225 408, 245 383 C 265 358, 285 328, 280 298 C 275 268, 255 243, 245 223 C 240 208, 220 208, 195 203 C 170 218, 160 243, 150 263 Z"
-              fill={colors.africa}
-              stroke={selectedPlate === 'africa' ? '#fbbf24' : colors.stroke}
-              strokeWidth={selectedPlate === 'africa' ? '3.5' : '2'}
+              d="M 188 345 
+                 C 198 320, 212 280, 222 245 
+                 C 238 235, 258 235, 278 245 
+                 C 298 255, 322 280, 342 320 
+                 C 358 360, 368 400, 358 440 
+                 C 348 460, 328 480, 308 500 
+                 C 288 520, 262 535, 238 545 
+                 C 222 545, 208 530, 198 495 
+                 C 202 460, 218 435, 232 395 
+                 C 228 370, 208 355, 188 345 Z"
+              fill={selectedPlate === 'africa' ? colors.landHover : colors.land}
+              stroke={selectedPlate === 'africa' ? colors.strokeHover : colors.stroke}
+              strokeWidth={selectedPlate === 'africa' ? '3.5' : '2.4'}
               strokeLinejoin="round"
+              strokeLinecap="round"
             />
-            <text x="210" y="315" fill="#0f172a" fontSize="12" fontWeight="bold" textAnchor="middle">
+            {/* Garis Sutur Internal Afrika (Persis Screenshot 3) */}
+            <path d="M 252 240 C 262 300, 278 370, 288 440" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+            <path d="M 288 320 C 308 360, 318 410, 322 460" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+
+            <text x="275" y="400" fill="#0f172a" fontSize="17" fontWeight="800" textAnchor="middle">
               Africa
             </text>
           </g>
 
-          {/* INDIA */}
+          {/* ── 5. INDIA (Kepingan Sudut di antara Afrika & Antartika) ── */}
           <g
             onMouseEnter={() => setSelectedPlate('india')}
             onMouseLeave={() => setSelectedPlate(null)}
             onClick={() => setSelectedPlate('india')}
-            className="cursor-pointer transition-all hover:brightness-110"
+            className="cursor-pointer transition-all"
           >
             <path
-              d="M 280 298 C 295 303, 315 318, 320 338 C 315 358, 295 363, 280 358 C 265 353, 265 328, 280 298 Z"
-              fill={colors.india}
-              stroke={selectedPlate === 'india' ? '#fbbf24' : colors.stroke}
-              strokeWidth={selectedPlate === 'india' ? '3.5' : '2'}
+              d="M 358 440 
+                 C 348 465, 332 485, 318 505 
+                 C 332 520, 352 530, 372 525 
+                 C 382 495, 378 465, 358 440 Z"
+              fill={selectedPlate === 'india' ? colors.landHover : colors.land}
+              stroke={selectedPlate === 'india' ? colors.strokeHover : colors.stroke}
+              strokeWidth={selectedPlate === 'india' ? '3.5' : '2.4'}
               strokeLinejoin="round"
+              strokeLinecap="round"
             />
-            <text x="295" y="338" fill="#0f172a" fontSize="9" fontWeight="bold" textAnchor="middle">
+            <text x="352" y="490" fill="#0f172a" fontSize="12" fontWeight="800" textAnchor="middle">
               India
             </text>
           </g>
 
-          {/* ANTARCTICA */}
+          {/* ── 6. ANTARCTICA (Kutub Selatan Pangea / Lengkungan Bawah) ── */}
           <g
             onMouseEnter={() => setSelectedPlate('antarctica')}
             onMouseLeave={() => setSelectedPlate(null)}
             onClick={() => setSelectedPlate('antarctica')}
-            className="cursor-pointer transition-all hover:brightness-110"
+            className="cursor-pointer transition-all"
           >
             <path
-              d="M 180 413 C 205 428, 235 438, 270 448 C 310 453, 340 438, 345 408 C 345 378, 330 358, 310 358 C 295 363, 280 358, 265 358 C 245 383, 225 408, 180 413 Z"
-              fill={colors.antarctica}
-              stroke={selectedPlate === 'antarctica' ? '#fbbf24' : colors.stroke}
-              strokeWidth={selectedPlate === 'antarctica' ? '3.5' : '2'}
+              d="M 182 555 
+                 C 188 560, 202 560, 218 550 
+                 C 238 545, 268 530, 292 520 
+                 C 318 505, 342 515, 372 525 
+                 C 392 525, 412 535, 428 550 
+                 C 422 575, 392 595, 348 605 
+                 C 298 605, 242 595, 202 580 
+                 C 188 570, 182 560, 182 555 Z"
+              fill={selectedPlate === 'antarctica' ? colors.landHover : colors.land}
+              stroke={selectedPlate === 'antarctica' ? colors.strokeHover : colors.stroke}
+              strokeWidth={selectedPlate === 'antarctica' ? '3.5' : '2.4'}
               strokeLinejoin="round"
+              strokeLinecap="round"
             />
-            <text x="260" y="420" fill="#0f172a" fontSize="11" fontWeight="bold" textAnchor="middle">
+            {/* Garis Sutur Transantarktika (Persis Screenshot 3) */}
+            <path d="M 258 560 C 288 570, 328 575, 368 565" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+
+            <text x="295" y="575" fill="#0f172a" fontSize="16" fontWeight="800" textAnchor="middle">
               Antarctica
             </text>
           </g>
 
-          {/* AUSTRALIA */}
+          {/* ── 7. AUSTRALIA (Tenggara Pangea Menempel di Antartika) ── */}
           <g
             onMouseEnter={() => setSelectedPlate('australia')}
             onMouseLeave={() => setSelectedPlate(null)}
             onClick={() => setSelectedPlate('australia')}
-            className="cursor-pointer transition-all hover:brightness-110"
+            className="cursor-pointer transition-all"
           >
             <path
-              d="M 320 338 C 345 348, 375 373, 375 403 C 370 428, 345 438, 340 408 C 335 388, 330 358, 320 338 Z"
-              fill={colors.australia}
-              stroke={selectedPlate === 'australia' ? '#fbbf24' : colors.stroke}
-              strokeWidth={selectedPlate === 'australia' ? '3.5' : '2'}
+              d="M 372 525 
+                 C 392 525, 412 535, 428 550 
+                 C 452 560, 478 545, 482 515 
+                 C 472 480, 452 455, 422 445 
+                 C 402 455, 382 485, 372 525 Z"
+              fill={selectedPlate === 'australia' ? colors.landHover : colors.land}
+              stroke={selectedPlate === 'australia' ? colors.strokeHover : colors.stroke}
+              strokeWidth={selectedPlate === 'australia' ? '3.5' : '2.4'}
               strokeLinejoin="round"
+              strokeLinecap="round"
             />
-            <g transform="translate(345, 395) rotate(-35)">
-              <text x="0" y="0" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle">
+            {/* Garis Sutur Internal Australia (Persis Screenshot 3) */}
+            <path d="M 422 450 C 438 485, 448 520, 452 550" fill="none" stroke={colors.suture} strokeWidth="1.4" opacity="0.6" />
+
+            <g transform="translate(432, 508) rotate(-35)">
+              <text x="0" y="0" fill="#0f172a" fontSize="14" fontWeight="800" textAnchor="middle">
                 Australia
               </text>
             </g>
@@ -2274,20 +2807,20 @@ function PangeaIllustration() {
       </div>
 
       {/* Bottom Interactive Educational Banner */}
-      <div className="w-full bg-[#0f172a] border-2 border-amber-500/70 rounded-xl p-2 sm:p-2.5 text-slate-200 text-[10px] sm:text-xs z-10 flex items-center justify-between gap-2 shadow-md">
+      <div className="w-full bg-[#0f172a] border-2 border-emerald-500/60 rounded-xl p-3 sm:p-3.5 text-slate-200 z-10 flex items-center justify-between gap-3 shadow-lg">
         {activePlateInfo ? (
-          <div className="flex items-center gap-2 animate-fadeIn">
-            <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-pixel-title font-bold text-[10px] border border-amber-500/50 whitespace-nowrap">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 animate-fadeIn w-full">
+            <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-bold text-xs sm:text-sm border border-emerald-500/50 whitespace-nowrap shadow-sm">
               {activePlateInfo.title}
             </span>
-            <span className="text-slate-300 font-medium leading-tight">
+            <span className="text-slate-100 font-medium text-xs sm:text-sm leading-relaxed">
               {activePlateInfo.desc}
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-slate-400 italic">
-            <PixelIcon name="bulb" size={12} className="text-amber-400" />
-            <span className="text-amber-400 font-bold">PETUNJUK:</span>
+          <div className="flex items-center gap-2.5 text-slate-200 font-semibold text-xs sm:text-sm">
+            <PixelIcon name="bulb" size={18} className="text-amber-400 shrink-0" />
+            <span className="text-amber-400 font-bold text-xs sm:text-sm">PETUNJUK:</span>
             <span>Arahkan kursor atau sentuh tiap benua di atas untuk mempelajari kepingan Pangea!</span>
           </div>
         )}
@@ -2306,12 +2839,12 @@ function TwinMountainsIllustration() {
       <rect x="0" y="0" width="600" height="320" fill="#082f49" />
 
       {/* Garis Grid Kartografi */}
-      <line x1="0" y1="160" x2="600" y2="160" stroke="#0284c7" strokeWidth="1" strokeDasharray="6 4" opacity="0.4" />
-      <line x1="300" y1="0" x2="300" y2="320" stroke="#0284c7" strokeWidth="1" strokeDasharray="6 4" opacity="0.4" />
+      <line x1="0" y1="160" x2="600" y2="160" stroke="#0284c7" strokeWidth="1" opacity="0.4" />
+      <line x1="300" y1="0" x2="300" y2="320" stroke="#0284c7" strokeWidth="1" opacity="0.4" />
 
       {/* Banner Judul */}
-      <rect x="50" y="8" width="500" height="24" rx="4" fill="#0c4a6e" stroke="#38bdf8" strokeWidth="1.5" />
-      <text x="300" y="24" textAnchor="middle" fill="#fef08a" fontSize="8" fontWeight="bold">
+      <rect x="40" y="6" width="520" height="26" rx="4" fill="#0c4a6e" stroke="#38bdf8" strokeWidth="1.5" />
+      <text x="300" y="24" textAnchor="middle" fill="#fef08a" fontSize="12" fontWeight="bold">
         REKONSTRUKSI PANGEA: PENYATUAN AMERIKA UTARA, EROPA, &amp; AFRIKA
       </text>
 
@@ -2322,10 +2855,10 @@ function TwinMountainsIllustration() {
         stroke="#166534"
         strokeWidth="2"
       />
-      <text x="130" y="140" fill="#ffffff" fontSize="9" fontWeight="bold">
+      <text x="130" y="136" fill="#ffffff" fontSize="13" fontWeight="bold">
         AMERIKA UTARA
       </text>
-      <text x="130" y="152" fill="#bbf7d0" fontSize="6.5">
+      <text x="130" y="152" fill="#bbf7d0" fontSize="10" fontWeight="bold">
         (Pesisir Timur / Pangea)
       </text>
 
@@ -2336,10 +2869,10 @@ function TwinMountainsIllustration() {
         stroke="#14532d"
         strokeWidth="2"
       />
-      <text x="360" y="85" fill="#ffffff" fontSize="9" fontWeight="bold">
+      <text x="360" y="82" fill="#ffffff" fontSize="13" fontWeight="bold">
         EROPA
       </text>
-      <text x="360" y="97" fill="#bbf7d0" fontSize="6.5">
+      <text x="360" y="98" fill="#bbf7d0" fontSize="10" fontWeight="bold">
         (Inggris, Skotlandia, &amp; Skandinavia)
       </text>
 
@@ -2350,10 +2883,10 @@ function TwinMountainsIllustration() {
         stroke="#78350f"
         strokeWidth="2"
       />
-      <text x="310" y="210" fill="#ffffff" fontSize="9" fontWeight="bold">
+      <text x="310" y="206" fill="#ffffff" fontSize="13" fontWeight="bold">
         AFRIKA
       </text>
-      <text x="310" y="222" fill="#fed7aa" fontSize="6.5">
+      <text x="310" y="222" fill="#fed7aa" fontSize="10" fontWeight="bold">
         (Pesisir Barat Laut Afrika)
       </text>
 
@@ -2374,28 +2907,28 @@ function TwinMountainsIllustration() {
       <polygon points="345,68 353,52 361,68" fill="#fef08a" />
 
       {/* Kotak Callout 1: Appalachian */}
-      <rect x="15" y="235" width="205" height="38" rx="4" fill="#0f172a" stroke="#facc15" strokeWidth="1.5" />
-      <text x="117" y="250" textAnchor="middle" fill="#facc15" fontSize="7.5" fontWeight="bold">
+      <rect x="15" y="235" width="220" height="42" rx="4" fill="#0f172a" stroke="#facc15" strokeWidth="1.5" />
+      <text x="125" y="252" textAnchor="middle" fill="#facc15" fontSize="11" fontWeight="bold">
         PEG. APPALACHIAN (AMERIKA)
       </text>
-      <text x="117" y="264" textAnchor="middle" fill="#cbd5e1" fontSize="6.5">
+      <text x="125" y="267" textAnchor="middle" fill="#cbd5e1" fontSize="9.5" fontWeight="bold">
         Batuan Paleozoikum &amp; Umur Sama
       </text>
-      <line x1="160" y1="235" x2="185" y2="215" stroke="#facc15" strokeWidth="1.5" strokeDasharray="3 2" />
+      <line x1="160" y1="235" x2="185" y2="215" stroke="#facc15" strokeWidth="1.5" />
 
       {/* Kotak Callout 2: Caledonian */}
-      <rect x="360" y="115" width="225" height="38" rx="4" fill="#0f172a" stroke="#facc15" strokeWidth="1.5" />
-      <text x="472" y="130" textAnchor="middle" fill="#facc15" fontSize="7.5" fontWeight="bold">
+      <rect x="350" y="112" width="240" height="42" rx="4" fill="#0f172a" stroke="#facc15" strokeWidth="1.5" />
+      <text x="470" y="129" textAnchor="middle" fill="#facc15" fontSize="11" fontWeight="bold">
         PEG. CALEDONIAN (EROPA/UK)
       </text>
-      <text x="472" y="144" textAnchor="middle" fill="#cbd5e1" fontSize="6.5">
+      <text x="470" y="144" textAnchor="middle" fill="#cbd5e1" fontSize="9.5" fontWeight="bold">
         Struktur Lipatan Identik Sempurna
       </text>
-      <line x1="390" y1="115" x2="330" y2="85" stroke="#facc15" strokeWidth="1.5" strokeDasharray="3 2" />
+      <line x1="390" y1="115" x2="330" y2="85" stroke="#facc15" strokeWidth="1.5" />
 
       {/* Footer Callout */}
-      <rect x="40" y="285" width="520" height="24" rx="4" fill="#18181b" stroke="#38bdf8" strokeWidth="1.5" />
-      <text x="300" y="301" textAnchor="middle" fill="#38bdf8" fontSize="7.5" fontWeight="bold">
+      <rect x="30" y="284" width="540" height="28" rx="4" fill="#18181b" stroke="#38bdf8" strokeWidth="1.5" />
+      <text x="300" y="302" textAnchor="middle" fill="#38bdf8" fontSize="10.5" fontWeight="bold">
         FAKTA: JIKA BENUA DISATUKAN, KEDUA RANTAI MEMBENTUK SATU SABUK UTUH!
       </text>
     </svg>
@@ -2403,434 +2936,383 @@ function TwinMountainsIllustration() {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// SUB-KOMPONEN 3: SIMULATOR PEMEKARAN DIVERGEN (PERSIS DENGAN LEVEL 2)
-// ═════════════════════════════════════════════════════════════════════════════
 function DivergentAnimIllustration({
-  isSimulating,
+  isSimulating: externalIsSimulating,
   onSimulate,
 }: {
-  isSimulating: boolean;
+  isSimulating?: boolean;
   onSimulate?: () => void;
 }) {
+  const [isDiverged, setIsDiverged] = useState(false);
+
+  useEffect(() => {
+    if (externalIsSimulating) {
+      setIsDiverged(true);
+    }
+  }, [externalIsSimulating]);
+
+  const handleToggle = () => {
+    retroAudio.playSelect?.();
+    setIsDiverged(prev => !prev);
+    onSimulate?.();
+  };
+
   return (
-    <div className="w-full h-full relative flex flex-col items-center justify-between p-2">
-      {/* Top Bar Button */}
-      <div className="w-full flex items-center justify-between px-2 pb-1 border-b border-slate-800 z-10">
-        <span className="text-[9px] font-pixel-title text-orange-400 font-bold flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-orange-500 animate-ping" />
-          SIMULATOR PEMEKARAN DIVERGEN (LEMPENG SALING MEMISAH)
+    <div className="w-full h-full relative flex flex-col items-center justify-between p-2 sm:p-3 overflow-hidden" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      {/* Top Bar Controls */}
+      <div className="w-full flex items-center justify-between px-3.5 py-2 bg-slate-900/95 border border-orange-500/70 rounded-xl z-10 shadow-lg">
+        <span className="text-xs sm:text-sm font-bold text-orange-400 flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping" />
+          <span>SIMULATOR GEOLOGI: PEMEKARAN DASAR SAMUDRA &amp; PEMATANG TENGAH</span>
         </span>
         <button
-          onClick={onSimulate}
-          disabled={isSimulating}
-          className={`px-4 py-1.5 rounded text-white text-[9px] font-bold border-2 cursor-pointer font-pixel-title active:translate-y-0.5 transition-all flex items-center gap-1.5 ${isSimulating
-              ? 'bg-orange-900 border-orange-950 opacity-80'
-              : 'bg-orange-600 hover:bg-orange-500 border-orange-950 shadow-[0_3px_0_#7c2d12]'
-            }`}
+          onClick={handleToggle}
+          className="px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl text-white text-xs sm:text-sm font-bold border-2 cursor-pointer active:translate-y-0.5 transition-all flex items-center gap-2 shadow-md bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 border-orange-400/80 shadow-[0_3px_0_#7c2d12]"
         >
-          <PixelIcon name="zap" size={13} />
-          <span>{isSimulating ? 'LEMPENG SEDANG MEMISAH...' : 'SIMULASI PEMISAHAN'}</span>
+          <PixelIcon name="zap" size={15} />
+          <span>{isDiverged ? '↺ GABUNGKAN KEMBALI DARATAN' : '▶ SIMULASI PEMISAHAN'}</span>
         </button>
       </div>
 
-      {/* SVG Canvas Simulator */}
-      <svg viewBox="0 0 540 240" className="w-full h-full object-contain" shapeRendering="crispEdges">
-        {/* Mantle Asthenosphere Base */}
-        <rect x="0" y="110" width="540" height="130" fill="#451a03" />
-        <rect x="0" y="150" width="540" height="90" fill="#7c2d12" />
-
-        {/* Kolom Air Samudra di Atas Kerak */}
-        <rect x="0" y="30" width="540" height="50" fill="#0369a1" opacity="0.35" />
-        <line x1="0" y1="30" x2="540" y2="30" stroke="#38bdf8" strokeWidth="1.5" strokeDasharray="8 4" />
-        <text x="20" y="45" fill="#7dd3fc" fontSize="7" fontWeight="bold">SAMUDRA LAUTAN DALAM</text>
-
-        {/* ARUS KONVEKSI MANTEL PEMISAH */}
-        <path d="M 150 185 A 35 35 0 0 1 95 150" fill="none" stroke="#ea580c" strokeWidth="3" strokeDasharray="6 3" />
-        <polygon points="90,152 96,140 104,150" fill="#ea580c" />
-        <text x="135" y="210" fill="#fed7aa" fontSize="7.5" fontWeight="bold" textAnchor="middle">
-          ARUS KONVEKSI &lt;&lt;
-        </text>
-
-        <path d="M 390 185 A 35 35 0 0 0 445 150" fill="none" stroke="#ea580c" strokeWidth="3" strokeDasharray="6 3" />
-        <polygon points="450,152 444,140 436,150" fill="#ea580c" />
-        <text x="405" y="210" fill="#fed7aa" fontSize="7.5" fontWeight="bold" textAnchor="middle">
-          &gt;&gt; ARUS KONVEKSI
-        </text>
-
-        {/* ZONA LEMBAH RETAKAN TENGAH */}
-        <rect x="235" y="80" width="70" height="40" fill="#1c1917" stroke="#0f172a" strokeWidth="1.5" />
-        <line x1="270" y1="75" x2="270" y2="120" stroke="#78350f" strokeWidth="1.5" strokeDasharray="4 3" />
-
-        {/* LEMPENG A (KIRI) — BERGERAK KE KIRI */}
-        <g
-          style={{
-            transform: isSimulating ? 'translateX(-34px)' : 'translateX(0)',
-            transition: 'transform 3.5s cubic-bezier(0.25, 1, 0.5, 1)',
-          }}
-        >
-          <rect x="20" y="75" width="220" height="45" fill="#1e293b" stroke="#0f172a" strokeWidth="2" />
-          <rect x="20" y="75" width="220" height="8" fill="#475569" />
-          <polygon points="50,60 25,68 50,76" fill="#facc15" />
-          <rect x="50" y="64" width="45" height="8" fill="#facc15" />
-          <text x="65" y="105" fill="#ffffff" fontSize="8.5" fontWeight="bold">
-            LEMPENG A (MEMISAH KE KIRI)
-          </text>
-        </g>
-
-        {/* LEMPENG B (KANAN) — BERGERAK KE KANAN */}
-        <g
-          style={{
-            transform: isSimulating ? 'translateX(34px)' : 'translateX(0)',
-            transition: 'transform 3.5s cubic-bezier(0.25, 1, 0.5, 1)',
-          }}
-        >
-          <rect x="300" y="75" width="220" height="45" fill="#1e293b" stroke="#0f172a" strokeWidth="2" />
-          <rect x="300" y="75" width="220" height="8" fill="#475569" />
-          <polygon points="490,68 465,60 465,76" fill="#facc15" />
-          <rect x="445" y="64" width="25" height="8" fill="#facc15" />
-          <text x="315" y="105" fill="#ffffff" fontSize="8.5" fontWeight="bold">
-            LEMPENG B (MEMISAH KE KANAN)
-          </text>
-        </g>
-
-        {/* Banner Keterangan Dinamika */}
-        <rect x="110" y="125" width="320" height="24" rx="4" fill="#0f172a" stroke="#ea580c" strokeWidth="1.5" />
-        <text x="270" y="141" fill="#fef08a" fontSize="7.5" fontWeight="bold" textAnchor="middle">
-          LEMPENG SALING MEMISAH MEMBENTUK LEMBAH RETAKAN (RIFT VALLEY)
-        </text>
-      </svg>
-    </div>
-  );
-}
-
-// ═════════════════════════════════════════════════════════════════════════════
-// 4. SUB-KOMPONEN: ANIMASI 2D PIXEL SUBDUKSI KONVERGEN (PERSIS SEPERTI LEVEL 2)
-// ═════════════════════════════════════════════════════════════════════════════
-function ConvergentSubductionIllustration() {
-  return (
-    <div className="w-full h-full relative flex flex-col items-center justify-between p-1.5 sm:p-2 select-none">
-      <div className="w-full flex items-center justify-between px-2 pb-1 border-b border-slate-800 z-10">
-        <span className="text-[9px] font-pixel-title text-amber-400 font-bold flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-          PENAMPANG 3D SUBDUKSI &amp; PELEBURAN LEMPENG
-        </span>
-        <span className="text-[8px] text-slate-400 font-pixel">
-          BATAS KONVERGEN: SAMUDRA vs BENUA
-        </span>
-      </div>
-
+      {/* Realistic Geological SVG Cross-Section (100% Bebas Teks di Dalam Gambar) */}
       <div className="w-full flex-1 min-h-0 relative flex items-center justify-center overflow-hidden my-1">
         <svg
-          viewBox="0 0 560 250"
-          className="w-full h-full object-contain drop-shadow-xl"
+          viewBox="0 0 680 340"
+          className="w-full h-full object-contain drop-shadow-2xl"
           shapeRendering="geometricPrecision"
         >
-          <style>{`
-            @keyframes subductSmoke {
-              0% { transform: translateY(0px) scale(0.9); opacity: 0.8; }
-              50% { transform: translateY(-7px) scale(1.15); opacity: 0.95; }
-              100% { transform: translateY(-15px) scale(1.3); opacity: 0; }
-            }
-            @keyframes magmaMeltRise {
-              0% { transform: translateY(0px); opacity: 0.3; }
-              50% { opacity: 1; }
-              100% { transform: translateY(-22px); opacity: 0.2; }
-            }
-            @keyframes arrowMoveRight {
-              0%, 100% { transform: translateX(0px); filter: drop-shadow(0 0 2px rgba(255,255,255,0.4)); }
-              50% { transform: translateX(12px); filter: drop-shadow(0 0 6px rgba(255,255,255,0.9)); }
-            }
-            @keyframes arrowMoveLeft {
-              0%, 100% { transform: translateX(0px); filter: drop-shadow(0 0 2px rgba(255,255,255,0.4)); }
-              50% { transform: translateX(-12px); filter: drop-shadow(0 0 6px rgba(255,255,255,0.9)); }
-            }
-            @keyframes waterGleam {
-              0%, 100% { opacity: 0.45; }
-              50% { opacity: 0.85; }
-            }
-            .anim-smoke-1 { animation: subductSmoke 2.6s ease-out infinite; transform-origin: 330px 55px; }
-            .anim-smoke-2 { animation: subductSmoke 2.6s ease-out infinite 0.9s; transform-origin: 330px 55px; }
-            .anim-smoke-3 { animation: subductSmoke 2.6s ease-out infinite 1.7s; transform-origin: 330px 55px; }
-            .anim-magma-drip { animation: magmaMeltRise 2.2s linear infinite; }
-            .anim-magma-drip-2 { animation: magmaMeltRise 2.2s linear infinite 0.7s; }
-            .anim-magma-drip-3 { animation: magmaMeltRise 2.2s linear infinite 1.4s; }
-            .anim-arrow-right { animation: arrowMoveRight 1.5s ease-in-out infinite; }
-            .anim-arrow-left { animation: arrowMoveLeft 1.5s ease-in-out infinite; }
-            .anim-water-ripple { animation: waterGleam 3s ease-in-out infinite; }
-          `}</style>
-
           <defs>
-            <linearGradient id="oceanTopWater" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#38bdf8" />
-              <stop offset="60%" stopColor="#0284c7" />
-              <stop offset="100%" stopColor="#0369a1" />
+            {/* Gradasi Kolom Air Samudra */}
+            <linearGradient id="divOceanGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0284c7" stopOpacity="0.85" />
+              <stop offset="35%" stopColor="#0369a1" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#082f49" />
             </linearGradient>
 
-            <linearGradient id="oceanFrontWater" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#0369a1" stopOpacity="0.95" />
+            {/* Gradasi Mantel Astenosfer Panas */}
+            <linearGradient id="divMantleGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#9a3412" />
+              <stop offset="40%" stopColor="#7c2d12" />
+              <stop offset="100%" stopColor="#3d1306" />
             </linearGradient>
 
-            <linearGradient id="oceanSideWater" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#0369a1" stopOpacity="0.95" />
-              <stop offset="100%" stopColor="#0284c7" stopOpacity="0.8" />
-            </linearGradient>
-
-            <linearGradient id="asthenoFront" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#fb923c" />
-              <stop offset="40%" stopColor="#f97316" />
-              <stop offset="100%" stopColor="#c2410c" />
-            </linearGradient>
-
-            <linearGradient id="asthenoSide" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#c2410c" />
-              <stop offset="100%" stopColor="#7c2d12" />
-            </linearGradient>
-
-            <linearGradient id="contLandTop" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#e2d4be" />
-              <stop offset="50%" stopColor="#d4b896" />
-              <stop offset="100%" stopColor="#bfa07a" />
-            </linearGradient>
-
-            <linearGradient id="contCrustFront" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#78716c" />
-              <stop offset="100%" stopColor="#57534e" />
-            </linearGradient>
-
-            <linearGradient id="contLithoFront" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#cbd5e1" />
-              <stop offset="100%" stopColor="#94a3b8" />
-            </linearGradient>
-
-            <linearGradient id="oceanLithoFront" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#e2e8f0" />
-              <stop offset="100%" stopColor="#cbd5e1" />
-            </linearGradient>
-
-            <linearGradient id="volcanoConeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#78716c" />
-              <stop offset="40%" stopColor="#57534e" />
-              <stop offset="100%" stopColor="#292524" />
-            </linearGradient>
-
-            <radialGradient id="magmaGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#fef08a" />
-              <stop offset="35%" stopColor="#f97316" />
-              <stop offset="80%" stopColor="#dc2626" />
-              <stop offset="100%" stopColor="#991b1b" />
+            {/* Gradasi Dapur Magma */}
+            <radialGradient id="divMagmaChamberGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#ffffff" />
+              <stop offset="25%" stopColor="#fef08a" />
+              <stop offset="60%" stopColor="#f97316" />
+              <stop offset="100%" stopColor="#dc2626" />
             </radialGradient>
+
+            {/* Gradasi Asap Hidrotermal Black Smoker */}
+            <linearGradient id="divSmokerGrad" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stopColor="#0f172a" stopOpacity="0.9" />
+              <stop offset="50%" stopColor="#334155" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#64748b" stopOpacity="0" />
+            </linearGradient>
+
+            {/* Gradasi Berkas Cahaya Laut Dalam */}
+            <linearGradient id="divCausticRay" x1="0" y1="0" x2="0.3" y2="1">
+              <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+            </linearGradient>
           </defs>
 
-          <rect x="0" y="0" width="560" height="250" fill="#09090b" rx="8" />
+          <style>{`
+            @keyframes divPlumeDrift {
+              0% { transform: translateY(0px) scale(0.95); opacity: 0.85; }
+              50% { transform: translateY(-8px) scale(1.1); opacity: 0.95; }
+              100% { transform: translateY(-18px) scale(1.25); opacity: 0.1; }
+            }
+            @keyframes divMagmaPulse {
+              0%, 100% { filter: drop-shadow(0 0 8px #f97316); opacity: 0.9; }
+              50% { filter: drop-shadow(0 0 20px #fbbf24); opacity: 1; }
+            }
+            @keyframes divBubbleRise {
+              0% { transform: translateY(0px); opacity: 0; }
+              20% { opacity: 0.9; }
+              100% { transform: translateY(-35px); opacity: 0; }
+            }
+            @keyframes divFlowPulse {
+              0% { stroke-dashoffset: 0; }
+              100% { stroke-dashoffset: -30; }
+            }
+          `}</style>
 
-          {/* RIGHT 3D SIDE CUTAWAY FACE */}
-          <g id="right-3d-side-face">
-            <polygon points="440,175 550,115 550,175 440,245" fill="url(#asthenoSide)" stroke="#431407" strokeWidth="1.5" />
-            <polygon points="440,140 550,85 550,115 440,175" fill="#475569" stroke="#1e293b" strokeWidth="1.5" />
-            <polygon points="440,105 550,55 550,85 440,140" fill="#3f3f46" stroke="#18181b" strokeWidth="1.5" />
-          </g>
+          {/* ── 1. KOLOM AIR SAMUDRA LUAS ── */}
+          <rect x="0" y="0" width="680" height="340" fill="url(#divOceanGrad)" />
 
-          {/* FRONT FACE: ASTHENOSPHERE */}
-          <polygon points="15,130 440,130 440,245 15,245" fill="url(#asthenoFront)" stroke="#9a3412" strokeWidth="1.5" />
-
-          {/* FRONT FACE: CONTINENTAL LITHOSPHERE & CRUST */}
-          <polygon points="215,140 440,140 440,175 275,175" fill="url(#contLithoFront)" stroke="#64748b" strokeWidth="1.5" />
-          <polygon points="215,105 440,105 440,140 215,140" fill="url(#contCrustFront)" stroke="#292524" strokeWidth="1.5" />
-
-          {/* SUBDUCTING OCEANIC SLAB */}
+          {/* Permukaan Laut Riak Berombak Halus */}
           <path
-            d="M 15,130 L 175,130 Q 200,132 230,160 L 330,245 L 270,245 L 180,165 Q 160,150 145,150 L 15,150 Z"
-            fill="url(#oceanLithoFront)"
-            stroke="#64748b"
-            strokeWidth="1.5"
+            d="M 0 16 Q 40 10, 80 16 T 160 16 T 240 16 T 320 16 T 400 16 T 480 16 T 560 16 T 640 16 T 680 16 L 680 0 L 0 0 Z"
+            fill="#38bdf8"
+            opacity="0.3"
           />
-          <path
-            d="M 15,123 L 178,123 Q 205,125 235,155 L 336,245 L 330,245 L 230,160 Q 200,132 175,130 L 15,130 Z"
-            fill="#1e293b"
-            stroke="#0f172a"
-            strokeWidth="1.5"
-          />
+          <line x1="0" y1="16" x2="680" y2="16" stroke="#7dd3fc" strokeWidth="1.5" opacity="0.6" />
 
-          {/* TOP ISOMETRIC SURFACE: CONTINENTAL LANDMASS & VOLCANIC ARC */}
-          <polygon points="215,105 440,105 550,55 320,55" fill="url(#contLandTop)" stroke="#78350f" strokeWidth="1.5" />
+          {/* Berkas Cahaya Bawah Laut */}
+          <polygon points="60,16 110,16 170,120 110,120" fill="url(#divCausticRay)" />
+          <polygon points="210,16 270,16 340,110 270,110" fill="url(#divCausticRay)" />
+          <polygon points="410,16 470,16 530,110 460,110" fill="url(#divCausticRay)" />
+          <polygon points="560,16 610,16 660,120 600,120" fill="url(#divCausticRay)" />
 
-          {/* Mountain Ridges in Background */}
-          <polygon points="360,55 385,38 410,55" fill="#a88a68" stroke="#78350f" strokeWidth="1.2" />
-          <polygon points="385,38 410,55 398,55" fill="#785938" />
-          <polygon points="420,55 450,32 480,55" fill="#bfa07a" stroke="#78350f" strokeWidth="1.2" />
-          <polygon points="450,32 480,55 465,55" fill="#8c6b45" />
-          <polygon points="485,55 515,36 545,55" fill="#a88a68" stroke="#78350f" strokeWidth="1.2" />
-          <polygon points="515,36 545,55 530,55" fill="#785938" />
+          {/* ── 2. MANTEL BUMI ASTENOSFER (DI BAWAH LITOSFER) ── */}
+          <rect x="0" y="160" width="680" height="180" fill="url(#divMantleGrad)" />
 
-          {/* Midground Hills */}
-          <polygon points="280,75 305,58 330,75" fill="#bfa07a" stroke="#78350f" strokeWidth="1.2" />
-          <polygon points="305,58 330,75 320,75" fill="#8c6b45" />
-
-          {/* Active Stratovolcano Cone */}
-          <polygon points="280,105 320,68 340,68 380,105" fill="url(#volcanoConeGrad)" stroke="#1c1917" strokeWidth="1.5" />
-          <polygon points="330,68 380,105 355,105" fill="#1c1917" opacity="0.6" />
-          <path d="M 326,70 Q 320,85 310,105" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" />
-          <path d="M 326,70 Q 320,85 310,105" fill="none" stroke="#fef08a" strokeWidth="1" strokeLinecap="round" />
-
-          {/* Volcano Crater Rim & Magma Pool */}
-          <ellipse cx="330" cy="68" rx="12" ry="4" fill="#0f172a" stroke="#78350f" strokeWidth="1.2" />
-          <ellipse cx="330" cy="68.5" rx="8" ry="2.5" fill="#dc2626" />
-          <ellipse cx="330" cy="68.5" rx="4" ry="1.2" fill="#fef08a" />
-
-          {/* Smoke Plumes */}
-          <g id="volcanic-smoke">
-            <circle cx="330" cy="54" r="9" fill="#475569" opacity="0.9" className="anim-smoke-1" />
-            <circle cx="322" cy="45" r="12" fill="#334155" opacity="0.92" className="anim-smoke-2" />
-            <circle cx="338" cy="40" r="13" fill="#1e293b" opacity="0.95" className="anim-smoke-3" />
-            <circle cx="325" cy="30" r="15" fill="#334155" opacity="0.9" className="anim-smoke-1" />
-            <circle cx="342" cy="24" r="16" fill="#1e293b" opacity="0.85" className="anim-smoke-2" />
-            <circle cx="328" cy="58" r="1.5" fill="#fef08a" />
-            <circle cx="334" cy="52" r="1.2" fill="#f97316" />
-            <circle cx="324" cy="46" r="1.5" fill="#ef4444" />
+          {/* ARUS KONVEKSI MANTEL: Upwelling dan Pembelahan Dua Arah */}
+          <g style={{ animation: 'divFlowPulse 2s linear infinite' }}>
+            {/* Plume Tengah Naik */}
+            <path
+              d="M 340 330 C 340 260, 340 215, 340 175"
+              fill="none"
+              stroke="#fb923c"
+              strokeWidth="4"
+              strokeDasharray="8 6"
+            />
+            {/* Aliran Membelok ke Kiri */}
+            <path
+              d="M 340 175 C 300 175, 200 175, 120 190 C 60 200, 35 240, 45 285 C 55 320, 160 330, 330 330"
+              fill="none"
+              stroke="#ea580c"
+              strokeWidth="3.2"
+              strokeDasharray="8 6"
+            />
+            {/* Aliran Membelok ke Kanan */}
+            <path
+              d="M 340 175 C 380 175, 480 175, 560 190 C 620 200, 645 240, 635 285 C 625 320, 520 330, 350 330"
+              fill="none"
+              stroke="#ea580c"
+              strokeWidth="3.2"
+              strokeDasharray="8 6"
+            />
           </g>
 
-          {/* Magma Conduit & Melting Droplets */}
-          <path d="M 330,70 L 330,120" stroke="#dc2626" strokeWidth="6" strokeLinecap="round" />
-          <path d="M 330,70 L 330,120" stroke="#fef08a" strokeWidth="2.5" strokeLinecap="round" />
+          {/* Panah Indikator Arus Konveksi */}
+          <polygon points="175,178 190,170 190,186" fill="#f97316" />
+          <polygon points="505,178 490,170 490,186" fill="#f97316" />
 
-          {/* Magma Chamber */}
-          <ellipse cx="330" cy="122" rx="16" ry="11" fill="url(#magmaGlow)" stroke="#7f1d1d" strokeWidth="1.5" />
-          <ellipse cx="330" cy="122" rx="10" ry="6" fill="#fef08a" opacity="0.85" />
-
-          {/* Rising Magma Droplets */}
-          <g id="magma-melting-droplets">
-            <circle cx="318" cy="142" r="3" fill="#ef4444" className="anim-magma-drip" />
-            <circle cx="318" cy="142" r="1.5" fill="#fef08a" className="anim-magma-drip" />
-
-            <circle cx="332" cy="148" r="3.5" fill="#dc2626" className="anim-magma-drip-2" />
-            <circle cx="332" cy="148" r="1.8" fill="#fef08a" className="anim-magma-drip-2" />
-
-            <circle cx="324" cy="160" r="2.8" fill="#ef4444" className="anim-magma-drip-3" />
-            <circle cx="338" cy="168" r="3.2" fill="#ea580c" className="anim-magma-drip" />
-            <circle cx="316" cy="175" r="2.5" fill="#f97316" className="anim-magma-drip-2" />
-            <circle cx="330" cy="184" r="3" fill="#ef4444" className="anim-magma-drip-3" />
-            <circle cx="322" cy="195" r="2.5" fill="#facc15" className="anim-magma-drip" />
-
-            <line x1="316" y1="185" x2="318" y2="145" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.7" />
-            <line x1="330" y1="195" x2="332" y2="140" stroke="#f97316" strokeWidth="1.5" strokeDasharray="4 3" opacity="0.75" />
-            <line x1="338" y1="180" x2="336" y2="145" stroke="#ef4444" strokeWidth="1.2" strokeDasharray="3 2" opacity="0.6" />
+          {/* ── 3. DAPUR MAGMA RETAKAN (AXIAL MAGMA CHAMBER) ── */}
+          <g style={{ animation: 'divMagmaPulse 2.5s ease-in-out infinite' }}>
+            <ellipse cx="340" cy="190" rx="55" ry="26" fill="url(#divMagmaChamberGrad)" />
+            {/* Saluran Magma / Dike Vertikal ke Lembah Retakan */}
+            <rect x="334" y="112" width="12" height="58" fill="#ff4500" rx="2" />
+            <path d="M 326 145 L 336 125 L 344 125 L 354 145 Z" fill="#fb923c" opacity="0.8" />
           </g>
 
-          {/* TOP ISOMETRIC SURFACE: OCEAN WATER BLOCK & TRENCH */}
-          <polygon points="15,105 215,105 320,55 120,55" fill="url(#oceanTopWater)" stroke="#38bdf8" strokeWidth="1.5" />
+          {/* ── 4. MAGMA NAIK & PEMBENTUKAN KERAK DASAR LAUT DI CELAH LEMBAH ── */}
+          {/* Tampil di tengah saat kedua lempeng saling memisah */}
+          <g style={{ opacity: isDiverged ? 1 : 0, transition: 'opacity 2.5s ease-in-out' }}>
+            <rect x="328" y="108" width="24" height="32" fill="#ff4500" rx="3" />
+            <ellipse cx="340" cy="114" rx="18" ry="7" fill="#fbbf24" />
 
-          {/* Ocean Waves */}
-          <g opacity="0.65" className="anim-water-ripple">
-            <path d="M 40,95 Q 60,93 80,95 Q 100,97 120,95" fill="none" stroke="#e0f2fe" strokeWidth="1.2" />
-            <path d="M 135,90 Q 155,88 175,90 Q 195,92 215,90" fill="none" stroke="#e0f2fe" strokeWidth="1.2" />
-            <path d="M 70,80 Q 90,78 110,80 Q 130,82 150,80" fill="none" stroke="#bae6fd" strokeWidth="1.2" />
-            <path d="M 160,75 Q 180,73 200,75 Q 220,77 240,75" fill="none" stroke="#bae6fd" strokeWidth="1.2" />
-            <path d="M 110,65 Q 130,63 150,65 Q 170,67 190,65" fill="none" stroke="#ffffff" strokeWidth="1" />
+            {/* Kerak Basal Baru Membeku di Dasar Retakan */}
+            <path
+              d="M 320 118 C 326 114, 333 116, 340 114 C 347 116, 354 114, 360 118 L 360 128 C 347 130, 333 130, 320 128 Z"
+              fill="#18181b"
+              stroke="#ea580c"
+              strokeWidth="1.5"
+            />
+            {/* Gelembung Hidrotermal */}
+            <circle cx="336" cy="106" r="2.2" fill="#fed7aa" style={{ animation: 'divBubbleRise 1.6s infinite 0.2s' }} />
+            <circle cx="344" cy="102" r="2.5" fill="#fef08a" style={{ animation: 'divBubbleRise 1.6s infinite 0.7s' }} />
+            <circle cx="340" cy="108" r="1.8" fill="#ffffff" style={{ animation: 'divBubbleRise 1.6s infinite 1.1s' }} />
           </g>
 
-          {/* Coastline / Beach & Trench Boundary */}
-          <path
-            d="M 215,105 Q 235,95 250,85 Q 275,75 320,55"
-            fill="none"
-            stroke="#fde68a"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-          <path
-            d="M 215,105 Q 235,95 250,85 Q 275,75 320,55"
-            fill="none"
-            stroke="#0284c7"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
+          {/* ── 5. LEMPENG BARAT (KIRI) — BERAWAL MENYATU (NYAMBUNG DI TENGAH X=340) ── */}
+          <g
+            style={{
+              transform: isDiverged ? 'translateX(-56px)' : 'translateX(0)',
+              transition: 'transform 3.5s cubic-bezier(0.2, 0.8, 0.35, 1)',
+            }}
+          >
+            {/* Lapisan Litosfer Mantel (Peridotite Bawah) */}
+            <path
+              d="M 0 135 C 70 130, 160 115, 230 92 C 265 82, 305 78, 340 78 L 341 96 L 338 116 L 342 138 L 339 158 L 340 170 L 0 170 Z"
+              fill="#1e3a2b"
+              stroke="#0f172a"
+              strokeWidth="2"
+            />
 
-          {/* Front Cutaway Water Slice */}
-          <polygon points="15,105 215,105 215,123 15,123" fill="url(#oceanFrontWater)" stroke="#0284c7" strokeWidth="1.5" />
+            {/* Lapisan Kerak Gabro & Dike (Tengah) */}
+            <path
+              d="M 0 135 C 70 130, 160 115, 230 92 C 265 82, 305 78, 340 78 L 341 96 L 338 116 L 342 138 L 315 138 C 230 138, 120 145, 0 152 Z"
+              fill="#1e293b"
+            />
 
-          {/* Left Side Cutaway Water Slice */}
-          <polygon points="15,105 120,55 120,68 15,123" fill="url(#oceanSideWater)" stroke="#0369a1" strokeWidth="1.5" />
+            {/* Lapisan Kerak Basal Bantal (Pillow Basalt - Atas) */}
+            <path
+              d="M 0 135 C 70 130, 160 115, 230 92 C 265 82, 305 78, 340 78 L 341 96 L 338 116 L 315 116 C 230 116, 120 132, 0 140 Z"
+              fill="#334155"
+              stroke="#0f172a"
+              strokeWidth="1.5"
+            />
 
-          {/* Movement Arrows */}
-          <g id="arrow-oceanic" className="anim-arrow-right" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.6))">
-            <polygon points="85,137 125,137 125,131 145,142 125,153 125,147 85,147" fill="#ffffff" stroke="#0f172a" strokeWidth="1.5" />
+            {/* Lapisan Sedimen Laut Pelagik */}
+            <path
+              d="M 0 135 C 60 131, 130 118, 190 102 L 190 106 C 130 122, 60 135, 0 139 Z"
+              fill="#fef08a"
+              opacity="0.85"
+            />
+
+            {/* Patahan Normal & Blok Sesar Berundak */}
+            <line x1="275" y1="83" x2="275" y2="135" stroke="#0f172a" strokeWidth="2" />
+            <line x1="298" y1="81" x2="298" y2="140" stroke="#0f172a" strokeWidth="2" />
+            <line x1="322" y1="79" x2="322" y2="155" stroke="#0f172a" strokeWidth="2" />
+
+            {/* Cerobong Hidrotermal (Black Smoker Kiri) */}
+            <path d="M 324 80 L 327 68 L 331 68 L 334 80 Z" fill="#18181b" stroke="#78350f" strokeWidth="1" />
+
+            {/* Vektor Arah Pemekaran (Panah Bersih Tanpa Teks) */}
+            <g
+              transform="translate(130, 52)"
+              style={{
+                opacity: isDiverged ? 1 : 0.4,
+                transition: 'opacity 1.5s ease',
+              }}
+            >
+              <polygon points="-55,10 -35,0 -35,20" fill="#38bdf8" filter="drop-shadow(0 0 6px #0284c7)" />
+              <rect x="-35" y="6" width="65" height="8" rx="2" fill="#38bdf8" />
+            </g>
           </g>
 
-          <g id="arrow-continental" className="anim-arrow-left" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.6))">
-            <polygon points="385,155 345,155 345,149 325,160 345,171 345,165 385,165" fill="#ffffff" stroke="#0f172a" strokeWidth="1.5" />
+          {/* ── 6. LEMPENG TIMUR (KANAN) — BERAWAL MENYATU (NYAMBUNG DI TENGAH X=340) ── */}
+          <g
+            style={{
+              transform: isDiverged ? 'translateX(56px)' : 'translateX(0)',
+              transition: 'transform 3.5s cubic-bezier(0.2, 0.8, 0.35, 1)',
+            }}
+          >
+            {/* Lapisan Litosfer Mantel (Peridotite Bawah) */}
+            <path
+              d="M 680 135 C 610 130, 520 115, 450 92 C 415 82, 375 78, 340 78 L 341 96 L 338 116 L 342 138 L 339 158 L 340 170 L 680 170 Z"
+              fill="#1e3a2b"
+              stroke="#0f172a"
+              strokeWidth="2"
+            />
+
+            {/* Lapisan Kerak Gabro & Dike (Tengah) */}
+            <path
+              d="M 680 135 C 610 130, 520 115, 450 92 C 415 82, 375 78, 340 78 L 341 96 L 338 116 L 342 138 L 365 138 C 450 138, 560 145, 680 152 Z"
+              fill="#1e293b"
+            />
+
+            {/* Lapisan Kerak Basal Bantal (Pillow Basalt - Atas) */}
+            <path
+              d="M 680 135 C 610 130, 520 115, 450 92 C 415 82, 375 78, 340 78 L 341 96 L 338 116 L 365 116 C 450 116, 560 132, 680 140 Z"
+              fill="#334155"
+              stroke="#0f172a"
+              strokeWidth="1.5"
+            />
+
+            {/* Lapisan Sedimen Laut Pelagik */}
+            <path
+              d="M 680 135 C 620 131, 550 118, 490 102 L 490 106 C 550 122, 620 135, 680 139 Z"
+              fill="#fef08a"
+              opacity="0.85"
+            />
+
+            {/* Patahan Normal & Blok Sesar Berundak */}
+            <line x1="405" y1="83" x2="405" y2="135" stroke="#0f172a" strokeWidth="2" />
+            <line x1="382" y1="81" x2="382" y2="140" stroke="#0f172a" strokeWidth="2" />
+            <line x1="358" y1="79" x2="358" y2="155" stroke="#0f172a" strokeWidth="2" />
+
+            {/* Cerobong Hidrotermal (Black Smoker Kanan) */}
+            <path d="M 346 80 L 349 68 L 353 68 L 356 80 Z" fill="#18181b" stroke="#78350f" strokeWidth="1" />
+
+            {/* Vektor Arah Pemekaran (Panah Bersih Tanpa Teks) */}
+            <g
+              transform="translate(550, 52)"
+              style={{
+                opacity: isDiverged ? 1 : 0.4,
+                transition: 'opacity 1.5s ease',
+              }}
+            >
+              <polygon points="55,10 35,0 35,20" fill="#38bdf8" filter="drop-shadow(0 0 6px #0284c7)" />
+              <rect x="-30" y="6" width="65" height="8" rx="2" fill="#38bdf8" />
+            </g>
           </g>
         </svg>
       </div>
 
-      <div className="w-full bg-[#0f172a] border border-amber-500/50 rounded-xl p-2 text-slate-300 text-[10px] flex items-center justify-between gap-2 shadow">
-        <span className="font-bold text-amber-400 shrink-0">INTI SAINS:</span>
-        <span className="leading-tight">
-          Lempeng samudra yang padat menunjam (subduksi) ke astenosfer mantel di bawah lempeng benua. Panas mantel bumi meleburkan batuan menjadi magma pijar yang naik ke atas melahirkan barisan gunung berapi aktif!
-        </span>
+      {/* Scientific Legend & Process Overview (Keterangan Rapi di Luar Gambar) */}
+      <div className="w-full bg-[#0f172a]/95 border-2 border-orange-500/70 rounded-xl p-2.5 sm:p-3 text-slate-200 text-xs sm:text-sm z-10 flex flex-wrap items-center justify-between gap-2 shadow-lg">
+        <div className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded-full bg-orange-500 shrink-0" />
+          <span className="font-bold text-orange-300">Pematang Tengah Samudra (Mid-Ocean Ridge):</span>
+          <span className="text-slate-200">
+            Dua lempeng memisah, magma naik mengisi celah dan membeku menjadi daratan kerak samudra baru.
+          </span>
+        </div>
       </div>
     </div>
   );
 }
 
+// 5. DATA & SUB-KOMPONEN: TIGA BENTANG ALAM GEOLOGIS HASIL TUMBUKAN KONVERGEN
 // ═════════════════════════════════════════════════════════════════════════════
-// 5. SUB-KOMPONEN: TIGA BENTANG ALAM GEOLOGIS HASIL TUMBUKAN KONVERGEN
-// ═════════════════════════════════════════════════════════════════════════════
-function ConvergentLandformsIllustration() {
-  const [selectedLandform, setSelectedLandform] = useState<'trench' | 'mountains' | 'volcano'>('trench');
+export const CONVERGENT_LANDFORMS_DATA = {
+  trench: {
+    tabLabel: '1. PALUNG LAUT',
+    title: '1. PALUNG LAUT DALAM (DEEP SEA TRENCH)',
+    subtitle: 'Ngarai Dasar Laut Terdalam di Bumi',
+    points: [
+      { icon: 'arrow-down', text: 'Terbentuk saat lempeng samudra yang berat menunjam curam ke bawah lempeng benua.' },
+      { icon: 'search', text: 'Kedalaman 7.000 - 11.000 m! Palung Mariana adalah titik terdalam di dunia (11.034 m).' },
+      { icon: 'bulb', text: 'Fakta: Gunung Everest (8.848 m) masih tenggelam >2.000 m jika dimasukkan ke palung ini!' },
+    ],
+  },
+  mountains: {
+    tabLabel: '2. PEGUNUNGAN',
+    title: '2. RANTAI PEGUNUNGAN LIPATAN (FOLDED MOUNTAINS)',
+    subtitle: 'Daratan Terangkat Akibat Tumbukan Lempeng',
+    points: [
+      { icon: 'layers', text: 'Dua lempeng saling menekan kuat, meremas dan melipat lapisan batuan kerak benua ke atas.' },
+      { icon: 'flag', text: 'Puncak lipatan disebut Antiklin, sedangkan lembah cekungannya disebut Sinklin.' },
+      { icon: 'check', text: 'Contoh nyata: Pegunungan Bukit Barisan di Sumatra dan Pegunungan Himalaya di Asia.' },
+    ],
+  },
+  volcano: {
+    tabLabel: '3. GUNUNG BERAPI',
+    title: '3. BUSUR GUNUNG BERAPI AKTIF (VOLCANIC ARC)',
+    subtitle: 'Jalur Erupsi Magma Peleburan Lempeng',
+    points: [
+      { icon: 'zap', text: 'Lempeng yang menunjam meleleh di mantel bumi bersuhu >1.200°C menjadi batuan cair (magma).' },
+      { icon: 'arrow-up', text: 'Magma panas yang lebih ringan mendesak naik ke permukaan membentuk kantung magma.' },
+      { icon: 'shield', text: 'Melahirkan jalur gunung berapi aktif Nusantara seperti Gunung Merapi, Semeru, & Krakatau.' },
+    ],
+  },
+};
 
-  const landformDetails = {
-    trench: {
-      title: '1. PALUNG LAUT DALAM (DEEP SEA TRENCH)',
-      subtitle: 'Ngarai Dasar Laut Terdalam di Bumi',
-      points: [
-        { icon: 'arrow-down', text: 'Terbentuk saat lempeng samudra yang berat menunjam curam ke bawah lempeng benua.' },
-        { icon: 'search', text: 'Kedalaman 7.000 - 11.000 m! Palung Mariana adalah titik terdalam di dunia (11.034 m).' },
-        { icon: 'bulb', text: 'Fakta: Gunung Everest (8.848 m) masih tenggelam >2.000 m jika dimasukkan ke palung ini!' },
-      ],
-      badgeColor: 'border-cyan-500 bg-cyan-950/90 text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.25)]',
-      textColor: 'text-cyan-400',
-    },
-    mountains: {
-      title: '2. RANTAI PEGUNUNGAN LIPATAN (FOLDED MOUNTAINS)',
-      subtitle: 'Daratan Terangkat Akibat Tumbukan Lempeng',
-      points: [
-        { icon: 'layers', text: 'Dua lempeng saling menekan kuat, meremas dan melipat lapisan batuan kerak benua ke atas.' },
-        { icon: 'flag', text: 'Puncak lipatan disebut Antiklin, sedangkan lembah cekungannya disebut Sinklin.' },
-        { icon: 'check', text: 'Contoh nyata: Pegunungan Bukit Barisan di Sumatra dan Pegunungan Himalaya di Asia.' },
-      ],
-      badgeColor: 'border-amber-500 bg-amber-950/90 text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.25)]',
-      textColor: 'text-amber-400',
-    },
-    volcano: {
-      title: '3. BUSUR GUNUNG BERAPI AKTIF (VOLCANIC ARC)',
-      subtitle: 'Jalur Erupsi Magma Peleburan Lempeng',
-      points: [
-        { icon: 'zap', text: 'Lempeng yang menunjam meleleh di mantel bumi bersuhu >1.200°C menjadi batuan cair (magma).' },
-        { icon: 'arrow-up', text: 'Magma panas yang lebih ringan mendesak naik ke permukaan membentuk kantung magma.' },
-        { icon: 'shield', text: 'Melahirkan jalur gunung berapi aktif Nusantara seperti Gunung Merapi, Semeru, & Krakatau.' },
-      ],
-      badgeColor: 'border-rose-500 bg-rose-950/90 text-rose-200 shadow-[0_0_15px_rgba(244,63,94,0.25)]',
-      textColor: 'text-rose-400',
-    },
+function ConvergentLandformsIllustration({
+  selectedLandform = 'trench',
+  onSelectLandform,
+}: {
+  selectedLandform?: 'trench' | 'mountains' | 'volcano';
+  onSelectLandform?: (lf: 'trench' | 'mountains' | 'volcano') => void;
+}) {
+  const [internalLandform, setInternalLandform] = useState<'trench' | 'mountains' | 'volcano'>('trench');
+  const activeLandform = onSelectLandform ? selectedLandform : internalLandform;
+  const handleSelect = (lf: 'trench' | 'mountains' | 'volcano') => {
+    retroAudio.playSelect();
+    if (onSelectLandform) {
+      onSelectLandform(lf);
+    } else {
+      setInternalLandform(lf);
+    }
   };
-
-  const current = landformDetails[selectedLandform];
 
   return (
     <div className="w-full h-full relative flex flex-col justify-between select-none">
       <div className="w-full pt-2.5 px-2 sm:px-3 pb-2 flex items-center justify-between border-b border-slate-800 bg-slate-950/95 z-20 shrink-0 gap-1 overflow-x-auto">
-        <span className="text-[8.5px] sm:text-[9.5px] font-pixel-title text-amber-400 font-bold shrink-0 flex items-center gap-1.5">
-          <PixelIcon name="layers" size={13} className="text-amber-400" />
+        <span className="text-xs sm:text-sm font-pixel-title text-amber-400 font-bold shrink-0 flex items-center gap-1.5">
+          <PixelIcon name="layers" size={14} className="text-amber-400" />
           <span className="hidden sm:inline">PILIH BENTANG ALAM:</span>
           <span className="sm:hidden">BENTANG ALAM:</span>
         </span>
         <div className="flex items-center gap-1.5 shrink-0">
           <button
-            onClick={() => {
-              retroAudio.playSelect();
-              setSelectedLandform('trench');
-            }}
-            className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[8px] sm:text-[9px] font-pixel-title cursor-pointer transition-colors border-2 ${selectedLandform === 'trench'
+            onClick={() => handleSelect('trench')}
+            className={`px-3 py-1.5 rounded-lg text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'trench'
               ? 'bg-cyan-600 text-white border-cyan-300 shadow-[0_2px_0_#083344]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
               }`}
@@ -2838,11 +3320,8 @@ function ConvergentLandformsIllustration() {
             [1. PALUNG LAUT]
           </button>
           <button
-            onClick={() => {
-              retroAudio.playSelect();
-              setSelectedLandform('mountains');
-            }}
-            className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[8px] sm:text-[9px] font-pixel-title cursor-pointer transition-colors border-2 ${selectedLandform === 'mountains'
+            onClick={() => handleSelect('mountains')}
+            className={`px-3 py-1.5 rounded-lg text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'mountains'
               ? 'bg-amber-600 text-white border-amber-300 shadow-[0_2px_0_#451a03]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
               }`}
@@ -2850,11 +3329,8 @@ function ConvergentLandformsIllustration() {
             [2. PEGUNUNGAN]
           </button>
           <button
-            onClick={() => {
-              retroAudio.playSelect();
-              setSelectedLandform('volcano');
-            }}
-            className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[8px] sm:text-[9px] font-pixel-title cursor-pointer transition-colors border-2 ${selectedLandform === 'volcano'
+            onClick={() => handleSelect('volcano')}
+            className={`px-3 py-1.5 rounded-lg text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'volcano'
               ? 'bg-rose-600 text-white border-rose-300 shadow-[0_2px_0_#4c0519]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
               }`}
@@ -2864,34 +3340,10 @@ function ConvergentLandformsIllustration() {
         </div>
       </div>
 
-      <div className="w-full flex-1 min-h-0 relative flex items-center justify-center overflow-hidden">
-        {selectedLandform === 'trench' && <TrenchIllustration />}
-        {selectedLandform === 'mountains' && <FoldedMountainsIllustration />}
-        {selectedLandform === 'volcano' && <VolcanoIllustration />}
-      </div>
-
-      <div className={`w-full border-t-2 sm:border-2 sm:rounded-xl p-2 sm:p-2.5 text-xs z-10 flex flex-col gap-1 shadow-lg shrink-0 ${current.badgeColor}`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <PixelIcon name="bulb" size={14} className={current.textColor} />
-            <span className="font-pixel-title text-[9px] sm:text-[10px] font-bold">
-              {current.title}
-            </span>
-          </div>
-          <span className="text-[8px] opacity-80 font-mono uppercase hidden sm:inline">
-            {current.subtitle}
-          </span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-2 pt-0.5">
-          {current.points.map((pt, idx) => (
-            <div key={idx} className="bg-black/35 rounded-lg p-1.5 border border-white/10 flex items-start gap-1.5">
-              <PixelIcon name={pt.icon as any} size={11} className={`shrink-0 mt-0.5 ${current.textColor}`} />
-              <span className="text-[8.5px] sm:text-[9px] leading-snug text-slate-100 font-medium">
-                {pt.text}
-              </span>
-            </div>
-          ))}
-        </div>
+      <div className="w-full flex-1 min-h-0 relative flex items-center justify-center overflow-hidden p-2 sm:p-4">
+        {activeLandform === 'trench' && <TrenchIllustration />}
+        {activeLandform === 'mountains' && <FoldedMountainsIllustration />}
+        {activeLandform === 'volcano' && <VolcanoIllustration />}
       </div>
     </div>
   );
@@ -2960,7 +3412,7 @@ function TrenchIllustration() {
       <rect x="0" y="38" width="560" height="212" fill="url(#tWaterGrad)" />
       <polygon points="260,38 275,38 295,95 240,95" fill="#bae6fd" opacity="0.18" />
       <polygon points="285,38 298,38 340,95 290,95" fill="#bae6fd" opacity="0.15" />
-      <line x1="0" y1="38" x2="560" y2="38" stroke="#38bdf8" strokeWidth="1.5" strokeDasharray="6 3" />
+      <line x1="0" y1="38" x2="560" y2="38" stroke="#38bdf8" strokeWidth="1.5" />
 
       {/* 3. Kapal Riset Kelautan */}
       <g>
@@ -2974,7 +3426,7 @@ function TrenchIllustration() {
         <line x1="213" y1="18" x2="213" y2="12" stroke="#475569" strokeWidth="1" />
         <circle cx="213" cy="11" r="2" fill="#e2e8f0" />
         <polygon points="234,26 238,18 240,18 238,26" fill="#334155" />
-        <line x1="239" y1="18" x2="239" y2="135" stroke="#38bdf8" strokeWidth="1" strokeDasharray="2 2" opacity="0.6" />
+        <line x1="239" y1="18" x2="239" y2="135" stroke="#38bdf8" strokeWidth="1" opacity="0.6" />
         <rect x="200" y="14" width="4" height="2" fill="#ef4444" />
         <rect x="200" y="16" width="4" height="2" fill="#ffffff" />
       </g>
@@ -2988,8 +3440,8 @@ function TrenchIllustration() {
       />
       <path d="M 60,65 L 105,72 L 135,115 L 165,155 L 190,210" fill="none" stroke="#57534e" strokeWidth="1" />
       <path d="M 95,95 L 125,105 L 140,145 L 175,195" fill="none" stroke="#1c1917" strokeWidth="1.5" />
-      <text x="65" y="70" fill="#a8a29e" fontSize="6.5" fontWeight="bold">LANDASAN BENUA</text>
-      <text x="105" y="115" fill="#78716c" fontSize="6" fontWeight="bold">LERENG BENUA</text>
+      <text x="65" y="70" fill="#a8a29e" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">LANDASAN BENUA</text>
+      <text x="105" y="115" fill="#78716c" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">LERENG BENUA</text>
 
       <polygon
         points="370,110 330,125 295,160 265,210 245,246 560,246 560,110"
@@ -3115,49 +3567,48 @@ function TrenchIllustration() {
           y2="78"
           stroke="#38bdf8"
           strokeWidth="1.2"
-          strokeDasharray="4 3"
           opacity="0.8"
         />
         <circle cx="390" cy="78" r="3" fill="#fef08a" stroke="#ca8a04" strokeWidth="1.2" />
 
         <g id="everest-callout">
           <rect
-            x="270"
-            y="42"
-            width="240"
-            height="28"
+            x="250"
+            y="38"
+            width="280"
+            height="34"
             rx="4"
             fill="#082f49"
             stroke="#38bdf8"
             strokeWidth="1.5"
           />
-          <text x="390" y="54" fill="#fef08a" fontSize="7" fontWeight="bold" textAnchor="middle">
+          <text x="390" y="52" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
             ▲ MT. EVEREST (8.848 m)
           </text>
-          <text x="390" y="63" fill="#7dd3fc" fontSize="5.2" fontWeight="bold" textAnchor="middle">
-            PUNCAK TERTINGGI BUMI TENGGELAM &gt;2.000 m DI PALUNG MARIANA!
+          <text x="390" y="65" fill="#7dd3fc" fontSize="8.5" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+            Puncak Tertinggi Bumi Tenggelam &gt;2.000 m di Palung!
           </text>
-          <polygon points="386,70 394,70 390,76" fill="#38bdf8" />
+          <polygon points="386,72 394,72 390,78" fill="#38bdf8" />
         </g>
       </g>
 
       {/* Skala Kedalaman */}
       <g>
-        <line x1="30" y1="38" x2="30" y2="246" stroke="#94a3b8" strokeWidth="1" />
-        <line x1="26" y1="38" x2="34" y2="38" stroke="#94a3b8" strokeWidth="1" />
-        <text x="24" y="41" fill="#bae6fd" fontSize="5.5" textAnchor="end" fontWeight="bold">0 m</text>
-        <line x1="26" y1="65" x2="34" y2="65" stroke="#94a3b8" strokeWidth="1" />
-        <text x="24" y="68" fill="#7dd3fc" fontSize="5.5" textAnchor="end">200 m</text>
-        <line x1="26" y1="105" x2="34" y2="105" stroke="#94a3b8" strokeWidth="1" />
-        <text x="24" y="108" fill="#93c5fd" fontSize="5.5" textAnchor="end">1.000 m</text>
-        <line x1="26" y1="165" x2="34" y2="165" stroke="#94a3b8" strokeWidth="1" />
-        <text x="24" y="168" fill="#cbd5e1" fontSize="5.5" textAnchor="end">4.000 m</text>
-        <line x1="26" y1="246" x2="34" y2="246" stroke="#facc15" strokeWidth="1.5" />
-        <text x="24" y="248" fill="#facc15" fontSize="6" textAnchor="end" fontWeight="bold">11.000 m</text>
+        <line x1="32" y1="38" x2="32" y2="246" stroke="#94a3b8" strokeWidth="1" />
+        <line x1="28" y1="38" x2="36" y2="38" stroke="#94a3b8" strokeWidth="1" />
+        <text x="26" y="41" fill="#bae6fd" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">0 m</text>
+        <line x1="28" y1="65" x2="36" y2="65" stroke="#94a3b8" strokeWidth="1" />
+        <text x="26" y="68" fill="#7dd3fc" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">200 m</text>
+        <line x1="28" y1="105" x2="36" y2="105" stroke="#94a3b8" strokeWidth="1" />
+        <text x="26" y="108" fill="#93c5fd" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">1.000 m</text>
+        <line x1="28" y1="165" x2="36" y2="165" stroke="#94a3b8" strokeWidth="1" />
+        <text x="26" y="168" fill="#cbd5e1" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">4.000 m</text>
+        <line x1="28" y1="246" x2="36" y2="246" stroke="#facc15" strokeWidth="1.5" />
+        <text x="26" y="248" fill="#facc15" fontSize="8.5" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">11.000 m</text>
       </g>
 
-      <rect x="180" y="234" width="105" height="12" rx="2" fill="#020617" stroke="#38bdf8" strokeWidth="1" />
-      <text x="232" y="242" fill="#38bdf8" fontSize="6" fontWeight="bold" textAnchor="middle">
+      <rect x="155" y="232" width="150" height="15" rx="3" fill="#020617" stroke="#38bdf8" strokeWidth="1.2" />
+      <text x="230" y="243" fill="#38bdf8" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
         CHALLENGER DEEP: 11.034 m
       </text>
     </svg>
@@ -3236,28 +3687,28 @@ function FoldedMountainsIllustration() {
 
       {/* Panah Kompresi */}
       <g>
-        <rect x="20" y="165" width="60" height="18" rx="3" fill="#ea580c" stroke="#fef08a" strokeWidth="1.5" />
-        <text x="32" y="177" fill="#ffffff" fontSize="6.5" fontWeight="bold">TEKANAN</text>
-        <polygon points="80,162 94,174 80,186" fill="#facc15" stroke="#78350f" strokeWidth="1" />
+        <rect x="15" y="165" width="72" height="20" rx="3" fill="#ea580c" stroke="#fef08a" strokeWidth="1.5" />
+        <text x="24" y="179" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">TEKANAN</text>
+        <polygon points="87,162 101,175 87,188" fill="#facc15" stroke="#78350f" strokeWidth="1" />
       </g>
       <g>
-        <rect x="480" y="165" width="60" height="18" rx="3" fill="#ea580c" stroke="#fef08a" strokeWidth="1.5" />
-        <text x="490" y="177" fill="#ffffff" fontSize="6.5" fontWeight="bold">TEKANAN</text>
-        <polygon points="480,162 466,174 480,186" fill="#facc15" stroke="#78350f" strokeWidth="1" />
+        <rect x="473" y="165" width="72" height="20" rx="3" fill="#ea580c" stroke="#fef08a" strokeWidth="1.5" />
+        <text x="482" y="179" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">TEKANAN</text>
+        <polygon points="473,162 459,175 473,188" fill="#facc15" stroke="#78350f" strokeWidth="1" />
       </g>
 
       {/* Label Antiklin & Sinklin */}
       <g>
-        <rect x="215" y="70" width="130" height="18" rx="3" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
-        <text x="280" y="82" fill="#fef08a" fontSize="6.5" fontWeight="bold" textAnchor="middle">
+        <rect x="200" y="68" width="160" height="22" rx="4" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
+        <text x="280" y="83" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
           PUNCAK LIPATAN (ANTIKLIN)
         </text>
-        <line x1="280" y1="88" x2="280" y2="105" stroke="#f59e0b" strokeWidth="1.5" />
+        <line x1="280" y1="90" x2="280" y2="105" stroke="#f59e0b" strokeWidth="1.5" />
         <circle cx="280" cy="105" r="3" fill="#fef08a" />
       </g>
       <g>
-        <rect x="145" y="195" width="125" height="18" rx="3" fill="#0f172a" stroke="#38bdf8" strokeWidth="1.5" />
-        <text x="207" y="207" fill="#7dd3fc" fontSize="6.5" fontWeight="bold" textAnchor="middle">
+        <rect x="130" y="195" width="160" height="22" rx="4" fill="#0f172a" stroke="#38bdf8" strokeWidth="1.5" />
+        <text x="210" y="210" fill="#7dd3fc" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
           LEMBAH LIPATAN (SINKLIN)
         </text>
         <line x1="200" y1="195" x2="200" y2="155" stroke="#38bdf8" strokeWidth="1.5" />
@@ -3316,7 +3767,7 @@ function VolcanoIllustration() {
       <rect x="0" y="112" width="560" height="6" fill="#15803d" />
       <rect x="0" y="118" width="560" height="132" fill="#1e293b" />
       <rect x="0" y="175" width="560" height="75" fill="url(#mantelGrad)" />
-      <text x="15" y="240" fill="#fed7aa" fontSize="6.5" fontWeight="bold">
+      <text x="15" y="240" fill="#fed7aa" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">
         ASTENOSFER MANTEL PANAS (SUHU &gt; 1.200°C)
       </text>
 
@@ -3327,7 +3778,7 @@ function VolcanoIllustration() {
         stroke="#14532d"
         strokeWidth="1.5"
       />
-      <text x="15" y="132" fill="#86efac" fontSize="6.5" fontWeight="bold">
+      <text x="15" y="134" fill="#86efac" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">
         LEMPENG SAMUDRA (MENUNJAM)
       </text>
 
@@ -3335,15 +3786,15 @@ function VolcanoIllustration() {
       <g>
         <circle cx="190" cy="210" r="14" fill="#ea580c" opacity="0.6" />
         <circle cx="190" cy="210" r="7" fill="#fef08a" />
-        <text x="210" y="214" fill="#fef08a" fontSize="6" fontWeight="bold">PELEBURAN SLAB</text>
-        <path d="M 205,200 Q 240,195 270,185" fill="none" stroke="#f97316" strokeWidth="2" strokeDasharray="3 2" />
+        <text x="210" y="215" fill="#fef08a" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">PELEBURAN SLAB</text>
+        <path d="M 205,200 Q 240,195 270,185" fill="none" stroke="#f97316" strokeWidth="2" />
       </g>
 
       {/* Dapur Magma Raksasa */}
       <g>
         <ellipse cx="330" cy="175" rx="55" ry="26" fill="url(#dapurMagmaGrad)" stroke="#ef4444" strokeWidth="2" />
         <ellipse cx="330" cy="175" rx="28" ry="12" fill="#fef08a" />
-        <text x="330" y="178" fill="#450a0a" fontSize="7" fontWeight="bold" textAnchor="middle">
+        <text x="330" y="178" fill="#450a0a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
           DAPUR MAGMA (KANTUNG PIJAR)
         </text>
       </g>
@@ -3354,9 +3805,9 @@ function VolcanoIllustration() {
 
       {/* Label */}
       <g>
-        <rect x="250" y="85" width="160" height="16" rx="3" fill="#450a0a" stroke="#f87171" strokeWidth="1.2" />
-        <text x="330" y="96" fill="#fef08a" fontSize="6.5" fontWeight="bold" textAnchor="middle">
-          BUSUR STRATOVOLCANO AKTIF MERAPI
+        <rect x="230" y="82" width="200" height="20" rx="4" fill="#450a0a" stroke="#f87171" strokeWidth="1.5" />
+        <text x="330" y="96" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+          BUSUR STRATOVOLCANO AKTIF
         </text>
       </g>
     </svg>

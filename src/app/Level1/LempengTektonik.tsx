@@ -362,7 +362,7 @@ export default function LempengTektonik() {
                     </g>
 
                     {/* Fault Line */}
-                    <line x1="25" y1="82" x2="375" y2="82" stroke="#ef4444" strokeWidth="3" strokeDasharray="8 4" />
+                    <line x1="25" y1="82" x2="375" y2="82" stroke="#ef4444" strokeWidth="3" />
 
                     {/* Bottom Plate */}
                     <g
@@ -521,7 +521,7 @@ export default function LempengTektonik() {
                 <circle cx="280" cy="95" r="3" fill="#ef4444" />
 
                 {/* Subduction line */}
-                <line x1="90" y1="125" x2="200" y2="120" stroke="#ef4444" strokeWidth="2" strokeDasharray="4 4" opacity="0.6" />
+                <line x1="90" y1="125" x2="200" y2="120" stroke="#ef4444" strokeWidth="2" opacity="0.6" />
 
                 {/* Island codes */}
                 <text x="105" y="105" fill="#86efac" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">SUM</text>
@@ -621,7 +621,6 @@ export default function LempengTektonik() {
                     fill="none"
                     stroke="#ef4444"
                     strokeWidth="3"
-                    strokeDasharray="6 3"
                     opacity="0.6"
                   />
 

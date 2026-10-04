@@ -154,7 +154,7 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-2xl animate-spin">e911_emergency</span>
           <span className="font-pixel-title text-xs md:text-sm font-bold tracking-wider">
-            🚨 SITUASI DARURAT: SKENARIO {currentScenarioIdx + 1} / {CRISIS_SCENARIOS.length}
+            SITUASI DARURAT: SKENARIO {currentScenarioIdx + 1} / {CRISIS_SCENARIOS.length}
           </span>
         </div>
         <div className="flex items-center gap-3">
@@ -162,7 +162,7 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
             WAKTU REAKSI: <span className={timeLeft <= 10 ? 'text-yellow-300 animate-ping' : ''}>{timeLeft}s</span>
           </div>
           <div className="px-2.5 py-1 rounded bg-emerald-900 border border-emerald-400 text-xs font-pixel-title font-bold">
-            👥 WARGA SELAMAT: {citizensSaved}
+            WARGA SELAMAT: {citizensSaved}
           </div>
         </div>
       </div>
@@ -234,7 +234,7 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
           >
             <div className="flex items-center gap-2 mb-1">
               <span className="font-pixel-title text-xs font-bold">
-                {decisionFeedback.isCorrect ? '★ KEPUTUSAN EFEKTIF TERCAPAI!' : '⚠️ KONSEKUENSI KEPUTUSAN BERISIKO:'}
+                {decisionFeedback.isCorrect ? '★ KEPUTUSAN EFEKTIF TERCAPAI!' : 'KONSEKUENSI KEPUTUSAN BERISIKO:'}
               </span>
             </div>
             <p className="text-xs leading-relaxed">{decisionFeedback.text}</p>

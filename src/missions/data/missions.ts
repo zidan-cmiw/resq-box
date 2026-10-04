@@ -1,23 +1,43 @@
 export interface MissionValidation {
   requiredBlocks?: string[];
   codeContains?: string[];
-  ancestorConstraints?: Record<string, string>; // { childType: requiredAncestorType }
+  ancestorConstraints?: Record<string, string>;
 }
 
 export interface MissionStep {
   title: string;
   description: string;
   icon: string;
-  tip?: string;
+  tip?: string | null;
 }
 
 export type MissionCategory = 'pengenalan' | 'gempa' | 'gunung' | 'proyek';
 
 export const CATEGORIES: { id: MissionCategory; title: string; icon: string; missions: number }[] = [
-  { id: 'pengenalan', title: 'Perkenalan', icon: 'school', missions: 3 },
-  { id: 'gempa', title: 'Gempa Bumi', icon: 'landslide', missions: 8 },
-  { id: 'gunung', title: 'Gunung Meletus', icon: 'volcano', missions: 8 },
-  { id: 'proyek', title: 'Proyek Akhir', icon: 'emoji_objects', missions: 4 },
+  {
+    "id": "pengenalan",
+    "title": "Fondasi EWS & Seismik",
+    "icon": "school",
+    "missions": 10
+  },
+  {
+    "id": "gempa",
+    "title": "Mitigasi Gempa Bumi",
+    "icon": "landslide",
+    "missions": 15
+  },
+  {
+    "id": "gunung",
+    "title": "Vulkanologi & Erupsi Merapi",
+    "icon": "volcano",
+    "missions": 15
+  },
+  {
+    "id": "proyek",
+    "title": "Jalur Evakuasi & Grand Mission",
+    "icon": "emoji_objects",
+    "missions": 10
+  }
 ];
 
 export interface Mission {
@@ -33,249 +53,2588 @@ export interface Mission {
   validation: MissionValidation;
 }
 
-const st = (title: string, description: string, icon: string, tip?: string): MissionStep => ({ title, description, icon, tip });
-
 export const MISSIONS: Mission[] = [
-
-  // ═══ KATEGORI 1: PERKENALAN (3 misi) ═══
   {
-  id: 'pengenalan_01', category: 'pengenalan', level: 1,
-  title: 'Nyalakan Lampu Pertama', icon: 'lightbulb',
-  scenario: 'Desa Cikaret mengalami pemadaman listrik saat malam hari akibat badai. Kamu perlu membuat lampu darurat agar warga tidak panik.',
-  objective: 'Buat program agar Lampu menyala terus-menerus.',
-  hint: 'Buka kategori Peringatan & Lampu, ambil blok "Lampu", lalu taruh di dalam "Mulai Saat Dihidupkan" pada blok Sistem Mitigasi.',
-  steps: [
-  st('Kenali Misimu! ', 'Desa Cikaret gelap gulita karena badai. Tugasmu adalah membuat lampu darurat supaya warga tidak panik!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Buka kategori Peringatan & Lampu di panel kiri, cari blok:\n• "Lampu Bahaya Nyala"\n\nBlok Sistem Mitigasi sudah ada di kanvas. Kamu tinggal menambahkan blok ke dalamnya!', 'inventory_2', 'Klik nama kategori di panel kiri untuk melihat semua blok yang tersedia.'),
-  st('Susun Blok-nya', 'Seret blok "Lampu Bahaya Nyala" ke dalam kotak "Mulai Saat Dihidupkan" di blok Sistem Mitigasi.\n\nBlok "Mulai Saat Dihidupkan" dijalankan satu kali saat program dimulai — cocok untuk menyalakan lampu!', 'extension', 'Pastikan blok Lampu menempel (snap) di dalam "Mulai Saat Dihidupkan", bukan di luar.'),
-  st('Jalankan & Validasi! ', 'Klik tombol "Mulai" di atas untuk menjalankan program. Kalau berhasil, klik tombol "VALIDASI MISI" di bawah ini.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_program', 'resq_led'], ancestorConstraints: { 'resq_led': 'resq_program' }, codeContains: ["api.setPin('10', 'HIGH')"] },
+    "id": "job_01",
+    "category": "pengenalan",
+    "level": 1,
+    "title": "Job 1: Sinyal Status Normal",
+    "icon": "school",
+    "scenario": "Sistem pemantauan baru dipasang di Pos Pengamatan. Saat kondisi aman, sistem menyalakan Lampu Status Hijau sebagai tanda bahwa sistem aktif dan kondisi normal.",
+    "objective": "Gunakan blok Sistem Mitigasi untuk menyalakan Lampu Status Hijau (Aman).",
+    "hint": "Buka kategori Peringatan & EWS, ambil blok 'Atur Lampu Status ke [Aman (Hijau)]', lalu masukkan ke dalam 'Mulai Saat Dihidupkan'.",
+    "steps": [
+      {
+        "title": "Kenali Misimu",
+        "description": "Pasang indikator kesiapan sistem mitigasi pertama. Warga desa perlu melihat lampu hijau menyala tenang!",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Blok",
+        "description": "Cari Peringatan & EWS -> 'Atur Lampu Status ke [Aman (Hijau)]'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Susun Blok",
+        "description": "Seret ke dalam kotak Mulai Saat Dihidupkan di blok Sistem Mitigasi.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Jalankan & Validasi",
+        "description": "Klik tombol MULAI, periksa indikator lampu berubah hijau, lalu klik Validasi Misi!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.setRgb"
+      ],
+      "ancestorConstraints": {
+        "resq_lampu_status": "resq_program"
+      }
+    }
   },
   {
-  id: 'pengenalan_02', category: 'pengenalan', level: 2,
-  title: 'Lampu Berkedip', icon: 'flash_on',
-  scenario: 'Lampu darurat saja tidak cukup untuk menarik perhatian. Warga butuh lampu yang berkedip agar tahu lokasi titik kumpul!',
-  objective: 'Buat Lampu berkedip: nyala 1 detik, mati 1 detik, berulang terus.',
-  hint: 'Pakai blok "Jeda Sebentar" dari Sistem, dan blok "Jalankan Terus-Menerus" agar kedip berlanjut.',
-  steps: [
-  st('Lampu Isyarat! ', 'Sekarang kita buat lampu yang berkedip supaya warga tahu jalan ke titik kumpul. Lampu ini akan terus berkedip tanpa henti!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Cari blok-blok ini:\n• Peringatan & Lampu → "Lampu Bahaya Nyala" dan "Lampu Bahaya Mati"\n• Sistem → "Jeda Sebentar 1000 ms" (2x)', 'inventory_2', 'Blok "Jeda Sebentar" bisa kamu ganti angka waktunya (1000ms = 1 detik).'),
-  st('Susun Pola Kedip', 'Di dalam "Jalankan Terus-Menerus" di Sistem, susun:\n1. Lampu Bahaya Nyala\n2. Jeda Sebentar 1000 ms\n3. Lampu Bahaya Mati\n4. Jeda Sebentar 1000 ms', 'extension', 'Pastikan di dalam Jalankan Terus-Menerus.'),
-  st('Lihat Kedipnya! ', 'Klik "Mulai" — Lampu bahaya harus berkedip tiap 1 detik. Kalau sudah, klik "VALIDASI MISI" di bawah.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_program', 'resq_led', 'resq_tunggu'], ancestorConstraints: { 'resq_led': 'resq_program' }, codeContains: ["api.setPin('10', 'HIGH')", "api.setPin('10', 'LOW')", 'api.delay'] },
+    "id": "job_02",
+    "category": "pengenalan",
+    "level": 2,
+    "title": "Job 2: Sinyal Waspada & Siaga",
+    "icon": "school",
+    "scenario": "Perubahan aktivitas alam mulai terdeteksi. Petugas harus mampu mengubah warna lampu status ke Kuning (Waspada) lalu Oranye (Siaga) secara bertahap.",
+    "objective": "Ganti lampu status ke Kuning, beri jeda 2 detik, lalu ganti ke Oranye.",
+    "hint": "Gunakan blok 'Jeda Waktu' dari kategori Sistem di antara dua blok pengaturan lampu status.",
+    "steps": [
+      {
+        "title": "Sinyal Bertahap",
+        "description": "Tingkat status bahaya bencana memiliki 4 level: Normal, Waspada, Siaga, dan Awas.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Kumpulkan Blok",
+        "description": "Ambil 2x Lampu Status (Kuning & Oranye) dan 1x Jeda Waktu 2 detik.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Susun Urutan",
+        "description": "Rangkai: Lampu Status Kuning -> Jeda Waktu 2 detik -> Lampu Status Oranye.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Uji Transisi",
+        "description": "Jalankan simulasi dan amati perubahan warna lampu indikator di panel telemetri.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lampu_status",
+        "resq_tunggu"
+      ],
+      "codeContains": [
+        "api.setRgb",
+        "api.delay"
+      ],
+      "ancestorConstraints": {
+        "resq_lampu_status": "resq_program",
+        "resq_tunggu": "resq_program"
+      }
+    }
   },
   {
-  id: 'pengenalan_03', category: 'pengenalan', level: 3,
-  title: 'Tombol & Lampu', icon: 'touch_app',
-  scenario: 'Relawan butuh tombol untuk menyalakan lampu tanda bahaya. Lampu hanya boleh menyala saat tombol ditekan.',
-  objective: 'Jika Tombol 1 ditekan, nyalakan Lampu. Jika tidak, matikan Lampu.',
-  hint: 'Gunakan blok "Jika...Kalau Tidak" dari Pengambilan Keputusan dan blok " Tombol Darurat 1 ditekan?" dari Pemantauan Alam.',
-  steps: [
-  st('Tombol Ajaib! ', 'Sekarang kita buat lampu yang cuma nyala kalau tombol ditekan. Ini berguna untuk memberi sinyal darurat!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Cari blok-blok ini:\n• Pemantauan Alam → " Tombol Darurat 1 ditekan?"\n• Pengambilan Keputusan → "Kalau...Selain Itu"\n• Peringatan & Lampu → "Lampu Bahaya Nyala" dan "Lampu Bahaya Mati"', 'inventory_2'),
-  st('Susun Logikanya', 'Di dalam "Jalankan Terus-Menerus", susun:\n\n Kalau →  Tombol Darurat 1 ditekan?\n  Maka Lakukan →  Lampu Bahaya Nyala\nSelain Itu →  Lampu Bahaya Mati', 'extension', 'Program harus terus mengecek tombol, makanya pakai "Jalankan Terus-Menerus".'),
-  st('Coba Tekan Tombolnya!', 'Klik "Mulai", lalu tekan Tombol Darurat 1 di panel Sensor — Lampu harus menyala! Kalau berhasil, klik "VALIDASI MISI".', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_tombol_1', 'resq_led'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_led': 'resq_program' }, codeContains: ["api.getPin('D2')", "api.setPin('10', 'HIGH')"] },
-  },
-
-  // ═══ KATEGORI 2: GEMPA BUMI (5 misi) ═══
-  {
-  id: 'gempa_01', category: 'gempa', level: 1,
-  title: 'Deteksi Getaran', icon: 'vibration',
-  scenario: 'Wilayah Lombok rawan gempa. Warga butuh peringatan dini: Lampu Bahaya harus menyala begitu gempa terdeteksi.',
-  objective: 'Gunakan sensor getaran. Jika getaran kuat, nyalakan Lampu Bahaya.',
-  hint: 'Pakai blok " Gempa Terdeteksi Kuat?" dari Pemantauan Alam, gabungkan dengan "Kalau...Selain Itu".',
-  steps: [
-  st('Kenali Gempa! ', 'Lombok sering gempa. Kamu akan membuat sistem yang mendeteksi getaran dan menyalakan lampu peringatan!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Cari:\n• Pemantauan Alam → " Gempa Terdeteksi Kuat?"\n• Pengambilan Keputusan → "Kalau...Selain Itu"\n• Peringatan & Lampu → "Lampu Bahaya Nyala" dan "Lampu Bahaya Mati"', 'inventory_2'),
-  st('Susun Detektor Getaran', 'Di dalam "Jalankan Terus-Menerus":\n\n Kalau →  Gempa Terdeteksi Kuat?\n  Maka Lakukan →  Lampu Bahaya Nyala\nSelain Itu →  Lampu Bahaya Mati', 'extension'),
-  st('Simulasikan Gempa! ', 'Klik "Mulai", buka panel Pemantauan Kondisi Alam, geser nilai getaran ke atas (>700). Lampu Bahaya harus menyala! Klik VALIDASI jika berhasil.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_getar_kuat', 'resq_led'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_led': 'resq_program' }, codeContains: ["api.getSensor('A1') > 700"] },
-  },
-  {
-  id: 'gempa_02', category: 'gempa', level: 2,
-  title: 'Alarm Getaran', icon: 'notification_important',
-  scenario: 'Lampu saja tidak cukup — warga perlu sirine keras supaya semua orang dengar peringatan gempa!',
-  objective: 'Jika getaran kuat, bunyikan Sirine sebagai alarm peringatan.',
-  hint: 'Ganti blok Lampu dengan blok "Sirine Peringatan" dan "Sirine Berhenti" dari Peringatan & Lampu.',
-  steps: [
-  st('Sirine Gempa! ', 'Lampu peringatan saja kurang keras. Sekarang kita tambahkan Sirine yang akan berbunyi saat gempa terdeteksi!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Cari:\n• Pemantauan Alam → " Gempa Terdeteksi Kuat?"\n• Peringatan & Lampu → "Sirine Peringatan" dan "Sirine Berhenti"\n• Pengambilan Keputusan → "Kalau...Selain Itu"', 'inventory_2'),
-  st('Susun Alarm', 'Di dalam "Jalankan Terus-Menerus":\n\n Kalau →  Gempa Terdeteksi Kuat?\n  Maka Lakukan → Sirine Peringatan\nSelain Itu → Sirine Berhenti', 'extension'),
-  st('Bunyikan Sirine! ', 'Jalankan, geser sensor getaran ke tinggi — Sirine harus berbunyi! VALIDASI MISI kalau berhasil.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_getar_kuat', 'resq_buzzer', 'resq_buzzer_stop'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_buzzer': 'resq_program', 'resq_buzzer_stop': 'resq_program' }, codeContains: ["api.getSensor('A1') > 700"] },
-  },
-  {
-  id: 'gempa_03', category: 'gempa', level: 3,
-  title: 'Level Getaran', icon: 'equalizer',
-  scenario: 'Tidak semua getaran berbahaya. Petugas BPBD perlu tahu level getaran: ringan (Lampu Aman) atau kuat (Lampu Bahaya + Sirine).',
-  objective: 'Bedakan 2 level getaran. Jika kuat → Lampu Bahaya + Sirine. Jika ringan → Lampu Aman saja.',
-  hint: 'Gunakan "Kalau...Selain Itu" lalu di dalam "Situasi Lain" tambahkan pengaturan Lampu Aman.',
-  steps: [
-  st('Level Getaran ', 'Getaran ada yang ringan dan kuat. Kita akan buat 2 level peringatan berbeda!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Cari:\n• Pemantauan Alam → " Gempa Terdeteksi Kuat?"\n• Pengambilan Keputusan → "Kalau...Selain Itu"\n• Peringatan & Lampu → Lampu Bahaya, Lampu Aman, Sirine, Matikan Semua Lampu', 'inventory_2', 'Lampu Aman untuk tanda AMAN. Lampu Bahaya + Sirine untuk tanda BAHAYA.'),
-  st('Susun Level Peringatan', 'Di "Jalankan Terus-Menerus":\n\n Kalau →  Gempa Terdeteksi Kuat?\n  Maka Lakukan →  Lampu Bahaya Nyala + Sirine\nSelain Itu →  Matikan Semua Lampu\n  Lampu Aman Nyala', 'extension'),
-  st('Uji Kedua Level! ', 'Run, lalu uji: 1) Getaran rendah → Lampu Aman. 2) Getaran tinggi → Lampu Bahaya + Sirine. VALIDASI kalau sukses!', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_getar_kuat', 'resq_buzzer', 'resq_semua_led_mati'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_buzzer': 'resq_program', 'resq_semua_led_mati': 'resq_program' }, codeContains: ["api.getSensor('A1') > 700"] },
+    "id": "job_03",
+    "category": "pengenalan",
+    "level": 3,
+    "title": "Job 3: Sinyal Bahaya Kritis & Sirine EWS",
+    "icon": "school",
+    "scenario": "Kondisi darurat terjadi! Sistem harus menyalakan Lampu Merah (Awas) dan membunyikan Sirine Peringatan Dini (EWS) selama 3 detik untuk memperingatkan warga.",
+    "objective": "Nyalakan Lampu Status Merah dan bunyikan Sirine EWS selama 3 detik.",
+    "hint": "Ambil blok 'Bunyikan Sirine EWS selama 3 detik' dari kategori Peringatan & EWS.",
+    "steps": [
+      {
+        "title": "Alarm Darurat",
+        "description": "Sirine EWS dan lampu merah adalah kombinasi audio-visual terpenting dalam evakuasi cepat.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Blok",
+        "description": "Ambil Lampu Status Merah dan Bunyikan Sirine EWS selama 3 detik.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Pasang di Sistem",
+        "description": "Masukkan kedua blok ke dalam Mulai Saat Dihidupkan.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Bunyikan Sirine",
+        "description": "Tekan MULAI dan dengarkan bunyi sirine EWS aktif bersama lampu merah!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lampu_status",
+        "resq_sirine_ews"
+      ],
+      "codeContains": [
+        "api.setRgb",
+        "api.setBuzzer"
+      ],
+      "ancestorConstraints": {
+        "resq_lampu_status": "resq_program",
+        "resq_sirine_ews": "resq_program"
+      }
+    }
   },
   {
-  id: 'gempa_04', category: 'gempa', level: 4,
-  title: 'Evakuasi Gempa', icon: 'directions_run',
-  scenario: 'Gempa besar terdeteksi! Sistem harus otomatis menyalakan Alarm Evakuasi jika gempa kuat ATAU tombol panik ditekan.',
-  objective: 'Gabungkan sensor getaran dan tombol darurat. Jika salah satu aktif, jalankan Alarm Evakuasi.',
-  hint: 'Di Pengambilan Keputusan, pakai blok "ATAU" untuk menggabungkan dua kondisi.',
-  steps: [
-  st('Evakuasi Darurat! ', 'Saat gempa besar atau tombol panik ditekan, seluruh sistem evakuasi harus jalan otomatis!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Kumpulkan:\n• Pemantauan Alam → " Gempa Terdeteksi Kuat?" + " Tombol Darurat 1 ditekan?"\n• Pengambilan Keputusan → "ATAU" + "Kalau...Selain Itu"\n• Peringatan & Lampu → " Alarm Evakuasi" + Lampu Aman', 'inventory_2'),
-  st('Susun Kondisi ATAU', 'Pertama gabungkan kondisi:\n\n Blok "ATAU"\n  Kiri →  Gempa Terdeteksi Kuat?\n  Kanan →  Tombol Darurat 1 ditekan?\n\nLalu masukkan ke "Jika".', 'extension', 'Ubah opsi di blok logika jadi "ATAU", bukan "DAN".'),
-  st('Aktifkan Evakuasi! ', 'Jika [Gempa ATAU Tombol] →  Alarm Evakuasi. Kalau tidak → Lampu Aman. Jalankan & uji kedua pemicunya!', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_dan_atau', 'resq_jika_tidak', 'resq_getar_kuat', 'resq_tombol_1', 'resq_alarm_darurat'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_alarm_darurat': 'resq_program' }, codeContains: ['||'] },
+    "id": "job_04",
+    "category": "pengenalan",
+    "level": 4,
+    "title": "Job 4: Pusat Informasi Publik (Layar OLED)",
+    "icon": "school",
+    "scenario": "Saat sirine berbunyi, warga seringkali panik karena tidak tahu apa yang terjadi. Sistem harus menampilkan instruksi jelas pada Layar Informasi Publik (OLED).",
+    "objective": "Kirim pesan instruksi evakuasi ke Layar Informasi OLED.",
+    "hint": "Gunakan blok 'Tampilkan di Layar Informasi' dari kategori Sistem dan ketik instruksi evakuasi.",
+    "steps": [
+      {
+        "title": "Papan Informasi",
+        "description": "Layar OLED SSD1306 di diorama berfungsi sebagai papan pengumuman digital bagi masyarakat desa.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Blok",
+        "description": "Ambil Sistem -> 'Tampilkan di Layar Informasi', lalu ketik pesan mitigasi.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Rangkai Pesan",
+        "description": "Masukkan ke dalam Mulai Saat Dihidupkan bersama status lampu siaga.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Cek Tampilan",
+        "description": "Jalankan simulasi dan baca teks pada kotak monitor OLED biru di panel telemetri!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.setOledMessage"
+      ],
+      "ancestorConstraints": {
+        "resq_layar_oled": "resq_program"
+      }
+    }
   },
   {
-  id: 'gempa_05', category: 'gempa', level: 5,
-  title: 'Sistem Peringatan Dini', icon: 'cell_tower',
-  scenario: 'Kota besar butuh sistem monitoring 24 jam. Setiap jeda singkat, sistem cek getaran. Jika kuat, aktifkan semua output darurat.',
-  objective: 'Buat loop monitoring dengan jeda tunggu. Jika getaran kuat, jalankan Lampu, Sirine, dan Kipas Ventilasi bersamaan.',
-  hint: 'Gunakan blok "Jeda Sebentar" untuk jeda monitoring. Aktifkan 3 output bersamaan di dalam "Lakukan".',
-  steps: [
-  st('Monitoring 24 Jam! ', 'Sistem ini harus terus mengecek getaran secara berkala. Begitu ada gempa, SEMUA alarm langsung aktif!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Kumpulkan:\n• Sistem → "Jeda Sebentar 1000 ms"\n• Pemantauan Alam → " Gempa Terdeteksi Kuat?"\n• Peringatan & Lampu → Lampu Bahaya + Sirine\n• Mekanik Evakuasi → Kipas Ventilasi\n• Pengambilan Keputusan → "Kalau...Selain Itu"', 'inventory_2'),
-  st('Susun Loop Monitoring', 'Di dalam "Jalankan Terus-Menerus":\n1.  Jika getaran kuat → Lampu + Sirine + Kipas nyala\n2. Selain Itu → semuanya mati\n3. Jeda Sebentar (biar hemat daya)', 'extension', 'Blok "Jeda Sebentar" di akhir loop penting — tanpa ini sensor dicek terus-terusan!'),
-  st('Uji Sistem Penuh! ', 'Run, geser sensor getaran naik. Lampu, Sirine, Kipas harus aktif bersamaan! VALIDASI MISI kalau sukses.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_tunggu', 'resq_getar_kuat', 'resq_jika_tidak', 'resq_led', 'resq_buzzer', 'resq_motor'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_led': 'resq_program', 'resq_buzzer': 'resq_program', 'resq_motor': 'resq_program' }, codeContains: ['api.delay'] },
-  },
-
-  // ═══ KATEGORI 3: GUNUNG MELETUS (5 misi) ═══
-  {
-  id: 'gunung_01', category: 'gunung', level: 1,
-  title: 'Sensor Suhu', icon: 'thermostat',
-  scenario: 'Gunung Merapi menunjukkan peningkatan suhu. Pasang sensor suhu untuk mendeteksi panas berlebih dan menyalakan Lampu peringatan.',
-  objective: 'Jika suhu panas (>35°C) terdeteksi, nyalakan Lampu Bahaya.',
-  hint: 'Pakai blok " Suhu Berbahaya?" dari Pemantauan Alam, gabungkan dengan "Kalau...Selain Itu".',
-  steps: [
-  st('Gunung Memanas!', 'Gunung Merapi suhunya naik! Kamu akan memasang sensor suhu untuk memantau panas gunung.', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Cari:\n• Pemantauan Alam → " Suhu Berbahaya?"\n• Pengambilan Keputusan → "Kalau...Selain Itu"\n• Peringatan & Lampu → "Lampu Bahaya Nyala" + "Lampu Bahaya Mati"', 'inventory_2'),
-  st('Susun Sensor Suhu', 'Di dalam "Jalankan Terus-Menerus":\n\n Kalau →  Suhu Berbahaya?\n  Maka Lakukan → Lampu Bahaya Nyala\nSelain Itu → Lampu Bahaya Mati', 'extension'),
-  st('Simulasikan Panas! ', 'Run, buka panel Pemantauan Kondisi Alam, geser suhu di atas 35°C. Lampu Bahaya harus menyala! VALIDASI kalau berhasil.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_suhu_panas', 'resq_led'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_led': 'resq_program' }, codeContains: ['0.4887'] },
-  },
-  {
-  id: 'gunung_02', category: 'gunung', level: 2,
-  title: 'Alarm Panas', icon: 'fireplace',
-  scenario: 'Suhu gunung sudah di level berbahaya! Sirine harus berbunyi keras agar semua warga di lereng segera evakuasi.',
-  objective: 'Jika suhu panas, bunyikan Sirine sebagai alarm evakuasi.',
-  hint: 'Ganti Lampu dengan Sirine. Jangan lupa matikan saat suhu normal.',
-  steps: [
-  st('Sirine Panas! ', 'Suhu gunung sudah di atas 35°C! Sirine harus berbunyi untuk memperingatkan semua warga!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Cari:\n• Pemantauan Alam → " Suhu Berbahaya?"\n• Peringatan & Lampu → "Sirine Peringatan" + "Sirine Berhenti"\n• Pengambilan Keputusan → "Kalau...Selain Itu"', 'inventory_2'),
-  st('Susun Alarm Panas', 'Di "Jalankan Terus-Menerus":\n\n Kalau →  Suhu Berbahaya?\n  Maka Lakukan → Sirine Peringatan\nSelain Itu → Sirine Berhenti', 'extension'),
-  st('Bunyikan Sirine! ', 'Run, geser suhu >35°C. Sirine harus bunyi! VALIDASI kalau berhasil.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_suhu_panas', 'resq_buzzer', 'resq_buzzer_stop'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_buzzer': 'resq_program', 'resq_buzzer_stop': 'resq_program' }, codeContains: ['0.4887'] },
-  },
-  {
-  id: 'gunung_03', category: 'gunung', level: 3,
-  title: 'Status Gunung', icon: 'monitoring',
-  scenario: 'PVMBG menetapkan status gunung berdasarkan suhu dan getaran vulkanik. Sistem harus merespons: Normal atau Awas.',
-  objective: 'Jika suhu panas ATAU getaran kuat, status Awas: aktifkan Lampu, Sirine, dan Pintu Evakuasi. Jika tidak, Lampu Aman.',
-  hint: 'Cek suhu panas dulu, gabungkan dengan getaran kuat pakai "ATAU". Di level Awas, aktifkan 3 output bersamaan.',
-  steps: [
-  st('Status Gunung ', 'PVMBG menetapkan status gunung berdasarkan suhu dan getaran vulkanik. Sistem harus merespons sesuai!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Kumpulkan:\n• Pemantauan Alam → " Suhu Berbahaya?" + " Gempa Terdeteksi Kuat?"\n• Pengambilan Keputusan → "ATAU" + "Kalau...Selain Itu"\n• Peringatan & Lampu → Lampu Bahaya, Lampu Aman, Sirine\n• Mekanik Evakuasi → Pintu Evakuasi', 'inventory_2'),
-  st('Susun Status Gunung', 'Di "Jalankan Terus-Menerus":\n Jika [Suhu Panas ATAU Getaran Kuat] → Lampu Bahaya + Sirine + Pintu Evakuasi Terbuka\nSelain Itu → Lampu Aman + matikan lainnya + Pintu Tertutup', 'extension', 'Pintu Evakuasi berguna untuk otomatis membuka rute evakuasi!'),
-  st('Uji Semua Status! ', 'Run, uji kombinasi suhu dan getaran. Tiap status harus beda respons! VALIDASI kalau berhasil.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_suhu_panas', 'resq_getar_kuat', 'resq_dan_atau', 'resq_led', 'resq_buzzer', 'resq_servo'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_led': 'resq_program', 'resq_buzzer': 'resq_program', 'resq_servo': 'resq_program' }, codeContains: ['||'] },
+    "id": "job_05",
+    "category": "pengenalan",
+    "level": 5,
+    "title": "Job 5: Uji Mandiri Semua Indikator (Diagnostic)",
+    "icon": "school",
+    "scenario": "Sebelum musim penghujan dan ancaman letusan tiba, tim BPBD melakukan pengujian mandiri berkala pada seluruh alarm dan lampu sebanyak 3 kali pengulangan.",
+    "objective": "Gunakan blok 'Ulangi Aksi 3 kali' untuk membunyikan sirine dan menyalakan lampu secara berkala.",
+    "hint": "Masukkan Sirine EWS dan Jeda Waktu ke dalam blok 'Ulangi Aksi 3 kali'.",
+    "steps": [
+      {
+        "title": "Loop Uji Coba",
+        "description": "Pengulangan otomatis memastikan seluruh sistem peringatan bekerja tanpa macet.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Gunakan Loop",
+        "description": "Ambil Sistem -> 'Ulangi Aksi [3] kali', lalu masukkan aksi sirine dan lampu di dalamnya.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Rakit Pengujian",
+        "description": "Pastikan blok berada di dalam loop pengulangan.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Uji Siklus",
+        "description": "Tekan MULAI dan saksikan alarm berulang 3 kali secara otomatis!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_ulangi",
+        "resq_sirine_ews"
+      ],
+      "codeContains": [
+        "for (let",
+        "api.setBuzzer"
+      ],
+      "ancestorConstraints": {
+        "resq_ulangi": "resq_program",
+        "resq_sirine_ews": "resq_program"
+      }
+    }
   },
   {
-  id: 'gunung_04', category: 'gunung', level: 4,
-  title: 'Evakuasi Gunung', icon: 'directions_walk',
-  scenario: 'Status Awas! Semua pintu evakuasi harus terbuka, alarm berbunyi, lampu darurat dan kipas ventilasi menyala otomatis.',
-  objective: 'Jika status Awas (suhu panas ATAU getaran kuat), aktifkan 4 output: Lampu Bahaya, Sirine, Kipas Ventilasi, dan Pintu Evakuasi.',
-  hint: 'Gabungkan 2 sensor dengan "ATAU". Di dalam "Lakukan", susun 4 blok output berurutan.',
-  steps: [
-  st('Evakuasi Gunung! ', 'Gunung status AWAS! Semua sistem evakuasi harus jalan: alarm, lampu, kipas ventilasi, dan pintu otomatis!', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Kumpulkan:\n• Pemantauan Alam → " Suhu Berbahaya?" + " Gempa Terdeteksi Kuat?"\n• Pengambilan Keputusan → "ATAU" + "Kalau...Selain Itu"\n• Peringatan & Lampu → Lampu Bahaya + Sirine\n• Mekanik Evakuasi → Kipas Ventilasi + Pintu Evakuasi', 'inventory_2'),
-  st('Susun Evakuasi Penuh', 'Di "Jalankan Terus-Menerus":\n\n Jika [ Suhu panas ATAU  Getaran kuat]\n  Maka Lakukan → Lampu Bahaya + Sirine + Kipas + Pintu\nSelain Itu → Matikan Semua', 'extension'),
-  st('Aktifkan Evakuasi! ', 'Run, naikkan suhu atau getaran. Semua 4 output harus aktif! VALIDASI kalau berhasil.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_dan_atau', 'resq_jika_tidak', 'resq_suhu_panas', 'resq_getar_kuat', 'resq_led', 'resq_buzzer', 'resq_motor', 'resq_servo'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_led': 'resq_program', 'resq_buzzer': 'resq_program', 'resq_motor': 'resq_program', 'resq_servo': 'resq_program' }, codeContains: ['||'] },
+    "id": "job_06",
+    "category": "pengenalan",
+    "level": 6,
+    "title": "Job 6: Simulasi Gempa Ringan (3.2 SR)",
+    "icon": "school",
+    "scenario": "Sesar lokal bergerak perlahan. Sensor mencatat getaran mikroseismik berkekuatan 3.2 Skala Richter. Simulasikan fenomena ini dan nyalakan lampu waspada.",
+    "objective": "Aktifkan Simulasi Getaran Gempa tingkat Ringan dan atur status ke Waspada.",
+    "hint": "Ambil blok 'Simulasi Getaran Gempa [Ringan (3-4 SR)]' dari kategori Simulasi Bencana.",
+    "steps": [
+      {
+        "title": "Getaran Pertama",
+        "description": "Gempa bumi ringan biasanya hanya menggetarkan jendela dan dirasakan orang yang diam.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Blok",
+        "description": "Ambil Simulasi Bencana -> 'Simulasi Getaran Gempa [Ringan (3-4 SR)]' dan Lampu Status Kuning.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Pasang di Sistem",
+        "description": "Letakkan di dalam Mulai Saat Dihidupkan.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Lihat Seismograf",
+        "description": "Jalankan dan amati grafik Seismograf melonjak dengan gelombang P kecil serta Skala Richter 3.4 SR!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.simGempa(1)"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
   },
   {
-  id: 'gunung_05', category: 'gunung', level: 5,
-  title: 'Sistem Monitoring Gunung', icon: 'satellite_alt',
-  scenario: 'Pusat vulkanologi butuh sistem monitoring 24 jam: cek suhu dengan jeda, 3 level status, dan respon otomatis tiap level.',
-  objective: 'Buat loop monitoring berulang dengan multi-sensor. Jika Awas → semua output. Normal → Lampu Aman.',
-  hint: 'Gunakan "ATAU" untuk kondisi Awas. Di dalam "Situasi Lain", tambahkan "Jika" kedua untuk cek kondisi aman.',
-  steps: [
-  st('Pusat Vulkanologi', 'Sistem monitoring gunung terlengkap! Cek tiap beberapa waktu, 3 level status, respons otomatis penuh.', 'auto_stories'),
-  st('Blok yang Kamu Butuhkan', 'Semua blok:\n• Sistem → "Jeda Sebentar"\n• Pemantauan Alam → Suhu panas + Getaran kuat\n• Output → Semua aksi yang ada\n• Pengambilan Keputusan → 2x "Jika" + "ATAU"', 'inventory_2'),
-  st('Susun Sistem Lengkap', 'Di "Jalankan Terus-Menerus":\n Jika [Suhu Panas ATAU Getaran Kuat]\n  Maka Lakukan → Lampu Bahaya + Sirine + Kipas + Pintu Buka\nSelain Itu →\n  Jika suhu normal → Lampu Aman + matikan lainnya\nJeda Sebentar', 'extension'),
-  st('Uji Sistem Penuh! ', 'Run dan uji semua kombinasi sensor. Tiap level harus respons tepat! VALIDASI kalau berhasil.', 'rocket_launch'),
-  ],
-  validation: { requiredBlocks: ['resq_tunggu', 'resq_jika_tidak', 'resq_dan_atau', 'resq_suhu_panas', 'resq_getar_kuat', 'resq_led', 'resq_buzzer', 'resq_servo'], ancestorConstraints: { 'resq_jika_tidak': 'resq_program', 'resq_led': 'resq_program', 'resq_buzzer': 'resq_program', 'resq_servo': 'resq_program' }, codeContains: ['0.4887', 'api.delay'] },
-  },
-
-  // ═══ KATEGORI 4: PROYEK AKHIR (4 proyek) ═══
-  {
-  id: 'proyek_01', category: 'proyek', level: 1,
-  title: 'RS Darurat (Gempa)', icon: 'local_hospital',
-  scenario: 'Rumah sakit "Harapan Desa" memiliki banyak pasien kritis. Jika terjadi gempa, listrik utama mati dan genset butuh waktu untuk menyala. Selain itu, pintu evakuasi tidak boleh langsung terbuka agar pasien bedah tetap aman, kecuali tombol override ditekan.',
-  objective: 'Buat satu urutan mitigasi gempa: Jika Getaran > 600, nyalakan Genset lalu bunyikan alarm 3x. Setelah itu, buka pintu evakuasi HANYA JIKA Tombol 2 (Override) TIDAK ditekan.',
-  hint: 'Semua ditaruh di dalam "Kalau Getaran > 600". Di bagian paling bawahnya, tambahkan "Kalau [BUKAN] Tombol 2 ditekan -> Pintu Terbuka".',
-  steps: [
-  st('Empathize & Define ', 'Pain Points: Pasien bedah rentan celaka jika pintu tiba-tiba terbuka saat operasi berlangsung akibat gempa. Pintu butuh sistem "Override" (pencegat).', 'psychology'),
-  st('Ideate & Prototype ', 'Semua blok ditaruh di dalam "Kalau Getaran > 600":\n1. Matikan Semua Lampu -> Jeda Sebentar (1000ms) -> Nyalakan Lampu Aman.\n2. Di bawahnya, tambahkan blok "Ulangi 3 kali": Sirine Bunyi -> Jeda -> Sirine Berhenti -> Jeda.\n3. Paling bawah (masih di dalam Getaran > 600), tambahkan "Kalau... Selain Itu": Kalau [BUKAN] Tombol 2 Ditekan -> Pintu Terbuka.', 'design_services'),
-  st('Test (Uji Coba) ', 'Uji: Kasih getaran > 600. Cek urutan nyala lampu dan bunyi sirine. Pastikan saat tombol 2 ditahan, pintu BATAL terbuka. Jika sukses, tekan Validasi!', 'science')
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_bandingkan', 'resq_sensor_getar', 'resq_tunggu', 'resq_led', 'resq_ulangi', 'resq_buzzer', 'resq_bukan', 'resq_servo'], codeContains: ["> 600"] }
-  },
-  {
-  id: 'proyek_02', category: 'proyek', level: 2,
-  title: 'Pabrik Kimia (Gempa & Suhu)', icon: 'factory',
-  scenario: 'Pabrik Kimia berisiko ganda. Gempa bisa meruntuhkan bangunan, dan suhu panas bisa meledakkan tangki. Jika bahaya, gas beracun harus dibuang.',
-  objective: 'Kondisi Kritis = (Getaran > 500) ATAU (Suhu > 45). Jika Kritis, Kipas Ventilasi menyala maksimal + Sirine. Pintu HANYA terbuka jika Tombol 1 (Konfirmasi Manajer) juga ditekan bersamaan dengan Kondisi Kritis.',
-  hint: 'Gunakan blok ATAU untuk mendeteksi bahaya. Gunakan blok DAN untuk menggabungkan Bahaya dengan konfirmasi Tombol 1.',
-  steps: [
-  st('Empathize & Define ', 'Pain Points: Bahaya ganda ledakan gas. Kipas harus langsung jalan, tapi pintu keluar tidak boleh sembarangan dibuka tanpa konfirmasi manajer agar gas tidak bocor ke luar sebelum aman.', 'psychology'),
-  st('Ideate & Prototype ', '1) Buat Kondisi Kritis: Getaran > 500 ATAU Suhu > 45.\n2) Kalau Kondisi Kritis -> Nyalakan Kipas Kencang & Sirine Darurat.\n3) Kalau [Kondisi Kritis] DAN [Tombol 1 Ditekan] -> Pintu Terbuka. Selain Itu -> Pintu Tertutup.', 'design_services'),
-  st('Test (Uji Coba) ', 'Beri Suhu > 45. Kipas & Sirine harus aktif, tapi pintu tetap tutup. Lalu tekan Tombol 1, pintu baru boleh buka. Uji dengan Getaran juga. Sukses? Validasi!', 'science')
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_bandingkan', 'resq_dan_atau', 'resq_motor', 'resq_buzzer', 'resq_tombol_1', 'resq_servo'], codeContains: ["> 500", "> 45"] }
-  },
-  {
-  id: 'proyek_03', category: 'proyek', level: 3,
-  title: 'Posko Gunung Cerdas (Suhu)', icon: 'device_thermostat',
-  scenario: 'PVMBG butuh posko otomatis 3 level yang akurat. Warga resah karena sirine sering bunyi mendadak di status waspada. Buat sistem berjenjang!',
-  objective: 'Aman (<30): Lampu Info. Siaga (30-45): Lampu Aman Berkedip (Loop) + Kipas Pelan. Awas (>45): Lampu Bahaya + Sirine + Pintu Buka.',
-  hint: 'Gunakan logika bertumpuk (nested if). Gunakan perbandingan (< 30), (> 30 DAN < 45), (> 45).',
-  steps: [
-  st('Empathize & Define ', 'Pain Points: Kepanikan warga akibat sirine yang salah waktu. Mereka butuh peringatan bertahap yang mulus dari Aman, Siaga, hingga Awas.', 'psychology'),
-  st('Ideate & Prototype ', '1) Kalau Suhu < 30 -> Aman (Lampu Info Nyala, lain mati).\n2) Selain Itu, Kalau Suhu < 45 -> Siaga (Ulangi 3x: Lampu Aman Kedip, Kipas Pelan).\n3) Selain Itu (berarti Suhu >= 45) -> Awas (Lampu Bahaya, Sirine, Pintu Terbuka).', 'design_services'),
-  st('Test (Uji Coba) ', 'Geser suhu pelan-pelan. Cek transisi dari lampu Info (Aman), ke lampu kuning berkedip (Siaga), hingga ke Sirine dan Pintu Terbuka (Awas). Sukses? Validasi!', 'science')
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_bandingkan', 'resq_sensor_suhu', 'resq_led', 'resq_ulangi', 'resq_motor', 'resq_buzzer', 'resq_servo'], codeContains: ["< 30", "< 45"] }
+    "id": "job_07",
+    "category": "pengenalan",
+    "level": 7,
+    "title": "Job 7: Simulasi Gempa Sedang (5.5 SR)",
+    "icon": "school",
+    "scenario": "Guncangan gempa sedang berkekuatan 5.5 SR melanda. Di hardware, motor getar bergetar sedang dan audio gempa bergemuruh. Layar OLED memberi peringatan tetap tenang.",
+    "objective": "Aktifkan Simulasi Getaran Gempa tingkat Sedang dan tampilkan pesan tetap tenang di OLED.",
+    "hint": "Gunakan Simulasi Getaran Gempa [Sedang (5-6 SR)] dan blok Layar Informasi.",
+    "steps": [
+      {
+        "title": "Guncangan Sedang",
+        "description": "Benda-benda gantung berayun kuat dan perabot bergeser pada gempa 5.5 SR.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Simulasi",
+        "description": "Ambil Simulasi Bencana -> 'Simulasi Getaran Gempa [Sedang (5-6 SR)]' dan Sistem -> 'Tampilkan di Layar Informasi'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Periksa Telemetri",
+        "description": "Amati amplitudo Seismograf membesar menjadi gelombang S yang rapat.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi setelah simulasi berjalan sempurna.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.simGempa(2)"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
   },
   {
-  id: 'proyek_04', category: 'proyek', level: 4,
-  title: 'Pusat Komando (Final Boss)', icon: 'admin_panel_settings',
-  scenario: 'BPBD Kota menugaskanmu membuat sistem "Super-Brain". Sistem ini harus menangkal alarm palsu, merespons letusan gunung, dan punya Protokol Kiamat (Doomsday).',
-  objective: 'Ancaman Aktif jika: (Getaran > 700 DAN Bukan Tombol 2) ATAU Suhu > 50. Jika ada ancaman Gempa DAN Gunung BERSAMAAN -> Protokol Doomsday.',
-  hint: 'Kombinasikan semua blok. Protokol Doomsday: Matikan semua lampu, Ulangi 5x (Sirine), Pintu Buka, Kipas Kencang.',
-  steps: [
-  st('Empathize & Define ', 'Pain Points: Multi-bencana bisa menghancurkan kota. Sistem harus tahan uji dari getaran palsu (filter) dan bereaksi maksimal jika gempa dan gunung terjadi BERSAMAAN.', 'psychology'),
-  st('Ideate & Prototype ', 'Tantangan Master: Gunakan filter BUKAN Tombol 2 untuk gempa. Deteksi gempa asli DAN gunung meletus secara bersamaan. Jika terjadi, jalankan aksi paling ekstrem. Tidak ada petunjuk blok untuk level ini. Buktikan kamu layak lulus!', 'design_services'),
-  st('Test (Uji Coba) ', 'Uji filter getaran palsu (Tombol 2 menahan sirine gempa). Uji gempa + gunung meletus bersamaan untuk memicu Doomsday. Jika sempurna, tekan Validasi. Selamat, Pahlawan!', 'science')
-  ],
-  validation: { requiredBlocks: ['resq_jika_tidak', 'resq_bandingkan', 'resq_dan_atau', 'resq_bukan', 'resq_tombol_2', 'resq_ulangi', 'resq_semua_led_mati', 'resq_buzzer', 'resq_motor', 'resq_servo'], codeContains: ["> 700", "> 50"] }
+    "id": "job_08",
+    "category": "pengenalan",
+    "level": 8,
+    "title": "Job 8: Simulasi Gempa Kuat (>7.0 SR)",
+    "icon": "school",
+    "scenario": "Gempa tektonik destruktif berkekuatan >7.0 Skala Richter mengguncang! Motor getar diorama bergetar maksimal, sirine EWS meraung, dan lampu darurat merah menyala!",
+    "objective": "Aktifkan Simulasi Gempa Kuat bersama Lampu Status Merah dan Sirine EWS.",
+    "hint": "Gunakan Simulasi Gempa Kuat (>7 SR) + Lampu Merah + Sirine EWS.",
+    "steps": [
+      {
+        "title": "Guncangan Hebat",
+        "description": "Gempa di atas 7 SR dapat meretakkan dinding dan meruntuhkan struktur bangunan yang rapuh.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Susun Tanggap Darurat",
+        "description": "Gabungkan Simulasi Gempa Kuat, Lampu Status Merah, dan Sirine EWS.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Amati Puncak Gelombang",
+        "description": "Seismograf akan menunjukkan lonjakan amplitudo merah maksimal!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi Hasil",
+        "description": "Periksa bahwa Skala Richter mencapai level 7.4 SR di monitor telemetri.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_sirine_ews",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.simGempa(3)"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_sirine_ews": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_09",
+    "category": "pengenalan",
+    "level": 9,
+    "title": "Job 9: Logika Otomatisasi Sirine Berdasarkan Getaran",
+    "icon": "school",
+    "scenario": "Tidak semua getaran memerlukan sirine keras agar warga tidak panik. Buat logika: Kalau getaran terdeteksi kuat, bunyikan sirine; selain itu cukup nyalakan lampu aman.",
+    "objective": "Gunakan blok 'Kalau... Selain Itu' dengan kondisi 'Gempa Terdeteksi Kuat?'.",
+    "hint": "Buka Pengambilan Keputusan untuk blok Kalau... Selain Itu, dan Pemantauan Alam untuk kondisi getaran kuat.",
+    "steps": [
+      {
+        "title": "Logika Keputusan",
+        "description": "Sistem cerdas harus mampu mengambil keputusan secara otomatis berdasarkan ambang batas sensor.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Susun Kondisi",
+        "description": "Kalau: 'Gempa Terdeteksi Kuat?' -> Maka: Sirine EWS + Lampu Merah -> Selain Itu: Lampu Hijau.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Pasang di Loop",
+        "description": "Letakkan logika ini di dalam Jalankan Terus-Menerus.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Uji Logika",
+        "description": "Jalankan simulasi dan uji respons logikanya.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jika_tidak",
+        "resq_getar_kuat",
+        "resq_sirine_ews"
+      ],
+      "codeContains": [
+        "if (",
+        "api.setBuzzer"
+      ],
+      "ancestorConstraints": {
+        "resq_jika_tidak": "resq_program",
+        "resq_getar_kuat": "resq_program",
+        "resq_sirine_ews": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_10",
+    "category": "pengenalan",
+    "level": 10,
+    "title": "Job 10: Analisis Gelombang Primer (P) dan Sekunder (S)",
+    "icon": "school",
+    "scenario": "Dalam seismologi, gelombang primer (P-wave) merambat lebih cepat dari gelombang sekunder (S-wave). Rancang simulasi yang memunculkan getaran ringan (P) lalu 2 detik kemudian guncangan kuat (S).",
+    "objective": "Susun simulasi gempa ringan, jeda waktu 2 detik, lalu simulasi gempa kuat.",
+    "hint": "Rangkai: Gempa Ringan -> Jeda 2 detik -> Gempa Kuat.",
+    "steps": [
+      {
+        "title": "Fisika Seismik",
+        "description": "Jeda antara gelombang P dan S adalah jendela emas bagi sistem EWS untuk memberi peringatan dini.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Urutan Gelombang",
+        "description": "1. Simulasi Gempa Ringan -> 2. Jeda Waktu 2 detik -> 3. Simulasi Gempa Kuat -> 4. Sirine EWS.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Perhatikan Seismograf",
+        "description": "Lihat transisi bentuk gelombang dari P kecil menjadi S lonjakan tajam pada canvas seismograf!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi Misi",
+        "description": "Klik Validasi jika urutan gelombang telah teruji.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_tunggu"
+      ],
+      "codeContains": [
+        "api.simGempa(1)",
+        "api.simGempa(3)"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_tunggu": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_11",
+    "category": "gempa",
+    "level": 11,
+    "title": "Job 11: Gempa Ringan Saat Jam Pelajaran",
+    "icon": "landslide",
+    "scenario": "Getaran ringan terasa saat jam pelajaran di lantai 2 gedung sekolah. Guru meminta siswa tidak panik dan menjauhi jendela kaca.",
+    "objective": "Atur lokasi ke Gedung Sekolah, jalankan gempa ringan, dan tampilkan pesan tetap tenang.",
+    "hint": "Gunakan blok Lokasi Kejadian [Gedung Sekolah], Gempa Ringan, dan Layar Informasi.",
+    "steps": [
+      {
+        "title": "Situasi Sekolah",
+        "description": "Siswa sedang belajar saat lantai bergetar halus. Kepanikan harus dicegah sejak awal!",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Lokasi & Gempa",
+        "description": "Ambil Simulasi Bencana -> Lokasi: Gedung Sekolah dan Simulasi Gempa Ringan.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Kirim Pesan",
+        "description": "Tampilkan di Layar Informasi: 'TETAP TENANG - JAUHI KACA'.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Uji Respon",
+        "description": "Jalankan simulasi dan pastikan pesan terbaca jelas.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lokasi_mitigasi",
+        "resq_gempa_sim",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.setLocation",
+        "api.simGempa(1)"
+      ],
+      "ancestorConstraints": {
+        "resq_lokasi_mitigasi": "resq_program",
+        "resq_gempa_sim": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_12",
+    "category": "gempa",
+    "level": 12,
+    "title": "Job 12: Protokol Drop, Cover, and Hold On",
+    "icon": "landslide",
+    "scenario": "Guncangan gempa meningkat menjadi kekuatan sedang (5.6 SR). Seluruh siswa wajib segera melakukan tindakan perlindungan diri di bawah meja kokoh!",
+    "objective": "Aktifkan gempa sedang, bunyikan sirine EWS, dan tampilkan instruksi 'DROP COVER HOLD ON'.",
+    "hint": "Gunakan Simulasi Gempa Sedang, Sirine EWS, dan Layar Informasi.",
+    "steps": [
+      {
+        "title": "SOP Gempa",
+        "description": "Drop (berlutut), Cover (lindungi kepala & leher di bawah meja), Hold on (pegang kaki meja kokoh).",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit SOP",
+        "description": "Pasang: Simulasi Gempa Sedang -> Sirine EWS 2 detik -> Tampilkan 'DROP COVER HOLD ON'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Cek Respon",
+        "description": "Pastikan sirine berbunyi dan panduan mitigasi muncul di monitor.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_sirine_ews",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.simGempa(2)",
+        "api.setBuzzer"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_sirine_ews": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_13",
+    "category": "gempa",
+    "level": 13,
+    "title": "Job 13: Gempa Kuat di Sekolah & Alarm Evakuasi",
+    "icon": "landslide",
+    "scenario": "Gempa kuat meretakkan dinding sekolah. Sirine alarm evakuasi harus meraung berulang agar seluruh gedung segera dikosongkan.",
+    "objective": "Aktifkan gempa kuat dan bunyikan Alarm Darurat evakuasi berulang.",
+    "hint": "Gunakan Simulasi Gempa Kuat dan blok Alarm Evakuasi dari Peringatan & EWS.",
+    "steps": [
+      {
+        "title": "Evakuasi Gedung",
+        "description": "Setelah guncangan hebat, seluruh penghuni gedung sekolah harus bersiap dievakuasi keluar.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Kumpulkan Blok",
+        "description": "Ambil Simulasi Gempa Kuat dan Alarm Evakuasi 3 kali.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Rangkai",
+        "description": "Pasang di dalam Mulai Saat Dihidupkan.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Jalankan dan amati sirine serta lampu darurat menyala sinkron.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_alarm_darurat"
+      ],
+      "codeContains": [
+        "api.simGempa(3)"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_alarm_darurat": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_14",
+    "category": "gempa",
+    "level": 14,
+    "title": "Job 14: Penentuan Jalur Evakuasi Lapangan Sekolah",
+    "icon": "landslide",
+    "scenario": "Guncangan utama reda. Siswa harus keluar kelas menuju titik kumpul tanpa saling dorong. Pilih jalur evakuasi aman menuju Lapangan Terbuka Sekolah!",
+    "objective": "Pilih 'Jalur Lapangan Terbuka' dan buka titik kumpul lapangan.",
+    "hint": "Gunakan blok 'Tentukan Jalur Evakuasi ke [Jalur Lapangan Terbuka]' dan 'Buka Posko [Titik Kumpul Lapangan]'.",
+    "steps": [
+      {
+        "title": "Pilihan Evakuasi",
+        "description": "Jangan menggunakan lift! Gunakan tangga darurat dan menuju lapangan terbuka jauh dari tiang & pohon tinggi.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Rute",
+        "description": "Ambil Aksi & Evakuasi -> Tentukan Jalur Evakuasi: Jalur Lapangan Terbuka.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Buka Titik Kumpul",
+        "description": "Tambahkan Buka Posko: Titik Kumpul Lapangan.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Cek Rute",
+        "description": "Jalankan simulasi dan amati rute evakuasi di panel telemetri berubah hijau aman!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jalur_evakuasi",
+        "resq_posko"
+      ],
+      "codeContains": [
+        "api.setEvacRoute",
+        "api.setActiveShelter"
+      ],
+      "ancestorConstraints": {
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_15",
+    "category": "gempa",
+    "level": 15,
+    "title": "Job 15: Evaluasi Keselamatan Sekolah & Absensi",
+    "icon": "landslide",
+    "scenario": "Seluruh siswa telah berkumpul di lapangan terbuka sekolah. Guru memastikan semua siswa selamat dan menyalakan lampu status aman.",
+    "objective": "Tampilkan pesan 'SEMUA SISWA SELAMAT DI LAPANGAN' dan nyalakan Lampu Status Hijau.",
+    "hint": "Gunakan blok Layar Informasi dan Lampu Status Hijau.",
+    "steps": [
+      {
+        "title": "Hitung Jumlah Siswa",
+        "description": "Ketua kelas dan guru menghitung absensi untuk memastikan tidak ada siswa tertinggal di dalam kelas.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Kirim Laporan",
+        "description": "Tampilkan di Layar Informasi: 'SEMUA SISWA LENGKAP & AMAN'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Status Aman",
+        "description": "Nyalakan Lampu Status Hijau.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Selesai Quest Sekolah",
+        "description": "Validasi misi untuk menuntaskan bab mitigasi sekolah!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_layar_oled",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.setOledMessage",
+        "api.setRgb('green')"
+      ],
+      "ancestorConstraints": {
+        "resq_layar_oled": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_16",
+    "category": "gempa",
+    "level": 16,
+    "title": "Job 16: Deteksi Gempa Malam Hari di Pemukiman",
+    "icon": "landslide",
+    "scenario": "Pukul 02.00 dini hari gempa sedang terjadi saat warga tertidur lelap. Sistem penerangan darurat otomatis harus menyala agar warga tidak panik dalam kegelapan.",
+    "objective": "Atur lokasi ke Pemukiman Warga, aktifkan gempa sedang, dan nyalakan lampu darurat.",
+    "hint": "Gunakan Lokasi: Pemukiman Warga, Gempa Sedang, dan Lampu Status Kuning.",
+    "steps": [
+      {
+        "title": "Gempa Malam Hari",
+        "description": "Kegelapan malam memperparah kepanikan. Lampu darurat otomatis membantu warga mencari jalan keluar.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Skenario",
+        "description": "Pasang Lokasi: Pemukiman Warga -> Gempa Sedang -> Lampu Status Kuning.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Tampilkan Info",
+        "description": "Kirim pesan: 'GEMPA TERDETEKSI - BANGUN DENGAN TENANG'.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Uji coba dan validasi misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lokasi_mitigasi",
+        "resq_gempa_sim",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.setLocation",
+        "api.simGempa(2)"
+      ],
+      "ancestorConstraints": {
+        "resq_lokasi_mitigasi": "resq_program",
+        "resq_gempa_sim": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_17",
+    "category": "gempa",
+    "level": 17,
+    "title": "Job 17: Bahaya Sekunder: Pemadaman Kompor & Gas",
+    "icon": "landslide",
+    "scenario": "Gempa bumi sering memicu kebakaran hebat akibat kebocoran pipa gas dan kompor yang menyala saat guncangan. Buat peringatan untuk mematikan kompor segera.",
+    "objective": "Jika gempa terdeteksi, tampilkan peringatan 'MATIKAN KOMPOR & LISTRIK' dan bunyikan sirine EWS.",
+    "hint": "Gunakan Gempa Sedang, Sirine EWS, dan Layar Informasi.",
+    "steps": [
+      {
+        "title": "Bahaya Sekunder",
+        "description": "Kebakaran pasca-gempa seringkali menelan korban lebih banyak daripada guncangan itu sendiri.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Peringatan Kompor",
+        "description": "Tampilkan instruksi darurat: 'MATIKAN KOMPOR GAS & PANEL LISTRIK'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Bunyikan Alarm",
+        "description": "Nyalakan sirine EWS selama 3 detik.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi Misi",
+        "description": "Tekan MULAI dan klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_sirine_ews",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.simGempa",
+        "api.setOledMessage"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_sirine_ews": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_18",
+    "category": "gempa",
+    "level": 18,
+    "title": "Job 18: Penentuan Jalur Evakuasi Jalan Lapang RT",
+    "icon": "landslide",
+    "scenario": "Gang sempit pemukiman padat dipenuhi puing genteng jatuh dan kabel putus. Warga harus diarahkan melalui jalan lapang menuju lapangan balai RW.",
+    "objective": "Tentukan jalur evakuasi ke Jalur Lapangan Terbuka dan arahkan ke balai desa.",
+    "hint": "Gunakan blok 'Tentukan Jalur Evakuasi ke [Jalur Lapangan Terbuka]'.",
+    "steps": [
+      {
+        "title": "Gang Padat Bahaya",
+        "description": "Genteng jatuh, pecahan kaca jendela, dan tembok pagar rentan roboh saat gempa di gang sempit.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Rute Lapang",
+        "description": "Ambil Tentukan Jalur Evakuasi: Jalur Lapangan Terbuka.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Hubungkan Posko",
+        "description": "Tambahkan Buka Posko: Titik Kumpul Lapangan.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi Rute",
+        "description": "Pastikan rute aman terpilih di monitor telemetri.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jalur_evakuasi"
+      ],
+      "codeContains": [
+        "api.setEvacRoute"
+      ],
+      "ancestorConstraints": {
+        "resq_jalur_evakuasi": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_19",
+    "category": "gempa",
+    "level": 19,
+    "title": "Job 19: Monitoring Gempa Susulan (Aftershock)",
+    "icon": "landslide",
+    "scenario": "Setelah gempa utama mereda, warga dilarang terburu-buru masuk ke dalam rumah karena struktur bangunan sudah rapuh. Sistem harus memantau gempa susulan berkala.",
+    "objective": "Buat jeda waktu 3 detik setelah gempa pertama, lalu aktifkan gempa susulan ringan dan peringatkan warga tetap di luar.",
+    "hint": "Rangkai: Gempa Sedang -> Jeda 3 detik -> Gempa Ringan -> Layar Informasi 'WASPADA GEMPA SUSULAN'.",
+    "steps": [
+      {
+        "title": "Gempa Susulan",
+        "description": "Aftershock berkekuatan lebih kecil tetap bisa meruntuhkan bangunan yang sudah mengalami keretakan.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Rangkaian",
+        "description": "Gempa Sedang -> Jeda 3 detik -> Gempa Ringan -> Tampilkan 'WASPADA GEMPA SUSULAN'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Perhatikan Grafik",
+        "description": "Lihat di Seismograf muncul dua episode gelombang gempa berurutan!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_tunggu",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.simGempa(2)",
+        "api.delay",
+        "api.simGempa(1)"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_tunggu": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_20",
+    "category": "gempa",
+    "level": 20,
+    "title": "Job 20: Penyelamatan Warga Rentan ke Pos Medis",
+    "icon": "landslide",
+    "scenario": "Tim relawan warga mendata korban cedera dan mendahulukan evakuasi warga lanjut usia serta balita menuju Posko Medis BPBD.",
+    "objective": "Buka Posko Medis BPBD dan arahkan ambulans relawan.",
+    "hint": "Gunakan blok Buka Posko [Posko Medis BPBD] dan Lampu Status Hijau.",
+    "steps": [
+      {
+        "title": "Kelompok Rentan",
+        "description": "Lansia, ibu hamil, balita, dan penyandang disabilitas mendapat prioritas evakuasi pertama.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Aktifkan Posko Medis",
+        "description": "Ambil Aksi & Evakuasi -> Buka Posko: Posko Medis BPBD.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Nyalakan Indikator",
+        "description": "Atur Lampu Status ke Hijau dan tampilkan info kesiapan medis.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Selesai Misi RT",
+        "description": "Validasi misi untuk menyelesaikan studi kasus pemukiman warga!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_posko",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.setActiveShelter",
+        "api.setRgb"
+      ],
+      "ancestorConstraints": {
+        "resq_posko": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_21",
+    "category": "gempa",
+    "level": 21,
+    "title": "Job 21: Gempa Kuat di Rumah Sakit Daerah",
+    "icon": "landslide",
+    "scenario": "Ruang rawat inap RS Harapan Desa terguncang hebat akibat gempa 7.2 SR. Sistem harus menyalakan alarm triase darurat dan lampu merah.",
+    "objective": "Atur lokasi ke Rumah Sakit, aktifkan Gempa Kuat, dan nyalakan Lampu Merah serta Sirine EWS.",
+    "hint": "Gunakan Lokasi: Rumah Sakit, Gempa Kuat, Lampu Merah, dan Sirine EWS.",
+    "steps": [
+      {
+        "title": "Kedaruratan Medis",
+        "description": "Pasien dengan infus dan alat bantu napas membutuhkan penanganan khusus saat gedung RS berguncang.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Alarm RS",
+        "description": "Lokasi: Rumah Sakit -> Gempa Kuat -> Lampu Merah -> Sirine EWS.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Kirim Pesan Triase",
+        "description": "Tampilkan: 'DARURAT RS - EVAKUASI PASIEN KRITIS'.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Jalankan simulasi dan klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lokasi_mitigasi",
+        "resq_gempa_sim",
+        "resq_lampu_status",
+        "resq_sirine_ews"
+      ],
+      "codeContains": [
+        "api.setLocation",
+        "api.simGempa(3)"
+      ],
+      "ancestorConstraints": {
+        "resq_lokasi_mitigasi": "resq_program",
+        "resq_gempa_sim": "resq_program",
+        "resq_lampu_status": "resq_program",
+        "resq_sirine_ews": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_22",
+    "category": "gempa",
+    "level": 22,
+    "title": "Job 22: Pembukaan Jalur Khusus Ambulans & Triase",
+    "icon": "landslide",
+    "scenario": "Jalur gerbang utama harus steril dari kendaraan pribadi agar ambulans dapat keluar masuk tanpa hambatan mengangkut korban gempa.",
+    "objective": "Tentukan Jalur Evakuasi dan buka Posko Medis BPBD untuk evakuasi darurat.",
+    "hint": "Gunakan Jalur Evakuasi dan Posko Medis BPBD.",
+    "steps": [
+      {
+        "title": "Jalur Steril",
+        "description": "Ambulans membutuhkan jalur bebas hambatan untuk menyelamatkan nyawa korban luka berat.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Buka Akses",
+        "description": "Pasang Tentukan Jalur Evakuasi dan Buka Posko: Posko Medis BPBD.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Tampilkan Rute",
+        "description": "Tampilkan di Layar Informasi: 'JALUR STERIL AMBULANS AKTIF'.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jalur_evakuasi",
+        "resq_posko"
+      ],
+      "codeContains": [
+        "api.setEvacRoute",
+        "api.setActiveShelter"
+      ],
+      "ancestorConstraints": {
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_23",
+    "category": "gempa",
+    "level": 23,
+    "title": "Job 23: Gempa di Area Jembatan (Bahaya Likuefaksi)",
+    "icon": "landslide",
+    "scenario": "Gempa memicu fenomena likuefaksi (tanah berpasir dekat sungai mencair dan ambles). Fondasi jembatan retak berbahaya dan tidak boleh dilintasi!",
+    "objective": "Atur lokasi ke Dekat Jembatan Sungai, aktifkan gempa kuat, dan beri peringatan jembatan retak.",
+    "hint": "Gunakan Lokasi: Dekat Jembatan Sungai, Gempa Kuat, dan Layar Informasi.",
+    "steps": [
+      {
+        "title": "Likuefaksi Tanah",
+        "description": "Getaran gempa dapat membuat tanah jenuh air kehilangan kekuatannya dan mencair seperti lumpur hisap.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Lokasi Jembatan",
+        "description": "Lokasi: Dekat Jembatan Sungai -> Gempa Kuat -> Tampilkan: 'JEMBATAN RETAK - JANGAN DILINTASI'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Sinyal Bahaya",
+        "description": "Nyalakan Lampu Status Merah.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Jalankan dan klik Validasi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lokasi_mitigasi",
+        "resq_gempa_sim",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.setLocation",
+        "api.simGempa(3)"
+      ],
+      "ancestorConstraints": {
+        "resq_lokasi_mitigasi": "resq_program",
+        "resq_gempa_sim": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_24",
+    "category": "gempa",
+    "level": 24,
+    "title": "Job 24: Pengalihan Rute Menjauhi Jembatan Retak",
+    "icon": "landslide",
+    "scenario": "Jalur terpendek melewati jembatan retak yang rawan runtuh. Siswa harus mengarahkan rute memutar yang kokoh melalui Jalur Lingkar Utama menuju posko aman.",
+    "objective": "Pilih Jalur Lingkar Utama (Bebas Lahar/Jembatan Rusak) untuk mengalihkan arus evakuasi warga.",
+    "hint": "Gunakan blok 'Tentukan Jalur Evakuasi ke [Jalur Lingkar Utama (Bebas Lahar)]'.",
+    "steps": [
+      {
+        "title": "Pengalihan Rute",
+        "description": "Jangan memaksakan lewat jembatan yang retak! Lebih baik memutar sedikit asalkan jalurnya aman dan kokoh.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Jalur Lingkar",
+        "description": "Ambil Tentukan Jalur Evakuasi: Jalur Lingkar Utama (Bebas Lahar).",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Buka Posko",
+        "description": "Arahkan warga menuju Barak Pengungsian Terpadu (KRB I).",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Cek Rute Peta",
+        "description": "Pastikan rute lingkar aman terpilih di panel telemetri.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jalur_evakuasi",
+        "resq_posko"
+      ],
+      "codeContains": [
+        "api.setEvacRoute('Jalur Lingkar Utama"
+      ],
+      "ancestorConstraints": {
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_25",
+    "category": "gempa",
+    "level": 25,
+    "title": "Job 25: Pusat Komando Bencana Rumah Sakit & Wilayah",
+    "icon": "landslide",
+    "scenario": "Mengintegrasikan seluruh sistem pemantauan gempa, pengalihan jembatan, dan posko medis ke dalam pusat komando terpadu.",
+    "objective": "Susun alur lengkap: Deteksi Gempa Kuat -> Sirine EWS -> Alihkan Jalur Lingkar -> Buka Posko Medis.",
+    "hint": "Gunakan Gempa Kuat, Sirine EWS, Jalur Lingkar, dan Posko Medis.",
+    "steps": [
+      {
+        "title": "Pusat Komando",
+        "description": "Koordinasi cepat antara rumah sakit, relawan, dan BPBD menyelamatkan ratusan warga saat gempa besar.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Alur Penuh",
+        "description": "1. Gempa Kuat -> 2. Sirine EWS -> 3. Jalur Lingkar Utama -> 4. Posko Medis BPBD.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Uji Sistem Lengkap",
+        "description": "Jalankan simulasi dan periksa seluruh indikator di panel telemetri.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Selesai Quest Gempa",
+        "description": "Selamat! Kamu telah menuntaskan seluruh studi kasus gempa bumi!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_sirine_ews",
+        "resq_jalur_evakuasi",
+        "resq_posko"
+      ],
+      "codeContains": [
+        "api.simGempa(3)",
+        "api.setEvacRoute"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_sirine_ews": "resq_program",
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_26",
+    "category": "gunung",
+    "level": 26,
+    "title": "Job 26: Deteksi Gempa Vulkanik Dalam Merapi",
+    "icon": "volcano",
+    "scenario": "Pos Pengamatan Gunung Merapi mendeteksi ratusan getaran gempa vulkanik per hari. Ini adalah tanda magma di perut bumi mendesak naik ke kubah lava.",
+    "objective": "Simulasikan getaran vulkanik ringan dan atur lampu status ke Kuning (Waspada).",
+    "hint": "Gunakan Simulasi Getaran Gempa [Ringan] dan Lampu Status [Kuning (Waspada)].",
+    "steps": [
+      {
+        "title": "Tanda Awal Magma",
+        "description": "Magma yang naik mendesak dan memecahkan lapisan batuan, menghasilkan gempa vulkanik (volcanic tremor).",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Skenario",
+        "description": "Gempa Ringan -> Lampu Status Kuning -> Tampilkan 'GEMPA VULKANIK TERDETEKSI'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Cek Seismograf",
+        "description": "Amati tremor halus di seismograf dan lampu kuning menyala.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.simGempa(1)",
+        "api.setRgb('yellow')"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_27",
+    "category": "gunung",
+    "level": 27,
+    "title": "Job 27: Pemantauan Suhu Termal Kawah & Fumarol",
+    "icon": "volcano",
+    "scenario": "Suhu kawah meningkat dari normal 27°C menjadi 45°C disertai pelepasan gas fumarol solfatara. Aktifkan simulasi status Waspada.",
+    "objective": "Jalankan Simulasi Erupsi Merapi status Waspada dan tampilkan suhu kawah.",
+    "hint": "Gunakan blok 'Simulasi Erupsi Merapi [Waspada (Fase 1)]'.",
+    "steps": [
+      {
+        "title": "Termal Kawah",
+        "description": "Peningkatan suhu kawah menandakan kubah lava mulai memanas aktif dan gas magmatik mendesak ke permukaan.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Blok Merapi",
+        "description": "Ambil Simulasi Bencana -> 'Simulasi Erupsi Merapi [Waspada (Fase 1)]'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Perhatikan Gauge Suhu",
+        "description": "Suhu kawah di panel telemetri akan naik ke angka 43.8°C!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi setelah suhu terkonfirmasi naik.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gunung_sim"
+      ],
+      "codeContains": [
+        "api.simGunung('WASPADA'"
+      ],
+      "ancestorConstraints": {
+        "resq_gunung_sim": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_28",
+    "category": "gunung",
+    "level": 28,
+    "title": "Job 28: Tremor Menerus & Kenaikan Status ke Siaga",
+    "icon": "volcano",
+    "scenario": "Getaran tremor seismik berlangsung tanpa henti. Suhu kawah mencapai 70°C. BPBD menaikkan status menjadi SIAGA (Lampu Oranye).",
+    "objective": "Aktifkan Simulasi Merapi status Siaga dan atur Lampu Status ke Oranye.",
+    "hint": "Gunakan Simulasi Merapi [Siaga (Fase 2)] dan Lampu Status [Oranye].",
+    "steps": [
+      {
+        "title": "Status Siaga",
+        "description": "Pada status Siaga, warga di lereng atas mulai mengamankan ternak dan menyiapkan tas siaga bencana.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pasang Status Siaga",
+        "description": "Simulasi Merapi [Siaga] -> Lampu Status Oranye -> Tampilkan 'STATUS SIAGA - SIAPKAN TAS BENCANA'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Amati Termometer",
+        "description": "Suhu kawah melonjak ke 68.4°C dan lampu oranye menyala!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gunung_sim",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.simGunung('SIAGA'",
+        "api.setRgb('orange')"
+      ],
+      "ancestorConstraints": {
+        "resq_gunung_sim": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_29",
+    "category": "gunung",
+    "level": 29,
+    "title": "Job 29: Kausalitas Vulkanik: Gempa Mendahului Erupsi",
+    "icon": "volcano",
+    "scenario": "Hukum IPA Vulkanologi: Erupsi tidak bisa terjadi tanpa didahului gempa vulkanik! Susun gempa vulkanik terlebih dahulu, jeda 2 detik, lalu aktifkan erupsi Merapi status Awas.",
+    "objective": "Susun urutan kausalitas: Gempa Sedang -> Jeda 2 detik -> Erupsi Merapi Status Awas.",
+    "hint": "Rangkai: Gempa Sedang -> Jeda Waktu 2 detik -> Simulasi Erupsi Merapi [Awas].",
+    "steps": [
+      {
+        "title": "Prinsip Kausalitas",
+        "description": "Secara vulkanologi, naiknya magma selalu meretakkan batuan kerak bumi terlebih dahulu.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Susun Urutan Benar",
+        "description": "1. Simulasi Gempa Sedang -> 2. Jeda Waktu 2 detik -> 3. Simulasi Erupsi Merapi [Awas].",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Lihat Efek Hardware",
+        "description": "Motor bergetar sesaat sebelum letusan dimulai di diorama!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi Kausalitas",
+        "description": "Validasi misi ilmiah ini.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_tunggu",
+        "resq_gunung_sim"
+      ],
+      "codeContains": [
+        "api.simGempa",
+        "api.delay",
+        "api.simGunung('AWAS'"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_tunggu": "resq_program",
+        "resq_gunung_sim": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_30",
+    "category": "gunung",
+    "level": 30,
+    "title": "Job 30: Menghidupkan Asap Kawah Humidifier Fisik",
+    "icon": "volcano",
+    "scenario": "Uji coba modul mist maker (humidifier) pada diorama ESP32 untuk menyemburkan kabut uap asap letusan putih dari lubang kawah.",
+    "objective": "Aktifkan Erupsi Merapi status Awas dan bunyikan sirine EWS.",
+    "hint": "Gunakan Simulasi Erupsi Merapi [Awas] dan Sirine EWS.",
+    "steps": [
+      {
+        "title": "Uap Asap Fisik",
+        "description": "Di hardware, pin MIST_PIN 26 mengaktifkan ultrasonic mist maker untuk menghasilkan efek asap letusan nyata.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Asap & Alarm",
+        "description": "Simulasi Erupsi Merapi [Awas] -> Sirine EWS 3 detik -> Lampu Status Merah.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Periksa Mist",
+        "description": "Status Asap Mist di panel aktuator akan menyala 'MENYEMBUR'!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gunung_sim",
+        "resq_sirine_ews"
+      ],
+      "codeContains": [
+        "api.simGunung('AWAS'",
+        "api.setBuzzer"
+      ],
+      "ancestorConstraints": {
+        "resq_gunung_sim": "resq_program",
+        "resq_sirine_ews": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_31",
+    "category": "gunung",
+    "level": 31,
+    "title": "Job 31: Karakteristik Erupsi Efusif (Lava Pijar)",
+    "icon": "volcano",
+    "scenario": "Kubah lava Gunung Merapi runtuh perlahan. Terjadi guguran lava pijar yang merayap menuruni lereng tanpa ledakan besar.",
+    "objective": "Aktifkan Simulasi Erupsi Merapi tipe Efusif dan atur lampu status ke Oranye (Siaga).",
+    "hint": "Gunakan Simulasi Erupsi Merapi [Siaga, Tipe: Efusif] dan Lampu Status Oranye.",
+    "steps": [
+      {
+        "title": "Erupsi Efusif",
+        "description": "Erupsi efusif terjadi karena magma memiliki viskositas encer dan tekanan gas rendah, menghasilkan lelehan lava.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Tipe Efusif",
+        "description": "Pilih Simulasi Erupsi Merapi dengan opsi 'Efusif (Lelehan Lava Pijar)'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Amati Indikator",
+        "description": "Di panel telemetri akan muncul badge 'Tipe Letusan: EFUSIF (Lava Pijar)'.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gunung_sim",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.simGunung('SIAGA', 'EFUSIF')"
+      ],
+      "ancestorConstraints": {
+        "resq_gunung_sim": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_32",
+    "category": "gunung",
+    "level": 32,
+    "title": "Job 32: Pemetaan Alur Bahaya Lava di Bantaran Sungai",
+    "icon": "volcano",
+    "scenario": "Lava pijar bersuhu >800°C mengalir mengikuti alur lembah sungai. Pemukiman di dekat bantaran sungai berada di zona bahaya tinggi.",
+    "objective": "Tampilkan peringatan 'ZONA BAHAYA LAVA: KOSONGKAN BANTARAN SUNGAI' di layar OLED.",
+    "hint": "Gunakan blok Layar Informasi dan Lampu Status Oranye.",
+    "steps": [
+      {
+        "title": "Lembah Sungai Merapi",
+        "description": "Sungai seperti Kali Boyong, Krasak, dan Gendol menjadi saluran alami aliran lava pijar.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Peringatan Sungai",
+        "description": "Tampilkan di Layar Informasi: 'KOSONGKAN BANTARAN SUNGAI RADIUS 500 METER'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Status Waspada",
+        "description": "Nyalakan Lampu Status Oranye.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_layar_oled",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.setOledMessage",
+        "api.setRgb"
+      ],
+      "ancestorConstraints": {
+        "resq_layar_oled": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_33",
+    "category": "gunung",
+    "level": 33,
+    "title": "Job 33: Sistem Peringatan Dini Bantaran Sungai",
+    "icon": "volcano",
+    "scenario": "Mengaktifkan sirine berkala untuk mengingatkan penambang pasir dan warga pinggir sungai agar segera mengevakuasi diri ke tempat tinggi.",
+    "objective": "Gunakan pengulangan 3 kali untuk membunyikan sirine berkala.",
+    "hint": "Gunakan blok 'Ulangi Aksi 3 kali', Sirine EWS, dan Jeda Waktu.",
+    "steps": [
+      {
+        "title": "Sirine Bantaran",
+        "description": "Sirine di pos pantau sungai memperingatkan penambang pasir dan warga lereng bawah.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Loop",
+        "description": "Ulangi 3 kali: Sirine EWS 1 detik -> Jeda Waktu 1 detik.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Cek Siklus",
+        "description": "Pastikan sirine berbunyi berkala 3 kali.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_ulangi",
+        "resq_sirine_ews"
+      ],
+      "codeContains": [
+        "for (let",
+        "api.setBuzzer"
+      ],
+      "ancestorConstraints": {
+        "resq_ulangi": "resq_program",
+        "resq_sirine_ews": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_34",
+    "category": "gunung",
+    "level": 34,
+    "title": "Job 34: Jalur Evakuasi Efusif: Menjauhi Lembah Sungai",
+    "icon": "volcano",
+    "scenario": "Siswa memilih rute evakuasi warga lereng: Menghindari jalan setapak pinggir kali menuju jalur lingkar bukit bebas lava!",
+    "objective": "Tentukan Jalur Evakuasi ke 'Jalur Lingkar Utama (Bebas Lahar)' dan buka Barak Pengungsian.",
+    "hint": "Gunakan blok 'Tentukan Jalur Evakuasi ke [Jalur Lingkar Utama (Bebas Lahar)]'.",
+    "steps": [
+      {
+        "title": "Keputusan Mitigasi",
+        "description": "Jangan menyusuri sungai! Menanjaklah ke punggung bukit menjauhi alur lembah sungai.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Jalur Aman",
+        "description": "Ambil Tentukan Jalur Evakuasi: Jalur Lingkar Utama (Bebas Lahar).",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Buka Barak KRB I",
+        "description": "Tambahkan Buka Posko: Barak Pengungsian Terpadu (KRB I).",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Cek Rute Hijau",
+        "description": "Rute aman di panel telemetri akan berstatus aman!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jalur_evakuasi",
+        "resq_posko"
+      ],
+      "codeContains": [
+        "api.setEvacRoute('Jalur Lingkar Utama",
+        "api.setActiveShelter"
+      ],
+      "ancestorConstraints": {
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_35",
+    "category": "gunung",
+    "level": 35,
+    "title": "Job 35: Bahaya Lahar Dingin Saat Terjadi Hujan Puncak",
+    "icon": "volcano",
+    "scenario": "Hujan lebat di puncak gunung menghanyutkan endapan material vulkanik menjadi banjir lahar dingin dahsyat di sungai. Nyalakan sirine dan lampu merah!",
+    "objective": "Aktifkan Sirine EWS, Lampu Merah, dan tampilkan 'BAHAYA BANJIR LAHAR DINGIN DI SUNGAI'.",
+    "hint": "Gunakan Sirine EWS, Lampu Merah, dan Layar Informasi.",
+    "steps": [
+      {
+        "title": "Lahar Hujan / Dingin",
+        "description": "Air hujan bercampur pasir dan batu besar membentuk aliran lumpur padat berkecepatan tinggi yang merusak jembatan.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Alarm Lahar",
+        "description": "Lampu Status Merah -> Sirine EWS 3 detik -> Tampilkan 'BAHAYA LAHAR DINGIN'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Jalur Menjauh",
+        "description": "Pastikan rute tetap mengarah menjauhi sungai.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Selesai Quest Efusif",
+        "description": "Validasi misi untuk menuntaskan bab erupsi efusif!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lampu_status",
+        "resq_sirine_ews",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.setRgb('red')",
+        "api.setBuzzer"
+      ],
+      "ancestorConstraints": {
+        "resq_lampu_status": "resq_program",
+        "resq_sirine_ews": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_36",
+    "category": "gunung",
+    "level": 36,
+    "title": "Job 36: Karakteristik Erupsi Eksplosif (Ledakan & Abu)",
+    "icon": "volcano",
+    "scenario": "Tekanan gas magma tinggi mendobrak sumbat kawah! Terjadi ledakan dahsyat dengan kolom abu vertikal setinggi 5 km dan awan panas.",
+    "objective": "Aktifkan Simulasi Erupsi Merapi tipe Eksplosif status Awas bersama Lampu Merah dan Sirine EWS.",
+    "hint": "Gunakan Simulasi Erupsi Merapi [Awas, Tipe: Eksplosif], Lampu Merah, dan Sirine EWS.",
+    "steps": [
+      {
+        "title": "Letusan Eksplosif",
+        "description": "Gas terlarut dalam magma andesitik melepaskan energi secara mendadak, menghasilkan dentuman dan semburan piroklastik.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Eksplosif",
+        "description": "Simulasi Erupsi Merapi [Awas, Tipe: Eksplosif] -> Lampu Merah -> Sirine EWS 4 detik.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Amati Partikel & Asap",
+        "description": "Di hardware mist maker menyembur kencang dan panel telemetri menampilkan status AWAS Eksplosif!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gunung_sim",
+        "resq_lampu_status",
+        "resq_sirine_ews"
+      ],
+      "codeContains": [
+        "api.simGunung('AWAS', 'EKSPLOSIF')",
+        "api.setRgb('red')"
+      ],
+      "ancestorConstraints": {
+        "resq_gunung_sim": "resq_program",
+        "resq_lampu_status": "resq_program",
+        "resq_sirine_ews": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_37",
+    "category": "gunung",
+    "level": 37,
+    "title": "Job 37: Peringatan Awan Panas Piroklastik",
+    "icon": "volcano",
+    "scenario": "Awan panas (wedhus gembel) bersuhu 600°C bergulung menuruni lereng dengan kecepatan 200 km/jam. Tidak ada waktu menunggu, evakuasi kilat harus dilakukan!",
+    "objective": "Tampilkan pesan 'AWAS AWAN PANAS - EVAKUASI SEGERA' dan bunyikan alarm darurat.",
+    "hint": "Gunakan Layar Informasi dan Alarm Darurat.",
+    "steps": [
+      {
+        "title": "Awan Panas / Piroklastik",
+        "description": "Campuran gas panas, abu, dan batu pijar yang meluncur cepat menuruni lembah lereng.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Alarm Kilat",
+        "description": "Alarm Darurat 3 kali -> Tampilkan 'AWAS AWAN PANAS - EVAKUASI SEGERA'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Bunyikan Alarm",
+        "description": "Pastikan sirine dan lampu berkedip cepat.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_alarm_darurat",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.setOledMessage"
+      ],
+      "ancestorConstraints": {
+        "resq_alarm_darurat": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_38",
+    "category": "gunung",
+    "level": 38,
+    "title": "Job 38: Bahaya Hujan Abu Vulkanik & Masker APD",
+    "icon": "volcano",
+    "scenario": "Hujan abu silika tajam melanda pemukiman. Sistem menginstruksikan warga memakai masker basah dan kacamata pelindung untuk mencegah ISPA.",
+    "objective": "Tampilkan panduan 'PAKAI MASKER & KACAMATA PELINDUNG' dan atur status Siaga.",
+    "hint": "Gunakan Layar Informasi dan Lampu Status Oranye.",
+    "steps": [
+      {
+        "title": "Bahaya Abu Vulkanik",
+        "description": "Abu vulkanik bukanlah abu kayu biasa, melainkan butiran kaca dan kristal mineral tajam yang berbahaya bagi paru-paru.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Panduan APD",
+        "description": "Tampilkan di Layar Informasi: 'PAKAI MASKER & KACAMATA PELINDUNG'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Status Waspada/Siaga",
+        "description": "Nyalakan Lampu Status Oranye.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_layar_oled",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.setOledMessage",
+        "api.setRgb"
+      ],
+      "ancestorConstraints": {
+        "resq_layar_oled": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_39",
+    "category": "gunung",
+    "level": 39,
+    "title": "Job 39: Jalur Evakuasi Eksplosif: Menjauhi Arah Angin Abu",
+    "icon": "volcano",
+    "scenario": "Angin bertiup ke Timur membawa abu pekat dengan jarak pandang nol. Arahkan warga mengevakuasi diri melalui Jalur Lingkar Barat/Utara menuju Barak KRB I!",
+    "objective": "Tentukan Jalur Evakuasi ke Jalur Lingkar Utama dan buka Barak Pengungsian.",
+    "hint": "Gunakan blok 'Tentukan Jalur Evakuasi ke [Jalur Lingkar Utama]' dan 'Buka Posko [Barak Pengungsian Terpadu]'.",
+    "steps": [
+      {
+        "title": "Arah Angin Abu",
+        "description": "Evakuasi harus memperhitungkan arah tiupan angin agar kendaraan warga tidak terjebak hujan abu tebal.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Rute Barat",
+        "description": "Ambil Tentukan Jalur Evakuasi: Jalur Lingkar Utama (Bebas Lahar).",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Aktifkan Barak",
+        "description": "Tambahkan Buka Posko: Barak Pengungsian Terpadu (KRB I).",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi Rute",
+        "description": "Pastikan rute lingkar aktif di panel telemetri.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jalur_evakuasi",
+        "resq_posko"
+      ],
+      "codeContains": [
+        "api.setEvacRoute",
+        "api.setActiveShelter"
+      ],
+      "ancestorConstraints": {
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_40",
+    "category": "gunung",
+    "level": 40,
+    "title": "Job 40: Pensterilan Radius Bahaya 10 KM (KRB III)",
+    "icon": "volcano",
+    "scenario": "Status Awas resmi diberlakukan PVMBG. Seluruh pemukiman dalam radius 10 km (KRB III) harus steril total. Pastikan seluruh sirine dan lampu status merah aktif!",
+    "objective": "Susun: Simulasi Erupsi Eksplosif -> Lampu Merah -> Sirine EWS -> Tampilkan 'RADIUS 10 KM KOSONG TOTAL'.",
+    "hint": "Gunakan Simulasi Erupsi Merapi [Awas], Lampu Merah, Sirine EWS, dan Layar Informasi.",
+    "steps": [
+      {
+        "title": "Sterilisasi Zona Merah",
+        "description": "Tidak boleh ada satu pun warga bertahan di kawasan KRB III selama letusan eksplosif berlangsung.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Sistem Penuh",
+        "description": "Erupsi Merapi Eksplosif -> Lampu Merah -> Sirine EWS -> Tampilkan 'RADIUS 10 KM STERIL'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Uji Tanggap",
+        "description": "Periksa seluruh output hardware aktif serempak!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Selesai Quest Eksplosif",
+        "description": "Selamat! Kamu telah menguasai mitigasi letusan eksplosif!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gunung_sim",
+        "resq_lampu_status",
+        "resq_sirine_ews",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.simGunung('AWAS'",
+        "api.setRgb('red')"
+      ],
+      "ancestorConstraints": {
+        "resq_gunung_sim": "resq_program",
+        "resq_lampu_status": "resq_program",
+        "resq_sirine_ews": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_41",
+    "category": "proyek",
+    "level": 41,
+    "title": "Job 41: Membaca Peta Kawasan Rawan Bencana (KRB)",
+    "icon": "emoji_objects",
+    "scenario": "Mengenal tiga zona mitigasi resmi PVMBG: KRB III (Paling Bahaya), KRB II (Waspada Lontaran Batu), dan KRB I (Aman untuk Pengungsian).",
+    "objective": "Tampilkan informasi zonasi KRB di Layar Informasi dan atur status ke Waspada.",
+    "hint": "Gunakan blok Layar Informasi dan Lampu Status Kuning.",
+    "steps": [
+      {
+        "title": "Zonasi Merapi",
+        "description": "KRB III selalu terancam awan panas dan aliran lava. KRB I adalah zona aman di dataran rendah.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Kirim Edukasi",
+        "description": "Tampilkan di Layar Informasi: 'KRB III: BAHAYA | KRB I: POS PENGUNGSIAN'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Nyalakan Sinyal",
+        "description": "Atur Lampu Status ke Kuning.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_layar_oled",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.setOledMessage"
+      ],
+      "ancestorConstraints": {
+        "resq_layar_oled": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_42",
+    "category": "proyek",
+    "level": 42,
+    "title": "Job 42: Keputusan Rute: Jalur Utama vs Lembah Sungai",
+    "icon": "emoji_objects",
+    "scenario": "Dua rute terlihat di peta: Rute jalan pintas lembah sungai vs Rute lingkar utama. Jika siswa salah pilih rute lembah sungai, simulator memberi peringatan bahaya!",
+    "objective": "Pilih 'Jalur Lingkar Utama (Bebas Lahar)' sebagai rute mitigasi yang benar.",
+    "hint": "Gunakan blok 'Tentukan Jalur Evakuasi ke [Jalur Lingkar Utama (Bebas Lahar)]'.",
+    "steps": [
+      {
+        "title": "Ujian Navigasi",
+        "description": "Rute lembah sungai memang tampak lebih dekat, tetapi itu adalah jebakan maut banjir lahar dingin!",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Pilih Rute Tepat",
+        "description": "Ambil Tentukan Jalur Evakuasi: Jalur Lingkar Utama (Bebas Lahar).",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Periksa Warna",
+        "description": "Di panel telemetri, rute akan berwarna hijau sukses!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi Keputusan",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jalur_evakuasi"
+      ],
+      "codeContains": [
+        "api.setEvacRoute('Jalur Lingkar Utama"
+      ],
+      "ancestorConstraints": {
+        "resq_jalur_evakuasi": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_43",
+    "category": "proyek",
+    "level": 43,
+    "title": "Job 43: Aktivasi Barak Pengungsian Terpadu (KRB I)",
+    "icon": "emoji_objects",
+    "scenario": "Menyiapkan tenda pleton BPBD, tandon air bersih, dan pos kesehatan di area aman KRB I untuk menampung ratusan pengungsi dari lereng atas.",
+    "objective": "Buka Barak Pengungsian Terpadu (KRB I) dan nyalakan Lampu Status Hijau.",
+    "hint": "Gunakan blok 'Buka Posko [Barak Pengungsian Terpadu (KRB I)]' dan Lampu Status Hijau.",
+    "steps": [
+      {
+        "title": "Barak Pengungsian",
+        "description": "Barak KRB I dilengkapi fasilitas dapur umum, tandon air, pos trauma healing, dan pos medis.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Buka Posko",
+        "description": "Ambil Aksi & Evakuasi -> Buka Posko: Barak Pengungsian Terpadu (KRB I).",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Kesiapan Logistik",
+        "description": "Atur Lampu Status ke Hijau dan tampilkan pesan kesiapan posko.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_posko",
+        "resq_lampu_status"
+      ],
+      "codeContains": [
+        "api.setActiveShelter('Barak Pengungsian",
+        "api.setRgb('green')"
+      ],
+      "ancestorConstraints": {
+        "resq_posko": "resq_program",
+        "resq_lampu_status": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_44",
+    "category": "proyek",
+    "level": 44,
+    "title": "Job 44: Jalur Khusus Logistik TAGANA & Medis",
+    "icon": "emoji_objects",
+    "scenario": "Truk pengangkut sembako dan mobil tangki air bersih harus melalui rute yang tidak bertabrakan dengan arus warga yang sedang mengungsi.",
+    "objective": "Tentukan rute evakuasi lingkar utama dan buka posko pengungsian bersamaan.",
+    "hint": "Gunakan Jalur Lingkar Utama dan Barak Pengungsian Terpadu.",
+    "steps": [
+      {
+        "title": "Manajemen Arus",
+        "description": "Pemisahan jalur logistik dan jalur pengungsi mencegah kemacetan total di gerbang masuk barak.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Terpadu",
+        "description": "Tentukan Jalur Evakuasi: Jalur Lingkar Utama -> Buka Posko: Barak KRB I.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Tampilkan Status",
+        "description": "Tampilkan: 'LOGISTIK & BARAK SIAP 100%'.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jalur_evakuasi",
+        "resq_posko"
+      ],
+      "codeContains": [
+        "api.setEvacRoute",
+        "api.setActiveShelter"
+      ],
+      "ancestorConstraints": {
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_45",
+    "category": "proyek",
+    "level": 45,
+    "title": "Job 45: Simulasi Waktu Tanggap Evakuasi Warga",
+    "icon": "emoji_objects",
+    "scenario": "Mengukur kecepatan respon sistem. Sejak sirine dibunyikan, warga memiliki jendela waktu emas 15 menit untuk mengosongkan dusun dan tiba di barak aman.",
+    "objective": "Bunyikan sirine EWS 3 detik, pilih jalur lingkar aman, dan buka barak pengungsian.",
+    "hint": "Gunakan Sirine EWS, Jalur Lingkar Utama, dan Barak Pengungsian Terpadu.",
+    "steps": [
+      {
+        "title": "Golden Time",
+        "description": "Kecepatan bereaksi menentukan keselamatan. Latihan berkala melatih refleks warga saat sirine berbunyi.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Cepat",
+        "description": "1. Sirine EWS 3 detik -> 2. Jalur Lingkar Utama -> 3. Barak Pengungsian KRB I.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Uji Simulasi",
+        "description": "Jalankan simulasi dan perhatikan respon cepat sistem!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Selesai Quest 9",
+        "description": "Validasi misi untuk membuka Grand Mission terakhir!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_sirine_ews",
+        "resq_jalur_evakuasi",
+        "resq_posko"
+      ],
+      "codeContains": [
+        "api.setBuzzer",
+        "api.setEvacRoute"
+      ],
+      "ancestorConstraints": {
+        "resq_sirine_ews": "resq_program",
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_46",
+    "category": "proyek",
+    "level": 46,
+    "title": "Job 46: Bencana Ganda: Gempa Memicu Erupsi Merapi",
+    "icon": "emoji_objects",
+    "scenario": "Gempa tektonik 6.8 SR meretakkan dinding lereng Merapi, memicu runtuhnya kubah lava dan letusan efusif secara bersamaan!",
+    "objective": "Susun simulasi gempa kuat terlebih dahulu, lalu aktifkan erupsi Merapi dan sirine EWS.",
+    "hint": "Gunakan Simulasi Gempa Kuat, Simulasi Erupsi Merapi [Awas], Sirine EWS, dan Lampu Merah.",
+    "steps": [
+      {
+        "title": "Multi-Bencana",
+        "description": "Gempa besar seringkali memicu ketidakstabilan kubah lava gunung api di dekat episentrum.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Gempa & Erupsi",
+        "description": "Simulasi Gempa Kuat -> Jeda 2 detik -> Simulasi Erupsi Merapi [Awas] -> Sirine EWS.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Uji Hardware",
+        "description": "Motor bergetar kencang, speaker bersuara gemuruh, mist menyembur, dan sirine berbunyi!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_gunung_sim",
+        "resq_sirine_ews"
+      ],
+      "codeContains": [
+        "api.simGempa(3)",
+        "api.simGunung('AWAS'",
+        "api.setBuzzer"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_gunung_sim": "resq_program",
+        "resq_sirine_ews": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_47",
+    "category": "proyek",
+    "level": 47,
+    "title": "Job 47: Erupsi Eksplosif Malam Hari & Pemadaman Listrik",
+    "icon": "emoji_objects",
+    "scenario": "Listrik gardu utama padam total akibat sambaran petir vulkanik di malam hari. Sistem mandiri RESQ-BOX mengambil alih kendali darurat.",
+    "objective": "Nyalakan Lampu Darurat Merah, sirine EWS, dan tampilkan petunjuk arah pada layar OLED.",
+    "hint": "Gunakan Lampu Merah, Sirine EWS, dan Layar Informasi OLED.",
+    "steps": [
+      {
+        "title": "Sistem Darurat Mandiri",
+        "description": "Sistem IoT berbasis mikrokontroler dengan baterai cadangan tetap beroperasi saat jaringan listrik kota lumpuh.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Respon Mandiri",
+        "description": "Lampu Status Merah -> Sirine EWS 3 detik -> Tampilkan 'LISTRIK PADAM - IKUTI LAMPU JALUR'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Cek Layar OLED",
+        "description": "Periksa pesan instruksi darurat tetap menyala terang di monitor OLED.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lampu_status",
+        "resq_sirine_ews",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.setRgb('red')",
+        "api.setBuzzer",
+        "api.setOledMessage"
+      ],
+      "ancestorConstraints": {
+        "resq_lampu_status": "resq_program",
+        "resq_sirine_ews": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_48",
+    "category": "proyek",
+    "level": 48,
+    "title": "Job 48: Pengalihan Jalur Saat Rute Tertutup Longsor",
+    "icon": "emoji_objects",
+    "scenario": "Saat evakuasi berlangsung, sebuah bukit longsor menutup jalur utama. Gunakan logika percabangan untuk mengalihkan warga ke rute darurat.",
+    "objective": "Gunakan blok 'Kalau... Selain Itu' untuk mengarahkan jalur evakuasi.",
+    "hint": "Gunakan blok Kalau... Selain Itu dan Tentukan Jalur Evakuasi.",
+    "steps": [
+      {
+        "title": "Dinamika Lapangan",
+        "description": "Bencana sering memicu longsor sekunder yang menutup jalan raya utama.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Percabangan",
+        "description": "Gunakan Kalau... Selain Itu untuk menentukan jalur evakuasi alternatif.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Tetapkan Rute",
+        "description": "Pastikan rute alternatif terpilih aman di panel telemetri.",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik tombol Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_jika_tidak",
+        "resq_jalur_evakuasi"
+      ],
+      "codeContains": [
+        "if (",
+        "api.setEvacRoute"
+      ],
+      "ancestorConstraints": {
+        "resq_jika_tidak": "resq_program",
+        "resq_jalur_evakuasi": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_49",
+    "category": "proyek",
+    "level": 49,
+    "title": "Job 49: Otomasi Pusat Pengendali Operasi (PUSDALOPS)",
+    "icon": "emoji_objects",
+    "scenario": "Merancang sistem cerdas PUSDALOPS BPBD: memantau sensor getaran, suhu kawah, status lampu RGB, sirine, hingga mengarahkan warga ke barak pengungsian secara otomatis.",
+    "objective": "Susun alur pemantauan otomatis lengkap dengan multi-aksi.",
+    "hint": "Gunakan Simulasi Bencana, Peringatan EWS, Jalur Evakuasi, dan Posko Pengungsian.",
+    "steps": [
+      {
+        "title": "PUSDALOPS Cerdas",
+        "description": "Pusat Pengendali Operasi mengintegrasikan data lapangan dan mengambil tindakan mitigasi otomatis demi keselamatan masyarakat.",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Susun Sistem Terpadu",
+        "description": "1. Status Merah -> 2. Sirine EWS -> 3. Tentukan Jalur Lingkar Utama -> 4. Buka Barak KRB I.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Uji Tanggap Penuh",
+        "description": "Saksikan seluruh indikator diorama dan simulator aktif serempak!",
+        "icon": "extension",
+        "tip": null
+      },
+      {
+        "title": "Validasi",
+        "description": "Klik Validasi Misi.",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_lampu_status",
+        "resq_sirine_ews",
+        "resq_jalur_evakuasi",
+        "resq_posko"
+      ],
+      "codeContains": [
+        "api.setRgb",
+        "api.setBuzzer",
+        "api.setEvacRoute",
+        "api.setActiveShelter"
+      ],
+      "ancestorConstraints": {
+        "resq_lampu_status": "resq_program",
+        "resq_sirine_ews": "resq_program",
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program"
+      }
+    }
+  },
+  {
+    "id": "job_50",
+    "category": "proyek",
+    "level": 50,
+    "title": "Job 50: Zero Victim Hero Challenge (Tantangan Akhir)",
+    "icon": "emoji_objects",
+    "scenario": "Tantangan puncak! Erupsi eksplosif besar Merapi dan gempa vulkanik hebat melanda kota. Terapkan seluruh ilmu mitigasi untuk mengevakuasi 100% warga tanpa ada korban jiwa!",
+    "objective": "Rakit sistem mitigasi total: Gempa -> Erupsi Eksplosif -> Sirine EWS -> Jalur Lingkar Bebas Lahar -> Barak Pengungsian KRB I.",
+    "hint": "Gunakan Gempa Sim, Gunung Sim, Sirine EWS, Jalur Evakuasi, Posko KRB I, dan Layar OLED.",
+    "steps": [
+      {
+        "title": "Misi Pahlawan Mitigasi",
+        "description": "Ujian akhir kompetensi seorang relawan dan pahlawan mitigasi bencana! Buktikan desamu selamat 100%!",
+        "icon": "school",
+        "tip": null
+      },
+      {
+        "title": "Rakit Alur Puncak",
+        "description": "1. Gempa Kuat -> 2. Erupsi Merapi Eksplosif -> 3. Sirine EWS -> 4. Jalur Lingkar Bebas Lahar -> 5. Buka Barak KRB I -> 6. Tampilkan 'MISI LULUS: ZERO VICTIM'.",
+        "icon": "inventory_2",
+        "tip": null
+      },
+      {
+        "title": "Validasi Kemenangan",
+        "description": "Jalankan simulasi dan raih sertifikat kelulusan Level 3 Action Lab!",
+        "icon": "rocket_launch",
+        "tip": null
+      }
+    ],
+    "validation": {
+      "requiredBlocks": [
+        "resq_program",
+        "resq_gempa_sim",
+        "resq_gunung_sim",
+        "resq_sirine_ews",
+        "resq_jalur_evakuasi",
+        "resq_posko",
+        "resq_layar_oled"
+      ],
+      "codeContains": [
+        "api.simGempa",
+        "api.simGunung",
+        "api.setBuzzer",
+        "api.setEvacRoute",
+        "api.setActiveShelter",
+        "api.setOledMessage"
+      ],
+      "ancestorConstraints": {
+        "resq_gempa_sim": "resq_program",
+        "resq_gunung_sim": "resq_program",
+        "resq_sirine_ews": "resq_program",
+        "resq_jalur_evakuasi": "resq_program",
+        "resq_posko": "resq_program",
+        "resq_layar_oled": "resq_program"
+      }
+    }
   }
 ];

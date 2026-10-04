@@ -166,6 +166,12 @@ export const useAuthStore = create<AuthState>()((set) => ({
       // Bersihkan progress guest un-scoped agar tidak bocor ke akun baru
       try {
         localStorage.removeItem('resqbox_level2_progress_guest');
+        localStorage.removeItem('resqbox_earthdive_progress_guest');
+        localStorage.removeItem('resqbox_earthdive_progress');
+        localStorage.removeItem('resqbox_missions_guest');
+        localStorage.removeItem('resqbox_workspace_guest');
+        localStorage.removeItem('resqbox-mission-storage');
+        localStorage.removeItem('resqbox-workspace-v2');
       } catch {}
 
       if (user.role === 'student') {
@@ -184,12 +190,24 @@ export const useAuthStore = create<AuthState>()((set) => ({
           },
         };
         localStorage.setItem('resqbox-student-profile', JSON.stringify(studentObj));
-        const level = user.username === 'demo' ? 3 : (user.unlocked_level || 1);
+        const byUser = localStorage.getItem(`resqbox-unlocked-level_${user.id}`);
+        const parsedByUser = byUser ? parseInt(byUser, 10) : 0;
+        const level = user.username === 'demo'
+          ? 3
+          : Math.max(user.unlocked_level || 1, !isNaN(parsedByUser) ? parsedByUser : 1);
         localStorage.setItem(`resqbox-unlocked-level_${user.id}`, level.toString());
         localStorage.setItem('resqbox-unlocked-level', level.toString());
         try {
           localStorage.removeItem('resqbox_earthdive_progress');
         } catch {}
+
+        // Sinkronisasi store Level 3 & Workspace Blockly khusus untuk akun ini
+        import('./missionStore').then(({ useMissionStore }) => {
+          useMissionStore.getState().syncUser(user.id);
+        });
+        import('./workspaceStore').then(({ useWorkspaceStore }) => {
+          useWorkspaceStore.getState().syncUser(user.id);
+        });
 
         set({
           currentUser: user,
@@ -229,11 +247,24 @@ export const useAuthStore = create<AuthState>()((set) => ({
           },
         };
         localStorage.setItem('resqbox-student-profile', JSON.stringify(studentObj));
-        const level = user.username === 'demo' ? 3 : (user.unlocked_level || 1);
+        const byUser = localStorage.getItem(`resqbox-unlocked-level_${user.id}`);
+        const parsedByUser = byUser ? parseInt(byUser, 10) : 0;
+        const level = user.username === 'demo'
+          ? 3
+          : Math.max(user.unlocked_level || 1, !isNaN(parsedByUser) ? parsedByUser : 1);
+        localStorage.setItem(`resqbox-unlocked-level_${user.id}`, level.toString());
         localStorage.setItem('resqbox-unlocked-level', level.toString());
         try {
           localStorage.removeItem('resqbox_earthdive_progress');
         } catch {}
+
+        import('./missionStore').then(({ useMissionStore }) => {
+          useMissionStore.getState().syncUser(user.id);
+        });
+        import('./workspaceStore').then(({ useWorkspaceStore }) => {
+          useWorkspaceStore.getState().syncUser(user.id);
+        });
+
         set({
           currentUser: user,
           student: studentObj,
@@ -245,9 +276,24 @@ export const useAuthStore = create<AuthState>()((set) => ({
     } else {
       localStorage.removeItem('resqbox-current-user');
       localStorage.removeItem('resqbox-student-profile');
+      localStorage.removeItem('resqbox-unlocked-level');
       try {
         localStorage.removeItem('resqbox_earthdive_progress');
+        localStorage.removeItem('resqbox_level2_progress_guest');
+        localStorage.removeItem('resqbox_earthdive_progress_guest');
+        localStorage.removeItem('resqbox_missions_guest');
+        localStorage.removeItem('resqbox_workspace_guest');
+        localStorage.removeItem('resqbox-mission-storage');
+        localStorage.removeItem('resqbox-workspace-v2');
       } catch {}
+
+      import('./missionStore').then(({ useMissionStore }) => {
+        useMissionStore.getState().syncUser('guest');
+      });
+      import('./workspaceStore').then(({ useWorkspaceStore }) => {
+        useWorkspaceStore.getState().syncUser('guest');
+      });
+
       set({ currentUser: null, student: null, unlockedLevel: 1 });
     }
   },
@@ -260,7 +306,19 @@ export const useAuthStore = create<AuthState>()((set) => ({
       localStorage.removeItem('resqbox_level2_progress_guest');
       localStorage.removeItem('resqbox_earthdive_progress_guest');
       localStorage.removeItem('resqbox_earthdive_progress');
+      localStorage.removeItem('resqbox_missions_guest');
+      localStorage.removeItem('resqbox_workspace_guest');
+      localStorage.removeItem('resqbox-mission-storage');
+      localStorage.removeItem('resqbox-workspace-v2');
     } catch {}
+
+    import('./missionStore').then(({ useMissionStore }) => {
+      useMissionStore.getState().syncUser('guest');
+    });
+    import('./workspaceStore').then(({ useWorkspaceStore }) => {
+      useWorkspaceStore.getState().syncUser('guest');
+    });
+
     set({ currentUser: null, student: null, unlockedLevel: 1 });
   },
 

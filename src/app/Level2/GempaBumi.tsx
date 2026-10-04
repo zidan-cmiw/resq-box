@@ -44,6 +44,19 @@ function SeismicVisualizer() {
         className="w-full h-40 cursor-crosshair"
         onClick={handleClick}
       >
+        <defs>
+          <filter id="gempa-smoke-filter" x="-40%" y="-40%" width="180%" height="180%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+            <feGaussianBlur in="displaced" stdDeviation="2.5" />
+          </filter>
+          <radialGradient id="gempaSmokeGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#e2e8f0" stopOpacity="0.8" />
+            <stop offset="40%" stopColor="#94a3b8" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#64748b" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
         {/* Ground surface line */}
         <line x1="0" y1="80" x2="400" y2="80" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
         <text x="10" y="75" fontSize="8" fill="rgba(255,255,255,0.3)">Permukaan</text>
@@ -208,12 +221,21 @@ function EarthquakeTypeComparison() {
                 </circle>
               ))}
 
-              {/* Smoke */}
-              <circle cx="200" cy="12" r="8" fill="#a8a29e" opacity="0.4">
-                <animate attributeName="cy" from="12" to="-10" dur="3s" repeatCount="indefinite" />
-                <animate attributeName="r" from="6" to="14" dur="3s" repeatCount="indefinite" />
-                <animate attributeName="opacity" from="0.5" to="0" dur="3s" repeatCount="indefinite" />
-              </circle>
+              {/* Realistic Volcanic Smoke Wisp */}
+              <g filter="url(#gempa-smoke-filter)">
+                <ellipse cx="200" cy="14" rx="8" ry="6" fill="url(#gempaSmokeGrad)" opacity="0.75">
+                  <animate attributeName="cy" from="16" to="-12" dur="2.8s" repeatCount="indefinite" />
+                  <animate attributeName="rx" from="6" to="18" dur="2.8s" repeatCount="indefinite" />
+                  <animate attributeName="ry" from="4" to="12" dur="2.8s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" from="0.75" to="0" dur="2.8s" repeatCount="indefinite" />
+                </ellipse>
+                <ellipse cx="204" cy="10" rx="6" ry="5" fill="url(#gempaSmokeGrad)" opacity="0.6">
+                  <animate attributeName="cy" from="14" to="-16" dur="3.2s" begin="0.8s" repeatCount="indefinite" />
+                  <animate attributeName="rx" from="5" to="16" dur="3.2s" begin="0.8s" repeatCount="indefinite" />
+                  <animate attributeName="ry" from="4" to="10" dur="3.2s" begin="0.8s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" from="0.6" to="0" dur="3.2s" begin="0.8s" repeatCount="indefinite" />
+                </ellipse>
+              </g>
 
               {/* Magma chamber label */}
               <ellipse cx="200" cy="110" rx="30" ry="15" fill="#dc2626" opacity="0.3" />

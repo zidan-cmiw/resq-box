@@ -543,7 +543,6 @@ export default function PixelEarthDiagram({
                   fill="none"
                   stroke="#fde047"
                   strokeWidth="3.5"
-                  strokeDasharray="8 4"
                   className="active-anim-glow"
                 />
               </g>
@@ -557,7 +556,6 @@ export default function PixelEarthDiagram({
                   fill="none"
                   stroke="#fbbf24"
                   strokeWidth="4"
-                  strokeDasharray="9 4"
                   className="active-anim-glow"
                 />
               </g>
@@ -571,7 +569,6 @@ export default function PixelEarthDiagram({
                   fill="none"
                   stroke="#fde047"
                   strokeWidth="4.5"
-                  strokeDasharray="10 5"
                   className="active-anim-glow"
                 />
               </g>
@@ -587,7 +584,6 @@ export default function PixelEarthDiagram({
                   fill="none"
                   stroke="#38bdf8"
                   strokeWidth="4"
-                  strokeDasharray="10 5"
                   className="active-anim-glow"
                 />
               </g>

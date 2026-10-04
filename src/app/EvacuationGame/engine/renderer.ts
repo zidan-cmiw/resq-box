@@ -502,18 +502,43 @@ export function renderMap(
     }
   }
 
-  // 4. Asap gunung
+  // 4. Asap gunung realistis (billowing organic puffs, bukan lingkaran bulat kaku)
   {
     const { x, y } = toS(4, 6); // center volcano scaled
     const z = 60;
     const isErupting = state.temperature > 700;
-    const smokeY = y - z - 4 + Math.sin(state.volcanoFrame * 0.05) * 2;
-    ctx.beginPath();
-    ctx.arc(x, smokeY - 8,
-      (isErupting ? 8 : 5) + (state.volcanoFrame % 20) * 0.15,
-      0, Math.PI * 2);
-    ctx.fillStyle = isErupting ? 'rgba(239,68,68,0.75)' : 'rgba(160,160,160,0.55)';
-    ctx.fill();
+    const baseSmokeY = y - z - 4;
+
+    for (let sp = 0; sp < 4; sp++) {
+      const prog = ((state.volcanoFrame * 0.04 + sp * 0.25) % 1);
+      const sx = x + prog * 8 + Math.sin(state.volcanoFrame * 0.05 + sp) * 4;
+      const sy = baseSmokeY - prog * 28;
+      const sr = (isErupting ? 7 : 5) + prog * 10;
+      const alpha = Math.max(0, (1 - prog) * (isErupting ? 0.8 : 0.6));
+      if (alpha <= 0.02) continue;
+
+      for (let l = 0; l < 4; l++) {
+        const ang = (l * Math.PI) / 2 + Math.sin(sp + l) * 0.3;
+        const lx = sx + Math.cos(ang) * (sr * 0.3);
+        const ly = sy + Math.sin(ang) * (sr * 0.25);
+        const lr = sr * 0.65;
+
+        const sGrad = ctx.createRadialGradient(lx, ly, 1, lx, ly, lr);
+        if (isErupting) {
+          sGrad.addColorStop(0, `rgba(239, 68, 68, ${alpha})`);
+          sGrad.addColorStop(0.6, `rgba(185, 28, 28, ${alpha * 0.8})`);
+          sGrad.addColorStop(1, 'rgba(127, 29, 29, 0)');
+        } else {
+          sGrad.addColorStop(0, `rgba(245, 245, 245, ${alpha})`);
+          sGrad.addColorStop(0.6, `rgba(180, 180, 180, ${alpha * 0.7})`);
+          sGrad.addColorStop(1, 'rgba(140, 140, 140, 0)');
+        }
+        ctx.fillStyle = sGrad;
+        ctx.beginPath();
+        ctx.arc(lx, ly, lr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
   }
 
   // 5. NPCs

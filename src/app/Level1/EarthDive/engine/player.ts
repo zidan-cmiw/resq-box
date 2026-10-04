@@ -30,6 +30,7 @@ export interface PlayerState {
   invulnerableTimer: number; // invulnerability cooldown frames after damage
   jumpZ?: number; // Top-down elevation / height off ground for bird's-eye jumping
   jumpZVelocity?: number;
+  equippedSuit?: string | null; // 'mantle_suit' | 'outer_core_suit' | 'inner_core_suit' | 'diver_suit' | null
 }
 
 // ── CONSTANTS ──
@@ -193,6 +194,7 @@ export function createPlayer(spawnColOrX: number, spawnRowOrY: number): PlayerSt
     invulnerableTimer: 0,
     jumpZ: 0,
     jumpZVelocity: 0,
+    equippedSuit: null,
   };
 }
 
@@ -332,6 +334,103 @@ export function updatePlayer(player: PlayerState, input: InputState, zone: ZoneC
 
     if (player.landingSquashTimer > 0) {
       player.landingSquashTimer--;
+    }
+
+    if (player.invulnerableTimer > 0) {
+      player.invulnerableTimer--;
+    }
+    return;
+  }
+
+  // ── MODE RENANG & MENYELAM 4 ARAH (AREA 6: BATAS DIVERGEN) ──
+  if (zone.id === 'divergent') {
+    const SWIM_SPEED_X = 3.2;
+    const SWIM_SPEED_Y = 2.8;
+
+    let dx = 0;
+    let dy = 0;
+
+    if (input.left) {
+      dx = -SWIM_SPEED_X;
+      player.dir = 'left';
+    } else if (input.right) {
+      dx = SWIM_SPEED_X;
+      player.dir = 'right';
+    }
+
+    if (input.up || input.jump) {
+      dy = -SWIM_SPEED_Y; // Berenang naik ke atas
+    } else if (input.down) {
+      dy = SWIM_SPEED_Y; // Berenang turun / menyelam ke bawah
+    }
+
+    const isMoving = dx !== 0 || dy !== 0;
+    player.isWalking = isMoving;
+
+    // Water buoyancy float bobbing saat diam mengapung di air
+    const idleBob = !isMoving ? Math.sin(Date.now() * 0.003 + player.x * 0.01) * 0.35 : 0;
+
+    player.vx = dx;
+    player.vy = dy;
+    player.onGround = false; // Selalu melayang / mengambang di air laut
+    player.isJumping = false;
+    player.isFalling = false;
+    player.canDoubleJump = false;
+
+    // Batas Horizontal Jelajah Laut
+    const minX = player.width / 2 + 10;
+    const maxX = zone.cols * TILE - player.width / 2 - 10;
+    const targetX = Math.max(minX, Math.min(maxX, player.x + dx));
+
+    // Batas Vertikal Kolom Air:
+    // - Batas Atas: Permukaan air laut (minY ~ 54, kepala penyelam menyentuh buih air)
+    // - Batas Bawah: Permukaan lempeng dasar laut / daratan (tidak bisa tembus batuan lempeng)
+    const minY = 54;
+    const effectiveGround = getEffectiveGround(zone, targetX, player.y, player.y);
+    const maxY = Math.max(minY, effectiveGround - 4);
+
+    let targetY = player.y + dy + idleBob;
+    targetY = Math.max(minY, Math.min(maxY, targetY));
+
+    player.x = targetX;
+    player.y = targetY;
+
+    // Animasi kayuhan sirip selam (flutter kick swimming)
+    if (player.isWalking) {
+      player.walkTimer++;
+      if (player.walkTimer >= 5) {
+        player.walkTimer = 0;
+        player.walkFrame = (player.walkFrame + 1) % 4;
+      }
+    } else {
+      player.walkTimer = 0;
+      player.walkFrame = 0;
+    }
+
+    // Hazard celah magma (Lava Hazard)
+    if (zone.hazards) {
+      for (const haz of zone.hazards) {
+        if (
+          player.x >= haz.x &&
+          player.x <= haz.x + haz.w &&
+          player.y >= haz.y
+        ) {
+          if (player.invulnerableTimer === 0) {
+            player.health = Math.max(0, player.health - haz.damage);
+            player.invulnerableTimer = 50;
+            player.y -= 28; // Terpental naik ke atas menjauhi magma panas
+            retroAudio.playExplosion();
+
+            if (player.health <= 0) {
+              player.health = 100;
+              player.x = zone.playerSpawnX;
+              player.y = zone.playerSpawnY;
+              player.vx = 0;
+              player.vy = 0;
+            }
+          }
+        }
+      }
     }
 
     if (player.invulnerableTimer > 0) {
@@ -538,11 +637,8 @@ export function updatePlayer(player: PlayerState, input: InputState, zone: ZoneC
     }
   }
 
-  // 10. Deep Pit & Divergent Rift Magma Fall Check
-  const isDivergentMagmaFall =
-    zone.id === 'divergent' && player.x >= 390 && player.x <= 510 && player.y > 384;
-
-  if (player.y > 440 || isDivergentMagmaFall) {
+  // 10. Bottomless Void Fall Protection (Hanya terpicu jika pemain jatuh menembus dasar peta y > 600)
+  if (player.y > 600) {
     player.health = 100;
     player.x = zone.playerSpawnX;
     player.y = zone.playerSpawnY;
@@ -559,7 +655,14 @@ export function updatePlayer(player: PlayerState, input: InputState, zone: ZoneC
 }
 
 // ── SPRITE FRAME INDEX ──
-export function getPlayerSpriteFrame(player: PlayerState): number {
+export function getPlayerSpriteFrame(player: PlayerState, zoneId?: string): number {
+  if (zoneId === 'divergent') {
+    // Mode Renang / Menyelam: kayuhan sirip selam (frame 0..3) saat berenang, frame 4 saat mengambang idle
+    if (player.isWalking) {
+      return player.walkFrame;
+    }
+    return 4;
+  }
   if (!player.onGround) {
     // Air poses: Frame 6 (Jump rising), Frame 7 (Falling downward)
     if (player.vy < -0.5) return 6;

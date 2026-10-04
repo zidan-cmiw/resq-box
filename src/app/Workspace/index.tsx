@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState, lazy, Suspense } from 'react';
-import { ArrowLeft } from 'lucide-react';
 
 const EvacuationCanvas = lazy(() => import('../EvacuationGame/EvacuationCanvas'));
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -8,9 +7,11 @@ import MissionPanel from './MissionPanel';
 import SensorPanel from './SensorPanel';
 import ConsoleOutput from './ConsoleOutput';
 import { MISSIONS } from '../../missions/data/missions';
+import { retroAudio } from '../../utils/retroAudio';
 import { useMissionStore } from '../../store/missionStore';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import { useRuntimeStore } from '../../store/runtimeStore';
+import { useAuthStore } from '../../store/teacherStore';
 import { sanitizeCode } from '../../engine/codeSanitizer';
 import {
   connectSerial,
@@ -42,6 +43,16 @@ export default function Workspace() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const missionParam = searchParams.get('mission');
+
+  const student = useAuthStore((state) => state.student);
+  const currentUser = useAuthStore((state) => state.currentUser);
+
+  // Ensure stores are synced to the active user on mount
+  useEffect(() => {
+    const activeId = student?.id || currentUser?.id || 'guest';
+    useMissionStore.getState().syncUser(activeId);
+    useWorkspaceStore.getState().syncUser(activeId);
+  }, [student?.id, currentUser?.id]);
 
   const { setActiveMission, resetValidation, isUnlocked } = useMissionStore();
   const { setActiveContext, getActiveDraft } = useWorkspaceStore();
@@ -124,9 +135,9 @@ export default function Workspace() {
     try {
       setSerialStatus('connecting');
       addLog('[USB] Membuka port... pilih port ESP32/Arduino di popup.', 'system');
-      await connectSerial(9600);
+      await connectSerial(115200);
       setSerialStatus('connected');
-      addLog('[USB] Diorama Fisik Terhubung via kabel USB! Sinyal siap dikirim.', 'success');
+      addLog('[USB] Diorama Fisik Terhubung via kabel USB (115200 baud)! Sinyal siap dikirim.', 'success');
     } catch (e) {
       setSerialStatus('idle');
       const msg = e instanceof Error ? e.message : 'dibatalkan pengguna.';
@@ -139,7 +150,7 @@ export default function Workspace() {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(cmd.endsWith('\n') ? cmd : cmd + '\n');
     }
-    sendSerial(cmd);
+    sendSerial(cmd.endsWith('\n') ? cmd : cmd + '\n');
   };
 
   // Tombol tes manual: kirim perintah langsung tanpa perlu menyusun Blockly.
@@ -202,7 +213,7 @@ export default function Workspace() {
       setRunning(false);
       runningRef.current = false;
       addLog('[INFO] Simulasi dihentikan.', 'warn');
-      sendHardware('PIN:ALL:OFF');
+      sendHardware('stopall');
       useRuntimeStore.getState().resetPinStates();
       return;
     }
@@ -216,23 +227,68 @@ export default function Workspace() {
     const api = {
       print: (text: string, type: string = 'info') => {
         useRuntimeStore.getState().addLog(text, type as any);
-        // Digital Twin: detect servo/motor state from print messages
-        const store = useRuntimeStore.getState();
-        // Digital Twin + kirim ke hardware fisik (WiFi/USB) untuk servo/buzzer/motor.
-        if (text.includes('Pintu Evakuasi Terbuka')) { store.setPinState('SERVO', 'OPEN'); sendHardware('PIN:SERVO:OPEN'); }
-        if (text.includes('Pintu Evakuasi Tertutup') || text.includes('Pintu Evakuasi Setengah')) { store.setPinState('SERVO', 'CLOSED'); sendHardware('PIN:SERVO:CLOSED'); }
-        if (text.includes('Sirine berbunyi')) { store.setPinState('BUZZER', 'ON'); sendHardware('PIN:BUZZER:ON'); }
-        if (text.includes('Sirine berhenti')) { store.setPinState('BUZZER', 'OFF'); sendHardware('PIN:BUZZER:OFF'); }
-        if (text.includes('Kipas Ventilasi Kencang')) { store.setPinState('MOTOR', 'FAST'); sendHardware('PIN:MOTOR:FAST'); }
-        if (text.includes('Kipas Ventilasi Sedang')) { store.setPinState('MOTOR', 'MEDIUM'); sendHardware('PIN:MOTOR:MEDIUM'); }
-        if (text.includes('Kipas Ventilasi Pelan')) { store.setPinState('MOTOR', 'SLOW'); sendHardware('PIN:MOTOR:SLOW'); }
-        if (text.includes('Kipas Ventilasi Mati')) { store.setPinState('MOTOR', 'OFF'); sendHardware('PIN:MOTOR:OFF'); }
       },
       setPin: (_pin: string, _state: string) => {
-        // Kirim ke ESP32/Arduino (Diorama Fisik) via WiFi (WebSocket) & USB (Web Serial)
         sendHardware(`PIN:${_pin}:${_state}`);
-        // Digital Twin: update pinStates in store
         useRuntimeStore.getState().setPinState(_pin, _state);
+      },
+      setRgb: (color: string) => {
+        const validColor = ['green', 'yellow', 'orange', 'red', 'off'].includes(color) ? color : 'green';
+        useRuntimeStore.getState().setRgbColor(validColor as any);
+        sendHardware(`rgb ${validColor}`);
+      },
+      setBuzzer: (on: boolean) => {
+        useRuntimeStore.getState().setPinState('BUZZER', on ? 'ON' : 'OFF');
+        sendHardware(`buzzer ${on ? 'on' : 'off'}`);
+      },
+      simGempa: (level: number) => {
+        const lvl = Math.max(1, Math.min(3, level));
+        useRuntimeStore.getState().setSeismicSimulation(lvl as any);
+        sendHardware(`gempa ${lvl}`);
+      },
+      simGunung: (status: string, tipe: string = 'EKSPLOSIF') => {
+        const lvl = status === 'AWAS' ? 3 : status === 'SIAGA' ? 2 : 1;
+        useRuntimeStore.getState().setVolcanoSimulation(status as any, tipe as any);
+        sendHardware(`gunung ${lvl}`);
+        if (tipe === 'EKSPLOSIF' || status === 'AWAS') {
+          sendHardware('mist on');
+        }
+      },
+      setEvacRoute: (route: string) => {
+        useRuntimeStore.getState().setEvacuationRoute(route);
+      },
+      setActiveShelter: (shelter: string) => {
+        useRuntimeStore.getState().setActiveShelter(shelter);
+      },
+      setOledMessage: (msg: string) => {
+        useRuntimeStore.getState().setOledMessage(msg);
+        sendHardware('oled');
+      },
+      setMist: (on: boolean) => {
+        useRuntimeStore.getState().setMistActive(on);
+        sendHardware(on ? 'mist on' : 'mist off');
+      },
+      playAudio: (track: number) => {
+        sendHardware(track > 0 ? `play ${track}` : 'stop');
+      },
+      stopAudio: () => {
+        sendHardware('stop');
+      },
+      setMotor: (speed: string | number) => {
+        if (speed === '0' || speed === 0) {
+          useRuntimeStore.getState().setPinState('MOTOR', 'OFF');
+          sendHardware('stopall');
+        } else {
+          useRuntimeStore.getState().setPinState('MOTOR', 'FAST');
+          sendHardware('gempa 2');
+        }
+      },
+      stopAll: () => {
+        sendHardware('stopall');
+        useRuntimeStore.getState().resetPinStates();
+      },
+      setLocation: (loc: string) => {
+        useRuntimeStore.getState().setLocationContext(loc);
       },
       getPin: (pin: string) => {
         const s = useRuntimeStore.getState().sensorValues;
@@ -308,73 +364,93 @@ export default function Workspace() {
   // State rightPanel dihapus karena sekarang game selalu tampil di atas
 
   return (
-    <div className="h-screen w-full flex flex-col bg-surface text-on-surface">
-      {/* Workspace Header */}
-      <header className="h-14 bg-surface-container border-b border-outline-variant flex items-center px-md justify-between shrink-0">
-        <div className="flex items-center gap-md">
+    <div className="h-screen w-full flex flex-col bg-[#fefce8] text-[#1c1917] font-pixel overflow-hidden">
+      {/* ── Retro Header Bar (SS 3 Warm Parchment & Wood Palette) ── */}
+      <header className="h-14 bg-[#fef3c7] border-b-4 border-[#78350f] flex items-center px-3 sm:px-4 justify-between shrink-0 shadow-md z-30">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
-            onClick={() => navigate('/')}
-            className="p-sm hover:bg-surface-container-high rounded-full transition-colors flex items-center justify-center text-on-surface-variant"
+            onClick={() => {
+              retroAudio.playSelect();
+              navigate('/level3');
+            }}
+            className="pixel-btn-wood-compact text-[10px] sm:text-xs py-1.5 px-3 text-amber-100 hover:text-white flex items-center gap-1.5 shrink-0 shadow-sm"
+            title="Kembali ke Peta Level 3"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <span>◀</span>
+            <span className="hidden sm:inline">PETA LEVEL 3</span>
           </button>
-          <div className="h-6 w-px bg-outline-variant" />
-          <div>
-            <h1 className="font-title-md text-title-md font-bold text-primary">
-              {activeMission ? activeMission.title : 'Ruang Simulasi'}
-            </h1>
-            <p className="font-label-sm text-label-sm text-on-surface-variant">
-              {activeMission ? (activeMission.category === 'proyek' ? `Kasus ${activeMission.level}` : `Skenario ${activeMission.level}`) : 'Susun Langkah Penyelamatan'}
-            </p>
+
+          <div className="h-6 w-px bg-[#b45309]/30 hidden sm:block" />
+
+          {/* Kotak Info Level (SS 3 Warm Parchment Card) */}
+          <div className="bg-[#fffbeb] border-2 border-[#b45309] px-3 py-1 rounded-xl shadow-sm flex items-center gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xs sm:text-sm font-bold text-[#451a03] font-sans tracking-wide leading-tight">
+                  {activeMission ? activeMission.title : 'Ruang Simulasi Sandbox'}
+                </h1>
+                {activeMission && (
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#b45309] text-white font-pixel uppercase shadow-sm">
+                    {activeMission.category === 'proyek' ? `Kasus ${activeMission.level}` : `Level ${activeMission.level}`}
+                  </span>
+                )}
+              </div>
+              <p className="text-[10px] text-[#78350f]/80 hidden sm:block font-sans truncate max-w-xs md:max-w-md font-medium">
+                {activeMission ? activeMission.scenario : 'Rancang dan uji logika sistem mitigasi'}
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-sm">
-          {/* Sambungkan Maket Button */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Sambungkan Diorama WiFi Button */}
           <div className="relative">
             <button
-              onClick={() => wsStatus === 'connected' ? disconnectMaket() : setShowWsModal(!showWsModal)}
-              className={`flex items-center gap-xs px-sm py-xs rounded-full border font-label-sm text-label-sm transition-all
-                ${wsStatus === 'connected'
-                  ? 'bg-[#16A34A] text-white border-[#16A34A]'
+              onClick={() => {
+                retroAudio.playSelect();
+                wsStatus === 'connected' ? disconnectMaket() : setShowWsModal(!showWsModal);
+              }}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[11px] font-bold transition-all shadow-sm ${
+                wsStatus === 'connected'
+                  ? 'bg-[#f0fdf4] text-[#15803d] border-[#16a34a]'
                   : wsStatus === 'connecting'
-                    ? 'bg-yellow-500 text-white border-yellow-500'
-                    : 'bg-surface-container-high border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary'
-                }`}
+                  ? 'bg-[#fef3c7] text-[#b45309] border-[#d97706] animate-pulse'
+                  : 'bg-[#fffbeb] border-[#b45309] text-[#78350f] hover:bg-[#fef3c7]'
+              }`}
+              title="Sambungkan Diorama Fisik ESP32 via WiFi"
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>
-                {wsStatus === 'connected' ? 'link' : 'memory'}
-              </span>
-              {wsStatus === 'connected' ? 'Diorama Terhubung' : wsStatus === 'connecting' ? 'Menghubungkan...' : 'Sambungkan Diorama Fisik'}
+              <span className={`w-2 h-2 rounded-full ${wsStatus === 'connected' ? 'bg-[#10b981] shadow-[0_0_6px_#10b981]' : wsStatus === 'connecting' ? 'bg-[#f59e0b]' : 'bg-[#a8a29e]'}`} />
+              <span className="hidden md:inline">{wsStatus === 'connected' ? 'Diorama WiFi: OK' : wsStatus === 'connecting' ? 'Menghubungkan...' : 'Diorama WiFi'}</span>
+              <span className="md:hidden">WiFi</span>
             </button>
 
-            {/* IP Input Modal */}
+            {/* IP Input Modal (SS 3 Warm Parchment) */}
             {showWsModal && wsStatus !== 'connected' && (
-              <div className="absolute top-full right-0 mt-2 w-72 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg p-md z-50">
-                <h4 className="font-title-sm text-title-sm text-on-surface mb-2">Alamat IP Diorama (WiFi)</h4>
-                <p className="text-xs text-on-surface-variant mb-sm">
-                  Lihat alamat IP pada layar OLED SSD1306 ESP32 atau Serial Monitor (misal: 192.168.1.15 atau 192.168.4.1). Port default: 81.
+              <div className="absolute top-full right-0 mt-2 w-72 bg-[#fffbeb] border-2 border-[#b45309] rounded-xl shadow-2xl p-3.5 z-50 font-sans text-[#1c1917]">
+                <h4 className="font-bold text-xs text-[#78350f] mb-1 font-pixel">Alamat IP Diorama (WiFi)</h4>
+                <p className="text-[10px] text-[#451a03] mb-2 leading-relaxed font-medium">
+                  Lihat IP pada layar OLED ESP32 atau Serial Monitor (contoh: 192.168.1.15). Port: 81.
                 </p>
-                <div className="flex flex-col gap-sm">
+                <div className="flex flex-col gap-2">
                   <input
                     type="text"
                     value={wsIp}
                     onChange={(e) => setWsIp(e.target.value)}
-                    className="w-full bg-surface px-sm py-xs border border-outline-variant rounded font-body-sm text-on-surface focus:outline-none focus:border-primary"
+                    className="w-full bg-[#fefce8] px-2.5 py-1.5 border border-[#b45309] rounded-lg text-[#451a03] text-xs outline-none focus:ring-1 focus:ring-[#d97706] font-mono font-bold"
                     placeholder="192.168.x.x"
                     disabled={wsStatus === 'connecting'}
                   />
-                  <div className="flex justify-end gap-2">
+                  <div className="flex justify-end gap-2 pt-1 font-pixel">
                     <button
                       onClick={() => setShowWsModal(false)}
-                      className="text-xs text-on-surface-variant hover:text-on-surface py-1 px-2"
+                      className="text-[11px] text-[#78716c] hover:text-[#1c1917] px-2 py-1 font-bold"
                     >
                       Batal
                     </button>
                     <button
                       onClick={connectMaket}
                       disabled={wsStatus === 'connecting'}
-                      className="bg-primary text-on-primary text-xs py-1 px-3 rounded hover:opacity-90 disabled:opacity-50"
+                      className="bg-[#c2410c] hover:bg-[#ea580c] text-white text-[11px] py-1 px-3 rounded-lg font-bold shadow-md border border-[#7c2d12]"
                     >
                       Koneksikan
                     </button>
@@ -384,59 +460,69 @@ export default function Workspace() {
             )}
           </div>
 
-          {/* Sambungkan via USB (Web Serial) */}
+          {/* Sambungkan USB Serial Button */}
           <button
-            onClick={connectSerialPort}
-            className={`flex items-center gap-xs px-sm py-xs rounded-full border font-label-sm text-label-sm transition-all
-              ${serialStatus === 'connected'
-                ? 'bg-[#2563EB] text-white border-[#2563EB]'
+            onClick={() => {
+              retroAudio.playSelect();
+              connectSerialPort();
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[11px] font-bold transition-all shadow-sm ${
+              serialStatus === 'connected'
+                ? 'bg-[#eff6ff] text-[#1d4ed8] border-[#3b82f6]'
                 : serialStatus === 'connecting'
-                  ? 'bg-yellow-500 text-white border-yellow-500'
-                  : 'bg-surface-container-high border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary'
-              }`}
+                ? 'bg-[#fef3c7] text-[#b45309] border-[#d97706] animate-pulse'
+                : 'bg-[#fffbeb] border-[#b45309] text-[#78350f] hover:bg-[#fef3c7]'
+            }`}
+            title="Sambungkan via Kabel USB (Web Serial)"
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>usb</span>
-            {serialStatus === 'connected' ? 'USB Terhubung' : serialStatus === 'connecting' ? 'Menghubungkan...' : 'Sambungkan USB'}
+            <span className={`w-2 h-2 rounded-full ${serialStatus === 'connected' ? 'bg-[#3b82f6] shadow-[0_0_6px_#3b82f6]' : serialStatus === 'connecting' ? 'bg-[#f59e0b]' : 'bg-[#a8a29e]'}`} />
+            <span className="hidden md:inline">{serialStatus === 'connected' ? 'USB: OK' : serialStatus === 'connecting' ? 'Menghubungkan...' : 'USB Serial'}</span>
+            <span className="md:hidden">USB</span>
           </button>
 
-          {/* Tes Perangkat (kirim perintah manual) */}
+          {/* Tes Perangkat Manual Button */}
           <div className="relative">
             <button
-              onClick={() => setShowTestPanel(!showTestPanel)}
-              className={`flex items-center gap-xs px-sm py-xs rounded-full border font-label-sm text-label-sm transition-all
-                ${showTestPanel
-                  ? 'bg-secondary-container text-on-secondary-container border-secondary-container'
-                  : 'bg-surface-container-high border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary'
-                }`}
+              onClick={() => {
+                retroAudio.playSelect();
+                setShowTestPanel(!showTestPanel);
+              }}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border-2 text-[11px] font-bold transition-all shadow-sm ${
+                showTestPanel
+                  ? 'bg-[#faf5ff] text-[#7e22ce] border-[#a855f7]'
+                  : 'bg-[#fffbeb] border-[#b45309] text-[#78350f] hover:bg-[#fef3c7]'
+              }`}
+              title="Panel Uji Output ESP32"
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>tune</span>
-              Tes Perangkat
+              <span>🎛️</span>
+              <span className="hidden lg:inline">Tes Perangkat</span>
             </button>
 
             {showTestPanel && (
-              <div className="absolute top-full right-0 mt-2 w-72 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg p-md z-50">
-                <h4 className="font-title-sm text-title-sm text-on-surface mb-1">Tes Diorama Fisik ESP32</h4>
-                <p className="text-xs text-on-surface-variant mb-sm">
+              <div className="absolute top-full right-0 mt-2 w-80 bg-[#fffbeb] border-2 border-[#b45309] rounded-xl shadow-2xl p-3 z-50 font-sans text-[#1c1917]">
+                <div className="flex items-center justify-between mb-1.5 border-b border-[#b45309]/30 pb-1">
+                  <h4 className="font-bold text-xs text-[#78350f] font-pixel">Tes Diorama ESP32</h4>
+                  <button onClick={() => setShowTestPanel(false)} className="text-[#78716c] hover:text-[#1c1917] text-xs font-bold">✕</button>
+                </div>
+                <p className="text-[10px] text-[#451a03] mb-2 leading-relaxed font-medium">
                   {wsStatus === 'connected' || serialStatus === 'connected'
-                    ? 'Klik tombol untuk menguji respon perangkat secara langsung.'
-                    : 'Hubungkan WiFi (WebSocket) atau USB dulu agar perintah terkirim.'}
+                    ? 'Klik tombol di bawah untuk menyalakan/mematikan output hardware secara langsung.'
+                    : 'Hubungkan WiFi atau USB terlebih dahulu agar sinyal hardware terkirim.'}
                 </p>
-                <div className="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
-                  <button onClick={() => testSend('PIN:10:HIGH', 'LED Bahaya (Merah) ON')} className="text-xs py-1 px-2 rounded bg-red-500/10 text-red-600 border border-red-500/30 hover:bg-red-500/20">Merah ON</button>
-                  <button onClick={() => testSend('PIN:10:LOW', 'LED Bahaya OFF')} className="text-xs py-1 px-2 rounded bg-surface-container border border-outline-variant hover:bg-surface-container-high">Merah OFF</button>
-                  <button onClick={() => testSend('PIN:11:HIGH', 'LED Aman (Hijau) ON')} className="text-xs py-1 px-2 rounded bg-green-500/10 text-green-600 border border-green-500/30 hover:bg-green-500/20">Hijau ON</button>
-                  <button onClick={() => testSend('PIN:11:LOW', 'LED Aman OFF')} className="text-xs py-1 px-2 rounded bg-surface-container border border-outline-variant hover:bg-surface-container-high">Hijau OFF</button>
-                  <button onClick={() => testSend('PIN:12:HIGH', 'LED Info (Biru) ON')} className="text-xs py-1 px-2 rounded bg-blue-500/10 text-blue-600 border border-blue-500/30 hover:bg-blue-500/20">Biru ON</button>
-                  <button onClick={() => testSend('PIN:12:LOW', 'LED Info OFF')} className="text-xs py-1 px-2 rounded bg-surface-container border border-outline-variant hover:bg-surface-container-high">Biru OFF</button>
-                  <button onClick={() => testSend('PIN:BUZZER:ON', 'Alarm Buzzer ON')} className="text-xs py-1 px-2 rounded bg-amber-500/10 text-amber-600 border border-amber-500/30 hover:bg-amber-500/20">Buzzer ON</button>
-                  <button onClick={() => testSend('PIN:BUZZER:OFF', 'Alarm Buzzer OFF')} className="text-xs py-1 px-2 rounded bg-surface-container border border-outline-variant hover:bg-surface-container-high">Buzzer OFF</button>
-                  <button onClick={() => testSend('PIN:MOTOR:FAST', 'Mist Maker (Asap) ON')} className="text-xs py-1 px-2 rounded bg-purple-500/10 text-purple-600 border border-purple-500/30 hover:bg-purple-500/20">Mist (Asap) ON</button>
-                  <button onClick={() => testSend('PIN:MOTOR:OFF', 'Mist Maker OFF')} className="text-xs py-1 px-2 rounded bg-surface-container border border-outline-variant hover:bg-surface-container-high">Mist OFF</button>
-                  <button onClick={() => testSend('play 1', 'Audio DFPlayer Track 1')} className="text-xs py-1 px-2 rounded bg-teal-500/10 text-teal-600 border border-teal-500/30 hover:bg-teal-500/20">Audio Track 1</button>
-                  <button onClick={() => testSend('stop', 'Audio Stop')} className="text-xs py-1 px-2 rounded bg-surface-container border border-outline-variant hover:bg-surface-container-high">Audio Stop</button>
-                  <button onClick={() => testSend('PIN:SERVO:OPEN', 'Pintu Terbuka')} className="text-xs py-1 px-2 rounded bg-indigo-500/10 text-indigo-600 border border-indigo-500/30 hover:bg-indigo-500/20">Pintu Buka</button>
-                  <button onClick={() => testSend('PIN:SERVO:CLOSED', 'Pintu Tertutup')} className="text-xs py-1 px-2 rounded bg-surface-container border border-outline-variant hover:bg-surface-container-high">Pintu Tutup</button>
-                  <button onClick={() => testSend('PIN:ALL:OFF', 'Semua Output Mati')} className="col-span-2 text-xs py-1.5 px-2 rounded bg-surface-container-high border border-outline-variant hover:bg-error/10 hover:text-error hover:border-error/40 font-bold">Matikan Semua Output</button>
+                <div className="grid grid-cols-2 gap-1.5 max-h-72 overflow-y-auto pr-1 text-[11px]">
+                  <button onClick={() => testSend('gempa 1', 'Simulasi Gempa Ringan')} className="py-1 px-2 rounded bg-amber-100 text-amber-900 border border-amber-400 hover:bg-amber-200 font-bold">Gempa Ringan</button>
+                  <button onClick={() => testSend('gempa 3', 'Simulasi Gempa Kuat')} className="py-1 px-2 rounded bg-red-100 text-red-900 border border-red-400 hover:bg-red-200 font-bold">Gempa Kuat</button>
+                  <button onClick={() => testSend('gunung 1', 'Gunung Waspada')} className="py-1 px-2 rounded bg-yellow-100 text-yellow-900 border border-yellow-400 hover:bg-yellow-200 font-bold">Gunung Waspada</button>
+                  <button onClick={() => testSend('gunung 3', 'Gunung Awas Erupsi')} className="py-1 px-2 rounded bg-rose-100 text-rose-900 border border-rose-400 hover:bg-rose-200 font-bold">Gunung Awas</button>
+                  <button onClick={() => testSend('rgb red', 'LED RGB Merah')} className="py-1 px-2 rounded bg-rose-100 text-rose-800 border border-rose-400 hover:bg-rose-200 font-bold">RGB Merah</button>
+                  <button onClick={() => testSend('rgb green', 'LED RGB Hijau')} className="py-1 px-2 rounded bg-emerald-100 text-emerald-800 border border-emerald-400 hover:bg-emerald-200 font-bold">RGB Hijau</button>
+                  <button onClick={() => testSend('rgb yellow', 'LED RGB Kuning')} className="py-1 px-2 rounded bg-amber-100 text-amber-800 border border-amber-400 hover:bg-amber-200 font-bold">RGB Kuning</button>
+                  <button onClick={() => testSend('rgb orange', 'LED RGB Oranye')} className="py-1 px-2 rounded bg-orange-100 text-orange-800 border border-orange-400 hover:bg-orange-200 font-bold">RGB Oranye</button>
+                  <button onClick={() => testSend('buzzer on', 'Sirine EWS ON')} className="py-1 px-2 rounded bg-amber-100 text-amber-800 border border-amber-400 hover:bg-amber-200 font-bold">Sirine ON</button>
+                  <button onClick={() => testSend('buzzer off', 'Sirine EWS OFF')} className="py-1 px-2 rounded bg-stone-100 text-stone-700 border border-stone-300 hover:bg-stone-200 font-semibold">Sirine OFF</button>
+                  <button onClick={() => testSend('mist on', 'Humidifier Asap ON')} className="py-1 px-2 rounded bg-purple-100 text-purple-800 border border-purple-400 hover:bg-purple-200 font-bold">Mist Asap ON</button>
+                  <button onClick={() => testSend('mist off', 'Humidifier Asap OFF')} className="py-1 px-2 rounded bg-stone-100 text-stone-700 border border-stone-300 hover:bg-stone-200 font-semibold">Mist Asap OFF</button>
+                  <button onClick={() => testSend('stopall', 'Hentikan Semua Simulasi')} className="col-span-2 py-1.5 px-2 rounded bg-red-600 text-white border border-red-800 hover:bg-red-700 font-bold mt-1 text-center shadow-sm">Matikan Semua Output (STOP ALL)</button>
                 </div>
               </div>
             )}
@@ -444,75 +530,71 @@ export default function Workspace() {
 
           {/* Sensor Panel Toggle */}
           <button
-            onClick={toggleSensorPanel}
-            className={`flex items-center gap-xs px-sm py-xs rounded-full border font-label-sm text-label-sm transition-all
-              ${showSensorPanel
-                ? 'bg-secondary-container text-on-secondary-container border-secondary-container'
-                : 'bg-surface-container-high border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary'
-              }`}
+            onClick={() => {
+              retroAudio.playSelect();
+              toggleSensorPanel();
+            }}
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border-2 text-[11px] font-bold transition-all shadow-sm ${
+              showSensorPanel
+                ? 'bg-[#fef3c7] text-[#b45309] border-[#d97706]'
+                : 'bg-[#fffbeb] border-[#b45309] text-[#78350f] hover:bg-[#fef3c7]'
+            }`}
+            title="Buka Panel Slider Sensor Bencana"
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>sensors</span>
-            Sensor
+            <span>📡</span>
+            <span className="hidden sm:inline">Sensor</span>
           </button>
 
-          {/* Run / Stop */}
+          {/* Run / Stop Simulation Button */}
           <button
-            onClick={toggleSimulation}
-            className={`flex items-center gap-xs px-md py-xs rounded-full font-label-lg shadow-sm tactile-btn transition-colors
-              ${isRunning
-                ? 'bg-error text-on-error hover:opacity-90'
-                : 'bg-[#16A34A] text-white hover:opacity-90'
-              }`}
+            onClick={() => {
+              retroAudio.playSelect();
+              toggleSimulation();
+            }}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-md transition-all border-2 ${
+              isRunning
+                ? 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white border-red-800 animate-pulse'
+                : 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white border-emerald-800'
+            }`}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-              {isRunning ? 'stop' : 'play_arrow'}
-            </span>
-            {isRunning ? 'Berhenti' : 'Mulai'}
+            <span>{isRunning ? '⏹' : '▶'}</span>
+            <span>{isRunning ? 'BERHENTI' : 'MULAI'}</span>
           </button>
         </div>
       </header>
 
-      {/* Main Layout */}
-      <main className="flex-1 flex overflow-hidden relative">
+      {/* ── Main Layout: Mission Panel on Left + Split Canvas/Editor on Right ── */}
+      <main className="flex-1 flex overflow-hidden relative bg-[#fefce8]">
         {activeMission && <MissionPanel missionId={activeMission.id} />}
 
-        {/* RIGHT SIDE: Top/Bottom Split */}
+        {/* RIGHT SIDE: Evacuation Digital Twin (Top) & Blockly/Console (Bottom) */}
         <div className="flex-1 flex flex-col overflow-hidden relative">
-          {/* TOP: Evacuation Game View */}
-          <section className="h-[35vh] w-full shrink-0 border-b-2 border-outline-variant shadow-sm relative z-10">
+          {/* TOP: Evacuation Game View (Area 6 Shelter Map) */}
+          <section className="h-[35vh] w-full shrink-0 border-b-4 border-[#78350f] shadow-md relative z-10 bg-[#e0f2fe]">
             <Suspense fallback={
-              <div className="flex items-center justify-center h-full text-on-surface-variant text-xs flex-col gap-2">
-                <span className="material-symbols-outlined animate-spin">progress_activity</span>
-                Memuat peta...
+              <div className="flex items-center justify-center h-full text-[#78350f] text-xs flex-col gap-2 font-pixel">
+                <span>MEMUAT PETA BARAK PENGUNGSIAN...</span>
               </div>
             }>
               <EvacuationCanvas />
             </Suspense>
           </section>
 
-          {/* BOTTOM: Blockly Editor & Console */}
-          <section className="flex-1 flex overflow-hidden relative bg-surface-container-lowest">
+          {/* BOTTOM: Blockly Workspace & Right Activity Console */}
+          <section className="flex-1 flex overflow-hidden relative bg-[#fefce8]">
             {/* Blockly Editor */}
             <div className="flex-1 overflow-hidden relative">
               <BlockEditor />
             </div>
 
-            {/* Right Console Panel */}
-            <aside className="w-80 shrink-0 border-l border-outline-variant overflow-hidden flex flex-col bg-surface">
-              <div className="flex shrink-0 border-b border-outline-variant bg-surface-container-low">
-                <div className="flex-1 py-sm text-xs font-semibold flex items-center justify-center gap-2 text-primary border-b-2 border-primary">
-                  <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>receipt_long</span>
-                  Monitor Aktivitas
-                </div>
-              </div>
-              <div className="flex-1 overflow-hidden relative">
-                <ConsoleOutput />
-              </div>
+            {/* Right Activity Console Panel */}
+            <aside aria-label="Monitor Aktivitas" className="w-80 shrink-0 border-l-4 border-[#78350f] overflow-hidden flex flex-col bg-[#fffbeb] shadow-lg">
+              <ConsoleOutput />
             </aside>
           </section>
         </div>
 
-        {/* Floating Sensor Panel */}
+        {/* Floating Sensor Panel Slider */}
         <SensorPanel />
       </main>
     </div>

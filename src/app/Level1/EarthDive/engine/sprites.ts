@@ -1,5 +1,5 @@
-import type { ZoneConfig } from './zones';
-import { MAP_WIDTH_PX, getDivergentTerrainElevation, getConvergentTerrainElevation } from './zones';
+import type { ZoneConfig, DivergentFish } from './zones';
+import { MAP_WIDTH_PX, getDivergentTerrainElevation, getConvergentTerrainElevation, getSubductingPlateTopY, getDivergentMantleY, getConvergentMantleY } from './zones';
 
 // ── TILE SIZE ──
 export const TILE = 32;
@@ -150,7 +150,7 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
   ctx.imageSmoothingEnabled = false;
 
   // ── A. LANGIT-LANGIT GUA ORGANIK (UNDERGROUND CAIRN & CEILING) ──
-  if (cProf && zone.id !== 'surface' && zone.id !== 'divergent') {
+  if (cProf && zone.id !== 'surface' && zone.id !== 'divergent' && zone.id !== 'outerCore') {
     let ceilColor = '#1c100b';
     let strataColor = '#2b1912';
     let edgeColor = '#4a2d21';
@@ -164,9 +164,9 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
       strataColor = '#4d1009';
       edgeColor = '#801c10';
     } else if (zone.id === 'innerCore') {
-      ceilColor = '#451a03';
-      strataColor = '#78350f';
-      edgeColor = '#b45309';
+      ceilColor = '#2d0905';
+      strataColor = '#4d1009';
+      edgeColor = '#801c10';
     }
 
     // FONDASI SOLID LANGIT-LANGIT (100% BEBAS CELAH SUB-PIXEL)
@@ -219,8 +219,8 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
         stColor = '#5e1208';
         stLight = '#f59e0b';
       } else if (zone.id === 'innerCore') {
-        stColor = '#b45309';
-        stLight = '#fef08a';
+        stColor = '#5e1208';
+        stLight = '#ea580c';
       }
 
       // Base body
@@ -246,8 +246,8 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
   let groundBaseColor = '#26201e';
   if (zone.id === 'crust') groundBaseColor = '#1a0d08';
   else if (zone.id === 'mantle') groundBaseColor = '#080201';
-  else if (zone.id === 'outerCore') groundBaseColor = '#120504';
-  else if (zone.id === 'innerCore') groundBaseColor = '#b45309';
+  else if (zone.id === 'outerCore') groundBaseColor = '#b45309';
+  else if (zone.id === 'innerCore') groundBaseColor = '#120504';
 
   ctx.fillStyle = groundBaseColor;
   ctx.beginPath();
@@ -374,7 +374,7 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
     } else if (zone.id === 'mantle') {
       // ── MANTEL BAWAH BUMI: BATUAN SILIKAT BRIDGMANITE & SUNGAI MAGMA KENTAL ──
       const magmaLevel = 360;
-      const inBasin = (x >= 380 && x <= 560) || (x >= 800 && x <= 970);
+      const inBasin = (x >= 310 && x <= 635) || (x >= 770 && x <= 1075);
 
       if (inBasin && gY > magmaLevel) {
         // Dasar jurang batuan silikat di bawah aliran magma
@@ -443,85 +443,8 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
       }
 
     } else if (zone.id === 'outerCore') {
-      // ── INTI LUAR: PELAT LOGAM BESI-NIKEL PADAT & SAMUDRA LOGAM CAIR 5.000°C ──
-      const metalLevel = 360;
-      const inBasin = (x >= 390 && x <= 570) || (x >= 800 && x <= 970);
-
-      if (inBasin && gY > metalLevel) {
-        // Dasar jurang di bawah samudra logam cair
-        ctx.fillStyle = '#0f0403';
-        ctx.fillRect(x, gY, sw, h - gY);
-
-        // Samudra logam cair nikel-besi mendidih menyala (4.000°C - 6.000°C)
-        const metH = gY - metalLevel;
-        const dynGrad = ctx.createLinearGradient(0, metalLevel, 0, gY);
-        dynGrad.addColorStop(0, '#ffffff'); // Pijar putih menyilaukan sepanas permukaan matahari
-        dynGrad.addColorStop(0.18, '#fef08a'); // Kuning logam cair membara
-        dynGrad.addColorStop(0.48, '#f59e0b'); // Emas oranye pijar dinamo
-        dynGrad.addColorStop(0.78, '#ea580c'); // Jingga termal bergolak
-        dynGrad.addColorStop(1, '#7c1d06');   // Dasar logam kental pekat
-        ctx.fillStyle = dynGrad;
-        ctx.fillRect(x, metalLevel, sw, metH);
-
-        // Kerak pelat logam padat yang mengapung di permukaan fluida berpusar
-        if ((seed % 13) === 0 && x % 8 === 0) {
-          ctx.fillStyle = '#1e0503';
-          ctx.fillRect(x, metalLevel + 1, 6, 2);
-        }
-
-        // Garis riak permukaan logam cair menyilaukan
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x, metalLevel, sw, 1);
-
-        // Bintik kilatan percikan listrik konduktif di permukaan samudra
-        if ((seed % 29) === 0) {
-          ctx.fillStyle = '#67e8f9';
-          ctx.fillRect(x, metalLevel - 1, 2, 2);
-        }
-
-      } else {
-        // Pelat logam padat terkompresi (Paduan Besi-Nikel Gelap Berpendar Emas)
-        ctx.fillStyle = '#120504';
-        ctx.fillRect(x, gY + 24, sw, h - (gY + 24)); // Lapisan logam dalam pekat
-
-        ctx.fillStyle = '#220b08';
-        ctx.fillRect(x, gY + 8, sw, 16); // Badan pelat logam besi padat
-
-        ctx.fillStyle = '#3d140e';
-        ctx.fillRect(x, gY, sw, 8); // Permukaan atas bongkahan logam tempat berpijak
-
-        // Bibir pelat logam di tepi samudra cair berpendar panas keemasan
-        if (inBasin || Math.abs(gY - metalLevel) < 22) {
-          ctx.fillStyle = '#f59e0b';
-          ctx.fillRect(x, gY - 1, sw, 2);
-          ctx.fillStyle = '#fef08a';
-          ctx.fillRect(x, gY - 2, sw, 1);
-        } else {
-          // Kilau tepi pelat logam feromagnetik
-          ctx.fillStyle = '#5c2217';
-          ctx.fillRect(x, gY - 1, sw, 1);
-        }
-
-        // Urat logam konduktif bercahaya di pelat padat
-        if ((seed % 17) === 0) {
-          ctx.fillStyle = '#fde047';
-          ctx.fillRect(x, gY + 3 + (seed % 12), 2, 2);
-          ctx.fillStyle = '#38bdf8';
-          ctx.fillRect(x + 1, gY + 4 + (seed % 12), 1, 1);
-        }
-
-        // Retakan panas elektromagnetik
-        if ((seed % 23) === 0) {
-          ctx.fillStyle = '#ea580c';
-          ctx.fillRect(x, gY + 2, 2, 4);
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(x, gY + 3, 1, 2);
-        }
-      }
-
-    } else if (zone.id === 'innerCore') {
-      // ── INTI DALAM (BOLA BESI PADAT MURNI BERWARNA KUNING SEPANAS MATAHARI 6.000°C) ──
-      // Permukaan tanah datar padat berwarna kuning matahari bercahaya
+      // ── INTI LUAR: KONDISI KUNING MATAHARI SEPERTI INTI DALAM SEBELUMNYA (+EFEK MAGNET & LISTRIK) ──
+      // Permukaan datar bola besi-nikel padat kuning emas bercahaya sepanas matahari 5.000°C
       // Dasar logam terkompresi kuat
       ctx.fillStyle = '#b45309';
       ctx.fillRect(x, gY + 28, sw, h - (gY + 28));
@@ -538,7 +461,7 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
       ctx.fillStyle = '#facc15';
       ctx.fillRect(x, gY, sw, 4);
 
-      // Bibir permukaan atas berpendar kuning-putih berkilau (efek bola besi panas matahari)
+      // Bibir permukaan atas berpendar kuning-putih berkilau matahari
       ctx.fillStyle = '#fef08a';
       ctx.fillRect(x, gY - 1, sw, 2);
       ctx.fillStyle = '#ffffff';
@@ -551,6 +474,100 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
       } else if ((seed % 23) === 0) {
         ctx.fillStyle = '#fde047';
         ctx.fillRect(x, gY + 6 + (seed % 10), 2, 2);
+      }
+
+      // ── EFEK LISTRIK & DINAMO MEDAN MAGNET BUMI (TETAP DI INTI LUAR) ──
+      // Urat energi listrik konduktif biru-cyan dinamo di pelat padat kuning emas
+      if ((seed % 11) === 0) {
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(x, gY + 3 + (seed % 10), 2, 2);
+        ctx.fillStyle = '#bae6fd';
+        ctx.fillRect(x + 1, gY + 4 + (seed % 10), 1, 1);
+      }
+
+      // Retakan plasma elektromagnetik dinamo
+      if ((seed % 19) === 0) {
+        ctx.fillStyle = '#ea580c';
+        ctx.fillRect(x, gY + 2, 2, 4);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x, gY + 3, 1, 2);
+      }
+
+    } else if (zone.id === 'innerCore') {
+      // ── INTI DALAM: KONDISI AGAK GELAP TANAH & MAGMANYA SEPERTI INTI LUAR SEBELUMNYA ──
+      const metalLevel = 360;
+      const inBasin = (x >= 390 && x <= 570) || (x >= 790 && x <= 970);
+
+      if (inBasin && gY > metalLevel) {
+        // Dasar jurang di bawah samudra logam cair agak gelap
+        ctx.fillStyle = '#0f0403';
+        ctx.fillRect(x, gY, sw, h - gY);
+
+        // Samudra magma/logam cair nikel-besi mendidih menyala agak gelap kemerahan (seperti Inti Luar sebelumnya)
+        const metH = gY - metalLevel;
+        const dynGrad = ctx.createLinearGradient(0, metalLevel, 0, gY);
+        dynGrad.addColorStop(0, '#ffffff'); // Pijar putih menyilaukan
+        dynGrad.addColorStop(0.18, '#fef08a'); // Kuning logam cair membara
+        dynGrad.addColorStop(0.45, '#f59e0b'); // Emas oranye pijar
+        dynGrad.addColorStop(0.72, '#ea580c'); // Jingga termal bergolak
+        dynGrad.addColorStop(1, '#7c1d06');   // Dasar logam kental pekat gelap
+        ctx.fillStyle = dynGrad;
+        ctx.fillRect(x, metalLevel, sw, metH);
+
+        // Kerak pelat logam padat gelap yang mengapung di permukaan fluida berpusar
+        if ((seed % 13) === 0 && x % 8 === 0) {
+          ctx.fillStyle = '#1e0503';
+          ctx.fillRect(x, metalLevel + 1, 6, 2);
+        }
+
+        // Garis riak permukaan logam cair menyilaukan
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x, metalLevel, sw, 1);
+
+        // Percikan lahar pijar di permukaan samudra magma
+        if ((seed % 29) === 0) {
+          ctx.fillStyle = '#fb923c';
+          ctx.fillRect(x, metalLevel - 1, 2, 2);
+        }
+
+      } else {
+        // Pelat tanah agak gelap terkompresi kuat (seperti kondisi Inti Luar sebelumnya)
+        ctx.fillStyle = '#120504';
+        ctx.fillRect(x, gY + 24, sw, h - (gY + 24)); // Lapisan logam dalam pekat
+
+        ctx.fillStyle = '#220b08';
+        ctx.fillRect(x, gY + 8, sw, 16); // Badan pelat logam besi padat gelap
+
+        ctx.fillStyle = '#3d140e';
+        ctx.fillRect(x, gY, sw, 8); // Permukaan atas bongkahan tempat berpijak
+
+        // Bibir pelat logam di tepi jurang magma berpendar panas tembaga-jingga
+        if (inBasin || Math.abs(gY - metalLevel) < 22) {
+          ctx.fillStyle = '#f59e0b';
+          ctx.fillRect(x, gY - 1, sw, 2);
+          ctx.fillStyle = '#fef08a';
+          ctx.fillRect(x, gY - 2, sw, 1);
+        } else {
+          // Kilau tepi pelat logam feromagnetik
+          ctx.fillStyle = '#5c2217';
+          ctx.fillRect(x, gY - 1, sw, 1);
+        }
+
+        // Urat bara panas di celah batuan gelap
+        if ((seed % 17) === 0) {
+          ctx.fillStyle = '#ea580c';
+          ctx.fillRect(x, gY + 3 + (seed % 12), 2, 2);
+          ctx.fillStyle = '#fef08a';
+          ctx.fillRect(x + 1, gY + 4 + (seed % 12), 1, 1);
+        }
+
+        // Retakan panas magma pekat
+        if ((seed % 23) === 0) {
+          ctx.fillStyle = '#ea580c';
+          ctx.fillRect(x, gY + 2, 2, 4);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x, gY + 3, 1, 2);
+        }
       }
     } else if (zone.id === 'divergent') {
       // ── BATAS DIVERGEN & LEMBAH RETAKAN (EAST AFRICAN RIFT / SUPERBENUA PANGEA) ──
@@ -582,15 +599,7 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
         ctx.fillStyle = magGrad;
         ctx.fillRect(x, magmaTopY, 2, magH);
 
-        // Kerak basal membeku yang terapung di atas lava
-        if ((seed % 9) === 0 && x % 6 === 0) {
-          ctx.fillStyle = '#1c1917';
-          ctx.fillRect(x, magmaTopY + 2, 6, 3);
-          ctx.fillStyle = '#27272a';
-          ctx.fillRect(x, magmaTopY + 1, 6, 1);
-        }
-
-        // Garis permukaan magma menyala terang
+        // Garis permukaan magma menyala terang murni tanpa serpihan/kerak
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(x, magmaTopY, 2, 2);
         // Glow permukaan lava
@@ -1066,8 +1075,10 @@ function renderZoneStructures(ctx: CanvasRenderingContext2D, zone: ZoneConfig): 
         ctx.fillStyle = '#78716c';
         ctx.fillRect(plat.x1 + 3, plat.y, pw - 6, 1);
         ctx.fillStyle = '#a8a29e';
-        ctx.fillRect(plat.x1 + 8, plat.y, 12, 1);
-        ctx.fillRect(plat.x1 + 35, plat.y, 16, 1);
+        ctx.fillRect(plat.x1 + 8, plat.y, Math.min(12, Math.floor(pw * 0.25)), 1);
+        if (pw > 45) {
+          ctx.fillRect(plat.x1 + Math.floor(pw * 0.55), plat.y, Math.min(16, pw - Math.floor(pw * 0.55) - 3), 1);
+        }
 
         // Pendar panas magma di bagian pilar yang terendam (berakhir presisi di dasar jurang, menyatu alami)
         const magmaLevel = 360;
@@ -1290,7 +1301,7 @@ export function drawZoneDecorations(ctx: CanvasRenderingContext2D, zoneId: strin
     }
 
     // 2. Gelembung letupan halus cairan magma kental di dasar jurang
-    const lavaChasms = [470, 885];
+    const lavaChasms = [380, 480, 580, 830, 930, 1020];
     for (const lx of lavaChasms) {
       for (let b = 0; b < 4; b++) {
         const prog = ((frame * 0.6 + b * 22) % 36) / 36;
@@ -1315,11 +1326,11 @@ export function drawZoneDecorations(ctx: CanvasRenderingContext2D, zoneId: strin
   } else if (zoneId === 'outerCore') {
     // 1. Busur Kilatan Listrik Statis & Badai Elektromagnetik Dinamo (Biru-Putih)
     const arcPoints = [
-      { x: 340, y: 310 },
-      { x: 480, y: 350 },
-      { x: 700, y: 300 },
-      { x: 880, y: 350 },
-      { x: 1080, y: 320 },
+      { x: 260, y: 345 },
+      { x: 480, y: 345 },
+      { x: 700, y: 345 },
+      { x: 880, y: 345 },
+      { x: 1080, y: 345 },
     ];
     for (let i = 0; i < arcPoints.length; i++) {
       const pt = arcPoints[i];
@@ -1350,15 +1361,15 @@ export function drawZoneDecorations(ctx: CanvasRenderingContext2D, zoneId: strin
       ctx.fillRect(px, py, 2, 2);
     }
   } else if (zoneId === 'innerCore') {
-    // ── EFEK PARTIKEL KATEDRAL KRISTAL LOGAM INTI DALAM (SAKRAL & TENANG) ──
-    // 1. Partikel debu intan bercahaya naik perlahan dan tenang dari sela kristal
+    // ── EFEK PARTIKEL INTI DALAM (KONDISI AGAK GELAP: BARA MAGMA & DISTORSI PANAS) ──
+    // 1. Partikel bara api magma & debu panas bumi naik perlahan dari jurang magma
     for (let p = 0; p < 16; p++) {
       const pProg = ((frame * 0.25 + p * 20) % 180) / 180;
       const px = (p * 85 + Math.sin(frame * 0.02 + p) * 16 + 20) % 1280;
       const py = 420 - pProg * 340;
       const pAlpha = Math.sin(pProg * Math.PI) * 0.8;
 
-      ctx.fillStyle = p % 3 === 0 ? `rgba(255, 255, 255, ${pAlpha})` : p % 2 === 0 ? `rgba(254, 240, 138, ${pAlpha})` : `rgba(251, 191, 36, ${pAlpha * 0.7})`;
+      ctx.fillStyle = p % 3 === 0 ? `rgba(254, 240, 138, ${pAlpha})` : p % 2 === 0 ? `rgba(249, 115, 22, ${pAlpha})` : `rgba(234, 88, 12, ${pAlpha * 0.8})`;
       ctx.fillRect(px, py, 2, 2);
       if (p % 4 === 0) {
         ctx.fillStyle = `rgba(255, 255, 255, ${pAlpha * 0.5})`;
@@ -1377,14 +1388,14 @@ export function drawZoneDecorations(ctx: CanvasRenderingContext2D, zoneId: strin
       ctx.fillRect(wx - 20, wy, 40, 2);
     }
 
-    // 3. Kilau bintang halus pada faset kristal (Crystal Facet Twinkle)
+    // 3. Kilau bintang halus pada faset kristal (Crystal Facet Twinkle di jembatan & teras)
     const sparklePoints = [
-      { x: 270, y: 298 },
-      { x: 410, y: 298 },
-      { x: 590, y: 226 },
-      { x: 680, y: 238 },
-      { x: 920, y: 308 },
-      { x: 1040, y: 308 },
+      { x: 280, y: 308 },
+      { x: 480, y: 308 },
+      { x: 680, y: 308 },
+      { x: 880, y: 308 },
+      { x: 1060, y: 328 },
+      { x: 1200, y: 328 },
     ];
     for (let i = 0; i < sparklePoints.length; i++) {
       const sp = sparklePoints[i];
@@ -1396,15 +1407,17 @@ export function drawZoneDecorations(ctx: CanvasRenderingContext2D, zoneId: strin
       }
     }
   } else if (zoneId === 'divergent') {
-    // ── EFEK DINAMIS BATAS DIVERGEN & LEMBAH RETAKAN ──
-    // Partikel bara api / debu vulkanik halus mengambang ke langit
-    for (let p = 0; p < 18; p++) {
-      const pProg = ((frame * 0.3 + p * 22) % 150) / 150;
-      const px = (p * 120 + Math.sin(frame * 0.03 + p) * 22 + 40) % 2000;
-      const py = 420 - pProg * 280;
-      const pAlpha = Math.sin(pProg * Math.PI) * 0.5;
-      ctx.fillStyle = p % 2 === 0 ? `rgba(249, 115, 22, ${pAlpha})` : `rgba(254, 240, 138, ${pAlpha})`;
-      ctx.fillRect(px, py, 2, 2);
+    // ── EFEK DINAMIS BATAS DIVERGEN: GELEMBUNG UDARA LAUTAN MELAYANG ──
+    for (let p = 0; p < 24; p++) {
+      const pProg = ((frame * 0.4 + p * 28) % 240) / 240;
+      const px = (p * 85 + Math.sin(frame * 0.04 + p) * 14 + 20) % 1500;
+      const py = 360 - pProg * 260;
+      const pAlpha = Math.sin(pProg * Math.PI) * 0.45;
+      ctx.fillStyle = p % 2 === 0 ? `rgba(224, 242, 254, ${pAlpha})` : `rgba(56, 189, 248, ${pAlpha * 0.8})`;
+      const bRad = (p % 4 === 0) ? 2.5 : 1.5;
+      ctx.beginPath();
+      ctx.arc(px, py, bRad, 0, Math.PI * 2);
+      ctx.fill();
     }
   }
 }
@@ -1485,26 +1498,9 @@ export function drawPortal(
     ctx.fillRect(x + 2, y + 14, 3, 8);
     ctx.fillRect(x + s - 5, y + 14, 3, 8);
 
-    // Banner hologram penanda kedalaman atau kapsul akhir
+    // Banner hologram penanda kedalaman atau kapsul akhir (Gaya Konsisten Level 2)
     const bob = Math.sin(frame * 0.08) * 2;
     if (labelText) {
-      // Emerald & Gold glowing banner for custom label / extraction capsule
-      ctx.font = 'bold 7.5px monospace';
-      const textW = ctx.measureText(labelText).width;
-      const bannerW = Math.max(s + 48, Math.round(textW + 16));
-      const bx = Math.round(x + s / 2 - bannerW / 2);
-
-      ctx.fillStyle = 'rgba(6, 78, 59, 0.95)';
-      ctx.fillRect(bx, y - 14 + bob, bannerW, 13);
-      ctx.strokeStyle = '#34d399';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(bx, y - 14 + bob, bannerW, 13);
-
-      ctx.fillStyle = '#fef08a';
-      ctx.textAlign = 'center';
-      ctx.fillText(labelText, x + s / 2, y - 4 + bob);
-      ctx.textAlign = 'start';
-
       // Vertical extraction beacon beam shooting upward into crystal cathedral
       const beamGrad = ctx.createLinearGradient(0, y + 8, 0, y - 65);
       beamGrad.addColorStop(0, 'rgba(52, 211, 153, 0.6)');
@@ -1512,19 +1508,63 @@ export function drawPortal(
       beamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.fillStyle = beamGrad;
       ctx.fillRect(x + 5, y - 65, s - 10, 73);
-    } else {
-      ctx.fillStyle = 'rgba(79, 70, 229, 0.9)';
-      const bannerW = s + 64;
-      ctx.fillRect(x + s / 2 - bannerW / 2, y - 14 + bob, bannerW, 12);
-      ctx.strokeStyle = '#a5b4fc';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x + s / 2 - bannerW / 2, y - 14 + bob, bannerW, 12);
 
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 6.5px monospace';
+      ctx.save();
+      ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
+      const textW = ctx.measureText(labelText).width;
+      const bannerW = Math.max(s + 36, Math.round(textW + 20));
+      const bx = Math.round(x + s / 2 - bannerW / 2);
+      const bannerY = Math.round(y - 38 + bob);
+      const bannerH = 18;
+
+      const isFinalCapsule = labelText.includes('KAPSUL');
+      const bannerBorder = isFinalCapsule ? '#22c55e' : '#38bdf8';
+      const bannerTextCol = isFinalCapsule ? '#86efac' : '#bae6fd';
+
+      ctx.beginPath();
+      if (typeof ctx.roundRect === 'function') {
+        ctx.roundRect(bx, bannerY, bannerW, bannerH, 4);
+      } else {
+        ctx.rect(bx, bannerY, bannerW, bannerH);
+      }
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+      ctx.fill();
+      ctx.strokeStyle = bannerBorder;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = bannerTextCol;
       ctx.textAlign = 'center';
-      ctx.fillText('▼ TURUN KE LAPISAN SELANJUTNYA ▼', x + s / 2, y - 5 + bob);
-      ctx.textAlign = 'start';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(labelText, x + s / 2, bannerY + bannerH / 2);
+      ctx.restore();
+    } else {
+      ctx.save();
+      ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
+      const text = '▼ TURUN KE LAPISAN SELANJUTNYA ▼';
+      const textW = ctx.measureText(text).width;
+      const bannerW = Math.max(s + 36, Math.round(textW + 20));
+      const bx = Math.round(x + s / 2 - bannerW / 2);
+      const bannerY = Math.round(y - 38 + bob);
+      const bannerH = 18;
+
+      ctx.beginPath();
+      if (typeof ctx.roundRect === 'function') {
+        ctx.roundRect(bx, bannerY, bannerW, bannerH, 4);
+      } else {
+        ctx.rect(bx, bannerY, bannerW, bannerH);
+      }
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+      ctx.fill();
+      ctx.strokeStyle = '#818cf8';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#c7d2fe';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, x + s / 2, bannerY + bannerH / 2);
+      ctx.restore();
     }
 
   } else {
@@ -1556,20 +1596,34 @@ export function drawPortal(
     ctx.fillRect(x + 6, y, s - 12, 32);
     ctx.globalAlpha = 1;
 
-    // Banner hologram ke atas
+    // Banner hologram ke atas (Gaya Konsisten Level 2)
     const bob = Math.sin(frame * 0.08) * 2;
-    ctx.fillStyle = 'rgba(14, 165, 233, 0.9)';
-    const bannerW = s + (labelText ? 50 : 64);
-    ctx.fillRect(x + s / 2 - bannerW / 2, y - 14 + bob, bannerW, 12);
-    ctx.strokeStyle = '#7dd3fc';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x + s / 2 - bannerW / 2, y - 14 + bob, bannerW, 12);
+    const text = labelText || '▲ NAIK KE LAPISAN SEBELUMNYA ▲';
+    ctx.save();
+    ctx.font = 'bold 9px "Plus Jakarta Sans", sans-serif';
+    const textW = ctx.measureText(text).width;
+    const bannerW = Math.max(s + 36, Math.round(textW + 20));
+    const bx = Math.round(x + s / 2 - bannerW / 2);
+    const bannerY = Math.round(y - 38 + bob);
+    const bannerH = 18;
 
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 6.5px monospace';
+    ctx.beginPath();
+    if (typeof ctx.roundRect === 'function') {
+      ctx.roundRect(bx, bannerY, bannerW, bannerH, 4);
+    } else {
+      ctx.rect(bx, bannerY, bannerW, bannerH);
+    }
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+    ctx.fill();
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = '#bae6fd';
     ctx.textAlign = 'center';
-    ctx.fillText(labelText || '▲ NAIK KE LAPISAN SEBELUMNYA ▲', x + s / 2, y - 5 + bob);
-    ctx.textAlign = 'start';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x + s / 2, bannerY + bannerH / 2);
+    ctx.restore();
   }
 }
 
@@ -1773,6 +1827,7 @@ export function drawZoneBackground(
   zoneId: string,
   frame: number,
   camX: number = 0,
+  convergentMode: 'land' | 'ocean' = 'land',
 ): void {
   switch (zoneId) {
     case 'surface': {
@@ -1835,25 +1890,37 @@ export function drawZoneBackground(
         const summitX = ox + 680;
         const summitY = Math.round(h * 0.20); // Puncak kawah Merapi yang tinggi
 
-        // A. Kepulan Asap Solfatara Kawah Aktif Merapi (Billowing Volcanic Steam Plume)
-        for (let p = 0; p < 9; p++) {
-          const pProg = ((frame * 0.05 + p * 0.75) % 6) / 6;
-          const px = summitX + 6 + pProg * 45 + Math.sin(frame * 0.04 + p) * 6;
+        // A. Kepulan Asap Solfatara Kawah Aktif Merapi (Billowing Volcanic Steam Plume Organik)
+        for (let p = 0; p < 8; p++) {
+          const pProg = ((frame * 0.04 + p * 0.125) % 1);
+          const px = summitX + 6 + pProg * 45 + Math.sin(frame * 0.035 + p * 1.4) * (5 + pProg * 12);
           const py = summitY - 4 - pProg * 75;
-          const pr = 7 + pProg * 22;
-          const pAlpha = Math.max(0, (1 - pProg) * 0.65);
+          const pr = 8 + pProg * 24;
+          const pAlpha = Math.max(0, (pProg < 0.15 ? pProg / 0.15 : (1 - pProg)) * 0.65);
+          if (pAlpha <= 0.02) continue;
 
-          // Asap uap putih pekat
-          ctx.fillStyle = `rgba(255, 255, 255, ${pAlpha})`;
-          ctx.beginPath();
-          ctx.arc(px, py, pr, 0, Math.PI * 2);
-          ctx.fill();
+          // Multi-lobed organic steam cloud (gumpalan uap vulkanik alami)
+          const lobes = 5;
+          for (let l = 0; l < lobes; l++) {
+            const angle = (l * Math.PI * 2) / lobes + Math.sin(frame * 0.02 + p + l) * 0.35;
+            const dist = pr * 0.36;
+            const lx = px + Math.cos(angle) * dist;
+            const ly = py + Math.sin(angle) * dist * 0.85;
+            const lr = pr * (0.62 + Math.sin(p * 2.1 + l * 1.5) * 0.16);
 
-          // Semburat uap belerang vulkanik kekuningan
-          if (p % 2 === 0) {
-            ctx.fillStyle = `rgba(254, 240, 138, ${pAlpha * 0.35})`;
+            const sGrad = ctx.createRadialGradient(lx - lr * 0.2, ly - lr * 0.2, lr * 0.1, lx, ly, lr);
+            if (p % 2 === 0 && pProg < 0.22) {
+              sGrad.addColorStop(0, `rgba(254, 240, 138, ${pAlpha * 0.55})`);
+              sGrad.addColorStop(0.5, `rgba(241, 245, 249, ${pAlpha * 0.65})`);
+            } else {
+              sGrad.addColorStop(0, `rgba(255, 255, 255, ${pAlpha})`);
+              sGrad.addColorStop(0.55, `rgba(241, 245, 249, ${pAlpha * 0.85})`);
+            }
+            sGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            ctx.fillStyle = sGrad;
             ctx.beginPath();
-            ctx.arc(px - 3, py + 2, pr * 0.6, 0, Math.PI * 2);
+            ctx.arc(lx, ly, lr, 0, Math.PI * 2);
             ctx.fill();
           }
         }
@@ -2434,158 +2501,264 @@ export function drawZoneBackground(
 
     case 'mantle': {
       // ══════════════════════════════════════════════════════════════════════
-      // MANTEL BUMI (~860 KM): LAUTAN MAGMA PENUH (FULL MAGMA OCEAN)
-      // Samudra magma silikat cair raksasa yang membara dari atas hingga bawah,
-      // gelombang arus konveksi mantel yang berombak dinamis, letupan gelembung
-      // magma pijar, dan kerak basal membeku yang terapung bebas.
-      // (100% BEBAS STRUKTUR PILAR / BANGUNAN KOTAK SESUAI INSTRUKSI PENGGUNA)
+      // MANTEL BUMI (~860 KM): LAUTAN MAGMA & ASINOSFER REALISTIK PENUH ASAP
+      // Gradasi warna magma murni yang membara tanpa garis-garis aneh,
+      // dipenuhi kabut asap vulkanik organik realistis (tanpa lingkaran kaku).
       // ══════════════════════════════════════════════════════════════════════
 
-      // 1. Gradien Lautan Magma Penuh Menyala (Atas Merah Magma -> Bawah Kuning Membara)
+      // 1. Gradasi Warna Magma Murni Membara (Atas Gelap Marun -> Bawah Jingga Magma)
       const grd = ctx.createLinearGradient(0, 0, 0, h);
-      grd.addColorStop(0, '#2d0502');    // Merah marun membara batas atas
-      grd.addColorStop(0.22, '#4d0a04'); // Merah magma pekat
-      grd.addColorStop(0.45, '#7f1d1d'); // Merah darah membara bersuhu ribuan derajat
-      grd.addColorStop(0.68, '#c2410c'); // Oranye membara arus konveksi mantel
-      grd.addColorStop(0.86, '#ea580c'); // Jingga terang mendidih
-      grd.addColorStop(1, '#f97316');    // Dasar lautan magma cair
+      grd.addColorStop(0, '#1c0302');     // Batas atas litosfer - kerak mantel dingin pekat
+      grd.addColorStop(0.18, '#350704');  // Merah marun vulkanik dalam
+      grd.addColorStop(0.42, '#5e0d06');  // Merah magma mendidih
+      grd.addColorStop(0.68, '#9a2408');  // Merah bata membara konveksi
+      grd.addColorStop(0.85, '#c2410c');  // Jingga pijar astenosfer
+      grd.addColorStop(1, '#ea580c');     // Dasar lautan magma silikat membara
       ctx.fillStyle = grd;
       ctx.fillRect(0, 0, w, h);
 
-      // 2. Gelombang Distorsi Panas Atmosferik Mantel (Undulating Convection Thermal Waves)
-      for (let y = 15; y < h - 10; y += 18) {
-        const waveOffset = Math.sin(frame * 0.04 + y * 0.04) * 8;
-        const hazeAlpha = 0.04 + Math.sin(frame * 0.06 + y * 0.05) * 0.025;
-        ctx.fillStyle = `rgba(254, 240, 138, ${hazeAlpha})`;
-        ctx.fillRect(0, y + waveOffset, w, 10);
+      // 2. Kolom Panas Konveksi Lembut Menyebar (Broad Vertical Thermal Glows - Non-Striped)
+      for (let p = 0; p < 3; p++) {
+        const pCam = camX * 0.08;
+        const pSpacing = (w + 240) / 3;
+        const px = ((p * pSpacing + 80 - pCam) % (w + 240) + (w + 240)) % (w + 240) - 120;
+        const pWidth = 140;
+        const pPulse = 0.07 + Math.sin(frame * 0.02 + p * 2.1) * 0.03;
+
+        const pGrd = ctx.createRadialGradient(px, h * 0.65, 10, px, h * 0.65, pWidth);
+        pGrd.addColorStop(0, `rgba(251, 146, 60, ${pPulse})`);
+        pGrd.addColorStop(0.5, `rgba(234, 88, 12, ${pPulse * 0.45})`);
+        pGrd.addColorStop(1, 'rgba(45, 10, 5, 0)');
+
+        ctx.fillStyle = pGrd;
+        ctx.fillRect(px - pWidth, 0, pWidth * 2, h);
       }
 
-      // 3. Lapisan Gelombang Arus Konveksi Magma (Surging Convective Magma Swells - 3 Tiers)
-      // Bergerak secara dinamis meniru fluida mantel astinosfer yang mengalir perlahan
-      const magmaTiers = [
-        { baseY: h * 0.32, amp: 14, speed: 0.018, freq: 0.007, col: 'rgba(153, 27, 27, 0.75)', crestCol: '#ea580c', crestH: 3 },
-        { baseY: h * 0.52, amp: 18, speed: 0.025, freq: 0.009, col: 'rgba(194, 65, 12, 0.82)', crestCol: '#f97316', crestH: 3 },
-        { baseY: h * 0.72, amp: 22, speed: 0.032, freq: 0.011, col: 'rgba(234, 88, 12, 0.90)', crestCol: '#fde047', crestH: 4 },
+      // 3. ASAP VULKANIK REALISTIK ORGANIK (100% BEBAS BENTUK BULAT / CIRCLE)
+      // Menggunakan kurva bezier berlapis dan pita harmonik poligon yang mengepul dinamis
+      // Lapis A: Kabut Asap Tebal Bergulung di Bagian Bawah & Tengah (Rolling Low Fog)
+      const smokeBanks = [
+        { baseY: h * 0.76, amp: 26, speed: 0.012, alpha: 0.22, color: '42, 12, 8' },
+        { baseY: h * 0.54, amp: 34, speed: 0.009, alpha: 0.18, color: '60, 18, 11' },
+        { baseY: h * 0.32, amp: 40, speed: 0.007, alpha: 0.15, color: '35, 10, 7' },
       ];
 
-      for (let tIdx = 0; tIdx < magmaTiers.length; tIdx++) {
-        const tier = magmaTiers[tIdx];
-        const tierP = camX * (0.05 + tIdx * 0.04);
+      for (let sIdx = 0; sIdx < smokeBanks.length; sIdx++) {
+        const sb = smokeBanks[sIdx];
+        const sP = camX * (0.04 + sIdx * 0.03);
 
-        ctx.fillStyle = tier.col;
+        ctx.fillStyle = `rgba(${sb.color}, ${sb.alpha})`;
         ctx.beginPath();
         ctx.moveTo(0, h);
 
-        const startY = tier.baseY + Math.sin(frame * tier.speed + (0 - tierP) * tier.freq) * tier.amp;
+        const startY = sb.baseY + Math.sin(frame * sb.speed - sP * 0.006) * sb.amp;
         ctx.lineTo(0, startY);
 
-        for (let bx = 0; bx <= w + 16; bx += 16) {
-          const waveY = tier.baseY +
-            Math.sin(frame * tier.speed + (bx - tierP) * tier.freq) * tier.amp +
-            Math.cos(frame * (tier.speed * 1.5) + (bx - tierP) * (tier.freq * 2)) * (tier.amp * 0.35);
-          ctx.lineTo(bx, waveY);
+        for (let bx = 0; bx <= w + 40; bx += 30) {
+          const t1 = frame * sb.speed + (bx - sP) * 0.007;
+          const t2 = frame * (sb.speed * 1.6) + (bx - sP) * 0.013;
+          const t3 = frame * (sb.speed * 0.6) + (bx - sP) * 0.003;
+          const waveY = sb.baseY +
+            Math.sin(t1) * sb.amp +
+            Math.cos(t2) * (sb.amp * 0.45) +
+            Math.sin(t3) * (sb.amp * 0.3);
+
+          const prevX = Math.max(0, bx - 30);
+          const cpX = (prevX + bx) / 2;
+          ctx.quadraticCurveTo(cpX, waveY + Math.sin(t2) * 6, bx, waveY);
         }
+
         ctx.lineTo(w, h);
         ctx.closePath();
         ctx.fill();
+      }
 
-        // Puncak Pijar Menyala pada Bibir Gelombang Magma (Incandescent Crests)
-        ctx.fillStyle = tier.crestCol;
-        for (let bx = 0; bx <= w; bx += 8) {
-          const waveY = tier.baseY +
-            Math.sin(frame * tier.speed + (bx - tierP) * tier.freq) * tier.amp +
-            Math.cos(frame * (tier.speed * 1.5) + (bx - tierP) * (tier.freq * 2)) * (tier.amp * 0.35);
-          ctx.fillRect(bx, waveY - 1, 8, tier.crestH);
+      // Lapis B: Gumpalan Kepulan Asap Vulkanik Vertikal Naik (Organic Rising Billows)
+      // Dibentuk dari kurva asimetris yang melengkung dan mengembang seperti asap cerobong nyata
+      for (let smk = 0; smk < 5; smk++) {
+        const seed = smk * 89 + 17;
+        const driftSpeed = 0.35 + (smk % 3) * 0.15;
+        const riseSpeed = 0.55 + (smk % 2) * 0.2;
+        const loopH = h * 1.2;
+
+        const smkY = ((h - (frame * riseSpeed + seed * 23) % loopH) + loopH) % loopH - (h * 0.1);
+        const sway = Math.sin(frame * 0.015 * driftSpeed + smk * 1.8) * 45;
+        const smkX = (((seed * 73 + sway - camX * 0.12) % (w + 160) + (w + 160)) % (w + 160)) - 80;
+
+        // Ketinggian relatif asap (makin tinggi makin mengembang dan memudar)
+        const altitudeNorm = Math.max(0, Math.min(1, 1 - (smkY / h)));
+        const billowW = 45 + altitudeNorm * 75;
+        const billowH = 55 + altitudeNorm * 65;
+        const smokeAlpha = Math.sin(altitudeNorm * Math.PI) * 0.16;
+
+        if (smokeAlpha > 0.01) {
+          const billowGrd = ctx.createRadialGradient(smkX, smkY, 6, smkX, smkY, billowW);
+          billowGrd.addColorStop(0, `rgba(85, 24, 14, ${smokeAlpha})`);
+          billowGrd.addColorStop(0.45, `rgba(50, 14, 9, ${smokeAlpha * 0.7})`);
+          billowGrd.addColorStop(0.8, `rgba(30, 8, 6, ${smokeAlpha * 0.3})`);
+          billowGrd.addColorStop(1, 'rgba(20, 5, 4, 0)');
+
+          ctx.fillStyle = billowGrd;
+          ctx.beginPath();
+          // Bentuk poligon organik terdistorsi (tanpa lingkaran)
+          const points = 7;
+          for (let pt = 0; pt <= points; pt++) {
+            const angle = (pt / points) * Math.PI * 2;
+            const radiusMod = 1 + Math.sin(angle * 3 + frame * 0.03 + seed) * 0.28 +
+              Math.cos(angle * 2 + seed * 0.5) * 0.18;
+            const px = smkX + Math.cos(angle) * (billowW * radiusMod);
+            const py = smkY + Math.sin(angle) * (billowH * radiusMod);
+            if (pt === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fill();
         }
       }
 
-      // 4. Gelembung Magma Meletup & Partikel Percikan Lahar Panas (Bubbling Lava & Embers)
-      for (let eb = 0; eb < 16; eb++) {
+      // 4. Percikan Pijar Lahar & Debu Vulkanik Mengambang (Floating Embers & Volcanic Ash)
+      for (let eb = 0; eb < 24; eb++) {
         const seedEb = (eb * 79 + 31);
-        const ex = ((seedEb * 43 - camX * 0.1) % w + w) % w;
-        const progress = ((frame * 0.6 + seedEb * 17) % 240) / 240;
-        const ey = h * 0.95 - progress * (h * 0.65);
-        const sway = Math.sin(frame * 0.05 + seedEb) * 12;
+        const ex = ((seedEb * 43 - camX * 0.12) % w + w) % w;
+        const progress = ((frame * 0.5 + seedEb * 17) % 260) / 260;
+        const ey = h * 0.98 - progress * (h * 0.9);
+        const sway = Math.sin(frame * 0.04 + seedEb) * 14;
 
-        const emberAlpha = Math.sin(progress * Math.PI);
-        ctx.fillStyle = eb % 3 === 0 ? `rgba(254, 240, 138, ${emberAlpha})` : `rgba(249, 115, 22, ${emberAlpha})`;
-        ctx.fillRect(Math.round(ex + sway), Math.round(ey), 2, 2);
+        const emberAlpha = Math.sin(progress * Math.PI) * 0.85;
+        if (eb % 4 === 0) {
+          // Debu abu vulkanik abu-abu gelap melayang dalam asap
+          ctx.fillStyle = `rgba(180, 140, 130, ${emberAlpha * 0.5})`;
+          ctx.fillRect(Math.round(ex + sway), Math.round(ey), 2, 2);
+        } else {
+          // Bara api magma menyala
+          ctx.fillStyle = eb % 3 === 0 ? `rgba(254, 240, 138, ${emberAlpha})` : `rgba(249, 115, 22, ${emberAlpha})`;
+          ctx.fillRect(Math.round(ex + sway), Math.round(ey), eb % 5 === 0 ? 3 : 2, eb % 5 === 0 ? 3 : 2);
+        }
       }
 
-      // 6. Pendaran Radiasi Termal Global Sangat Kuat
-      const radiantPulse = Math.sin(frame * 0.03) * 0.05 + 0.14;
-      ctx.fillStyle = `rgba(249, 115, 22, ${radiantPulse})`;
+      // 5. Pendaran Radiasi Termal Ambien Lembut
+      const radiantPulse = Math.sin(frame * 0.025) * 0.03 + 0.10;
+      ctx.fillStyle = `rgba(234, 88, 12, ${radiantPulse})`;
       ctx.fillRect(0, 0, w, h);
       break;
     }
 
     case 'outerCore': {
       // ══════════════════════════════════════════════════════════════════════
-      // INTI LUAR (2.900 - 5.150 KM): SAMUDRA BESI-NIKEL CAIR CERAH 5.000°C
-      // Suhu dahsyat 4.000°C - 5.000°C: Samudra fluida logam mendidih jauh lebih cerah
-      // berwarna kuning-oranye berpijar emas menyilaukan.
-      // DILENGKAPI EFEK MEDAN MAGNET BUMI (GEOMAGNETIC DIPOLE FLUX LOOPS):
-      // Garis-garis fluks medan magnet dipole bumi melengkung anggun melintasi langit,
-      // melambangkan generator dinamo bumi yang melindungi bumi dari radiasi matahari.
-      // (100% BEBAS DARI BONGKAHAN TRAPESIUM / BATUAN KAKU SESUAI INSTRUKSI)
+      // INTI LUAR (2.900 - 5.150 KM): KONDISI KUNING MATAHARI SEPERTI INTI DALAM SEBELUMNYA
+      // Background gradasi magma keemasan fotorealistik kuning matahari cerah 5.000°C.
+      // Ditambah efek kepulan asap termal kristalin organik keemasan.
+      // DILENGKAPI EFEK GARIS MEDAN MAGNET BUMI (GEOMAGNETIC DIPOLE FLUX LOOPS)
       // ══════════════════════════════════════════════════════════════════════
 
-      // 1. Gradien Magma Logam Cair Jauh Lebih Cerah (Bright Incandescent Golden-Orange Liquid Ocean)
+      // 1. Gradien Magma Emas Pijar Lembut (Photorealistic Golden Solar Magma Gradient)
       const grd = ctx.createLinearGradient(0, 0, 0, h);
-      grd.addColorStop(0, '#5a1306');    // Atas: Jingga merah hangat batas mantel-inti
-      grd.addColorStop(0.20, '#9a3412'); // Oranye tembaga pijar
-      grd.addColorStop(0.45, '#ea580c'); // Jingga terang membara 4.000°C
-      grd.addColorStop(0.70, '#f59e0b'); // Emas pijar samudra logam cair nikel-besi
-      grd.addColorStop(0.90, '#facc15'); // Kuning membara menyilaukan
-      grd.addColorStop(1, '#fef08a');    // Dasar logam cair putih-kuning 5.000°C
+      grd.addColorStop(0, '#78350f');    // Kuning amber gelap hangat di puncak kubah terbuka
+      grd.addColorStop(0.28, '#b45309'); // Kuning keemasan pekat
+      grd.addColorStop(0.55, '#d97706'); // Kuning matahari membara
+      grd.addColorStop(0.80, '#eab308'); // Kuning cerah pijar inti
+      grd.addColorStop(1, '#fde047');    // Kuning matahari murni di atas permukaan tanah datar
       ctx.fillStyle = grd;
       ctx.fillRect(0, 0, w, h);
 
-      // 2. Gelombang Distorsi Termal Cair Berpendar Terang (Bright Thermal Convection Bands)
-      for (let y = 15; y < h - 15; y += 18) {
-        const waveOffset = Math.sin(frame * 0.05 + y * 0.04) * 10;
-        const hazeAlpha = 0.07 + Math.sin(frame * 0.07 + y * 0.06) * 0.035;
-        ctx.fillStyle = `rgba(255, 255, 255, ${hazeAlpha})`;
-        ctx.fillRect(0, y + waveOffset, w, 8);
-      }
-
-      // 3. Lapisan Samudra Fluida Logam Menyilaukan (Brilliant Molten Metal Ocean Waves - 3 Layers)
-      const coreTiers = [
-        { baseY: h * 0.45, amp: 12, speed: 0.024, freq: 0.008, col: 'rgba(234, 88, 12, 0.65)', crestCol: '#fde047' },
-        { baseY: h * 0.62, amp: 16, speed: 0.032, freq: 0.010, col: 'rgba(245, 158, 11, 0.75)', crestCol: '#fef08a' },
-        { baseY: h * 0.78, amp: 20, speed: 0.042, freq: 0.013, col: 'rgba(250, 204, 21, 0.85)', crestCol: '#ffffff' },
+      // 2. ASAP TERMAL KEEMASAN ORGANIK REALISTIS (100% BEBAS BENTUK BULAT / CIRCLE)
+      // Lapis A: Kabut Asap Emas Hangat Bergulung di Bagian Bawah & Tengah (Rolling Golden Fog)
+      const smokeBanksOC = [
+        { baseY: h * 0.72, amp: 22, speed: 0.010, alpha: 0.18, color: '120, 53, 15' },
+        { baseY: h * 0.48, amp: 30, speed: 0.008, alpha: 0.14, color: '160, 75, 18' },
+        { baseY: h * 0.28, amp: 35, speed: 0.006, alpha: 0.12, color: '100, 40, 12' },
       ];
 
-      for (let tIdx = 0; tIdx < coreTiers.length; tIdx++) {
-        const tier = coreTiers[tIdx];
-        const tierP = camX * (0.06 + tIdx * 0.04);
+      for (let sIdx = 0; sIdx < smokeBanksOC.length; sIdx++) {
+        const sb = smokeBanksOC[sIdx];
+        const sP = camX * (0.04 + sIdx * 0.03);
 
-        ctx.fillStyle = tier.col;
+        ctx.fillStyle = `rgba(${sb.color}, ${sb.alpha})`;
         ctx.beginPath();
         ctx.moveTo(0, h);
-        for (let bx = 0; bx <= w + 16; bx += 16) {
-          const waveY = tier.baseY +
-            Math.sin(frame * tier.speed + (bx - tierP) * tier.freq) * tier.amp +
-            Math.cos(frame * (tier.speed * 1.6) + (bx - tierP) * (tier.freq * 2.2)) * (tier.amp * 0.4);
-          ctx.lineTo(bx, waveY);
+
+        const startY = sb.baseY + Math.sin(frame * sb.speed - sP * 0.006) * sb.amp;
+        ctx.lineTo(0, startY);
+
+        for (let bx = 0; bx <= w + 40; bx += 30) {
+          const t1 = frame * sb.speed + (bx - sP) * 0.007;
+          const t2 = frame * (sb.speed * 1.6) + (bx - sP) * 0.013;
+          const t3 = frame * (sb.speed * 0.6) + (bx - sP) * 0.003;
+          const waveY = sb.baseY +
+            Math.sin(t1) * sb.amp +
+            Math.cos(t2) * (sb.amp * 0.45) +
+            Math.sin(t3) * (sb.amp * 0.3);
+
+          const prevX = Math.max(0, bx - 30);
+          const cpX = (prevX + bx) / 2;
+          ctx.quadraticCurveTo(cpX, waveY + Math.sin(t2) * 6, bx, waveY);
         }
+
         ctx.lineTo(w, h);
         ctx.closePath();
         ctx.fill();
+      }
 
-        // Puncak gelombang menyilaukan
-        ctx.fillStyle = tier.crestCol;
-        for (let bx = 0; bx <= w; bx += 8) {
-          const waveY = tier.baseY +
-            Math.sin(frame * tier.speed + (bx - tierP) * tier.freq) * tier.amp +
-            Math.cos(frame * (tier.speed * 1.6) + (bx - tierP) * (tier.freq * 2.2)) * (tier.amp * 0.4);
-          ctx.fillRect(bx, waveY - 1, 8, 3);
+      // Lapis B: Gumpalan Kepulan Asap Termal Keemasan Naik
+      for (let smk = 0; smk < 5; smk++) {
+        const seed = smk * 83 + 19;
+        const driftSpeed = 0.32 + (smk % 3) * 0.12;
+        const riseSpeed = 0.45 + (smk % 2) * 0.18;
+        const loopH = h * 1.2;
+
+        const smkY = ((h - (frame * riseSpeed + seed * 23) % loopH) + loopH) % loopH - (h * 0.1);
+        const sway = Math.sin(frame * 0.015 * driftSpeed + smk * 1.8) * 45;
+        const smkX = (((seed * 73 + sway - camX * 0.12) % (w + 160) + (w + 160)) % (w + 160)) - 80;
+
+        const altitudeNorm = Math.max(0, Math.min(1, 1 - (smkY / h)));
+        const billowW = 45 + altitudeNorm * 75;
+        const billowH = 55 + altitudeNorm * 65;
+        const smokeAlpha = Math.sin(altitudeNorm * Math.PI) * 0.14;
+
+        if (smokeAlpha > 0.01) {
+          const billowGrd = ctx.createRadialGradient(smkX, smkY, 6, smkX, smkY, billowW);
+          billowGrd.addColorStop(0, `rgba(180, 83, 9, ${smokeAlpha})`);
+          billowGrd.addColorStop(0.45, `rgba(140, 60, 8, ${smokeAlpha * 0.7})`);
+          billowGrd.addColorStop(0.8, `rgba(100, 40, 6, ${smokeAlpha * 0.3})`);
+          billowGrd.addColorStop(1, 'rgba(60, 20, 4, 0)');
+
+          ctx.fillStyle = billowGrd;
+          ctx.beginPath();
+          const points = 7;
+          for (let pt = 0; pt <= points; pt++) {
+            const angle = (pt / points) * Math.PI * 2;
+            const radiusMod = 1 + Math.sin(angle * 3 + frame * 0.03 + seed) * 0.28 +
+              Math.cos(angle * 2 + seed * 0.5) * 0.18;
+            const px = smkX + Math.cos(angle) * (billowW * radiusMod);
+            const py = smkY + Math.sin(angle) * (billowH * radiusMod);
+            if (pt === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fill();
         }
       }
 
-      // 4. ── EFEK GARIS MEDAN MAGNET BUMI (GEOMAGNETIC DIPOLE FLUX LOOPS) ──
-      // Meniru diagram kutub magnet dipole bumi (Image 4):
-      // Garis fluks melengkung anggun membentuk kurva torus megah melintasi langit.
+      // Floating Luminous Amber Sparks & Gold Shimmer
+      for (let sp = 0; sp < 22; sp++) {
+        const seedSp = (sp * 71 + 29);
+        const sx = ((seedSp * 47 - camX * 0.1) % w + w) % w;
+        const progress = ((frame * 0.45 + seedSp * 13) % 240) / 240;
+        const sy = h * 0.98 - progress * (h * 0.9);
+        const sway = Math.sin(frame * 0.035 + seedSp) * 12;
+        const sparkAlpha = Math.sin(progress * Math.PI) * 0.85;
+
+        if (sp % 3 === 0) {
+          ctx.fillStyle = `rgba(255, 255, 255, ${sparkAlpha * 0.9})`;
+          ctx.fillRect(Math.round(sx + sway), Math.round(sy), 2, 2);
+        } else {
+          ctx.fillStyle = `rgba(254, 240, 138, ${sparkAlpha * 0.7})`;
+          ctx.fillRect(Math.round(sx + sway), Math.round(sy), 1.5, 1.5);
+        }
+      }
+
+      // 3. ── EFEK GARIS MEDAN MAGNET BUMI (GEOMAGNETIC DIPOLE FLUX LOOPS - TETAP DI INTI LUAR) ──
+      // Meniru diagram kutub magnet dipole bumi melengkung anggun melintasi langit emas kuning:
       // Warna: Cyan elektrik menyala & Emas elektromagnetik bercahaya.
       ctx.save();
       const dipoleLoops = [
@@ -2641,8 +2814,8 @@ export function drawZoneBackground(
       }
       ctx.restore();
 
-      // 5. Pendaran Radiasi Termal Cerah Global (High-Temperature Incandescent Glow)
-      const globalPulse = Math.sin(frame * 0.04) * 0.04 + 0.16;
+      // 4. Pendaran Radiasi Termal Cerah Global (High-Temperature Solar Incandescent Glow)
+      const globalPulse = Math.sin(frame * 0.04) * 0.03 + 0.12;
       ctx.fillStyle = `rgba(254, 240, 138, ${globalPulse})`;
       ctx.fillRect(0, 0, w, h);
       break;
@@ -2650,151 +2823,234 @@ export function drawZoneBackground(
 
     case 'innerCore': {
       // ══════════════════════════════════════════════════════════════════════
-      // INTI DALAM (5.150 - 6.371 KM): BOLA BESI PADAT KUNING SEPANAS MATAHARI 6.000°C
-      // Background polos kuning keemasan magma yang tenang dan megah.
-      // (100% BEBAS PILAR HEKSAGONAL, BEBAS BANGUNAN, & BEBAS LENS FLARE SILAU)
+      // INTI DALAM (5.150 - 6.371 KM): KONDISI AGAK GELAP SEPERTI INTI LUAR SEBELUMNYA
+      // Gradien magma tembaga-merah pekat membara (seperti kondisi Inti Luar sebelumnya)
+      // Dilengkapi samudra fluida logam cair, kabut asap vulkanik gelap, dan floating embers
       // ══════════════════════════════════════════════════════════════════════
 
-      // 1. Gradien Polos Kuning Magma Hangat Bersinar (Clean Golden-Yellow Magma Glow)
+      // 1. Gradien Magma Gelap Kental Fotorealistik Halus (Smooth Deep Molten Magma Gradient)
       const grd = ctx.createLinearGradient(0, 0, 0, h);
-      grd.addColorStop(0, '#78350f');    // Kuning amber gelap hangat di atap
-      grd.addColorStop(0.25, '#b45309'); // Kuning keemasan pekat
-      grd.addColorStop(0.50, '#d97706'); // Kuning matahari membara
-      grd.addColorStop(0.75, '#eab308'); // Kuning cerah pijar inti
-      grd.addColorStop(1, '#fde047');    // Kuning matahari murni di atas permukaan tanah datar
+      grd.addColorStop(0, '#3b0a04');    // Atas: Jingga merah tembaga gelap pekat
+      grd.addColorStop(0.20, '#5c1507'); // Merah marun pekat
+      grd.addColorStop(0.42, '#781d08'); // Oranye merah pijar
+      grd.addColorStop(0.65, '#9a3412'); // Tembaga membara
+      grd.addColorStop(0.85, '#ea580c'); // Jingga terang magma
+      grd.addColorStop(1, '#c2410c');    // Pijar dasar tembaga jurang
       ctx.fillStyle = grd;
       ctx.fillRect(0, 0, w, h);
 
-      // 2. Riak Gelombang Hangat Magma Lembut Polos (Subtle Warm Magma Ripples)
-      for (let y = 20; y < h - 20; y += 22) {
-        const waveOffset = Math.sin(frame * 0.03 + y * 0.035) * 6;
-        const shimmerAlpha = 0.04 + Math.sin(frame * 0.05 + y * 0.04) * 0.02;
-        ctx.fillStyle = `rgba(254, 240, 138, ${shimmerAlpha})`;
-        ctx.fillRect(0, y + waveOffset, w, 12);
+      // 2. Lapisan Samudra Fluida Logam Cair Halus (Smooth Molten Metal Fluid Waves)
+      const coreTiers = [
+        { baseY: h * 0.52, amp: 14, speed: 0.022, freq: 0.007, col: 'rgba(234, 88, 12, 0.40)' },
+        { baseY: h * 0.68, amp: 18, speed: 0.030, freq: 0.009, col: 'rgba(245, 158, 11, 0.45)' },
+        { baseY: h * 0.82, amp: 22, speed: 0.038, freq: 0.012, col: 'rgba(234, 88, 12, 0.35)' },
+      ];
+
+      for (let tIdx = 0; tIdx < coreTiers.length; tIdx++) {
+        const tier = coreTiers[tIdx];
+        const tierP = camX * (0.05 + tIdx * 0.03);
+
+        ctx.fillStyle = tier.col;
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+        for (let bx = 0; bx <= w + 20; bx += 20) {
+          const waveY = tier.baseY +
+            Math.sin(frame * tier.speed + (bx - tierP) * tier.freq) * tier.amp +
+            Math.cos(frame * (tier.speed * 1.5) + (bx - tierP) * (tier.freq * 2.0)) * (tier.amp * 0.35);
+          ctx.lineTo(bx, waveY);
+        }
+        ctx.lineTo(w, h);
+        ctx.closePath();
+        ctx.fill();
       }
 
-      // 3. Pendaran Hangat Merata Bola Besi Padat (Homogeneous Solid Core Radiance)
+      // 3. ASAP TERMAL MAGMA GELAP ORGANIK (100% BEBAS BENTUK BULAT / CIRCLE)
+      // Lapis A: Kabut Asap Tebal Bergulung di Bagian Bawah & Tengah (Rolling Low Fog)
+      const smokeBanksIC = [
+        { baseY: h * 0.74, amp: 24, speed: 0.011, alpha: 0.20, color: '50, 14, 8' },
+        { baseY: h * 0.52, amp: 32, speed: 0.008, alpha: 0.16, color: '68, 20, 10' },
+        { baseY: h * 0.30, amp: 36, speed: 0.006, alpha: 0.13, color: '40, 10, 6' },
+      ];
+
+      for (let sIdx = 0; sIdx < smokeBanksIC.length; sIdx++) {
+        const sb = smokeBanksIC[sIdx];
+        const sP = camX * (0.04 + sIdx * 0.03);
+
+        ctx.fillStyle = `rgba(${sb.color}, ${sb.alpha})`;
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+
+        const startY = sb.baseY + Math.sin(frame * sb.speed - sP * 0.006) * sb.amp;
+        ctx.lineTo(0, startY);
+
+        for (let bx = 0; bx <= w + 40; bx += 30) {
+          const t1 = frame * sb.speed + (bx - sP) * 0.007;
+          const t2 = frame * (sb.speed * 1.6) + (bx - sP) * 0.013;
+          const t3 = frame * (sb.speed * 0.6) + (bx - sP) * 0.003;
+          const waveY = sb.baseY +
+            Math.sin(t1) * sb.amp +
+            Math.cos(t2) * (sb.amp * 0.45) +
+            Math.sin(t3) * (sb.amp * 0.3);
+
+          const prevX = Math.max(0, bx - 30);
+          const cpX = (prevX + bx) / 2;
+          ctx.quadraticCurveTo(cpX, waveY + Math.sin(t2) * 6, bx, waveY);
+        }
+
+        ctx.lineTo(w, h);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Lapis B: Gumpalan Kepulan Asap Vertikal Naik (Organic Rising Billows)
+      for (let smk = 0; smk < 5; smk++) {
+        const seed = smk * 97 + 23;
+        const driftSpeed = 0.35 + (smk % 3) * 0.15;
+        const riseSpeed = 0.50 + (smk % 2) * 0.2;
+        const loopH = h * 1.2;
+
+        const smkY = ((h - (frame * riseSpeed + seed * 23) % loopH) + loopH) % loopH - (h * 0.1);
+        const sway = Math.sin(frame * 0.015 * driftSpeed + smk * 1.8) * 45;
+        const smkX = (((seed * 73 + sway - camX * 0.12) % (w + 160) + (w + 160)) % (w + 160)) - 80;
+
+        const altitudeNorm = Math.max(0, Math.min(1, 1 - (smkY / h)));
+        const billowW = 45 + altitudeNorm * 75;
+        const billowH = 55 + altitudeNorm * 65;
+        const smokeAlpha = Math.sin(altitudeNorm * Math.PI) * 0.15;
+
+        if (smokeAlpha > 0.01) {
+          const billowGrd = ctx.createRadialGradient(smkX, smkY, 6, smkX, smkY, billowW);
+          billowGrd.addColorStop(0, `rgba(80, 22, 12, ${smokeAlpha})`);
+          billowGrd.addColorStop(0.45, `rgba(55, 14, 8, ${smokeAlpha * 0.7})`);
+          billowGrd.addColorStop(0.8, `rgba(35, 8, 6, ${smokeAlpha * 0.3})`);
+          billowGrd.addColorStop(1, 'rgba(20, 5, 4, 0)');
+
+          ctx.fillStyle = billowGrd;
+          ctx.beginPath();
+          const points = 7;
+          for (let pt = 0; pt <= points; pt++) {
+            const angle = (pt / points) * Math.PI * 2;
+            const radiusMod = 1 + Math.sin(angle * 3 + frame * 0.03 + seed) * 0.28 +
+              Math.cos(angle * 2 + seed * 0.5) * 0.18;
+            const px = smkX + Math.cos(angle) * (billowW * radiusMod);
+            const py = smkY + Math.sin(angle) * (billowH * radiusMod);
+            if (pt === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+
+      // Floating Embers & Logam Pijar Partikel
+      for (let eb = 0; eb < 20; eb++) {
+        const seedEb = (eb * 79 + 31);
+        const ex = ((seedEb * 43 - camX * 0.12) % w + w) % w;
+        const progress = ((frame * 0.5 + seedEb * 17) % 260) / 260;
+        const ey = h * 0.98 - progress * (h * 0.9);
+        const sway = Math.sin(frame * 0.04 + seedEb) * 14;
+        const emberAlpha = Math.sin(progress * Math.PI) * 0.8;
+
+        if (eb % 3 === 0) {
+          ctx.fillStyle = `rgba(254, 240, 138, ${emberAlpha})`;
+          ctx.fillRect(Math.round(ex + sway), Math.round(ey), 2, 2);
+        } else {
+          ctx.fillStyle = `rgba(249, 115, 22, ${emberAlpha * 0.7})`;
+          ctx.fillRect(Math.round(ex + sway), Math.round(ey), 1.5, 1.5);
+        }
+      }
+
+      // 4. Pendaran Radiasi Termal Ambien Kental Gelap (Deep Molten Incandescent Glow)
       const coreWarmth = Math.sin(frame * 0.03) * 0.03 + 0.10;
-      ctx.fillStyle = `rgba(254, 240, 138, ${coreWarmth})`;
+      ctx.fillStyle = `rgba(234, 88, 12, ${coreWarmth})`;
       ctx.fillRect(0, 0, w, h);
       break;
     }
 
     case 'divergent': {
       // ══════════════════════════════════════════════════════════════════════
-      // BATAS DIVERGEN: LEMBAH RETAKAN VULKANIK (BARISAN GUNUNG & MATAHARI SENJA)
-      // Karakteristik: Langit atmosferik hangat keemasan, matahari bersinar
-      // megah dengan halo korona, dan barisan pegunungan bertingkat yang indah.
+      // BATAS DIVERGEN: LAUTAN LUAS (OCEANIC DIVERGENT RIFT & MID-OCEAN RIDGE)
+      // Karakteristik: Gradien biru lautan dari permukaan cerah di atas menuju
+      // kedalaman samudra pekat di bawah, riak gelombang permukaan air, berkas
+      // cahaya matahari (sunbeams/caustics) menembus air, dan gelembung melayang.
       // ══════════════════════════════════════════════════════════════════════
 
-      // 1. Gradien Langit Atmosferik Lembah Retakan
-      const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
-      skyGrad.addColorStop(0, '#0f172a');    // Indigo pekat langit atas
-      skyGrad.addColorStop(0.26, '#1e1b4b'); // Violet senja
-      skyGrad.addColorStop(0.52, '#431407'); // Merah tembaga pegunungan
-      skyGrad.addColorStop(0.76, '#9a3412'); // Amber keemasan cakrawala
-      skyGrad.addColorStop(1, '#f97316');    // Pijar oranye hangat di horizon
-      ctx.fillStyle = skyGrad;
+      // 1. Gradien Lautan Penuh (Full Ocean Gradient: Biru Cerah Atas -> Biru Safir Pekat Bawah)
+      const oceanGrad = ctx.createLinearGradient(0, 0, 0, h);
+      oceanGrad.addColorStop(0, '#0ea5e9');    // Biru muda cerah permukaan laut
+      oceanGrad.addColorStop(0.08, '#0284c7'); // Biru laut tropis jernih
+      oceanGrad.addColorStop(0.25, '#0369a1'); // Biru laut sedang
+      oceanGrad.addColorStop(0.50, '#075985'); // Biru laut dalam
+      oceanGrad.addColorStop(0.75, '#0c4a6e'); // Biru samudra safir pekat
+      oceanGrad.addColorStop(1, '#082f49');    // Dasar samudra abisal
+      ctx.fillStyle = oceanGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // 2. Matahari Bersinar Megah di Atas Barisan Pegunungan
-      const sunX = w * 0.44 - (camX * 0.02) % 60;
-      const sunY = h * 0.28;
-      const sunHalo = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 110);
-      sunHalo.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-      sunHalo.addColorStop(0.18, 'rgba(254, 240, 138, 0.7)');
-      sunHalo.addColorStop(0.45, 'rgba(251, 146, 60, 0.3)');
-      sunHalo.addColorStop(0.8, 'rgba(234, 88, 12, 0.1)');
-      sunHalo.addColorStop(1, 'rgba(234, 88, 12, 0)');
-      ctx.fillStyle = sunHalo;
-      ctx.beginPath();
-      ctx.arc(sunX, sunY, 110, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Piringan inti matahari
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(sunX, sunY, 18, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#fef08a';
-      ctx.beginPath();
-      ctx.arc(sunX, sunY, 22, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Sinar-sinar korona matahari halus
+      // 2. Permukaan Air Bergelombang Lembut di Bagian Paling Atas (y = 0 .. 16)
       ctx.save();
-      ctx.translate(sunX, sunY);
-      ctx.rotate(frame * 0.003);
-      ctx.fillStyle = 'rgba(254, 240, 138, 0.08)';
-      for (let s = 0; s < 8; s++) {
-        ctx.rotate((Math.PI * 2) / 8);
+      const waveGrad = ctx.createLinearGradient(0, 0, 0, 18);
+      waveGrad.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
+      waveGrad.addColorStop(0.3, 'rgba(186, 230, 253, 0.5)');
+      waveGrad.addColorStop(1, 'rgba(14, 165, 233, 0)');
+      ctx.fillStyle = waveGrad;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      for (let wx = 0; wx <= w; wx += 8) {
+        const wy = 4 + Math.sin(frame * 0.05 + wx * 0.04) * 3 + Math.cos(frame * 0.03 + wx * 0.08) * 1.5;
+        ctx.lineTo(wx, wy);
+      }
+      ctx.lineTo(w, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // Garis buih putih puncak gelombang
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let wx = 0; wx <= w; wx += 6) {
+        const wy = 3 + Math.sin(frame * 0.05 + wx * 0.04) * 2.5;
+        if (wx === 0) ctx.moveTo(wx, wy);
+        else ctx.lineTo(wx, wy);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // 3. Berkas Cahaya Matahari (Sunbeams / Underwater God Rays) Menembus Air
+      ctx.save();
+      for (let r = 0; r < 7; r++) {
+        const raySeed = r * 160;
+        const rayX = ((raySeed - (camX * 0.03) + Math.sin(frame * 0.012 + r) * 25) % (w + 200)) - 100;
+        const rayGrad = ctx.createLinearGradient(rayX, 0, rayX + 70, h * 0.8);
+        rayGrad.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
+        rayGrad.addColorStop(0.3, 'rgba(186, 230, 253, 0.08)');
+        rayGrad.addColorStop(0.7, 'rgba(56, 189, 248, 0.03)');
+        rayGrad.addColorStop(1, 'rgba(2, 132, 199, 0)');
+
+        ctx.fillStyle = rayGrad;
         ctx.beginPath();
-        ctx.moveTo(-12, 0);
-        ctx.lineTo(0, -180);
-        ctx.lineTo(12, 0);
+        ctx.moveTo(rayX - 10, 0);
+        ctx.lineTo(rayX + 35, 0);
+        ctx.lineTo(rayX + 110, h * 0.75);
+        ctx.lineTo(rayX + 45, h * 0.75);
         ctx.closePath();
         ctx.fill();
       }
       ctx.restore();
 
-      // 3. Siluet Barisan Pegunungan Jauh (Far Mountain Peaks - Parallax 0.06)
-      const farP = camX * 0.06;
+      // 4. Partikel Gelembung Udara Lautan Melayang Perlahan Naik
       ctx.save();
-      ctx.fillStyle = '#18181b';
-      ctx.beginPath();
-      ctx.moveTo(0, h);
-      const mSpan = 600;
-      for (let mx = -200; mx <= w + 400; mx += 150) {
-        const sx = mx - (farP % mSpan);
-        const peakH = 140 + ((Math.abs(mx * 13) % 70));
-        ctx.lineTo(sx, h - peakH);
-        ctx.lineTo(sx + 75, h - (peakH - 45));
+      for (let b = 0; b < 24; b++) {
+        const bProg = ((frame * 0.4 + b * 45) % 360) / 360;
+        const bx = ((b * 55 + Math.sin(frame * 0.03 + b) * 16 - camX * 0.05) % (w + 80) + w + 80) % (w + 80) - 40;
+        const by = h * 0.9 - bProg * (h * 0.85);
+        const bAlpha = Math.sin(bProg * Math.PI) * 0.45;
+        const bSize = (b % 3 === 0) ? 2.5 : 1.5;
+        ctx.fillStyle = `rgba(224, 242, 254, ${bAlpha})`;
+        ctx.beginPath();
+        ctx.arc(bx, by, bSize, 0, Math.PI * 2);
+        ctx.fill();
       }
-      ctx.lineTo(w, h);
-      ctx.closePath();
-      ctx.fill();
       ctx.restore();
-
-      // 4. Barisan Lereng Gunung Vulkanik Sedang (Mid Mountain Ridges - Parallax 0.16)
-      const midP = camX * 0.16;
-      ctx.save();
-      ctx.fillStyle = '#27272a';
-      ctx.beginPath();
-      ctx.moveTo(0, h);
-      for (let rx = -200; rx <= w + 400; rx += 180) {
-        const sx = rx - (midP % 540);
-        const ridgeH = 110 + ((Math.abs(rx * 17) % 55));
-        ctx.lineTo(sx, h - ridgeH);
-        ctx.lineTo(sx + 90, h - (ridgeH - 35));
-      }
-      ctx.lineTo(w, h);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-
-      // 5. Kaki Gunung / Dinding Ngarai Retakan Dekat (Near Scarp - Parallax 0.30)
-      const nearP = camX * 0.30;
-      ctx.save();
-      ctx.fillStyle = '#1c1917';
-      ctx.beginPath();
-      ctx.moveTo(0, h);
-      for (let nx = -200; nx <= w + 400; nx += 220) {
-        const sx = nx - (nearP % 660);
-        const scarpH = 75 + ((Math.abs(nx * 19) % 35));
-        ctx.lineTo(sx, h - scarpH);
-        ctx.lineTo(sx + 110, h - (scarpH - 20));
-      }
-      ctx.lineTo(w, h);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-
-      // 6. Kabut Atmosferik Hangat di Atas Kaki Pegunungan
-      const hazeGrad = ctx.createLinearGradient(0, h - 120, 0, h - 30);
-      hazeGrad.addColorStop(0, 'rgba(234, 88, 12, 0)');
-      hazeGrad.addColorStop(1, 'rgba(249, 115, 22, 0.16)');
-      ctx.fillStyle = hazeGrad;
-      ctx.fillRect(0, h - 120, w, 90);
       break;
     }
 
@@ -2805,12 +3061,19 @@ export function drawZoneBackground(
       // di kiri atas, awan pixel bergulir, dan siluet megah barisan gunung api.
       // ══════════════════════════════════════════════════════════════════════
 
-      // 1. Gradien Langit Tropis Indonesia yang Cerah & Biru Alami
+      // 1. Gradien Langit Tropis Indonesia yang Cerah & Biru Alami Sesuai Kondisi
       const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
-      skyGrad.addColorStop(0, '#0284c7');    // Sky blue tropis pekat di zenit
-      skyGrad.addColorStop(0.35, '#38bdf8'); // Clear azure
-      skyGrad.addColorStop(0.70, '#7dd3fc'); // Sky haze di atas barisan gunung
-      skyGrad.addColorStop(1, '#bae6fd');    // Horizon kabut atmosferik lembut
+      if (convergentMode === 'land') {
+        skyGrad.addColorStop(0, '#0284c7');    // Sky blue tropis pekat di zenit
+        skyGrad.addColorStop(0.35, '#38bdf8'); // Clear azure
+        skyGrad.addColorStop(0.70, '#7dd3fc'); // Sky haze di atas barisan gunung
+        skyGrad.addColorStop(1, '#ffedd5');    // Horizon hangat daratan vulkanik
+      } else {
+        skyGrad.addColorStop(0, '#0369a1');    // Sky blue pesisir
+        skyGrad.addColorStop(0.35, '#0ea5e9'); // Biru laut cerah
+        skyGrad.addColorStop(0.70, '#7dd3fc'); // Kabut laut
+        skyGrad.addColorStop(1, '#bae6fd');    // Horizon samudra
+      }
       ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, w, h);
 
@@ -2871,79 +3134,154 @@ export function drawZoneBackground(
       ctx.fillRect(c2X + 20, 62, 65, 14);
       ctx.fillRect(c2X + 38, 56, 30, 8);
 
-      // 4. BARISAN PEGUNUNGAN VULKANIK JAUH (Far Mountain Silhouettes - Parallax 0.05)
-      // Warna abu-abu kebiruan atmosferik andesit (#64748b & #475569) persis Screenshot 1
-      const farP = camX * 0.05;
-      const farSpan = 900;
-      const farBaseX = -((farP % farSpan + farSpan) % farSpan);
+      // 4. LATAR BELAKANG: GUNUNG API DARATAN (MODE LAND) ATAU HORIZON SAMUDRA LEPAS (MODE OCEAN)
+      if (convergentMode === 'land') {
+        // BARISAN PEGUNUNGAN VULKANIK JAUH (Far Mountain Silhouettes - Parallax 0.05)
+        const farP = camX * 0.05;
+        const farSpan = 900;
+        const farBaseX = -((farP % farSpan + farSpan) % farSpan);
 
-      for (let rep = -1; rep < Math.ceil(w / farSpan) + 2; rep++) {
-        const ox = farBaseX + rep * farSpan;
+        for (let rep = -1; rep < Math.ceil(w / farSpan) + 2; rep++) {
+          const ox = farBaseX + rep * farSpan;
 
-        // Puncak Gunung Vulkanik Jauh 1 (Tinggi di Tengah)
-        ctx.fillStyle = '#64748b'; // Abu-abu andesit atmosferik jauh
-        ctx.beginPath();
-        ctx.moveTo(ox - 80, h * 0.72);
-        ctx.lineTo(ox + 160, h * 0.42);
-        ctx.lineTo(ox + 340, h * 0.24); // Puncak kawah
-        ctx.lineTo(ox + 370, h * 0.25);
-        ctx.lineTo(ox + 520, h * 0.46);
-        ctx.lineTo(ox + 720, h * 0.72);
-        ctx.closePath();
-        ctx.fill();
-
-        // Kepulan Asap Fumarol / Solfatara Vulkanik Halus di Puncak
-        for (let ap = 0; ap < 6; ap++) {
-          const aProg = ((frame * 0.04 + ap * 0.8) % 5) / 5;
-          const apx = ox + 355 + aProg * 35 + Math.sin(frame * 0.03 + ap) * 5;
-          const apy = h * 0.24 - 6 - aProg * 55;
-          const apr = 6 + aProg * 16;
-          const aAlpha = Math.max(0, (1 - aProg) * 0.50);
-          ctx.fillStyle = `rgba(255, 255, 255, ${aAlpha})`;
+          // Puncak Gunung Vulkanik Jauh 1 (Tinggi di Tengah)
+          ctx.fillStyle = '#64748b'; // Abu-abu andesit atmosferik jauh
           ctx.beginPath();
-          ctx.arc(apx, apy, apr, 0, Math.PI * 2);
+          ctx.moveTo(ox - 80, h * 0.72);
+          ctx.lineTo(ox + 160, h * 0.42);
+          ctx.lineTo(ox + 340, h * 0.24); // Puncak kawah
+          ctx.lineTo(ox + 370, h * 0.25);
+          ctx.lineTo(ox + 520, h * 0.46);
+          ctx.lineTo(ox + 720, h * 0.72);
+          ctx.closePath();
+          ctx.fill();
+
+          // Kepulan Asap Fumarol / Solfatara Vulkanik Halus di Puncak (Organik & Lembut)
+          for (let ap = 0; ap < 6; ap++) {
+            const aProg = ((frame * 0.035 + ap * (1 / 6)) % 1);
+            const apx = ox + 355 + aProg * 35 + Math.sin(frame * 0.03 + ap * 1.2) * (4 + aProg * 8);
+            const apy = h * 0.24 - 6 - aProg * 55;
+            const apr = 6 + aProg * 18;
+            const aAlpha = Math.max(0, (aProg < 0.15 ? aProg / 0.15 : (1 - aProg)) * 0.50);
+            if (aAlpha <= 0.02) continue;
+
+            const lobes = 5;
+            for (let l = 0; l < lobes; l++) {
+              const angle = (l * Math.PI * 2) / lobes + Math.sin(frame * 0.02 + ap + l) * 0.3;
+              const dist = apr * 0.35;
+              const lx = apx + Math.cos(angle) * dist;
+              const ly = apy + Math.sin(angle) * dist * 0.85;
+              const lr = apr * (0.6 + Math.sin(ap * 2 + l) * 0.15);
+
+              const fGrad = ctx.createRadialGradient(lx - lr * 0.2, ly - lr * 0.2, lr * 0.1, lx, ly, lr);
+              fGrad.addColorStop(0, `rgba(255, 255, 255, ${aAlpha})`);
+              fGrad.addColorStop(0.5, `rgba(241, 245, 249, ${aAlpha * 0.8})`);
+              fGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+              ctx.fillStyle = fGrad;
+              ctx.beginPath();
+              ctx.arc(lx, ly, lr, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+
+          // Puncak Gunung Vulkanik Sebelah Kanan (Secondary Ridge)
+          ctx.fillStyle = '#475569';
+          ctx.beginPath();
+          ctx.moveTo(ox + 390, h * 0.72);
+          ctx.lineTo(ox + 560, h * 0.38);
+          ctx.lineTo(ox + 690, h * 0.28);
+          ctx.lineTo(ox + 720, h * 0.29);
+          ctx.lineTo(ox + 880, h * 0.50);
+          ctx.lineTo(ox + 1040, h * 0.72);
+          ctx.closePath();
           ctx.fill();
         }
 
-        // Puncak Gunung Vulkanik Sebelah Kanan (Secondary Ridge)
-        ctx.fillStyle = '#475569';
-        ctx.beginPath();
-        ctx.moveTo(ox + 390, h * 0.72);
-        ctx.lineTo(ox + 560, h * 0.38);
-        ctx.lineTo(ox + 690, h * 0.28);
-        ctx.lineTo(ox + 720, h * 0.29);
-        ctx.lineTo(ox + 880, h * 0.50);
-        ctx.lineTo(ox + 1040, h * 0.72);
-        ctx.closePath();
-        ctx.fill();
+        // PERBUKITAN TEKTONIK MENENGAH (Mid Foothills Ridge - Parallax 0.11)
+        const midP = camX * 0.11;
+        const midSpan = 700;
+        const midBaseX = -((midP % midSpan + midSpan) % midSpan);
+
+        for (let rep = -1; rep < Math.ceil(w / midSpan) + 2; rep++) {
+          const mx = midBaseX + rep * midSpan;
+          ctx.fillStyle = '#334155'; // Abu-abu gelap lereng bukit
+          ctx.beginPath();
+          ctx.moveTo(mx - 40, h * 0.78);
+          ctx.lineTo(mx + 110, h * 0.56);
+          ctx.lineTo(mx + 250, h * 0.44);
+          ctx.lineTo(mx + 420, h * 0.58);
+          ctx.lineTo(mx + 560, h * 0.48);
+          ctx.lineTo(mx + 740, h * 0.78);
+          ctx.closePath();
+          ctx.fill();
+        }
+      } else {
+        // MODE LAUTAN: HORIZON SAMUDRA TROPIS LEPAS & KEPULAUAN KARANG RENDAH DI KEJAUHAN
+        const oceanSeaY = 310;
+
+        // Horizon air laut jauh (gradasi laut tenang membiru di kejauhan)
+        const distSeaGrad = ctx.createLinearGradient(0, 160, 0, oceanSeaY);
+        distSeaGrad.addColorStop(0, 'rgba(14, 165, 233, 0.40)');
+        distSeaGrad.addColorStop(0.5, 'rgba(2, 132, 199, 0.65)');
+        distSeaGrad.addColorStop(1, 'rgba(3, 105, 161, 0.88)');
+        ctx.fillStyle = distSeaGrad;
+        ctx.fillRect(0, 190, w, oceanSeaY - 190);
+
+        // Siluet Kepulauan Karang Atol Rendah di Horison Jauh (Parallax 0.04, tinggi sangat rendah)
+        const islandP = camX * 0.04;
+        const islSpan = 850;
+        const islBaseX = -((islandP % islSpan + islSpan) % islSpan);
+        for (let rep = -1; rep < Math.ceil(w / islSpan) + 2; rep++) {
+          const ix = islBaseX + rep * islSpan;
+          ctx.fillStyle = '#1e293b'; // Siluet navy gelap lembut
+          ctx.beginPath();
+          ctx.moveTo(ix - 60, oceanSeaY);
+          ctx.lineTo(ix + 40, oceanSeaY - 18);
+          ctx.lineTo(ix + 120, oceanSeaY - 24);
+          ctx.lineTo(ix + 190, oceanSeaY - 12);
+          ctx.lineTo(ix + 280, oceanSeaY);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = '#334155';
+          ctx.beginPath();
+          ctx.moveTo(ix + 340, oceanSeaY);
+          ctx.lineTo(ix + 420, oceanSeaY - 14);
+          ctx.lineTo(ix + 510, oceanSeaY - 20);
+          ctx.lineTo(ix + 600, oceanSeaY);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Burung camar pesisir pixel putih terbang anggun di angkasa
+        const gulls = [
+          { bx: 180, by: 110, spd: 0.28 },
+          { bx: 460, by: 90, spd: 0.32 },
+          { bx: 820, by: 130, spd: 0.25 },
+          { bx: 1180, by: 105, spd: 0.30 },
+        ];
+        for (const gull of gulls) {
+          const gx = ((gull.bx + frame * gull.spd - camX * 0.08) % (w + 200) + (w + 200)) % (w + 200) - 100;
+          const flap = Math.sin(frame * 0.15 + gull.bx) * 2.5;
+          const gy = gull.by + Math.sin(frame * 0.03 + gull.bx) * 4;
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(gx - 6, gy + flap);
+          ctx.lineTo(gx, gy);
+          ctx.lineTo(gx + 6, gy + flap);
+          ctx.stroke();
+        }
+
+        // Kabut pesisir atmosferik lembut di atas garis laut
+        const mistGrad = ctx.createLinearGradient(0, 180, 0, oceanSeaY);
+        mistGrad.addColorStop(0, 'rgba(186, 230, 253, 0)');
+        mistGrad.addColorStop(0.7, 'rgba(224, 242, 254, 0.25)');
+        mistGrad.addColorStop(1, 'rgba(240, 249, 255, 0.50)');
+        ctx.fillStyle = mistGrad;
+        ctx.fillRect(0, 180, w, oceanSeaY - 180);
       }
-
-      // 5. PERBUKITAN TEKTONIK MENENGAH (Mid Foothills Ridge - Parallax 0.11)
-      const midP = camX * 0.11;
-      const midSpan = 700;
-      const midBaseX = -((midP % midSpan + midSpan) % midSpan);
-
-      for (let rep = -1; rep < Math.ceil(w / midSpan) + 2; rep++) {
-        const mx = midBaseX + rep * midSpan;
-        ctx.fillStyle = '#334155'; // Abu-abu gelap lereng bukit
-        ctx.beginPath();
-        ctx.moveTo(mx - 40, h * 0.78);
-        ctx.lineTo(mx + 110, h * 0.56);
-        ctx.lineTo(mx + 250, h * 0.44);
-        ctx.lineTo(mx + 420, h * 0.58);
-        ctx.lineTo(mx + 560, h * 0.48);
-        ctx.lineTo(mx + 740, h * 0.78);
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      // 6. Kabut Pesisir Atmosferik Hangat di Horizon Bawah
-      const mistGrad = ctx.createLinearGradient(0, h * 0.58, 0, h * 0.78);
-      mistGrad.addColorStop(0, 'rgba(186, 230, 253, 0)');
-      mistGrad.addColorStop(0.6, 'rgba(224, 242, 254, 0.35)');
-      mistGrad.addColorStop(1, 'rgba(240, 249, 255, 0.75)');
-      ctx.fillStyle = mistGrad;
-      ctx.fillRect(0, h * 0.58, w, h * 0.20);
       break;
     }
 
@@ -2977,11 +3315,19 @@ export function drawZoneBackground(
 // RENDERING MEDAN DINAMIS AREA 6 (BATAS DIVERGEN): PEMEKARAN LEMPENG,
 // GUNDUKAN ALAMI, MAGMA MENGANGA BERSIH (TANPA PLATFORM), DAN TEKSTUR BATUAN KAYA
 // ══════════════════════════════════════════════════════════════════════════
+// RENDERING MEDAN DINAMIS AREA 6 (BATAS DIVERGEN): LAUTAN LUAS, PEMEKARAN
+// LEMPENG SAMUDRA, LAPISAN MANTEL MAGMA DI BAWAH, TUMBUHAN & IKAN LAUT
+// ══════════════════════════════════════════════════════════════════════════
 export function renderOrganicDivergentTerrain(
   ctx: CanvasRenderingContext2D,
   zone: ZoneConfig,
   frame: number,
   progress: number = 1.0,
+  coolProgress: number = 0,
+  wiltProgress: number = 0,
+  fishScared: boolean = false,
+  fishList?: DivergentFish[],
+  sequencePhase: string = 'cooling',
 ): void {
   const w = zone.cols * TILE;
   const h = Math.max(zone.rows * TILE, 1600);
@@ -2991,258 +3337,508 @@ export function renderOrganicDivergentTerrain(
   const gap = p * maxGap;
   const leftEdge = Math.round(splitCenter - gap / 2);
   const rightEdge = Math.round(splitCenter + gap / 2);
-  const magmaY = Math.round(455 - (p > 0.15 ? ((p - 0.15) / 0.85) : 0) * 70);
+
+  // Ketinggian Geologis & Geometri Ngarai Patahan Miring:
+  // - Top lempeng (dasar laut) berada pada y ~ 248 (garis merah atas referensi)
+  // - Batas mantel astenosfer bergelombang organik via getDivergentMantleY(x) (ikut membelah & bergeser selaras lempeng)
+  // - Batas patahan dibuat miring dengan lereng bertingkat (slopeW ~ 26px)
+  // - Magma celah dan mantel adalah SATU kesatuan zat cair pijar terpadu dengan tekstur & warna yang sama persis
+  const slopeW = Math.min(38, Math.max(14, Math.round(gap * 0.35)));
+  const lavaLeft = leftEdge + slopeW;
+  const lavaRight = rightEdge - slopeW;
+  const floorY = 372;
 
   ctx.imageSmoothingEnabled = false;
 
   // ══════════════════════════════════════════════════════════════════════
-  // LAYER 1: BACK LAYER MAGMA (Z-Index paling belakang)
-  // Menghindari glitch dan berada di bawah lapisan batuan
+  // LAYER 0: LAPISAN MANTEL BUMI & MAGMA TERPADU (UNIFIED ASTHENOSPHERE & MAGMA)
+  // Sesuai instruksi:
+  // 1. Mantel dan magma celah adalah SATU LAPISAN TUNGGAL (bukan beda SVG/objek terpisah)
+  // 2. Mantel di bawah lempeng ikut membelah dan bergeser selaras lempeng kiri & kanan
+  // 3. Tekstur, warna gradien, dan arus konveksi magma celah SAMA PERSIS dengan mantel
+  // 4. Tidak ada garis kontak/Moho yang memotong melintang di bawah magma rekahan
   // ══════════════════════════════════════════════════════════════════════
-  if (gap > 4) {
-    const magH = h - magmaY;
-    const magGrad = ctx.createLinearGradient(0, magmaY, 0, h);
-    magGrad.addColorStop(0, '#ffffff');    // Permukaan pijar menyilaukan
-    magGrad.addColorStop(0.06, '#fef08a'); // Kuning panas menyala
-    magGrad.addColorStop(0.22, '#fb923c'); // Oranye cerah lava cair
-    magGrad.addColorStop(0.48, '#ea580c'); // Oranye membara
-    magGrad.addColorStop(0.72, '#dc2626'); // Merah magma kental
-    magGrad.addColorStop(1, '#450a0a');    // Dasar magma pekat
+  ctx.save();
 
-    ctx.fillStyle = magGrad;
-    ctx.fillRect(leftEdge - 4, magmaY, gap + 8, magH);
-
-    // Permukaan magma bergelombang lembut & garis putih pijar
-    const pulse = Math.sin(frame * 0.05) * 1.5;
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(leftEdge, magmaY + pulse, gap, 2);
-    ctx.fillStyle = 'rgba(254, 240, 138, 0.65)';
-    ctx.fillRect(leftEdge, magmaY + pulse - 2, gap, 3);
-
-    // Pulau-pulau kecil kerak basal beku yang terapung di atas lava
-    for (let bx = leftEdge + 12; bx < rightEdge - 12; bx += 28) {
-      const bFloat = Math.sin(frame * 0.04 + bx) * 1.5;
-      ctx.fillStyle = '#1c1917';
-      ctx.fillRect(bx, magmaY + 3 + bFloat, 10, 4);
-      ctx.fillStyle = '#27272a';
-      ctx.fillRect(bx + 2, magmaY + 2 + bFloat, 6, 2);
-    }
-  }
-
-  // ══════════════════════════════════════════════════════════════════════
-  // LAYER 2: LEMPENG DARATAN DENGAN GUNDUKAN & TEKSTUR STRATA BATUAN KAYA
-  // ══════════════════════════════════════════════════════════════════════
-
-  // A. FONDASI SOLID DASAR LEMPENG (100% ELIMINASI CELAH SUB-PIXEL & GARIS-GARIS VERTIKAL)
-  ctx.fillStyle = '#090d16';
-  // Lempeng Barat
+  // 1. Poligon Terpadu Seluruh Fluida Mantel & Magma yang Naik di Celah
   ctx.beginPath();
   ctx.moveTo(-600, h);
-  for (let bx = -600; bx <= leftEdge; bx += 4) {
-    ctx.lineTo(bx, getDivergentTerrainElevation(bx, splitCenter, p));
-  }
-  ctx.lineTo(leftEdge, h);
-  ctx.closePath();
-  ctx.fill();
-
-  // Lempeng Timur
-  ctx.beginPath();
-  ctx.moveTo(rightEdge, h);
-  for (let bx = rightEdge; bx <= w + 600; bx += 4) {
-    ctx.lineTo(bx, getDivergentTerrainElevation(bx, splitCenter, p));
+  ctx.lineTo(-600, getDivergentMantleY(-600, splitCenter, p, coolProgress));
+  for (let mx = -600; mx <= w + 600; mx += 2) {
+    ctx.lineTo(mx, getDivergentMantleY(mx, splitCenter, p, coolProgress));
   }
   ctx.lineTo(w + 600, h);
   ctx.closePath();
+
+  // Gradien Magma Murni Membara — SAMA PERSIS untuk seluruh lapisan mantel & magma celah
+  const moltenGrad = ctx.createLinearGradient(0, 365, 0, 485);
+  moltenGrad.addColorStop(0, '#ffffff');    // Pucuk terpanas putih menyala di rekahan
+  moltenGrad.addColorStop(0.06, '#fef08a'); // Kuning menyala terang
+  moltenGrad.addColorStop(0.18, '#fde047'); // Inti konveksi magma kuning keemasan
+  moltenGrad.addColorStop(0.38, '#f97316'); // Magma oranye membara di dasar lempeng
+  moltenGrad.addColorStop(0.65, '#ea580c'); // Vermilion sirkulasi mantel
+  moltenGrad.addColorStop(0.88, '#dc2626'); // Merah magma mantel dalam
+  moltenGrad.addColorStop(1.0, '#991b1b');  // Mantel pekat
+  ctx.fillStyle = moltenGrad;
   ctx.fill();
 
-  const drawPlateSlice = (x: number, isWest: boolean) => {
-    const gY = getDivergentTerrainElevation(x, splitCenter, p);
-    const nearLip = isWest ? (x >= leftEdge - 24) : (x <= rightEdge + 24);
-    const veryNearLip = isWest ? (x >= leftEdge - 8) : (x <= rightEdge + 8);
-    const sw = 2.5; // Sedikit tumpang tindih untuk mencegah celah seam rasterisasi pada semua zoom level
+  // 2. Arus Konveksi Sinusoidal yang Melintasi Mantel & Magma Celah
+  ctx.fillStyle = 'rgba(254, 240, 138, 0.42)';
+  for (let mx = -600; mx <= w + 600; mx += 14) {
+    const my = getDivergentMantleY(mx, splitCenter, p, coolProgress);
+    const wave1 = Math.sin(frame * 0.03 + mx * 0.02) * 4;
+    ctx.fillRect(mx, my + 8 + wave1, 14, 5);
+  }
+  ctx.fillStyle = 'rgba(249, 115, 22, 0.48)';
+  for (let mx = -600; mx <= w + 600; mx += 18) {
+    const my = getDivergentMantleY(mx, splitCenter, p, coolProgress);
+    const wave2 = Math.cos(frame * 0.04 + mx * 0.025) * 4;
+    ctx.fillRect(mx, my + 18 + wave2, 18, 5);
+  }
 
-    // 1. Lapisan tanah dasar paling bawah (Mantel Atas / Deep Lithosphere)
+  // 3. Gelembung Pijar Magma Terapung di Seluruh Lapisan Mantel & Rekahan Magma
+  for (let i = 0; i < 16; i++) {
+    const bx = (((i * 137 + frame * 0.35) % (w + 1200)) - 600);
+    const mBase = getDivergentMantleY(bx, splitCenter, p, coolProgress);
+    const by = mBase + 6 + ((i * 23) % 30) + Math.sin(frame * 0.05 + i) * 3;
+    ctx.fillStyle = 'rgba(254, 240, 138, 0.65)';
+    ctx.beginPath();
+    ctx.arc(bx, by, 2.5 + (i % 2), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.fillRect(bx - 1, by - 1, 2, 2);
+  }
+
+  // 4. Garis Kontak Moho Berpendar Hangat (HANYA di Bawah Lempeng Barat & Timur, TIDAK memotong celah)
+  ctx.strokeStyle = 'rgba(254, 240, 138, 0.55)';
+  ctx.lineWidth = 3;
+  // Sisi barat (sepanjang seluruh dasar lempeng barat hingga rekahan lavaLeft)
+  ctx.beginPath();
+  for (let mx = -600; mx <= lavaLeft; mx += 6) {
+    const my = getDivergentMantleY(mx, splitCenter, p, coolProgress);
+    if (mx === -600) ctx.moveTo(mx, my);
+    else ctx.lineTo(mx, my);
+  }
+  ctx.stroke();
+
+  // Sisi timur (sepanjang seluruh dasar lempeng timur dari rekahan lavaRight)
+  ctx.beginPath();
+  for (let mx = lavaRight; mx <= w + 600; mx += 6) {
+    const my = getDivergentMantleY(mx, splitCenter, p, coolProgress);
+    if (mx === lavaRight) ctx.moveTo(mx, my);
+    else ctx.lineTo(mx, my);
+  }
+  ctx.stroke();
+
+  // 5. Efek di Celah Magma yang Terbuka (Saat p >= 0.45 dan belum membeku total)
+  if (gap > 4 && p >= 0.45 && lavaRight > lavaLeft && coolProgress < 1) {
+    const currentMagmaY = getDivergentMantleY(splitCenter, splitCenter, p, coolProgress);
+    const lavaW = lavaRight - lavaLeft;
+
+    // Pendaran hangat di permukaan magma cair yang membumbung (overlap 3px ke lereng dinding agar zero gap)
+    ctx.fillStyle = `rgba(254, 240, 138, ${0.85 * (1 - coolProgress)})`;
+    ctx.fillRect(lavaLeft - 3, currentMagmaY - 1, lavaW + 6, 3);
+
+    // Gelembung hidrotermal & uap panas mendidih naik ke air laut
+    for (let sp = 0; sp < 4; sp++) {
+      const sProg = ((frame * 0.5 + sp * 30) % 110) / 110;
+      const sx = lavaLeft + ((sp * 26 + frame * 0.25) % Math.max(8, lavaW));
+      const sy = currentMagmaY - sProg * 85;
+      const sAlpha = Math.sin(sProg * Math.PI) * 0.65 * (1 - coolProgress * 0.8);
+      ctx.fillStyle = `rgba(224, 242, 254, ${sAlpha})`;
+      ctx.beginPath();
+      ctx.arc(sx, sy, 2 + sProg * 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Rekahan pembekuan saat mulai mendingin
+    if (coolProgress > 0.15) {
+      ctx.strokeStyle = `rgba(239, 68, 68, ${0.85 * (1 - coolProgress)})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(lavaLeft + 3, currentMagmaY + 2);
+      ctx.lineTo(splitCenter - 4, currentMagmaY + 3);
+      ctx.lineTo(splitCenter + 6, currentMagmaY + 2);
+      ctx.lineTo(lavaRight - 3, currentMagmaY + 4);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 2: LEMPENG DASAR LAUT & KERAK BEKU SAMUDRA (DIVERGENT BOUNDARY)
+  // Lempeng barat & timur membentang di atas mantel, mengapit celah rekahan di tengah.
+  // Lereng ngarai patahan melandai miring bertingkat dari bibir atas ke lantai magma di Y = 372.
+  // ══════════════════════════════════════════════════════════════════════
+
+  // A. FONDASI SOLID BATUAN LEMPENG (Di atas mantel terpadu getDivergentMantleY)
+  if (gap <= 4) {
+    // 1. Belum membelah: Satu lempeng padat utuh tersambung dari barat ke timur
     ctx.fillStyle = '#090d16';
-    ctx.fillRect(x, gY + 36, sw, h - (gY + 36));
+    ctx.beginPath();
+    ctx.moveTo(-600, getDivergentMantleY(-600, splitCenter, p, coolProgress) + 4);
+    for (let bx = -600; bx <= w + 600; bx += 2) {
+      ctx.lineTo(bx, getDivergentTerrainElevation(bx, splitCenter, p, coolProgress));
+    }
+    ctx.lineTo(w + 600, getDivergentMantleY(w + 600, splitCenter, p, coolProgress) + 4);
+    for (let bx = w + 600; bx >= -600; bx -= 4) {
+      ctx.lineTo(bx, getDivergentMantleY(bx, splitCenter, p, coolProgress) + 4);
+    }
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    // 2. Lempeng Barat (dari -600 hingga ujung lereng barat di lavaLeft)
+    ctx.fillStyle = '#090d16';
+    ctx.beginPath();
+    ctx.moveTo(-600, getDivergentMantleY(-600, splitCenter, p, coolProgress) + 4);
+    for (let bx = -600; bx <= lavaLeft; bx += 2) {
+      ctx.lineTo(bx, getDivergentTerrainElevation(bx, splitCenter, p, coolProgress));
+    }
+    for (let bx = lavaLeft; bx >= -600; bx -= 4) {
+      ctx.lineTo(bx, getDivergentMantleY(bx, splitCenter, p, coolProgress) + 4);
+    }
+    ctx.closePath();
+    ctx.fill();
 
-    // 2. Lapisan batuan gabbro / beku padat (Mid-crust)
+    // 3. Lempeng Timur (dari awal lereng timur di lavaRight hingga w + 600)
+    ctx.beginPath();
+    ctx.moveTo(lavaRight, getDivergentTerrainElevation(lavaRight, splitCenter, p, coolProgress));
+    for (let bx = lavaRight; bx <= w + 600; bx += 2) {
+      ctx.lineTo(bx, getDivergentTerrainElevation(bx, splitCenter, p, coolProgress));
+    }
+    ctx.lineTo(w + 600, getDivergentMantleY(w + 600, splitCenter, p, coolProgress) + 4);
+    for (let bx = w + 600; bx >= lavaRight; bx -= 4) {
+      ctx.lineTo(bx, getDivergentMantleY(bx, splitCenter, p, coolProgress) + 4);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // B. RENDER SLICE STRATA BATUAN LEMPENG SAMUDRA SAMPAI KE DASAR MANTEL
+  const drawPlateSlice = (x: number, isSlope: boolean = false) => {
+    const gY = getDivergentTerrainElevation(x, splitCenter, p, coolProgress);
+    const bY = getDivergentMantleY(x, splitCenter, p, coolProgress) + 4; // +4px untuk kontak mulus rapat ke mantel
+    if (gY >= bY) return;
+    const sw = 2.5;
+    const totalThick = bY - gY;
+    if (totalThick < 3) return;
+
+    // 1. Lapisan dasar gabbro & peridotit lempeng samudra
+    ctx.fillStyle = '#090d16';
+    ctx.fillRect(x, gY + 36, sw, Math.max(0, totalThick - 36));
+
+    // 2. Lapisan batuan gabbro pejal / plutonik
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x, gY + 18, sw, 18);
+    ctx.fillRect(x, gY + 18, sw, Math.min(18, Math.max(0, totalThick - 18)));
 
-    // 3. Lapisan batuan basal sekunder
+    // 3. Lapisan dyke basal bersusun
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x, gY + 6, sw, 12);
+    ctx.fillRect(x, gY + 6, sw, Math.min(12, Math.max(0, totalThick - 6)));
 
-    // 4. Lapisan kerak permukaan luar (Upper crust)
+    // 4. Lapisan pillow basalt permukaan luar
     ctx.fillStyle = '#334155';
-    ctx.fillRect(x, gY + 2, sw, 4);
+    ctx.fillRect(x, gY + 2, sw, Math.min(4, Math.max(0, totalThick - 2)));
 
-    // 5. Garis kontur permukaan atas (Top rim & highlights)
-    if (veryNearLip) {
-      // Bibir tebing terpanggang panas magma
-      ctx.fillStyle = '#ea580c';
-      ctx.fillRect(x, gY - 1, sw, 2);
-      ctx.fillStyle = '#f97316';
-      ctx.fillRect(x, gY - 2, sw, 1);
-    } else if (nearLip) {
-      ctx.fillStyle = '#c2410c';
-      ctx.fillRect(x, gY - 1, sw, 2);
-      ctx.fillStyle = '#fb923c';
-      ctx.fillRect(x, gY - 2, sw, 1);
-    } else {
-      // Permukaan batuan vulkanik bertekstur
-      ctx.fillStyle = '#475569';
+    // 5. Permukaan sedimen / kerak tebing terluar
+    if (isSlope) {
+      // Pada lereng ngarai patahan: batuan basal terjal gelap bertingkat alami
+      ctx.fillStyle = '#1e293b';
       ctx.fillRect(x, gY, sw, 2);
-      ctx.fillStyle = '#64748b';
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(x, gY - 1, sw, 1);
+    } else {
+      ctx.fillStyle = '#0f766e'; // Hijau toska pekat sedimen laut dalam
+      ctx.fillRect(x, gY, sw, 2);
+      ctx.fillStyle = '#14b8a6'; // Lapisan pasir laut teratas
       ctx.fillRect(x, gY - 1, sw, 1);
     }
 
-    // ── TEKSTUR STRATA BATUAN MENYATU & NYAMBUNG MULUS ──
-    const seed = (x * 7919) ^ 0x5a5a;
+    // ── TEKSTUR STRATA LENGKAP DARI ATAS SAMPAI KE BAWAH MANTEL ──
+    if (totalThick > 16) {
+      const seed = (x * 7919) ^ 0x5a5a;
+      for (let depthY = gY + 12; depthY < bY - 6; depthY += 12) {
+        const strataNoise = Math.sin(x * 0.05 + depthY * 0.08) * 2;
+        const bandColor = ((depthY + seed) % 24 < 12) ? 'rgba(30, 41, 59, 0.65)' : 'rgba(15, 23, 42, 0.55)';
+        ctx.fillStyle = bandColor;
+        ctx.fillRect(x, depthY + strataNoise, sw, 3);
 
-    // A. Gelombang strata horizontal kontinu (sedimen/foliasi batuan lempeng yang mengalir mulus)
-    const strataOffset1 = Math.sin(x * 0.035) * 3;
-    const strataOffset2 = Math.cos(x * 0.025) * 4;
-    ctx.fillStyle = 'rgba(71, 85, 105, 0.35)';
-    ctx.fillRect(x, gY + 12 + strataOffset1, sw, 3);
-    ctx.fillStyle = 'rgba(30, 41, 59, 0.45)';
-    ctx.fillRect(x, gY + 26 + strataOffset2, sw, 3);
-
-    // B. Urat magma lembut berpendar hanya tepat di bibir celah (bukan garis potong vertikal)
-    if (nearLip && (seed % 17 === 0)) {
-      ctx.fillStyle = 'rgba(249, 115, 22, 0.7)';
-      ctx.fillRect(x, gY + 4 + (seed % 12), sw, 4);
-    }
-
-    // C. Bintik-bintik kerikil basal halus & kristal mineral alami yang tertanam di batuan
-    if (seed % 19 === 0) {
-      ctx.fillStyle = '#64748b'; // Kerikil batuan beku halus
-      ctx.fillRect(x, gY + 10 + (seed % 16), 2, 2);
-    } else if (seed % 31 === 0) {
-      ctx.fillStyle = '#65a30d'; // Mineral peridotit/olivin mantel
-      ctx.fillRect(x, gY + 14 + (seed % 18), 1, 2);
-    } else if (seed % 41 === 0) {
-      ctx.fillStyle = '#eab308'; // Mineral sulfur/belerang vulkanik
-      ctx.fillRect(x, gY + 8 + (seed % 14), 1, 2);
-    }
-  };
-
-  // Render Lempeng Barat (-600 .. leftEdge)
-  for (let x = -600; x <= leftEdge; x += 2) {
-    drawPlateSlice(x, true);
-  }
-
-  // Tebing vertikal potong Lempeng Barat di sisi retakan
-  if (gap > 4) {
-    const leftLipY = getDivergentTerrainElevation(leftEdge, splitCenter, p);
-    ctx.fillStyle = '#020617';
-    ctx.fillRect(leftEdge, leftLipY, 4, magmaY - leftLipY + 4);
-    // Cahaya pantulan lava di dinding tebing
-    const cliffGlow = ctx.createLinearGradient(0, leftLipY, 0, magmaY);
-    cliffGlow.addColorStop(0, 'rgba(234, 88, 12, 0.1)');
-    cliffGlow.addColorStop(0.7, 'rgba(234, 88, 12, 0.6)');
-    cliffGlow.addColorStop(1, 'rgba(251, 146, 60, 0.9)');
-    ctx.fillStyle = cliffGlow;
-    ctx.fillRect(leftEdge + 2, leftLipY, 2, magmaY - leftLipY);
-  }
-
-  // Render Lempeng Timur (rightEdge .. w + 600)
-  for (let x = rightEdge; x <= w + 600; x += 2) {
-    drawPlateSlice(x, false);
-  }
-
-  // Tebing vertikal potong Lempeng Timur di sisi retakan
-  if (gap > 4) {
-    const rightLipY = getDivergentTerrainElevation(rightEdge, splitCenter, p);
-    ctx.fillStyle = '#020617';
-    ctx.fillRect(rightEdge - 4, rightLipY, 4, magmaY - rightLipY + 4);
-    // Cahaya pantulan lava di dinding tebing
-    const cliffGlow = ctx.createLinearGradient(0, rightLipY, 0, magmaY);
-    cliffGlow.addColorStop(0, 'rgba(234, 88, 12, 0.1)');
-    cliffGlow.addColorStop(0.7, 'rgba(234, 88, 12, 0.6)');
-    cliffGlow.addColorStop(1, 'rgba(251, 146, 60, 0.9)');
-    ctx.fillStyle = cliffGlow;
-    ctx.fillRect(rightEdge - 4, rightLipY, 2, magmaY - rightLipY);
-  }
-
-  // ══════════════════════════════════════════════════════════════════════
-  // LAYER 3: EFEK SULUR ASAP & UAP VULKANIK REALISTIS (BUKAN BOLA BULAT)
-  // Aliran uap geotermal meliuk-liuk alami (sinuous fluid plumes) & bara api mikro
-  // ══════════════════════════════════════════════════════════════════════
-  if (p > 0.25 && gap > 20) {
-    ctx.save();
-
-    // 1. Sulur-sulur Uap Panas Meliuk Halus (Flowing Steam Ribbons)
-    const numColumns = 4;
-    for (let c = 0; c < numColumns; c++) {
-      // Posisi pangkal uap di permukaan celah magma
-      const baseX = leftEdge + 14 + (c * (gap - 28)) / (numColumns - 1);
-      const timeOffset = frame * 0.035 + c * 1.7;
-
-      for (let w = 0; w < 2; w++) {
-        const speed = 0.55 + w * 0.25;
-        const phase = (frame * speed * 0.018 + c * 0.75 + w * 1.3) % 1;
-        const plumeHeight = 100 + w * 35;
-        const topY = magmaY - plumeHeight * phase;
-        const currentAlpha = Math.sin(phase * Math.PI) * 0.16; // Lembut & transparan
-
-        if (currentAlpha <= 0.01) continue;
-
-        ctx.beginPath();
-        const startWidth = 6 + w * 3;
-        const leftBase = baseX - startWidth / 2 + Math.sin(timeOffset) * 3;
-        const rightBase = baseX + startWidth / 2 + Math.sin(timeOffset) * 3;
-
-        ctx.moveTo(leftBase, magmaY);
-
-        // Meliuk ke atas ditiup arus konveksi udara & angin sepoi ke kanan
-        const driftX = Math.sin(timeOffset + 1.2) * 10 + (phase * 14);
-        const midY = (magmaY + topY) / 2;
-        const midWidth = 14 + phase * 18;
-        const topWidth = 22 + phase * 26;
-
-        const cp1x = leftBase - 6 + Math.sin(frame * 0.04 + c) * 8;
-        const cp1y = magmaY - (magmaY - midY) * 0.55;
-        const cp2x = baseX - midWidth / 2 + driftX * 0.5;
-        const cp2y = midY;
-
-        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, baseX - topWidth / 2 + driftX, topY);
-        ctx.lineTo(baseX + topWidth / 2 + driftX, topY);
-
-        const cp3x = baseX + midWidth / 2 + driftX * 0.5;
-        const cp3y = midY;
-        const cp4x = rightBase + 6 + Math.sin(frame * 0.04 + c + 1) * 8;
-        const cp4y = magmaY - (magmaY - midY) * 0.55;
-
-        ctx.bezierCurveTo(cp3x, cp3y, cp4x, cp4y, rightBase, magmaY);
-        ctx.closePath();
-
-        // Gradien uap: pendaran hangat di dekat lava -> uap putih tipis -> memudar di udara
-        const grad = ctx.createLinearGradient(baseX, magmaY, baseX + driftX, topY);
-        grad.addColorStop(0, `rgba(254, 215, 170, ${currentAlpha * 0.75})`);
-        grad.addColorStop(0.3, `rgba(226, 232, 240, ${currentAlpha})`);
-        grad.addColorStop(0.7, `rgba(203, 213, 225, ${currentAlpha * 0.45})`);
-        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-        ctx.fillStyle = grad;
-        ctx.fill();
+        if ((depthY + seed) % 19 === 0) {
+          ctx.fillStyle = '#334155';
+          ctx.fillRect(x, depthY + 2, 2, 2);
+        } else if ((depthY + seed) % 31 === 0) {
+          ctx.fillStyle = isSlope ? '#475569' : '#0d9488';
+          ctx.fillRect(x, depthY + 3, 1.5, 2);
+        }
       }
     }
 
-    // 2. Partikel Bara Api Mikro yang Mengapung Bersama Hawa Panas
-    const numSparks = 7;
-    for (let s = 0; s < numSparks; s++) {
-      const sparkCycle = ((frame * 0.45 + s * 37) % 85) / 85;
-      const sparkX = leftEdge + 10 + ((s * 26 + frame * 0.18) % Math.max(10, gap - 20)) + Math.sin(frame * 0.04 + s) * 6;
-      const sparkY = magmaY - sparkCycle * 90;
-      const sparkAlpha = Math.sin(sparkCycle * Math.PI);
+    // Pijar kontak termal lempeng dengan mantel di batas bawah
+    ctx.fillStyle = 'rgba(254, 240, 138, 0.35)';
+    ctx.fillRect(x, bY - 4, sw, 4);
+  };
 
-      ctx.fillStyle = s % 2 === 0
-        ? `rgba(254, 240, 138, ${sparkAlpha * 0.8})` // Emas pijar
-        : `rgba(251, 146, 60, ${sparkAlpha * 0.7})`;  // Oranye bara
-      ctx.fillRect(sparkX, sparkY, 1.5, 2);
+  // Render detail slice strata pada lempeng padat & lereng ngarai tembus sampai ke bawah
+  if (gap <= 4) {
+    for (let x = -600; x <= w + 600; x += 2) {
+      const isSlope = (x > leftEdge && x < lavaLeft) || (x > lavaRight && x < rightEdge);
+      drawPlateSlice(x, isSlope);
+    }
+  } else {
+    // Dataran Lempeng Barat (-600 sampai leftEdge)
+    for (let x = -600; x <= leftEdge; x += 2) {
+      drawPlateSlice(x, false);
+    }
+    // Lereng Ngarai Barat Miring Atas (leftEdge sampai lavaLeft melandai miring ke floorY = 372)
+    for (let x = leftEdge; x <= lavaLeft; x += 2) {
+      drawPlateSlice(x, true);
+    }
+    // Lereng Ngarai Timur Miring Atas (lavaRight sampai rightEdge melandai miring dari floorY = 372)
+    for (let x = lavaRight; x <= rightEdge; x += 2) {
+      drawPlateSlice(x, true);
+    }
+    // Dataran Lempeng Timur (rightEdge sampai w + 600)
+    for (let x = rightEdge; x <= w + 600; x += 2) {
+      drawPlateSlice(x, false);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // C. KERAK SAMUDRA HASIL PEMBEKUAN MAGMA DENGAN GRADASI TERMAL KE MAGMA BAWAH
+  // Ketika magma membeku (coolProgress > 0), magma tidak turun kebawah.
+  // Permukaan atas magma membeku menjadi lempeng daratan basal padat (y = floorY = 372),
+  // sementara bagian bawah kerak membeku ini memiliki gradasi mulus organik ke magma
+  // yang tetap menyala dan mengalir di bawahnya (seolah daratan bawahnya masih jadi bagian dari magma).
+  // ══════════════════════════════════════════════════════════════════════
+  if (gap > 4 && p >= 0.45 && lavaRight > lavaLeft && coolProgress > 0) {
+    const cool = Math.max(0, Math.min(1, coolProgress));
+    const crustLeft = lavaLeft - 4;
+    const crustRight = lavaRight + 4;
+    const crustW = crustRight - crustLeft;
+
+    // Kedalaman kerak yang membeku: ~22px (dari y = 372 hingga ~394, pas sesuai garis merah)
+    const crustH = 22;
+
+    ctx.save();
+
+    // 1. Poligon Kerak Membeku dengan lekukan organik pillow basalt di sisi bawah
+    ctx.beginPath();
+    ctx.moveTo(crustLeft, floorY);
+    ctx.lineTo(crustRight, floorY);
+    for (let cx = crustRight; cx >= crustLeft; cx -= 3) {
+      const bWave = Math.sin((cx - splitCenter) * 0.15) * 2 + Math.cos((cx - splitCenter) * 0.08) * 1.5;
+      const cy = floorY + crustH + bWave;
+      ctx.lineTo(cx, cy);
+    }
+    ctx.closePath();
+
+    // Gradasi Termal: Bagian atas batuan padat beku gelap, bagian bawah gradasi menyatu ke magma
+    const crustGrad = ctx.createLinearGradient(0, floorY, 0, floorY + crustH + 3);
+    crustGrad.addColorStop(0.00, `rgba(15, 23, 42, ${cool})`);          // Atas: #0f172a batuan basal padat utuh
+    crustGrad.addColorStop(0.22, `rgba(30, 41, 59, ${cool})`);          // #1e293b batuan lempeng beku
+    crustGrad.addColorStop(0.42, `rgba(51, 65, 85, ${cool * 0.95})`);    // #334155 basal abu-abu
+    crustGrad.addColorStop(0.60, `rgba(69, 10, 10, ${cool * 0.92})`);    // #450a0a kerak hangus membara
+    crustGrad.addColorStop(0.74, `rgba(127, 29, 29, ${cool * 0.80})`);   // #7f1d1d merah gelap pijar
+    crustGrad.addColorStop(0.85, `rgba(234, 88, 12, ${cool * 0.55})`);   // #ea580c jingga magma membara
+    crustGrad.addColorStop(0.94, `rgba(249, 115, 22, ${cool * 0.25})`);  // #f97316 batas pendar kuning-oranye
+    crustGrad.addColorStop(1.00, `rgba(253, 224, 71, 0)`);               // 0% transparan, menyatu sempurna ke magma mantel di bawahnya!
+    ctx.fillStyle = crustGrad;
+    ctx.fill();
+
+    // 2. Tekstur Kubah Pillow Basalt (Basal Bantal Samudra) di Bagian Atas Kerak
+    for (let px = crustLeft + 2; px <= crustRight - 10; px += 13) {
+      const lobeW = 13;
+      const lobeH = 6 * cool;
+      const pillowGrad = ctx.createRadialGradient(
+        px + lobeW / 2, floorY + 4, 1,
+        px + lobeW / 2, floorY + 4, lobeW / 2
+      );
+      pillowGrad.addColorStop(0, `rgba(71, 85, 105, ${cool * 0.65})`);  // #475569 highlight kubah
+      pillowGrad.addColorStop(0.7, `rgba(30, 41, 59, ${cool * 0.85})`); // #1e293b sisi kubah
+      pillowGrad.addColorStop(1, `rgba(15, 23, 42, ${cool})`);          // #0f172a celah antar bantal
+      ctx.fillStyle = pillowGrad;
+      ctx.beginPath();
+      ctx.ellipse(px + lobeW / 2, floorY + 4, lobeW / 2, lobeH / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
     }
 
+    // 3. Rekahan Kontraksi Pendinginan (Cooling Fractures)
+    // Saat mendingin (cool < 0.85): retakan berpijar merah oranye
+    // Saat membeku padat (cool >= 0.85): retakan mengeras menjadi joint batuan gelap
+    const isGlowing = cool < 0.85;
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = isGlowing
+      ? `rgba(239, 68, 68, ${0.9 * (1 - cool * 0.5)})`
+      : 'rgba(15, 23, 42, 0.8)';
+    ctx.beginPath();
+    ctx.moveTo(crustLeft + 8, floorY + 1);
+    ctx.lineTo(crustLeft + 20, floorY + 8);
+    ctx.lineTo(crustLeft + 30, floorY + 5);
+    ctx.lineTo(crustLeft + 44, floorY + 13);
+    ctx.moveTo(crustRight - 10, floorY + 2);
+    ctx.lineTo(crustRight - 22, floorY + 7);
+    ctx.lineTo(crustRight - 34, floorY + 14);
+    ctx.stroke();
+
+    if (isGlowing) {
+      ctx.strokeStyle = `rgba(249, 115, 22, ${0.75 * (1 - cool)})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // 4. Lapisan Lantai Daratan Baru yang Rapi & Solid di Permukaan
+    ctx.fillStyle = `rgba(100, 116, 139, ${cool * 0.9})`; // #64748b highlight tepi atas lantai
+    ctx.fillRect(crustLeft, floorY - 1, crustW, 1);
+    ctx.fillStyle = `rgba(71, 85, 105, ${cool * 0.95})`; // #475569 permukaan lantai pijakan
+    ctx.fillRect(crustLeft, floorY, crustW, 2);
+    ctx.fillStyle = `rgba(51, 65, 85, ${cool})`;         // #334155 fondasi atas
+    ctx.fillRect(crustLeft, floorY + 2, crustW, 2);
+
+    // 5. Bintik Mineral Plagioklas & Olivin pada Kerak Baru
+    for (let i = 0; i < 10; i++) {
+      const sx = crustLeft + ((i * 19 + 7) % Math.max(10, crustW - 8));
+      const sy = floorY + 5 + ((i * 11) % 11);
+      ctx.fillStyle = (i % 2 === 0) ? `rgba(148, 163, 184, ${cool * 0.75})` : `rgba(45, 212, 191, ${cool * 0.5})`;
+      ctx.fillRect(sx, sy, 2, 1.5);
+    }
+
+    ctx.restore();
+  }
+
+
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 3: TUMBUHAN LAUT (SEAWEED / RUMPUT LAUT) & EFEK LAYU KARENA SUHU NAIK
+  // Sesuai instruksi: Awalnya subur, pasca-gempa suhu naik -> tanaman layu
+  // ══════════════════════════════════════════════════════════════════════
+  const plantPositions = [110, 150, 195, 240, 310, 350, 560, 610, 690, 760, 830, 920, 990, 1070];
+
+  for (const px of plantPositions) {
+    // Lewati tumbuhan jika berada di rongga patahan yang terbuka
+    if (gap > 12 && px > leftEdge - 4 && px < rightEdge + 4) continue;
+
+    const py = getDivergentTerrainElevation(px, splitCenter, p, coolProgress);
+    const plantSeed = (px * 31) ^ 0x3c3c;
+    const baseH = 20 + (plantSeed % 12);
+    // Saat layu, tinggi tanaman menyusut dan terkulai
+    const curH = baseH * (1 - wiltProgress * 0.45);
+    const sway = Math.sin(frame * 0.04 + px * 0.06) * (4 * (1 - wiltProgress * 0.7));
+
+    ctx.save();
+    // Warna: Hijau zamrud segar jika wiltProgress=0, berubah cokelat gosong jika layu
+    let plantColor = '#10b981';
+    let plantColorDark = '#059669';
+    let plantTipColor = '#34d399';
+
+    if (wiltProgress > 0.6) {
+      plantColor = '#78350f';     // Cokelat hangus layu
+      plantColorDark = '#451a03'; // Cokelat pekat layu
+      plantTipColor = '#a16207';  // Pucuk kering
+    } else if (wiltProgress > 0.2) {
+      plantColor = '#ca8a04';     // Menguning tanda suhu naik
+      plantColorDark = '#854d0e';
+      plantTipColor = '#facc15';
+    }
+
+    // Gambar batang utama dan daun rumput laut bergelombang
+    ctx.strokeStyle = plantColorDark;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    const midX = px + sway * 0.6;
+    const midY = py - curH * 0.55;
+    const topX = px + sway;
+    const topY = py - curH;
+    ctx.quadraticCurveTo(midX, midY, topX, topY);
+    ctx.stroke();
+
+    ctx.strokeStyle = plantColor;
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+
+    // Daun cabang kiri & kanan
+    ctx.fillStyle = plantTipColor;
+    ctx.fillRect(midX - 3, midY, 3, 2);
+    ctx.fillRect(midX + 2, midY - 3, 3, 2);
+    ctx.fillRect(topX - 1, topY - 1, 3, 3);
+
+    // Jika layu (suhu naik), munculkan distorsi riak uap panas & gelembung kecil
+    if (wiltProgress > 0.15) {
+      const steamY = py - curH - ((frame * 0.6 + px) % 35);
+      const steamAlpha = (1 - ((frame * 0.6 + px) % 35) / 35) * 0.55 * wiltProgress;
+      ctx.fillStyle = `rgba(254, 215, 170, ${steamAlpha})`;
+      ctx.fillRect(topX - 1 + Math.sin(frame * 0.15 + px) * 2, steamY, 2, 2);
+    }
+    ctx.restore();
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 4: IKAN-IKAN LAUT (OCEAN FISH)
+  // Sesuai instruksi: Awalnya berenang di atas lempeng, pasca-gempa & suhu naik -> kabur menjauh
+  // ══════════════════════════════════════════════════════════════════════
+  const fishToRender = fishList && fishList.length > 0 ? fishList : [];
+  for (const fish of fishToRender) {
+    // Jika ikan sudah kabur ke luar batas layar, jangan render
+    if (fish.x < -50 || fish.x > w + 50) continue;
+
+    ctx.save();
+    const fx = Math.round(fish.x);
+    const fy = Math.round(fish.y);
+    const sz = fish.size;
+    const isRight = fish.dir === 'right';
+    const tailWiggle = Math.sin(frame * 0.28 + fish.id) * 3;
+
+    // A. Badan Ikan (Pixel Capsule Body)
+    ctx.fillStyle = fish.color;
+    ctx.beginPath();
+    ctx.ellipse(fx, fy, sz * 0.6, sz * 0.35, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // B. Garis Aksen / Pola Garis Ikan
+    ctx.fillStyle = fish.accentColor;
+    const stripeX = isRight ? fx - 1 : fx + 1;
+    ctx.fillRect(stripeX, fy - Math.round(sz * 0.28), 2, Math.round(sz * 0.56));
+
+    // C. Sirip Ekor (Tail Fin) dengan animasi mengibas (wiggling)
+    const tailX = isRight ? fx - sz * 0.6 : fx + sz * 0.6;
+    ctx.fillStyle = fish.accentColor;
+    ctx.beginPath();
+    ctx.moveTo(tailX, fy);
+    ctx.lineTo(tailX + (isRight ? -6 : 6), fy - 5 + tailWiggle);
+    ctx.lineTo(tailX + (isRight ? -4 : 4), fy);
+    ctx.lineTo(tailX + (isRight ? -6 : 6), fy + 5 + tailWiggle);
+    ctx.closePath();
+    ctx.fill();
+
+    // D. Mata Ikan
+    const eyeX = isRight ? fx + sz * 0.35 : fx - sz * 0.35;
+    const eyeY = fy - 2;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(eyeX, eyeY, 2, 2);
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(isRight ? eyeX + 1 : eyeX, eyeY, 1, 1);
+
+    // E. Gelembung Kepanikan saat Ikan Kabur Menjauh (Fleeing Speed Bubbles)
+    if (fishScared) {
+      const bubbleX = isRight ? fx - sz * 0.8 : fx + sz * 0.8;
+      ctx.fillStyle = 'rgba(224, 242, 254, 0.6)';
+      ctx.beginPath();
+      ctx.arc(bubbleX + Math.sin(frame * 0.3 + fish.id) * 2, fy + 1, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 5: DISTORSI PANAS SEBAGAI INDIKATOR SUHU MENINGKAT
+  // ══════════════════════════════════════════════════════════════════════
+  if (sequencePhase === 'temp_rise' || sequencePhase === 'diverging') {
+    ctx.save();
+    // Gelombang termal halus naik dari dasar lempeng
+    ctx.fillStyle = 'rgba(251, 146, 60, 0.05)';
+    for (let ty = 140; ty < 240; ty += 8) {
+      const tOff = Math.sin(frame * 0.1 + ty * 0.08) * 4;
+      ctx.fillRect(0, ty + tOff, w, 3);
+    }
     ctx.restore();
   }
 }
@@ -3321,35 +3917,647 @@ export function drawResearchBoat(
 
 // ══════════════════════════════════════════════════════════════════════════
 // PROFIL DASAR LAUT TERPADU AREA 7 (BATAS KONVERGEN)
-// Menjamin konsistensi elevasi 100% antara kerak benua, kerak samudra, dan air laut
-// sehingga mustahil ada celah (gap) yang terbentuk selama animasi subduksi
+// Menjamin konsistensi elevasi 100% antara lempeng samudra, palung subduksi menunjam,
+// dan prisma akresi benua. Dasar palung menunjam ke y = 570 (jauh di bawah 480 px),
+// sehingga dasar jurang palung 100% TIDAK TERLIHAT di layar kanvas!
 // ══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// PROFIL DASAR LAUT TERPADU AREA 7 (BATAS KONVERGEN: LAUTAN & PALUNG)
+// Sesuai Arahan Pengguna & Sketsa:
+// 1. Kurva Lempeng Samudra & Dasar Laut 100% MULUS KONTINU (Hermite C1 Continuous)
+//    bebas dari sudut patahan tajam.
+// 2. Palung Laut berjarak ~200px dari garis pantai (trenchX ≈ 360..385, pantai di coastX = 580).
+// 3. Palung mendalam secara dinamis seiring animasi tumbukan lempeng samudra (p: 0 -> 1).
+// 4. Lempeng benua di kanan posisinya lebih tinggi dari samudra (elevasi bergelombang alami di pantai).
+// ══════════════════════════════════════════════════════════════════════════
+
+// Elevasi permukaan atas lempeng samudra yang menunjam ke bawah lempeng benua (Slab Subduksi Mulus Kontinu & Rigid)
+export function getOceanicSubductingSlabTopY(x: number, p: number): number {
+  const normP = Math.max(0, Math.min(1, p));
+  const flexStart = 190 + Math.round(normP * 25);
+  const trenchX = 370 + Math.round(normP * 12);
+  const seafloorY = 350;
+  // Palung laut adalah struktur jurang geologis dalam yang stabil (kedalaman 485 .. 510) tanpa deformasi melar kendur
+  const trenchDepth = Math.round(485 + normP * 25);
+  const targetSlope = 0.70; // Kemiringan sudut penunjaman ~35°
+
+  if (x <= flexStart) {
+    return seafloorY;
+  }
+
+  // Zona 1: Lengkungan mulus Hermite C1 dari lantai laut ke sumbu palung (trenchX)
+  if (x <= trenchX) {
+    const L = trenchX - flexStart;
+    const u = (x - flexStart) / L;
+    const h00 = 2 * u * u * u - 3 * u * u + 1;
+    const h01 = -2 * u * u * u + 3 * u * u;
+    const h11 = u * u * u - u * u;
+    return Math.round(h00 * seafloorY + h01 * trenchDepth + h11 * (targetSlope * L));
+  }
+
+  // Zona 2: Penunjaman menembus di bawah lempeng benua (x > trenchX)
+  // Menyatu 100% mulus (C1 kontinu) dari trenchX dengan turunan awal sama persis = targetSlope
+  const rx = x - trenchX;
+  return Math.round(trenchDepth + rx * targetSlope + (rx * rx * 0.00035));
+}
+
+// Kemiringan sudut (slope dy/dx) permukaan lempeng samudra untuk perhitungan vektor normal tegak lurus bidang slab
+export function getOceanicSlabSlope(x: number, p: number): number {
+  const normP = Math.max(0, Math.min(1, p));
+  const flexStart = 190 + Math.round(normP * 25);
+  const trenchX = 370 + Math.round(normP * 12);
+  const seafloorY = 350;
+  const trenchDepth = Math.round(485 + normP * 25);
+  const targetSlope = 0.70;
+
+  if (x <= flexStart) {
+    return 0;
+  }
+  if (x <= trenchX) {
+    const L = trenchX - flexStart;
+    const u = (x - flexStart) / L;
+    const dh00 = 6 * u * u - 6 * u;
+    const dh01 = -6 * u * u + 6 * u;
+    const dh11 = 3 * u * u - 2 * u;
+    const dy_du = dh00 * seafloorY + dh01 * trenchDepth + dh11 * (targetSlope * L);
+    return dy_du / L;
+  }
+  const rx = x - trenchX;
+  return targetSlope + 2 * rx * 0.00035;
+}
+
+// Profil dasar laut dari lantai samudra barat, palung laut, hingga bibir pantai
 export function getConvergentSeafloorProfile(x: number, p: number): number {
-  if (x <= 240) {
-    return 405; // Lantai samudra abisal datar sebelum palung
+  const normP = Math.max(0, Math.min(1, p));
+  const trenchX = 370 + Math.round(normP * 12);
+  const trenchDepth = Math.round(485 + normP * 25);
+  const coastX = 580;
+  const seaLevelY = 300;
+
+  // Di sebelah barat sumbu palung: dasar laut adalah permukaan atas lempeng samudra
+  if (x <= trenchX) {
+    return getOceanicSubductingSlabTopY(x, normP);
   }
-  if (x <= 380) {
-    // Lereng palung luar (outer-trench slope) melengkung mulus ke sumbu palung (x=380)
-    const t = (x - 240) / 140;
-    const sCurve = (1 - Math.cos(t * Math.PI)) / 2;
-    return 405 + sCurve * 55 * p; // Palung mendalam hingga y = 460
+
+  // Antara sumbu palung (trenchX) dan garis pantai (coastX):
+  // Lereng benua (continental slope / accretionary wedge) kokoh dan stabil,
+  // dengan sedikit kompresi pemadatan tektonik saat ditumbuk lempeng samudra (tanpa meleyot kendur)
+  if (x <= coastX) {
+    const u = (x - trenchX) / (coastX - trenchX);
+    const s = u * u * (3 - 2 * u); // Smoothstep C1
+    const yBase = trenchDepth * (1 - s) + seaLevelY * s;
+    const wedgeCompress = Math.sin(u * Math.PI) * (normP * 10);
+    return Math.round(yBase - wedgeCompress);
   }
-  if (x <= 518) {
-    // Lereng prisma akresi benua naik mulus dari dasar palung (y=405+55*p) ke dermaga pantai (y=360)
-    const t = (x - 380) / 138;
-    const sCurve = (1 - Math.cos(t * Math.PI)) / 2;
-    const trenchBottom = 405 + 55 * p;
-    return trenchBottom - sCurve * (trenchBottom - 360);
-  }
-  return 360; // Batuan dasar daratan pantai & pesisir
+
+  // Di daratan pantai lempeng benua (x > coastX)
+  return getConvergentTerrainElevation(x, normP, 'ocean');
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// RENDERING MEDAN DINAMIS AREA 7 (BATAS KONVERGEN): SUBDUKSI SAMUDRA MENUNJAM,
-// PALUNG DALAM DI TENGAH LAUT (TERISI AIR), KERAK SAMUDRA KAYA STRATA & MINERAL,
-// GUNUNG BERAPI DARATAN, TANPA CELAH/LAVA/JEMBATAN
+// RENDERING MEDAN DINAMIS AREA 7 (BATAS KONVERGEN):
+// DUA LEMPENG BERTABRAKAN SECARA REALISTIS:
+// 1. LEMPENG SAMUDRA NYATA BERGESER HORIZONTAL & MENUNJAM CURAM KE MANTEL (SUBDUKSI)
+// 2. PALUNG LAUT MENDALAM TEMBUS KE BAWAH LAYAR (DASAR JURANG TERSEMBUNYI)
+// 3. PELEBURAN PARSIAL & MAGMA MEMBARA NAIK KE ATAS (ORGANIK TANPA GARIS-GARIS WIRE)
+// 4. PARTIKEL KONVEKSI CAIRAN MAGMA REALISTIS & ASAP VULKANIK BERGULUNG BEBAS BULET
+// 5. KERAK BENUA MENGALAMI KOMPRESI & TERANGKAT MEMBENTUK GUNUNG VULKANIK
 // ══════════════════════════════════════════════════════════════════════════
-export function renderOrganicConvergentTerrain(
+// ══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// HELPER: TEKTONIK ARROW
+// ══════════════════════════════════════════════════════════════════════════
+
+export function drawPlateVectorArrow(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  angleRad: number,
+  length: number,
+  label: string,
+  color: string,
+  frame: number,
+): void {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angleRad);
+
+  const pulse = Math.sin(frame * 0.1) * 0.2 + 0.8;
+  const shaftW = length;
+  const shaftH = 7;
+  const headSize = 13;
+
+  // Glow halo
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.35 * pulse;
+  ctx.fillRect(-2, -shaftH / 2 - 2, shaftW + 4, shaftH + 4);
+  ctx.beginPath();
+  ctx.moveTo(shaftW, -headSize - 2);
+  ctx.lineTo(shaftW + headSize + 4, 0);
+  ctx.lineTo(shaftW, headSize + 2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Solid Shaft
+  ctx.globalAlpha = 0.95;
+  ctx.fillStyle = color;
+  ctx.fillRect(0, -shaftH / 2, shaftW, shaftH);
+
+  // White core shaft
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(2, -shaftH / 2 + 2, shaftW - 2, shaftH - 4);
+
+  // Solid Arrow Head
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(shaftW, -headSize);
+  ctx.lineTo(shaftW + headSize, 0);
+  ctx.lineTo(shaftW, headSize);
+  ctx.closePath();
+  ctx.fill();
+
+  // White core Head
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.moveTo(shaftW + 2, -headSize + 4);
+  ctx.lineTo(shaftW + headSize - 3, 0);
+  ctx.lineTo(shaftW + 2, headSize - 4);
+  ctx.closePath();
+  ctx.fill();
+
+  // Animated moving indicator along shaft
+  const chevronPos = ((frame * 0.8) % Math.max(1, shaftW - 4));
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(chevronPos, -shaftH / 2 + 1, 3, shaftH - 2);
+
+  ctx.restore();
+
+  // Label badge (drawn unrotated for clean readability)
+  if (label) {
+    ctx.save();
+    ctx.font = 'bold 8.5px "Outfit", "Pixelify Sans", sans-serif';
+    const textW = ctx.measureText(label).width;
+    const badgeW = textW + 12;
+    const badgeH = 16;
+    const badgeX = Math.round(x - badgeW / 2);
+    const badgeY = Math.round(y - 24);
+
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+    ctx.fillRect(badgeX, badgeY, badgeW, badgeH);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(badgeX, badgeY, badgeW, badgeH);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(label, badgeX + 6, badgeY + 11.5);
+    ctx.restore();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// KONDISI 1: KONVERGEN DARATAN (TABRAKAN DUA LEMPENG BENUA & PEMBENTUKAN GUNUNG)
+// Sesuai Konsep Video Referensi:
+// - Dua lempeng benua:
+//   1. Lempeng benua kiri ("kepadatan lebih rendah"): bentuk awal sudah menunjam miring ke kanan bawah (↘),
+//      tanpa Gunung Anak Krakatau. Saat animasi, bergerak ke kanan menunjam ke bawah (↘).
+//   2. Lempeng benua kanan ("kepadatan lebih tinggi"): bergerak ke kiri (←).
+// - Di bawah lempeng: ada lapisan tanah/batuan padat litosfer dulu ("tanahnya dulu"),
+//   baru di bawahnya lapisan mantel astenosfer yang berisi magma dengan arus konveksi.
+// - Kedua lempeng saling bertabrakan (kompresi horizontal) melipat kerak membentuk gunung megah.
+// - Saat gunung terbentuk, di dalam perut gunung terisi dapur magma (magma chamber) & pipa magma
+//   yang naik dari zona peleburan mantel, namun magma TETAP TERKUNCI di dalam (tidak meletus keluar).
+// ══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// KONDISI 1: KONVERGEN DARATAN (TABRAKAN DUA LEMPENG BENUA & PEMBENTUKAN GUNUNG)
+// Sesuai Konsep Video Referensi & Arahan Pengguna:
+// - Dua lempeng benua:
+//   1. Lempeng benua kiri: menunjam miring ke kanan-bawah (↘) dengan garis batas alami
+//      (bebas dari garis hitam buatan), meluncur masuk ke dalam mantel.
+//   2. Lempeng benua kanan: bergerak ke kiri (←).
+// - Lapisan Mantel Astenosfer Magma: dibuat persis seperti di Area Divergen
+//   (gradien magma pijar membara, arus konveksi sinusoidal, gelembung pijar, garis kontak Moho).
+// - Di antara lempeng dan mantel terdapat lapisan tanah/batuan padat litosfer ("tanahnya dulu").
+// - Tabrakan melipat kerak membentuk gunung megah yang natural dan rapi (tanpa tulisan berantakan).
+// - Dapur magma terisi di dalam perut gunung dan diberi saluran pipa dari mantel,
+//   namun magma TETAP TERKUNCI di dalam gunung dengan atap batuan padat kokoh (tidak meletus keluar).
+// ══════════════════════════════════════════════════════════════════════════
+export function renderConvergentLandMode(
+  ctx: CanvasRenderingContext2D,
+  zone: ZoneConfig,
+  frame: number,
+  collisionProgress: number = 1.0,
+): void {
+  const w = zone.cols * TILE;
+  const h = Math.max(zone.rows * TILE, 480);
+  const p = Math.max(0, Math.min(1, collisionProgress));
+  ctx.imageSmoothingEnabled = false;
+
+  const leftShiftX = Math.round(p * 80);
+  const contactX = 380 + leftShiftX;
+  const curveStartX = 200 + leftShiftX;
+  const baseY = 310;
+  const plateThick = 95;
+  const mountainPeakX = contactX + 200;
+  const mountainEndX = contactX + 460;
+  const mountainLift = p * 155;
+
+  // Geometri Dapur Magma di dalam Gunung yang Terbentuk saat Konvergen Tabrakan Benua
+  const chamberApexX = mountainPeakX;
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 1: LAPISAN MANTEL BUMI & MAGMA TERPADU (UNIFIED ASTHENOSPHERE & MAGMA DOME)
+  // PERSIS SEPERTI KONSEP BATAS DIVERGEN:
+  // 1. Mantel dan magma yang naik ke perut gunung adalah SATU LAPISAN TUNGGAL
+  // 2. Magma di dalam gunung BUKAN objek/layer terpisah, melainkan lapisan mantel
+  //    itu sendiri yang membumbung naik ke dalam gunung saat kedua lempeng bertabrakan!
+  // 3. Tekstur, warna gradien, arus konveksi, dan gelembung pijar 100% SAMA PERSIS dan MENYATU
+  // 4. Bebas garis pembatas/sekat seolah satu fluida magma cair murni
+  // ══════════════════════════════════════════════════════════════════════
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(-800, h);
+  ctx.lineTo(-800, getConvergentMantleY(-800, p, 'land'));
+  for (let mx = -800; mx <= w + 400; mx += 3) {
+    ctx.lineTo(mx, getConvergentMantleY(mx, p, 'land'));
+  }
+  ctx.lineTo(w + 400, h);
+  ctx.closePath();
+
+  // Gradien Magma Murni Membara — SAMA PERSIS untuk seluruh lapisan mantel & magma gunung
+  const topMantleY = getConvergentMantleY(chamberApexX, p, 'land');
+  const moltenGrad = ctx.createLinearGradient(0, Math.min(412, topMantleY), 0, 500);
+  moltenGrad.addColorStop(0.00, '#ffffff');    // Pucuk terpanas putih menyala di puncak magma
+  moltenGrad.addColorStop(0.04, '#fef08a');   // Kuning menyala terang tipis di bibir atas
+  moltenGrad.addColorStop(0.10, '#fde047');   // Inti konveksi magma emas keemasan
+  moltenGrad.addColorStop(0.24, '#f97316');   // Magma oranye membara (WARNA UTAMA MANTEL)
+  moltenGrad.addColorStop(0.65, '#f97316');   // Tubuh kubah magma sepenuhnya oranye mantel
+  moltenGrad.addColorStop(0.85, '#ea580c');   // Vermilion sirkulasi mantel
+  moltenGrad.addColorStop(0.95, '#dc2626');   // Merah magma dalam
+  moltenGrad.addColorStop(1.00, '#991b1b');   // Mantel pekat abisal
+  ctx.fillStyle = moltenGrad;
+  ctx.fill();
+
+  // Clip agar seluruh arus konveksi & gelembung tidak pernah overshooting/kelewatan ke atas
+  ctx.clip();
+
+  // Arus konveksi yang mengalir melintasi seluruh mantel dan membumbung ke gunung
+  ctx.fillStyle = 'rgba(254, 240, 138, 0.38)';
+  for (let mx = -800; mx <= w + 400; mx += 14) {
+    const my = getConvergentMantleY(mx, p, 'land');
+    const wave1 = Math.sin(frame * 0.03 + mx * 0.02) * 3.5;
+    ctx.fillRect(mx, my + 14 + wave1, 14, 4);
+  }
+  ctx.fillStyle = 'rgba(249, 115, 22, 0.42)';
+  for (let mx = -800; mx <= w + 400; mx += 18) {
+    const my = getConvergentMantleY(mx, p, 'land');
+    const wave2 = Math.cos(frame * 0.04 + mx * 0.025) * 3.5;
+    ctx.fillRect(mx, my + 24 + wave2, 18, 4);
+  }
+
+  // Gelembung Pijar Magma Terapung di Seluruh Lapisan Mantel & Rongga Magma Gunung
+  for (let i = 0; i < 28; i++) {
+    const bx = (((i * 137 + frame * 0.35) % (w + 1200)) - 800);
+    const my = getConvergentMantleY(bx, p, 'land');
+    const by = my + 8 + ((i * 27) % 50) + Math.sin(frame * 0.05 + i) * 3;
+    ctx.fillStyle = 'rgba(254, 240, 138, 0.75)';
+    ctx.beginPath();
+    ctx.arc(bx, by, 2.5 + (i % 2), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+    ctx.fillRect(bx - 1, by - 1, 2, 2);
+  }
+
+  // Garis Kontak Moho Berpendar Hangat (persis Batas Divergen)
+  ctx.strokeStyle = 'rgba(254, 240, 138, 0.55)';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  for (let mx = -800; mx <= w + 400; mx += 6) {
+    const my = getConvergentMantleY(mx, p, 'land');
+    if (mx === -800) ctx.moveTo(mx, my);
+    else ctx.lineTo(mx, my);
+  }
+  ctx.stroke();
+
+  ctx.restore();
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 2: LAPISAN TANAH & BATUAN PADAT LITOSFER BAWAH (SOLID KONTINU)
+  // Menghubungkan dasar lempeng ke atas mantel bumi secara kontinu tanpa celah bocor.
+  // Di area dapur magma yang membumbung di dalam gunung, ketebalan otomatis 0
+  // (sehingga magma mantel Layer 1 memancar utuh di dalam perut gunung).
+  // ══════════════════════════════════════════════════════════════════════
+  ctx.save();
+  const getPlateBottomY = (px: number) => {
+    return px <= contactX ? (getSubductingPlateTopY(px, p) + plateThick) : (baseY + plateThick);
+  };
+
+  ctx.beginPath();
+  // Jalur atas: dari -800 ke w + 400 mengikuti dasar lempeng tektonik
+  ctx.moveTo(-800, getPlateBottomY(-800));
+  for (let x = -800; x <= w + 400; x += 6) {
+    ctx.lineTo(x, getPlateBottomY(x));
+  }
+  // Jalur bawah: dari w + 400 kembali ke -800 mengikuti permukaan mantel
+  // Menggunakan Math.max(getPlateBottomY(x), getConvergentMantleY(x, p, 'land'))
+  // sehingga di area magma naik ke perut gunung, ketebalan litosfer menjadi 0 secara mulus tanpa celah kosong.
+  for (let x = w + 400; x >= -800; x -= 6) {
+    const pBottom = getPlateBottomY(x);
+    const mTop = getConvergentMantleY(x, p, 'land');
+    ctx.lineTo(x, Math.max(pBottom, mTop));
+  }
+  ctx.closePath();
+
+  const subGroundGrad = ctx.createLinearGradient(0, baseY + plateThick, 0, 424);
+  subGroundGrad.addColorStop(0, '#382b21');  // Batuan kerak benua padat
+  subGroundGrad.addColorStop(0.5, '#281e16'); // Litosfer padat berkompresi tinggi
+  subGroundGrad.addColorStop(1, '#1b130e');  // Dasar kontak termal mantel
+  ctx.fillStyle = subGroundGrad;
+  ctx.fill();
+
+  // Clip agar tekstur strata batuan hanya berada di dalam litosfer padat
+  ctx.clip();
+
+  // Tekstur strata batuan horizontal lembut (hanya di zona litosfer, aman di atas mantel)
+  for (let gy = baseY + plateThick + 3; gy < 424; gy += 7) {
+    const isEven = Math.floor(gy / 7) % 2 === 0;
+    ctx.strokeStyle = isEven ? 'rgba(78, 62, 50, 0.35)' : 'rgba(38, 28, 21, 0.40)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-800, gy);
+    for (let x = -800; x <= w + 400; x += 24) {
+      const wave = Math.sin(x * 0.035 + gy * 0.08) * 2.0;
+      ctx.lineTo(x, gy + wave);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 3: LEMPENG BENUA KANAN & PEMBENTUKAN GUNUNG (Z-INDEX LEBIH RENDAH)
+  // - Batuan gunung terangkat dan membentuk atap di atas magma mantel yang membumbung
+  // - Di bawah atap gunung, rongga terbuka langsung memperlihatkan magma mantel Layer 1
+  // ══════════════════════════════════════════════════════════════════════
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(contactX, getSubductingPlateTopY(contactX, p));
+  for (let x = contactX; x <= w + 400; x += 4) {
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+  }
+  ctx.lineTo(w + 400, baseY + plateThick);
+  for (let x = w + 400; x >= contactX; x -= 4) {
+    const bottomY = Math.min(baseY + plateThick, getConvergentMantleY(x, p, 'land') + 2);
+    ctx.lineTo(x, bottomY);
+  }
+  ctx.closePath();
+
+  // Gradien kerak benua yang SAMA PERSIS dengan lempeng kiri (tebal 95px)
+  const rightPlateGrad = ctx.createLinearGradient(0, baseY - mountainLift, 0, baseY + plateThick);
+  rightPlateGrad.addColorStop(0, '#4a3f35');   // Sedimen atas
+  rightPlateGrad.addColorStop(0.35, '#3a3028'); // Granit menengah
+  rightPlateGrad.addColorStop(0.70, '#29211a'); // Granit dalam
+  rightPlateGrad.addColorStop(1, '#1c1510');    // Batuan dasar mafik
+  ctx.fillStyle = rightPlateGrad;
+  ctx.fill();
+
+  // Garis Lipatan Tektonik Antiklinal Alami yang Mulus Menyatukan Gunung & Dataran (5 lipatan)
+  for (let f = 1; f <= 5; f++) {
+    const fOffset = f * 17;
+    ctx.strokeStyle = (f % 2 === 0) ? 'rgba(87, 72, 61, 0.40)' : 'rgba(53, 44, 37, 0.35)';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    for (let x = contactX; x <= w + 400; x += 8) {
+      const elev = getConvergentTerrainElevation(x, p, 'land');
+      const sy = elev + fOffset;
+      if (sy < baseY + plateThick + 4) {
+        if (x === contactX) ctx.moveTo(x, sy);
+        else ctx.lineTo(x, sy);
+      }
+    }
+    ctx.stroke();
+  }
+
+  // Rumput Hijau Subur pada Permukaan Lempeng Kanan & Lereng Gunung
+  ctx.beginPath();
+  ctx.moveTo(contactX, getSubductingPlateTopY(contactX, p));
+  for (let x = contactX; x <= w + 400; x += 4) {
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+  }
+  ctx.lineTo(w + 400, baseY + 4);
+  for (let x = w + 400; x >= contactX; x -= 4) {
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land') + 4);
+  }
+  ctx.closePath();
+  ctx.fillStyle = '#15803d';
+  ctx.fill();
+
+  ctx.strokeStyle = '#22c55e';
+  ctx.lineWidth = 2.0;
+  ctx.beginPath();
+  ctx.moveTo(contactX, getSubductingPlateTopY(contactX, p));
+  for (let x = contactX; x <= w + 400; x += 4) {
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+  }
+  ctx.stroke();
+  ctx.restore();
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 5: LEMPENG BENUA KIRI (SLAB SUBDUKSI - Z-INDEX LEBIH TINGGI)
+  // - Dirender SETELAH lempeng kanan dan gunung, sehingga lempeng kiri berada di atas
+  //   pada area pertemuan lempeng (contactX), sesuai permintaan pengguna.
+  // - Menunjam mulus dan curam tembus ke dasar layar dengan ketebalan 95px padat.
+  // - Didukung animasi pergeseran strata horisontal nyata (strataOffset = leftShiftX)
+  //   sehingga pergerakan lempeng tektonik tampak jelas dan hidup.
+  // ══════════════════════════════════════════════════════════════════════
+  ctx.save();
+  const slabReachX = contactX + 260 + Math.round(p * 45);
+
+  // 5A. Tubuh Lempeng Benua Kiri (Batuan Granit, Sedimen & Batuan Dasar Menunjam)
+  ctx.beginPath();
+  ctx.moveTo(-800, baseY);
+  for (let x = -800; x <= slabReachX; x += 4) {
+    ctx.lineTo(x, getSubductingPlateTopY(x, p));
+  }
+  ctx.lineTo(slabReachX, getSubductingPlateTopY(slabReachX, p) + plateThick);
+  for (let x = slabReachX; x >= -800; x -= 4) {
+    ctx.lineTo(x, getSubductingPlateTopY(x, p) + plateThick);
+  }
+  ctx.closePath();
+
+  const leftPlateGrad = ctx.createLinearGradient(0, baseY, 0, baseY + plateThick);
+  leftPlateGrad.addColorStop(0, '#4a3f35');   // Sedimen atas
+  leftPlateGrad.addColorStop(0.35, '#3a3028'); // Granit menengah
+  leftPlateGrad.addColorStop(0.70, '#29211a'); // Granit dalam
+  leftPlateGrad.addColorStop(1, '#1c1510');    // Batuan dasar mafik
+  ctx.fillStyle = leftPlateGrad;
+  ctx.fill();
+
+  // 5B. Garis Strata Internal Lempeng Kiri (4 lapisan strata tebal mengikuti penunjaman)
+  for (let s = 1; s <= 4; s++) {
+    const sOffset = s * 20;
+    ctx.strokeStyle = (s % 2 === 0) ? 'rgba(87, 72, 61, 0.45)' : 'rgba(53, 44, 37, 0.45)';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-800, baseY + sOffset);
+    for (let x = -800; x <= slabReachX; x += 6) {
+      ctx.lineTo(x, getSubductingPlateTopY(x, p) + sOffset);
+    }
+    ctx.stroke();
+  }
+
+  // 5B.2 TEKSTUR PERGERAKAN LEMPENG (STRATA BERGESER NYATA MENGIKUTI PERGERAKAN LEMPENG KE KANAN)
+  const strataOffset = leftShiftX;
+
+  // Garis kekar / patahan vertikal litosfer yang bergerak meluncur ke kanan
+  for (let bx = -800; bx <= slabReachX; bx += 44) {
+    const fx = bx + strataOffset;
+    if (fx <= slabReachX) {
+      const topY = getSubductingPlateTopY(fx, p);
+      ctx.strokeStyle = (Math.floor(bx / 44) % 2 === 0) ? 'rgba(78, 62, 50, 0.28)' : 'rgba(38, 28, 21, 0.24)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(fx, topY + 4);
+      ctx.lineTo(fx, topY + plateThick - 4);
+      ctx.stroke();
+    }
+  }
+
+  // Bintik kristal mineral padat yang bergeser dinamis bersama lempeng
+  for (let i = 0; i < 48; i++) {
+    const sx = (((i * 89 + strataOffset) % (contactX + 750)) - 750);
+    const sy = baseY + 12 + ((i * 27) % (plateThick - 24));
+    ctx.fillStyle = i % 3 === 0 ? 'rgba(255, 255, 255, 0.45)' : (i % 2 === 0 ? 'rgba(190, 160, 130, 0.35)' : 'rgba(40, 30, 22, 0.45)');
+    ctx.fillRect(sx, sy, 2, 2);
+  }
+
+  // 5C. Rumput Hijau Subur pada Dataran Lempeng Barat (TERTUTUP PENUH SAMPAI contactX)
+  ctx.beginPath();
+  ctx.moveTo(-800, baseY);
+  for (let x = -800; x <= contactX; x += 4) {
+    ctx.lineTo(x, getSubductingPlateTopY(x, p));
+  }
+  ctx.lineTo(contactX, getSubductingPlateTopY(contactX, p) + 4);
+  for (let x = contactX; x >= -800; x -= 4) {
+    ctx.lineTo(x, getSubductingPlateTopY(x, p) + 4);
+  }
+  ctx.closePath();
+  ctx.fillStyle = '#15803d';
+  ctx.fill();
+
+  ctx.strokeStyle = '#22c55e';
+  ctx.lineWidth = 2.0;
+  ctx.beginPath();
+  ctx.moveTo(-800, baseY);
+  for (let x = -800; x <= contactX; x += 4) {
+    ctx.lineTo(x, getSubductingPlateTopY(x, p));
+  }
+  ctx.stroke();
+
+  // Rumpun rumput & ornamen di permukaan lempeng kiri yang bergerak nyata ke kanan
+  for (let gx = -720; gx < contactX - 12; gx += 32) {
+    const px = gx + strataOffset;
+    if (px < contactX - 4) {
+      const py = getSubductingPlateTopY(px, p);
+      ctx.fillStyle = '#4ade80';
+      ctx.fillRect(px, py - 2, 3, 2);
+      ctx.fillStyle = '#166534';
+      ctx.fillRect(px + 1, py, 2, 2);
+    }
+  }
+
+  // 5D. Kontak Alami Batuan pada Bidang Penunjaman di Bawah Gunung
+  ctx.strokeStyle = 'rgba(30, 22, 16, 0.40)';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  for (let x = contactX; x <= slabReachX; x += 4) {
+    const y = getSubductingPlateTopY(x, p);
+    if (x === contactX) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // 5E. Zona Peleburan Parsial Ujung Slab di dalam Mantel (Benioff Partial Melt Zone)
+  const meltX = contactX + 110;
+  const meltY = getSubductingPlateTopY(meltX, p) + 20;
+  const meltGlow = ctx.createRadialGradient(meltX + 45, meltY + 25, 8, meltX + 45, meltY + 25, 95);
+  meltGlow.addColorStop(0, 'rgba(254, 240, 138, 0.90)');
+  meltGlow.addColorStop(0.35, 'rgba(249, 115, 22, 0.65)');
+  meltGlow.addColorStop(0.70, 'rgba(220, 38, 38, 0.30)');
+  meltGlow.addColorStop(1, 'rgba(220, 38, 38, 0)');
+  ctx.fillStyle = meltGlow;
+  ctx.beginPath();
+  ctx.arc(meltX + 45, meltY + 25, 95, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 6: POHON-POHON PINUS (TERSEBAR ALAMI TANPA BERTUMPUKAN)
+  // ══════════════════════════════════════════════════════════════════════
+  const pineXs = [
+    120,
+    240,
+    contactX + 35,
+    mountainPeakX - 95,
+    mountainPeakX + 115,
+    mountainEndX - 30,
+    mountainEndX + 90,
+    mountainEndX + 220,
+  ];
+  for (const px of pineXs) {
+    if (px < w + 200) {
+      const treeY = getConvergentTerrainElevation(px, p, 'land');
+      drawPineTree(ctx, px, treeY, 0.95);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 7: INDIKATOR VEKTOR GERAKAN LEMPENG (JELAS, EDUKATIF & BERANIMASI)
+  // ══════════════════════════════════════════════════════════════════════
+  // Panah 1: Lempeng kiri menunjam miring ke kanan bawah (↘)
+  const leftArrowX = curveStartX + 30;
+  const leftArrowY = getSubductingPlateTopY(leftArrowX, p) + 40;
+  drawPlateVectorArrow(
+    ctx,
+    leftArrowX,
+    leftArrowY,
+    (Math.PI / 180) * 28,
+    42,
+    '',
+    '#38bdf8',
+    frame,
+  );
+
+  // Panah 2: Lempeng kanan menekan ke kiri (←)
+  const rightArrowX = mountainEndX + 65;
+  const rightArrowY = baseY + 40;
+  drawPlateVectorArrow(
+    ctx,
+    rightArrowX,
+    rightArrowY,
+    Math.PI,
+    42,
+    '',
+    '#f59e0b',
+    frame,
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// KONDISI 2: KONVERGEN LAUTAN & PANTAI (SUBDUKSI SAMUDRA & PEMBENTUKAN PALUNG)
+// Sesuai Arahan Pengguna & Sketsa Gambar:
+// 1. Kurva Lempeng Samudra 100% MULUS KONTINU (bebas patahan siku di area subduksi).
+// 2. Palung Laut berjarak jauh (~200px) dari garis pantai (trenchX ≈ 360..385, pantai di coastX = 580).
+// 3. Lempeng Benua di kanan posisinya LEBIH TINGGI dari lempeng samudra, dengan kontur
+//    perbukitan pasir pantai bergelombang alami (rolling sand dunes).
+// 4. Lempeng Benua memiliki 5 LAPISAN STRATA BATUAN YANG SANGAT JELAS, TEGAS & KONTRAS
+//    (Pasir Emas, Serpih Sedimen, Kerak Granit, Kerak Diorit, Litosfer Mafik).
+// 5. TANPA LAPISAN MANTEL MAGMA: Di bawah lempeng adalah batuan litosfer padat dingin.
+// 6. Indikator vektor gerakan lempeng bersih tanpa label badge teks.
+// ══════════════════════════════════════════════════════════════════════════
+export function renderConvergentOceanMode(
   ctx: CanvasRenderingContext2D,
   zone: ZoneConfig,
   frame: number,
@@ -3360,287 +4568,448 @@ export function renderOrganicConvergentTerrain(
   const p = Math.max(0, Math.min(1, collisionProgress));
   ctx.imageSmoothingEnabled = false;
 
-  // ══════════════════════════════════════════════════════════════════════
-  // LAYER 1: FONDASI MANTEL ASTENOSFER SOLID (ELIMINASI SEMUA CELAH BACKGROUND)
-  // ══════════════════════════════════════════════════════════════════════
-  // Mengisi penuh dari y=356 ke bawah canvas (h) pada seluruh lebar map.
-  // Menjamin 100% TIDAK ADA celah langit/kabut yang dapat tembus di bawah air atau lereng!
-  const asthenoGrad = ctx.createLinearGradient(0, 356, 0, h);
-  asthenoGrad.addColorStop(0, '#261405'); // Batuan mantel astenosfer peridotit pekat
-  asthenoGrad.addColorStop(0.35, '#190d03');
-  asthenoGrad.addColorStop(1, '#0c0601');
-  ctx.fillStyle = asthenoGrad;
-  ctx.fillRect(-800, 356, w + 1600, h - 356);
+  const coastX = 580;
+  const seaLevelY = 300;
+  // Pergerakan nyata lempeng samudra meluncur maju ke kanan (110 px)
+  const oceanicShift = Math.round(p * 110);
+  const trenchX = 370 + Math.round(p * 12);
+  const trenchDepth = Math.round(485 + p * 25);
+  const slabThick = 75;
+  // Slab subduksi menusuk menembus makin jauh & makin dalam ke bawah lempeng benua (p: 0 -> 1)
+  const slabReachX = trenchX + 130 + Math.round(p * 260);
+
+  const getContTop = (x: number) => {
+    return x <= coastX ? getConvergentSeafloorProfile(x, p) : getConvergentTerrainElevation(x, p, 'ocean');
+  };
 
   // ══════════════════════════════════════════════════════════════════════
-  // LAYER 2: KERAK SAMUDRA BERSTRATA KAYA (OFIOILIT LITOSFER SAMUDRA)
+  // LAYER 1: LITOSFER BAWAH PADAT DINGIN (DEEP LITHOSPHERE - TANPA LAPISAN MANTEL)
+  // Sesuai arahan pengguna: TIDAK ADA LAPISAN MANTEL MAGMA di kondisi lautan.
+  // Batuan litosfer mafik padat, dingin, dan stabil mengisi bagian bawah kanvas.
   // ══════════════════════════════════════════════════════════════════════
-  // Membentang dari x=-800 hingga menunjam ke bawah lempeng benua (x=500)
-  const sw = 2.5; // Tumpang tindih mikro untuk mencegah celah garis sub-pixel
-  for (let x = -800; x <= 500; x += 2) {
-    let topY: number;
-    if (x <= 380) {
-      topY = getConvergentSeafloorProfile(x, p);
-    } else {
-      // Penunjaman lempeng samudra menembus astenosfer di bawah prisma akresi benua
-      const plungeT = (x - 380) / 120;
-      topY = (405 + 55 * p) + plungeT * 55 * p;
-    }
-
-    const slabThickness = 48;
-
-    // A. LAPISAN 4: GABRO PLUTONIK BERLAPIS & MANTEL PERIDOTIT (topY + 34 s/d topY + 48)
-    ctx.fillStyle = '#090d16'; // Ultra-mafik kristalin pekat
-    ctx.fillRect(x, topY + 34, sw, slabThickness - 34);
-
-    // B. LAPISAN 3: SHEETED DYKES / KOMPLEKS DYKE BERSUSUN (topY + 20 s/d topY + 34)
-    ctx.fillStyle = '#141d2c'; // Diabase mafik basaltik
-    ctx.fillRect(x, topY + 20, sw, 14);
-
-    // C. LAPISAN 2: BASAL BANTAL VULKANIK (PILLOW BASALT CRUST) (topY + 5 s/d topY + 20)
-    ctx.fillStyle = '#1e293b'; // Basalt crust utama
-    ctx.fillRect(x, topY + 5, sw, 15);
-
-    // D. LAPISAN 1: SEDIMEN LAUT PELAGIS (PELAGIC SEDIMENT) (topY s/d topY + 5)
-    ctx.fillStyle = '#475569'; // Silt laut dalam
-    ctx.fillRect(x, topY + 2, sw, 3);
-    ctx.fillStyle = '#64748b'; // Permukaan sedimen laut terang
-    ctx.fillRect(x, topY, sw, 2);
-
-    // STRATA & TEKSTUR KHAS KERAK SAMUDRA:
-    // 1. Laminasi sedimen laut halus
-    if (x % 6 === 0) {
-      ctx.fillStyle = 'rgba(148, 163, 184, 0.45)';
-      ctx.fillRect(x, topY + 1, sw, 1);
-    }
-
-    // 2. Dykes intrusi vertikal di zona sheeted dykes
-    if (x % 14 === 0) {
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x, topY + 22, sw, 10);
-    }
-
-    // 3. Kristal mineral khas kerak samudra (Olivin & Piroksen Hijau Zamrud khas Gabro/Peridotit)
-    const seed = (x * 7919) ^ 0x5a5a;
-    if (seed % 19 === 0) {
-      // Kristal Olivin hijau zamrud
-      ctx.fillStyle = '#0d9488';
-      ctx.fillRect(x, topY + 36 + (seed % 9), 1.5, 2);
-    } else if (seed % 23 === 0) {
-      // Kristal Piroksen hijau laut terang
-      ctx.fillStyle = '#10b981';
-      ctx.fillRect(x, topY + 38 + (seed % 7), 1.5, 1.5);
-    } else if (seed % 31 === 0) {
-      // Kristal feldspar / kalsit hidrotermal
-      ctx.fillStyle = '#cbd5e1';
-      ctx.fillRect(x, topY + 8 + (seed % 10), 1.5, 1.5);
-    } else if (seed % 41 === 0) {
-      // Urat kuarsa / zeolit hidrotermal biru laut
-      ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(x, topY + 11 + (seed % 8), 1.5, 2);
-    }
-
-    // 4. Retakan kompresi tektonik di daerah penekukan palung (outer-trench flexure)
-    if (p > 0.3 && x >= 280 && x <= 370 && (x % 28 === 0)) {
-      ctx.fillStyle = '#020617';
-      ctx.fillRect(x, topY + 2, 1, 14);
-    }
-  }
-
-  // Bentukan visual Basal Bantal (Pillow Lava Lobes) membulat di sepanjang permukaan kerak samudra (x: -800..380)
   ctx.save();
-  for (let px = -800; px < 380; px += 18) {
-    const pY = getConvergentSeafloorProfile(px, p);
-    // Garis kubah basal bantal
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 1.2;
+  const deepLithoGrad = ctx.createLinearGradient(0, 390, 0, h);
+  deepLithoGrad.addColorStop(0, '#1c1917');
+  deepLithoGrad.addColorStop(0.35, '#12100e');
+  deepLithoGrad.addColorStop(1, '#080706');
+  ctx.fillStyle = deepLithoGrad;
+  ctx.fillRect(-800, 360, w + 1600, h - 360);
+
+  // Tekstur strata litosfer horizontal padat
+  for (let gy = 415; gy < Math.min(h, 950); gy += 15) {
+    const isEven = Math.floor(gy / 15) % 2 === 0;
+    ctx.strokeStyle = isEven ? 'rgba(68, 64, 60, 0.22)' : 'rgba(41, 37, 36, 0.28)';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.arc(px + 8, pY + 12, 7, Math.PI, 0, false);
+    ctx.moveTo(-800, gy);
+    for (let x = -800; x <= w + 800; x += 32) {
+      const wave = Math.sin(x * 0.02 + gy * 0.05) * 2.5;
+      ctx.lineTo(x, gy + wave);
+    }
     ctx.stroke();
-    // Bayangan pendinginan kaca vulkanik di batas bantal
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
-    ctx.fillRect(px + 14, pY + 8, 2, 8);
   }
   ctx.restore();
 
   // ══════════════════════════════════════════════════════════════════════
-  // LAYER 3: KERAK BENUA & PRISMA AKRESI LERENG PALUNG (x: 380 .. w + 800)
+  // LAYER 2: LEMPENG BENUA KANAN (5 LAPISAN STRATA BATUAN JELAS, TEGAS & BERGELOMBANG)
+  // Sesuai arahan pengguna & sketsa:
+  // - Posisi lempeng benua LEBIH TINGGI dari lempeng samudra
+  // - Lapisan atas bergelombang alami (rolling sand dunes)
+  // - 5 LAPISAN STRATA YANG SANGAT JELAS DENGAN WARNA KONTRAS & GARIS PEMISAH TEGAS:
+  //   1. Pasir Pantai Emas & Batupasir Kuarsa (0 .. 22 px)
+  //   2. Serpih Sedimen & Batulumpur Pantai (22 .. 54 px)
+  //   3. Kerak Granit Atas Benua (54 .. 102 px)
+  //   4. Kerak Bawah Diorit (102 .. 165 px)
+  //   5. Batuan Dasar Metamorf Litosfer Benua (165+ px ke bawah)
   // ══════════════════════════════════════════════════════════════════════
-  // FONDASI SOLID KERAK BENUA & PRISMA AKRESI (100% BEBAS CELAH SUB-PIXEL & GARIS VERTIKAL)
-  ctx.fillStyle = '#1c1917';
+  ctx.save();
+
+  // Batas kliping tubuh lempeng benua
   ctx.beginPath();
-  ctx.moveTo(380, h);
-  for (let bx = 380; bx <= 530; bx += 4) {
-    ctx.lineTo(bx, getConvergentSeafloorProfile(bx, p));
-  }
-  for (let bx = 530; bx <= w + 800; bx += 4) {
-    ctx.lineTo(bx, getConvergentTerrainElevation(bx, p));
+  ctx.moveTo(trenchX, trenchDepth);
+  for (let bx = trenchX; bx <= w + 800; bx += 4) {
+    ctx.lineTo(bx, getContTop(bx));
   }
   ctx.lineTo(w + 800, h);
+  for (let bx = w + 800; bx >= trenchX; bx -= 8) {
+    const bY = bx <= slabReachX ? getOceanicSubductingSlabTopY(bx, p) : h;
+    ctx.lineTo(bx, bY);
+  }
   ctx.closePath();
+  ctx.clip(); // Seluruh 5 strata batuan berada presisi di dalam tubuh lempeng benua
+
+  // 2E. STRATA 5: BATUAN DASAR METAMORF LITOSFER BENUA (Paling Dasar)
+  ctx.fillStyle = '#18181b';
+  ctx.fillRect(trenchX - 20, 0, w + 1000, h);
+
+  // 2D. STRATA 4: KERAK BAWAH DIORIT (Lower Crust / Diorite - Tebal 63px)
+  // Warna abu-abu gelap kebiruan elegan yang kontras
+  ctx.beginPath();
+  ctx.moveTo(trenchX, trenchDepth + 102);
+  for (let bx = trenchX; bx <= w + 800; bx += 4) {
+    ctx.lineTo(bx, getContTop(bx) + 102);
+  }
+  ctx.lineTo(w + 800, h);
+  ctx.lineTo(trenchX, h);
+  ctx.closePath();
+  const dioriteGrad = ctx.createLinearGradient(0, seaLevelY + 102, 0, seaLevelY + 220);
+  dioriteGrad.addColorStop(0, '#334155');
+  dioriteGrad.addColorStop(0.5, '#243042');
+  dioriteGrad.addColorStop(1, '#1e293b');
+  ctx.fillStyle = dioriteGrad;
   ctx.fill();
 
-  // A. Lereng Prisma Akresi Palung (x: 380 .. 530)
-  // Permukaan batuan mengikuti EXACTLY getConvergentSeafloorProfile(x, p) sehingga rapat tanpa celah
-  for (let x = 380; x <= 530; x += 2) {
-    const slopeY = getConvergentSeafloorProfile(x, p);
+  // 2C. STRATA 3: KERAK GRANIT ATAS BENUA (Upper Granitic Crust - Tebal 48px)
+  // Warna abu-abu kecokelatan andesit granit yang khas benua
+  ctx.beginPath();
+  ctx.moveTo(trenchX, trenchDepth + 54);
+  for (let bx = trenchX; bx <= w + 800; bx += 4) {
+    ctx.lineTo(bx, getContTop(bx) + 54);
+  }
+  ctx.lineTo(w + 800, h);
+  ctx.lineTo(trenchX, h);
+  ctx.closePath();
+  const graniteGrad = ctx.createLinearGradient(0, seaLevelY + 54, 0, seaLevelY + 120);
+  graniteGrad.addColorStop(0, '#57534e');
+  graniteGrad.addColorStop(0.5, '#4b4742');
+  graniteGrad.addColorStop(1, '#3f3b37');
+  ctx.fillStyle = graniteGrad;
+  ctx.fill();
 
-    // Litosfer benua dalam (Granit & kristalin dasar)
-    ctx.fillStyle = '#1c1917';
-    ctx.fillRect(x, slopeY + 36, sw, h - (slopeY + 36));
-
-    // Kerak benua tengah (Batuan andesit padat & batuan dasar beku)
-    ctx.fillStyle = '#292524';
-    ctx.fillRect(x, slopeY + 12, sw, 24);
-
-    // Lapisan batuan lereng atas (Andesit vulkanik terlipat)
-    ctx.fillStyle = '#44403c';
-    ctx.fillRect(x, slopeY + 3, sw, 9);
-
-    // Puncak permukaan batuan tepi lereng
-    ctx.fillStyle = '#57534e';
-    ctx.fillRect(x, slopeY, sw, 3);
-    ctx.fillStyle = '#78716c';
-    ctx.fillRect(x, slopeY - 1, sw, 1);
-
-    // Garis foliasi lipatan tektonik lereng
-    const foldWedge = Math.sin(x * 0.08) * 3;
-    ctx.fillStyle = 'rgba(120, 113, 108, 0.35)';
-    ctx.fillRect(x, slopeY + 8 + foldWedge, sw, 1.5);
-    ctx.fillStyle = 'rgba(28, 25, 23, 0.45)';
-    ctx.fillRect(x, slopeY + 20 + foldWedge, sw, 1.5);
+  // Bintik kristal feldspar & mika pada granit
+  for (let i = 0; i < 48; i++) {
+    const gx = trenchX + 30 + ((i * 73) % (w + 400));
+    const gy = getContTop(gx) + 60 + ((i * 17) % 36);
+    ctx.fillStyle = i % 2 === 0 ? 'rgba(255, 255, 255, 0.40)' : 'rgba(214, 211, 209, 0.35)';
+    ctx.fillRect(gx, gy, 2, 2);
   }
 
-  // B. Daratan Kerak Benua & Barisan Pegunungan Vulkanik Terlipat (x: 530 .. w + 800)
-  for (let x = 530; x <= w + 800; x += 2) {
-    const gY = getConvergentTerrainElevation(x, p);
+  // 2B. STRATA 2: SERPIH SEDIMEN & BATULUMPUR PANTAI (Terrigenous Shale - Tebal 32px)
+  // Warna cokelat kemerahan hangat yang memukau
+  ctx.beginPath();
+  ctx.moveTo(trenchX, trenchDepth + 22);
+  for (let bx = trenchX; bx <= w + 800; bx += 4) {
+    ctx.lineTo(bx, getContTop(bx) + 22);
+  }
+  ctx.lineTo(w + 800, h);
+  ctx.lineTo(trenchX, h);
+  ctx.closePath();
+  const shaleGrad = ctx.createLinearGradient(0, seaLevelY + 22, 0, seaLevelY + 60);
+  shaleGrad.addColorStop(0, '#9a3412');
+  shaleGrad.addColorStop(0.5, '#852d0e');
+  shaleGrad.addColorStop(1, '#71260c');
+  ctx.fillStyle = shaleGrad;
+  ctx.fill();
 
-    // Deep lithosphere / crystalline basement
-    ctx.fillStyle = '#1c1917';
-    ctx.fillRect(x, gY + 45, sw, h - (gY + 45));
+  // 2A. STRATA 1: PASIR PANTAI EMAS & BATUPASIR KUARSA (Gold Sandstone - Tebal 22px)
+  // Warna pasir emas berkilauan sesuai sketsa pantai tropis
+  ctx.beginPath();
+  ctx.moveTo(trenchX, trenchDepth);
+  for (let bx = trenchX; bx <= w + 800; bx += 4) {
+    ctx.lineTo(bx, getContTop(bx));
+  }
+  ctx.lineTo(w + 800, h);
+  ctx.lineTo(trenchX, h);
+  ctx.closePath();
+  const sandGrad = ctx.createLinearGradient(0, seaLevelY - 15, 0, seaLevelY + 30);
+  sandGrad.addColorStop(0.00, '#fef9c3'); // Pasir putih keemasan halus di permukaan
+  sandGrad.addColorStop(0.25, '#fef08a'); // Pasir hangat
+  sandGrad.addColorStop(0.55, '#fde047'); // Emas pantai tropis
+  sandGrad.addColorStop(0.85, '#ca8a04'); // Pasir basah padat
+  sandGrad.addColorStop(1.00, '#a16207'); // Batupasir kontak
+  ctx.fillStyle = sandGrad;
+  ctx.fill();
 
-    // Middle continental crust (Granite & gneiss)
-    ctx.fillStyle = '#292524';
-    ctx.fillRect(x, gY + 22, sw, 23);
+  // ══════════════════════════════════════════════════════════════════════
+  // GARIS PEMISAH STRATA GEOLOGI (BEDDING PLANES) YANG SANGAT JELAS & TEGAS
+  // ══════════════════════════════════════════════════════════════════════
+  const layerOffsets = [
+    { offset: 22, color: 'rgba(69, 26, 3, 0.95)', width: 2.2 },   // Batas Pasir / Serpih
+    { offset: 54, color: 'rgba(41, 37, 36, 0.95)', width: 2.2 },  // Batas Serpih / Granit
+    { offset: 102, color: 'rgba(15, 23, 42, 0.95)', width: 2.5 }, // Batas Granit / Diorit
+    { offset: 165, color: 'rgba(9, 9, 11, 0.95)', width: 2.5 },   // Batas Diorit / Basement
+  ];
 
-    // Volcanic andesite rock layer
-    ctx.fillStyle = '#44403c';
-    ctx.fillRect(x, gY + 8, sw, 14);
+  for (const lp of layerOffsets) {
+    ctx.strokeStyle = lp.color;
+    ctx.lineWidth = lp.width;
+    ctx.beginPath();
+    ctx.moveTo(trenchX, trenchDepth + lp.offset);
+    for (let bx = trenchX; bx <= w + 800; bx += 4) {
+      ctx.lineTo(bx, getContTop(bx) + lp.offset);
+    }
+    ctx.stroke();
+  }
 
-    // Upper andesite & tuff layer
-    ctx.fillStyle = '#57534e';
-    ctx.fillRect(x, gY + 2, sw, 6);
+  // Riak ombak pasir (sand ripples) alami di sepanjang daratan pantai
+  for (let rx = coastX + 15; rx <= w + 800; rx += 28) {
+    const topY = getContTop(rx);
+    ctx.fillStyle = 'rgba(202, 138, 4, 0.50)';
+    ctx.fillRect(rx, topY, 8, 1.5);
+    ctx.fillStyle = 'rgba(254, 249, 195, 0.75)';
+    ctx.fillRect(rx + 2, topY - 1, 4, 1);
+  }
 
-    // Surface crest & highlights
-    ctx.fillStyle = '#78716c';
-    ctx.fillRect(x, gY, sw, 2);
-    ctx.fillStyle = '#a8a29e';
-    ctx.fillRect(x, gY - 1, sw, 1);
+  // Taburan bintik pasir kristal kuarsa berkilau lembut di pantai
+  for (let i = 0; i < 45; i++) {
+    const spX = coastX + 10 + ((i * 47) % (w + 200));
+    const spY = getContTop(spX) + ((i * 7) % 18);
+    ctx.fillStyle = i % 2 === 0 ? 'rgba(255, 255, 255, 0.75)' : 'rgba(254, 240, 138, 0.65)';
+    ctx.fillRect(spX, spY, 1.5, 1.5);
+  }
 
-    // Strata compression foliation (folded rock lines from collision)
-    const foldStrata = Math.sin(x * 0.04) * 4;
-    ctx.fillStyle = 'rgba(120, 113, 108, 0.4)';
-    ctx.fillRect(x, gY + 14 + foldStrata, sw, 2);
-    ctx.fillStyle = 'rgba(41, 37, 36, 0.5)';
-    ctx.fillRect(x, gY + 28 + foldStrata, sw, 2);
+  // Dermaga Kayu Pantai di Bibir Air Laut (x: 574 .. 598, menyambung air laut & pasir pantai)
+  ctx.fillStyle = '#451a03';
+  ctx.fillRect(coastX - 6, seaLevelY, 5, 26);
+  ctx.fillRect(coastX + 6, seaLevelY, 5, 26);
+  ctx.fillStyle = '#78350f';
+  ctx.fillRect(coastX - 12, seaLevelY - 3, 26, 5);
+  ctx.fillStyle = '#92400e';
+  ctx.fillRect(coastX - 12, seaLevelY - 4, 26, 2);
 
-    // Andesite mineral crystals
-    const seed = (x * 4391) ^ 0x3c3c;
-    if (seed % 17 === 0) {
-      ctx.fillStyle = '#cbd5e1';
-      ctx.fillRect(x, gY + 10 + (seed % 18), 1, 2);
-    } else if (seed % 29 === 0) {
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(x, gY + 16 + (seed % 14), 2, 1);
+  ctx.restore();
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 3: LEMPENG SAMUDRA KIRI & SLAB SUBDUKSI MENUNJAM KAKU & REALISTIS
+  // - Lempeng samudra meluncur maju secara nyata (oceanicShift = p * 110 px).
+  // - Ujung slab (slabReachX) menusuk menembus jauh ke dalam litosfer benua (p * 260 px).
+  // - Ketebalan lempeng 75px dihitung tegak lurus bidang normal permukaan slab (bebas distorsi meleyot).
+  // - Patahan kekar basal miring tegak lurus slab menyusuri lintasan subduksi.
+  // - Gesekan seismik aktif pada batas kontak megathrust membuktikan kedua lempeng bertumbukan.
+  // ══════════════════════════════════════════════════════════════════════
+  ctx.save();
+
+  // 3A. Tubuh Lempeng Samudra & Slab Penunjaman (Ketebalan Tegak Lurus Presisi 75px)
+  const tipSlope = getOceanicSlabSlope(slabReachX, p);
+  const tipTheta = Math.atan(tipSlope);
+  const tipNx = -Math.sin(tipTheta);
+  const tipNy = Math.cos(tipTheta);
+
+  ctx.beginPath();
+  // Lintasan permukaan atas dari -800 sampai slabReachX
+  ctx.moveTo(-800, 350);
+  for (let x = -800; x <= slabReachX; x += 4) {
+    ctx.lineTo(x, getOceanicSubductingSlabTopY(x, p));
+  }
+  // Ujung slab dipotong tegak lurus penampang geologis slab
+  ctx.lineTo(slabReachX + tipNx * slabThick, getOceanicSubductingSlabTopY(slabReachX, p) + tipNy * slabThick);
+  // Lintasan dasar bawah lempeng dari slabReachX kembali ke -800 mengikuti normal slab
+  for (let x = slabReachX; x >= -800; x -= 6) {
+    const topY = getOceanicSubductingSlabTopY(x, p);
+    const sl = getOceanicSlabSlope(x, p);
+    const th = Math.atan(sl);
+    const nx = -Math.sin(th);
+    const ny = Math.cos(th);
+    ctx.lineTo(x + nx * slabThick, topY + ny * slabThick);
+  }
+  ctx.closePath();
+
+  const oceanPlateGrad = ctx.createLinearGradient(0, 350, 0, 350 + slabThick);
+  oceanPlateGrad.addColorStop(0.00, '#475569'); // Sedimen pelagis atas (slate)
+  oceanPlateGrad.addColorStop(0.18, '#334155'); // Sedimen laut dalam
+  oceanPlateGrad.addColorStop(0.35, '#1e293b'); // Basal bantal vulkanik (pillow basalt)
+  oceanPlateGrad.addColorStop(0.65, '#111827'); // Sheeted dykes litosfer
+  oceanPlateGrad.addColorStop(1.00, '#090d16'); // Gabro plutonik mafik padat
+  ctx.fillStyle = oceanPlateGrad;
+  ctx.fill();
+
+  // 3B. Garis Strata Internal Lempeng Samudra Mengikuti Normal Slab Menunjam Mulus
+  for (let s = 1; s <= 4; s++) {
+    const sDist = s * (slabThick / 5);
+    ctx.strokeStyle = (s % 2 === 0) ? 'rgba(71, 85, 105, 0.45)' : 'rgba(30, 41, 59, 0.40)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-800, 350 + sDist);
+    for (let x = -800; x <= slabReachX; x += 6) {
+      const topY = getOceanicSubductingSlabTopY(x, p);
+      const sl = getOceanicSlabSlope(x, p);
+      const th = Math.atan(sl);
+      const nx = -Math.sin(th);
+      const ny = Math.cos(th);
+      ctx.lineTo(x + nx * sDist, topY + ny * sDist);
+    }
+    ctx.stroke();
+  }
+
+  // 3C. ANIMASI PERGERAKAN LEMPENG: PATAHAN KEKAR LITOSFER SAMUDRA MELUNCUR KE KANAN & MENUNJAM
+  // Kekar tegak lurus bidang slab meluncur menyusuri rel lengkungan penunjaman
+  for (let bx = -800; bx <= slabReachX; bx += 40) {
+    const fx = bx + oceanicShift;
+    if (fx <= slabReachX - 8) {
+      const topY = getOceanicSubductingSlabTopY(fx, p);
+      const sl = getOceanicSlabSlope(fx, p);
+      const th = Math.atan(sl);
+      const nx = -Math.sin(th);
+      const ny = Math.cos(th);
+      ctx.strokeStyle = (Math.floor(bx / 40) % 2 === 0) ? 'rgba(51, 65, 85, 0.40)' : 'rgba(15, 23, 42, 0.35)';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(fx + nx * 4, topY + ny * 4);
+      ctx.lineTo(fx + nx * (slabThick - 4), topY + ny * (slabThick - 4));
+      ctx.stroke();
     }
   }
 
+  // Bintik kristal mineral basal & olivin bergerak bergeser bersama lempeng
+  for (let i = 0; i < 40; i++) {
+    const sx = (((i * 97 + oceanicShift) % (trenchX + 700)) - 700);
+    const sy = 350 + 10 + ((i * 23) % (slabThick - 20));
+    ctx.fillStyle = i % 2 === 0 ? 'rgba(148, 163, 184, 0.45)' : 'rgba(30, 41, 59, 0.50)';
+    ctx.fillRect(sx, sy, 2, 2);
+  }
+
+  // 3D. Garis Batas Sesar Kontak Penunjaman (Megathrust Plate Interface)
+  ctx.strokeStyle = 'rgba(15, 23, 42, 0.85)';
+  ctx.lineWidth = 2.0;
+  ctx.beginPath();
+  ctx.moveTo(trenchX, trenchDepth);
+  for (let x = trenchX; x <= slabReachX; x += 5) {
+    ctx.lineTo(x, getOceanicSubductingSlabTopY(x, p));
+  }
+  ctx.stroke();
+
+  // Pendaran tegangan kompresi tektonik megathrust & percikan gesekan saat kedua lempeng bertumbukan
+  if (p > 0.03 && p < 0.97) {
+    const pulse = (Math.sin(frame * 0.25) + 1) / 2;
+    ctx.strokeStyle = `rgba(56, 189, 248, ${0.20 + pulse * 0.30})`;
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(trenchX, trenchDepth);
+    for (let x = trenchX; x <= slabReachX; x += 6) {
+      ctx.lineTo(x, getOceanicSubductingSlabTopY(x, p));
+    }
+    ctx.stroke();
+
+    // Percikan gesekan batuan tektonik (tectonic stress sparks)
+    for (let i = 0; i < 6; i++) {
+      const spDist = Math.max(30, slabReachX - trenchX - 40);
+      const fx = trenchX + 25 + ((i * 47 + frame * 2.5) % spDist);
+      const fy = getOceanicSubductingSlabTopY(fx, p);
+      const sparkGlow = (Math.sin(frame * 0.35 + i) + 1) / 2;
+      ctx.fillStyle = i % 2 === 0 ? `rgba(254, 240, 138, ${0.45 + sparkGlow * 0.5})` : `rgba(249, 115, 22, ${0.40 + sparkGlow * 0.45})`;
+      ctx.fillRect(fx - 1, fy - 1, 2, 2);
+    }
+  }
+
+  ctx.restore();
+
   // ══════════════════════════════════════════════════════════════════════
-  // LAYER 4: CEKUNGAN SAMUDRA & AIR PALUNG SUBDUKSI PENUH (x: -800 .. 518)
+  // LAYER 4: AIR LAUTAN LUAS & PEMBENTUKAN PALUNG SAMUDRA (x: -800 .. coastX)
+  // - Permukaan air laut berada di seaLevelY = 300
+  // - Palung laut berada di tengah laut (trenchX ≈ 360..385), berjarak jauh dari pantai (coastX = 580)
+  // - Dasar air laut mengikuti pembentukan palung yang mendalam seiring p: 0 -> 1
+  // - Air laut biru jernih memenuhi seluruh lantai samudra dan palung
   // ══════════════════════════════════════════════════════════════════════
-  // 1. Badan Air Laut Utama Solid Kontinu (100% Bebas Garis-Garis Vertikal & Celah Seam)
-  const maxBedY = 405 + 55 * p + 15;
-  const oceanGrad = ctx.createLinearGradient(0, 360, 0, maxBedY);
-  oceanGrad.addColorStop(0, 'rgba(56, 189, 248, 0.88)');   // Permukaan azure cerah
-  oceanGrad.addColorStop(0.28, 'rgba(2, 132, 199, 0.92)'); // Biru samudra jernih
-  oceanGrad.addColorStop(0.68, 'rgba(3, 105, 161, 0.96)'); // Biru laut dalam
-  oceanGrad.addColorStop(1, 'rgba(8, 47, 73, 0.99)');       // Biru pekat abisal dasar palung
+  ctx.save();
+  const oceanGrad = ctx.createLinearGradient(0, seaLevelY, 0, Math.max(trenchDepth + 20, 520));
+  oceanGrad.addColorStop(0.00, 'rgba(56, 189, 248, 0.88)'); // Azure jernih tropis di permukaan
+  oceanGrad.addColorStop(0.20, 'rgba(2, 132, 199, 0.92)');  // Biru samudra
+  oceanGrad.addColorStop(0.55, 'rgba(3, 105, 161, 0.96)');  // Biru laut dalam
+  oceanGrad.addColorStop(0.85, 'rgba(3, 35, 65, 0.98)');    // Biru abisal palung
+  oceanGrad.addColorStop(1.00, 'rgba(2, 20, 40, 0.99)');    // Dasar jurang palung gelap pekat
 
   ctx.fillStyle = oceanGrad;
   ctx.beginPath();
-  ctx.moveTo(-800, 360);
-  ctx.lineTo(518, 360);
-  for (let bx = 518; bx >= -800; bx -= 4) {
+  ctx.moveTo(-800, seaLevelY);
+  ctx.lineTo(coastX, seaLevelY);
+  for (let bx = coastX; bx >= -800; bx -= 4) {
     ctx.lineTo(bx, getConvergentSeafloorProfile(bx, p));
   }
   ctx.closePath();
   ctx.fill();
 
-  // 2. Sinar Bias Cahaya Matahari (Soft Angled Sun Rays / Caustics) Meliuk Halus
-  ctx.save();
-  const rayRays = [-650, -480, -310, -140, 30, 200, 370];
+  // Sinar matahari menembus air laut (God rays miring menuju palung)
+  const rayRays = [-650, -480, -310, -140, 30, 200, 350, 440];
   for (const rx of rayRays) {
-    const drift = Math.sin(frame * 0.03 + rx * 0.01) * 10;
-    const rayGrad = ctx.createLinearGradient(0, 360, 0, 420);
-    rayGrad.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
-    rayGrad.addColorStop(0.5, 'rgba(186, 230, 253, 0.06)');
+    const drift = Math.sin(frame * 0.03 + rx * 0.01) * 8;
+    const rayGrad = ctx.createLinearGradient(0, seaLevelY, 0, 440);
+    rayGrad.addColorStop(0, 'rgba(255, 255, 255, 0.14)');
+    rayGrad.addColorStop(0.5, 'rgba(186, 230, 253, 0.07)');
     rayGrad.addColorStop(1, 'rgba(2, 132, 199, 0)');
-
     ctx.fillStyle = rayGrad;
     ctx.beginPath();
-    ctx.moveTo(rx + drift, 360);
-    ctx.lineTo(rx + 28 + drift, 360);
-    ctx.lineTo(rx + 48 + drift, 420);
-    ctx.lineTo(rx + 12 + drift, 420);
+    ctx.moveTo(rx + drift, seaLevelY);
+    ctx.lineTo(rx + 24 + drift, seaLevelY);
+    ctx.lineTo(rx + 44 + drift, 440);
+    ctx.lineTo(rx + 12 + drift, 440);
     ctx.closePath();
     ctx.fill();
   }
+
+  // Ombak permukaan laut beriak halus di seaLevelY = 300
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  ctx.beginPath();
+  ctx.moveTo(-800, seaLevelY);
+  for (let wx = -800; wx <= coastX - 2; wx += 4) {
+    const waveSin = Math.sin(frame * 0.08 + wx * 0.05) * 1.5;
+    ctx.lineTo(wx, seaLevelY + waveSin);
+  }
+  ctx.lineTo(coastX - 2, seaLevelY + 2);
+  for (let wx = coastX - 2; wx >= -800; wx -= 4) {
+    const waveSin = Math.sin(frame * 0.08 + wx * 0.05) * 1.5;
+    ctx.lineTo(wx, seaLevelY + 1.5 + waveSin);
+  }
+  ctx.closePath();
+  ctx.fill();
+
+  // Buih ombak pantai yang memecah di bibir pasir & dermaga (x: coastX - 10 .. coastX + 6)
+  const surfPulse = Math.sin(frame * 0.07) * 3;
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.80)';
+  ctx.fillRect(coastX - 8 + surfPulse, seaLevelY - 1, 14, 3);
+  ctx.fillStyle = 'rgba(224, 242, 254, 0.65)';
+  ctx.fillRect(coastX - 10 + surfPulse, seaLevelY + 1, 16, 2);
+
   ctx.restore();
 
-  // 3. Ombak Permukaan Laut Kontinu & Buih Putih Mengalir (Bukan Kotak-Kotak Terputus)
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
-  ctx.beginPath();
-  ctx.moveTo(-800, 360);
-  for (let wx = -800; wx <= 516; wx += 4) {
-    const waveSin = Math.sin(frame * 0.08 + wx * 0.05) * 1.5;
-    ctx.lineTo(wx, 360 + waveSin);
-  }
-  ctx.lineTo(516, 362);
-  for (let wx = 516; wx >= -800; wx -= 4) {
-    const waveSin = Math.sin(frame * 0.08 + wx * 0.05) * 1.5;
-    ctx.lineTo(wx, 361.5 + waveSin);
-  }
-  ctx.closePath();
-  ctx.fill();
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 5: INDIKATOR VEKTOR GERAKAN LEMPENG (BERSIH TANPA LABEL TEKS)
+  // - Panah 1: Lempeng Samudra (kiri) meluncur menunjam miring ke kanan bawah (↘)
+  // - Panah 2: Lempeng Benua (kanan) menekan ke kiri (←)
+  // ══════════════════════════════════════════════════════════════════════
+  // Panah 1: Lempeng Samudra
+  const oceanArrowX = 160 + oceanicShift;
+  const oceanArrowY = 385;
+  drawPlateVectorArrow(
+    ctx,
+    oceanArrowX,
+    oceanArrowY,
+    (Math.PI / 180) * 32, // Miring ke kanan bawah (↘)
+    42,
+    '',
+    '#38bdf8',
+    frame,
+  );
 
-  // Garis kilau air cyan terang di bawah buih
-  ctx.fillStyle = 'rgba(186, 230, 253, 0.55)';
-  ctx.beginPath();
-  ctx.moveTo(-800, 361.5);
-  for (let wx = -800; wx <= 516; wx += 4) {
-    const waveSin = Math.sin(frame * 0.08 + wx * 0.05) * 1.5;
-    ctx.lineTo(wx, 361.5 + waveSin);
-  }
-  ctx.lineTo(516, 363.5);
-  for (let wx = 516; wx >= -800; wx -= 4) {
-    const waveSin = Math.sin(frame * 0.08 + wx * 0.05) * 1.5;
-    ctx.lineTo(wx, 363 + waveSin);
-  }
-  ctx.closePath();
-  ctx.fill();
+  // Panah 2: Lempeng Benua
+  const contArrowX = 760 - Math.round(p * 20);
+  const contArrowY = 330;
+  drawPlateVectorArrow(
+    ctx,
+    contArrowX,
+    contArrowY,
+    Math.PI, // Mengarah ke kiri (←)
+    42,
+    '',
+    '#f59e0b',
+    frame,
+  );
+}
 
-  // Dermaga riset di tepi pantai (x: 512 .. 535)
-  ctx.fillStyle = '#451a03'; // Tiang kayu vertikal menancap ke batuan daratan
-  ctx.fillRect(516, 360, 5, 24);
-  ctx.fillRect(528, 360, 5, 24);
-  // Papan geladak dermaga
-  ctx.fillStyle = '#78350f';
-  ctx.fillRect(512, 357, 24, 5);
-  ctx.fillStyle = '#92400e';
-  ctx.fillRect(512, 356, 24, 2);
-  // Baut pengikat tali perahu (mooring cleat)
-  ctx.fillStyle = '#475569';
-  ctx.fillRect(520, 354, 6, 2);
+// ══════════════════════════════════════════════════════════════════════════
+// EXPORT DISPATCHER: RENDERING MEDAN DINAMIS AREA 7 (BATAS KONVERGEN)
+// ══════════════════════════════════════════════════════════════════════════
+export function renderOrganicConvergentTerrain(
+  ctx: CanvasRenderingContext2D,
+  zone: ZoneConfig,
+  frame: number,
+  collisionProgress: number = 1.0,
+  mode: 'land' | 'ocean' = 'land',
+): void {
+  if (mode === 'land') {
+    renderConvergentLandMode(ctx, zone, frame, collisionProgress);
+  } else {
+    renderConvergentOceanMode(ctx, zone, frame, collisionProgress);
+  }
 }
 
 
@@ -3660,25 +5029,69 @@ export function renderOrganicTransformTerrain(
   const w = zone.cols * TILE;
   const h = Math.max(zone.rows * TILE, 480);
   const p = Math.max(0, Math.min(1, transformProgress));
-  const faultY = 240; // Garis sesar transform membentang di tengah Y = 240
-
-  // Pergeseran horizontal berlawanan arah lempeng tektonik
-  // Lempeng Pasifik (Utara / Y < 240) bergerak ke Kiri (Barat Laut)
-  // Lempeng Amerika Utara (Selatan / Y >= 240) bergerak ke Kanan (Tenggara)
-  const shiftNorth = -Math.round(65 * p);
-  const shiftSouth = Math.round(65 * p);
-
   ctx.imageSmoothingEnabled = false;
 
-  // 1. BASE TERRAIN (LEMPENG UTARA & SELATAN DENGAN STRATA GURUN & PERGESERAN)
-  // Lempeng Utara (Lempeng Pasifik, Y: 0 s/d 240)
-  ctx.save();
-  ctx.fillStyle = '#b45309'; // Tanah gurun alluvial kuning kecokelatan
-  ctx.fillRect(0, 0, w, faultY);
+  // ══════════════════════════════════════════════════════════════════════
+  // KALKULASI PROGRES TAHAPAN SEISMIK & PERGESERAN LEMPENG
+  // Sesuai Arahan Pengguna:
+  // 1. Fase Tenang Awal (p: 0.00 .. 0.08): Tanah menyatu utuh tanpa gempa.
+  // 2. Fase Gempa Dulu (p: 0.08 .. 0.30): Gempa tremor tektonik mengguncang layar,
+  //    tetapi tanah MASIH UTUH BERSATU (belum ada retakan sama sekali!).
+  // 3. Fase Retakan Merekah (p: 0.30 .. 0.50): Di bawah tekanan gempa yang berlanjut,
+  //    barulah retakan sesar mulai merekah dan menjalar bertahap.
+  // 4. Fase Pergeseran Mendatar (p: 0.50 .. 0.90): Seiring gempanya, lempeng bergeser
+  //    secara mendatar (strike-slip) sejauh 1/3 dari jarak sebelumnya (maks 22px per lempeng).
+  // 5. Fase Patahan Menetap (p: 0.90 .. 1.00): Gempa mereda ke 0, bekas patahan bergerigi menetap.
+  // ══════════════════════════════════════════════════════════════════════
+  const crackP = p < 0.30 ? 0 : Math.min(1, (p - 0.30) / 0.20);
+  const rawShiftP = p < 0.50 ? 0 : Math.min(1, (p - 0.50) / 0.40);
+  // S-Curve Smoothstep untuk akselerasi dan deselerasi pergeseran tektonik alami
+  const shiftP = rawShiftP * rawShiftP * (3 - 2 * rawShiftP);
 
-  // Gelombang pasir alami yang bergeser bersama Lempeng Pasifik
+  // Jarak pergeseran dibuat 1/3 dari sebelumnya (maksimal 22px per lempeng, total offset = 44px)
+  const maxShift = 22;
+  const shiftNorth = -Math.round(maxShift * shiftP);
+  const shiftSouth = Math.round(maxShift * shiftP);
+
+  // ── KONTUR GARIS SESAR BERGERIGI & BERTINGKAT (JAGGED STEPPED FAULT TRACE) ──
+  // Sesuai arahan pengguna: Garis patahan TIDAK lurus penggaris, melainkan memiliki
+  // bekas patahan bergerigi alami, undulasi tektonik, dan patahan stepped en-echelon.
+  const getFaultBaseY = (x: number): number => {
+    const w1 = Math.sin(x * 0.012) * 5.0;
+    const w2 = Math.cos(x * 0.038) * 3.0;
+    const microJag = Math.sin(x * 0.14) * 2.0;
+    const stepSeg = ((Math.floor((x + 40) / 160) % 3) - 1) * 3.5;
+    return 240 + w1 + w2 + microJag + stepSeg;
+  };
+
+  // Lebar celah retakan sesar saat merekah
+  const getHalfGap = (x: number): number => {
+    if (crackP <= 0) return 0;
+    return (crackP * 3.5) + (Math.abs(Math.sin(x * 0.08)) * 1.8 * crackP);
+  };
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 1: BASE TERRAIN (LEMPENG UTARA & SELATAN DENGAN STRATA GURUN)
+  // - Saat p < 0.18: Kedua lempeng bertemu tepat dan rapat (tanah menyatu 100% utuh).
+  // - Saat p >= 0.18: Celah retakan mulai membuka di antara kedua lempeng.
+  // ══════════════════════════════════════════════════════════════════════
+  ctx.save();
+
+  // 1A. Lempeng Utara (Lempeng Pasifik - Gurun Aluvial Kuning Kecokelatan)
+  ctx.fillStyle = '#b45309';
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(w, 0);
+  ctx.lineTo(w, getFaultBaseY(w) - getHalfGap(w));
+  for (let x = w; x >= 0; x -= 4) {
+    ctx.lineTo(x, getFaultBaseY(x) - getHalfGap(x));
+  }
+  ctx.closePath();
+  ctx.fill();
+
+  // Gelombang pasir alami yang bergeser bersama Lempeng Pasifik (Utara)
   ctx.fillStyle = '#c26d18';
-  for (let dy = 16; dy < faultY - 12; dy += 32) {
+  for (let dy = 16; dy < 210; dy += 32) {
     const waveShift = ((shiftNorth * 0.8) % 120 + 120) % 120;
     ctx.beginPath();
     ctx.moveTo(0, dy);
@@ -3692,24 +5105,32 @@ export function renderOrganicTransformTerrain(
     ctx.fill();
   }
 
-  // Lapisan batu dan kerikil kuarsa yang bergeser bersama lempeng utara
+  // Kerikil kuarsa yang bergeser bersama lempeng utara
   for (let bx = -100; bx < w + 100; bx += 48) {
     const px = bx + shiftNorth;
     const seed = (bx * 3137) ^ 0x4a4a;
-    const by = (Math.abs(seed) % (faultY - 30)) + 15;
+    const by = (Math.abs(seed) % 195) + 15;
     ctx.fillStyle = 'rgba(254, 240, 138, 0.25)';
     ctx.fillRect(px, by, 4, 3);
     ctx.fillStyle = 'rgba(69, 26, 3, 0.35)';
     ctx.fillRect(px + 4, by + 1, 3, 3);
   }
 
-  // Lempeng Selatan (Lempeng Amerika Utara, Y: 240 s/d h)
-  ctx.fillStyle = '#92400e'; // Tanah gurun alluvial cokelat kemerahan
-  ctx.fillRect(0, faultY, w, h - faultY);
+  // 1B. Lempeng Selatan (Lempeng Amerika Utara - Gurun Aluvial Cokelat Kemerahan)
+  ctx.fillStyle = '#92400e';
+  ctx.beginPath();
+  ctx.moveTo(0, getFaultBaseY(0) + getHalfGap(0));
+  for (let x = 0; x <= w; x += 4) {
+    ctx.lineTo(x, getFaultBaseY(x) + getHalfGap(x));
+  }
+  ctx.lineTo(w, h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  ctx.fill();
 
-  // Gelombang pasir alami yang bergeser bersama Lempeng Amerika Utara
+  // Gelombang pasir alami yang bergeser bersama Lempeng Amerika Utara (Selatan)
   ctx.fillStyle = '#78350f';
-  for (let dy = faultY + 24; dy < h - 16; dy += 34) {
+  for (let dy = 264; dy < h - 16; dy += 34) {
     const waveShift = ((shiftSouth * 0.8) % 120 + 120) % 120;
     ctx.beginPath();
     ctx.moveTo(0, dy);
@@ -3723,11 +5144,11 @@ export function renderOrganicTransformTerrain(
     ctx.fill();
   }
 
-  // Lapisan kerikil gurun lempeng selatan yang bergeser bersama lempeng selatan
+  // Kerikil gurun lempeng selatan yang bergeser bersama lempeng selatan
   for (let bx = -100; bx < w + 100; bx += 48) {
     const px = bx + shiftSouth;
     const seed = (bx * 7919) ^ 0x6b6b;
-    const by = faultY + 15 + (Math.abs(seed) % (h - faultY - 35));
+    const by = 265 + (Math.abs(seed) % (h - 295));
     ctx.fillStyle = 'rgba(254, 240, 138, 0.2)';
     ctx.fillRect(px, by, 4, 3);
     ctx.fillStyle = 'rgba(69, 26, 3, 0.4)';
@@ -3735,12 +5156,14 @@ export function renderOrganicTransformTerrain(
   }
   ctx.restore();
 
-  // 2. SUNGAI KERING TERGESER (WALLACE CREEK OFFSET STREAM BED - SOLID CONTINUOUS TEXTURE)
-  // Ikon geologi Sesar San Andreas: Alur sungai yang memotong tegak lurus patahan terpotong dan bergeser
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 2: SUNGAI KERING TERGESER (WALLACE CREEK OFFSET STREAM BED)
+  // - Saat tanah utuh (p < 0.18): Alur sungai menyatu lurus tanpa patahan.
+  // - Saat bergeser (p >= 0.38): Alur sungai tergeser terpotong secara dramatis.
+  // ══════════════════════════════════════════════════════════════════════
   const creekBaseX = 720;
   const creekWidth = 24;
 
-  // Gambar alur Sungai Wallace Creek sebagai poligon kontinu solid (tanpa scanlines/garis-garis celah)
   const drawStreamChannel = (startY: number, endY: number, shift: number) => {
     // 1. Bantaran pasir aluvial luar (Dry sand bank)
     ctx.fillStyle = '#78716c';
@@ -3795,241 +5218,301 @@ export function renderOrganicTransformTerrain(
     }
   };
 
-  // Saluran Utara Wallace Creek (Y: 0 s/d faultY - 4)
-  drawStreamChannel(0, faultY - 4, shiftNorth);
+  const creekNorthEndY = getFaultBaseY(creekBaseX + shiftNorth) - getHalfGap(creekBaseX + shiftNorth);
+  const creekSouthStartY = getFaultBaseY(creekBaseX + shiftSouth) + getHalfGap(creekBaseX + shiftSouth);
 
-  // Saluran Selatan Wallace Creek (Y: faultY + 4 s/d h)
-  drawStreamChannel(faultY + 4, h, shiftSouth);
+  // Saluran Utara Wallace Creek
+  drawStreamChannel(0, creekNorthEndY, shiftNorth);
+  // Saluran Selatan Wallace Creek
+  drawStreamChannel(creekSouthStartY, h, shiftSouth);
 
-  // Alur patahan penghubung sungai yang tergeser (Sheared channel along fault)
-  if (p > 0.02) {
-    const northCX = creekBaseX + shiftNorth + Math.sin((faultY - 4) * 0.04) * 6;
-    const southCX = creekBaseX + shiftSouth + Math.sin((faultY + 4) * 0.04) * 6;
+  // Alur sesar penghubung sungai yang tergeser (Sheared channel along fault)
+  if (shiftP > 0.02) {
+    const northCX = creekBaseX + shiftNorth + Math.sin(creekNorthEndY * 0.04) * 6;
+    const southCX = creekBaseX + shiftSouth + Math.sin(creekSouthStartY * 0.04) * 6;
     const minX = Math.min(northCX, southCX) - creekWidth / 2;
     const maxX = Math.max(northCX, southCX) + creekWidth / 2;
+    const midY = (creekNorthEndY + creekSouthStartY) / 2;
 
     // Celah kering sungai terseret di sepanjang bidang sesar
     ctx.fillStyle = '#44403c';
-    ctx.fillRect(minX - 2, faultY - 7, maxX - minX + 4, 14);
+    ctx.fillRect(minX - 2, midY - 6, maxX - minX + 4, 12);
     ctx.fillStyle = '#292524';
-    ctx.fillRect(minX + 2, faultY - 4, maxX - minX - 4, 8);
+    ctx.fillRect(minX + 2, midY - 3, maxX - minX - 4, 6);
     ctx.fillStyle = '#0284c7';
-    ctx.fillRect(minX + 5, faultY - 2, maxX - minX - 10, 4);
-
-    // Label Geologi Wallace Creek & Garis Pengukuran Offset
-    ctx.save();
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
-    ctx.fillRect(minX - 10, faultY - 28, (maxX - minX) + 20, 16);
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(minX - 10, faultY - 28, (maxX - minX) + 20, 16);
-
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 8px monospace';
-    ctx.textAlign = 'center';
-    const offsetMeters = Math.round(p * 130);
-    ctx.fillText(`OFFSET WALLACE CREEK: ${offsetMeters}m`, (minX + maxX) / 2, faultY - 17);
-    ctx.restore();
+    ctx.fillRect(minX + 4, midY - 1.5, maxX - minX - 8, 3);
   }
 
-  // 3. JALAN RAYA ASPAL GURUN TERPOTONG (OFFSET HIGHWAY - SOLID CONTINUOUS PIXEL TEXTURE)
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 3: JALAN RAYA ASPAL GURUN (OFFSET HIGHWAY)
+  // - Saat tanah utuh (p < 0.18): Jalan aspal menyatu lurus tanpa retakan.
+  // - Saat gempa (p >= 0.18): Retakan aspal merekah di garis sesar.
+  // - Saat bergeser (p >= 0.38): Jalan terpotong dan bergeser ~22px kiri & kanan.
+  // ══════════════════════════════════════════════════════════════════════
   const roadBaseX = 360;
   const roadWidth = 32;
 
   // Bagian Jalan Utara (Bergeser ke kiri bersama Lempeng Pasifik)
   const rNorthX = roadBaseX + shiftNorth;
-  // Permukaan aspal solid penuh
+  const roadNorthEndY = getFaultBaseY(rNorthX) - getHalfGap(rNorthX);
   ctx.fillStyle = '#262626';
-  ctx.fillRect(rNorthX - roadWidth / 2, 0, roadWidth, faultY - 4);
-  // Tekstur kerikil aspal halus
+  ctx.fillRect(rNorthX - roadWidth / 2, 0, roadWidth, roadNorthEndY);
+  // Tekstur aspal halus
   ctx.fillStyle = '#1f1f1f';
-  for (let ry = 8; ry < faultY - 10; ry += 12) {
+  for (let ry = 8; ry < roadNorthEndY - 6; ry += 12) {
     ctx.fillRect(rNorthX - roadWidth / 2 + 4, ry, 6, 2);
     ctx.fillRect(rNorthX + 2, ry + 4, 7, 2);
   }
   // Garis bahu jalan putih solid
   ctx.fillStyle = '#f1f5f9';
-  ctx.fillRect(rNorthX - roadWidth / 2 + 1, 0, 2, faultY - 4);
-  ctx.fillRect(rNorthX + roadWidth / 2 - 3, 0, 2, faultY - 4);
-  // Garis marka kuning putus-putus tengah jalan
+  ctx.fillRect(rNorthX - roadWidth / 2 + 1, 0, 2, roadNorthEndY);
+  ctx.fillRect(rNorthX + roadWidth / 2 - 3, 0, 2, roadNorthEndY);
+  // Marka kuning putus-putus
   ctx.fillStyle = '#f59e0b';
-  for (let ry = 4; ry < faultY - 14; ry += 20) {
-    ctx.fillRect(rNorthX - 1, ry, 2, 10);
+  for (let ry = 4; ry < roadNorthEndY - 10; ry += 20) {
+    ctx.fillRect(rNorthX - 1, ry, 2, Math.min(10, roadNorthEndY - ry));
   }
 
   // Bagian Jalan Selatan (Bergeser ke kanan bersama Lempeng Amerika Utara)
   const rSouthX = roadBaseX + shiftSouth;
+  const roadSouthStartY = getFaultBaseY(rSouthX) + getHalfGap(rSouthX);
   ctx.fillStyle = '#262626';
-  ctx.fillRect(rSouthX - roadWidth / 2, faultY + 4, roadWidth, h - faultY - 4);
+  ctx.fillRect(rSouthX - roadWidth / 2, roadSouthStartY, roadWidth, h - roadSouthStartY);
   ctx.fillStyle = '#1f1f1f';
-  for (let ry = faultY + 12; ry < h - 10; ry += 12) {
+  for (let ry = roadSouthStartY + 8; ry < h - 10; ry += 12) {
     ctx.fillRect(rSouthX - roadWidth / 2 + 4, ry, 6, 2);
     ctx.fillRect(rSouthX + 2, ry + 4, 7, 2);
   }
   ctx.fillStyle = '#f1f5f9';
-  ctx.fillRect(rSouthX - roadWidth / 2 + 1, faultY + 4, 2, h - faultY - 4);
-  ctx.fillRect(rSouthX + roadWidth / 2 - 3, faultY + 4, 2, h - faultY - 4);
+  ctx.fillRect(rSouthX - roadWidth / 2 + 1, roadSouthStartY, 2, h - roadSouthStartY);
+  ctx.fillRect(rSouthX + roadWidth / 2 - 3, roadSouthStartY, 2, h - roadSouthStartY);
   ctx.fillStyle = '#f59e0b';
-  for (let ry = faultY + 14; ry < h - 10; ry += 20) {
+  for (let ry = roadSouthStartY + 10; ry < h - 10; ry += 20) {
     ctx.fillRect(rSouthX - 1, ry, 2, 10);
   }
 
-  // Patahan aspal robek & retakan tektonik alami di titik potong jalan (tanpa cone merah)
-  if (p > 0.03) {
-    // Serpihan dan pecahan aspal hitam terkelupas alami
+  // Patahan aspal robek di titik potong sesar saat retakan / geser terjadi
+  if (crackP > 0.05) {
     ctx.fillStyle = '#171717';
-    ctx.fillRect(rNorthX - roadWidth / 2 - 2, faultY - 7, roadWidth + 4, 5);
-    ctx.fillRect(rSouthX - roadWidth / 2 - 2, faultY + 2, roadWidth + 4, 5);
+    ctx.fillRect(rNorthX - roadWidth / 2 - 2, roadNorthEndY - 4, roadWidth + 4, 4);
+    ctx.fillRect(rSouthX - roadWidth / 2 - 2, roadSouthStartY, roadWidth + 4, 4);
 
-    // Kerikil aspal abu-abu berserakan di sekitar patahan
-    ctx.fillStyle = '#404040';
-    ctx.fillRect(rNorthX - 8, faultY - 8, 3, 2);
-    ctx.fillRect(rNorthX + 6, faultY - 7, 4, 2);
-    ctx.fillRect(rSouthX - 6, faultY + 5, 4, 2);
-    ctx.fillRect(rSouthX + 8, faultY + 6, 3, 2);
+    if (shiftP > 0.03) {
+      // Kerikil aspal abu-abu berserakan di zona geser
+      ctx.fillStyle = '#404040';
+      ctx.fillRect(rNorthX - 6, roadNorthEndY - 5, 3, 2);
+      ctx.fillRect(rNorthX + 6, roadNorthEndY - 4, 4, 2);
+      ctx.fillRect(rSouthX - 6, roadSouthStartY + 3, 4, 2);
+      ctx.fillRect(rSouthX + 8, roadSouthStartY + 4, 3, 2);
+    }
   }
 
-  // 4. GARIS SESAR SAN ANDREAS (REALISTIC FAULT SCARP & JAGGED BRANCHING FISSURES)
-  const fissureH = 10 + Math.round(p * 8);
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 4: BIDANG PATAHAN BERGERIGI, REKAHAN & BEKAS PATAHAN SESAR NYATA
+  // - Hanya muncul saat gempa terjadi (crackP > 0)
+  // - Mengikuti kontur berliku getFaultBaseY(x) (BUKAN garis lurus kaku)
+  // - Menampilkan tebing patahan (fault scarps), goresan gesek (slickensides),
+  //   dan puing-puing pecahan batuan (fault breccia) di sepanjang celah!
+  // ══════════════════════════════════════════════════════════════════════
+  if (crackP > 0) {
+    ctx.save();
 
-  // Palung celah sesar hitam pekat di dalam perut bumi
-  ctx.fillStyle = '#09090b';
-  ctx.fillRect(0, faultY - fissureH / 2, w, fissureH);
+    // 4A. Jurang Rekahan Sesar Hitam Pekat (Fracture Void)
+    ctx.beginPath();
+    ctx.moveTo(0, getFaultBaseY(0) - getHalfGap(0));
+    for (let x = 0; x <= w; x += 4) {
+      ctx.lineTo(x, getFaultBaseY(x) - getHalfGap(x));
+    }
+    for (let x = w; x >= 0; x -= 4) {
+      ctx.lineTo(x, getFaultBaseY(x) + getHalfGap(x));
+    }
+    ctx.closePath();
+    ctx.fillStyle = '#09090b'; // Hitam pekat kedalaman patahan
+    ctx.fill();
 
-  // Bayangan kedalaman rongga bawah
-  ctx.fillStyle = '#18181b';
-  ctx.fillRect(0, faultY - fissureH / 2 + 2, w, fissureH - 4);
+    // 4B. Bayangan Dinding Sesar Dalam (Subsurface Shadow)
+    ctx.beginPath();
+    ctx.moveTo(0, getFaultBaseY(0) - getHalfGap(0) + 1);
+    for (let x = 0; x <= w; x += 4) {
+      ctx.lineTo(x, getFaultBaseY(x) - getHalfGap(x) + 1);
+    }
+    for (let x = w; x >= 0; x -= 4) {
+      ctx.lineTo(x, getFaultBaseY(x) + getHalfGap(x) - 1);
+    }
+    ctx.closePath();
+    ctx.fillStyle = '#18181b';
+    ctx.fill();
 
-  // Bibir sesar atas (Fault Scarp Edge) berpendar pasir terik
-  ctx.fillStyle = '#fde047';
-  ctx.fillRect(0, faultY - fissureH / 2 - 1, w, 2);
-  ctx.fillStyle = '#451a03';
-  ctx.fillRect(0, faultY + fissureH / 2, w, 3);
+    // 4C. Bibir Sesar Atas Bergerigi (Jagged Fault Scarp Edge Highlight)
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(0, getFaultBaseY(0) - getHalfGap(0));
+    for (let x = 0; x <= w; x += 4) {
+      ctx.lineTo(x, getFaultBaseY(x) - getHalfGap(x));
+    }
+    ctx.stroke();
 
-  // ── RETAKAN TANAH SEISMIK REALISTIS (JAGGED BRANCHING EARTHQUAKE RUPTURES) ──
-  // Bukan garis miring satu arah, melainkan retakan bumi alami bercabang dan berliku
-  ctx.save();
-  const faultSeeds = [
-    { x: 30, len: 26, angle1: -0.6, angle2: -0.9, branch: true },
-    { x: 75, len: 18, angle1: 0.4, angle2: 0.7, branch: false },
-    { x: 120, len: 32, angle1: -0.8, angle2: -0.4, branch: true },
-    { x: 170, len: 22, angle1: 0.5, angle2: 0.2, branch: false },
-    { x: 215, len: 38, angle1: -0.7, angle2: -1.0, branch: true },
-    { x: 270, len: 20, angle1: 0.3, angle2: 0.8, branch: false },
-    { x: 310, len: 30, angle1: -0.5, angle2: -0.8, branch: true },
-    { x: 420, len: 36, angle1: 0.6, angle2: 0.3, branch: true },
-    { x: 470, len: 24, angle1: -0.7, angle2: -0.4, branch: false },
-    { x: 520, len: 40, angle1: -0.4, angle2: -0.9, branch: true },
-    { x: 580, len: 22, angle1: 0.7, angle2: 0.5, branch: false },
-    { x: 630, len: 34, angle1: -0.6, angle2: -0.8, branch: true },
-    { x: 680, len: 28, angle1: 0.4, angle2: 0.7, branch: true },
-    { x: 800, len: 32, angle1: -0.7, angle2: -0.5, branch: true },
-    { x: 855, len: 20, angle1: 0.5, angle2: 0.8, branch: false },
-    { x: 910, len: 38, angle1: -0.5, angle2: -0.9, branch: true },
-    { x: 970, len: 24, angle1: 0.3, angle2: 0.6, branch: false },
-    { x: 1020, len: 35, angle1: -0.8, angle2: -0.6, branch: true },
-    { x: 1080, len: 22, angle1: 0.6, angle2: 0.9, branch: false },
-    { x: 1140, len: 42, angle1: -0.4, angle2: -0.8, branch: true },
-    { x: 1200, len: 26, angle1: 0.5, angle2: 0.3, branch: true },
-    { x: 1260, len: 34, angle1: -0.7, angle2: -0.5, branch: false },
-    { x: 1320, len: 28, angle1: 0.4, angle2: 0.8, branch: true },
-    { x: 1380, len: 36, angle1: -0.6, angle2: -0.9, branch: true },
-    { x: 1440, len: 22, angle1: 0.5, angle2: 0.4, branch: false },
-  ];
-
-  for (const f of faultSeeds) {
-    // 1. Retakan ke arah Lempeng Utara
-    const startX = f.x + shiftNorth * 0.3;
-    const startY = faultY - fissureH / 2;
-    const midX = startX + Math.sin(f.angle1) * (f.len * 0.55);
-    const midY = startY - Math.cos(f.angle1) * (f.len * 0.55);
-    const endX = midX + Math.sin(f.angle2) * (f.len * 0.45);
-    const endY = midY - Math.cos(f.angle2) * (f.len * 0.45);
-
-    // Garis retakan gelap dalam
-    ctx.strokeStyle = '#18181b';
+    // 4D. Tebing Sesar Bawah Berbayang Gelap (Southern Fault Scarp)
+    ctx.strokeStyle = '#451a03';
     ctx.lineWidth = 2.2;
     ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(midX, midY);
-    ctx.lineTo(endX, endY);
+    ctx.moveTo(0, getFaultBaseY(0) + getHalfGap(0));
+    for (let x = 0; x <= w; x += 4) {
+      ctx.lineTo(x, getFaultBaseY(x) + getHalfGap(x));
+    }
     ctx.stroke();
 
-    // Highlight tanah merekah di sisi retakan
-    ctx.strokeStyle = '#ca8a04';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(startX + 1, startY);
-    ctx.lineTo(midX + 1, midY);
-    ctx.lineTo(endX + 1, endY);
-    ctx.stroke();
-
-    // Percabangan retakan (Crack Bifurcation)
-    if (f.branch) {
-      const bEndX = midX + Math.sin(f.angle1 + 0.75) * (f.len * 0.35);
-      const bEndY = midY - Math.cos(f.angle1 + 0.75) * (f.len * 0.35);
-      ctx.strokeStyle = '#18181b';
-      ctx.lineWidth = 1.6;
-      ctx.beginPath();
-      ctx.moveTo(midX, midY);
-      ctx.lineTo(bEndX, bEndY);
-      ctx.stroke();
+    // 4E. GORESAN SESAR MENDATAR (SLICKENSIDES STRIATIONS) PADA BEKAS PATAHAN
+    // Garis-garis gores mendatar sejajar bidang sesar hasil gesekan antar-lempeng
+    if (shiftP > 0.04) {
+      ctx.lineWidth = 1.2;
+      for (let x = 20; x < w; x += 36) {
+        const fy = getFaultBaseY(x);
+        const stLen = 8 + (Math.abs(Math.sin(x * 0.1)) * 14);
+        ctx.strokeStyle = (Math.floor(x / 36) % 2 === 0) ? 'rgba(120, 53, 15, 0.75)' : 'rgba(28, 25, 23, 0.65)';
+        ctx.beginPath();
+        ctx.moveTo(x - stLen / 2, fy);
+        ctx.lineTo(x + stLen / 2, fy);
+        ctx.stroke();
+      }
     }
 
-    // 2. Retakan ke arah Lempeng Selatan
-    const sStartX = f.x + 18 + shiftSouth * 0.3;
-    const sStartY = faultY + fissureH / 2;
-    const sMidX = sStartX + Math.sin(f.angle2) * (f.len * 0.5);
-    const sMidY = sStartY + Math.cos(f.angle2) * (f.len * 0.5);
-    const sEndX = sMidX + Math.sin(f.angle1) * (f.len * 0.5);
-    const sEndY = sMidY + Math.cos(f.angle1) * (f.len * 0.5);
+    // 4F. PUING & PECAHAN BATUAN PATAHAN (FAULT BRECCIA & GOUGE)
+    // Serpihan dan kerikil batuan hancur yang berserakan di sepanjang celah patahan bergerigi
+    for (let i = 0; i < 48; i++) {
+      const seedX = (i * 73 + 17) % (w - 40) + 20;
+      const fy = getFaultBaseY(seedX);
+      const bShift = (i % 2 === 0 ? shiftNorth : shiftSouth) * 0.4;
+      const bx = seedX + bShift;
+      const by = fy + (Math.sin(i * 1.7) * (getHalfGap(seedX) + 2));
+      const bSize = 2 + (i % 3);
 
-    ctx.strokeStyle = '#18181b';
-    ctx.lineWidth = 2.2;
-    ctx.beginPath();
-    ctx.moveTo(sStartX, sStartY);
-    ctx.lineTo(sMidX, sMidY);
-    ctx.lineTo(sEndX, sEndY);
-    ctx.stroke();
-
-    ctx.strokeStyle = '#78350f';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(sStartX + 1, sStartY);
-    ctx.lineTo(sMidX + 1, sMidY);
-    ctx.lineTo(sEndX + 1, sEndY);
-    ctx.stroke();
-
-    if (f.branch) {
-      const sbEndX = sMidX - Math.sin(f.angle2 - 0.7) * (f.len * 0.32);
-      const sbEndY = sMidY + Math.cos(f.angle2 - 0.7) * (f.len * 0.32);
-      ctx.strokeStyle = '#18181b';
-      ctx.lineWidth = 1.6;
-      ctx.beginPath();
-      ctx.moveTo(sMidX, sMidY);
-      ctx.lineTo(sbEndX, sbEndY);
-      ctx.stroke();
+      ctx.fillStyle = i % 3 === 0 ? '#44403c' : (i % 2 === 0 ? '#78716c' : '#78350f');
+      ctx.fillRect(bx, by, bSize, bSize);
+      if (i % 4 === 0) {
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(bx, by - 1, 1.5, 1);
+      }
     }
-  }
-  ctx.restore();
 
-  // 5. DEBU SEISMIK & GESEKAN TEKTONIK AKTIF (SEISMIC FRICTION DUST PUFFS)
-  if (p > 0.05) {
-    for (let dp = 0; dp < 16; dp++) {
-      const dCycle = ((frame * 0.08 + dp * 1.5) % 10) / 10;
-      const dx = ((dp * 97 + frame * 0.4) % (w - 40)) + 20;
-      const dy = faultY + Math.sin(frame * 0.1 + dp) * 5;
-      const dr = 3 + dCycle * 8;
-      const dAlpha = Math.max(0, (1 - dCycle) * 0.45);
-
-      ctx.fillStyle = `rgba(254, 215, 170, ${dAlpha})`;
-      ctx.beginPath();
-      ctx.arc(dx, dy, dr, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    ctx.restore();
   }
 
-  // 6. INDIKATOR TEKTONIK & PANAH PERGERAKAN LEMPENG (TACTICAL OVERHEAD PLATES)
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 5: RETAKAN TANAH SEISMIK BERCABANG (JAGGED BRANCHING EARTHQUAKE RUPTURES)
+  // - Hanya muncul saat gempa terjadi (crackP > 0)
+  // - Merambat memanjang dinamis seiring intensitas gempa (crackP)
+  // ══════════════════════════════════════════════════════════════════════
+  if (crackP > 0.05) {
+    ctx.save();
+    const faultSeeds = [
+      { x: 30, len: 26, angle1: -0.6, angle2: -0.9, branch: true },
+      { x: 75, len: 18, angle1: 0.4, angle2: 0.7, branch: false },
+      { x: 120, len: 32, angle1: -0.8, angle2: -0.4, branch: true },
+      { x: 170, len: 22, angle1: 0.5, angle2: 0.2, branch: false },
+      { x: 215, len: 38, angle1: -0.7, angle2: -1.0, branch: true },
+      { x: 270, len: 20, angle1: 0.3, angle2: 0.8, branch: false },
+      { x: 310, len: 30, angle1: -0.5, angle2: -0.8, branch: true },
+      { x: 420, len: 36, angle1: 0.6, angle2: 0.3, branch: true },
+      { x: 470, len: 24, angle1: -0.7, angle2: -0.4, branch: false },
+      { x: 520, len: 40, angle1: -0.4, angle2: -0.9, branch: true },
+      { x: 580, len: 22, angle1: 0.7, angle2: 0.5, branch: false },
+      { x: 630, len: 34, angle1: -0.6, angle2: -0.8, branch: true },
+      { x: 680, len: 28, angle1: 0.4, angle2: 0.7, branch: true },
+      { x: 800, len: 32, angle1: -0.7, angle2: -0.5, branch: true },
+      { x: 855, len: 20, angle1: 0.5, angle2: 0.8, branch: false },
+      { x: 910, len: 38, angle1: -0.5, angle2: -0.9, branch: true },
+      { x: 970, len: 24, angle1: 0.3, angle2: 0.6, branch: false },
+      { x: 1020, len: 35, angle1: -0.8, angle2: -0.6, branch: true },
+      { x: 1080, len: 22, angle1: 0.6, angle2: 0.9, branch: false },
+      { x: 1140, len: 42, angle1: -0.4, angle2: -0.8, branch: true },
+      { x: 1200, len: 26, angle1: 0.5, angle2: 0.3, branch: true },
+      { x: 1260, len: 34, angle1: -0.7, angle2: -0.5, branch: false },
+      { x: 1320, len: 28, angle1: 0.4, angle2: 0.8, branch: true },
+      { x: 1380, len: 36, angle1: -0.6, angle2: -0.9, branch: true },
+      { x: 1440, len: 22, angle1: 0.5, angle2: 0.4, branch: false },
+    ];
+
+    for (const f of faultSeeds) {
+      const curLen = f.len * crackP;
+
+      // 1. Retakan ke arah Lempeng Utara
+      const startX = f.x + shiftNorth * 0.3;
+      const startY = getFaultBaseY(startX) - getHalfGap(startX);
+      const midX = startX + Math.sin(f.angle1) * (curLen * 0.55);
+      const midY = startY - Math.cos(f.angle1) * (curLen * 0.55);
+      const endX = midX + Math.sin(f.angle2) * (curLen * 0.45);
+      const endY = midY - Math.cos(f.angle2) * (curLen * 0.45);
+
+      ctx.strokeStyle = '#18181b';
+      ctx.lineWidth = 2.0;
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(midX, midY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#ca8a04';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(startX + 1, startY);
+      ctx.lineTo(midX + 1, midY);
+      ctx.lineTo(endX + 1, endY);
+      ctx.stroke();
+
+      if (f.branch && crackP > 0.4) {
+        const bEndX = midX + Math.sin(f.angle1 + 0.75) * (curLen * 0.35);
+        const bEndY = midY - Math.cos(f.angle1 + 0.75) * (curLen * 0.35);
+        ctx.strokeStyle = '#18181b';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(midX, midY);
+        ctx.lineTo(bEndX, bEndY);
+        ctx.stroke();
+      }
+
+      // 2. Retakan ke arah Lempeng Selatan
+      const sStartX = f.x + 18 + shiftSouth * 0.3;
+      const sStartY = getFaultBaseY(sStartX) + getHalfGap(sStartX);
+      const sMidX = sStartX + Math.sin(f.angle2) * (curLen * 0.5);
+      const sMidY = sStartY + Math.cos(f.angle2) * (curLen * 0.5);
+      const sEndX = sMidX + Math.sin(f.angle1) * (curLen * 0.5);
+      const sEndY = sMidY + Math.cos(f.angle1) * (curLen * 0.5);
+
+      ctx.strokeStyle = '#18181b';
+      ctx.lineWidth = 2.0;
+      ctx.beginPath();
+      ctx.moveTo(sStartX, sStartY);
+      ctx.lineTo(sMidX, sMidY);
+      ctx.lineTo(sEndX, sEndY);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(sStartX + 1, sStartY);
+      ctx.lineTo(sMidX + 1, sMidY);
+      ctx.lineTo(sEndX + 1, sEndY);
+      ctx.stroke();
+
+      if (f.branch && crackP > 0.4) {
+        const sbEndX = sMidX - Math.sin(f.angle2 - 0.7) * (curLen * 0.32);
+        const sbEndY = sMidY + Math.cos(f.angle2 - 0.7) * (curLen * 0.32);
+        ctx.strokeStyle = '#18181b';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(sMidX, sMidY);
+        ctx.lineTo(sbEndX, sbEndY);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 6: INDIKATOR TEKTONIK & PANAH PERGERAKAN LEMPENG (OVERHEAD PLATES)
+  // ══════════════════════════════════════════════════════════════════════
   ctx.save();
   // Spanduk & Panah Lempeng Pasifik (Bergerak ke Barat Laut / Kiri)
   const indNorthX = 1120 + shiftNorth * 0.3;
@@ -4066,7 +5549,9 @@ export function renderOrganicTransformTerrain(
   ctx.fillText('Kecepatan Geser: ~5 cm/tahun', indSouthX, indSouthY + 9);
   ctx.restore();
 
-  // 7. VEGETASI GURUN & BATUAN DARI ATAS (TOP-DOWN JOSHUA TREES & ARID BOULDERS)
+  // ══════════════════════════════════════════════════════════════════════
+  // LAYER 7: VEGETASI GURUN & BATUAN DARI ATAS (TOP-DOWN JOSHUA TREES & BOULDERS)
+  // ══════════════════════════════════════════════════════════════════════
   const desertFoliage = [
     { x: 180, y: 80, isNorth: true, type: 'tree' },
     { x: 540, y: 150, isNorth: true, type: 'bush' },

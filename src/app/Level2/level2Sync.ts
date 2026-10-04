@@ -4,6 +4,7 @@
 
 import { submitLevelProgress } from '../../utils/supabaseClient';
 import { useAuthStore, type Student } from '../../store/teacherStore';
+import { loadLevel2Progress } from './engine/gameEngine';
 
 export interface Level2ProgressPayload {
   score: number;
@@ -64,6 +65,7 @@ export async function syncLevel2Progress(
         stage_label: isDone
           ? 'Tuntas (Mitigasi Gempa, Simulasi & Pascabencana - 100 Poin)'
           : `Zona Mitigasi ${progress.currentMission} (${clampedScore} Poin)`,
+        crystals: Math.min(21, loadLevel2Progress(effectiveStudent.id)?.collectedCrystals?.length ?? 0),
       },
     });
   } catch (err) {

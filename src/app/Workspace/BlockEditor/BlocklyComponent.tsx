@@ -21,30 +21,38 @@ const INITIAL_TOOLBOX = {
         { kind: 'block', type: 'resq_program' },
         { kind: 'block', type: 'resq_tunggu' },
         { kind: 'block', type: 'resq_ulangi' },
-        { kind: 'block', type: 'resq_tampil' },
+        { kind: 'block', type: 'resq_layar_oled' },
       ],
     },
     {
       kind: 'category',
-      name: 'Peringatan & Lampu',
+      name: 'Simulasi Bencana',
+      colour: '#DC2626',
+      contents: [
+        { kind: 'block', type: 'resq_gempa_sim' },
+        { kind: 'block', type: 'resq_gunung_sim' },
+        { kind: 'block', type: 'resq_tipe_letusan' },
+        { kind: 'block', type: 'resq_lokasi_mitigasi' },
+      ],
+    },
+    {
+      kind: 'category',
+      name: 'Peringatan & EWS',
       colour: '#0D9488',
       contents: [
-        { kind: 'block', type: 'resq_led' },
-        { kind: 'block', type: 'resq_led_kedip' },
-        { kind: 'block', type: 'resq_semua_led_mati' },
-        { kind: 'block', type: 'resq_buzzer' },
-        { kind: 'block', type: 'resq_buzzer_nada' },
-        { kind: 'block', type: 'resq_buzzer_stop' },
+        { kind: 'block', type: 'resq_lampu_status' },
+        { kind: 'block', type: 'resq_sirine_ews' },
+        { kind: 'block', type: 'resq_sirine_stop' },
         { kind: 'block', type: 'resq_alarm_darurat' },
       ],
     },
     {
       kind: 'category',
-      name: 'Mekanik Evakuasi',
+      name: 'Aksi & Evakuasi',
       colour: '#7C3AED',
       contents: [
-        { kind: 'block', type: 'resq_motor' },
-        { kind: 'block', type: 'resq_servo' },
+        { kind: 'block', type: 'resq_jalur_evakuasi' },
+        { kind: 'block', type: 'resq_posko' },
       ],
     },
     {
@@ -52,12 +60,9 @@ const INITIAL_TOOLBOX = {
       name: 'Pemantauan Alam',
       colour: '#2563EB',
       contents: [
-        { kind: 'block', type: 'resq_sensor_getar' },
+        { kind: 'block', type: 'resq_sensor_seismik' },
         { kind: 'block', type: 'resq_sensor_suhu' },
-        { kind: 'block', type: 'resq_tombol_1' },
-        { kind: 'block', type: 'resq_tombol_2' },
         { kind: 'block', type: 'resq_getar_kuat' },
-        { kind: 'block', type: 'resq_suhu_panas' },
       ],
     },
     {
@@ -69,8 +74,6 @@ const INITIAL_TOOLBOX = {
         { kind: 'block', type: 'resq_jika_tidak' },
         { kind: 'block', type: 'resq_bandingkan' },
         { kind: 'block', type: 'resq_dan_atau' },
-        { kind: 'block', type: 'resq_bukan' },
-        { kind: 'block', type: 'resq_hitung' },
         { kind: 'block', type: 'math_number' },
         { kind: 'block', type: 'resq_teks' },
       ],
@@ -203,15 +206,15 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
   }, []);
 
   return (
-    <div className="flex flex-col h-full w-full bg-surface">
-      <div className="flex justify-between items-center p-sm border-b border-outline-variant bg-surface-container-lowest">
-        <h2 className="font-title-md text-title-md text-primary flex items-center gap-2">
-          <span className="material-symbols-outlined text-secondary-container">widgets</span>
+    <div className="flex flex-col h-full w-full bg-[#fefce8]">
+      <div className="flex justify-between items-center px-3 py-2 border-b-2 border-[#b45309] bg-[#fef3c7] shadow-sm">
+        <h2 className="font-pixel text-xs sm:text-sm text-[#451a03] font-bold flex items-center gap-2">
+          <span className="material-symbols-outlined text-[#b45309]" style={{ fontSize: '18px' }}>widgets</span>
           Ruang Simulasi
         </h2>
       </div>
       
-      <div className="flex-1 relative flex">
+      <div className="flex-1 relative flex bg-[#fefce8]">
         <div 
           ref={blocklyDiv} 
           className="absolute inset-0 w-full"

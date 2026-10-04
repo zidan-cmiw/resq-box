@@ -29,7 +29,7 @@ export default function TelemetryHUD({
   const formattedDepth = currentDepthKm !== undefined ? currentDepthKm.toLocaleString('id-ID') : null;
 
   return (
-    <div className="bg-slate-950/95 backdrop-blur-md border-2 sm:border-3 border-amber-600/90 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-[0_5px_0_#231206] text-amber-200 font-pixel flex flex-col items-stretch select-none whitespace-nowrap transition-all duration-200 w-auto min-w-[170px] sm:min-w-[195px] max-w-[calc(100vw-24px)]">
+    <div className="bg-slate-950/95 backdrop-blur-md border-2 sm:border-3 border-amber-600/90 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-[0_5px_0_#231206] text-amber-200 font-sans font-bold flex flex-col items-stretch select-none whitespace-nowrap transition-all duration-200 w-auto min-w-[170px] sm:min-w-[195px] max-w-[calc(100vw-24px)]">
       
       {/* Header Pill yang dapat diklik di SEMUA layar (Mobile, Tablet, Desktop) persis seperti tangkapan layar */}
       <button
@@ -42,7 +42,7 @@ export default function TelemetryHUD({
         }`}
         title={isExpanded ? "Sembunyikan Telemetri" : "Tampilkan Indikator Telemetri"}
       >
-        <span className="flex items-center gap-1.5 tracking-widest font-pixel-title text-xs sm:text-[13px] font-bold text-amber-400">
+        <span className="flex items-center gap-1.5 tracking-wider font-sans text-xs sm:text-sm font-extrabold text-amber-400">
           <PixelIcon name="broadcast" size={13} className="text-cyan-400 shrink-0" />
           <span>TELEMETRI</span>
         </span>
@@ -53,41 +53,41 @@ export default function TelemetryHUD({
 
       {/* Indikator Telemetri (Muncul saat panel diperluas / diklik) */}
       {isExpanded && (
-        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 xl:gap-2.5 animate-fadeIn pt-0.5">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 xl:gap-3 animate-fadeIn pt-1">
           {/* 1. Kedalaman */}
           {formattedDepth !== null && (
-            <div className="flex items-center justify-between sm:justify-start gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-slate-900/95 border border-blue-500/70 shrink-0 whitespace-nowrap" title="Kedalaman saat ini">
+            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-blue-500/70 shrink-0 whitespace-nowrap" title="Kedalaman saat ini">
               <div className="flex items-center gap-1.5">
-                <PixelIcon name="ruler" size={13} className="text-blue-400 shrink-0" />
-                <span className="text-[9px] sm:text-[10px] text-blue-300 font-semibold">KEDALAMAN</span>
+                <PixelIcon name="ruler" size={14} className="text-blue-400 shrink-0" />
+                <span className="text-[11px] sm:text-xs text-blue-300 font-bold tracking-wide">KEDALAMAN</span>
               </div>
-              <span className="text-[11px] sm:text-xs md:text-sm font-bold text-blue-100 whitespace-nowrap">
-                {formattedDepth} <span className="text-[9px] sm:text-[10px] text-blue-300 font-semibold">KM</span>
+              <span className="text-xs sm:text-sm md:text-base font-extrabold text-blue-100 whitespace-nowrap">
+                {formattedDepth} <span className="text-[11px] sm:text-xs text-blue-300 font-bold">KM</span>
               </span>
             </div>
           )}
 
           {/* 2. Tekanan */}
           {currentPressureGpa !== undefined && (
-            <div className="flex items-center justify-between sm:justify-start gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-slate-900/95 border border-rose-500/70 shrink-0 whitespace-nowrap" title="Tekanan interior">
+            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-rose-500/70 shrink-0 whitespace-nowrap" title="Tekanan interior">
               <div className="flex items-center gap-1.5">
-                <PixelIcon name="earthquake" size={13} className="text-rose-400 shrink-0" />
-                <span className="text-[9px] sm:text-[10px] text-rose-300 font-semibold">TEKANAN</span>
+                <PixelIcon name="earthquake" size={14} className="text-rose-400 shrink-0" />
+                <span className="text-[11px] sm:text-xs text-rose-300 font-bold tracking-wide">TEKANAN</span>
               </div>
-              <span className="text-[11px] sm:text-xs md:text-sm font-bold text-rose-100 whitespace-nowrap">
-                {currentPressureGpa} <span className="text-[9px] sm:text-[10px] text-rose-300 font-semibold">GPa</span>
+              <span className="text-xs sm:text-sm md:text-base font-extrabold text-rose-100 whitespace-nowrap">
+                {currentPressureGpa} <span className="text-[11px] sm:text-xs text-rose-300 font-bold">GPa</span>
               </span>
             </div>
           )}
 
           {/* 3. Suhu */}
           {currentTempLabel && (
-            <div className="flex items-center justify-between sm:justify-start gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-slate-900/95 border border-amber-500/70 shrink-0 whitespace-nowrap" title="Suhu Interior Bumi">
+            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-amber-500/70 shrink-0 whitespace-nowrap" title="Suhu Interior Bumi">
               <div className="flex items-center gap-1.5">
-                <PixelIcon name="fire" size={13} className="text-amber-400 shrink-0" />
-                <span className="text-[9px] sm:text-[10px] text-amber-300 font-semibold">SUHU</span>
+                <PixelIcon name="fire" size={14} className="text-amber-400 shrink-0" />
+                <span className="text-[11px] sm:text-xs text-amber-300 font-bold tracking-wide">SUHU</span>
               </div>
-              <span className="text-[11px] sm:text-xs md:text-sm font-bold text-amber-100 whitespace-nowrap">
+              <span className="text-xs sm:text-sm md:text-base font-extrabold text-amber-100 whitespace-nowrap">
                 <span className="inline 2xl:hidden">
                   {currentTempLabel.includes('–') || currentTempLabel.includes('-')
                     ? currentTempLabel.split(/[–-]/).pop()?.replace(/[()]/g, '').trim() || currentTempLabel
@@ -101,24 +101,24 @@ export default function TelemetryHUD({
           )}
 
           {/* 4. Kristal */}
-          <div className="flex items-center justify-between sm:justify-start gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-slate-900/95 border border-cyan-500/70 shrink-0 whitespace-nowrap" title="Kristal geologi terkumpul">
+          <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-cyan-500/70 shrink-0 whitespace-nowrap" title="Kristal geologi terkumpul">
             <div className="flex items-center gap-1.5">
-              <PixelIcon name="crystal" size={13} className="text-cyan-300 shrink-0" />
-              <span className="text-[9px] sm:text-[10px] text-cyan-300 font-semibold">KRISTAL</span>
+              <PixelIcon name="crystal" size={14} className="text-cyan-300 shrink-0" />
+              <span className="text-[11px] sm:text-xs text-cyan-300 font-bold tracking-wide">KRISTAL</span>
             </div>
-            <span className="text-[11px] sm:text-xs md:text-sm font-bold text-cyan-100 whitespace-nowrap">
+            <span className="text-xs sm:text-sm md:text-base font-extrabold text-cyan-100 whitespace-nowrap">
               {crystalsCount}/{totalCrystals}
             </span>
           </div>
 
           {/* 5. Temuan Geologis Area Ini */}
           {areaDiscoveriesTotal > 0 && (
-            <div className="flex items-center justify-between sm:justify-start gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-slate-900/95 border border-amber-500/70 shrink-0 whitespace-nowrap" title="Temuan Geologis Area Ini">
+            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-amber-500/70 shrink-0 whitespace-nowrap" title="Temuan Geologis Area Ini">
               <div className="flex items-center gap-1.5">
-                <PixelIcon name="search" size={13} className="text-amber-300 shrink-0" />
-                <span className="text-[9px] sm:text-[10px] text-amber-300 font-semibold">TEMUAN</span>
+                <PixelIcon name="search" size={14} className="text-amber-300 shrink-0" />
+                <span className="text-[11px] sm:text-xs text-amber-300 font-bold tracking-wide">TEMUAN</span>
               </div>
-              <span className="text-[11px] sm:text-xs md:text-sm font-bold text-amber-100 whitespace-nowrap">
+              <span className="text-xs sm:text-sm md:text-base font-extrabold text-amber-100 whitespace-nowrap">
                 {areaDiscoveriesRead}/{areaDiscoveriesTotal}
               </span>
             </div>
@@ -126,12 +126,12 @@ export default function TelemetryHUD({
 
           {/* 6. Ketahanan Eksplorasi (HP) */}
           <div
-            className="flex items-center justify-between sm:justify-start gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-slate-900/95 border border-rose-500/70 shrink-0 whitespace-nowrap"
+            className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-rose-500/70 shrink-0 whitespace-nowrap"
             title="Ketahanan Eksplorasi (HP)"
           >
             <div className="flex items-center gap-1.5">
-              <PixelIcon name="heart" size={13} className="text-rose-400 shrink-0" />
-              <span className="text-[9px] sm:text-[10px] text-rose-300 font-semibold">HP</span>
+              <PixelIcon name="heart" size={14} className="text-rose-400 shrink-0" />
+              <span className="text-[11px] sm:text-xs text-rose-300 font-bold tracking-wide">HP</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-12 sm:w-16 xl:w-20 h-3 bg-slate-800 rounded-full border border-slate-700 overflow-hidden p-0.5 shrink-0">

@@ -22,13 +22,17 @@ export interface PinStates {
   '13': 'HIGH' | 'LOW';   // LED Bawaan
   SERVO: 'OPEN' | 'CLOSED'; // Pintu Evakuasi
   BUZZER: boolean;           // Sirine
-  MOTOR: 'OFF' | 'SLOW' | 'MEDIUM' | 'FAST'; // Kipas Ventilasi
+  MOTOR: 'OFF' | 'SLOW' | 'MEDIUM' | 'FAST'; // Kipas Ventilasi / Getar
 }
 
 const DEFAULT_PIN_STATES: PinStates = {
   '10': 'LOW', '11': 'LOW', '12': 'LOW', '13': 'LOW',
   SERVO: 'CLOSED', BUZZER: false, MOTOR: 'OFF',
 };
+
+export type SeismicLevel = 0 | 1 | 2 | 3;
+export type VolcanoStatus = 'NORMAL' | 'WASPADA' | 'SIAGA' | 'AWAS';
+export type EruptionType = 'NONE' | 'EKSPLOSIF' | 'EFUSIF';
 
 interface RuntimeState {
   isRunning: boolean;
@@ -38,6 +42,19 @@ interface RuntimeState {
   showConsole: boolean;
   pinStates: PinStates;
 
+  // Telemetri Digital Twin Bencana & Mitigasi
+  seismicLevel: SeismicLevel;
+  richterScale: number;
+  volcanoStatus: VolcanoStatus;
+  volcanoTemp: number;
+  eruptionType: EruptionType;
+  selectedRoute: string;
+  activeShelter: string;
+  oledMessage: string;
+  locationContext: string;
+  rgbColor: 'green' | 'yellow' | 'orange' | 'red' | 'off';
+  mistActive: boolean;
+
   setRunning: (running: boolean) => void;
   setSensorValue: (pin: keyof SensorValues, value: number | boolean) => void;
   addLog: (text: string, type?: ConsoleLog['type']) => void;
@@ -46,13 +63,22 @@ interface RuntimeState {
   toggleConsole: () => void;
   setPinState: (pin: string, state: string) => void;
   resetPinStates: () => void;
+
+  setSeismicSimulation: (level: SeismicLevel) => void;
+  setVolcanoSimulation: (status: VolcanoStatus, type?: EruptionType) => void;
+  setEvacuationRoute: (route: string) => void;
+  setActiveShelter: (shelter: string) => void;
+  setOledMessage: (msg: string) => void;
+  setLocationContext: (loc: string) => void;
+  setRgbColor: (color: 'green' | 'yellow' | 'orange' | 'red' | 'off') => void;
+  setMistActive: (active: boolean) => void;
 }
 
 export const useRuntimeStore = create<RuntimeState>((set) => ({
   isRunning: false,
   sensorValues: {
     A1: 0,
-    A2: 512,  // ~25°C default
+    A2: 275,  // ~27°C normal
     D2: false,
     D3: false,
   },
@@ -60,6 +86,19 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
   showSensorPanel: false,
   showConsole: true,
   pinStates: { ...DEFAULT_PIN_STATES },
+
+  // Initial disaster states
+  seismicLevel: 0,
+  richterScale: 0.0,
+  volcanoStatus: 'NORMAL',
+  volcanoTemp: 27.5,
+  eruptionType: 'NONE',
+  selectedRoute: 'Belum Ditentukan',
+  activeShelter: 'Belum Diaktifkan',
+  oledMessage: 'SISTEM SIAP: MENUNGGU...',
+  locationContext: 'Pemukiman Warga',
+  rgbColor: 'green',
+  mistActive: false,
 
   setRunning: (running) => set({ isRunning: running }),
 
@@ -84,24 +123,75 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
 
   setPinState: (pin, state) => set((s) => {
     const next = { ...s.pinStates } as any;
-    // LED pins
     if (['10','11','12','13'].includes(pin)) {
       next[pin] = state === 'HIGH' ? 'HIGH' : 'LOW';
     }
-    // Servo (Pintu Evakuasi)
     if (pin === 'SERVO' || state.includes('Terbuka') || state.includes('Tertutup')) {
       next.SERVO = state.includes('Terbuka') || state === 'OPEN' ? 'OPEN' : 'CLOSED';
     }
-    // Buzzer
     if (pin === 'BUZZER') {
       next.BUZZER = state === 'ON';
     }
-    // Motor
     if (pin === 'MOTOR') {
       next.MOTOR = state;
     }
     return { pinStates: next };
   }),
 
-  resetPinStates: () => set({ pinStates: { ...DEFAULT_PIN_STATES } }),
+  setSeismicSimulation: (level) => set((s) => {
+    let richter = 0.0;
+    let a1Val = 0;
+    if (level === 1) { richter = 3.4; a1Val = 350; }
+    else if (level === 2) { richter = 5.6; a1Val = 620; }
+    else if (level === 3) { richter = 7.4; a1Val = 920; }
+
+    return {
+      seismicLevel: level,
+      richterScale: richter,
+      sensorValues: { ...s.sensorValues, A1: a1Val }
+    };
+  }),
+
+  setVolcanoSimulation: (status, type = 'NONE') => set((s) => {
+    let temp = 27.5;
+    let rgb: 'green' | 'yellow' | 'orange' | 'red' | 'off' = 'green';
+    let mist = false;
+
+    if (status === 'NORMAL') { temp = 27.5; rgb = 'green'; mist = false; }
+    else if (status === 'WASPADA') { temp = 43.8; rgb = 'yellow'; mist = false; }
+    else if (status === 'SIAGA') { temp = 68.4; rgb = 'orange'; mist = type === 'EFUSIF'; }
+    else if (status === 'AWAS') { temp = 94.6; rgb = 'red'; mist = true; }
+
+    const rawA2 = Math.round((temp / 100) * 1023);
+
+    return {
+      volcanoStatus: status,
+      volcanoTemp: temp,
+      eruptionType: type,
+      rgbColor: rgb,
+      mistActive: mist,
+      sensorValues: { ...s.sensorValues, A2: rawA2 }
+    };
+  }),
+
+  setEvacuationRoute: (route) => set({ selectedRoute: route }),
+  setActiveShelter: (shelter) => set({ activeShelter: shelter }),
+  setOledMessage: (msg) => set({ oledMessage: msg }),
+  setLocationContext: (loc) => set({ locationContext: loc }),
+  setRgbColor: (color) => set({ rgbColor: color }),
+  setMistActive: (active) => set({ mistActive: active }),
+
+  resetPinStates: () => set({
+    pinStates: { ...DEFAULT_PIN_STATES },
+    seismicLevel: 0,
+    richterScale: 0.0,
+    volcanoStatus: 'NORMAL',
+    volcanoTemp: 27.5,
+    eruptionType: 'NONE',
+    selectedRoute: 'Belum Ditentukan',
+    activeShelter: 'Belum Diaktifkan',
+    oledMessage: 'SISTEM SIAP: MENUNGGU...',
+    rgbColor: 'green',
+    mistActive: false,
+  }),
 }));

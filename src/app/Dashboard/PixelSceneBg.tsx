@@ -219,7 +219,7 @@ export default function PixelSceneBg() {
         <rect x="476" y="135" width="8" height="280" fill="#fde047" />
 
         {/* Tectonic Plate Boundary / Subduction Fault Line (Sesar & Zona Subduksi) */}
-        <g stroke="#f97316" strokeWidth="4" strokeDasharray="8 6" fill="none">
+        <g stroke="#f97316" strokeWidth="4" fill="none">
           {/* Subducting plate slant */}
           <path d="M 0,380 L 320,410 L 420,510" />
           {/* Right fault fracture */}
@@ -277,7 +277,6 @@ export default function PixelSceneBg() {
                 fill="none"
                 stroke={isSelected ? '#facc15' : '#ffffff'}
                 strokeWidth="2"
-                strokeDasharray="4 2"
                 opacity={isSelected ? 1 : 0.6}
               />
               {/* Node Core */}

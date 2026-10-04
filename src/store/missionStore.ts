@@ -1,9 +1,48 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import { MISSIONS, CATEGORIES, type MissionCategory } from '../missions/data/missions';
 import { useAuthStore } from './teacherStore';
 
 type ValidationStatus = 'idle' | 'checking' | 'pass' | 'fail';
+
+export function getActiveUserId(): string {
+  if (typeof window === 'undefined') return 'guest';
+  try {
+    const raw = localStorage.getItem('resqbox-current-user');
+    if (raw) {
+      const user = JSON.parse(raw);
+      if (user?.id) return user.id;
+    }
+  } catch {}
+  return 'guest';
+}
+
+function getUserMissionKey(userId?: string): string {
+  return `resqbox_missions_${userId || 'guest'}`;
+}
+
+export function loadMissionsForUser(userId?: string): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const key = getUserMissionKey(userId);
+    const raw = localStorage.getItem(key);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const validIds = new Set(MISSIONS.map((m) => m.id));
+        return parsed.filter((id) => validIds.has(id));
+      }
+    }
+  } catch {}
+  return [];
+}
+
+export function saveMissionsForUser(userId: string | undefined, missionIds: string[]) {
+  if (typeof window === 'undefined') return;
+  try {
+    const key = getUserMissionKey(userId);
+    localStorage.setItem(key, JSON.stringify(missionIds));
+  } catch {}
+}
 
 interface MissionState {
   completedMissionIds: string[];
@@ -20,141 +59,141 @@ interface MissionState {
   isCategoryUnlocked: (categoryIndex: number) => boolean;
   setCurrentCategoryIndex: (index: number) => void;
   getCategoryProgress: (categoryId: MissionCategory) => { completed: number; total: number };
+  syncUser: (userId?: string) => void;
 }
 
-export const useMissionStore = create<MissionState>()(
-  persist(
-    (set, get) => ({
-      completedMissionIds: [],
+const initialUserId = getActiveUserId();
+const initialMissions = loadMissionsForUser(initialUserId);
+
+export const useMissionStore = create<MissionState>()((set, get) => ({
+  completedMissionIds: initialMissions,
+  activeMissionId: null,
+  validationStatus: 'idle',
+  validationMessage: '',
+  currentCategoryIndex: 0,
+
+  syncUser: (userId?: string) => {
+    const targetUserId = userId || getActiveUserId();
+    const ids = loadMissionsForUser(targetUserId);
+    set({
+      completedMissionIds: ids,
       activeMissionId: null,
       validationStatus: 'idle',
       validationMessage: '',
       currentCategoryIndex: 0,
+    });
+  },
 
-      setActiveMission: (id) => set({ activeMissionId: id, validationStatus: 'idle', validationMessage: '' }),
+  setActiveMission: (id) => set({ activeMissionId: id, validationStatus: 'idle', validationMessage: '' }),
 
-      completeMission: (id) => {
-        set((state) => ({
-          completedMissionIds: state.completedMissionIds.includes(id)
-            ? state.completedMissionIds
-            : [...state.completedMissionIds, id],
-        }));
+  completeMission: (id) => {
+    const userId = getActiveUserId();
+    const current = get().completedMissionIds;
+    const next = current.includes(id) ? current : [...current, id];
 
-        // Sync with teacher store
-        import('./teacherStore').then(({ useAuthStore }) => {
-          const authState = useAuthStore.getState();
-          if (authState.student) {
-            authState.completeMission(id);
-          }
+    // Save to user-scoped localStorage
+    saveMissionsForUser(userId, next);
+    set({ completedMissionIds: next });
 
-          // Check if ALL missions are now completed → mark Level 3 as done
-          const { completedMissionIds } = get();
-          const allIds = new Set([...completedMissionIds, id]);
-          const allMissionsDone = MISSIONS.every((m) => allIds.has(m.id));
+    // Sync with teacher store
+    import('./teacherStore').then(({ useAuthStore }) => {
+      const authState = useAuthStore.getState();
+      if (authState.student) {
+        authState.completeMission(id);
+      }
 
-          if (allMissionsDone) {
-            // Unlock beyond Level 3 (signals completion)
-            authState.unlockLevel(4);
+      // Check if ALL missions are now completed for this user → mark Level 3 as done
+      const allIds = new Set(next);
+      const allMissionsDone = MISSIONS.every((m) => allIds.has(m.id));
 
-            // Submit Level 3 completion to cloud
-            import('../utils/supabaseClient').then(({ submitLevelProgress }) => {
-              const student = authState.student;
-              submitLevelProgress({
-                student_id: student?.id || 'std-1',
-                student_name: student?.name || 'RESQ-Team',
-                classroom_code: student?.classroom_id || 'RESQ-8A',
-                level_number: 3,
-                score: 100,
-                details: {
-                  missions_completed: MISSIONS.length,
-                  categories_completed: CATEGORIES.map((c) => c.id),
-                },
-              });
-            });
-          }
-        });
-      },
+      if (allMissionsDone) {
+        // Unlock beyond Level 3
+        authState.unlockLevel(4);
 
-      setValidationResult: (status, message) =>
-        set({ validationStatus: status, validationMessage: message }),
-
-      resetValidation: () => set({ validationStatus: 'idle', validationMessage: '' }),
-
-      setCurrentCategoryIndex: (index) => set({ currentCategoryIndex: index }),
-
-      isUnlocked: (missionId) => {
-        const { completedMissionIds } = get();
-        const mission = MISSIONS.find((m) => m.id === missionId);
-        if (!mission) return false;
-        
-        // Kategori proyek selalu terbuka semua misinya
-        if (mission.category === 'proyek') return true;
-
-        // Cek dulu apakah kategori ini diizinkan oleh guru
-        const catIndex = CATEGORIES.findIndex((c) => c.id === mission.category);
-        if (!get().isCategoryUnlocked(catIndex)) return false;
-
-        // Level 1 selalu terbuka selama kategorinya diizinkan
-        if (mission.level === 1) return true;
-
-        // Mission N requires mission N-1 in the same category to be completed
-        const prevMission = MISSIONS.find(
-          (m) => m.category === mission.category && m.level === mission.level - 1
-        );
-        if (!prevMission) return true;
-        return completedMissionIds.includes(prevMission.id);
-      },
-
-      isCategoryUnlocked: (categoryIndex) => {
-        // Categories: 0: Persiapan, 1: Gempa Bumi, 2: Kebakaran, 3: Proyek
-        const currentCategory = CATEGORIES[categoryIndex];
-        if (currentCategory && currentCategory.id === 'proyek') return true;
-
-        // Fetch unlocked category from authStore settings
-        let unlockedMax = 1; // Default to first category
-        const settings = useAuthStore.getState().settings;
-        if (settings) {
-            unlockedMax = settings.unlocked_mission_category;
-        }
-
-        // categoryIndex is 0-based. Settings unlocked is 1-based.
-        // If settings.unlocked_mission_category is 2, then index 0 and 1 are unlocked.
-        return categoryIndex < unlockedMax;
-      },
-
-      getCategoryProgress: (categoryId) => {
-        const { completedMissionIds } = get();
-        const missionsInCategory = MISSIONS.filter((m) => m.category === categoryId);
-        const completed = missionsInCategory.filter((m) => completedMissionIds.includes(m.id)).length;
-        return { completed, total: missionsInCategory.length };
-      },
-    }),
-    {
-      name: 'resqbox-mission-storage',
-      onRehydrateStorage: () => {
-        return (state, error) => {
-          if (error || !state) return;
-          // ── Integrity check: validate completedMissionIds ──
-          const { completedMissionIds } = state;
-          const validIds = new Set(MISSIONS.map((m) => m.id));
-          const cleaned = completedMissionIds.filter((id) => {
-            if (!validIds.has(id)) return false;
-            const mission = MISSIONS.find((m) => m.id === id)!;
-            if (mission.level === 1) return true;
-            const prevMission = MISSIONS.find(
-              (m) => m.category === mission.category && m.level === mission.level - 1
-            );
-            if (!prevMission) return true;
-            return completedMissionIds.includes(prevMission.id);
+        // Submit Level 3 completion to cloud
+        import('../utils/supabaseClient').then(({ submitLevelProgress }) => {
+          const student = authState.student;
+          submitLevelProgress({
+            student_id: student?.id || userId,
+            student_name: student?.name || 'RESQ-Team',
+            classroom_code: student?.classroom_id || 'RESQ-8A',
+            level_number: 3,
+            score: 100,
+            details: {
+              missions_completed: MISSIONS.length,
+              categories_completed: CATEGORIES.map((c) => c.id),
+            },
           });
-          if (cleaned.length !== completedMissionIds.length) {
-            console.warn(
-              `[Security] Removed ${completedMissionIds.length - cleaned.length} tampered mission(s).`
-            );
-            state.completedMissionIds = cleaned;
-          }
-        };
-      },
+        });
+      }
+    });
+  },
+
+  setValidationResult: (status, message) =>
+    set({ validationStatus: status, validationMessage: message }),
+
+  resetValidation: () => set({ validationStatus: 'idle', validationMessage: '' }),
+
+  setCurrentCategoryIndex: (index) => set({ currentCategoryIndex: index }),
+
+  isUnlocked: (missionId) => {
+    const { completedMissionIds } = get();
+    const missionIdx = MISSIONS.findIndex((m) => m.id === missionId);
+    if (missionIdx === -1) return false;
+
+    // Level 1 (misi pertama) selalu terbuka
+    if (missionIdx === 0) return true;
+
+    // Misi ke-i terbuka HANYA jika misi ke-(i - 1) sebelumnya sudah diselesaikan
+    const prevMission = MISSIONS[missionIdx - 1];
+    return completedMissionIds.includes(prevMission.id);
+  },
+
+  isCategoryUnlocked: (categoryIndex) => {
+    if (categoryIndex === 0) return true;
+    const currentCategory = CATEGORIES[categoryIndex];
+    if (!currentCategory || currentCategory.id === 'proyek') return true;
+
+    const authState = useAuthStore.getState();
+    if (authState.currentUser?.username === 'demo' || authState.unlockedLevel >= 4) return true;
+
+    let unlockedMax = 1;
+    const settings = authState.settings;
+    if (settings && typeof settings.unlocked_mission_category === 'number') {
+      unlockedMax = settings.unlocked_mission_category;
     }
-  )
-);
+
+    if (categoryIndex < unlockedMax) return true;
+
+    // Unlock naturally if previous category is completed
+    const prevCategory = CATEGORIES[categoryIndex - 1];
+    if (prevCategory) {
+      const prevProgress = get().getCategoryProgress(prevCategory.id);
+      if (prevProgress.completed >= prevProgress.total && prevProgress.total > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+  getCategoryProgress: (categoryId) => {
+    const { completedMissionIds } = get();
+    const missionsInCategory = MISSIONS.filter((m) => m.category === categoryId);
+    const completed = missionsInCategory.filter((m) => completedMissionIds.includes(m.id)).length;
+    return { completed, total: missionsInCategory.length };
+  },
+}));
+
+// Automatic subscription to auth store changes
+if (typeof window !== 'undefined') {
+  import('./teacherStore').then(({ useAuthStore }) => {
+    useAuthStore.subscribe((state, prevState) => {
+      const currentId = state.currentUser?.id || 'guest';
+      const prevId = prevState?.currentUser?.id || 'guest';
+      if (currentId !== prevId) {
+        useMissionStore.getState().syncUser(currentId);
+      }
+    });
+  });
+}

@@ -1,8 +1,8 @@
 // ── src/app/Level1/EarthDive/engine/gameEngine.ts ─────────────────────────
 // Core game loop: ties together player, zones, camera, renderer, and interactions.
 
-import type { ZoneConfig, MapObject } from './zones';
-import { ZONES, getZone, updateDivergentGroundProfile, updateConvergentGroundProfile } from './zones';
+import type { ZoneConfig, MapObject, DivergentFish } from './zones';
+import { ZONES, getZone, updateDivergentGroundProfile, updateConvergentGroundProfile, createInitialDivergentFish } from './zones';
 import type { PlayerState, InputState } from './player';
 import { createPlayer, updatePlayer, getEffectiveGround, isNearObject, initInput, readInput, mergeInput } from './player';
 import type { Camera } from './renderer';
@@ -23,6 +23,7 @@ export interface GameState {
   discoveredPoints: Set<string>;
   unlockedGates: Set<string>;
   completedChallenges: Set<string>;
+  purchasedSuits: Set<string>;
   nearObject: MapObject | null;
 
   // Transition state
@@ -36,6 +37,13 @@ export interface GameState {
   pendingChallenge: MapObject | null;
   pendingInfoSign: MapObject | null;
   pendingNpcDialogue: MapObject | null;
+  pendingSuitMerchant: MapObject | null;
+  pendingSuitRequired: {
+    requiredSuit: string;
+    suitName: string;
+    zoneName: string;
+    reason: string;
+  } | null;
   pendingCoreChallenge: boolean;
   pendingWordleEvaluation: boolean;
   pendingGateLocked: boolean;
@@ -54,10 +62,18 @@ export interface GameState {
   // Dynamic Divergent Rift Animation State (Area 6)
   divergentProgress: number;
   divergentShake: number;
+  divergentMagmaTimer: number;
+  divergentCoolProgress: number;
+  divergentSequencePhase?: 'calm' | 'quake' | 'temp_rise' | 'diverging' | 'cooling';
+  divergentPhaseTimer?: number;
+  divergentWiltProgress?: number;
+  divergentFishScared?: boolean;
+  divergentFish?: DivergentFish[];
 
   // Dynamic Convergent Collision Animation State (Area 7)
   convergentProgress: number;
   convergentShake: number;
+  convergentMode: 'land' | 'ocean';
 
   // Dynamic Transform Strike-Slip Animation State (Area 8)
   transformProgress: number;
@@ -78,6 +94,8 @@ export interface SavedEarthDiveProgress {
   playerDir: 'left' | 'right';
   playerHealth?: number;
   collectedCrystals: string[];
+  purchasedSuits?: string[];
+  equippedSuit?: string | null;
   discoveredPoints: string[];
   unlockedGates: string[];
   completedChallenges: string[];
@@ -85,6 +103,7 @@ export interface SavedEarthDiveProgress {
   zonePositions?: Record<number, { x: number; y: number; dir: 'left' | 'right' }>;
   divergentProgress?: number;
   convergentProgress?: number;
+  convergentMode?: 'land' | 'ocean';
   transformProgress?: number;
 }
 
@@ -120,6 +139,8 @@ export function saveEarthDiveProgress(state: GameState, userId?: string): void {
       playerDir: state.player.dir,
       playerHealth: state.player.health,
       collectedCrystals: Array.from(state.collectedCrystals),
+      purchasedSuits: Array.from(state.purchasedSuits),
+      equippedSuit: state.player.equippedSuit,
       discoveredPoints: Array.from(state.discoveredPoints),
       unlockedGates: Array.from(state.unlockedGates),
       completedChallenges: Array.from(state.completedChallenges),
@@ -127,6 +148,7 @@ export function saveEarthDiveProgress(state: GameState, userId?: string): void {
       zonePositions: existingPositions,
       divergentProgress: state.divergentProgress,
       convergentProgress: state.convergentProgress,
+      convergentMode: state.convergentMode,
       transformProgress: state.transformProgress,
     };
 
@@ -181,14 +203,15 @@ export function createGameState(userId?: string): GameState {
 
   // Posisi pemain: Utamakan posisi persis terakhir yang tersimpan di zona ini (TIDAK reset ke awal area)
   const savedZonePos = saved?.zonePositions?.[zoneIndex];
-  let initialX = savedZonePos?.x ?? saved?.playerX ?? zone.playerSpawnX ?? 80;
-  let initialY = savedZonePos?.y ?? saved?.playerY ?? zone.playerSpawnY ?? 360;
+  const hasSavedInThisZone = savedZonePos !== undefined || (saved?.currentZone === zoneIndex && saved?.playerX !== undefined);
+  let initialX = savedZonePos?.x ?? (saved?.currentZone === zoneIndex ? saved?.playerX : undefined) ?? (zoneIndex === 6 ? 110 : (zone.playerSpawnX ?? 80));
+  let initialY = savedZonePos?.y ?? (saved?.currentZone === zoneIndex ? saved?.playerY : undefined) ?? (zone.playerSpawnY ?? 360);
 
   // Hanya jika benar-benar pertama kali masuk Batas Konvergen tanpa riwayat posisi sama sekali, spawn di perahu
-  if (zoneIndex === 6 && savedZonePos === undefined && saved?.playerX === undefined) {
+  if (zoneIndex === 6 && !hasSavedInThisZone) {
     initialX = 110;
     initialY = 360;
-  } else if (zoneIndex === 7 && savedZonePos === undefined && saved?.playerX === undefined) {
+  } else if (zoneIndex === 7 && !hasSavedInThisZone) {
     initialX = 120;
     initialY = 200;
   }
@@ -196,7 +219,13 @@ export function createGameState(userId?: string): GameState {
   // Batasi agar pemain tetap berada di dalam batas map yang aman
   const mapW = zone.cols * TILE;
   initialX = Math.max(40, Math.min(mapW - 60, initialX));
-  initialY = getEffectiveGround(zone, initialX, initialY);
+  if (zoneIndex === 5) {
+    // Di Batas Divergen: Mengambang di air laut (~195px atau ~40px di atas dasar laut)
+    const effectiveGround = getEffectiveGround(zone, initialX, initialY);
+    initialY = Math.max(54, Math.min(effectiveGround - 35, initialY > 50 ? initialY : 195));
+  } else {
+    initialY = getEffectiveGround(zone, initialX, initialY);
+  }
 
   const state: GameState = {
     userId,
@@ -205,6 +234,7 @@ export function createGameState(userId?: string): GameState {
     camera: { x: 0, y: 0 },
     frame: 0,
     collectedCrystals: new Set(saved?.collectedCrystals ?? []),
+    purchasedSuits: new Set(saved?.purchasedSuits ?? []),
     discoveredPoints: new Set(saved?.discoveredPoints ?? []),
     unlockedGates: new Set(saved?.unlockedGates ?? []),
     completedChallenges: new Set(saved?.completedChallenges ?? []),
@@ -217,6 +247,8 @@ export function createGameState(userId?: string): GameState {
     pendingChallenge: null,
     pendingInfoSign: null,
     pendingNpcDialogue: null,
+    pendingSuitMerchant: null,
+    pendingSuitRequired: null,
     pendingCoreChallenge: false,
     pendingWordleEvaluation: false,
     pendingGateLocked: false,
@@ -228,8 +260,16 @@ export function createGameState(userId?: string): GameState {
     zonesVisited: new Set(saved?.zonesVisited ?? [zoneIndex]),
     divergentProgress: initDivProg,
     divergentShake: 0,
+    divergentMagmaTimer: initDivProg >= 1 ? 9999 : 0,
+    divergentCoolProgress: initDivProg >= 1 ? 1.0 : 0,
+    divergentSequencePhase: initDivProg >= 1 ? 'cooling' : 'calm',
+    divergentPhaseTimer: 0,
+    divergentWiltProgress: initDivProg >= 1 ? 1 : 0,
+    divergentFishScared: initDivProg >= 1,
+    divergentFish: createInitialDivergentFish(),
     convergentProgress: initConvProg,
     convergentShake: 0,
+    convergentMode: saved?.convergentMode ?? 'land',
     transformProgress: initTransProg,
     transformShake: 0,
   };
@@ -238,9 +278,23 @@ export function createGameState(userId?: string): GameState {
     state.player.health = saved.playerHealth;
   }
 
+  if (saved?.equippedSuit) {
+    state.player.equippedSuit = saved.equippedSuit;
+  } else {
+    // Backward compatibility untuk save game lama yang sudah berada di zona bawah
+    if (zoneIndex === 2) state.player.equippedSuit = 'mantle_suit';
+    else if (zoneIndex === 3) state.player.equippedSuit = 'outer_core_suit';
+    else if (zoneIndex === 4) state.player.equippedSuit = 'inner_core_suit';
+    else if (zoneIndex >= 5) state.player.equippedSuit = 'diver_suit';
+  }
+
   const savedDir = savedZonePos?.dir ?? saved?.playerDir;
   if (savedDir) {
     state.player.dir = savedDir;
+  }
+
+  if (zoneIndex === 5) {
+    state.player.onGround = false;
   }
 
   // Center camera on restored player immediately
@@ -271,18 +325,31 @@ export function initGame(): void {
 }
 
 // ── FIND NEAREST INTERACTABLE ──
-function findNearObject(player: PlayerState, zone: ZoneConfig, collectedIds: Set<string>): MapObject | null {
+function findNearObject(
+  player: PlayerState,
+  zone: ZoneConfig,
+  collectedIds: Set<string>,
+  npcStates?: Map<string, NpcState>,
+): MapObject | null {
   let closest: MapObject | null = null;
   let closestDist = Infinity;
 
   for (const obj of zone.objects) {
     if (collectedIds.has(obj.id)) continue;
-    const targetX = obj.px !== undefined ? obj.px : obj.x;
-    const targetY = obj.py !== undefined ? obj.py : obj.y;
+    let targetX = obj.px !== undefined ? obj.px : obj.x;
+    let targetY = obj.py !== undefined ? obj.py : obj.y;
+
+    if (obj.type === 'npc' && npcStates) {
+      const npcState = npcStates.get(obj.id);
+      if (npcState) {
+        targetX = npcState.x;
+        targetY = npcState.y - 16;
+      }
+    }
 
     if (isNearObject(player, targetX, targetY, 1.8)) {
-      const ox = obj.px !== undefined ? obj.px + TILE / 2 : obj.x * TILE + TILE / 2;
-      const oy = obj.py !== undefined ? obj.py + TILE / 2 : obj.y * TILE + TILE / 2;
+      const ox = targetX >= 30 ? targetX : targetX * TILE + TILE / 2;
+      const oy = targetY >= 20 ? targetY : targetY * TILE + TILE / 2;
       const dist = Math.sqrt((player.x - ox) ** 2 + ((player.y - player.height / 2) - oy) ** 2);
       if (dist < closestDist) {
         closestDist = dist;
@@ -314,12 +381,51 @@ function updateTransition(state: GameState): void {
 
     if (state.currentZone === 5) {
       state.divergentProgress = 0;
-      updateDivergentGroundProfile(zone, 0);
+      state.divergentShake = 0;
+      state.divergentMagmaTimer = 0;
+      state.divergentCoolProgress = 0;
+      state.divergentSequencePhase = 'calm';
+      state.divergentPhaseTimer = 0;
+      state.divergentWiltProgress = 0;
+      state.divergentFishScared = false;
+      state.divergentFish = createInitialDivergentFish();
+      updateDivergentGroundProfile(zone, 0, 0);
     }
 
     if (state.currentZone === 6) {
       state.convergentProgress = 0;
-      updateConvergentGroundProfile(zone, 0);
+      updateConvergentGroundProfile(zone, 0, state.convergentMode || 'land');
+      const isOcean = (state.convergentMode || 'land') === 'ocean';
+      const farhan = state.npcStates.get('z6_npc_zidane') || state.npcStates.get('npc_farhan');
+      const initFarhanX = isOcean ? 615 : 460;
+      if (farhan) {
+        farhan.x = initFarhanX;
+        farhan.anchorX = initFarhanX;
+        farhan.dir = isOcean ? 'left' : 'right';
+        farhan.state = isOcean ? 'idle_left' : 'idle_right';
+        farhan.isFleeing = false;
+        farhan.y = getEffectiveGround(zone, initFarhanX, 310);
+        const farhanObj = zone.objects.find(o => o.id === 'z6_npc_zidane' || o.id === 'npc_farhan');
+        if (farhanObj) {
+          farhanObj.px = initFarhanX;
+          farhanObj.py = farhan.y;
+        }
+      }
+      const ratna = state.npcStates.get('z6_npc_zahra') || state.npcStates.get('npc_ratna');
+      const initRatnaX = isOcean ? 800 : 740;
+      if (ratna) {
+        ratna.x = initRatnaX;
+        ratna.anchorX = initRatnaX;
+        ratna.dir = 'left';
+        ratna.state = 'idle_left';
+        ratna.isFleeing = false;
+        ratna.y = getEffectiveGround(zone, initRatnaX, 310);
+        const ratnaObj = zone.objects.find(o => o.id === 'z6_npc_zahra' || o.id === 'npc_ratna');
+        if (ratnaObj) {
+          ratnaObj.px = initRatnaX;
+          ratnaObj.py = ratna.y;
+        }
+      }
     }
 
     if (state.currentZone === 7) {
@@ -330,8 +436,8 @@ function updateTransition(state: GameState): void {
       // 1. Menuju ke area selanjutnya: Spawn di TEMPAT AWAL (sebelah kiri / dekat portal_up / spawnX awal)
       const upPortal = zone.objects.find(o => o.type === 'portal_up');
       const targetX = upPortal?.px !== undefined ? upPortal.px + 50 : (zone.playerSpawnX ?? 80);
-      const defaultY = state.currentZone === 7 ? 200 : (zone.playerSpawnY ?? 360);
-      const targetY = getEffectiveGround(zone, targetX, defaultY);
+      const defaultY = state.currentZone === 7 ? 200 : (state.currentZone === 5 ? 195 : (zone.playerSpawnY ?? 360));
+      const targetY = state.currentZone === 5 ? 195 : getEffectiveGround(zone, targetX, defaultY);
       state.player.x = targetX;
       state.player.y = targetY;
       state.player.dir = 'right';
@@ -339,15 +445,15 @@ function updateTransition(state: GameState): void {
       // 2. Kembali ke area sebelumnya: Spawn di TEMPAT AKHIR (sebelah kanan / dekat portal_down)
       const downPortal = zone.objects.find(o => o.type === 'portal_down');
       const targetX = downPortal?.px !== undefined ? downPortal.px - 55 : (zone.cols * TILE - 120);
-      const defaultY = state.currentZone === 7 ? 200 : 360;
-      const targetY = getEffectiveGround(zone, targetX, defaultY);
+      const defaultY = state.currentZone === 7 ? 200 : (state.currentZone === 5 ? 195 : 360);
+      const targetY = state.currentZone === 5 ? 195 : getEffectiveGround(zone, targetX, defaultY);
       state.player.x = targetX;
       state.player.y = targetY;
       state.player.dir = 'left';
     }
 
     state.player.vy = 0;
-    state.player.onGround = true;
+    state.player.onGround = state.currentZone !== 5; // Di Divergent (Area 6), pemain mengambang di air
     state.player.isWalking = false;
     state.player.isJumping = false;
     state.player.isFalling = false;
@@ -382,6 +488,56 @@ function updateTransition(state: GameState): void {
   }
 }
 
+// ── SUIT HELPER & VALIDATION ──
+export function buyAndEquipSuit(state: GameState, suitType: string): boolean {
+  state.purchasedSuits.add(suitType);
+  state.player.equippedSuit = suitType;
+  retroAudio.playPowerup();
+  saveEarthDiveProgress(state, state.userId);
+  return true;
+}
+
+function checkSuitRequirements(state: GameState): boolean {
+  let requiredSuit: string | null = null;
+  let requiredSuitName = '';
+  let nextZoneName = '';
+  let suitReason = '';
+
+  if (state.currentZone === 1) {
+    requiredSuit = 'mantle_suit';
+    requiredSuitName = 'Baju Pelindung Termal MK-1';
+    nextZoneName = 'Mantel Bumi';
+    suitReason = 'Suhu Mantel Bumi mencapai 1.000°C–3.700°C dan tekanan jutaan atmosfer! Kamu wajib membeli dan mengenakan Baju Pelindung Termal dari Teknisi Joko sebelum melangkah turun.';
+  } else if (state.currentZone === 2) {
+    requiredSuit = 'outer_core_suit';
+    requiredSuitName = 'Baju Pelindung Elektromagnetik MK-2';
+    nextZoneName = 'Inti Luar';
+    suitReason = 'Lautan logam cair bersuhu 5.000°C dengan radiasi dinamo magnetik dahsyat! Kamu wajib membeli dan mengenakan Baju Pelindung Elektromagnetik dari Teknisi Rudi sebelum turun.';
+  } else if (state.currentZone === 3) {
+    requiredSuit = 'inner_core_suit';
+    requiredSuitName = 'Exo-Suit Hiper-Tekanan Adamantine MK-3';
+    nextZoneName = 'Inti Dalam';
+    suitReason = 'Pusat bumi memiliki tekanan 3,6 juta atmosfer pada suhu 6.000°C! Kamu wajib membeli dan mengenakan Exo-Suit Adamantine dari Teknisi Dian sebelum turun.';
+  } else if (state.currentZone === 4) {
+    requiredSuit = 'diver_suit';
+    requiredSuitName = 'Baju Penyelam Samudra Kedalaman';
+    nextZoneName = 'Batas Divergen (Punggung Samudra)';
+    suitReason = 'Zona berikutnya berada di palung samudra kedalaman 5.000 meter bertekanan tinggi! Kamu wajib membeli dan mengenakan Baju Penyelam dari Teknisi Arya.';
+  }
+
+  if (requiredSuit && state.player.equippedSuit !== requiredSuit) {
+    state.pendingSuitRequired = {
+      requiredSuit,
+      suitName: requiredSuitName,
+      zoneName: nextZoneName,
+      reason: suitReason,
+    };
+    return false;
+  }
+
+  return true;
+}
+
 // ── HANDLE INTERACTION ──
 function handleInteraction(state: GameState, input: InputState): void {
   if (!state.nearObject) return;
@@ -399,8 +555,13 @@ function handleInteraction(state: GameState, input: InputState): void {
         break;
 
       case 'npc':
-        state.pendingNpcDialogue = obj;
-        retroAudio.playSelect();
+        if (obj.data?.isSuitMerchant) {
+          state.pendingSuitMerchant = obj;
+          retroAudio.playSelect();
+        } else {
+          state.pendingNpcDialogue = obj;
+          retroAudio.playSelect();
+        }
         break;
 
       case 'discovery':
@@ -415,8 +576,18 @@ function handleInteraction(state: GameState, input: InputState): void {
       case 'challenge_gate':
         if (!state.unlockedGates.has(obj.id)) {
           const zone = getZone(state.currentZone);
-          const zoneDiscoveries = zone.objects.filter(o => o.type === 'discovery');
-          const readCount = zoneDiscoveries.filter(o => state.discoveredPoints.has(o.id)).length;
+          const zoneDiscoveries = zone.objects.filter(o => o.type === 'discovery' || o.data?.isDiscoveryNpc);
+          const readCount = zoneDiscoveries.filter(o => {
+            const key = (o.data?.discoveryKey as string) || o.id;
+            return (
+              state.discoveredPoints.has(key) ||
+              state.discoveredPoints.has(o.id) ||
+              (o.data?.discoveryId !== undefined && (
+                state.discoveredPoints.has(`disc_${o.data.discoveryId}`) ||
+                state.discoveredPoints.has(String(o.data.discoveryId))
+              ))
+            );
+          }).length;
           const totalCount = zoneDiscoveries.length;
 
           if (readCount < totalCount) {
@@ -452,6 +623,9 @@ function handleInteraction(state: GameState, input: InputState): void {
                         : null;
         if (gateId && !state.unlockedGates.has(gateId)) {
           state.pendingGateLocked = true;
+          return;
+        }
+        if (!checkSuitRequirements(state)) {
           return;
         }
         if (state.currentZone >= ZONES.length - 1) {
@@ -495,6 +669,9 @@ function handleInteraction(state: GameState, input: InputState): void {
       state.pendingGateLocked = true;
       return;
     }
+    if (!checkSuitRequirements(state)) {
+      return;
+    }
     if (state.currentZone >= ZONES.length - 1) {
       state.pendingCoreChallenge = true;
       return;
@@ -524,13 +701,13 @@ export function tickGame(state: GameState): void {
   updateNpcs(state.npcStates, zone, state.player, state.isTransitioning);
 
   // Find nearby object
-  state.nearObject = findNearObject(state.player, zone, state.collectedCrystals);
+  state.nearObject = findNearObject(state.player, zone, state.collectedCrystals, state.npcStates);
 
   // Auto-collect crystals when near
   if (state.nearObject?.type === 'crystal') {
     state.collectedCrystals.add(state.nearObject.id);
     retroAudio.playPowerup();
-    state.nearObject = findNearObject(state.player, zone, state.collectedCrystals);
+    state.nearObject = findNearObject(state.player, zone, state.collectedCrystals, state.npcStates);
     saveEarthDiveProgress(state);
   }
 
@@ -548,34 +725,145 @@ export function tickGame(state: GameState): void {
 
   // Dynamic Divergent Rift Animation (Area 6 - Batas Divergen)
   if (state.currentZone === 5) {
-    if (state.divergentProgress < 1) {
-      // Pemekaran lempeng perlahan dan megah (~4.5 detik)
-      state.divergentProgress = Math.min(1, state.divergentProgress + 0.0035);
-      if (state.divergentProgress > 0.05 && state.divergentProgress < 0.95) {
-        state.divergentShake = Math.sin(state.frame * 0.45) * 1.5 * (1 - state.divergentProgress);
+    if (!state.divergentFish || state.divergentFish.length === 0) {
+      state.divergentFish = createInitialDivergentFish();
+    }
+    if (!state.divergentSequencePhase) {
+      state.divergentSequencePhase = state.divergentProgress >= 1 ? 'cooling' : 'calm';
+    }
+    if (state.divergentPhaseTimer === undefined) {
+      state.divergentPhaseTimer = 0;
+    }
+
+    // 1. Update Fish Movement
+    for (const fish of state.divergentFish) {
+      if (state.divergentFishScared) {
+        // Ikan panik menjauh ke kiri/kanan keluar layar dengan kecepatan tinggi
+        const fleeLeft = fish.x < 450;
+        fish.dir = fleeLeft ? 'left' : 'right';
+        const moveSpeed = Math.abs(fish.vx) * 2.8;
+        fish.x += fleeLeft ? -moveSpeed : moveSpeed;
+        fish.y += Math.sin(state.frame * 0.18 + fish.id) * 0.7;
       } else {
+        // Ikan berenang damai mondar-mandir di air laut
+        fish.x += fish.vx;
+        fish.y += Math.sin(state.frame * 0.04 + fish.id) * 0.35;
+        if (fish.x < 60) {
+          fish.x = 60;
+          fish.vx = Math.abs(fish.vx);
+          fish.dir = 'right';
+        } else if (fish.x > 840) {
+          fish.x = 840;
+          fish.vx = -Math.abs(fish.vx);
+          fish.dir = 'left';
+        }
+      }
+    }
+
+    // 2. Multi-phase state machine
+    switch (state.divergentSequencePhase) {
+      case 'calm': {
+        // Fase tenang awal: Ikan berenang santai & tumbuhan laut segar (~1.2 detik)
+        state.divergentPhaseTimer++;
         state.divergentShake = 0;
+        state.divergentWiltProgress = 0;
+        state.divergentFishScared = false;
+        if (state.divergentPhaseTimer >= 70) {
+          state.divergentSequencePhase = 'quake';
+          state.divergentPhaseTimer = 0;
+          retroAudio.playEarthquakeRumble();
+        }
+        break;
       }
-      updateDivergentGroundProfile(zone, state.divergentProgress);
-      if (state.player.onGround && !state.player.isJumping) {
-        state.player.y = getEffectiveGround(zone, state.player.x, state.player.y);
+
+      case 'quake': {
+        // Fase gempa awal: Guncangan seismik kuat (~1.5 detik)
+        state.divergentPhaseTimer++;
+        state.divergentShake = Math.sin(state.frame * 0.6) * 2.2 + Math.sin(state.frame * 1.2) * 1.2;
+        state.divergentWiltProgress = 0;
+        state.divergentFishScared = false;
+        if (state.divergentPhaseTimer >= 90) {
+          state.divergentSequencePhase = 'temp_rise';
+          state.divergentPhaseTimer = 0;
+          state.divergentShake = 0;
+        }
+        break;
       }
-    } else {
-      state.divergentShake = 0;
+
+      case 'temp_rise': {
+        // Fase kenaikan suhu drastis: Ikan kabur menjauh, tanaman laut layu & uap panas (~1.8 detik)
+        state.divergentPhaseTimer++;
+        state.divergentFishScared = true;
+        state.divergentWiltProgress = Math.min(1, state.divergentPhaseTimer / 95);
+        state.divergentShake = Math.sin(state.frame * 0.4) * 0.8;
+        if (state.divergentPhaseTimer >= 105) {
+          state.divergentSequencePhase = 'diverging';
+          state.divergentPhaseTimer = 0;
+          state.divergentShake = 0;
+        }
+        break;
+      }
+
+      case 'diverging': {
+        // Fase pergerakan divergen: Lempeng membelah ke kiri dan kanan, magma naik dari mantel (~4.5 detik)
+        state.divergentFishScared = true;
+        state.divergentWiltProgress = 1;
+        state.divergentProgress = Math.min(1, state.divergentProgress + 0.0035);
+        if (state.divergentProgress > 0.05 && state.divergentProgress < 0.95) {
+          state.divergentShake = Math.sin(state.frame * 0.45) * 1.5 * (1 - state.divergentProgress);
+        } else {
+          state.divergentShake = 0;
+        }
+        state.divergentMagmaTimer = 0;
+        state.divergentCoolProgress = 0;
+        updateDivergentGroundProfile(zone, state.divergentProgress, 0);
+        if (state.player.onGround && !state.player.isJumping) {
+          state.player.y = getEffectiveGround(zone, state.player.x, state.player.y);
+        }
+        if (state.divergentProgress >= 1) {
+          state.divergentSequencePhase = 'cooling';
+          state.divergentShake = 0;
+          state.divergentMagmaTimer = 0;
+        }
+        break;
+      }
+
+      case 'cooling': {
+        state.divergentFishScared = true;
+        state.divergentWiltProgress = 1;
+        state.divergentShake = 0;
+        // Magma timer setelah patahan terbuka: dipercepat menjadi sekitar 5 detik (~300 tick total):
+        // Magma membual aktif di air laut selama ~1.7 detik (100 tick),
+        // kemudian mendingin & membeku membentuk kerak pillow basalt baru selama ~3.3 detik (180 tick)
+        state.divergentMagmaTimer = (state.divergentMagmaTimer || 0) + 1;
+        if (state.divergentMagmaTimer > 100) {
+          const coolT = Math.min(1, (state.divergentMagmaTimer - 100) / 180);
+          state.divergentCoolProgress = coolT;
+          updateDivergentGroundProfile(zone, state.divergentProgress, state.divergentCoolProgress);
+        }
+        break;
+      }
     }
   }
 
   // Dynamic Convergent Collision Animation (Area 7 - Batas Konvergen)
   if (state.currentZone === 6) {
-    if (state.convergentProgress < 1) {
-      // Penumbukan lempeng perlahan dan megah (~4.5 detik)
-      state.convergentProgress = Math.min(1, state.convergentProgress + 0.0035);
-      if (state.convergentProgress > 0.05 && state.convergentProgress < 0.95) {
-        state.convergentShake = Math.sin(state.frame * 0.45) * 1.5 * (1 - state.convergentProgress);
+    const p = state.convergentProgress;
+    const isLand = (state.convergentMode || 'land') === 'land';
+
+    if (p < 1) {
+      // Penumbukan lempeng dinamis, megah, dan sinematik (~9.2 detik)
+      state.convergentProgress = Math.min(1, p + 0.0018);
+      if (p > 0.03 && p < 0.97) {
+        state.convergentShake = Math.sin(state.frame * 0.35) * 1.5 * Math.sin(p * Math.PI);
+        // Suara gemuruh gempa bumi tremor tektonik berkala
+        if (state.frame % 55 === 0) {
+          retroAudio.playEarthquakeRumble();
+        }
       } else {
         state.convergentShake = 0;
       }
-      updateConvergentGroundProfile(zone, state.convergentProgress);
+      updateConvergentGroundProfile(zone, state.convergentProgress, state.convergentMode || 'land');
       // Jika karakter sedang menapak tanah, sesuaikan posisi Y pemain naik mengikuti pegunungan secara real-time
       if (state.player.onGround && !state.player.isJumping) {
         state.player.y = getEffectiveGround(zone, state.player.x, state.player.y);
@@ -583,15 +871,102 @@ export function tickGame(state: GameState): void {
     } else {
       state.convergentShake = 0;
     }
+
+    // ── KEPANIKAN & EVAKUASI NPC MENJAUH DARI AREA BAHAYA SAAT GEMPA TEKTONIK ──
+    const farhan = state.npcStates.get('z6_npc_zidane') || state.npcStates.get('npc_farhan');
+    const ratna = state.npcStates.get('z6_npc_zahra') || state.npcStates.get('npc_ratna');
+    const safeFarhanX = isLand ? 220 : 720; // Di daratan mundur ke barat, di lautan mundur ke daratan pantai timur
+    const safeRatnaX = 1000; // Dataran timur yang aman
+
+    if (p > 0.04 && p < 0.96) {
+      // Saat gempa berlangsung: Zidane lari cepat menjauh dari titik tumbukan
+      if (farhan) {
+        farhan.isFleeing = true;
+        if (isLand) {
+          if (farhan.x > safeFarhanX) {
+            farhan.x = Math.max(safeFarhanX, farhan.x - 1.4);
+            farhan.dir = 'left';
+            farhan.state = 'walk_left';
+          } else {
+            farhan.dir = 'right';
+            farhan.state = 'idle_right';
+          }
+        } else {
+          if (farhan.x < safeFarhanX) {
+            farhan.x = Math.min(safeFarhanX, farhan.x + 1.4);
+            farhan.dir = 'right';
+            farhan.state = 'walk_right';
+          } else {
+            farhan.dir = 'left';
+            farhan.state = 'idle_left';
+          }
+        }
+        farhan.anchorX = safeFarhanX;
+        farhan.y = getEffectiveGround(zone, farhan.x, farhan.y);
+      }
+
+      // Saat gempa berlangsung: Zahra lari cepat menjauh ke Timur
+      if (ratna) {
+        ratna.isFleeing = true;
+        if (ratna.x < safeRatnaX) {
+          ratna.x = Math.min(safeRatnaX, ratna.x + 1.4);
+          ratna.dir = 'right';
+          ratna.state = 'walk_right';
+        } else {
+          ratna.dir = 'left';
+          ratna.state = 'idle_left';
+        }
+        ratna.anchorX = safeRatnaX;
+        ratna.y = getEffectiveGround(zone, ratna.x, ratna.y);
+      }
+    } else if (p >= 0.96) {
+      // Gempa telah selesai
+      if (farhan && farhan.isFleeing) {
+        farhan.isFleeing = false;
+        farhan.x = safeFarhanX;
+        farhan.anchorX = safeFarhanX;
+        farhan.dir = isLand ? 'right' : 'left';
+        farhan.state = isLand ? 'idle_right' : 'idle_left';
+        farhan.y = getEffectiveGround(zone, farhan.x, farhan.y);
+      }
+      if (ratna && ratna.isFleeing) {
+        ratna.isFleeing = false;
+        ratna.x = safeRatnaX;
+        ratna.anchorX = safeRatnaX;
+        ratna.dir = 'left';
+        ratna.state = 'idle_left';
+        ratna.y = getEffectiveGround(zone, ratna.x, ratna.y);
+      }
+    }
+
+    // Sinkronisasi koordinat objek interaksi dengan posisi NPC terkini
+    const farhanObj = zone.objects.find(o => o.id === 'z6_npc_zidane' || o.id === 'npc_farhan');
+    if (farhanObj && farhan) {
+      farhanObj.px = Math.round(farhan.x);
+      farhanObj.py = Math.round(farhan.y);
+    }
+    const ratnaObj = zone.objects.find(o => o.id === 'z6_npc_zahra' || o.id === 'npc_ratna');
+    if (ratnaObj && ratna) {
+      ratnaObj.px = Math.round(ratna.x);
+      ratnaObj.py = Math.round(ratna.y);
+    }
   }
 
   // Dynamic Transform Strike-Slip Animation (Area 8 - Batas Transform)
   if (state.currentZone === 7) {
     if (state.transformProgress < 1) {
-      // Pergeseran mendatar sesar San Andreas perlahan dan megah (~4.5 detik)
-      state.transformProgress = Math.min(1, state.transformProgress + 0.0035);
-      if (state.transformProgress > 0.05 && state.transformProgress < 0.95) {
-        state.transformShake = Math.sin(state.frame * 0.45) * 1.5 * (1 - state.transformProgress);
+      // Kecepatan diperlambat (~10.4 detik pada 60fps) agar fase: tanah utuh -> gempa dulu -> baru retak -> geseran lempeng teramati jelas
+      state.transformProgress = Math.min(1, state.transformProgress + 0.0016);
+      const p = state.transformProgress;
+
+      // Fase Gempa: Gempa terjadi DULU mulai p = 0.08 s/d p = 0.90 (sebelum retakan muncul)
+      if (p > 0.08 && p < 0.90) {
+        // Intensitas gempa tektonik sinusoidal
+        const quakeIntensity = Math.sin(((p - 0.08) / (0.90 - 0.08)) * Math.PI);
+        state.transformShake = Math.sin(state.frame * 0.45) * 1.8 * quakeIntensity;
+        if (state.frame % 50 === 0) {
+          retroAudio.playEarthquakeRumble();
+        }
       } else {
         state.transformShake = 0;
       }
@@ -648,6 +1023,13 @@ export function renderGame(
     state.divergentProgress,
     state.convergentProgress,
     state.transformProgress,
+    state.divergentCoolProgress ?? 0,
+    state.divergentWiltProgress ?? 0,
+    state.divergentFishScared ?? false,
+    state.divergentFish,
+    state.divergentSequencePhase ?? 'cooling',
+    state.convergentMode || 'land',
+    state.discoveredPoints,
   );
 
   // Transition overlay
@@ -806,31 +1188,132 @@ export function dismissInfoSign(state: GameState): void {
 }
 
 // ── SIMULASI ULANG INTERAKTIF ANIMASI TEKTONIK (AREA 6 & AREA 7) ──
+export function setConvergentMode(state: GameState, mode: 'land' | 'ocean'): void {
+  if (state.currentZone !== 6) return;
+  state.convergentMode = mode;
+  state.convergentProgress = 0;
+  state.convergentShake = 0;
+  const zone = getZone(6);
+  updateConvergentGroundProfile(zone, 0, mode);
+
+  // Update teks papan informasi sesuai mode
+  const signObj = zone.objects.find(o => o.id === 'conv_sign_dock');
+  if (signObj && signObj.data) {
+    if (mode === 'ocean') {
+      signObj.data.text = '"Zona Subduksi Samudra & Benua! Lempeng samudra yang lebih padat menumbuk dan menunjam ke bawah lempeng benua, membentuk Palung Laut (Trench) yang sangat dalam di tepi pantai berpasir."';
+    } else {
+      signObj.data.text = '"Dua lempeng benua saling bertabrakan (Batas Konvergen)! Lempeng kiri menunjam ke bawah, gaya kompresi melipat kerak bumi dan membentuk gunung dengan dapur magma di dalamnya."';
+    }
+  }
+
+  // Reset NPC ke titik pengamatan awal sebelum gempa
+  const farhan = state.npcStates.get('z6_npc_zidane') || state.npcStates.get('npc_farhan');
+  const initFarhanX = mode === 'ocean' ? 615 : 460;
+  if (farhan) {
+    farhan.x = initFarhanX;
+    farhan.anchorX = initFarhanX;
+    farhan.dir = mode === 'ocean' ? 'left' : 'right';
+    farhan.state = mode === 'ocean' ? 'idle_left' : 'idle_right';
+    farhan.isFleeing = false;
+    farhan.y = getEffectiveGround(zone, initFarhanX, 310);
+    const farhanObj = zone.objects.find(o => o.id === 'z6_npc_zidane' || o.id === 'npc_farhan');
+    if (farhanObj) {
+      farhanObj.px = initFarhanX;
+      farhanObj.py = farhan.y;
+    }
+  }
+  const ratna = state.npcStates.get('z6_npc_zahra') || state.npcStates.get('npc_ratna');
+  const initRatnaX = mode === 'ocean' ? 800 : 740;
+  if (ratna) {
+    ratna.x = initRatnaX;
+    ratna.anchorX = initRatnaX;
+    ratna.dir = 'left';
+    ratna.state = 'idle_left';
+    ratna.isFleeing = false;
+    ratna.y = getEffectiveGround(zone, initRatnaX, 310);
+    const ratnaObj = zone.objects.find(o => o.id === 'z6_npc_zahra' || o.id === 'npc_ratna');
+    if (ratnaObj) {
+      ratnaObj.px = initRatnaX;
+      ratnaObj.py = ratna.y;
+    }
+  }
+
+  if (state.player.onGround && !state.player.isJumping) {
+    state.player.y = getEffectiveGround(zone, state.player.x, state.player.y);
+  }
+  retroAudio.playPowerup();
+  saveEarthDiveProgress(state, state.userId);
+}
+
 export function triggerConvergentSimulation(state: GameState): void {
   if (state.currentZone !== 6) return;
   state.convergentProgress = 0;
-  state.player.x = 110;
-  state.player.y = 360;
-  state.player.dir = 'right';
+  state.convergentShake = 0;
+  const isOcean = (state.convergentMode || 'land') === 'ocean';
   const zone = getZone(6);
-  updateConvergentGroundProfile(zone, 0);
+  updateConvergentGroundProfile(zone, 0, state.convergentMode || 'land');
+
+  // Reset NPC ke titik pengamatan awal sebelum gempa
+  const farhan = state.npcStates.get('z6_npc_zidane') || state.npcStates.get('npc_farhan');
+  const initFarhanX = isOcean ? 615 : 460;
+  if (farhan) {
+    farhan.x = initFarhanX;
+    farhan.anchorX = initFarhanX;
+    farhan.dir = isOcean ? 'left' : 'right';
+    farhan.state = isOcean ? 'idle_left' : 'idle_right';
+    farhan.isFleeing = false;
+    farhan.y = getEffectiveGround(zone, initFarhanX, 310);
+    const farhanObj = zone.objects.find(o => o.id === 'z6_npc_zidane' || o.id === 'npc_farhan');
+    if (farhanObj) {
+      farhanObj.px = initFarhanX;
+      farhanObj.py = farhan.y;
+    }
+  }
+  const ratna = state.npcStates.get('z6_npc_zahra') || state.npcStates.get('npc_ratna');
+  const initRatnaX = isOcean ? 800 : 740;
+  if (ratna) {
+    ratna.x = initRatnaX;
+    ratna.anchorX = initRatnaX;
+    ratna.dir = 'left';
+    ratna.state = 'idle_left';
+    ratna.isFleeing = false;
+    ratna.y = getEffectiveGround(zone, initRatnaX, 310);
+    const ratnaObj = zone.objects.find(o => o.id === 'z6_npc_zahra' || o.id === 'npc_ratna');
+    if (ratnaObj) {
+      ratnaObj.px = initRatnaX;
+      ratnaObj.py = ratna.y;
+    }
+  }
+
+  if (state.player.onGround && !state.player.isJumping) {
+    state.player.y = getEffectiveGround(zone, state.player.x, state.player.y);
+  }
   retroAudio.playPowerup();
 }
 
 export function triggerDivergentSimulation(state: GameState): void {
   if (state.currentZone !== 5) return;
   state.divergentProgress = 0;
-  state.player.x = 120;
-  state.player.y = 360;
-  state.player.dir = 'right';
+  state.divergentShake = 0;
+  state.divergentMagmaTimer = 0;
+  state.divergentCoolProgress = 0;
+  state.divergentSequencePhase = 'calm';
+  state.divergentPhaseTimer = 0;
+  state.divergentWiltProgress = 0;
+  state.divergentFishScared = false;
+  state.divergentFish = createInitialDivergentFish();
   const zone = getZone(5);
-  updateDivergentGroundProfile(zone, 0);
+  updateDivergentGroundProfile(zone, 0, 0);
+  if (state.player.onGround && !state.player.isJumping) {
+    state.player.y = getEffectiveGround(zone, state.player.x, state.player.y);
+  }
   retroAudio.playPowerup();
 }
 
 export function triggerTransformSimulation(state: GameState): void {
   if (state.currentZone !== 7) return;
   state.transformProgress = 0;
+  state.transformShake = 0;
   state.player.x = 120;
   state.player.y = 200;
   state.player.dir = 'right';

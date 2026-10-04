@@ -23,14 +23,19 @@ interface ClueItem {
   startCol: number;
 }
 
-// ── CLUES AREA 1: MITIGASI GEMPA BUMI & KESIAPSIAGAAN ──
+// ── CLUES AREA 1: MITIGASI GEMPA BUMI & KESIAPSIAGAAN (SMP KELAS 8) ──
+// Soal dirancang ramah anak SMP, diambil murni dari penjelasan para NPC di ruang kelas 8A:
+// - Pak Surya & Dito: Merunduk, Berlindung di bawah meja, Bertahan
+// - Siti (Ketua OSIS): Evakuasi tertib lewat tangga darurat menuju titik kumpul
+// - Rian & Bu Rahma: Getaran gempa bumi di ruang kelas
+// - Bu Rahma: Tas Siaga Bencana 72 Jam
 const CLUES_AREA_1: ClueItem[] = [
   {
     id: 'c1',
     number: 1,
     direction: 'across',
     answer: 'BERLINDUNG',
-    clue: 'Aksi mencari perlindungan di bawah meja belajar kokoh saat guncangan gempa bumi terjadi (Merunduk, Berlindung, Bertahan).',
+    clue: 'Aksi masuk ke bawah meja belajar yang kokoh untuk mendekap kepala saat bumi berguncang.',
     startRow: 1,
     startCol: 1,
   },
@@ -39,7 +44,7 @@ const CLUES_AREA_1: ClueItem[] = [
     number: 2,
     direction: 'down',
     answer: 'EVAKUASI',
-    clue: 'Proses perpindahan warga dari bangunan atau zona bahaya menuju titik kumpul aman yang telah ditentukan.',
+    clue: 'Penyelamatan diri dengan berjalan tertib lewat tangga darurat menuju titik kumpul di lapangan sekolah.',
     startRow: 1,
     startCol: 2,
   },
@@ -48,7 +53,7 @@ const CLUES_AREA_1: ClueItem[] = [
     number: 3,
     direction: 'down',
     answer: 'GEMPA',
-    clue: 'Getaran atau guncangan pada permukaan bumi akibat pelepasan energi mendadak dari pergerakan lempeng tektonik.',
+    clue: 'Peristiwa getaran atau guncangan tanah mendadak yang kita simulasikan cara penyelamatannya di kelas.',
     startRow: 1,
     startCol: 10,
   },
@@ -57,7 +62,7 @@ const CLUES_AREA_1: ClueItem[] = [
     number: 4,
     direction: 'across',
     answer: 'SIAGA',
-    clue: 'Sikap kesiapsiagaan menghadapi bencana, termasuk menyiapkan tas 72 jam dan mengenali jalur evakuasi.',
+    clue: 'Tas darurat 72 jam yang diajarkan Bu Rahma berisi makanan, air, dan obat disebut Tas ... Bencana.',
     startRow: 7,
     startCol: 2,
   },
@@ -143,10 +148,90 @@ const CLUES_AREA_3: ClueItem[] = [
   },
 ];
 
+// ── CLUES AREA 4: PRABENCANA ERUPSI MERAPI (STATUS PVMBG & KESIAPSIAGAAN KRB) ──
+const CLUES_AREA_4: ClueItem[] = [
+  {
+    id: 'c1',
+    number: 1,
+    direction: 'across',
+    answer: 'MAGMA',
+    clue: 'Batuan cair pijar bersuhu ribuan derajat di perut bumi, sekaligus nama aplikasi resmi pemantauan gunung api di Indonesia.',
+    startRow: 1,
+    startCol: 1,
+  },
+  {
+    id: 'c2',
+    number: 2,
+    direction: 'down',
+    answer: 'MASKER',
+    clue: 'Alat pelindung pernapasan wajib disiapkan untuk menyaring partikel abu silika tajam agar tidak merusak paru-paru.',
+    startRow: 1,
+    startCol: 1,
+  },
+  {
+    id: 'c3',
+    number: 3,
+    direction: 'down',
+    answer: 'AWAS',
+    clue: 'Tingkat status aktivitas gunung api tertinggi (Level IV) yang menandakan letusan utama berpeluang besar segera terjadi.',
+    startRow: 1,
+    startCol: 5,
+  },
+  {
+    id: 'c4',
+    number: 4,
+    direction: 'across',
+    answer: 'SIAGA',
+    clue: 'Tingkat status gunung api Level III yang menunjukkan peningkatan aktivitas seismik secara nyata dan letusan dapat segera menyusul.',
+    startRow: 4,
+    startCol: 5,
+  },
+];
+
+// ── CLUES AREA 6: PASCABENCANA ERUPSI MERAPI (BARAK PENGUNGSIAN & BAHAYA SEKUNDER) ──
+const CLUES_AREA_6: ClueItem[] = [
+  {
+    id: 'c1',
+    number: 1,
+    direction: 'across',
+    answer: 'BARAK',
+    clue: 'Tempat penampungan pengungsian terpadu yang aman bagi warga terdampak erupsi, dilengkapi posko medis dan logistik.',
+    startRow: 1,
+    startCol: 1,
+  },
+  {
+    id: 'c2',
+    number: 2,
+    direction: 'down',
+    answer: 'ATAP',
+    clue: 'Bagian bangunan rumah yang wajib dibersihkan dari timbunan abu vulkanik tebal secara gotong royong agar tidak ambruk akibat beban berat.',
+    startRow: 1,
+    startCol: 2,
+  },
+  {
+    id: 'c3',
+    number: 3,
+    direction: 'across',
+    answer: 'LAHAR',
+    clue: 'Aliran endapan material vulkanik dingin yang meluap di sungai berhulu Merapi saat hujan lebat turun (bahaya sekunder).',
+    startRow: 3,
+    startCol: 1,
+  },
+  {
+    id: 'c4',
+    number: 4,
+    direction: 'down',
+    answer: 'AMAN',
+    clue: 'Kondisi keselamatan warga di barak pengungsian Zona KRB I yang terbebas dari ancaman awan panas dan guguran lava.',
+    startRow: 1,
+    startCol: 4,
+  },
+];
+
 export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: CrosswordModalProps) {
-  const clues = areaIndex === 2 ? CLUES_AREA_3 : areaIndex === 1 ? CLUES_AREA_2 : CLUES_AREA_1;
-  const rows = areaIndex === 2 ? 11 : areaIndex === 1 ? 9 : 10;
-  const cols = areaIndex === 2 ? 8 : areaIndex === 1 ? 8 : 12;
+  const clues = areaIndex === 5 ? CLUES_AREA_6 : areaIndex === 3 ? CLUES_AREA_4 : areaIndex === 2 ? CLUES_AREA_3 : areaIndex === 1 ? CLUES_AREA_2 : CLUES_AREA_1;
+  const rows = areaIndex === 5 ? 6 : areaIndex === 3 ? 8 : areaIndex === 2 ? 11 : areaIndex === 1 ? 9 : 10;
+  const cols = areaIndex === 5 ? 7 : areaIndex === 3 ? 11 : areaIndex === 2 ? 8 : areaIndex === 1 ? 8 : 12;
   const initialClue = clues[0];
 
   // Cell data map: "r-c" -> { char, isFixed, clueNumber, activeIn: [] }
@@ -274,22 +359,26 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
     <div
       ref={containerRef}
       tabIndex={0}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-pixel outline-none"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-pixel outline-none"
     >
-      <div className="relative w-full max-w-2xl bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl p-4 sm:p-5 shadow-[0_12px_0_#1c0d02] text-[#451a03] max-h-[96vh] overflow-y-auto">
+      <div className="relative w-full max-w-4xl xl:max-w-5xl bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-[0_16px_0_#1c0d02] text-[#451a03] max-h-[96vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between border-b-3 border-[#78350f] pb-2.5 mb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#b45309]/20 border border-[#b45309] flex items-center justify-center shrink-0">
-              <PixelIcon name="key" size={18} className="text-[#92400e]" />
+        <div className="flex items-center justify-between border-b-3 border-[#78350f] pb-3 mb-3.5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#b45309]/20 border-2 border-[#b45309] flex items-center justify-center shrink-0">
+              <PixelIcon name="key" size={24} className="text-[#92400e]" />
             </div>
             <div>
-              <h2 className="text-xs sm:text-sm text-[#451a03] font-pixel-title font-bold">
-                {areaIndex === 2
-                  ? 'TEKA-TEKI SILANG: PASCABENCANA & TITIK KUMPUL'
-                  : areaIndex === 1
-                  ? 'TEKA-TEKI SILANG: MITIGASI ERUPSI MERAPI'
-                  : 'TEKA-TEKI SILANG: MITIGASI GEMPA BUMI'}
+              <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#451a03] font-pixel-title font-bold">
+                {areaIndex === 5
+                  ? 'TEKA-TEKI SILANG: PASCABENCANA ERUPSI MERAPI'
+                  : areaIndex === 3
+                    ? 'TEKA-TEKI SILANG: PRABENCANA ERUPSI MERAPI'
+                    : areaIndex === 2
+                      ? 'TEKA-TEKI SILANG: PASCABENCANA & TITIK KUMPUL'
+                      : areaIndex === 1
+                        ? 'TEKA-TEKI SILANG: SIMULASI GEMPA BUMI'
+                        : 'TEKA-TEKI SILANG: MITIGASI GEMPA BUMI'}
               </h2>
             </div>
           </div>
@@ -298,28 +387,28 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-8 h-8 rounded-lg bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-xs flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-sm sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
             title="Tutup"
           >
-            <PixelIcon name="cross" size={12} />
+            <PixelIcon name="cross" size={16} />
           </button>
         </div>
 
         {/* Instructions */}
-        <div className="p-2.5 rounded-xl bg-amber-100/90 border-2 border-[#b45309]/40 mb-3 text-[10px] text-[#291305]">
+        <div className="p-3.5 sm:p-4 rounded-xl bg-amber-100/90 border-2 border-[#b45309]/40 mb-4 text-sm sm:text-base md:text-[17px] text-[#291305] font-sans font-semibold leading-relaxed">
           Isi kotak teka-teki silang dengan istilah sains geologi &amp; kesiapsiagaan mitigasi bencana yang tepat! Klik petunjuk atau kotak untuk mulai mengetik.
         </div>
 
         {/* Main Content Layout: Crossword Grid (Left) + Clues List (Right) */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-3 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 mb-4 items-start">
           {/* ── CROSSWORD GRID (7 cols on desktop) ── */}
-          <div className="md:col-span-7 bg-[#0f172a] p-3 rounded-xl border-3 border-[#451a03] shadow-inner flex flex-col items-center justify-center overflow-x-auto">
+          <div className="lg:col-span-7 bg-[#0f172a] p-4 sm:p-5 rounded-2xl border-3 sm:border-4 border-[#451a03] shadow-inner flex flex-col items-center justify-center overflow-x-auto">
             <div
-              className="grid gap-1"
+              className="grid gap-1.5"
               style={{
                 gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
                 width: '100%',
-                maxWidth: areaIndex === 2 ? '340px' : areaIndex === 1 ? '320px' : '390px',
+                maxWidth: areaIndex === 3 ? '540px' : areaIndex === 2 ? '500px' : areaIndex === 1 ? '480px' : '540px',
               }}
             >
               {Array.from({ length: rows }).map((_, r) =>
@@ -331,7 +420,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
                     return (
                       <div
                         key={key}
-                        className="aspect-square bg-slate-900/60 rounded-xs"
+                        className="aspect-square bg-slate-900/60 rounded-md"
                       />
                     );
                   }
@@ -362,15 +451,15 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
                           if (otherClue) setActiveClueId(otherClue.id);
                         }
                       }}
-                      className={`relative aspect-square rounded border-2 font-pixel-title text-xs sm:text-sm font-bold flex items-center justify-center transition-all cursor-pointer ${isSelected
-                        ? 'bg-amber-400 text-amber-950 border-amber-300 ring-2 ring-amber-400 scale-105 z-10'
+                      className={`relative aspect-square rounded-lg border-2 sm:border-3 font-pixel-title text-base sm:text-lg md:text-xl font-bold flex items-center justify-center transition-all cursor-pointer min-h-[42px] sm:min-h-[48px] ${isSelected
+                        ? 'bg-amber-400 text-amber-950 border-amber-300 ring-3 ring-amber-400 scale-105 z-10 shadow-lg'
                         : letter
-                          ? 'bg-[#fef3c7] text-[#451a03] border-amber-600'
+                          ? 'bg-[#fef3c7] text-[#451a03] border-amber-600 shadow-xs'
                           : 'bg-slate-800 text-slate-100 border-slate-600 hover:border-amber-400'
                         }`}
                     >
                       {clueNumber && (
-                        <span className="absolute top-0.5 left-1 text-[7px] text-amber-600 font-bold leading-none pointer-events-none">
+                        <span className="absolute top-0.5 left-1 text-[9px] sm:text-[11px] text-amber-500 font-bold leading-none pointer-events-none">
                           {clueNumber}
                         </span>
                       )}
@@ -383,8 +472,8 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
           </div>
 
           {/* ── CLUES LIST (5 cols on desktop) ── */}
-          <div className="md:col-span-5 space-y-2 text-xs">
-            <span className="text-[9px] font-pixel-title text-[#b45309] block uppercase tracking-wider">
+          <div className="lg:col-span-5 space-y-3">
+            <span className="text-xs sm:text-sm md:text-base font-pixel-title text-[#b45309] block uppercase tracking-wider font-bold">
               PETUNJUK KATA:
             </span>
             {clues.map((clue) => {
@@ -393,21 +482,21 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
                 <button
                   key={clue.id}
                   onClick={() => handleSelectClue(clue)}
-                  className={`w-full text-left p-2 rounded-xl border-2 transition-all cursor-pointer block ${isActive
-                    ? 'bg-amber-600 text-white border-amber-950 shadow-[0_2px_0_#451a03] -translate-y-0.5'
+                  className={`w-full text-left p-3.5 sm:p-4 rounded-xl border-2 sm:border-3 transition-all cursor-pointer block ${isActive
+                    ? 'bg-amber-600 text-white border-amber-950 shadow-[0_3px_0_#451a03] -translate-y-0.5'
                     : 'bg-[#fffbeb] hover:bg-[#fde68a] text-[#451a03] border-[#b45309]/40'
                     }`}
                 >
-                  <div className="flex items-center gap-1.5 mb-1 font-pixel-title text-[9px]">
+                  <div className="flex items-center gap-2 mb-1.5 font-pixel-title text-xs sm:text-sm">
                     <span
-                      className={`px-1.5 py-0.5 rounded ${isActive ? 'bg-amber-800 text-amber-200' : 'bg-[#b45309]/20 text-[#b45309]'
+                      className={`px-2.5 py-0.5 rounded-md font-bold ${isActive ? 'bg-amber-800 text-amber-200' : 'bg-[#b45309]/20 text-[#b45309]'
                         }`}
                     >
                       {clue.number} {clue.direction === 'across' ? 'MENDATAR' : 'MENURUN'}
                     </span>
-                    <span className="opacity-75">({clue.answer.length} HURUF)</span>
+                    <span className="opacity-80 font-bold">({clue.answer.length} HURUF)</span>
                   </div>
-                  <p className="text-[10px] leading-relaxed line-clamp-2">
+                  <p className={`text-sm sm:text-base md:text-[16px] leading-relaxed font-sans ${isActive ? 'text-white font-bold' : 'text-[#291305] font-semibold'}`}>
                     {clue.clue}
                   </p>
                 </button>
@@ -418,22 +507,22 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
 
         {/* Validation Error Banner */}
         {validationError && (
-          <div className="mb-3 p-2 rounded-xl bg-rose-100 border-2 border-rose-500 text-rose-900 text-xs font-bold text-center">
+          <div className="mb-4 p-3.5 rounded-xl bg-rose-100 border-2 border-rose-500 text-rose-900 text-sm sm:text-base font-bold text-center">
             {validationError}
           </div>
         )}
 
         {/* Action Controls */}
-        <div className="flex items-center justify-between pt-2 border-t-2 border-[#b45309]/30">
-          <div className="flex items-center gap-1.5 text-[9px] text-[#78350f]">
+        <div className="flex items-center justify-between pt-3 border-t-2 border-[#b45309]/30">
+          <div className="flex items-center gap-1.5 text-xs text-[#78350f]">
           </div>
 
           {!isCompleted ? (
             <button
               onClick={handleCheckSolution}
-              className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 border-[#451a03] shadow-[0_3px_0_#231206] text-xs font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2"
+              className="px-7 sm:px-9 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-sm sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2.5 font-bold"
             >
-              <PixelIcon name="check" size={13} className="text-amber-200" />
+              <PixelIcon name="check" size={18} className="text-amber-200" />
               <span>CEK JAWABAN</span>
             </button>
           ) : (
@@ -442,13 +531,13 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
                 retroAudio.playSelect();
                 onSuccess();
               }}
-              className="px-6 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white border-3 border-emerald-950 shadow-[0_3px_0_#064e3b] text-xs font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2 animate-bounce"
+              className="px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white border-3 border-emerald-950 shadow-[0_4px_0_#064e3b] text-sm sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2.5 animate-bounce font-bold"
             >
-              <PixelIcon name="unlock" size={13} />
+              <PixelIcon name="unlock" size={18} />
               <span>
                 {areaIndex === 1
                   ? 'SELESAIKAN EKSPEDISI LEVEL 2!'
-                  : 'BUKA GERBANG KE AREA 2!'}
+                  : 'BUKA GERBANG KE AREA SELANJUTNYA!'}
               </span>
             </button>
           )}
