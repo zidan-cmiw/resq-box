@@ -38,13 +38,18 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
         classroom_code: student.classroom_id || 'RESQ-8A',
         level_number: 1,
         score: 100,
+        // Tantangan inti = penutup seluruh 8 area Level 1.
+        // Server memakai angka ini untuk menghitung nilai resmi (100).
+        missions: 8,
+        isCompleted: true,
         details: {
           mode: 'earth_dive_descent',
           is_completed: true,
           current_layer: 'Inti Dalam (5.150–6.371 km)',
-          current_zone: 4,
-          crystals: 5,
-          total_crystals: 5,
+          current_zone: 7,
+          zones_completed: 8,
+          crystals: 16,
+          total_crystals: 16,
           badges: ['Surface Scout', 'Tectonic Tracker', 'Mantle Explorer', 'Core Specialist'],
           words: ['LEMPENG', 'KONVEKSI', 'DINAMO', 'TEKANAN', 'SUBDUKSI'],
           status_text: 'TUNTAS',

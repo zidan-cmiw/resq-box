@@ -129,16 +129,21 @@ const getInitialUnlockedLevel = (user: UserAccount | null): number => {
   if (typeof window === 'undefined') return 1;
   if (user && user.username === 'demo') return 3;
   try {
+    // Nilai dari SERVER selalu menang: dialah sumber kebenaran setelah
+    // submit_level_result menaikkan level. Cache lokal hanya cadangan
+    // supaya tampilan tetap benar saat luring.
+    const userObjLevel = user?.unlocked_level;
+    if (typeof userObjLevel === 'number' && userObjLevel >= 1) {
+      return Math.min(3, userObjLevel);
+    }
     const userId = user?.id;
     if (userId) {
       const byUser = localStorage.getItem(`resqbox-unlocked-level_${userId}`);
       if (byUser) {
         const parsedByUser = parseInt(byUser, 10);
-        if (!isNaN(parsedByUser) && parsedByUser >= 1) return parsedByUser;
+        if (!isNaN(parsedByUser) && parsedByUser >= 1) return Math.min(3, parsedByUser);
       }
     }
-    const userObjLevel = user?.unlocked_level;
-    if (userObjLevel && userObjLevel >= 1) return userObjLevel;
   } catch {}
   return 1;
 };
@@ -391,6 +396,13 @@ export const useAuthStore = create<AuthState>()((set) => ({
     set((state) => {
       const allowedLevel = level;
       const newLevel = Math.max(state.unlockedLevel, allowedLevel);
+
+      // Cegah penulisan berulang: bila level tidak berubah, jangan sentuh
+      // localStorage maupun cloud. Tanpa penjaga ini, setiap pemanggilan
+      // unlockLevel() (dipanggil juga pada tiap sync level yang "selesai")
+      // menghasilkan satu RPC tambahan yang sia-sia.
+      if (newLevel === state.unlockedLevel) return state;
+
       const userId = state.student?.id || state.currentUser?.id;
       if (userId) {
         localStorage.setItem(`resqbox-unlocked-level_${userId}`, newLevel.toString());
@@ -405,7 +417,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
         } catch {}
       }
 
-      // Sync updated level to cloud
+      // Sinkronkan level baru ke cloud
       if (state.student) {
         syncStudentToCloud({
           id: state.student.id,

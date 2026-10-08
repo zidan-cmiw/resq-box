@@ -1,11 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { arduinoGenerator } from '../arduinoGenerator';
 
-// LED color → pin mapping (hidden from user)
-const LED_PIN: Record<string, string> = {
-  Bahaya: '10', Aman: '11', Info: '12', Bawaan: 'LED_BUILTIN',
-};
-
 export function defineCoreBlocks() {
 
   // ── 1. Sistem Utama ────────────────────────────────────────────
@@ -121,7 +116,7 @@ export function defineCoreBlocks() {
   arduinoGenerator.forBlock['resq_motor'] = function (block: Blockly.Block) {
     const spd = block.getFieldValue('SPEED');
     if (spd === '0') return `motorStop();\n`;
-    return `analogWrite(MOTOR_AIN1, ${spd});\ndigitalWrite(MOTOR_AIN2, LOW);\n`;
+    return `motorStartKick(${spd});\n`;
   };
 
   // ── 6. Pintu Evakuasi ────────────────────────────────────────
@@ -378,7 +373,7 @@ export function defineCoreBlocks() {
   };
   arduinoGenerator.forBlock['resq_alarm_darurat'] = function (block: Blockly.Block) {
     const n = block.getFieldValue('KALI');
-    return `// Alarm Evakuasi ${n}x\nfor (int _a = 0; _a < ${n}; _a++) {\n  digitalWrite(10, HIGH);\n  tone(5, 2000, 300);\n  delay(300);\n  digitalWrite(10, LOW);\n  noTone(5);\n  delay(200);\n}\n`;
+    return `// Alarm Evakuasi ${n}x\nfor (int _a = 0; _a < ${n}; _a++) {\n  setRGBColor("red");\n  redLED_ON();\n  buzzerON();\n  delay(350);\n  rgbOFF();\n  redLED_OFF();\n  buzzerOFF();\n  delay(200);\n}\n`;
   };
 
   // ── 24. Lampu Berkedip ───────────────────────────────────────
@@ -400,9 +395,16 @@ export function defineCoreBlocks() {
   };
   arduinoGenerator.forBlock['resq_led_kedip'] = function (block: Blockly.Block) {
     const color = block.getFieldValue('COLOR');
-    const pin = LED_PIN[color] || '13';
     const n = block.getFieldValue('KALI');
-    return `// Lampu ${color} kedip ${n}x\npinMode(${pin}, OUTPUT);\nfor (int _k = 0; _k < ${n}; _k++) {\n  digitalWrite(${pin}, HIGH);\n  delay(400);\n  digitalWrite(${pin}, LOW);\n  delay(400);\n}\n`;
+    if (color === 'Bahaya') {
+      return `// Lampu Bahaya kedip ${n}x\nfor (int _k = 0; _k < ${n}; _k++) {\n  setRGBColor("red");\n  redLED_ON();\n  delay(400);\n  rgbOFF();\n  redLED_OFF();\n  delay(400);\n}\n`;
+    } else if (color === 'Aman') {
+      return `// Lampu Aman kedip ${n}x\nfor (int _k = 0; _k < ${n}; _k++) {\n  setRGBColor("green");\n  delay(400);\n  rgbOFF();\n  delay(400);\n}\n`;
+    } else if (color === 'Info') {
+      return `// Lampu Info kedip ${n}x\nfor (int _k = 0; _k < ${n}; _k++) {\n  setRGBColor("blue");\n  delay(400);\n  rgbOFF();\n  delay(400);\n}\n`;
+    } else {
+      return `// Lampu Bawaan kedip ${n}x\nfor (int _k = 0; _k < ${n}; _k++) {\n  setRGBColor("yellow");\n  delay(400);\n  rgbOFF();\n  delay(400);\n}\n`;
+    }
   };
 
   // ── 25. Matikan Semua Lampu ──────────────────────────────────
@@ -460,7 +462,7 @@ export function defineCoreBlocks() {
   };
   arduinoGenerator.forBlock['resq_tipe_gempa'] = function (block: Blockly.Block) {
     const lvl = block.getFieldValue('LEVEL') || '1';
-    return [`(seismicLevel == ${lvl})`, 0];
+    return [`(gempaActive && gempaLevel == ${lvl})`, 0];
   };
 
   // ── 31. Lampu Status Bencana (RGB) ───────────────────────────
@@ -522,7 +524,7 @@ export function defineCoreBlocks() {
   };
   arduinoGenerator.forBlock['resq_gempa_sim'] = function (block: Blockly.Block) {
     const lvl = block.getFieldValue('LEVEL');
-    return `startSimulation(MODE_GEMPA, ${lvl});\n`;
+    return `startGempa(${lvl});\n`;
   };
 
   // ── 34. Simulasi Aktivitas Gunung Merapi ─────────────────────
@@ -548,7 +550,15 @@ export function defineCoreBlocks() {
   };
   arduinoGenerator.forBlock['resq_gunung_sim'] = function (block: Blockly.Block) {
     const status = block.getFieldValue('STATUS');
-    return `startSimulation(MODE_GUNUNG, ${status});\n`;
+    const tipe = block.getFieldValue('TIPE') || 'EKSPLOSIF';
+    const jenisEnum = tipe === 'EFUSIF' ? 'LETUSAN_EFUSIF' : 'LETUSAN_EKSPLOSIF';
+    if (status === '3') {
+      return `startGunungMeletus(3, ${jenisEnum});\n`;
+    } else if (status === '2') {
+      return `// Fase 2: Siaga - Tidak ada getaran gempa\nstopGempa();\noledMessage("STATUS MERAPI", "SIAGA (FASE 2)", "Kesiapsiagaan");\n`;
+    } else {
+      return `// Fase 1: Waspada - Tidak ada getaran gempa\nstopGempa();\noledMessage("STATUS MERAPI", "WASPADA (FASE 1)", "Pemantauan Kawah");\n`;
+    }
   };
 
   // ── 35. Tipe Letusan ─────────────────────────────────────────
@@ -567,7 +577,8 @@ export function defineCoreBlocks() {
   };
   arduinoGenerator.forBlock['resq_tipe_letusan'] = function (block: Blockly.Block) {
     const tipe = block.getFieldValue('TIPE') || 'EFUSIF';
-    return [`(eruptionType == "${tipe}")`, 0];
+    const jenisEnum = tipe === 'EFUSIF' ? 'LETUSAN_EFUSIF' : 'LETUSAN_EKSPLOSIF';
+    return [`(jenisLetusan == ${jenisEnum})`, 0];
   };
 
 
@@ -747,7 +758,7 @@ export function defineCoreBlocks() {
   arduinoGenerator.forBlock['resq_motor_getar'] = function (block: Blockly.Block) {
     const speed = block.getFieldValue('SPEED');
     if (speed === '0') return `motorStop();\n`;
-    return `analogWrite(MOTOR_AIN1, ${speed});\ndigitalWrite(MOTOR_AIN2, LOW);\n`;
+    return `motorStartKick(${speed});\n`;
   };
 }
 

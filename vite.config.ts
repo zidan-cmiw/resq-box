@@ -27,8 +27,55 @@ export default defineConfig({
         enabled: true,
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // `webp` wajib ada di sini: latar belakang halaman Login & Posko Guru
+        // sekarang berformat WebP. Tanpa ini, janji "luring penuh" (PRD.md:253)
+        // tidak terpenuhi untuk kedua halaman tersebut.
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
+        // ── Precache selektif ──────────────────────────────────────────────
+        // Modul berat hanya dibutuhkan setelah siswa membuka level terkait.
+        // Mengeluarkannya dari precache awal memangkas unduhan pertama
+        // (±2 MB) tanpa mengorbankan mode luring: setelah dipakai sekali,
+        // berkasnya masuk cache lewat runtimeCaching di bawah.
+        globIgnores: [
+          'assets/blockly-*.js',
+          'assets/Workspace-*.js',
+          'assets/EvacuationCanvas-*.js',
+          'assets/Level2-*.js',
+          'assets/Level3-*.js',
+          // Ikon manifest sudah ditambahkan otomatis oleh vite-plugin-pwa;
+          // mengecualikannya di sini mencegah entri precache ganda.
+          'pwa-*.png',
+        ],
         runtimeCaching: [
+          {
+            // Chunk aplikasi yang belum di-precache (Level 2, Level 3,
+            // Action Lab/Blockly, Digital Twin 3D). Di-cache setelah dipakai
+            // sehingga kunjungan berikutnya (termasuk saat luring) tersedia.
+            urlPattern: /\/assets\/.*\.js$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'resqbox-deferred-chunks',
+              expiration: {
+                maxEntries: 40,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 hari
+              },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // Aset media besar (mis. model 3D terrain-688.stl) tidak
+            // di-precache, tapi langsung di-cache saat pertama dipakai.
+            urlPattern: /\.(?:stl|webp|jpg|jpeg|png)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'resqbox-media',
+              expiration: {
+                maxEntries: 30,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+              },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
@@ -60,11 +107,13 @@ export default defineConfig({
         ],
       },
       manifest: {
-        name: 'RESQ-BOX',
+        name: 'RESQ-BOX — Belajar Mitigasi Bencana',
         short_name: 'RESQ-BOX',
-        description: 'Simulasi dan Pemrograman Arduino untuk Mitigasi Bencana',
-        theme_color: '#f8fafc',
-        background_color: '#f8fafc',
+        description:
+          'Platform media pembelajaran IPA interaktif & simulasi mitigasi bencana untuk SMP Kelas 8',
+        lang: 'id',
+        theme_color: '#0f172a',
+        background_color: '#050813',
         display: 'standalone',
         orientation: 'landscape',
         start_url: '/',

@@ -117,11 +117,15 @@ export async function syncLevel3Progress(
       classroom_code: effectiveClassroom,
       level_number: 3,
       score,
+      // 20 misi × 5 poin. Server memakai angka ini sebagai sumber nilai resmi.
+      missions: completedCount,
+      isCompleted,
       details: {
         mode: 'action_lab_simulation',
         is_completed: isCompleted,
         completed_missions: completedMissions,
         completed_count: completedCount,
+        missions: completedCount,
         total_missions: totalMissions,
         last_completed_id: lastCompletedId,
         last_completed_title: lastMissionObj?.title,

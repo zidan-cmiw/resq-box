@@ -143,19 +143,27 @@ export async function syncEarthDiveProgress(
     progress.statusText = 'TUNTAS';
   }
 
+  // Jumlah area yang sudah tuntas. Indeks zona 0..7, jadi zona terakhir = 8 area.
+  const zonesCompleted = Math.min(8, Math.max(0, game.currentZone + 1));
+
   await submitLevelProgress({
     student_id: student.id,
     student_name: student.name,
     classroom_code: student.classroom_id || 'RESQ-8A',
     level_number: 1,
+    // Nilai versi klien hanya dipakai sebagai batas atas; server menghitung
+    // nilai resmi dari `missions` (jumlah area tuntas).
     score: progress.score,
+    missions: zonesCompleted,
+    isCompleted: progress.isCompleted,
     details: {
       mode: 'earth_dive_descent',
       is_completed: progress.isCompleted,
       current_layer: progress.currentLayer,
       current_zone: game.currentZone,
+      zones_completed: zonesCompleted,
       crystals: progress.crystalsCount,
-      total_crystals: 5,
+      total_crystals: 16,
       unlocked_gates: progress.unlockedGates,
       badges: progress.badges,
       words: progress.solvedWords,

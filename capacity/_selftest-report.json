@@ -1,0 +1,69 @@
+{
+  "startedAt": "2026-10-08T14:31:59.262Z",
+  "finishedAt": "2026-10-08T14:31:59.283Z",
+  "config": {
+    "url": "http://127.0.0.1:1",
+    "anonKey": "***",
+    "password": "***",
+    "vu": 3,
+    "allowHighVu": false,
+    "durationS": 2,
+    "rampS": 0,
+    "timeoutMs": 1500,
+    "tickMs": 300,
+    "emailSuffix": "resqbox.local",
+    "userPrefix": "resqload",
+    "userStart": 1,
+    "writeIntervalMs": 300,
+    "readOwnProb": 1,
+    "teacherProb": 0.34,
+    "teacherReadIntervalMs": 60000,
+    "classroom": "RESQ-8A",
+    "classReadLimit": 0,
+    "enableWrites": true,
+    "enableStudentUpsert": false,
+    "submissionIdStyle": "uuid",
+    "sloP95Ms": 750,
+    "sloErrorRate": 0.01,
+    "maxSamples": 200000,
+    "reportJson": "loadtest-report.selftest.json",
+    "dryRun": false,
+    "quiet": false,
+    "C": 0.25,
+    "M": 10
+  },
+  "metrics": {
+    "elapsedS": 0.019604999999999997,
+    "vu": 3,
+    "totalRequests": 3,
+    "ok": 0,
+    "errors": 3,
+    "errorRate": 1,
+    "authFailures": 3,
+    "achievedReqPerS": 153.02218821729153,
+    "achievedReqPerPlayerPerMin": 3060.443764345831,
+    "p50Ms": 1.031400000000005,
+    "p95Ms": 19.205199999999998,
+    "p99Ms": 19.205199999999998,
+    "bytesOut": 0,
+    "bytesIn": 0,
+    "byStatus": {
+      "net:Error": 3
+    },
+    "byEndpoint": {
+      "AUTH login": {
+        "total": 3,
+        "ok": 0,
+        "fail": 3,
+        "sumMs": 21.027600000000007,
+        "avgMs": 7.0092000000000025
+      }
+    }
+  },
+  "slo": {
+    "p95Ms": 750,
+    "errorRate": 0.01
+  },
+  "verdict": "TIDAK BERJALAN",
+  "abortedAtAuth": true
+}

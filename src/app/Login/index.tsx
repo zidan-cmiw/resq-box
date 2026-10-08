@@ -100,7 +100,7 @@ export default function Login() {
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
         {/* Base 2D Pixel Art Backdrop matching the reference photo */}
         <img
-          src="/bg-rainforest.jpg"
+          src="/bg-rainforest.webp"
           alt="Tropical Cloud Forest"
           className="w-full h-full object-cover object-center absolute inset-0 select-none"
           style={{ imageRendering: 'pixelated' }}
@@ -343,25 +343,7 @@ export default function Login() {
                 />
               </div>
 
-              {role === 'teacher' ? (
-                <div id="tour-login-quick-demo" className="p-2.5 bg-emerald-950/10 rounded-xl border-2 border-emerald-900/30 text-center space-y-1">
-                  <span className="text-[10px] font-bold text-emerald-950 block uppercase font-pixel-title">
-                    Kredensial Akses Guru:
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLoginUsername('guru');
-                      setLoginPassword('guru123');
-                      retroAudio.playSelect();
-                    }}
-                    className="font-pixel text-[11px] font-bold text-emerald-950 bg-amber-50 hover:bg-amber-100/90 py-1 px-2 rounded border border-emerald-800/40 w-full cursor-pointer flex items-center justify-between"
-                  >
-                    <span>User: <strong className="text-emerald-700 font-pixel-title text-[10px]">guru</strong> • Pass: <strong className="text-emerald-700 font-pixel-title text-[10px]">guru123</strong></span>
-                    <span className="text-[8px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-pixel-title">[ISI]</span>
-                  </button>
-                </div>
-              ) : (
+              {role === 'student' && (
                 <div id="tour-login-quick-demo" className="p-2.5 bg-amber-950/10 rounded-xl border-2 border-amber-900/30 text-center space-y-1">
                   <span className="text-[10px] font-bold text-amber-950 block uppercase font-pixel-title">
                     Akun Demo (Semua Level Terbuka):

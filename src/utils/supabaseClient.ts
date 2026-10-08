@@ -1,14 +1,28 @@
 // ── supabaseClient.ts ──────────────────────────────────────────────────────
-// Supabase Cloud Real-Time Client + Resilient Local BroadcastChannel Fallback
-// Mendukung autentikasi Akun Guru & Siswa, Multi-Kelas, Pembuatan & Penghapusan Akun Siswa,
-// serta Rekap Rapor & Nilai Real-Time.
+// Lapisan data RESQ-BOX di atas Supabase.
+//
+// MODEL KEAMANAN (lihat supabase/migrations/*.sql)
+//   • Identitas  : Supabase Auth. Username dipetakan ke email sintetis
+//                  `<username>@resqbox.local` (domain bisa diatur lewat
+//                  VITE_AUTH_EMAIL_DOMAIN).
+//   • Otorisasi  : RLS di database. Klien TIDAK menentukan peran, kelas,
+//                  level, atau nilai — semuanya diputuskan server.
+//   • Klien ini  : hanya mengirim "apa yang dicapai", bukan "berapa nilainya".
+//
+// CATATAN PENTING
+//   • Tidak ada lagi password yang disimpan di localStorage.
+//   • `getLocal*` sekarang murni CACHE untuk tampilan luring, bukan sumber
+//     kebenaran. Cloud selalu diutamakan bila tersedia.
+//   • Setiap kegagalan RPC sekarang tercatat, tidak lagi ditelan `catch {}`.
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, type Session } from '@supabase/supabase-js';
 import type { CustomAvatarConfig } from '../store/teacherStore';
 
+// ── TIPE PUBLIK (dipertahankan agar komponen lain tidak perlu diubah) ──────
 export interface UserAccount {
   id: string;
   username: string;
+  /** Selalu undefined di klien sekarang — password tidak pernah dipegang klien. */
   password?: string;
   role: 'student' | 'teacher';
   name: string;
@@ -17,17 +31,18 @@ export interface UserAccount {
   school_name?: string;
   avatar_config?: CustomAvatarConfig;
   unlocked_level?: number;
+  is_admin?: boolean;
   created_at?: string;
   updated_at?: string;
 }
 
 export interface ClassroomRecord {
-  id: string;
+  id?: string;
   code: string;
   name: string;
   teacher_username: string;
   school_name: string;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface StudentDbRecord {
@@ -52,37 +67,68 @@ export interface LevelSubmissionDbRecord {
   classroom_code: string;
   level_number: number;
   score: number;
+  // Catatan: sengaja `any` (bukan `unknown`) agar pemakaian lama di
+  // TeacherDashboard tetap type-safe tanpa perlu diubah semua.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   details?: Record<string, any>;
   completed_at: string;
 }
 
+// ── KONFIGURASI ───────────────────────────────────────────────────────────
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const AUTH_EMAIL_DOMAIN = import.meta.env.VITE_AUTH_EMAIL_DOMAIN || 'resqbox.local';
 
 export const isSupabaseConfigured = Boolean(
-  supabaseUrl &&
-  supabaseAnonKey &&
-  supabaseUrl.startsWith('http') &&
-  supabaseAnonKey.length > 20
+  supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http') && supabaseAnonKey.length > 20
 );
 
 export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: false,
+        storageKey: 'resqbox-auth',
+      },
+    })
   : null;
 
-// Local BroadcastChannel for live multi-tab simulator when offline / without cloud keys
-const localBroadcast = typeof window !== 'undefined' && 'BroadcastChannel' in window
-  ? new BroadcastChannel('resqbox_class_channel')
-  : null;
+/** Username → email sintetis untuk Supabase Auth. */
+export function usernameToEmail(username: string): string {
+  const clean = username.trim().toLowerCase().replace(/[^a-z0-9._-]/g, '');
+  return `${clean}@${AUTH_EMAIL_DOMAIN}`;
+}
 
-// Local storage keys
-const LOCAL_STORAGE_USERS_KEY = 'resqbox-cloud-users';
+// ── LOG DIAGNOSTIK ────────────────────────────────────────────────────────
+// Dulu setiap kegagalan cloud ditelan `catch {}` sehingga masalah tak terlihat.
+let lastCloudError: string | null = null;
+
+export function getLastCloudError(): string | null {
+  return lastCloudError;
+}
+
+function noteError(scope: string, detail: unknown): void {
+  const msg = detail instanceof Error ? detail.message : String(detail);
+  lastCloudError = `${scope}: ${msg}`;
+  console.error(`[RESQ-BOX][cloud] ${scope}:`, detail);
+}
+
+/** Bila kunci cloud belum diisi, aplikasi berjalan 100% lokal (mode luring). */
+export const isCloudAvailable = (): boolean => supabase !== null;
+
+// ── KANAL LOKAL (sinkronisasi antar-tab tanpa server) ──────────────────────
+const localBroadcast =
+  typeof window !== 'undefined' && 'BroadcastChannel' in window
+    ? new BroadcastChannel('resqbox_class_channel')
+    : null;
+
+// ── KUNCI CACHE LOKAL ─────────────────────────────────────────────────────
 const LOCAL_STORAGE_CLASSES_KEY = 'resqbox-cloud-classes';
 const LOCAL_STORAGE_STUDENTS_KEY = 'resqbox-cloud-students';
 const LOCAL_STORAGE_SUBMISSIONS_KEY = 'resqbox-cloud-submissions';
 
-// ── DEFAULT INITIAL SEED DATA ──────────────────────────────────────────────
-const DEFAULT_AVATAR: CustomAvatarConfig = {
+export const DEFAULT_AVATAR: CustomAvatarConfig = {
   skin: 'warm',
   hairStyle: 'spiky',
   hairColor: '#3e2723',
@@ -92,286 +138,240 @@ const DEFAULT_AVATAR: CustomAvatarConfig = {
   bgTheme: 'amber',
 };
 
-function getInitialUsers(): UserAccount[] {
-  return [
-    {
-      id: 'teacher-1',
-      username: 'guru',
-      password: 'guru123',
-      role: 'teacher',
-      name: 'Bapak Hendra, S.Pd (Guru IPA)',
-      school_name: 'SMP Negeri 1',
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: 'std-demo-all-unlocked',
-      username: 'demo',
-      password: 'demo123',
-      role: 'student',
-      name: 'Taruna Demo (Semua Level Terbuka)',
-      absent_number: '99',
-      classroom_code: 'RESQ-8A',
-      school_name: 'SMP Negeri 1 (Demo Testing)',
-      avatar_config: DEFAULT_AVATAR,
-      unlocked_level: 3,
-      created_at: new Date().toISOString(),
-    },
-  ];
-}
+// ── CACHE LOKAL (bukan sumber kebenaran) ──────────────────────────────────
+// Kredensial TIDAK lagi disimpan. Yang tersisa hanya data tampilan.
 
-function getInitialClassrooms(): ClassroomRecord[] {
-  return [
-    {
-      id: 'cls-1',
-      code: 'RESQ-8A',
-      name: 'Kelas VIII-A (IPA)',
-      teacher_username: 'guru',
-      school_name: 'SMP Negeri 1',
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: 'cls-2',
-      code: 'RESQ-8B',
-      name: 'Kelas VIII-B (IPA)',
-      teacher_username: 'guru',
-      school_name: 'SMP Negeri 1',
-      created_at: new Date().toISOString(),
-    },
-  ];
-}
-
-function getInitialStudentsList(): StudentDbRecord[] {
-  return [
-    {
-      id: 'std-demo-all-unlocked',
-      user_id: 'std-demo-all-unlocked',
-      classroom_code: 'RESQ-8A',
-      name: 'Taruna Demo (Semua Level Terbuka)',
-      username: 'demo',
-      password: 'demo123',
-      class_name: 'Kelas VIII-A (IPA)',
-      absent_number: '99',
-      avatar_config: DEFAULT_AVATAR,
-      unlocked_level: 3,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-  ];
-}
-
-function getInitialSubmissionsList(): LevelSubmissionDbRecord[] {
+/** @deprecated Tidak dipakai lagi — akun dikelola Supabase Auth. */
+export function getLocalUsers(): UserAccount[] {
   return [];
 }
 
-// ── LOCAL STORAGE ACCESSORS ────────────────────────────────────────────────
-export function getLocalUsers(): UserAccount[] {
-  try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_USERS_KEY);
-    if (!raw) {
-      const init = getInitialUsers();
-      localStorage.setItem(LOCAL_STORAGE_USERS_KEY, JSON.stringify(init));
-      return init;
-    }
-    const list: UserAccount[] = JSON.parse(raw);
-    // Remove obsolete test accounts
-    const cleaned = list.filter((u) => u.username !== 'budi8a' && u.username !== 'siti8a');
-    
-    // Ensure default teacher account exists
-    if (!cleaned.some((u) => u.username === 'guru')) {
-      cleaned.unshift(getInitialUsers()[0]);
-    }
-    
-    // Ensure default demo student account exists with unlocked_level: 3
-    const demoIdx = cleaned.findIndex((u) => u.username === 'demo');
-    if (demoIdx < 0) {
-      cleaned.push(getInitialUsers()[1]);
-    } else {
-      cleaned[demoIdx].unlocked_level = 3;
-    }
-
-    localStorage.setItem(LOCAL_STORAGE_USERS_KEY, JSON.stringify(cleaned));
-    return cleaned;
-  } catch {
-    return getInitialUsers();
-  }
-}
-
-export function saveLocalUsers(list: UserAccount[]) {
-  try {
-    localStorage.setItem(LOCAL_STORAGE_USERS_KEY, JSON.stringify(list));
-  } catch { }
+/** @deprecated Lihat catatan di atas. */
+export function saveLocalUsers(_list: UserAccount[]): void {
+  // sengaja no-op: klien tidak lagi menyimpan akun
 }
 
 export function getLocalClasses(): ClassroomRecord[] {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_CLASSES_KEY);
-    if (!raw) {
-      const init = getInitialClassrooms();
-      localStorage.setItem(LOCAL_STORAGE_CLASSES_KEY, JSON.stringify(init));
-      return init;
-    }
-    const list: ClassroomRecord[] = JSON.parse(raw);
-    if (list.length === 0) {
-      const init = getInitialClassrooms();
-      localStorage.setItem(LOCAL_STORAGE_CLASSES_KEY, JSON.stringify(init));
-      return init;
-    }
-    return list;
+    if (!raw) return [];
+    const list = JSON.parse(raw) as ClassroomRecord[];
+    return Array.isArray(list) ? list : [];
   } catch {
-    return getInitialClassrooms();
+    return [];
   }
 }
 
-export function saveLocalClasses(list: ClassroomRecord[]) {
+export function saveLocalClasses(list: ClassroomRecord[]): void {
   try {
     localStorage.setItem(LOCAL_STORAGE_CLASSES_KEY, JSON.stringify(list));
-  } catch { }
+  } catch {
+    /* kuota penuh / mode privat: abaikan, cache bersifat opsional */
+  }
 }
 
 export function getLocalStudents(): StudentDbRecord[] {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_STUDENTS_KEY);
-    if (!raw) {
-      const init = getInitialStudentsList();
-      localStorage.setItem(LOCAL_STORAGE_STUDENTS_KEY, JSON.stringify(init));
-      return init;
-    }
-    const list: StudentDbRecord[] = JSON.parse(raw);
-    const cleaned = list.filter(
-      (s) => s.id !== 'std-budi' && s.id !== 'std-siti' && s.username !== 'budi8a' && s.username !== 'siti8a'
-    );
-    if (!cleaned.some((s) => s.username === 'demo')) {
-      cleaned.push(getInitialStudentsList()[0]);
-    }
-    localStorage.setItem(LOCAL_STORAGE_STUDENTS_KEY, JSON.stringify(cleaned));
-    return cleaned;
+    if (!raw) return [];
+    const list = JSON.parse(raw) as StudentDbRecord[];
+    return Array.isArray(list) ? list : [];
   } catch {
-    return getInitialStudentsList();
+    return [];
   }
 }
 
-export function saveLocalStudents(list: StudentDbRecord[]) {
+export function saveLocalStudents(list: StudentDbRecord[]): void {
   try {
     localStorage.setItem(LOCAL_STORAGE_STUDENTS_KEY, JSON.stringify(list));
-  } catch { }
+  } catch {
+    /* abaikan */
+  }
 }
 
 export function getLocalSubmissions(): LevelSubmissionDbRecord[] {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_SUBMISSIONS_KEY);
-    if (!raw) {
-      const init = getInitialSubmissionsList();
-      localStorage.setItem(LOCAL_STORAGE_SUBMISSIONS_KEY, JSON.stringify(init));
-      return init;
-    }
-    const list: LevelSubmissionDbRecord[] = JSON.parse(raw);
-    const cleaned = list.filter((s) => s.student_id !== 'std-budi' && s.student_id !== 'std-siti' && !s.student_id.startsWith('std-demo'));
-    if (cleaned.length !== list.length) {
-      localStorage.setItem(LOCAL_STORAGE_SUBMISSIONS_KEY, JSON.stringify(cleaned));
-    }
-    return cleaned;
+    if (!raw) return [];
+    const list = JSON.parse(raw) as LevelSubmissionDbRecord[];
+    return Array.isArray(list) ? list : [];
   } catch {
-    return getInitialSubmissionsList();
+    return [];
   }
 }
 
-export function saveLocalSubmissions(list: LevelSubmissionDbRecord[]) {
+export function saveLocalSubmissions(list: LevelSubmissionDbRecord[]): void {
   try {
     localStorage.setItem(LOCAL_STORAGE_SUBMISSIONS_KEY, JSON.stringify(list));
-  } catch { }
+  } catch {
+    /* abaikan */
+  }
 }
 
-// ── 1. AUTENTIKASI (LOGIN & REGISTER) ──────────────────────────────────────
+// ── PEMETAAN BARIS → TIPE APLIKASI ────────────────────────────────────────
+interface ProfileRow {
+  id: string;
+  username: string;
+  role: 'student' | 'teacher' | 'admin';
+  is_admin?: boolean;
+  name: string;
+  absent_number?: string | null;
+  classroom_code?: string | null;
+  school_name?: string | null;
+  avatar_config?: CustomAvatarConfig | null;
+  unlocked_level?: number | null;
+}
 
+function profileToUser(p: ProfileRow): UserAccount {
+  return {
+    id: p.id,
+    username: p.username,
+    role: p.role === 'teacher' || p.role === 'admin' ? 'teacher' : 'student',
+    name: p.name,
+    absent_number: p.absent_number ?? '1',
+    classroom_code: p.classroom_code ?? undefined,
+    school_name: p.school_name ?? undefined,
+    avatar_config: p.avatar_config ?? undefined,
+    unlocked_level: p.unlocked_level ?? 1,
+    is_admin: Boolean(p.is_admin),
+  };
+}
+
+function rowToStudent(row: Record<string, unknown>): StudentDbRecord {
+  return {
+    id: String(row.id ?? ''),
+    user_id: row.user_id ? String(row.user_id) : undefined,
+    classroom_code: String(row.classroom_code ?? ''),
+    name: String(row.name ?? ''),
+    username: row.username ? String(row.username) : undefined,
+    password: undefined, // tidak pernah dikirim server
+    class_name: String(row.class_name ?? 'Kelas VIII-A'),
+    absent_number: String(row.absent_number ?? '1'),
+    avatar_config: (row.avatar_config as CustomAvatarConfig) ?? DEFAULT_AVATAR,
+    unlocked_level: Number(row.unlocked_level ?? 1),
+    created_at: row.created_at as string | undefined,
+    updated_at: row.updated_at as string | undefined,
+  };
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 1. AUTENTIKASI (Supabase Auth)
+// ══════════════════════════════════════════════════════════════════════════
+
+export async function getAuthSession(): Promise<Session | null> {
+  if (!supabase) return null;
+  const { data } = await supabase.auth.getSession();
+  return data.session ?? null;
+}
+
+/**
+ * Login. Mencoba Supabase Auth lebih dulu, lalu menyesuaikan dengan peran
+ * yang dipilih siswa/guru. Tidak ada password yang disimpan di klien.
+ */
 export async function loginUser(
   usernameInput: string,
   passwordInput: string,
   role: 'student' | 'teacher'
 ): Promise<{ success: boolean; user?: UserAccount; message?: string }> {
   const username = usernameInput.trim().toLowerCase();
-  const password = passwordInput.trim();
+  const password = passwordInput; // JANGAN di-trim: spasi bisa bagian dari sandi
 
-  // Supabase cloud: verify password server-side via RPC (never exposes hash)
-  if (supabase) {
-    try {
-      const { data, error } = await supabase.rpc('verify_login', {
-        p_username: username,
-        p_password: password,
-        p_role: role,
-      });
-
-      if (!error && data) {
-        const result = typeof data === 'string' ? JSON.parse(data) : data;
-        if (result.success && result.user) {
-          return { success: true, user: result.user };
-        }
-        if (result.message) {
-          return { success: false, message: result.message };
-        }
-      }
-    } catch { }
+  if (!username || !password) {
+    return { success: false, message: 'Username dan password wajib diisi.' };
   }
 
-  // Local fallback
-  const users = getLocalUsers();
-  const user = users.find(
-    (u) => u.username.toLowerCase() === username && u.role === role
-  );
-
-  if (!user) {
+  if (!supabase) {
     return {
       success: false,
-      message:
-        role === 'teacher'
-          ? 'Akun Guru tidak ditemukan. Gunakan username: guru dan password: guru123'
-          : 'Akun Siswa tidak ditemukan. Silakan buat akun baru dengan klik [DAFTAR AKUN BARU] atau minta dibuatkan oleh gurumu.',
+      message: 'Mode luring: tidak bisa masuk tanpa koneksi ke server.',
     };
   }
 
-  if (user.password !== password) {
-    return { success: false, message: 'Password yang kamu masukkan salah!' };
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: usernameToEmail(username),
+      password,
+    });
+
+    if (error) {
+      // Bedakan "salah sandi" dengan "akun belum ada di sistem baru".
+      const raw = (error.message || '').toLowerCase();
+      if (raw.includes('invalid login')) {
+        return { success: false, message: 'Username atau password salah!' };
+      }
+      if (raw.includes('email not confirmed')) {
+        return {
+          success: false,
+          message: 'Akun belum aktif. Hubungi gurumu untuk mengaktifkan akun.',
+        };
+      }
+      noteError('loginUser', error);
+      return { success: false, message: 'Gagal masuk. Coba lagi sebentar lagi.' };
+    }
+
+    if (!data.user) {
+      return { success: false, message: 'Gagal masuk: sesi tidak terbentuk.' };
+    }
+
+    // Ambil profil (peran sebenarnya ditentukan server, bukan pilihan di form)
+    const profileRes = await supabase.rpc('get_my_profile');
+    if (profileRes.error) {
+      noteError('get_my_profile', profileRes.error);
+      await supabase.auth.signOut();
+      return { success: false, message: 'Profil tidak ditemukan. Hubungi gurumu.' };
+    }
+
+    const payload = profileRes.data as { found?: boolean } & ProfileRow;
+    if (!payload || payload.found === false) {
+      await supabase.auth.signOut();
+      return { success: false, message: 'Profil tidak ditemukan. Hubungi gurumu.' };
+    }
+
+    const user = profileToUser(payload);
+
+    // Cegah salah pilih peran: akun guru tidak bisa masuk lewat pintu siswa.
+    if (role === 'teacher' && user.role !== 'teacher') {
+      await supabase.auth.signOut();
+      return { success: false, message: 'Akun ini bukan akun Guru.' };
+    }
+    if (role === 'student' && user.role === 'teacher') {
+      await supabase.auth.signOut();
+      return { success: false, message: 'Akun ini adalah akun Guru. Pilih tab Guru.' };
+    }
+
+    return { success: true, user };
+  } catch (err) {
+    noteError('loginUser:exception', err);
+    return {
+      success: false,
+      message: 'Tidak bisa menghubungi server. Periksa koneksi internetmu.',
+    };
   }
-
-  return { success: true, user };
 }
 
-export function findMatchingClass(input: string): ClassroomRecord | null {
-  const raw = input.trim();
-  if (!raw) return null;
-  const clean = raw.toUpperCase().replace(/[\s\-_]/g, '');
-  const classes = getLocalClasses();
-
-  // 1. Direct code match (e.g. "RESQ-8B", "RESQ8B")
-  const directMatch = classes.find(
-    (c) => c.code.toUpperCase() === raw.toUpperCase() || c.code.toUpperCase().replace(/[\s\-_]/g, '') === clean
-  );
-  if (directMatch) return directMatch;
-
-  // 2. Suffix & fuzzy name match (e.g. "8B", "8-B", "VIII-B", "VIIIB", "Kelas 8B", "Kelas VIII-B")
-  const normalizedInput = clean.replace(/VIII/g, '8').replace(/VII/g, '7').replace(/IX/g, '9');
-
-  const match = classes.find((c) => {
-    const codeNorm = c.code.toUpperCase().replace(/[\s\-_]/g, '');
-    const nameNorm = c.name.toUpperCase().replace(/[\s\-_]/g, '');
-    const normalizedCode = codeNorm.replace(/VIII/g, '8').replace(/VII/g, '7').replace(/IX/g, '9');
-    const normalizedName = nameNorm.replace(/VIII/g, '8').replace(/VII/g, '7').replace(/IX/g, '9');
-
-    // Exact matches after roman/arabic normalization
-    if (codeNorm === clean || normalizedCode === normalizedInput) return true;
-
-    // Code ends with input (e.g. "RESQ8B" ends with "8B", "RESQ-8B" ends with "8B")
-    if (codeNorm.endsWith(clean) || normalizedCode.endsWith(normalizedInput)) return true;
-
-    // Class name contains input (e.g. "KELAS8B(IPA)" contains "8B" or "KELAS8B")
-    if (nameNorm.includes(clean) || normalizedName.includes(normalizedInput)) return true;
-
-    return false;
-  });
-
-  return match || null;
+export async function logoutUser(): Promise<void> {
+  if (!supabase) return;
+  try {
+    await supabase.auth.signOut();
+  } catch (err) {
+    noteError('logoutUser', err);
+  }
 }
 
-// Siswa Mendaftar Mandiri
+/** Profil terbaru milik pengguna yang sedang login. */
+export async function fetchMyProfile(): Promise<UserAccount | null> {
+  if (!supabase) return null;
+  const { data, error } = await supabase.rpc('get_my_profile');
+  if (error) {
+    noteError('fetchMyProfile', error);
+    return null;
+  }
+  const payload = data as { found?: boolean } & ProfileRow;
+  if (!payload || payload.found === false) return null;
+  return profileToUser(payload);
+}
+
+/** Siswa mendaftar mandiri. Kelas divalidasi di server, bukan dari cache lokal. */
 export async function registerStudent(data: {
   username: string;
   password: string;
@@ -380,330 +380,309 @@ export async function registerStudent(data: {
   classroom_code: string;
 }): Promise<{ success: boolean; user?: UserAccount; message?: string }> {
   const username = data.username.trim().toLowerCase();
-  const users = getLocalUsers();
+  const password = data.password;
 
-  if (users.some((u) => u.username.toLowerCase() === username)) {
-    return { success: false, message: `Username "${username}" sudah digunakan! Silakan pilih username lain.` };
-  }
-
-  // Strict Classroom Lookup
-  const matchedClass = findMatchingClass(data.classroom_code);
-  if (!matchedClass) {
-    const availableCodes = getLocalClasses().map((c) => c.code).join(', ');
+  if (!/^[a-z0-9._-]{3,30}$/.test(username)) {
     return {
       success: false,
-      message: `Kode kelas "${data.classroom_code}" tidak ditemukan! Pastikan kamu memasukkan kode kelas yang benar dari gurumu (contoh: ${availableCodes || 'RESQ-8A'}).`,
+      message: 'Username hanya boleh huruf kecil, angka, titik, garis bawah, dan strip (3–30 karakter).',
     };
   }
+  if (password.length < 6) {
+    return { success: false, message: 'Password minimal 6 karakter.' };
+  }
 
-  const cleanClassCode = matchedClass.code;
-  const className = matchedClass.name;
+  if (!supabase) {
+    return { success: false, message: 'Mode luring: pendaftaran butuh koneksi ke server.' };
+  }
 
-  const newUser: UserAccount = {
-    id: `std-${Date.now()}`,
-    username,
-    password: data.password.trim(),
-    role: 'student',
-    name: data.name.trim(),
-    absent_number: data.absent_number.trim() || '1',
-    classroom_code: cleanClassCode,
-    school_name: matchedClass.school_name || 'SMP Negeri 1',
-    avatar_config: DEFAULT_AVATAR,
-    unlocked_level: 1,
-    created_at: new Date().toISOString(),
-  };
+  const classCode = data.classroom_code.trim().toUpperCase();
 
-  users.push(newUser);
-  saveLocalUsers(users);
+  try {
+    // Cek ketersediaan username (server hanya menjawab boolean).
+    const avail = await supabase.rpc('username_available', { p_username: username });
+    if (avail.error) {
+      noteError('username_available', avail.error);
+    } else if (avail.data === false) {
+      return { success: false, message: `Username "${username}" sudah dipakai. Pilih yang lain.` };
+    }
 
-  // Add to students list
-  const students = getLocalStudents();
-  const newStudentRec: StudentDbRecord = {
-    id: newUser.id,
-    user_id: newUser.id,
-    classroom_code: cleanClassCode,
-    name: newUser.name,
-    username: newUser.username,
-    password: newUser.password,
-    class_name: className,
-    absent_number: newUser.absent_number || '1',
-    avatar_config: DEFAULT_AVATAR,
-    unlocked_level: 1,
-    updated_at: new Date().toISOString(),
-  };
-  students.push(newStudentRec);
-  saveLocalStudents(students);
+    // Validasi kode kelas (server hanya mengembalikan nama kelas/sekolah).
+    const classInfo = await supabase.rpc('class_code_info', { p_code: classCode });
+    if (classInfo.error) {
+      noteError('class_code_info', classInfo.error);
+      return { success: false, message: 'Gagal memeriksa kode kelas. Coba lagi.' };
+    }
+    const info = classInfo.data as { found?: boolean; name?: string; school_name?: string } | null;
+    if (!info || info.found !== true) {
+      return {
+        success: false,
+        message: `Kode kelas "${classCode}" tidak ditemukan. Mintalah kode yang benar dari gurumu.`,
+      };
+    }
 
-  // Broadcast to teacher dashboard
-  if (localBroadcast) {
-    localBroadcast.postMessage({
-      type: 'STUDENT_UPDATED',
-      payload: newStudentRec,
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email: usernameToEmail(username),
+      password,
+      options: {
+        data: {
+          username,
+          name: data.name.trim(),
+          absent_number: data.absent_number.trim() || '1',
+          classroom_code: classCode,
+          school_name: info.school_name || 'SMP Negeri 1',
+          role: 'student', // server tetap memaksa 'student' untuk pendaftaran mandiri
+        },
+      },
     });
-  }
 
-  if (supabase) {
-    try {
-      const { data: rpcData } = await supabase.rpc('register_student_account', {
-        p_username: username,
-        p_password: data.password.trim(),
-        p_name: data.name.trim(),
-        p_absent_number: data.absent_number.trim() || '1',
-        p_classroom_code: cleanClassCode,
-      });
-      // If RPC returned a UUID id, use it for local record consistency
-      if (rpcData) {
-        const res = typeof rpcData === 'string' ? JSON.parse(rpcData) : rpcData;
-        if (res.success && res.user?.id) {
-          newUser.id = res.user.id;
-          newStudentRec.id = res.user.id;
-          newStudentRec.user_id = res.user.id;
-        }
+    if (signUpError) {
+      noteError('registerStudent:signUp', signUpError);
+      const m = (signUpError.message || '').toLowerCase();
+      if (m.includes('already registered') || m.includes('already exists')) {
+        return { success: false, message: `Username "${username}" sudah dipakai. Pilih yang lain.` };
       }
-    } catch { }
-  }
+      return { success: false, message: 'Gagal membuat akun. Coba lagi sebentar lagi.' };
+    }
 
-  return { success: true, user: newUser };
+    // Bila konfirmasi email dimatikan, sesi langsung aktif.
+    if (!signUpData.session) {
+      return {
+        success: false,
+        message:
+          'Akun dibuat, tetapi perlu konfirmasi email. Hubungi gurumu, atau minta admin menonaktifkan konfirmasi email.',
+      };
+    }
+
+    const profile = await fetchMyProfile();
+    if (!profile) {
+      return {
+        success: true,
+        user: {
+          id: signUpData.user?.id ?? '',
+          username,
+          role: 'student',
+          name: data.name.trim(),
+          absent_number: data.absent_number.trim() || '1',
+          classroom_code: classCode,
+          school_name: info.school_name || 'SMP Negeri 1',
+          avatar_config: DEFAULT_AVATAR,
+          unlocked_level: 1,
+        },
+      };
+    }
+
+    return { success: true, user: profile };
+  } catch (err) {
+    noteError('registerStudent:exception', err);
+    return { success: false, message: 'Tidak bisa menghubungi server. Periksa koneksi internetmu.' };
+  }
 }
 
-// Guru Mendaftar Akun Baru
-export async function registerTeacher(data: {
+/**
+ * Pendaftaran akun guru.
+ * Sengaja TIDAK membuka jalur pendaftaran guru dari publik: guru baru
+ * ditambahkan oleh admin lewat SQL/Edge Function (lihat supabase/README.md).
+ */
+export async function registerTeacher(_data: {
   username: string;
   password: string;
   name: string;
   school_name: string;
 }): Promise<{ success: boolean; user?: UserAccount; message?: string }> {
-  const username = data.username.trim().toLowerCase();
-  const users = getLocalUsers();
-
-  if (users.some((u) => u.username.toLowerCase() === username)) {
-    return { success: false, message: `Username "${username}" sudah digunakan!` };
-  }
-
-  const newTeacher: UserAccount = {
-    id: `teacher-${Date.now()}`,
-    username,
-    password: data.password.trim(),
-    role: 'teacher',
-    name: data.name.trim(),
-    school_name: data.school_name.trim() || 'SMP Negeri 1',
-    created_at: new Date().toISOString(),
+  return {
+    success: false,
+    message:
+      'Pendaftaran akun Guru hanya bisa dilakukan oleh admin sekolah. Hubungi pengelola sistem RESQ-BOX.',
   };
-
-  users.push(newTeacher);
-  saveLocalUsers(users);
-
-  // Create initial class for this teacher
-  const initialClassCode = `RESQ-${Math.floor(100 + Math.random() * 900)}`;
-  const classes = getLocalClasses();
-  classes.push({
-    id: `cls-${Date.now()}`,
-    code: initialClassCode,
-    name: 'Kelas Utama (IPA)',
-    teacher_username: username,
-    school_name: newTeacher.school_name || 'SMP Negeri 1',
-    created_at: new Date().toISOString(),
-  });
-  saveLocalClasses(classes);
-
-  if (supabase) {
-    try {
-      const { data: rpcData } = await supabase.rpc('register_teacher_account', {
-        p_username: username,
-        p_password: data.password.trim(),
-        p_name: data.name.trim(),
-        p_school_name: data.school_name.trim() || 'SMP Negeri 1',
-      });
-      if (rpcData) {
-        const res = typeof rpcData === 'string' ? JSON.parse(rpcData) : rpcData;
-        if (res.success && res.user?.id) {
-          newTeacher.id = res.user.id;
-        }
-      }
-    } catch { }
-  }
-
-  return { success: true, user: newTeacher };
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// 2. KELAS
+// ══════════════════════════════════════════════════════════════════════════
 
-export async function fetchTeacherClassrooms(teacherUsername: string): Promise<ClassroomRecord[]> {
-  const classes = getLocalClasses();
-  const list = classes.filter((c) => c.teacher_username.toLowerCase() === teacherUsername.toLowerCase() || teacherUsername === 'guru');
-  return list.length > 0 ? list : getInitialClassrooms();
+/**
+ * Kelas yang boleh dilihat pemanggil: guru → kelas yang dia ampu, admin → semua.
+ * Server menegakkan aturan ini; klien hanya menampilkan hasilnya.
+ */
+export async function fetchTeacherClassrooms(_teacherUsername: string): Promise<ClassroomRecord[]> {
+  if (!supabase) return getLocalClasses();
+
+  const { data, error } = await supabase.rpc('list_my_classrooms');
+  if (error) {
+    noteError('fetchTeacherClassrooms', error);
+    return getLocalClasses();
+  }
+
+  const list = (data as ClassroomRecord[]) ?? [];
+  saveLocalClasses(list);
+  return list;
 }
 
 export async function createClassroom(
   name: string,
-  teacherUsername: string,
+  _teacherUsername: string,
   schoolName: string = 'SMP Negeri 1'
 ): Promise<ClassroomRecord> {
   const randomSuffix = Math.floor(100 + Math.random() * 900);
   const code = `RESQ-${name.replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase() || 'CLS'}${randomSuffix}`;
-
-  const newClass: ClassroomRecord = {
-    id: `cls-${Date.now()}`,
+  const record: ClassroomRecord = {
     code,
-    name: name.trim(),
-    teacher_username: teacherUsername,
+    name: name.trim() || 'Kelas VIII-A',
+    teacher_username: _teacherUsername,
     school_name: schoolName,
     created_at: new Date().toISOString(),
   };
 
-  const classes = getLocalClasses();
-  classes.push(newClass);
-  saveLocalClasses(classes);
-
-  if (supabase) {
-    try {
-      await supabase.rpc('rpc_create_classroom', {
-        p_code: newClass.code,
-        p_name: newClass.name,
-        p_teacher: teacherUsername,
-        p_school: schoolName,
-      });
-    } catch { }
+  if (!supabase) {
+    const list = getLocalClasses();
+    list.push(record);
+    saveLocalClasses(list);
+    return record;
   }
 
-  return newClass;
+  const { error } = await supabase.rpc('create_my_classroom', {
+    p_code: code,
+    p_name: record.name,
+    p_school: schoolName,
+  });
+
+  if (error) {
+    noteError('createClassroom', error);
+    // Kode bentrok → coba sekali lagi dengan angka baru
+    const retryCode = `RESQ-${name.replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase() || 'CLS'}${Math.floor(100 + Math.random() * 900)}`;
+    const { error: retryError } = await supabase.rpc('create_my_classroom', {
+      p_code: retryCode,
+      p_name: record.name,
+      p_school: schoolName,
+    });
+    if (retryError) {
+      noteError('createClassroom:retry', retryError);
+      throw new Error('Gagal membuat kelas di server.');
+    }
+    record.code = retryCode;
+  }
+
+  const list = getLocalClasses().filter((c) => c.code !== record.code);
+  list.push(record);
+  saveLocalClasses(list);
+
+  if (localBroadcast) {
+    localBroadcast.postMessage({ type: 'CLASSROOM_UPDATED', payload: record });
+  }
+  return record;
 }
 
-export async function updateClassroomName(classroomCode: string, newName: string): Promise<ClassroomRecord | null> {
+export async function updateClassroomName(
+  classroomCode: string,
+  newName: string
+): Promise<ClassroomRecord | null> {
   const trimmedName = newName.trim();
   if (!trimmedName) return null;
 
-  // 1. Update in local classes list
-  const classes = getLocalClasses();
-  const clsIdx = classes.findIndex((c) => c.code === classroomCode);
-  let updatedRecord: ClassroomRecord | null = null;
-  if (clsIdx >= 0) {
-    classes[clsIdx].name = trimmedName;
-    updatedRecord = classes[clsIdx];
-    saveLocalClasses(classes);
-  }
-
-  // 2. Update class_name for all students in this class
-  const students = getLocalStudents();
-  let updatedAnyStudent = false;
-  students.forEach((s) => {
-    if (s.classroom_code === classroomCode || findMatchingClass(s.classroom_code)?.code === classroomCode) {
-      s.class_name = trimmedName;
-      updatedAnyStudent = true;
-    }
-  });
-  if (updatedAnyStudent) {
-    saveLocalStudents(students);
-  }
-
-  // 3. Broadcast update to all tabs
-  if (localBroadcast && updatedRecord) {
-    localBroadcast.postMessage({
-      type: 'CLASSROOM_UPDATED',
-      payload: updatedRecord,
+  if (supabase) {
+    const { error } = await supabase.rpc('rename_my_classroom', {
+      p_code: classroomCode,
+      p_name: trimmedName,
     });
-  }
-
-  // 4. Update in Supabase if configured
-  if (supabase) {
-    try {
-      await supabase.rpc('rpc_update_classroom_name', {
-        p_code: classroomCode,
-        p_name: trimmedName,
-      });
-    } catch { }
-  }
-
-  return updatedRecord;
-}
-
-export async function updateTeacherProfile(
-  username: string,
-  updates: { name?: string; school_name?: string }
-): Promise<{ success: boolean; user?: UserAccount }> {
-  const users = getLocalUsers();
-  const idx = users.findIndex((u) => u.username.toLowerCase() === username.toLowerCase() && u.role === 'teacher');
-  if (idx < 0) return { success: false };
-
-  if (updates.name !== undefined) users[idx].name = updates.name.trim();
-  if (updates.school_name !== undefined) users[idx].school_name = updates.school_name.trim();
-  users[idx].updated_at = new Date().toISOString();
-  saveLocalUsers(users);
-
-  // Update resqbox-current-user in localStorage if it's the same account
-  try {
-    const raw = localStorage.getItem('resqbox-current-user');
-    if (raw) {
-      const cur: UserAccount = JSON.parse(raw);
-      if (cur.username.toLowerCase() === username.toLowerCase()) {
-        if (updates.name !== undefined) cur.name = updates.name.trim();
-        if (updates.school_name !== undefined) cur.school_name = updates.school_name.trim();
-        localStorage.setItem('resqbox-current-user', JSON.stringify(cur));
-      }
+    if (error) {
+      noteError('updateClassroomName', error);
+      throw new Error('Gagal mengganti nama kelas di server.');
     }
-  } catch { }
-
-  if (supabase) {
-    try {
-      await supabase.rpc('rpc_update_teacher_profile', {
-        p_username: username,
-        p_name: updates.name || null,
-        p_school: updates.school_name || null,
-      });
-    } catch { }
   }
 
-  return { success: true, user: users[idx] };
+  const list = getLocalClasses();
+  const idx = list.findIndex((c) => c.code === classroomCode);
+  let updated: ClassroomRecord | null = null;
+  if (idx >= 0) {
+    list[idx].name = trimmedName;
+    updated = list[idx];
+    saveLocalClasses(list);
+  }
+
+  const students = getLocalStudents().map((s) =>
+    s.classroom_code === classroomCode ? { ...s, class_name: trimmedName } : s
+  );
+  saveLocalStudents(students);
+
+  if (localBroadcast && updated) {
+    localBroadcast.postMessage({ type: 'CLASSROOM_UPDATED', payload: updated });
+  }
+  return updated ?? { code: classroomCode, name: trimmedName, teacher_username: '', school_name: '' };
 }
 
 export async function deleteClassroom(classroomCode: string): Promise<boolean> {
-  // 1. Delete classroom record from classes list
-  const classes = getLocalClasses().filter((c) => c.code !== classroomCode);
-  saveLocalClasses(classes);
-
-  // 2. Identify all students belonging to this class (exact or fuzzy code)
-  const allStudents = getLocalStudents();
-  const studentsInClass = allStudents.filter(
-    (s) => s.classroom_code === classroomCode || (findMatchingClass(s.classroom_code)?.code === classroomCode)
-  );
-  const studentIdsToDelete = new Set(studentsInClass.map((s) => s.id));
-
-  // 3. Cascade Delete students from students list
-  const remainingStudents = allStudents.filter((s) => !studentIdsToDelete.has(s.id));
-  saveLocalStudents(remainingStudents);
-
-  // 4. Cascade Delete user accounts belonging to these students or matching classroom_code
-  const users = getLocalUsers().filter(
-    (u) => !studentIdsToDelete.has(u.id) && u.classroom_code !== classroomCode
-  );
-  saveLocalUsers(users);
-
-  // 5. Cascade Delete all submissions belonging to these students or matching classroom_code
-  const submissions = getLocalSubmissions().filter(
-    (s) => !studentIdsToDelete.has(s.student_id) && s.classroom_code !== classroomCode
-  );
-  saveLocalSubmissions(submissions);
-
-  // 6. Broadcast delete event to all tabs
-  if (localBroadcast) {
-    localBroadcast.postMessage({
-      type: 'CLASSROOM_DELETED',
-      payload: { classroomCode },
-    });
-  }
-
-  // 7. Supabase cloud cascade delete if configured
   if (supabase) {
-    try {
-      await supabase.rpc('rpc_delete_classroom', { p_code: classroomCode });
-    } catch { }
+    const { error } = await supabase.rpc('delete_my_classroom', { p_code: classroomCode });
+    if (error) {
+      noteError('deleteClassroom', error);
+      throw new Error('Gagal menghapus kelas di server.');
+    }
   }
 
+  saveLocalClasses(getLocalClasses().filter((c) => c.code !== classroomCode));
+  saveLocalStudents(getLocalStudents().filter((s) => s.classroom_code !== classroomCode));
+  saveLocalSubmissions(getLocalSubmissions().filter((s) => s.classroom_code !== classroomCode));
+
+  if (localBroadcast) {
+    localBroadcast.postMessage({ type: 'CLASSROOM_DELETED', payload: { classroomCode } });
+  }
   return true;
 }
 
-// ── 3. MANAJEMEN AKUN SISWA OLEH GURU ─────────────────────────────────────
+/** Rekap siswa satu kelas (guru pemilik / admin). Tidak memuat password. */
+export async function fetchClassroomStudents(classroomCode: string): Promise<StudentDbRecord[]> {
+  if (!supabase) {
+    return getLocalStudents().filter((s) => s.classroom_code === classroomCode);
+  }
 
-// Guru Membuatkan Akun Siswa Langsung di Kelas
+  const { data, error } = await supabase.rpc('list_class_students', { p_code: classroomCode });
+  if (error) {
+    noteError('fetchClassroomStudents', error);
+    return getLocalStudents().filter((s) => s.classroom_code === classroomCode);
+  }
+
+  const rows = ((data as Record<string, unknown>[]) ?? []).map(rowToStudent);
+  // Hasil kosong adalah keadaan yang SAH (kelas baru belum punya siswa).
+  // Jangan jatuh ke cache lokal hanya karena kosong — itu menampilkan data basi.
+  const others = getLocalStudents().filter((s) => s.classroom_code !== classroomCode);
+  saveLocalStudents([...others, ...rows]);
+  return rows;
+}
+
+/** Rekap nilai satu kelas (guru pemilik / admin). */
+export async function fetchClassroomSubmissions(
+  classroomCode: string
+): Promise<LevelSubmissionDbRecord[]> {
+  if (!supabase) {
+    return getLocalSubmissions().filter((s) => s.classroom_code === classroomCode);
+  }
+
+  const { data, error } = await supabase.rpc('list_class_submissions', { p_code: classroomCode });
+  if (error) {
+    noteError('fetchClassroomSubmissions', error);
+    return getLocalSubmissions().filter((s) => s.classroom_code === classroomCode);
+  }
+
+  const rows = ((data as LevelSubmissionDbRecord[]) ?? []).map((r) => ({
+    ...r,
+    details: (r.details ?? {}) as Record<string, unknown>,
+  }));
+  const others = getLocalSubmissions().filter((s) => s.classroom_code !== classroomCode);
+  saveLocalSubmissions([...others, ...rows]);
+  return rows;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 3. MANAJEMEN AKUN SISWA OLEH GURU
+// ══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Guru membuatkan akun siswa.
+ * Pembuatan akun Auth memerlukan hak admin, jadi ini dijalankan lewat fungsi
+ * server `teacher_create_student` (SECURITY DEFINER, memverifikasi bahwa
+ * pemanggil benar-benar guru kelas tersebut).
+ */
 export async function createStudentByTeacher(data: {
   classroom_code: string;
   name: string;
@@ -713,420 +692,421 @@ export async function createStudentByTeacher(data: {
   class_name?: string;
 }): Promise<{ success: boolean; student?: StudentDbRecord; message?: string }> {
   const username = data.username.trim().toLowerCase();
-  const users = getLocalUsers();
 
-  if (users.some((u) => u.username.toLowerCase() === username)) {
-    return { success: false, message: `Username "${username}" sudah ada!` };
+  if (!supabase) {
+    return {
+      success: false,
+      message: 'Mode luring: pembuatan akun siswa memerlukan koneksi ke server.',
+    };
   }
 
-  const newStudentId = `std-${Date.now()}-${Math.random().toString(36).substr(2, 3)}`;
-
-  // Create User Account
-  const newUser: UserAccount = {
-    id: newStudentId,
-    username,
-    password: data.password.trim(),
-    role: 'student',
-    name: data.name.trim(),
-    absent_number: data.absent_number.trim(),
-    classroom_code: data.classroom_code,
-    school_name: 'SMP Negeri 1',
-    avatar_config: DEFAULT_AVATAR,
-    unlocked_level: 1,
-    created_at: new Date().toISOString(),
-  };
-  users.push(newUser);
-  saveLocalUsers(users);
-
-  // Create Student Record
-  const newStudentRec: StudentDbRecord = {
-    id: newStudentId,
-    user_id: newStudentId,
-    classroom_code: data.classroom_code,
-    name: data.name.trim(),
-    username,
-    password: data.password.trim(),
-    class_name: data.class_name || 'Kelas VIII-A',
-    absent_number: data.absent_number.trim(),
-    avatar_config: DEFAULT_AVATAR,
-    unlocked_level: 1,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
-
-  const students = getLocalStudents();
-  students.push(newStudentRec);
-  saveLocalStudents(students);
-
-  // Broadcast event
-  if (localBroadcast) {
-    localBroadcast.postMessage({
-      type: 'STUDENT_UPDATED',
-      payload: newStudentRec,
+  try {
+    const { data: result, error } = await supabase.rpc('teacher_create_student', {
+      p_classroom_code: data.classroom_code,
+      p_name: data.name.trim(),
+      p_absent_number: data.absent_number.trim() || '1',
+      p_username: username,
+      p_password: data.password,
     });
-  }
 
-  if (supabase) {
-    try {
-      const { data: rpcResult } = await supabase.rpc('create_student_by_teacher', {
-        p_classroom_code: data.classroom_code,
-        p_name: data.name.trim(),
-        p_absent_number: data.absent_number.trim(),
-        p_username: username,
-        p_password: data.password.trim(),
-        p_class_name: data.class_name || 'Kelas VIII-A',
-      });
-      if (rpcResult) {
-        const res = typeof rpcResult === 'string' ? JSON.parse(rpcResult) : rpcResult;
-        if (res.success && res.student?.id) {
-          newUser.id = res.student.id;
-          newStudentRec.id = res.student.id;
-          newStudentRec.user_id = res.student.id;
-        }
+    if (error) {
+      noteError('createStudentByTeacher', error);
+      const msg = (error.message || '').toLowerCase();
+      if (msg.includes('sudah')) {
+        return { success: false, message: `Username "${username}" sudah ada!` };
       }
-    } catch { }
-  }
+      if (msg.includes('bukan milik') || msg.includes('hanya guru')) {
+        return { success: false, message: 'Kelas ini bukan kelas yang Anda ampu.' };
+      }
+      return { success: false, message: 'Gagal membuat akun siswa di server.' };
+    }
 
-  return { success: true, student: newStudentRec };
+    const payload = result as { success?: boolean; student?: Record<string, unknown>; message?: string };
+    if (!payload?.success) {
+      return { success: false, message: payload?.message || 'Gagal membuat akun siswa.' };
+    }
+
+    const student = payload.student ? rowToStudent(payload.student) : undefined;
+
+    if (student) {
+      const list = getLocalStudents().filter((s) => s.id !== student.id);
+      list.push(student);
+      saveLocalStudents(list);
+      if (localBroadcast) {
+        localBroadcast.postMessage({ type: 'STUDENT_UPDATED', payload: student });
+      }
+    }
+
+    return { success: true, student };
+  } catch (err) {
+    noteError('createStudentByTeacher:exception', err);
+    return { success: false, message: 'Tidak bisa menghubungi server.' };
+  }
 }
 
-// Guru Menghapus Akun Siswa dari Kelas
-export async function deleteStudentAccount(studentId: string, classroomCode: string): Promise<boolean> {
-  // Delete from students list
-  const students = getLocalStudents().filter((s) => s.id !== studentId);
-  saveLocalStudents(students);
+export async function deleteStudentAccount(studentId: string, _classroomCode?: string): Promise<boolean> {
+  if (!supabase) {
+    saveLocalStudents(getLocalStudents().filter((s) => s.id !== studentId));
+    return true;
+  }
 
-  // Delete from users list
-  const users = getLocalUsers().filter((u) => u.id !== studentId && u.username !== studentId);
-  saveLocalUsers(users);
+  const { error } = await supabase.rpc('delete_my_student', { p_student_id: studentId });
+  if (error) {
+    noteError('deleteStudentAccount', error);
+    throw new Error('Gagal menghapus akun siswa di server.');
+  }
 
-  // Delete from submissions
-  const subs = getLocalSubmissions().filter((s) => s.student_id !== studentId);
-  saveLocalSubmissions(subs);
+  saveLocalStudents(getLocalStudents().filter((s) => s.id !== studentId));
+  saveLocalSubmissions(getLocalSubmissions().filter((s) => s.student_id !== studentId));
 
-  // Broadcast delete
   if (localBroadcast) {
-    localBroadcast.postMessage({
-      type: 'STUDENT_DELETED',
-      payload: { studentId, classroomCode },
-    });
+    localBroadcast.postMessage({ type: 'STUDENT_DELETED', payload: { studentId } });
   }
-
-  if (supabase) {
-    try {
-      await supabase.rpc('rpc_delete_student', { p_student_id: studentId });
-    } catch { }
-  }
-
   return true;
 }
 
-// ── 4. SINKRONISASI PROGRES SISWA & REKAP NILAI ────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+// 4. SINKRONISASI PROFIL & NILAI
+// ══════════════════════════════════════════════════════════════════════════
 
-export async function syncStudentToCloud(student: StudentDbRecord): Promise<boolean> {
-  const timestamp = new Date().toISOString();
-  const record: StudentDbRecord = {
-    ...student,
-    updated_at: timestamp,
-  };
+/**
+ * Menyimpan perubahan profil milik sendiri.
+ * Peran, kelas, dan level DIABAIKAN walau ikut terkirim — server mengunci itu.
+ */
+export async function syncStudentToCloud(data: {
+  id: string;
+  classroom_code: string;
+  name: string;
+  username?: string;
+  class_name?: string;
+  absent_number?: string;
+  avatar_config?: CustomAvatarConfig;
+  unlocked_level?: number;
+}): Promise<boolean> {
+  if (!supabase) return false;
 
-  const localList = getLocalStudents();
-  const existingIdx = localList.findIndex((s) => s.id === student.id || s.name === student.name);
-  if (existingIdx >= 0) {
-    localList[existingIdx] = { ...localList[existingIdx], ...record };
-  } else {
-    localList.push(record);
+  const { error } = await supabase.rpc('update_my_profile', {
+    p_data: {
+      name: data.name,
+      school_name: undefined,
+      absent_number: data.absent_number,
+      avatar_config: data.avatar_config,
+      // unlocked_level sengaja tidak dikirim: hanya server yang boleh menaikkannya
+    },
+  });
+
+  if (error) {
+    // Kolom vakum di JSONB tidak masalah; hanya catat bila benar-benar gagal.
+    if (!(error.message || '').toLowerCase().includes('harus login')) {
+      noteError('syncStudentToCloud', error);
+    }
+    return false;
   }
-  saveLocalStudents(localList);
-
-  // Also update user account unlocked level
-  const users = getLocalUsers();
-  const userIdx = users.findIndex((u) => u.id === student.id || u.name === student.name);
-  if (userIdx >= 0) {
-    users[userIdx].unlocked_level = student.unlocked_level;
-    users[userIdx].avatar_config = student.avatar_config;
-    saveLocalUsers(users);
-  }
-
-  if (localBroadcast) {
-    localBroadcast.postMessage({
-      type: 'STUDENT_UPDATED',
-      payload: record,
-    });
-  }
-
-  if (supabase) {
-    try {
-      await supabase.rpc('rpc_upsert_student', {
-        p_data: {
-          id: record.id,
-          classroom_code: record.classroom_code,
-          name: record.name,
-          class_name: record.class_name,
-          absent_number: record.absent_number,
-          avatar_config: record.avatar_config,
-          unlocked_level: record.unlocked_level,
-        },
-      });
-    } catch { }
-  }
-
   return true;
 }
 
+export async function updateTeacherProfile(
+  _username: string,
+  updates: { name?: string; school_name?: string }
+): Promise<{ success: boolean; user?: UserAccount }> {
+  if (!supabase) return { success: false };
+
+  const { data, error } = await supabase.rpc('update_my_teacher_profile', {
+    p_name: updates.name ?? null,
+    p_school: updates.school_name ?? null,
+  });
+
+  if (error) {
+    noteError('updateTeacherProfile', error);
+    return { success: false };
+  }
+
+  const payload = data as { success?: boolean; profile?: ProfileRow };
+  if (payload?.success && payload.profile) {
+    return { success: true, user: profileToUser(payload.profile) };
+  }
+  return { success: false };
+}
+
+/**
+ * Mengirim hasil sebuah level.
+ *
+ * Klien mengirim DUA hal:
+ *   1. `missions`  — jumlah capaian (misi/kata/area) yang benar-benar selesai.
+ *   2. `score`     — skor versi klien, hanya dipakai sebagai batas atas.
+ *
+ * Server lalu menghitung `official_level_score(level, missions)` dan memakai
+ * nilai TERTINGGI di antara keduanya. Jadi siswa tidak bisa memalsukan nilai
+ * melebihi capaian yang dilaporkannya, dan nilai tidak pernah "hilang"
+ * hanya karena urutan sinkronisasi.
+ */
 export async function submitLevelProgress(
-  submission: Omit<LevelSubmissionDbRecord, 'id' | 'completed_at'>
-): Promise<boolean> {
-  const fullSubmission: LevelSubmissionDbRecord = {
-    ...submission,
-    id: `sub-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-    completed_at: new Date().toISOString(),
-  };
-
-  const localSubmissions = getLocalSubmissions();
-  const existingIdx = localSubmissions.findIndex(
-    (s) => s.student_id === fullSubmission.student_id && s.level_number === fullSubmission.level_number
-  );
-  if (existingIdx >= 0) {
-    localSubmissions[existingIdx] = fullSubmission;
-  } else {
-    localSubmissions.push(fullSubmission);
+  submission: Omit<LevelSubmissionDbRecord, 'id' | 'completed_at'> & {
+    missions?: number;
+    isCompleted?: boolean;
   }
-  saveLocalSubmissions(localSubmissions);
+): Promise<boolean> {
+  const level = Number(submission.level_number);
+  if (!Number.isInteger(level) || level < 1 || level > 3) {
+    noteError('submitLevelProgress', `level_number tidak valid: ${submission.level_number}`);
+    return false;
+  }
+
+  // Jumlah capaian: dari argumen, atau disimpulkan dari details.
+  const details = (submission.details ?? {}) as Record<string, unknown>;
+  const num = (v: unknown): number | undefined =>
+    typeof v === 'number' && Number.isFinite(v) ? v : undefined;
+
+  const missions =
+    submission.missions ??
+    num(details.missions) ??
+    num(details.completed_count) ??
+    (Array.isArray(details.completed_missions) ? details.completed_missions.length : undefined) ??
+    num(details.current_zone) ??
+    num(details.zones_completed) ??
+    0;
+
+  const clientScore = Math.max(0, Math.min(100, Number(submission.score ?? 0)));
+
+  const isCompleted =
+    submission.isCompleted ?? Boolean(details.is_completed ?? clientScore >= 100);
+
+  // Simpan dulu ke cache lokal agar tidak ada data hilang saat luring.
+  const local: LevelSubmissionDbRecord = {
+    ...(submission as LevelSubmissionDbRecord),
+    id: `local-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    completed_at: new Date().toISOString(),
+    score: clientScore,
+  };
+  const cached = getLocalSubmissions();
+  const existingIdx = cached.findIndex(
+    (s) => s.student_id === local.student_id && s.level_number === local.level_number
+  );
+  if (existingIdx >= 0) cached[existingIdx] = local;
+  else cached.push(local);
+  saveLocalSubmissions(cached);
 
   if (localBroadcast) {
-    localBroadcast.postMessage({
-      type: 'LEVEL_SUBMITTED',
-      payload: fullSubmission,
-    });
+    localBroadcast.postMessage({ type: 'LEVEL_SUBMITTED', payload: local });
   }
 
-  if (supabase) {
-    try {
-      await supabase.rpc('rpc_insert_submission', {
-        p_data: fullSubmission,
-      });
-    } catch { }
-  }
+  if (!supabase) return false;
 
-  // Synchronize student unlocked_level in local cache upon level completion
-  if (fullSubmission.details?.is_completed || fullSubmission.score >= 100) {
-    const nextLevel = Math.max(2, fullSubmission.level_number + 1);
-    const localStudents = getLocalStudents();
-    const sIdx = localStudents.findIndex((s) => s.id === fullSubmission.student_id);
-    if (sIdx >= 0) {
-      localStudents[sIdx].unlocked_level = Math.max(localStudents[sIdx].unlocked_level || 1, nextLevel);
-      saveLocalStudents(localStudents);
+  // ── Koalesensi penulisan (write-behind) ────────────────────────────────
+  // Satu perjalanan belajar bisa memicu puluhan peristiwa progres. Kita
+  // gabungkan per level: hanya pengiriman TERBARU yang dikirim, dalam
+  // jendela 5 detik. Progres tidak pernah hilang karena cache lokal sudah
+  // ditulis di atas, dan antrean dikuras saat tab disembunyikan/ditutup.
+  const payload = {
+    p_level: level,
+    p_missions: Math.max(0, Math.trunc(Number(missions) || 0)),
+    p_details: details,
+    p_is_completed: isCompleted,
+    p_client_score: clientScore,
+  };
+
+  // Peristiwa penting langsung dikirim: penyelesaian level tidak boleh ditunda.
+  const isMilestone = isCompleted || clientScore >= 100;
+
+  if (isMilestone) {
+    const held = pendingProgress.get(level);
+    if (held) {
+      clearTimeout(held.timer);
+      pendingProgress.delete(level);
     }
-    const localUsers = getLocalUsers();
-    const uIdx = localUsers.findIndex((u) => u.id === fullSubmission.student_id);
-    if (uIdx >= 0) {
-      localUsers[uIdx].unlocked_level = Math.max(localUsers[uIdx].unlocked_level || 1, nextLevel);
-      saveLocalUsers(localUsers);
-    }
+    return sendProgress(payload);
   }
 
+  return enqueueProgress(level, payload);
+}
+
+// ── Antrean tulis progres (koalesensi per level) ──────────────────────────
+interface PendingProgress {
+  payload: Record<string, unknown>;
+  timer: ReturnType<typeof setTimeout>;
+}
+
+const pendingProgress = new Map<number, PendingProgress>();
+const PROGRESS_FLUSH_MS = 5000;
+
+async function sendProgress(payload: Record<string, unknown>): Promise<boolean> {
+  if (!supabase) return false;
+  const { error } = await supabase.rpc('submit_level_result', payload);
+  if (error) {
+    noteError('submitLevelProgress', error);
+    return false;
+  }
   return true;
 }
 
-export async function fetchClassroomStudents(classroomCode: string): Promise<StudentDbRecord[]> {
-  if (supabase) {
-    try {
-      const { data, error } = await supabase
-        .from('students')
-        .select('*')
-        .eq('classroom_code', classroomCode)
-        .order('absent_number', { ascending: true });
+function enqueueProgress(level: number, payload: Record<string, unknown>): Promise<boolean> {
+  const existing = pendingProgress.get(level);
+  if (existing) clearTimeout(existing.timer);
 
-      if (!error && data && data.length > 0) {
-        return data;
-      }
-    } catch { }
-  }
+  return new Promise<boolean>((resolve) => {
+    const timer = setTimeout(() => {
+      pendingProgress.delete(level);
+      void sendProgress(payload).then(resolve);
+    }, PROGRESS_FLUSH_MS);
 
-  const local = getLocalStudents();
-  return local.filter((s) => {
-    if (!classroomCode) return true;
-    if (s.classroom_code === classroomCode) return true;
-    const match = findMatchingClass(s.classroom_code);
-    return match && match.code === classroomCode;
+    // Kirim yang terbaru saja; yang lama sudah ditimpa.
+    pendingProgress.set(level, { payload, timer });
   });
 }
 
-export async function fetchClassroomSubmissions(classroomCode: string): Promise<LevelSubmissionDbRecord[]> {
-  let list: LevelSubmissionDbRecord[] = [];
-  if (supabase) {
-    try {
-      const { data, error } = await supabase
-        .from('level_submissions')
-        .select('*')
-        .eq('classroom_code', classroomCode)
-        .order('completed_at', { ascending: false });
-
-      if (!error && data && data.length > 0) {
-        list = data;
-      }
-    } catch { }
+/** Kirim segera semua progres yang masih tertahan (dipakai saat tab ditutup). */
+export function flushPendingProgress(): void {
+  for (const [level, pending] of pendingProgress.entries()) {
+    clearTimeout(pending.timer);
+    void sendProgress(pending.payload);
+    pendingProgress.delete(level);
   }
-
-  if (list.length === 0) {
-    const local = getLocalSubmissions();
-    list = local.filter((s) => {
-      if (!classroomCode) return true;
-      if (s.classroom_code === classroomCode) return true;
-      const match = findMatchingClass(s.classroom_code);
-      return match && match.code === classroomCode;
-    });
-  }
-
-  // Rekonsiliasi otomatis: Jika murid telah menyelesaikan misi Level 3 di localStorage
-  // pastikan progres tersebut selalu hadir di daftar submissions Dashboard Guru
-  try {
-    const students = getLocalStudents();
-    let hasNewSynthesis = false;
-    const allLocalSubs = getLocalSubmissions();
-
-    for (const std of students) {
-      const candidateKeys = [
-        `resqbox_missions_${std.id}`,
-        `resqbox_missions_${std.username || ''}`,
-      ];
-      if (std.username === 'demo') {
-        candidateKeys.push('resqbox_missions_std-demo-all-unlocked');
-        candidateKeys.push('resqbox_missions_demo');
-      }
-
-      let completedMissions: string[] = [];
-      for (const key of candidateKeys) {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          try {
-            const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed) && parsed.length > completedMissions.length) {
-              completedMissions = parsed;
-            }
-          } catch { }
-        }
-      }
-
-      if (completedMissions.length > 0) {
-        const completedCount = completedMissions.length;
-        const score = Math.min(100, Math.round((completedCount / 20) * 100));
-        const isDone = completedCount >= 20 || score >= 100;
-        const sub3Idx = list.findIndex(
-          (sub) =>
-            (sub.student_id === std.id || (std.username && sub.student_id === std.username)) &&
-            sub.level_number === 3
-        );
-
-        const lastJobId = completedMissions[completedMissions.length - 1];
-        const statusText = isDone ? 'TUNTAS' : `${score} Poin`;
-        const stageLabel = isDone
-          ? 'Tuntas (20/20 Misi Simulasi Selesai - 100 Poin)'
-          : `Selesai ${completedCount}/20 Misi (${score} Poin)`;
-
-        if (sub3Idx >= 0) {
-          const existingCount = list[sub3Idx].details?.completed_count || 0;
-          if (completedCount >= existingCount) {
-            list[sub3Idx].score = Math.max(list[sub3Idx].score || 0, score);
-            list[sub3Idx].details = {
-              ...list[sub3Idx].details,
-              mode: 'action_lab_simulation',
-              is_completed: isDone,
-              completed_missions: completedMissions,
-              completed_count: completedCount,
-              total_missions: 20,
-              last_completed_id: lastJobId,
-              status_text: statusText,
-              stage_label: stageLabel,
-            };
-          }
-        } else {
-          const synthesized: LevelSubmissionDbRecord = {
-            id: `sub-l3-${std.id}`,
-            student_id: std.id,
-            student_name: std.name,
-            classroom_code: std.classroom_code || classroomCode,
-            level_number: 3,
-            score,
-            details: {
-              mode: 'action_lab_simulation',
-              is_completed: isDone,
-              completed_missions: completedMissions,
-              completed_count: completedCount,
-              total_missions: 20,
-              last_completed_id: lastJobId,
-              status_text: statusText,
-              stage_label: stageLabel,
-            },
-            completed_at: new Date().toISOString(),
-          };
-          list.push(synthesized);
-
-          const existingLocalIdx = allLocalSubs.findIndex(
-            (s) => (s.student_id === std.id || (std.username && s.student_id === std.username)) && s.level_number === 3
-          );
-          if (existingLocalIdx >= 0) {
-            allLocalSubs[existingLocalIdx] = synthesized;
-          } else {
-            allLocalSubs.push(synthesized);
-          }
-          hasNewSynthesis = true;
-        }
-      }
-    }
-
-    if (hasNewSynthesis) {
-      saveLocalSubmissions(allLocalSubs);
-    }
-  } catch { }
-
-  return list;
 }
 
-// ── 5. REALTIME LISTENER UNTUK DASHBOARD GURU ──────────────────────────────
+// Jangan biarkan progres tertahan hilang saat tab disembunyikan/ditutup.
+if (typeof window !== 'undefined') {
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') flushPendingProgress();
+  });
+  window.addEventListener('pagehide', flushPendingProgress);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 5. LANGGANAN REAL-TIME
+// ══════════════════════════════════════════════════════════════════════════
+
+export interface ClassroomSubscriptionHandlers {
+  onStudentUpdated?: (student: StudentDbRecord) => void;
+  onStudentDeleted?: (studentId: string) => void;
+  onSubmission?: (submission: LevelSubmissionDbRecord) => void;
+  onClassroomUpdated?: (classroom: ClassroomRecord) => void;
+  onClassroomDeleted?: (code: string) => void;
+}
+
+/** Bentuk peristiwa gaya lama (dipakai TeacherDashboard). */
+export interface ClassroomSubscriptionEvent {
+  type: 'STUDENT_UPDATED' | 'STUDENT_DELETED' | 'LEVEL_SUBMITTED' | 'CLASSROOM_UPDATED' | 'CLASSROOM_DELETED';
+  payload: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+
+export type ClassroomSubscriber =
+  | ClassroomSubscriptionHandlers
+  | ((event: ClassroomSubscriptionEvent) => void);
+
+/** Menyeragamkan dua bentuk langganan (tangan-peristiwa vs objek handler). */
+function normalizeSubscriber(subscriber: ClassroomSubscriber): ClassroomSubscriptionHandlers {
+  if (typeof subscriber !== 'function') return subscriber;
+  return {
+    onStudentUpdated: (s) => subscriber({ type: 'STUDENT_UPDATED', payload: s }),
+    onStudentDeleted: (id) => subscriber({ type: 'STUDENT_DELETED', payload: { studentId: id } }),
+    onSubmission: (s) => subscriber({ type: 'LEVEL_SUBMITTED', payload: s }),
+    onClassroomUpdated: (c) => subscriber({ type: 'CLASSROOM_UPDATED', payload: c }),
+    onClassroomDeleted: (code) => subscriber({ type: 'CLASSROOM_DELETED', payload: { classroomCode: code } }),
+  };
+}
+
+/**
+ * Langganan perubahan kelas.
+ * Dibuat idempoten: memanggil ulang akan menutup langganan lama lebih dulu,
+ * sehingga tidak menumpuk channel (penting saat 1000+ klien aktif).
+ */
+let activeChannel: ReturnType<SupabaseClient['channel']> | null = null;
 
 export function subscribeToClassroom(
   classroomCode: string,
-  onEvent: (event: { type: 'STUDENT_UPDATED' | 'LEVEL_SUBMITTED' | 'STUDENT_DELETED' | 'CLASSROOM_DELETED'; payload: any }) => void
-) {
-  const handleBroadcast = (msg: MessageEvent) => {
-    if (msg.data && msg.data.type) {
-      onEvent(msg.data);
+  subscriber: ClassroomSubscriber
+): () => void {
+  const handlers = normalizeSubscriber(subscriber);
+
+  // 1. Kanal lokal (selalu aktif, bekerja tanpa server)
+  const onLocal = (ev: MessageEvent) => {
+    const { type, payload } = ev.data ?? {};
+    if (type === 'STUDENT_UPDATED') {
+      handlers.onStudentUpdated?.(payload as StudentDbRecord);
+    } else if (type === 'STUDENT_DELETED') {
+      handlers.onStudentDeleted?.(payload?.studentId as string);
+    } else if (type === 'LEVEL_SUBMITTED') {
+      handlers.onSubmission?.(payload as LevelSubmissionDbRecord);
+    } else if (type === 'CLASSROOM_UPDATED') {
+      handlers.onClassroomUpdated?.(payload as ClassroomRecord);
+    } else if (type === 'CLASSROOM_DELETED') {
+      handlers.onClassroomDeleted?.(payload?.classroomCode as string);
     }
   };
+  localBroadcast?.addEventListener('message', onLocal);
 
-  if (localBroadcast) {
-    localBroadcast.addEventListener('message', handleBroadcast);
-  }
-
-  let supabaseChannel: any = null;
+  // 2. Kanal Supabase Realtime (bila tersedia)
   if (supabase) {
-    supabaseChannel = supabase
-      .channel(`classroom-${classroomCode}`)
+    if (activeChannel) {
+      void supabase.removeChannel(activeChannel);
+      activeChannel = null;
+    }
+
+    activeChannel = supabase
+      .channel(`classroom:${classroomCode}`)
+      // RLS tetap berlaku pada Realtime: klien hanya menerima baris yang boleh dibaca.
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'students', filter: `classroom_code=eq.${classroomCode}` },
+        { event: '*', schema: 'public', table: 'profiles', filter: `classroom_code=eq.${classroomCode}` },
         (payload) => {
-          onEvent({ type: 'STUDENT_UPDATED', payload: payload.new });
+          const row = payload.new as Record<string, unknown> | undefined;
+          if (!row || !row.id) return; // DELETE membawa new = {} → diabaikan
+          handlers.onStudentUpdated?.(rowToStudent(row));
         }
       )
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'level_submissions', filter: `classroom_code=eq.${classroomCode}` },
         (payload) => {
-          onEvent({ type: 'LEVEL_SUBMITTED', payload: payload.new });
+          const row = payload.new as LevelSubmissionDbRecord | undefined;
+          if (row) handlers.onSubmission?.(row);
         }
       )
       .subscribe();
   }
 
   return () => {
-    if (localBroadcast) {
-      localBroadcast.removeEventListener('message', handleBroadcast);
-    }
-    if (supabaseChannel && supabase) {
-      supabase.removeChannel(supabaseChannel);
+    localBroadcast?.removeEventListener('message', onLocal);
+    if (supabase && activeChannel) {
+      void supabase.removeChannel(activeChannel);
+      activeChannel = null;
     }
   };
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// 6. UTILITAS PENCARIAN KELAS (sisi tampilan saja)
+// ══════════════════════════════════════════════════════════════════════════
+
+/** Hanya untuk membantu tampilan; validasi sebenarnya ada di server. */
+export function findMatchingClass(input: string): ClassroomRecord | null {
+  const raw = input.trim();
+  if (!raw) return null;
+  const clean = raw.toUpperCase().replace(/[\s\-_]/g, '');
+  const classes = getLocalClasses();
+
+  const direct = classes.find(
+    (c) => c.code.toUpperCase() === raw.toUpperCase() ||
+           c.code.toUpperCase().replace(/[\s\-_]/g, '') === clean
+  );
+  if (direct) return direct;
+
+  const normalizedInput = clean.replace(/VIII/g, '8').replace(/VII/g, '7').replace(/IX/g, '9');
+
+  return (
+    classes.find((c) => {
+      const codeNorm = c.code.toUpperCase().replace(/[\s\-_]/g, '');
+      const nameNorm = c.name.toUpperCase().replace(/[\s\-_]/g, '');
+      const nCode = codeNorm.replace(/VIII/g, '8').replace(/VII/g, '7').replace(/IX/g, '9');
+      const nName = nameNorm.replace(/VIII/g, '8').replace(/VII/g, '7').replace(/IX/g, '9');
+      return (
+        codeNorm === clean ||
+        nCode === normalizedInput ||
+        codeNorm.endsWith(clean) ||
+        nCode.endsWith(normalizedInput) ||
+        nameNorm.includes(clean) ||
+        nName.includes(normalizedInput)
+      );
+    }) ?? null
+  );
 }

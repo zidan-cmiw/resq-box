@@ -183,6 +183,7 @@ Dokumen ini merekam secara komprehensif seluruh percakapan, instruksi pengguna, 
 | 178 | **Sinkronisasi Presisi Render Avatar Berhijab & Gaya Rambut pada Seluruh Dialog dan In-Game Sprites**: Memperbaiki inkonsistensi avatar di mana pilihan hijab (misal hijab hijau) di Bengkel Avatar berubah menjadi karakter berambut hijau pendek dengan leher terbuka di dalam game. Memperbarui engine potret dialog Level 2 (`getPlayerPortraitL2`) dan Level 1 (`getPlayerPortrait`) dengan rendering hijab rescuer lengkap (kubah kepala melengkung, ciput putih dahi, kerudung samping menutupi telinga hingga bahu bertekstur lipatan, penutup leher & dagu penuh, serta bros emas), memperbaiki sprite duduk menyimak di kelas (`drawStudentSittingInDesk`), memperbaiki sprite sheet in-game (`studentAvatarSheet.ts`) agar warna hijab dinamis mengikuti `hairColor` kustom alih-alih hardcode abu-abu `#334155`, serta membersihkan cache sprite (`clearSpriteCache`) seketika saat kustomisasi disimpan. | `src/app/Level2/engine/npcSpritesL2.ts`, `src/app/Level1/EarthDive/engine/npcSprites.ts`, `src/utils/studentAvatarSheet.ts`, `src/components/PixelAvatar/AvatarCustomizerModal.tsx` |
 | 179 | **Penyempurnaan Simulasi Awan Panas Wedhus Gembel (Jumlah 3x Lipat Melimpah & Disipasi Menghilang Seiring Jarak)**: Merombak simulasi awan panas 3D di `Merapi3DScene.tsx`. Memperbanyak gumpalan awan dari 66 menjadi 210 puff (70 per lembah: Kali Gendol, Kali Kuning, Kali Boyong) bertingkat 3-tier (`base`, `body`, `crest`), mendistribusikannya merata di sepanjang alur lembah dari kawah hingga lereng bawah, serta mengimplementasikan disipasi bertingkat ("makin jauh makin ngilang"): pekat penuh di lereng kawah atas (opacity ~0.95), menipis lembut di lereng tengah (opacity ~0.70), dan meluruh tajam hingga 0.0 (menghilang total) saat mendekati pemukiman warga/jalan desa bawah tanpa tumpukan gumpalan statis. | `src/app/EvacuationGame/Merapi3DScene.tsx` |
 | 180 | **Ekspansi Awan Panas di 6 Sektor Lereng Merapi & Standarisasi Warna Abu Vulkanik Kelabu Otentik**: Menambahkan 3 sektor aliran awan panas baru sesuai instruksi coretan pengguna: Lereng Barat Luar / Kali Krasak (`LAVA_STREAM_KRASAK_WEST`), Punggung Lereng Tengah (`LAVA_STREAM_RIDGE_MID`), dan Lereng Timur Luar / Kali Woro (`LAVA_STREAM_WORO_EAST`) dengan total 300 gumpalan (50 puff per jalur x 6 alur lereng). Mengubah seluruh warna asap letusan kawah (kolom Plinian, runtuhan kolom, partikel asap kawah `smokeMat`) dan awan panas wedhus gembel `pMat` dari putih cerah menjadi warna **ABU-ABU VULKANIK OTENTIK** (`0x5a6578`, `0x64748b`, `0x52525b`) yang realistis dan pekat. | `src/app/EvacuationGame/Merapi3DScene.tsx` |
+| 181 | **Sinkronisasi Logika Blok Coding Arduino dengan API Firmware ESP32 (`yom.ino`), Penanganan Brownout Reset Hardware, Throttling & Deduplikasi Perintah Web, serta Restrukturisasi Fase Getaran Erupsi Merapi (Fase 1-2 Tanpa Gempa, Fase 3 Gempa Aktif Eksplosif & Efusif)**: Menyelaraskan seluruh pemanggilan API generator Arduino Blockly (`core.ts`) dengan API nyata firmware `yom.ino` (`startGunungMeletus`, `motorStartKick`, `gempaActive`, dll); mematikan LED putih terang saat idle/normal state (`anode`, `rgb off`, `led off`, default `rgbColor: 'off'`); mengidentifikasi dan menangani akar masalah crash ESP32 / WebSocket putus (lonjakan inrush kick start motor getar 500mA-1A memicu hardware Brownout Detector pada suplai USB terbatas, serta banjir perintah berulang dari loop Blockly); menambahkan throttling & deduplikasi perintah hardware (< 250ms interval) di `Workspace/index.tsx`; serta merestrukturisasi logika simulasi erupsi di mana Fase 1 (Waspada) dan Fase 2 (Siaga) dijamin 100% bebas getaran gempa baik di digital twin maupun hardware maket, dan getaran gempa hanya aktif pada Fase 3 (Awas / Erupsi) untuk kedua tipe letusan (Eksplosif dan Efusif). | `src/engine/blockly/blocks/core.ts`, `src/store/runtimeStore.ts`, `src/app/Workspace/index.tsx` |
 
 ---
 
@@ -4972,7 +4973,62 @@ Pengguna meminta implementasi menyeluruh logika block coding, efek visual kamera
 
 ---
 
+### Bab 109: Sinkronisasi Logika Blok Coding Arduino dengan API Firmware ESP32 (`yom.ino`), Proteksi Brownout Hardware, Throttling & Deduplikasi Perintah Web, serta Restrukturisasi Fase Getaran Erupsi Merapi (Fase 1-2 Tanpa Gempa, Fase 3 Gempa Aktif Eksplosif & Efusif)
+
+#### 1. Latar Belakang & Aspirasi Pengguna
+1. **Sinkronisasi Generator Blok Coding Arduino (`core.ts`) dengan API Nyata `yom.ino`**:
+   - Menyelaraskan seluruh pemanggilan fungsi C++ Arduino di generator Blockly dengan firmware yang ada di file [yom.ino](file:///c:/github/lidm%20buatan%20vincent/yom/yom.ino) milik pengguna tanpa mengubah file firmware ESP32.
+2. **Eliminasi Nyala Putih LED RGB Saat Idle/Normal**:
+   - Memastikan saat kondisi normal/idle tidak ada LED RGB putih yang menyala, karena nyala putih Common Anode yang tidak dimatikan mengganggu visual lampu status (misalnya lampu aman hijau menjadi pudar/bercampur warna lain).
+3. **Penyelidikan Bug Hardware: Simulasi Menyala Sekejap Lalu Mati & WebSocket Terputus**:
+   - Saat simulasi gempa atau erupsi dijalankan dari web, diorama fisik sempat menyala sebentar lalu seketika mati dan koneksi WebSocket ke ESP32 terputus.
+4. **Restrukturisasi Fase Simulasi Erupsi Merapi**:
+   - Pada simulasi Erupsi Merapi, Fase 1 (Waspada) dan Fase 2 (Siaga) tidak boleh memicu getaran gempa. Getaran gempa hanya boleh aktif pada Fase 3 (Awas / Erupsi), baik pada skenario Eksplosif maupun Efusif.
+
+#### 2. Solusi & Rincian Implementasi
+1. **Sinkronisasi Lengkap Generator Arduino Blockly ([`src/engine/blockly/blocks/core.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/engine/blockly/blocks/core.ts))**:
+   - Mengganti fungsi fiktif `startGunung()` menjadi fungsi resmi `yom.ino`: `startGunungMeletus(status, jenisEnum)`.
+   - Mengganti `seismicLevel` menjadi ekspresi boolean state nyata: `(gempaActive && gempaLevel == lvl)`.
+   - Mengganti `eruptionType` menjadi perbandingan enum: `(jenisLetusan == LETUSAN_...)`.
+   - Mengganti fungsi motor fiktif `motorVibrate()` menjadi `motorStartKick(speed)` dan `motorStop()`.
+   - Menyelaraskan kontrol sirine dan lampu LED: `buzzerON()`, `buzzerOFF()`, `setRGBColor("red")`, `redLED_ON()`, `redLED_OFF()`, `rgbOFF()`.
+2. **Koreksi Default LED RGB & Mode Common Anode ([`src/app/Workspace/index.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Workspace/index.tsx) & [`src/store/runtimeStore.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/store/runtimeStore.ts))**:
+   - Mengeliminasi seluruh perintah `cathode` di web dan mengunci mode `anode` (Active LOW) yang merupakan default perangkat keras `yom.ino`.
+   - Mengirim perintah penjinak `rgb off` dan `led off` saat inisialisasi awal koneksi dan saat reset simulasi.
+   - Mengubah nilai default dan reset `rgbColor` di `runtimeStore.ts` dari `'green'` menjadi `'off'`.
+3. **Investigasi & Resolusi Masalah Brownout Reset Hardware & Banjir Perintah Web**:
+   - **Akar Masalah Fisik (Electrical Inrush Current & Brownout Detector)**:
+     - Motor getar DC saat pertama kali berputar menyedot arus lonjakan (*inrush current*) sebesar 500mA - 1000mA (karena `motorStartKick` menembakkan PWM 200–220).
+     - Di saat bersamaan, DFPlayer memainkan audio dan radio WiFi Access Point ESP32 (`DIORAMA_ESP32`) memancarkan frame TCP transmisi berdaya tinggi (~350mA).
+     - Total tarikan arus sesaat mencapai **> 1.2A**. Jika ESP32 dicolokkan ke port USB 2.0 laptop (batas 500mA), tegangan drop seketika di bawah 2.8V, memicu sirkuit proteksi internal **ESP32 Brownout Detector** yang me-restart chip (reboot).
+     - Akibat reboot, seluruh GPIO kembali ke LOW (motor & lampu mati) dan server port 81 menutup socket TCP (`ws.onclose` di web tertrigger).
+   - **Akar Masalah Software (Command Flooding di Loop)**:
+     - Blok di dalam wadah perulangan `LOOP` mengeksekusi `api.simGempa(lvl)` setiap 50ms tanpa henti (20x/detik), membombardir buffer TCP ESP32 dan memicu reset berulang.
+   - **Solusi Web (Throttling & State-Change Guards)**:
+     - Menambahkan referensi `lastCmdTimeRef` pada `sendHardware`: Perintah identik yang dikirim dalam rentang `< 250ms` otomatis di-drop (throttled).
+     - Menambahkan state guards pada `api.simGempa`, `api.simGunung`, `api.setPin`, `api.setRgb`, `api.setBuzzer`, `api.setMist`, `api.setMotor` sehingga perintah fisik hanya dikirim jika state benar-benar berubah.
+     - Memberikan jeda mikro inisialisasi 50ms terpisah saat mulai simulasi (`anode`, `rgb off`, `led off`) agar buffer mikrokontroler tidak tersedak.
+     - Menyatukan perintah stop menjadi single command `stopall`.
+4. **Restrukturisasi Fase Getaran Erupsi Merapi (Fase 1-2 Tanpa Gempa, Fase 3 Gempa Aktif)**:
+   - **[`src/store/runtimeStore.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/store/runtimeStore.ts)**:
+     - Pada `status === 'WASPADA'` (Fase 1) dan `status === 'SIAGA'` (Fase 2), nilai seismik dijamin bersih: `seismic = 0`, `richter = 0.0`, dan sensor `A1 = 0`.
+     - Pada `status === 'AWAS'` (Fase 3), getaran gempa vulkanik aktif untuk kedua tipe:
+       - Tipe **Efusif**: Gempa tremor vulkanik sedang (`seismic = 1`, `richter = 3.6`, `A1 = 380`).
+       - Tipe **Eksplosif**: Gempa tremor kuat berkelanjutan (`seismic = 3`, `richter = 6.2`, `A1 = 850`).
+   - **[`src/app/Workspace/index.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Workspace/index.tsx)**:
+     - Pada Fase 1 & 2: Web mematikan getaran (`motor off`, `gempa off`, `mist off`, `oled ...`) dan sengaja tidak mengirim perintah `gunung 1` atau `gunung 2` ke ESP32 karena di `yom.ino` perintah tersebut memicu prequake getar.
+     - Pada Fase 3: Web mengirim `gunung 3 efusif` atau `gunung 3 eksplosif` yang langsung menyalakan getaran motor gempa vulkanik dan kabut asap mist maker di maket.
+   - **[`src/engine/blockly/blocks/core.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/engine/blockly/blocks/core.ts)**:
+     - Generator Arduino `resq_gunung_sim` hanya memanggil `startGunungMeletus(3, jenisEnum)` saat berada di Fase 3 (Awas). Untuk Fase 1 dan Fase 2, generator menghasilkan `stopGempa()` dan pesan status informatif pada OLED.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. **TypeScript Verification (`npx tsc -b`)**: 100% lulus tanpa kesalahan kompilasi (exit code 0).
+2. **Production Bundle Build (`npm run build`)**: 100% sukses dalam 2.22 detik (exit code 0, 33 precache PWA valid, 4761.97 KiB).
+
+---
+
 > **Catatan Tim**: Seluruh riwayat dan perubahan ini telah disinkronkan ke dalam berkas dokumentasi utama ([`README.md`](./README.md), [`PRD.md`](./PRD.md), [`design.md`](./design.md), [`walkthrough.md`](./walkthrough.md), [`Dashboard.md`](./Dashboard.md), dan [`progress_report.md`](./progress_report.md)).
+
 
 
 

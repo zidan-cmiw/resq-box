@@ -5203,15 +5203,12 @@ function VolcanoResponseIllustration() {
         return (
           <div className="w-full h-full flex items-center justify-center relative overflow-hidden bg-slate-950">
             <img
-              src="/images (1).jpeg"
+              src="/wedhus_gembel.jpg"
               onError={(e) => {
                 const target = e.currentTarget;
                 if (!target.dataset.tried) {
                   target.dataset.tried = '1';
-                  target.src = '/wedhus_gembel.jpg';
-                } else if (target.dataset.tried === '1') {
-                  target.dataset.tried = '2';
-                  target.src = '/images (1).jpg';
+                  target.src = '/images (1).jpeg';
                 }
               }}
               alt="Awan Panas Guguran (Wedhus Gembel) Gunung Merapi Asli"
@@ -5240,14 +5237,7 @@ function VolcanoResponseIllustration() {
         return (
           <div className="w-full h-full flex items-center justify-center relative">
             <img
-              src="/images.jpeg"
-              onError={(e) => {
-                const target = e.currentTarget;
-                if (!target.dataset.tried) {
-                  target.dataset.tried = '1';
-                  target.src = '/lahar_dingin.jpg';
-                }
-              }}
+              src="/lahar_dingin.jpg"
               alt="Banjir Lahar Hujan Dingin Kali Gendol & Woro Merapi"
               className={`w-full h-full object-cover rounded-none ${isExpanded ? 'max-h-[75vh]' : ''}`}
             />
@@ -6585,7 +6575,7 @@ function VolcanoPostLaharIllustration() {
                 </clipPath>
                 <rect x="0" y="0" width="214" height="205" rx="10" fill="#0f172a" stroke="#059669" strokeWidth="1.8" />
                 <image
-                  href="/images.jpeg"
+                  href="/lahar_dingin.jpg"
                   x="0"
                   y="0"
                   width="214"

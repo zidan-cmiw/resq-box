@@ -113,7 +113,7 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
   activeEvacCommand: 'NONE',
   oledMessage: 'SISTEM SIAP: MENUNGGU...',
   locationContext: 'Pemukiman Warga',
-  rgbColor: 'green',
+  rgbColor: 'off',
   mistActive: false,
   isMapExpanded: false,
   disasterResetCounter: 0,
@@ -175,7 +175,7 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
 
   setVolcanoSimulation: (status, type = 'NONE') => set((s) => {
     let temp = 27.5;
-    let rgb: 'green' | 'yellow' | 'orange' | 'red' | 'off' = 'green';
+    let rgb: 'green' | 'yellow' | 'orange' | 'red' | 'off' = 'off';
     let mist = false;
     let seismic: SeismicLevel = s.seismicLevel;
     let richter = s.richterScale;
@@ -183,7 +183,7 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
 
     if (status === 'NORMAL') {
       temp = 27.5;
-      rgb = 'green';
+      rgb = 'off';
       mist = false;
       seismic = 0;
       richter = 0.0;
@@ -192,11 +192,15 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
       temp = 43.8;
       rgb = 'yellow';
       mist = false;
+      // Fase 1: Tidak ada gempa
+      seismic = 0;
+      richter = 0.0;
+      a1Val = 0;
     } else if (status === 'SIAGA') {
       temp = 68.4;
       rgb = 'orange';
       mist = false;
-      // Saat SIAGA: fase kesiapsiagaan, belum meletus dan belum ada gempa
+      // Fase 2: Tidak ada gempa
       seismic = 0;
       richter = 0.0;
       a1Val = 0;
@@ -204,13 +208,14 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
       temp = 94.6;
       rgb = 'red';
       mist = true;
+      // Fase 3: Gempa aktif, baik di tipe Eksplosif maupun Efusif
       if (type === 'EFUSIF') {
-        // Erupsi Efusif: Gempa vulkanik tremor ringan (Level 1)
+        // Erupsi Efusif: Gempa tremor vulkanik sedang
         seismic = 1;
-        richter = 2.4;
-        a1Val = 210;
+        richter = 3.6;
+        a1Val = 380;
       } else {
-        // Erupsi Eksplosif: Disertai gempa tremor vulkanik kuat terus-menerus
+        // Erupsi Eksplosif: Gempa tremor vulkanik kuat terus-menerus
         seismic = 3;
         richter = 6.2;
         a1Val = 850;
@@ -250,7 +255,7 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
     activeShelter: 'Belum Diaktifkan',
     activeEvacCommand: 'NONE',
     oledMessage: 'SISTEM SIAP: MENUNGGU...',
-    rgbColor: 'green',
+    rgbColor: 'off',
     mistActive: false,
   }),
 }));

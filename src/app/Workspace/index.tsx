@@ -58,7 +58,17 @@ import {
 // Parse satu baris data dari hardware (serial/websocket) → perbarui Digital Twin.
 // Format dari ESP32: "SENSOR:A1:750", "SENSOR:A2:600", "SENSOR:D2:1", "SENSOR:D3:0"
 function handleHardwareLine(line: string) {
-  const parts = line.trim().split(':');
+  const clean = line.trim();
+  // Jika ESP32 baru dinyalakan/reboot, pastikan mode Common Anode (default yom.ino) & matikan LED
+  if (clean.includes('ESP32') || clean.includes('SISTEM SIAP') || clean.includes('CONNECTED_TO_ESP32')) {
+    if (isSerialConnected()) {
+      sendSerial('anode\n');
+      sendSerial('rgb off\n');
+      sendSerial('led off\n');
+    }
+  }
+
+  const parts = clean.split(':');
   if (parts[0] !== 'SENSOR' || parts.length < 3) return;
   const pin = parts[1];
   const raw = parts[2];
@@ -97,7 +107,6 @@ export default function Workspace() {
   } = useRuntimeStore();
 
   const runningRef = useRef(false);
-  const [simTimeRemaining, setSimTimeRemaining] = useState<number | null>(null);
 
   // ── Responsive Layout Mobile/Tablet States ──────────────────────
   const [showMissionPanel, setShowMissionPanel] = useState(() => (typeof window !== 'undefined' ? window.innerWidth >= 1024 : true));
@@ -122,12 +131,24 @@ export default function Workspace() {
         setWsStatus('connected');
         setShowWsModal(false);
         addLog(`[DIORAMA] Diorama Fisik Terhubung! Sinyal siap dikirim.`, 'success');
+        // Kunci mode Common Anode (default yom.ino) & matikan LED agar tidak menyala putih saat normal
+        ws.send('anode\n');
+        ws.send('rgb off\n');
+        ws.send('led off\n');
       };
 
       ws.onmessage = (event) => {
         // Data sensor/tombol dari hardware via WiFi → perbarui Digital Twin.
         String(event.data).split('\n').forEach((line) => {
-          if (line.trim()) handleHardwareLine(line);
+          const l = line.trim();
+          if (l) {
+            if (l.includes('CONNECTED_TO_ESP32') || l.includes('ESP32') || l.includes('SISTEM SIAP')) {
+              ws.send('anode\n');
+              ws.send('rgb off\n');
+              ws.send('led off\n');
+            }
+            handleHardwareLine(l);
+          }
         });
       };
 
@@ -176,6 +197,10 @@ export default function Workspace() {
       await connectSerial(115200);
       setSerialStatus('connected');
       addLog('[USB] Diorama Fisik Terhubung via kabel USB (115200 baud)! Sinyal siap dikirim.', 'success');
+      // Kunci mode Common Anode (default yom.ino) & matikan LED agar tidak menyala putih saat normal
+      await sendSerial('anode\n');
+      await sendSerial('rgb off\n');
+      await sendSerial('led off\n');
     } catch (e) {
       setSerialStatus('idle');
       const msg = e instanceof Error ? e.message : 'dibatalkan pengguna.';
@@ -183,9 +208,22 @@ export default function Workspace() {
     }
   };
 
+  // Throttle & deduplikasi pengiriman hardware untuk mencegah banjir paket dan restart ESP32
+  const lastCmdTimeRef = useRef<Map<string, number>>(new Map());
+
   // Kirim perintah ke SEMUA hardware yang terhubung (WiFi + USB).
-  const sendHardware = (cmd: string) => {
+  const sendHardware = (cmd: string, force = false) => {
     const cleanCmd = cmd.trim();
+    if (!cleanCmd) return;
+
+    // Deduplikasi/Throttling: Cegah pengiriman perintah identik dalam rentang < 250ms
+    const now = Date.now();
+    const lastTime = lastCmdTimeRef.current.get(cleanCmd) || 0;
+    if (!force && now - lastTime < 250) {
+      return;
+    }
+    lastCmdTimeRef.current.set(cleanCmd, now);
+
     let sentWs = false;
     let sentUsb = false;
 
@@ -201,8 +239,6 @@ export default function Workspace() {
     if (sentWs || sentUsb) {
       const target = sentWs && sentUsb ? 'WiFi & USB' : sentWs ? 'WiFi' : 'USB';
       addLog(`[HARDWARE ➔ ${target}] ${cleanCmd}`, 'system');
-    } else {
-      addLog(`[HARDWARE ⚠] Belum terhubung (WiFi/USB): "${cleanCmd}" tidak terkirim. Klik "Diorama WiFi" atau "USB Serial".`, 'warn');
     }
   };
 
@@ -252,7 +288,6 @@ export default function Workspace() {
       clearLogs();
       setRunning(false);
       runningRef.current = false;
-      setSimTimeRemaining(null);
       useRuntimeStore.getState().setSeismicSimulation(0);
       useRuntimeStore.getState().setVolcanoSimulation('NORMAL', 'NONE');
       useRuntimeStore.getState().setEvacuationCommand('NONE');
@@ -266,12 +301,11 @@ export default function Workspace() {
       retroAudio.stopEwsSiren();
       setRunning(false);
       runningRef.current = false;
-      setSimTimeRemaining(null);
       addLog('[INFO] Simulasi dihentikan oleh pengguna.', 'warn');
-      sendHardware('stopall');
-      sendHardware('gempa 0');
-      sendHardware('gunung 1');
-      sendHardware('mist off');
+      addLog('[PETA] Dampak lingkungan pasca-bencana tetap dapat diamati di peta 3D. Klik tombol "↺ Reset Kondisi" di toolbar peta untuk mengembalikan ke kondisi awal.', 'info');
+      if (wsRef.current?.readyState === WebSocket.OPEN || isSerialConnected()) {
+        sendHardware('stopall', true);
+      }
       useRuntimeStore.getState().resetPinStates();
       useRuntimeStore.getState().setSeismicSimulation(0);
       useRuntimeStore.getState().setVolcanoSimulation('NORMAL', 'NONE');
@@ -282,8 +316,15 @@ export default function Workspace() {
     clearLogs();
     setRunning(true);
     runningRef.current = true;
-    setSimTimeRemaining(20);
     useRuntimeStore.getState().resetPinStates();
+
+    // Inisialisasi awal hardware: pastikan mode Common Anode & LED mati saat normal/idle
+    // Diberi jeda mikro agar buffer ESP32 tidak tersedak sebelum simulasi dimulai
+    sendHardware('anode');
+    await new Promise((r) => setTimeout(r, 50));
+    sendHardware('rgb off');
+    sendHardware('led off');
+    await new Promise((r) => setTimeout(r, 50));
 
     // Build the runtime API
     const api = {
@@ -291,17 +332,35 @@ export default function Workspace() {
         useRuntimeStore.getState().addLog(text, type as any);
       },
       setPin: (_pin: string, _state: string) => {
-        sendHardware(`PIN:${_pin}:${_state}`);
+        const cur = (useRuntimeStore.getState().pinStates as Record<string, any>)[_pin];
         useRuntimeStore.getState().setPinState(_pin, _state);
+        if (cur !== _state) {
+          sendHardware(`PIN:${_pin}:${_state}`);
+        }
       },
       setRgb: (color: string) => {
         const validColor = ['green', 'yellow', 'orange', 'red', 'off'].includes(color) ? color : 'green';
+        const cur = useRuntimeStore.getState().rgbColor;
         useRuntimeStore.getState().setRgbColor(validColor as any);
-        sendHardware(`rgb ${validColor}`);
+        if (cur !== validColor) {
+          if (validColor === 'off') {
+            sendHardware('rgb off');
+            sendHardware('led off');
+          } else if (validColor === 'red') {
+            sendHardware('rgb red');
+            sendHardware('led on');
+          } else {
+            sendHardware(`rgb ${validColor}`);
+            sendHardware('led off');
+          }
+        }
       },
       setBuzzer: (on: boolean) => {
+        const cur = !!useRuntimeStore.getState().pinStates.BUZZER;
         useRuntimeStore.getState().setPinState('BUZZER', on ? 'ON' : 'OFF');
-        sendHardware(`buzzer ${on ? 'on' : 'off'}`);
+        if (cur !== on) {
+          sendHardware(`buzzer ${on ? 'on' : 'off'}`);
+        }
         if (on) {
           retroAudio.startEwsSiren();
         } else {
@@ -310,28 +369,52 @@ export default function Workspace() {
       },
       simGempa: (level: number) => {
         const lvl = Math.max(1, Math.min(3, level));
+        const currentLvl = useRuntimeStore.getState().seismicLevel;
         useRuntimeStore.getState().setSeismicSimulation(lvl as any);
-        sendHardware(`gempa ${lvl}`);
+        // Cegah spamming jika level gempa di hardware sudah sama
+        if (currentLvl !== lvl) {
+          sendHardware(`gempa ${lvl}`);
+        }
       },
-      simGunung: (status: string, tipe: string = 'EKSPLOSIF') => {
-        const lvl = status === 'AWAS' ? 3 : status === 'SIAGA' ? 2 : 1;
-        useRuntimeStore.getState().setVolcanoSimulation(status as any, tipe as any);
+      simGunung: async (status: string, tipe: string = 'EKSPLOSIF') => {
+        const curStatus = useRuntimeStore.getState().volcanoStatus;
+        const curType = useRuntimeStore.getState().eruptionType;
+        if (curStatus === status && curType === tipe) {
+          return; // Status dan jenis letusan sudah sama, abaikan spamming
+        }
+
         if (status === 'AWAS') {
+          // Fase 3 (Awas / Erupsi): Gempa bumi & mist maker aktif, baik di letusan eksplosif maupun efusif
+          useRuntimeStore.getState().setVolcanoSimulation('AWAS', tipe as any);
+
           if (tipe === 'EFUSIF') {
-            // EFUSIF: Gempa vulkanik tremor ringan (Level 1)
-            sendHardware('gempa 1');
-            sendHardware(`gunung ${lvl} efusif`);
-            sendHardware('mist on');
+            sendHardware('gunung 3 efusif');
           } else {
-            // EKSPLOSIF: Gempa tremor kuat
-            sendHardware('gempa 3');
-            sendHardware(`gunung ${lvl}`);
-            sendHardware('mist on');
+            sendHardware('gunung 3 eksplosif');
           }
-        } else {
-          sendHardware('gempa 0');
-          sendHardware(`gunung ${lvl}`);
+
+          api.print(`[ERUPSI MERAPI] Status AWAS / Erupsi (Fase 3 - ${tipe}) aktif! Getaran gempa vulkanik dan asap mist menyala!`, 'error');
+        } else if (status === 'SIAGA') {
+          // Fase 2 (Siaga): Kesiapsiagaan ditingkatkan, TIDAK ADA getaran gempa
+          useRuntimeStore.getState().setVolcanoSimulation('SIAGA', tipe as any);
+          useRuntimeStore.getState().setSeismicSimulation(0);
+          sendHardware('motor off');
+          sendHardware('gempa off');
           sendHardware('mist off');
+          sendHardware('oled SIAGA (FASE 2)');
+          api.print(`[STATUS MERAPI] Status SIAGA (Fase 2) aktif. Kesiapsiagaan ditingkatkan, tanpa getaran gempa.`, 'warn');
+        } else if (status === 'WASPADA') {
+          // Fase 1 (Waspada): Pemantauan awal kawah, TIDAK ADA getaran gempa
+          useRuntimeStore.getState().setVolcanoSimulation('WASPADA', tipe as any);
+          useRuntimeStore.getState().setSeismicSimulation(0);
+          sendHardware('motor off');
+          sendHardware('gempa off');
+          sendHardware('mist off');
+          sendHardware('oled WASPADA (FASE 1)');
+          api.print(`[STATUS MERAPI] Status WASPADA (Fase 1) aktif. Pemantauan kawah dimulai, tanpa getaran gempa.`, 'info');
+        } else {
+          useRuntimeStore.getState().setVolcanoSimulation('NORMAL', 'NONE');
+          sendHardware('stopall');
         }
       },
       setEvacRoute: (route: string) => {
@@ -348,8 +431,11 @@ export default function Workspace() {
         sendHardware(`oled ${msg}`);
       },
       setMist: (on: boolean) => {
+        const cur = useRuntimeStore.getState().mistActive;
         useRuntimeStore.getState().setMistActive(on);
-        sendHardware(on ? 'mist on' : 'mist off');
+        if (cur !== on) {
+          sendHardware(on ? 'mist on' : 'mist off');
+        }
       },
       playAudio: (track: number) => {
         sendHardware(track > 0 ? `play ${track}` : 'stop');
@@ -359,17 +445,21 @@ export default function Workspace() {
       },
       setMotor: (speed: string | number) => {
         const spd = String(speed);
-        if (spd === '0' || speed === 0) {
+        const isOff = spd === '0' || speed === 0;
+        const cur = useRuntimeStore.getState().pinStates['MOTOR'];
+        if (isOff) {
           useRuntimeStore.getState().setPinState('MOTOR', 'OFF');
-          sendHardware('motor off');
+          if (cur !== 'OFF') sendHardware('motor off');
         } else {
           useRuntimeStore.getState().setPinState('MOTOR', 'FAST');
-          sendHardware(`motor ${spd}`);
+          if (cur !== 'FAST') sendHardware(`motor ${spd}`);
         }
       },
       stopAll: () => {
         retroAudio.stopEwsSiren();
-        sendHardware('stopall');
+        if (wsRef.current?.readyState === WebSocket.OPEN || isSerialConnected()) {
+          sendHardware('stopall');
+        }
         useRuntimeStore.getState().resetPinStates();
       },
       getEruptionType: () => {
@@ -433,33 +523,9 @@ export default function Workspace() {
 
       if (typeof setup === 'function') await setup();
 
-      const startTime = Date.now();
-      const SIMULATION_DURATION_MS = 20000; // 20 Detik durasi observasi bencana
-      addLog('[SIMULASI] Simulasi bencana aktif selama 20 detik. Mengamati respon evakuasi warga dan dampak mitigasi...', 'warn');
+      addLog('[SIMULASI] Simulasi bencana aktif. Mengamati respon evakuasi warga dan dampak mitigasi...', 'warn');
 
       while (runningRef.current) {
-        const elapsed = Date.now() - startTime;
-        const remainingSec = Math.max(0, Math.ceil((SIMULATION_DURATION_MS - elapsed) / 1000));
-        setSimTimeRemaining(remainingSec);
-
-        if (elapsed >= SIMULATION_DURATION_MS) {
-          addLog('[SELESAI] Durasi simulasi 20 detik selesai! Bencana telah mereda.', 'success');
-          addLog('[EVALUASI] Seluruh dampak bencana dan hasil mitigasi berhasil diamati.', 'info');
-          addLog('[PETA] Dampak lingkungan pasca-bencana tetap dapat diamati di peta 3D. Klik tombol "↺ Reset Kondisi" di toolbar peta untuk mengembalikan ke kondisi awal.', 'warn');
-          // Meredakan bencana di 3D dan hardware (getaran & semburan aktif berhenti, dampak lingkungan dipertahankan)
-          useRuntimeStore.getState().setSeismicSimulation(0);
-          useRuntimeStore.getState().setVolcanoSimulation('NORMAL', 'NONE');
-          useRuntimeStore.getState().setEvacuationCommand('NONE');
-          sendHardware('gempa 0');
-          sendHardware('gunung 1');
-          sendHardware('mist off');
-          retroAudio.stopEwsSiren();
-          setRunning(false);
-          runningRef.current = false;
-          setSimTimeRemaining(null);
-          break;
-        }
-
         if (typeof loop === 'function') await loop();
         await api.delay(50);
       }
@@ -473,7 +539,6 @@ export default function Workspace() {
       setRunning(false);
       runningRef.current = false;
     } finally {
-      setSimTimeRemaining(null);
       if (!runningRef.current) {
         retroAudio.stopEwsSiren();
         useRuntimeStore.getState().setSeismicSimulation(0);
@@ -565,7 +630,7 @@ export default function Workspace() {
               <div className="absolute top-full right-0 mt-2 w-72 bg-[#fffbeb] border-2 border-[#b45309] rounded-xl shadow-2xl p-3.5 z-50 font-sans text-[#1c1917]">
                 <h4 className="font-bold text-xs text-[#78350f] mb-1 font-pixel">Alamat IP Diorama (WiFi)</h4>
                 <p className="text-[10px] text-[#451a03] mb-2 leading-relaxed font-medium">
-                  Hubungkan ke WiFi <b>DIORAMA_RESQBOX</b> (Pass: 12345678). IP default: <b>192.168.4.1</b> (Port 81).
+                  Hubungkan ke WiFi <b>DIORAMA_ESP32</b> (Pass: 12345678). IP default: <b>192.168.4.1</b> (Port 81).
                 </p>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-1.5">
@@ -637,7 +702,7 @@ export default function Workspace() {
               }`}
           >
             <span>{isRunning ? '⏹' : '▶'}</span>
-            <span>{isRunning ? `BERHENTI (${simTimeRemaining ?? 20}s)` : 'MULAI'}</span>
+            <span>{isRunning ? 'BERHENTI' : 'MULAI'}</span>
           </button>
         </div>
       </header>

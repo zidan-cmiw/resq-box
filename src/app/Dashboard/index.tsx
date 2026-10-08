@@ -971,7 +971,7 @@ export default function Dashboard() {
                     <div className="text-sm sm:text-base md:text-[17px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
-                        <span className="font-bold text-[#200b01]">20 Misi Studi Kasus, Mode Bebas (Proyek Saya Sandbox), gempa 3-tingkat, erupsi eksplosif vs efusif, reaksi 75 AI warga, observasi 20 detik pasca-bencana, tombol Reset Kondisi, dan koneksi ESP32.</span>
+                        <span className="font-bold text-[#200b01]">20 Misi Studi Kasus, Mode Bebas (Proyek Saya Sandbox), gempa 3-tingkat, erupsi eksplosif vs efusif, reaksi 75 AI warga, kontrol simulasi fleksibel, tombol Reset Kondisi, dan koneksi ESP32.</span>
                       </div>
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
@@ -1137,7 +1137,7 @@ export default function Dashboard() {
                     </h5>
                     <ul className="list-disc list-inside space-y-2 text-[#1a0800] font-bold">
                       <li><strong className="font-black text-[#1a0800]">Blockly Ramah Anak:</strong> Susun blok aksi-reaksi (Sensor ➔ Lampu Status ➔ Sirine EWS ➔ Tindakan Evakuasi). Setiap misi dilengkapi panduan kategori toolbox.</li>
-                      <li><strong className="font-black text-[#1a0800]">Digital Twin 3D Merapi:</strong> Amati reaksi 75 AI warga selama 20 detik pasca-bencana. Kerusakan tetap terlihat untuk evaluasi dan dapat direset dengan tombol <strong className="font-black text-[#1a0800]">[Reset Kondisi]</strong>.</li>
+                      <li><strong className="font-black text-[#1a0800]">Digital Twin 3D Merapi:</strong> Amati reaksi 75 AI warga saat bencana berlangsung. Kerusakan tetap terlihat untuk evaluasi dan dapat direset dengan tombol <strong className="font-black text-[#1a0800]">[Reset Kondisi]</strong>.</li>
                       <li><strong className="font-black text-[#1a0800]">Sinkronisasi Guru &amp; Hardware:</strong> Setiap misi yang tuntas langsung terkirim ke Dashboard Guru (5 poin per misi, total 100 poin) dan opsional terhubung ke diorama fisik ESP32.</li>
                     </ul>
                   </div>

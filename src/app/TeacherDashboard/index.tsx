@@ -558,7 +558,7 @@ export default function TeacherDashboard() {
       {/* ── 1. ULTRA-DETAILED 2D PIXEL ART STRATOVOLCANO & SEA OF CLOUDS BACKDROP ── */}
       <div className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
         <img
-          src="/bg-teacher-clouds.jpg"
+          src="/bg-teacher-clouds.webp"
           alt="Stratovolcano rising above Sea of Clouds"
           className="w-full h-full object-cover object-center absolute inset-0 select-none"
           style={{ imageRendering: 'pixelated' }}
@@ -1295,11 +1295,14 @@ export default function TeacherDashboard() {
 
             {/* Info Akun Login Siswa */}
             <div className="p-3 bg-amber-100 rounded-xl border border-amber-950/30 space-y-1 text-xs">
-              <span className="text-[10px] font-pixel-title font-bold text-amber-950 uppercase block">KREDENSIAL LOGIN SISWA:</span>
+              <span className="text-[10px] font-pixel-title font-bold text-amber-950 uppercase block">AKUN LOGIN SISWA:</span>
               <div className="flex items-center justify-between font-pixel">
                 <span>Username: <strong className="font-pixel-title text-amber-950">{selectedStudentForDetail.username || '-'}</strong></span>
-                <span>Password: <strong className="font-pixel-title text-amber-950">{selectedStudentForDetail.password || '12345'}</strong></span>
               </div>
+              <p className="text-[10px] font-pixel text-amber-900/80 leading-snug">
+                Password tidak disimpan di sistem (hanya tersimpan terenkripsi di server autentikasi).
+                Bila siswa lupa password, minta siswa menggantinya sendiri lewat halaman Profil.
+              </p>
             </div>
 
             {/* Rincian Progres Semua Level */}

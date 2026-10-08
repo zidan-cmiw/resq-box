@@ -5,5 +5,49 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "headers": [
+    {
+      "comment": "Aset ber-hash dari Vite: isinya berubah setiap build, jadi aman di-cache selamanya. Ini yang mengubah kunjungan ulang dari ~5,8 MB menjadi ~0.",
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "comment": "Ikon PWA & favicon: jarang berubah.",
+      "source": "/(favicon\\.png|favicon\\.svg|apple-touch-icon\\.png|pwa-192x192\\.png|pwa-512x512\\.png|icons\\.svg)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800" }
+      ]
+    },
+    {
+      "comment": "Gambar latar & materi: stabil, cache 30 hari.",
+      "source": "/(.*)\\.(webp|jpg|jpeg|png)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000" }
+      ]
+    },
+    {
+      "comment": "Model 3D diorama. Versi .gz (~966 KB) dipakai lebih dulu oleh aplikasi; berkas asli hanya sebagai cadangan.",
+      "source": "/(.*)\\.stl(\\.gz)?",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000" }
+      ]
+    },
+    {
+      "comment": "Service worker & manifest TIDAK boleh di-cache lama, supaya pembaruan aplikasi cepat sampai.",
+      "source": "/(sw\\.js|registerSW\\.js|workbox-.*\\.js|manifest\\.webmanifest)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "comment": "index.html juga tidak boleh di-cache lama agar rilis baru langsung terpakai.",
+      "source": "/index.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
   ]
 }

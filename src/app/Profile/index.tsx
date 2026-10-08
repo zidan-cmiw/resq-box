@@ -12,10 +12,6 @@ import PixelIcon from '../../components/PixelIcon';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 import {
-  getLocalUsers,
-  saveLocalUsers,
-  getLocalStudents,
-  saveLocalStudents,
   supabase,
 } from '../../utils/supabaseClient';
 
@@ -49,51 +45,44 @@ export default function Profile() {
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
   const [showSavedToast, setShowSavedToast] = useState(false);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordError('');
 
-    // If student wants to change password
+    // Bila siswa mengisi password baru, ganti lewat Supabase Auth.
+    // Password TIDAK PERNAH disimpan di klien, localStorage, atau tabel biasa.
     if (newPassword.trim()) {
       if (newPassword !== confirmPassword) {
         retroAudio.playLocked();
         setPasswordError('Password baru dan konfirmasi password tidak sama!');
         return;
       }
-      if (newPassword.length < 4) {
+      if (newPassword.length < 6) {
         retroAudio.playLocked();
-        setPasswordError('Password minimal harus 4 karakter!');
+        setPasswordError('Password minimal harus 6 karakter!');
         return;
       }
 
-      // Update in local users
-      const users = getLocalUsers();
-      const userIdx = users.findIndex(
-        (u) => u.id === (currentUser?.id || student?.id) || u.username === (currentUser?.username || student?.username)
-      );
-      if (userIdx >= 0) {
-        users[userIdx].password = newPassword.trim();
-        saveLocalUsers(users);
+      if (!supabase) {
+        retroAudio.playLocked();
+        setPasswordError('Mode luring: ganti password membutuhkan koneksi ke server.');
+        return;
       }
 
-      // Update in local students
-      const stdList = getLocalStudents();
-      const stdIdx = stdList.findIndex(
-        (s) => s.id === (currentUser?.id || student?.id) || s.username === (currentUser?.username || student?.username)
-      );
-      if (stdIdx >= 0) {
-        stdList[stdIdx].password = newPassword.trim();
-        saveLocalStudents(stdList);
-      }
-
-      // Update in Supabase if configured
-      if (supabase && currentUser?.id) {
-        supabase.from('user_accounts').update({ password: newPassword.trim() }).eq('id', currentUser.id).then();
-        supabase.from('students').update({ password: newPassword.trim() }).eq('id', currentUser.id).then();
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) {
+        retroAudio.playLocked();
+        setPasswordError(
+          error.message.toLowerCase().includes('should be different')
+            ? 'Password baru harus berbeda dari password lama.'
+            : `Gagal mengganti password: ${error.message}`
+        );
+        return;
       }
 
       setNewPassword('');
       setConfirmPassword('');
+      retroAudio.playUnlock();
     }
 
     retroAudio.playSelect();

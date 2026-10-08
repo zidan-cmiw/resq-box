@@ -108,12 +108,12 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
       },
       {
         id: 'quick_demo',
-        title: 'Uji Coba Cepat (Akun Demo & Guru)',
+        title: 'Uji Coba Cepat (Akun Demo)',
         badge: 'AKSES CEPAT',
         targetSelector: '#tour-login-quick-demo',
         placement: 'top',
         content:
-          'Ingin mencoba fitur tanpa daftar? Klik tombol cepat di bawah ini: Akun Siswa Demo, Demo Juri (semua level langsung terbuka), atau Akun Guru Demo (guru/guru123)!',
+          'Ingin mencoba fitur tanpa daftar? Klik tombol cepat di bawah ini untuk masuk sebagai Akun Siswa Demo (semua level langsung terbuka)!',
         actionHint: 'Selamat mencoba dan nikmati petualangan belajarmu!',
       },
     ],
@@ -272,7 +272,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         targetSelector: '#tour-profile-password',
         placement: 'top',
         content:
-          'Ingin mengganti password akunmu? Cukup ketik password baru di kedua kolom ini (minimal 4 karakter). Kosongkan bila tidak ingin mengubah password.',
+          'Ingin mengganti password akunmu? Cukup ketik password baru di kedua kolom ini (minimal 6 karakter). Kosongkan bila tidak ingin mengubah password.',
       },
       {
         id: 'profile_readiness',
@@ -412,7 +412,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'SIMULATOR 3D',
         placement: 'center',
         content:
-          'Jalankan simulasimu! Amati respon warga desa (berlindung di kolong meja aman, lari ke titik kumpul, atau evakuasi ke barak) selama 20 detik pada maket 3D bentang alam Gunung Merapi asli. Dampak bencana bisa diamati dan diulang dengan tombol [Reset Kondisi]!',
+          'Jalankan simulasimu! Amati respon warga desa (berlindung di kolong meja aman, lari ke titik kumpul, atau evakuasi ke barak) pada maket 3D bentang alam Gunung Merapi asli. Simulasi dapat dihentikan kapan saja dengan tombol [BERHENTI], dan dampak bencana dapat diulang dengan tombol [Reset Kondisi]!',
       },
       {
         id: 'l3_my_projects',
@@ -536,7 +536,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         targetSelector: '#tour-ws-actions',
         placement: 'bottom',
         content:
-          'Tekan tombol hijau [▶ MULAI] untuk menjalankan simulasi penyelamatan bencanamu selama 20 detik! Kamu juga bisa menghubungkan simulasi ini ke alat peraga kotak diorama fisik melalui tombol WiFi atau USB.',
+          'Tekan tombol hijau [▶ MULAI] untuk menjalankan simulasi penyelamatan bencanamu dan amati respon warga! Kamu juga bisa menghentikan simulasi kapan saja dengan tombol [BERHENTI] atau menghubungkannya ke alat peraga kotak diorama fisik melalui tombol WiFi atau USB.',
         actionHint: 'Susun balok penyelamatan terbaikmu dan amati warga menyelamatkan diri!',
       },
     ],

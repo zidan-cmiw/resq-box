@@ -1,0 +1,167 @@
+[
+ {
+  "file": "bg-rainforest.jpg",
+  "fmt": "JPEG",
+  "w": 1376,
+  "h": 768,
+  "bytes": 748765,
+  "webp90": 198142,
+  "webp80": 116850,
+  "webp70": 89838,
+  "webp80_half": null
+ },
+ {
+  "file": "bg-teacher-clouds.jpg",
+  "fmt": "JPEG",
+  "w": 1376,
+  "h": 768,
+  "bytes": 714454,
+  "webp90": 145302,
+  "webp80": 89414,
+  "webp70": 69454,
+  "webp80_half": null
+ },
+ {
+  "file": "peta_lapisan_bumi.jpg",
+  "fmt": "JPEG",
+  "w": 1200,
+  "h": 896,
+  "bytes": 590710,
+  "webp90": 72652,
+  "webp80": 47394,
+  "webp70": 38820,
+  "webp80_half": null
+ },
+ {
+  "file": "radar_bumi_lengkap.jpg",
+  "fmt": "JPEG",
+  "w": 896,
+  "h": 1200,
+  "bytes": 619008,
+  "webp90": 83538,
+  "webp80": 54564,
+  "webp70": 43974,
+  "webp80_half": null
+ },
+ {
+  "file": "radar_bumi_lengkap_label.png",
+  "fmt": "PNG",
+  "w": 1520,
+  "h": 970,
+  "bytes": 383776,
+  "webp90": 115856,
+  "webp80": 83512,
+  "webp70": 68770,
+  "webp80_half": null
+ },
+ {
+  "file": "logo.png",
+  "fmt": "JPEG",
+  "w": 1024,
+  "h": 1024,
+  "bytes": 367842,
+  "webp90": 59928,
+  "webp80": 40346,
+  "webp70": 32544,
+  "webp80_half": null
+ },
+ {
+  "file": "radar_bumi.png",
+  "fmt": "PNG",
+  "w": 640,
+  "h": 678,
+  "bytes": 57626,
+  "webp90": 32852,
+  "webp80": 22392,
+  "webp70": 18210,
+  "webp80_half": null
+ },
+ {
+  "file": "1.webp",
+  "fmt": "WEBP",
+  "w": 768,
+  "h": 544,
+  "bytes": 84312,
+  "webp90": 95816,
+  "webp80": 82554,
+  "webp70": 69118,
+  "webp80_half": null
+ },
+ {
+  "file": "images.jpeg",
+  "fmt": "JPEG",
+  "w": 736,
+  "h": 416,
+  "bytes": 85163,
+  "webp90": 128696,
+  "webp80": 96464,
+  "webp70": 81018,
+  "webp80_half": null
+ },
+ {
+  "file": "images (1).jpg",
+  "fmt": "JPEG",
+  "w": 638,
+  "h": 480,
+  "bytes": 25827,
+  "webp90": 30686,
+  "webp80": 18858,
+  "webp70": 14758,
+  "webp80_half": null
+ },
+ {
+  "file": "wedhus_gembel.jpg",
+  "fmt": "JPEG",
+  "w": 638,
+  "h": 480,
+  "bytes": 25827,
+  "webp90": 30686,
+  "webp80": 18858,
+  "webp70": 14758,
+  "webp80_half": null
+ },
+ {
+  "file": "lahar_dingin.jpg",
+  "fmt": "JPEG",
+  "w": 736,
+  "h": 416,
+  "bytes": 85163,
+  "webp90": 128696,
+  "webp80": 96464,
+  "webp70": 81018,
+  "webp80_half": null
+ },
+ {
+  "file": "frames/f_0.jpg",
+  "fmt": "JPEG",
+  "w": 1920,
+  "h": 1080,
+  "bytes": 221897,
+  "webp90": 73744,
+  "webp80": 40122,
+  "webp70": 30168,
+  "webp80_half": 16722
+ },
+ {
+  "file": "frames/f_3.jpg",
+  "fmt": "JPEG",
+  "w": 1920,
+  "h": 1080,
+  "bytes": 309451,
+  "webp90": 107072,
+  "webp80": 60740,
+  "webp70": 45948,
+  "webp80_half": 24610
+ },
+ {
+  "file": "frames/f_6.jpg",
+  "fmt": "JPEG",
+  "w": 1920,
+  "h": 1080,
+  "bytes": 334071,
+  "webp90": 116166,
+  "webp80": 65880,
+  "webp70": 49582,
+  "webp80_half": 26530
+ }
+]

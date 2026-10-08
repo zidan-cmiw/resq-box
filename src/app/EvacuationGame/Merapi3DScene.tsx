@@ -411,9 +411,88 @@ export default function Merapi3DScene() {
       return (h00 * (1 - tx) + h10 * tx) * (1 - tz) + (h01 * (1 - tx) + h11 * tx) * tz;
     }
 
-    stlLoader.load(
-      '/terrain-688.stl',
-      (geometry) => {
+    // ── PEMUATAN MODEL 3D TERRAIN (dengan kompresi gzip) ─────────────
+    // terrain-688.stl berukuran 3,17 MB — aset terberat aplikasi. Versi
+    // gzip-nya hanya ~966 KB (hemat ~2,2 MB per pemuatan, penting untuk
+    // koneksi sekolah). Kita coba versi terkompresi lebih dulu, lalu
+    // JATUH KEMBALI ke berkas asli bila browser belum mendukung
+    // DecompressionStream atau berkas .gz tidak tersedia.
+    void (async () => {
+      const STL_BYTES = 3165784;
+
+      const reportProgress = (loaded: number, total: number) => {
+        if (total > 0) setLoadProgress(Math.round((loaded / total) * 100));
+        else setLoadProgress(Math.min(99, Math.round((loaded / STL_BYTES) * 100)));
+      };
+
+      async function fetchWithProgress(url: string): Promise<ArrayBuffer> {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status} untuk ${url}`);
+
+        const total = Number(res.headers.get('content-length')) || 0;
+
+        // Tanpa stream/reader, langsung baca seluruh isi.
+        if (!res.body || typeof res.body.getReader !== 'function') {
+          const buf = await res.arrayBuffer();
+          reportProgress(buf.byteLength, total || buf.byteLength);
+          return buf;
+        }
+
+        const reader = res.body.getReader();
+        const chunks: Uint8Array[] = [];
+        let loaded = 0;
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (value) {
+            chunks.push(value);
+            loaded += value.byteLength;
+            reportProgress(loaded, total);
+          }
+        }
+        const merged = new Uint8Array(loaded);
+        let offset = 0;
+        for (const chunk of chunks) {
+          merged.set(chunk, offset);
+          offset += chunk.byteLength;
+        }
+        return merged.buffer;
+      }
+
+      async function fetchStlBuffer(): Promise<ArrayBuffer> {
+        const gzipSupported =
+          typeof DecompressionStream === 'function' && typeof Response === 'function';
+
+        if (gzipSupported) {
+          try {
+            const compressed = await fetchWithProgress('/terrain-688.stl.gz');
+            const stream = new Blob([compressed])
+              .stream()
+              .pipeThrough(new DecompressionStream('gzip'));
+            return await new Response(stream).arrayBuffer();
+          } catch (gzError) {
+            console.warn(
+              '[Merapi3D] Gagal memakai terrain-688.stl.gz, beralih ke berkas asli:',
+              gzError
+            );
+          }
+        }
+
+        return fetchWithProgress('/terrain-688.stl');
+      }
+
+      try {
+        const buffer = await fetchStlBuffer();
+        const geometry = stlLoader.parse(buffer);
+        handleStlGeometry(geometry);
+      } catch (error) {
+        console.error('Gagal memuat terrain-688.stl:', error);
+        setIsLoading(false);
+      }
+    })();
+
+    function handleStlGeometry(geometry: THREE.BufferGeometry) {
+      {
         geometry.center();
         geometry.rotateX(-Math.PI / 2);
         geometry.computeVertexNormals();
@@ -535,19 +614,8 @@ export default function Merapi3DScene() {
         } finally {
           setIsLoading(false);
         }
-      },
-      (xhr) => {
-        if (xhr.total > 0) {
-          setLoadProgress(Math.round((xhr.loaded / xhr.total) * 100));
-        } else {
-          setLoadProgress(Math.min(99, Math.round((xhr.loaded / 3165784) * 100)));
-        }
-      },
-      (error) => {
-        console.error('Gagal memuat terrain-688.stl:', error);
-        setIsLoading(false);
-      }
-    );
+    }
+    }
 
     // ── HELPER: GEOMETRI PITA KONTINU (SEAMLESS MITER RIBBON) ────────
     // Menghubungkan seluruh segmen dengan miter normals bersama & subdivisi kontur halus (zero gaps, zero sawteeth)

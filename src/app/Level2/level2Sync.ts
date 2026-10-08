@@ -41,7 +41,11 @@ export async function syncLevel2Progress(
   if (!effectiveStudent) return;
 
   const clampedScore = Math.min(100, Math.max(0, progress.score));
-  const isDone = progress.isCompleted || clampedScore >= 100 || (progress.completedMissions && progress.completedMissions.includes(3));
+  // Level 2 kini terdiri dari 6 area mitigasi (bukan 3 area tektonik).
+  // Level 3 baru terbuka bila SELURUH 6 area tuntas — memakai ambang yang
+  // sama dengan nilai resmi di server (official_level_score: 6 area = 100).
+  const missionsCompleted = Math.min(6, progress.completedMissions?.length ?? 0);
+  const isDone = progress.isCompleted || clampedScore >= 100 || missionsCompleted >= 6;
 
   if (isDone) {
     authState.unlockLevel(3);
@@ -54,11 +58,14 @@ export async function syncLevel2Progress(
       classroom_code: effectiveStudent.classroom_id || 'RESQ-8A',
       level_number: 2,
       score: clampedScore,
+      missions: missionsCompleted,
+      isCompleted: isDone,
       details: {
-        mode: 'tectonic_explorer',
+        mode: 'mitigasi_bencana',
         is_completed: isDone,
         current_mission: progress.currentMission,
         completed_missions: progress.completedMissions,
+        missions: missionsCompleted,
         resilience_points: progress.resiliencePoints,
         badges: progress.badges,
         status_text: isDone ? 'TUNTAS' : (progress.statusText || `${clampedScore} Poin`),

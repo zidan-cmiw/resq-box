@@ -87,8 +87,13 @@ export function isSerialConnected(): boolean {
   return writer !== null;
 }
 
-/** Buka dialog pemilihan port lalu hubungkan. Baud rate harus sama dengan sketch Arduino. */
-export async function connectSerial(baudRate = 9600): Promise<void> {
+/**
+ * Buka dialog pemilihan port lalu hubungkan.
+ * Baud rate HARUS sama dengan sketch Arduino — kedua firmware di repo ini
+ * (`program_esp.ino` dan `yom.ino`) memakai `Serial.begin(115200)`,
+ * jadi default-nya 115200, bukan 9600.
+ */
+export async function connectSerial(baudRate = 115200): Promise<void> {
   if (!isWebSerialSupported()) {
     throw new Error('Browser tidak mendukung Web Serial. Gunakan Chrome atau Edge.');
   }

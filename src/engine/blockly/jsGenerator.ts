@@ -231,7 +231,7 @@ javascriptGenerator.forBlock['resq_gunung_sim'] = function(block: Blockly.Block)
   const stMap: Record<string, string> = { '1': 'WASPADA', '2': 'SIAGA', '3': 'AWAS' };
   const st = stMap[block.getFieldValue('STATUS')] || 'WASPADA';
   const tipe = block.getFieldValue('TIPE') || 'EKSPLOSIF';
-  return `await api.simGunung('${st}', '${tipe}');\nawait api.print('Simulasi Erupsi Merapi: Status ${st} (Tipe ${tipe}) aktif!', 'error');\n`;
+  return `await api.simGunung('${st}', '${tipe}');\n`;
 };
 
 // ── resq_tipe_letusan ───────────────────────────────────────────
