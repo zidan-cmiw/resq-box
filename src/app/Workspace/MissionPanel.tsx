@@ -8,7 +8,7 @@ import { javascriptGenerator } from '../../engine/blockly/jsGenerator';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import { retroAudio } from '../../utils/retroAudio';
 
-export default function MissionPanel({ missionId }: { missionId: string }) {
+export default function MissionPanel({ missionId, onClose }: { missionId: string; onClose?: () => void }) {
   const navigate = useNavigate();
   const mission = MISSIONS.find((m) => m.id === missionId);
 
@@ -19,7 +19,7 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
 
   if (!mission) {
     return (
-      <aside aria-label="Panduan Misi" className="w-80 bg-[#16120e] border-r-2 border-amber-950 flex items-center justify-center text-amber-200/60 p-4 font-pixel text-xs">
+      <aside aria-label="Panduan Misi" className="w-80 max-w-[85vw] bg-[#16120e] border-r-2 border-amber-950 flex items-center justify-center text-amber-200/60 p-4 font-pixel text-xs">
         <p>Misi tidak ditemukan.</p>
       </aside>
     );
@@ -63,7 +63,7 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
   const categoryObj = CATEGORIES.find((c) => c.id === mission.category);
 
   return (
-    <aside aria-label="Panduan Misi" className="w-80 bg-[#fffbeb] border-r-4 border-[#78350f] flex flex-col overflow-hidden shrink-0 font-pixel text-[#1c1917] shadow-xl">
+    <aside aria-label="Panduan Misi" className="w-80 max-w-[85vw] bg-[#fffbeb] border-r-4 border-[#78350f] flex flex-col overflow-hidden shrink-0 font-pixel text-[#1c1917] shadow-xl">
       {/* ── 1. HEADER MISSION CARD (SS 3 Warm Parchment) ── */}
       <div className="p-3.5 border-b-2 border-[#b45309] bg-[#fef3c7]">
         <div className="flex items-center justify-between gap-1 mb-1.5">
@@ -73,12 +73,23 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
             </span>
           </div>
 
-          <span className="text-[10px] text-[#78350f] font-bold">
-            {currentStep + 1} / {totalSteps}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-[#78350f] font-bold">
+              {currentStep + 1} / {totalSteps}
+            </span>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="w-5 h-5 rounded bg-[#b45309] hover:bg-[#92400e] text-white flex items-center justify-center font-bold text-[10px] cursor-pointer lg:hidden"
+                title="Tutup Panduan Misi"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
 
-        <h2 className="text-sm font-bold text-[#451a03] leading-snug font-sans">
+        <h2 className="text-sm sm:text-base font-extrabold text-[#451a03] leading-snug font-sans">
           {mission.title}
         </h2>
 
@@ -91,13 +102,12 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
                 retroAudio.playSelect();
                 setCurrentStep(i);
               }}
-              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                i < currentStep
-                  ? 'bg-[#15803d] flex-1'
-                  : i === currentStep
+              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${i < currentStep
+                ? 'bg-[#15803d] flex-1'
+                : i === currentStep
                   ? 'bg-[#b45309] flex-[2] ring-2 ring-[#78350f]'
                   : 'bg-[#d6d3d1] border border-[#a8a29e] flex-1'
-              }`}
+                }`}
               title={`Langkah ${i + 1}: ${steps[i].title}`}
             />
           ))}
@@ -110,49 +120,61 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
         <div className="rounded-xl border-2 border-[#b45309] bg-[#fefce8] p-3.5 flex flex-col gap-2.5 shadow-sm text-[#1c1917]">
           {/* Step Icon & Title */}
           <div className="flex items-center gap-2.5 pb-2 border-b border-[#b45309]/20">
-            <div className="w-8 h-8 rounded-lg bg-[#b45309] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+            <div className="w-8 h-8 rounded-lg bg-[#b45309] text-white flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
                 {step.icon}
               </span>
             </div>
-            <h3 className="font-bold text-[#451a03] text-xs sm:text-sm leading-tight">
+            <h3 className="font-bold text-[#451a03] text-sm sm:text-base leading-tight">
               {step.title}
             </h3>
           </div>
 
           {/* Description — crisp dark text with high contrast */}
-          <div className="text-xs text-[#292524] leading-relaxed whitespace-pre-line font-medium">
+          <div className="text-xs sm:text-sm text-[#292524] leading-relaxed whitespace-pre-line font-medium">
             {step.description}
           </div>
         </div>
 
         {/* Tip Box (SS 3 Style Fact Box) */}
         {step.tip && (
-          <div className="flex items-start gap-2 bg-[#fef3c7] border-2 border-[#d97706] rounded-xl p-2.5 text-[#78350f] shadow-sm">
-            <span className="text-[#b45309] text-sm shrink-0 mt-0.5">💡</span>
-            <p className="text-[11px] text-[#78350f] font-semibold leading-relaxed">
+          <div className="flex items-start gap-2 bg-[#fef3c7] border-2 border-[#d97706] rounded-xl p-3 text-[#78350f] shadow-sm">
+            <p className="text-xs sm:text-sm text-[#78350f] font-semibold leading-relaxed">
               {step.tip}
             </p>
+          </div>
+        )}
+
+        {/* Quick Toolbox Category Guide */}
+        {mission.hint && (
+          <div className="flex items-start gap-2 bg-[#ecfdf5] border-2 border-[#059669] rounded-xl p-3 text-[#065f46] shadow-sm">
+            <div>
+              <span className="text-[11px] font-black uppercase tracking-wider block text-[#047857] mb-0.5">
+                PANDUAN LOKASI BLOK:
+              </span>
+              <p className="text-xs sm:text-sm font-semibold leading-relaxed text-[#064e3b]">
+                {mission.hint}
+              </p>
+            </div>
           </div>
         )}
 
         {/* Validation Result Box */}
         {isLastStep && (isPassed || isFailed) && (
           <div
-            className={`rounded-xl p-3 border-2 flex items-start gap-2.5 shadow-md ${
-              isPassed
-                ? 'bg-[#f0fdf4] border-[#16a34a] text-[#15803d]'
-                : 'bg-[#fff1f2] border-[#e11d48] text-[#be123c]'
-            }`}
+            className={`rounded-xl p-3.5 border-2 flex items-start gap-2.5 shadow-md ${isPassed
+              ? 'bg-[#f0fdf4] border-[#16a34a] text-[#15803d]'
+              : 'bg-[#fff1f2] border-[#e11d48] text-[#be123c]'
+              }`}
           >
-            <span className="text-base shrink-0 mt-0.5">
+            <span className="text-lg shrink-0 mt-0.5">
               {isPassed ? '🏆' : '⚠️'}
             </span>
             <div className="flex-1">
-              <p className="text-xs font-bold leading-tight mb-1">
+              <p className="text-sm font-bold leading-tight mb-1">
                 {isPassed ? 'MISI BERHASIL TUNTAS!' : 'PERLU PENYESUAIAN BLOK'}
               </p>
-              <p className="text-[11px] leading-relaxed font-medium">
+              <p className="text-xs sm:text-sm leading-relaxed font-medium">
                 {validationMessage}
               </p>
             </div>
@@ -161,7 +183,7 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
       </div>
 
       {/* ── 3. BOTTOM FOOTER NAVIGATION ── */}
-      <div className="p-3 border-t-2 border-[#b45309] bg-[#fef3c7] flex flex-col gap-2 font-pixel">
+      <div className="p-3.5 border-t-2 border-[#b45309] bg-[#fef3c7] flex flex-col gap-2 font-pixel">
         {/* Navigation / Validation Buttons */}
         {!isPassed && (
           <div className="flex gap-2">
@@ -171,11 +193,10 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
                 setCurrentStep((s) => Math.max(0, s - 1));
               }}
               disabled={isFirstStep}
-              className={`flex-1 py-2 px-2.5 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 border-2 transition-colors ${
-                isFirstStep
-                  ? 'bg-[#e7e5e4] border-[#d6d3d1] text-[#a8a29e] cursor-not-allowed'
-                  : 'bg-[#e7e5e4] hover:bg-[#d6d3d1] border-[#a8a29e] text-[#44403c]'
-              }`}
+              className={`flex-1 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-bold flex items-center justify-center gap-1 border-2 transition-colors ${isFirstStep
+                ? 'bg-[#e7e5e4] border-[#d6d3d1] text-[#a8a29e] cursor-not-allowed'
+                : 'bg-[#e7e5e4] hover:bg-[#d6d3d1] border-[#a8a29e] text-[#44403c]'
+                }`}
             >
               <span>◀</span>
               <span>SEBELUM</span>
@@ -186,23 +207,21 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
               <button
                 onClick={handleValidate}
                 disabled={isChecking}
-                className={`flex-[2] py-2 px-3 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-md transition-all border-2 border-[#7c2d12] ${
-                  isChecking
-                    ? 'bg-[#b45309] text-white cursor-not-allowed animate-pulse'
-                    : 'bg-gradient-to-r from-[#c2410c] to-[#b45309] hover:from-[#ea580c] hover:to-[#c2410c] text-white'
-                }`}
+                className={`flex-[2] py-2.5 px-3.5 rounded-lg text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-md transition-all border-2 border-[#7c2d12] ${isChecking
+                  ? 'bg-[#b45309] text-white cursor-not-allowed animate-pulse'
+                  : 'bg-gradient-to-r from-[#c2410c] to-[#b45309] hover:from-[#ea580c] hover:to-[#c2410c] text-white'
+                  }`}
               >
-                <span>⭐</span>
                 <span>{isChecking ? 'MENGECEK...' : 'VALIDASI MISI!'}</span>
               </button>
             ) : (
-              /* Next step button */
+
               <button
                 onClick={() => {
                   retroAudio.playSelect();
                   setCurrentStep((s) => Math.min(totalSteps - 1, s + 1));
                 }}
-                className="flex-[2] py-2 px-3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-[11px] rounded-lg shadow-md flex items-center justify-center gap-1 border-2 border-emerald-700"
+                className="flex-[2] py-2.5 px-3.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs sm:text-sm rounded-lg shadow-md flex items-center justify-center gap-1 border-2 border-emerald-700"
               >
                 <span>LANJUT</span>
                 <span>➔</span>
@@ -215,9 +234,8 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
         {isPassed && (
           <button
             onClick={handleFinish}
-            className="w-full py-2.5 px-3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 border-2 border-emerald-700 animate-bounce"
+            className="w-full py-3 px-3.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg flex items-center justify-center gap-2 border-2 border-emerald-700 animate-bounce"
           >
-            <span>🏆</span>
             <span>KEMBALI KE PETA LEVEL 3 ➔</span>
           </button>
         )}
@@ -228,9 +246,8 @@ export default function MissionPanel({ missionId }: { missionId: string }) {
             retroAudio.playSelect();
             navigate('/level3');
           }}
-          className="w-full py-1 text-[10px] text-[#78350f] hover:text-[#451a03] font-bold flex items-center justify-center gap-1 transition-colors"
+          className="w-full py-1 text-xs text-[#78350f] hover:text-[#451a03] font-bold flex items-center justify-center gap-1 transition-colors"
         >
-          <span>🗺️</span>
           <span>Kembali ke Peta Level 3</span>
         </button>
       </div>

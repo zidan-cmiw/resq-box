@@ -4,6 +4,8 @@
 
 let audioCtx: AudioContext | null = null;
 let soundEnabled = true;
+let sirenLoopTimer: ReturnType<typeof setInterval> | null = null;
+let isSirenLooping = false;
 
 function getAudioContext(): AudioContext | null {
   if (typeof window === 'undefined') return null;
@@ -433,23 +435,243 @@ export const retroAudio = {
     try {
       const ctx = getAudioContext();
       if (!ctx) return;
+      const now = ctx.currentTime;
+
+      // 1. Oscillator Utama (Sawtooth wail)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sawtooth';
+      osc1.frequency.setValueAtTime(540, now);
+      osc1.frequency.linearRampToValueAtTime(880, now + 0.35);
+      osc1.frequency.linearRampToValueAtTime(540, now + 0.7);
+
+      gain1.gain.setValueAtTime(0.2, now);
+      gain1.gain.exponentialRampToValueAtTime(0.02, now + 0.72);
+
+      // 2. Oscillator Harmonik Kedua (Sine wave untuk resonansi sirene horn)
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(542, now);
+      osc2.frequency.linearRampToValueAtTime(884, now + 0.35);
+      osc2.frequency.linearRampToValueAtTime(542, now + 0.7);
+
+      gain2.gain.setValueAtTime(0.12, now);
+      gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.72);
+
+      // Filter bandpass agar suara terfokus tajam dan jelas
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(750, now);
+      filter.Q.setValueAtTime(1.0, now);
+
+      osc1.connect(gain1);
+      osc2.connect(gain2);
+      gain1.connect(filter);
+      gain2.connect(filter);
+      filter.connect(ctx.destination);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 0.75);
+      osc2.stop(now + 0.75);
+    } catch {
+      // ignore
+    }
+  },
+
+  // Mulai memutar sirine EWS secara kontinu sampai dihentikan
+  startEwsSiren() {
+    if (!this.isEnabled()) return;
+    if (isSirenLooping) return;
+    isSirenLooping = true;
+    this.playEwsSiren();
+    if (sirenLoopTimer) clearInterval(sirenLoopTimer);
+    sirenLoopTimer = setInterval(() => {
+      if (!isSirenLooping) {
+        if (sirenLoopTimer) clearInterval(sirenLoopTimer);
+        sirenLoopTimer = null;
+        return;
+      }
+      this.playEwsSiren();
+    }, 720);
+  },
+
+  // Hentikan putaran sirine EWS seketika
+  stopEwsSiren() {
+    isSirenLooping = false;
+    if (sirenLoopTimer) {
+      clearInterval(sirenLoopTimer);
+      sirenLoopTimer = null;
+    }
+  },
+
+  // ── SIMULASI GEMPA BUMI SEISMIK 3 TINGKAT ──────────────────────────────
+  // 1. Gempa Ringan (3-4 SR): Gemuruh frekuensi rendah (low rumble) samar
+  playLightEarthquakeRumble() {
+    if (!this.isEnabled()) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
 
       osc.type = 'sawtooth';
       const now = ctx.currentTime;
-      osc.frequency.setValueAtTime(550, now);
-      osc.frequency.linearRampToValueAtTime(880, now + 0.35);
-      osc.frequency.linearRampToValueAtTime(550, now + 0.7);
+      osc.frequency.setValueAtTime(45, now);
+      osc.frequency.linearRampToValueAtTime(28, now + 1.8);
 
-      gain.gain.setValueAtTime(0.16, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.72);
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(75, now);
+      filter.frequency.linearRampToValueAtTime(40, now + 1.8);
 
-      osc.connect(gain);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+
+      osc.connect(filter);
+      filter.connect(gain);
       gain.connect(ctx.destination);
 
-      osc.start();
-      osc.stop(now + 0.75);
+      osc.start(now);
+      osc.stop(now + 1.85);
+    } catch {
+      // ignore
+    }
+  },
+
+  // 2. Gempa Sedang (5-6 SR): Gemuruh jelas + deritan dinding/beton (creaking wood/concrete)
+  playMediumEarthquakeWithCreak() {
+    if (!this.isEnabled()) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      // A. Gemuruh Seismik Sedang
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(58, now);
+      osc.frequency.linearRampToValueAtTime(32, now + 2.0);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(130, now);
+      filter.frequency.linearRampToValueAtTime(55, now + 2.0);
+
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 2.05);
+
+      // B. Suara Deritan Kayu & Beton Berderit (Creaking / Groaning effect)
+      const creakOsc = ctx.createOscillator();
+      const creakGain = ctx.createGain();
+      const creakFilter = ctx.createBiquadFilter();
+
+      creakOsc.type = 'sawtooth';
+      creakOsc.frequency.setValueAtTime(290, now + 0.15);
+      creakOsc.frequency.exponentialRampToValueAtTime(160, now + 0.65);
+      creakOsc.frequency.exponentialRampToValueAtTime(240, now + 1.1);
+      creakOsc.frequency.exponentialRampToValueAtTime(110, now + 1.6);
+
+      creakFilter.type = 'bandpass';
+      creakFilter.frequency.setValueAtTime(260, now + 0.15);
+      creakFilter.Q.setValueAtTime(4.0, now + 0.15);
+
+      creakGain.gain.setValueAtTime(0.001, now);
+      creakGain.gain.linearRampToValueAtTime(0.09, now + 0.2);
+      creakGain.gain.linearRampToValueAtTime(0.03, now + 0.8);
+      creakGain.gain.linearRampToValueAtTime(0.07, now + 1.2);
+      creakGain.gain.exponentialRampToValueAtTime(0.001, now + 1.7);
+
+      creakOsc.connect(creakFilter);
+      creakFilter.connect(creakGain);
+      creakGain.connect(ctx.destination);
+      creakOsc.start(now + 0.15);
+      creakOsc.stop(now + 1.75);
+    } catch {
+      // ignore
+    }
+  },
+
+  // 3. Gempa Besar (>7 SR): Gemuruh dahsyat + beton pecah runtuh (crash) + sirine bencana
+  playMajorEarthquakeWithCollapse() {
+    if (!this.isEnabled()) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      // A. Gemuruh Bass Dahsyat
+      const subOsc = ctx.createOscillator();
+      const subGain = ctx.createGain();
+      const subFilter = ctx.createBiquadFilter();
+
+      subOsc.type = 'sawtooth';
+      subOsc.frequency.setValueAtTime(70, now);
+      subOsc.frequency.linearRampToValueAtTime(22, now + 2.5);
+
+      subFilter.type = 'lowpass';
+      subFilter.frequency.setValueAtTime(180, now);
+      subFilter.frequency.linearRampToValueAtTime(40, now + 2.5);
+
+      subGain.gain.setValueAtTime(0.26, now);
+      subGain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+
+      subOsc.connect(subFilter);
+      subFilter.connect(subGain);
+      subGain.connect(ctx.destination);
+      subOsc.start(now);
+      subOsc.stop(now + 2.55);
+
+      // B. Efek Reruntuhan Beton / Puing Patah (Shattering Concrete Crunch Noise)
+      const bufferSize = Math.floor(ctx.sampleRate * 1.2);
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.4));
+      }
+      const noiseSource = ctx.createBufferSource();
+      noiseSource.buffer = noiseBuffer;
+
+      const crashFilter = ctx.createBiquadFilter();
+      crashFilter.type = 'lowpass';
+      crashFilter.frequency.setValueAtTime(420, now + 0.1);
+      crashFilter.frequency.linearRampToValueAtTime(120, now + 1.2);
+
+      const crashGain = ctx.createGain();
+      crashGain.gain.setValueAtTime(0.22, now + 0.1);
+      crashGain.gain.exponentialRampToValueAtTime(0.001, now + 1.3);
+
+      noiseSource.connect(crashFilter);
+      crashFilter.connect(crashGain);
+      crashGain.connect(ctx.destination);
+      noiseSource.start(now + 0.1);
+      noiseSource.stop(now + 1.35);
+
+      // C. Sirine Peringatan Bencana EWS
+      const sirenOsc = ctx.createOscillator();
+      const sirenGain = ctx.createGain();
+      sirenOsc.type = 'sawtooth';
+      sirenOsc.frequency.setValueAtTime(540, now + 0.3);
+      sirenOsc.frequency.linearRampToValueAtTime(860, now + 0.8);
+      sirenOsc.frequency.linearRampToValueAtTime(540, now + 1.3);
+      sirenOsc.frequency.linearRampToValueAtTime(860, now + 1.8);
+
+      sirenGain.gain.setValueAtTime(0.14, now + 0.3);
+      sirenGain.gain.exponentialRampToValueAtTime(0.01, now + 2.1);
+
+      sirenOsc.connect(sirenGain);
+      sirenGain.connect(ctx.destination);
+      sirenOsc.start(now + 0.3);
+      sirenOsc.stop(now + 2.15);
     } catch {
       // ignore
     }

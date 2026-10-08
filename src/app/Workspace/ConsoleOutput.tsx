@@ -22,11 +22,11 @@ export default function ConsoleOutput() {
     <div className="h-full flex flex-col bg-[#fffbeb] text-[#1c1917] font-mono text-xs select-text">
       {/* Panel sub-header (SS 3 Warm Parchment) */}
       <div className="h-9 shrink-0 flex items-center px-3 gap-2 border-b-2 border-[#b45309] bg-[#fef3c7]">
-        <span className="text-[#b45309] text-xs">📟</span>
-        <span className="font-pixel text-[10px] text-[#78350f] font-bold flex-1">
+        <span className="text-[#b45309] text-sm">📟</span>
+        <span className="font-pixel text-xs text-[#78350f] font-bold flex-1">
           LOG AKTIVITAS
           {consoleLogs.length > 0 && (
-            <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-[#b45309] text-white text-[9px] border border-[#78350f] font-bold shadow-sm">
+            <span className="ml-1.5 px-2 py-0.5 rounded-full bg-[#b45309] text-white text-[10px] border border-[#78350f] font-bold shadow-sm">
               {consoleLogs.length}
             </span>
           )}
@@ -34,13 +34,13 @@ export default function ConsoleOutput() {
 
         {/* Running status indicator */}
         {isRunning ? (
-          <div className="flex items-center gap-1 text-[#15803d] text-[10px] font-bold">
-            <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse shadow-[0_0_6px_#10b981]" />
+          <div className="flex items-center gap-1.5 text-[#15803d] text-xs font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse shadow-[0_0_6px_#10b981]" />
             <span>RUNNING</span>
           </div>
         ) : (
-          <div className="flex items-center gap-1 text-[#78716c] text-[10px] font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#a8a29e]" />
+          <div className="flex items-center gap-1.5 text-[#78716c] text-xs font-bold">
+            <span className="w-2 h-2 rounded-full bg-[#a8a29e]" />
             <span>IDLE</span>
           </div>
         )}
@@ -49,7 +49,7 @@ export default function ConsoleOutput() {
         {consoleLogs.length > 0 && (
           <button
             onClick={clearLogs}
-            className="p-1 hover:bg-[#fde68a] rounded transition-colors text-[#78350f] ml-1"
+            className="p-1 hover:bg-[#fde68a] rounded transition-colors text-[#78350f] ml-1 text-sm"
             title="Bersihkan log"
           >
             🗑️
@@ -61,8 +61,8 @@ export default function ConsoleOutput() {
       <div className="flex-1 overflow-y-auto p-2.5 flex flex-col gap-1.5 bg-[#fffbeb]">
         {consoleLogs.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-2 text-[#78350f]/60 select-none py-8">
-            <span className="text-2xl opacity-60">📟</span>
-            <span className="text-[11px] text-center font-sans text-[#78350f] font-medium leading-relaxed">
+            <span className="text-3xl opacity-60">📟</span>
+            <span className="text-xs sm:text-sm text-center font-sans text-[#78350f] font-medium leading-relaxed">
               Klik tombol <strong className="text-[#15803d] font-mono font-bold">[MULAI]</strong> di atas<br />
               untuk menjalankan simulasi logika
             </span>
@@ -73,15 +73,15 @@ export default function ConsoleOutput() {
             return (
               <div
                 key={log.id}
-                className={`flex items-start gap-2 px-2.5 py-1.5 rounded-lg ${style.bg} text-[11px] shadow-sm`}
+                className={`flex items-start gap-2 px-2.5 py-1.5 rounded-lg ${style.bg} text-xs sm:text-[13px] shadow-sm`}
               >
-                <span className="shrink-0 mt-0.5 text-xs select-none">
+                <span className="shrink-0 mt-0.5 text-sm select-none">
                   {style.icon}
                 </span>
                 <span className={`flex-1 leading-relaxed ${style.color}`}>
                   {log.text}
                 </span>
-                <span className="text-[9px] text-[#78716c] shrink-0 mt-0.5 select-none font-sans font-medium">
+                <span className="text-[10px] text-[#78716c] shrink-0 mt-0.5 select-none font-sans font-medium">
                   {log.timestamp}
                 </span>
               </div>

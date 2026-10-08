@@ -954,6 +954,7 @@ export async function fetchClassroomStudents(classroomCode: string): Promise<Stu
 }
 
 export async function fetchClassroomSubmissions(classroomCode: string): Promise<LevelSubmissionDbRecord[]> {
+  let list: LevelSubmissionDbRecord[] = [];
   if (supabase) {
     try {
       const { data, error } = await supabase
@@ -963,18 +964,124 @@ export async function fetchClassroomSubmissions(classroomCode: string): Promise<
         .order('completed_at', { ascending: false });
 
       if (!error && data && data.length > 0) {
-        return data;
+        list = data;
       }
     } catch { }
   }
 
-  const local = getLocalSubmissions();
-  return local.filter((s) => {
-    if (!classroomCode) return true;
-    if (s.classroom_code === classroomCode) return true;
-    const match = findMatchingClass(s.classroom_code);
-    return match && match.code === classroomCode;
-  });
+  if (list.length === 0) {
+    const local = getLocalSubmissions();
+    list = local.filter((s) => {
+      if (!classroomCode) return true;
+      if (s.classroom_code === classroomCode) return true;
+      const match = findMatchingClass(s.classroom_code);
+      return match && match.code === classroomCode;
+    });
+  }
+
+  // Rekonsiliasi otomatis: Jika murid telah menyelesaikan misi Level 3 di localStorage
+  // pastikan progres tersebut selalu hadir di daftar submissions Dashboard Guru
+  try {
+    const students = getLocalStudents();
+    let hasNewSynthesis = false;
+    const allLocalSubs = getLocalSubmissions();
+
+    for (const std of students) {
+      const candidateKeys = [
+        `resqbox_missions_${std.id}`,
+        `resqbox_missions_${std.username || ''}`,
+      ];
+      if (std.username === 'demo') {
+        candidateKeys.push('resqbox_missions_std-demo-all-unlocked');
+        candidateKeys.push('resqbox_missions_demo');
+      }
+
+      let completedMissions: string[] = [];
+      for (const key of candidateKeys) {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length > completedMissions.length) {
+              completedMissions = parsed;
+            }
+          } catch { }
+        }
+      }
+
+      if (completedMissions.length > 0) {
+        const completedCount = completedMissions.length;
+        const score = Math.min(100, Math.round((completedCount / 20) * 100));
+        const isDone = completedCount >= 20 || score >= 100;
+        const sub3Idx = list.findIndex(
+          (sub) =>
+            (sub.student_id === std.id || (std.username && sub.student_id === std.username)) &&
+            sub.level_number === 3
+        );
+
+        const lastJobId = completedMissions[completedMissions.length - 1];
+        const statusText = isDone ? 'TUNTAS' : `${score} Poin`;
+        const stageLabel = isDone
+          ? 'Tuntas (20/20 Misi Simulasi Selesai - 100 Poin)'
+          : `Selesai ${completedCount}/20 Misi (${score} Poin)`;
+
+        if (sub3Idx >= 0) {
+          const existingCount = list[sub3Idx].details?.completed_count || 0;
+          if (completedCount >= existingCount) {
+            list[sub3Idx].score = Math.max(list[sub3Idx].score || 0, score);
+            list[sub3Idx].details = {
+              ...list[sub3Idx].details,
+              mode: 'action_lab_simulation',
+              is_completed: isDone,
+              completed_missions: completedMissions,
+              completed_count: completedCount,
+              total_missions: 20,
+              last_completed_id: lastJobId,
+              status_text: statusText,
+              stage_label: stageLabel,
+            };
+          }
+        } else {
+          const synthesized: LevelSubmissionDbRecord = {
+            id: `sub-l3-${std.id}`,
+            student_id: std.id,
+            student_name: std.name,
+            classroom_code: std.classroom_code || classroomCode,
+            level_number: 3,
+            score,
+            details: {
+              mode: 'action_lab_simulation',
+              is_completed: isDone,
+              completed_missions: completedMissions,
+              completed_count: completedCount,
+              total_missions: 20,
+              last_completed_id: lastJobId,
+              status_text: statusText,
+              stage_label: stageLabel,
+            },
+            completed_at: new Date().toISOString(),
+          };
+          list.push(synthesized);
+
+          const existingLocalIdx = allLocalSubs.findIndex(
+            (s) => (s.student_id === std.id || (std.username && s.student_id === std.username)) && s.level_number === 3
+          );
+          if (existingLocalIdx >= 0) {
+            allLocalSubs[existingLocalIdx] = synthesized;
+          } else {
+            allLocalSubs.push(synthesized);
+          }
+          hasNewSynthesis = true;
+        }
+      }
+    }
+
+    if (hasNewSynthesis) {
+      saveLocalSubmissions(allLocalSubs);
+    }
+  } catch { }
+
+  return list;
 }
 
 // ── 5. REALTIME LISTENER UNTUK DASHBOARD GURU ──────────────────────────────

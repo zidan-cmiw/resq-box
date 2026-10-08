@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Compass Rose</title>
+  <style>
+    body { background: #060913; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: sans-serif; }
+    canvas { border: 2px solid #78350f; border-radius: 50%; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+  </style>
+</head>
+<body>
+  <canvas id="compass" width="1024" height="1024"></canvas>
+  <script>
+    const canvas = document.getElementById('compass');
+    const ctx = canvas.getContext('2d');
+    const cx = 512, cy = 512;
+
+    ctx.clearRect(0, 0, 1024, 1024);
+
+    // 1. Outer Bezel Rings (Scaled with safe padding)
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, 470, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fill();
+    ctx.restore();
+
+    // Outer Brass Ring (462 -> 438)
+    const gBrass1 = ctx.createRadialGradient(cx, cy, 430, cx, cy, 464);
+    gBrass1.addColorStop(0, '#78350f');
+    gBrass1.addColorStop(0.3, '#d97706');
+    gBrass1.addColorStop(0.6, '#fde047');
+    gBrass1.addColorStop(0.85, '#b45309');
+    gBrass1.addColorStop(1, '#451a03');
+    ctx.beginPath();
+    ctx.arc(cx, cy, 462, 0, Math.PI * 2);
+    ctx.fillStyle = gBrass1;
+    ctx.fill();
+
+    // Dark groove (438 -> 432)
+    ctx.beginPath();
+    ctx.arc(cx, cy, 438, 0, Math.PI * 2);
+    ctx.fillStyle = '#0f172a';
+    ctx.fill();
+
+    // Inner Bevel Ring (432 -> 418)
+    const gBrass2 = ctx.createRadialGradient(cx, cy, 418, cx, cy, 432);
+    gBrass2.addColorStop(0, '#92400e');
+    gBrass2.addColorStop(0.5, '#f59e0b');
+    gBrass2.addColorStop(1, '#78350f');
+    ctx.beginPath();
+    ctx.arc(cx, cy, 432, 0, Math.PI * 2);
+    ctx.fillStyle = gBrass2;
+    ctx.fill();
+
+    // 2. Main Dial Face (radius 418)
+    const gDial = ctx.createRadialGradient(cx, cy, 0, cx, cy, 418);
+    gDial.addColorStop(0, '#0f172a');
+    gDial.addColorStop(0.65, '#090d16');
+    gDial.addColorStop(0.9, '#040711');
+    gDial.addColorStop(1, '#020408');
+    ctx.beginPath();
+    ctx.arc(cx, cy, 418, 0, Math.PI * 2);
+    ctx.fillStyle = gDial;
+    ctx.fill();
+
+    // Concentric coordinate rings
+    [115, 205, 295, 380].forEach((r, idx) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = idx === 3 ? '#d97706' : 'rgba(148, 163, 184, 0.18)';
+      ctx.lineWidth = idx === 3 ? 2.5 : 1;
+      if (idx !== 3) ctx.setLineDash([4, 4]);
+      else ctx.setLineDash([]);
+      ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    // 16 Thin Radial Guide Lines
+    for (let i = 0; i < 16; i++) {
+      const ang = (i / 16) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(ang) * 80, cy + Math.sin(ang) * 80);
+      ctx.lineTo(cx + Math.cos(ang) * 380, cy + Math.sin(ang) * 380);
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.12)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // 3. Degree Tick Marks (between r=380 and r=416)
+    for (let deg = 0; deg < 360; deg += 2) {
+      const ang = (deg - 90) * (Math.PI / 180);
+      const is30 = deg % 30 === 0;
+      const is10 = deg % 10 === 0;
+      const rInner = is30 ? 388 : is10 ? 398 : 406;
+      const rOuter = 415;
+
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(ang) * rInner, cy + Math.sin(ang) * rInner);
+      ctx.lineTo(cx + Math.cos(ang) * rOuter, cy + Math.sin(ang) * rOuter);
+      ctx.strokeStyle = is30 ? '#fbbf24' : is10 ? '#cbd5e1' : '#64748b';
+      ctx.lineWidth = is30 ? 2.5 : is10 ? 1.5 : 0.8;
+      ctx.stroke();
+
+      // Degree numbers
+      if (is30) {
+        const rText = 368;
+        const tx = cx + Math.cos(ang) * rText;
+        const ty = cy + Math.sin(ang) * rText;
+        ctx.save();
+        ctx.translate(tx, ty);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 11px "Segoe UI", Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(deg + '°', 0, 0);
+        ctx.restore();
+      }
+    }
+
+    // 4. Secondary 4-Point Star (Intercardinal: NE, SE, SW, NW)
+    const interAngles = [45, 135, 225, 315];
+    const rInter = 210;
+    const wInterBase = 32;
+    interAngles.forEach((deg) => {
+      const ang = (deg - 90) * (Math.PI / 180);
+      const tipX = cx + Math.cos(ang) * rInter;
+      const tipY = cy + Math.sin(ang) * rInter;
+      const baseAngL = ang - Math.PI / 2;
+      const baseAngR = ang + Math.PI / 2;
+      const baseLX = cx + Math.cos(baseAngL) * wInterBase;
+      const baseLY = cy + Math.sin(baseAngL) * wInterBase;
+      const baseRX = cx + Math.cos(baseAngR) * wInterBase;
+      const baseRY = cy + Math.sin(baseAngR) * wInterBase;
+
+      // Left facet (Light gold/slate)
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(baseLX, baseLY);
+      ctx.lineTo(tipX, tipY);
+      ctx.closePath();
+      ctx.fillStyle = '#fde047';
+      ctx.fill();
+
+      // Right facet (Dark amber/slate)
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(tipX, tipY);
+      ctx.lineTo(baseRX, baseRY);
+      ctx.closePath();
+      ctx.fillStyle = '#b45309';
+      ctx.fill();
+
+      // Thin stroke
+      ctx.beginPath();
+      ctx.moveTo(baseLX, baseLY);
+      ctx.lineTo(tipX, tipY);
+      ctx.lineTo(baseRX, baseRY);
+      ctx.strokeStyle = '#451a03';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // 5. Primary 4-Point Star (Cardinal: N, E, S, W)
+    const rCard = 315;
+    const wCardBase = 46;
+
+    function drawNeedle(angleDeg, tipR, baseW, colLight, colDark, borderCol) {
+      const ang = (angleDeg - 90) * (Math.PI / 180);
+      const tipX = cx + Math.cos(ang) * tipR;
+      const tipY = cy + Math.sin(ang) * tipR;
+      const baseAngL = ang - Math.PI / 2;
+      const baseAngR = ang + Math.PI / 2;
+      const baseLX = cx + Math.cos(baseAngL) * baseW;
+      const baseLY = cy + Math.sin(baseAngL) * baseW;
+      const baseRX = cx + Math.cos(baseAngR) * baseW;
+      const baseRY = cy + Math.sin(baseAngR) * baseW;
+
+      // Left facet
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(baseLX, baseLY);
+      ctx.lineTo(tipX, tipY);
+      ctx.closePath();
+      ctx.fillStyle = colLight;
+      ctx.fill();
+
+      // Right facet
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(tipX, tipY);
+      ctx.lineTo(baseRX, baseRY);
+      ctx.closePath();
+      ctx.fillStyle = colDark;
+      ctx.fill();
+
+      // Center spine highlight
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(tipX, tipY);
+      ctx.strokeStyle = borderCol || '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Outline
+      ctx.beginPath();
+      ctx.moveTo(baseLX, baseLY);
+      ctx.lineTo(tipX, tipY);
+      ctx.lineTo(baseRX, baseRY);
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+
+      return { tipX, tipY };
+    }
+
+    // Selatan (180° / South)
+    drawNeedle(180, rCard, wCardBase, '#cbd5e1', '#475569', '#f1f5f9');
+
+    // Timur (90° / East)
+    drawNeedle(90, rCard, wCardBase, '#facc15', '#92400e', '#fef08a');
+
+    // Barat (270° / West)
+    drawNeedle(270, rCard, wCardBase, '#facc15', '#92400e', '#fef08a');
+
+    // UTARA (0° / North - POINTING UP! Specially highlighted in vibrant Crimson & Gold)
+    const northTip = drawNeedle(0, rCard + 12, wCardBase + 4, '#ef4444', '#991b1b', '#fde047');
+
+    // Golden Diamond Finial at North tip
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(northTip.tipX, northTip.tipY - 16);
+    ctx.lineTo(northTip.tipX + 9, northTip.tipY);
+    ctx.lineTo(northTip.tipX, northTip.tipY + 10);
+    ctx.lineTo(northTip.tipX - 9, northTip.tipY);
+    ctx.closePath();
+    ctx.fillStyle = '#fde047';
+    ctx.shadowColor = 'rgba(239, 68, 68, 0.8)';
+    ctx.shadowBlur = 10;
+    ctx.fill();
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    // 6. Central Brass Bezel Hub (Center Pivot)
+    const gHubOuter = ctx.createRadialGradient(cx, cy, 48, cx, cy, 66);
+    gHubOuter.addColorStop(0, '#78350f');
+    gHubOuter.addColorStop(0.5, '#f59e0b');
+    gHubOuter.addColorStop(1, '#451a03');
+    ctx.beginPath();
+    ctx.arc(cx, cy, 66, 0, Math.PI * 2);
+    ctx.fillStyle = gHubOuter;
+    ctx.fill();
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Stepped ring (r=48)
+    ctx.beginPath();
+    ctx.arc(cx, cy, 48, 0, Math.PI * 2);
+    ctx.fillStyle = '#0f172a';
+    ctx.fill();
+
+    // Glowing Jewel / Center Dome (r=36)
+    const gJewel = ctx.createRadialGradient(cx - 8, cy - 8, 4, cx, cy, 36);
+    gJewel.addColorStop(0, '#f87171');
+    gJewel.addColorStop(0.4, '#dc2626');
+    gJewel.addColorStop(0.85, '#991b1b');
+    gJewel.addColorStop(1, '#450a0a');
+    ctx.beginPath();
+    ctx.arc(cx, cy, 36, 0, Math.PI * 2);
+    ctx.fillStyle = gJewel;
+    ctx.shadowColor = 'rgba(239, 68, 68, 0.8)';
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Specular highlight gleam on center jewel
+    ctx.beginPath();
+    ctx.arc(cx - 10, cy - 10, 8, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+    ctx.fill();
+
+    // 7. Direction Labels (U, T, S, B and Intercardinals)
+    function drawBadge(x, y, text, subText, mainCol, bgCol, borderCol, radius = 28) {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = bgCol;
+      ctx.fill();
+
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = borderCol;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = mainCol;
+      ctx.font = '900 30px "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, x, y + 1);
+
+      if (subText) {
+        ctx.fillStyle = borderCol;
+        ctx.font = 'bold 11px "Segoe UI", Arial, sans-serif';
+        ctx.fillText(subText, x, y > cy ? y + radius + 13 : y - radius - 11);
+      }
+      ctx.restore();
+    }
+
+    // U (UTARA - ATAS / NORTH)
+    drawBadge(cx, 115, 'U', 'UTARA', '#ffffff', '#dc2626', '#fde047', 32);
+
+    // T (TIMUR - KANAN / EAST)
+    drawBadge(880, cy, 'T', 'TIMUR', '#fef08a', '#1e293b', '#f59e0b', 28);
+
+    // S (SELATAN - BAWAH / SOUTH)
+    drawBadge(cx, 880, 'S', 'SELATAN', '#ffffff', '#1e293b', '#94a3b8', 28);
+
+    // B (BARAT - KIRI / WEST)
+    drawBadge(144, cy, 'B', 'BARAT', '#fef08a', '#1e293b', '#f59e0b', 28);
+
+    // Intercardinal text: TL, TG, BD, BL
+    const interLabels = [
+      { text: 'TL', deg: 45, col: '#fde047' },
+      { text: 'TG', deg: 135, col: '#cbd5e1' },
+      { text: 'BD', deg: 225, col: '#cbd5e1' },
+      { text: 'BL', deg: 315, col: '#fde047' },
+    ];
+    interLabels.forEach((item) => {
+      const ang = (item.deg - 90) * (Math.PI / 180);
+      const r = 265;
+      const lx = cx + Math.cos(ang) * r;
+      const ly = cy + Math.sin(ang) * r;
+      ctx.save();
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+      ctx.beginPath();
+      ctx.arc(lx, ly, 15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = item.col;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.fillStyle = item.col;
+      ctx.font = 'bold 12px "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(item.text, lx, ly);
+      ctx.restore();
+    });
+
+    // Sub-banner title on bottom curve: "MERAPI 3D • ARAH MATA ANGIN"
+    ctx.save();
+    ctx.fillStyle = 'rgba(251, 191, 36, 0.8)';
+    ctx.font = 'bold 12px "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('DIORAMA MERAPI • ARAH MATA ANGIN', cx, cy + 175);
+    ctx.restore();
+  </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DEFAULT_CUSTOM_AVATAR, type CustomAvatarConfig } from '../../store/teacherStore';
 import { PixelAvatarRenderer } from './PixelAvatarRenderer';
 import { retroAudio } from '../../utils/retroAudio';
@@ -9,6 +9,19 @@ interface AvatarCustomizerModalProps {
   initialConfig?: CustomAvatarConfig;
   onClose: () => void;
   onSave: (config: CustomAvatarConfig) => void;
+}
+
+function sanitizeAvatarConfig(cfg?: any): CustomAvatarConfig {
+  if (!cfg || typeof cfg !== 'object') return { ...DEFAULT_CUSTOM_AVATAR };
+  return {
+    skin: cfg.skin || DEFAULT_CUSTOM_AVATAR.skin,
+    hairStyle: cfg.hairStyle || DEFAULT_CUSTOM_AVATAR.hairStyle,
+    hairColor: cfg.hairColor || DEFAULT_CUSTOM_AVATAR.hairColor,
+    eyes: cfg.eyes || DEFAULT_CUSTOM_AVATAR.eyes,
+    outfit: cfg.outfit || DEFAULT_CUSTOM_AVATAR.outfit,
+    accessory: cfg.accessory || DEFAULT_CUSTOM_AVATAR.accessory,
+    bgTheme: cfg.bgTheme || DEFAULT_CUSTOM_AVATAR.bgTheme,
+  };
 }
 
 // Preset options for quick 1-click loading (Pure pixel avatar previews, NO emojis)
@@ -164,8 +177,14 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const [avatar, setAvatar] = useState<CustomAvatarConfig>(initialConfig);
+  const [avatar, setAvatar] = useState<CustomAvatarConfig>(() => sanitizeAvatarConfig(initialConfig));
   const [activeTab, setActiveTab] = useState<'hair' | 'skin' | 'eyes' | 'outfit' | 'accessory' | 'bg'>('hair');
+
+  useEffect(() => {
+    if (isOpen) {
+      setAvatar(sanitizeAvatarConfig(initialConfig));
+    }
+  }, [isOpen, initialConfig]);
 
   if (!isOpen) return null;
 
@@ -192,7 +211,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
 
   const handleApplyPreset = (preset: typeof PRESETS[0]) => {
     retroAudio.playSelect();
-    setAvatar({ ...preset.config });
+    setAvatar(sanitizeAvatarConfig(preset.config));
   };
 
   const handleSave = () => {
@@ -254,7 +273,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                   PRATINJAU KARAKTER
                 </span>
                 <p className="text-xs sm:text-sm text-amber-950 font-bold">
-                  {avatar.outfit.replace('-', ' ').toUpperCase()}
+                  {(avatar.outfit || 'vest-orange').replace('-', ' ').toUpperCase()}
                 </p>
               </div>
             </div>

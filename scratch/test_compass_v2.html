@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Preview Compass V2</title>
+  <style>
+    body { background: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    canvas { width: 512px; height: 512px; border-radius: 50%; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+  </style>
+</head>
+<body>
+  <canvas id="c" width="1024" height="1024"></canvas>
+  <script>
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    const cx = 512, cy = 512;
+
+    // Outer shadow
+    ctx.beginPath();
+    ctx.arc(cx, cy, 476, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.fill();
+
+    // Cincin Bezel Kuningan Luar
+    const gBrass1 = ctx.createRadialGradient(cx, cy, 430, cx, cy, 472);
+    gBrass1.addColorStop(0, '#78350f');
+    gBrass1.addColorStop(0.3, '#d97706');
+    gBrass1.addColorStop(0.6, '#fde047');
+    gBrass1.addColorStop(0.85, '#b45309');
+    gBrass1.addColorStop(1, '#451a03');
+    ctx.beginPath();
+    ctx.arc(cx, cy, 472, 0, Math.PI * 2);
+    ctx.fillStyle = gBrass1;
+    ctx.fill();
+
+    // Celah Gelap
+    ctx.beginPath();
+    ctx.arc(cx, cy, 442, 0, Math.PI * 2);
+    ctx.fillStyle = '#0f172a';
+    ctx.fill();
+
+    // Bevel Kuningan Dalam
+    const gBrass2 = ctx.createRadialGradient(cx, cy, 420, cx, cy, 442);
+    gBrass2.addColorStop(0, '#92400e');
+    gBrass2.addColorStop(0.5, '#f59e0b');
+    gBrass2.addColorStop(1, '#78350f');
+    ctx.beginPath();
+    ctx.arc(cx, cy, 442, 0, Math.PI * 2);
+    ctx.fillStyle = gBrass2;
+    ctx.fill();
+
+    // Dial Face Obsidian
+    const gDial = ctx.createRadialGradient(cx, cy, 0, cx, cy, 420);
+    gDial.addColorStop(0, '#0f172a');
+    gDial.addColorStop(0.65, '#090d16');
+    gDial.addColorStop(0.9, '#040711');
+    gDial.addColorStop(1, '#020408');
+    ctx.beginPath();
+    ctx.arc(cx, cy, 420, 0, Math.PI * 2);
+    ctx.fillStyle = gDial;
+    ctx.fill();
+
+    // Lingkaran Konsentris
+    [105, 195, 280, 365].forEach((r, idx) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = idx === 3 ? '#d97706' : 'rgba(148, 163, 184, 0.22)';
+      ctx.lineWidth = idx === 3 ? 3 : 1.2;
+      if (idx !== 3) ctx.setLineDash([4, 4]);
+      else ctx.setLineDash([]);
+      ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    // Skala Derajat
+    for (let deg = 0; deg < 360; deg += 2) {
+      const ang = (deg - 90) * (Math.PI / 180);
+      const is30 = deg % 30 === 0;
+      const is10 = deg % 10 === 0;
+      const rInner = is30 ? 372 : is10 ? 384 : 394;
+      const rOuter = 414;
+
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(ang) * rInner, cy + Math.sin(ang) * rInner);
+      ctx.lineTo(cx + Math.cos(ang) * rOuter, cy + Math.sin(ang) * rOuter);
+      ctx.strokeStyle = is30 ? '#fbbf24' : is10 ? '#cbd5e1' : '#64748b';
+      ctx.lineWidth = is30 ? 3 : is10 ? 1.8 : 0.9;
+      ctx.stroke();
+    }
+
+    // Bintang 4 Penjuru Sekunder (TL, TG, BD, BL)
+    const interAngles = [45, 135, 225, 315];
+    const rInter = 195;
+    const wInterBase = 30;
+    interAngles.forEach((deg) => {
+      const ang = (deg - 90) * (Math.PI / 180);
+      const tipX = cx + Math.cos(ang) * rInter;
+      const tipY = cy + Math.sin(ang) * rInter;
+      const baseAngL = ang - Math.PI / 2;
+      const baseAngR = ang + Math.PI / 2;
+      const baseLX = cx + Math.cos(baseAngL) * wInterBase;
+      const baseLY = cy + Math.sin(baseAngL) * wInterBase;
+      const baseRX = cx + Math.cos(baseAngR) * wInterBase;
+      const baseRY = cy + Math.sin(baseAngR) * wInterBase;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(baseLX, baseLY);
+      ctx.lineTo(tipX, tipY);
+      ctx.closePath();
+      ctx.fillStyle = '#fde047';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(tipX, tipY);
+      ctx.lineTo(baseRX, baseRY);
+      ctx.closePath();
+      ctx.fillStyle = '#b45309';
+      ctx.fill();
+    });
+
+    // Jarum Kardinal (N, E, S, W)
+    const rCard = 290;
+    const wCardBase = 48;
+    const drawNeedle = (angleDeg, tipR, baseW, colLight, colDark, borderCol) => {
+      const ang = (angleDeg - 90) * (Math.PI / 180);
+      const tipX = cx + Math.cos(ang) * tipR;
+      const tipY = cy + Math.sin(ang) * tipR;
+      const baseAngL = ang - Math.PI / 2;
+      const baseAngR = ang + Math.PI / 2;
+      const baseLX = cx + Math.cos(baseAngL) * baseW;
+      const baseLY = cy + Math.sin(baseAngL) * baseW;
+      const baseRX = cx + Math.cos(baseAngR) * baseW;
+      const baseRY = cy + Math.sin(baseAngR) * baseW;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(baseLX, baseLY);
+      ctx.lineTo(tipX, tipY);
+      ctx.closePath();
+      ctx.fillStyle = colLight;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(tipX, tipY);
+      ctx.lineTo(baseRX, baseRY);
+      ctx.closePath();
+      ctx.fillStyle = colDark;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(tipX, tipY);
+      ctx.strokeStyle = borderCol || '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(baseLX, baseLY);
+      ctx.lineTo(tipX, tipY);
+      ctx.lineTo(baseRX, baseRY);
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      return { tipX, tipY };
+    };
+
+    drawNeedle(180, rCard, wCardBase, '#cbd5e1', '#475569', '#f1f5f9');
+    drawNeedle(90, rCard, wCardBase, '#facc15', '#92400e', '#fef08a');
+    drawNeedle(270, rCard, wCardBase, '#facc15', '#92400e', '#fef08a');
+    const northTip = drawNeedle(0, rCard + 16, wCardBase + 6, '#ef4444', '#991b1b', '#fde047');
+
+    // Finial Intan Emas di Puncak Jarum Utara
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(northTip.tipX, northTip.tipY - 22);
+    ctx.lineTo(northTip.tipX + 12, northTip.tipY);
+    ctx.lineTo(northTip.tipX, northTip.tipY + 12);
+    ctx.lineTo(northTip.tipX - 12, northTip.tipY);
+    ctx.closePath();
+    ctx.fillStyle = '#fde047';
+    ctx.shadowColor = 'rgba(239, 68, 68, 0.9)';
+    ctx.shadowBlur = 14;
+    ctx.fill();
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+
+    // Poros Pusat
+    ctx.beginPath();
+    ctx.arc(cx, cy, 64, 0, Math.PI * 2);
+    ctx.fillStyle = '#b45309';
+    ctx.fill();
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 44, 0, Math.PI * 2);
+    ctx.fillStyle = '#dc2626';
+    ctx.shadowColor = 'rgba(239, 68, 68, 0.8)';
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // BADGE BESAR UTARA, SELATAN, TIMUR, BARAT (DIGEDEIN EKSTRA BESAR & TEGAS)
+    const drawBigBadge = (x, y, text, subText, mainCol, bgCol, borderCol, radius, fontSize, subFontSize) => {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+      ctx.shadowBlur = 12;
+
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = bgCol;
+      ctx.fill();
+
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = borderCol;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Huruf Utama
+      ctx.fillStyle = mainCol;
+      ctx.font = '900 ' + fontSize + 'px "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, x, y + 2);
+
+      // Label Teks Bawah/Atas
+      if (subText) {
+        const textY = y > cy ? y + radius + subFontSize * 0.9 : y - radius - subFontSize * 0.4;
+        ctx.font = '900 ' + subFontSize + 'px "Segoe UI", Arial, sans-serif';
+        // Stroke hitam tebal agar sangat kontras
+        ctx.strokeStyle = '#020617';
+        ctx.lineWidth = 4;
+        ctx.strokeText(subText, x, textY);
+        ctx.fillStyle = borderCol;
+        ctx.fillText(subText, x, textY);
+      }
+      ctx.restore();
+    };
+
+    // U (UTARA - PALING BESAR, MENONJOL, MERAH MENYALA)
+    drawBigBadge(cx, 130, 'U', 'UTARA', '#ffffff', '#dc2626', '#fde047', 56, 64, 22);
+
+    // T (TIMUR - KANAN)
+    drawBigBadge(894, cy, 'T', 'TIMUR', '#fef08a', '#0f172a', '#f59e0b', 50, 56, 20);
+
+    // S (SELATAN - BAWAH)
+    drawBigBadge(cx, 894, 'S', 'SELATAN', '#ffffff', '#0f172a', '#94a3b8', 50, 56, 20);
+
+    // B (BARAT - KIRI)
+    drawBigBadge(130, cy, 'B', 'BARAT', '#fef08a', '#0f172a', '#f59e0b', 50, 56, 20);
+
+    // Label Interkardinal (TL, TG, BD, BL)
+    const interLabels = [
+      { text: 'TL', deg: 45, col: '#fde047' },
+      { text: 'TG', deg: 135, col: '#cbd5e1' },
+      { text: 'BD', deg: 225, col: '#cbd5e1' },
+      { text: 'BL', deg: 315, col: '#fde047' },
+    ];
+    interLabels.forEach((item) => {
+      const ang = (item.deg - 90) * (Math.PI / 180);
+      const r = 245;
+      const lx = cx + Math.cos(ang) * r;
+      const ly = cy + Math.sin(ang) * r;
+      ctx.save();
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(lx, ly, 22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = item.col;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.fillStyle = item.col;
+      ctx.font = '900 18px "Segoe UI", Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(item.text, lx, ly + 1);
+      ctx.restore();
+    });
+
+    // Judul Plakat
+    ctx.save();
+    ctx.font = '900 18px "Segoe UI", Arial, sans-serif';
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    ctx.strokeText('DIORAMA MERAPI • ARAH MATA ANGIN', cx, cy + 160);
+    ctx.fillStyle = '#fde047';
+    ctx.textAlign = 'center';
+    ctx.fillText('DIORAMA MERAPI • ARAH MATA ANGIN', cx, cy + 160);
+    ctx.restore();
+  </script>
+</body>
+</html>

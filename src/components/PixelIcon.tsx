@@ -92,7 +92,8 @@ export type PixelIconType =
   | 'siren'
   | 'dot-yellow'
   | 'dot-red'
-  | 'dot-orange';
+  | 'dot-orange'
+  | 'tent';
 
 interface PixelIconProps {
   name: PixelIconType | string;
@@ -1572,6 +1573,30 @@ export default function PixelIcon({ name, size = 16, className = '', color }: Pi
           <rect x="1" y="1" width="10" height="10" fill="#7c2d12" />
           <rect x="2" y="2" width="8" height="8" fill="#f97316" />
           <rect x="3" y="3" width="3" height="3" fill="#ffedd5" />
+        </svg>
+      );
+
+    case 'tent':
+      return (
+        <svg
+          viewBox="0 0 16 16"
+          width={s}
+          height={s}
+          shapeRendering="crispEdges"
+          className={`inline-block ${className}`}
+        >
+          <rect x="7" y="2" width="2" height="2" fill="#facc15" />
+          <rect x="6" y="4" width="4" height="2" fill="#facc15" />
+          <rect x="5" y="6" width="6" height="2" fill="#facc15" />
+          <rect x="4" y="8" width="8" height="2" fill="#facc15" />
+          <rect x="3" y="10" width="10" height="2" fill="#facc15" />
+          <rect x="2" y="12" width="12" height="2" fill="#facc15" />
+          <rect x="7" y="6" width="2" height="2" fill="#78350f" />
+          <rect x="6" y="8" width="4" height="2" fill="#78350f" />
+          <rect x="6" y="10" width="4" height="4" fill="#451a03" />
+          <rect x="1" y="13" width="1" height="1" fill="#94a3b8" />
+          <rect x="14" y="13" width="1" height="1" fill="#94a3b8" />
+          <rect x="0" y="14" width="16" height="1" fill="#334155" />
         </svg>
       );
 

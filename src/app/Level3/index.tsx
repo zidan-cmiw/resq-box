@@ -1,15 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MISSIONS, CATEGORIES, type Mission } from '../../missions/data/missions';
-import { useMissionStore } from '../../store/missionStore';
+import { useMissionStore, loadMissionsForUser } from '../../store/missionStore';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import { useAuthStore, getActiveCustomAvatar } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
 import { toggleFullscreen, isFullscreenActive } from '../../utils/fullscreen';
 import { PixelAvatarRenderer } from '../../components/PixelAvatar/PixelAvatarRenderer';
 import PixelIcon from '../../components/PixelIcon';
+import { syncLevel3Progress } from './level3Sync';
+import ResqyTutorialOverlay from '../../components/Tutorial/ResqyTutorialOverlay';
+import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 
-// ── Map Coordinate Config for 17 Missions (Horizontal Winding Path Across Merapi) ──
+// ── Map Coordinate Config for 20 Missions (Horizontal Winding Path Across Merapi) ──
 interface PathNode {
   mission: Mission;
   index: number;
@@ -21,35 +24,38 @@ interface PathNode {
   sectorTitle: string;
 }
 
-const MAP_WIDTH = Math.max(3800, 350 + MISSIONS.length * 220);
+const MAP_WIDTH = 4650;
 const MAP_HEIGHT = 1000;
 
-// Nodes positioned organically like an expedition trail across Merapi biomes
+// Nodes positioned organically like an expedition trail across Merapi biomes (20 Levels, 5 per Sector)
 const MAP_NODE_POSITIONS = [
-  // ── SEKTOR 1: BARAK PENGUNGSIAN TERPADU (Level 1 - 3) ──
-  { x: 220,  y: 650, labelPos: 'top' as const, sector: 'lembah' as const, sectorTitle: 'Barak Pengungsian' },
-  { x: 450,  y: 560, labelPos: 'bottom' as const, sector: 'lembah' as const, sectorTitle: 'Barak Pengungsian' },
-  { x: 700,  y: 640, labelPos: 'top' as const, sector: 'lembah' as const, sectorTitle: 'Barak Pengungsian' },
+  // ── SEKTOR 1: FONDASI EWS & SEISMIK (Level 1 - 5) ──
+  { x: 220, y: 640, labelPos: 'top' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
+  { x: 440, y: 550, labelPos: 'bottom' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
+  { x: 660, y: 630, labelPos: 'top' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
+  { x: 880, y: 540, labelPos: 'bottom' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
+  { x: 1100, y: 620, labelPos: 'top' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
 
-  // ── SEKTOR 2: POSKO MEDIS & AIR BERSIH (Level 4 - 8) ──
-  { x: 960,  y: 540, labelPos: 'bottom' as const, sector: 'gempa' as const, sectorTitle: 'Posko Medis & Air' },
-  { x: 1200, y: 440, labelPos: 'top' as const, sector: 'gempa' as const, sectorTitle: 'Posko Medis & Air' },
-  { x: 1440, y: 530, labelPos: 'bottom' as const, sector: 'gempa' as const, sectorTitle: 'Posko Medis & Air' },
-  { x: 1680, y: 640, labelPos: 'top' as const, sector: 'gempa' as const, sectorTitle: 'Posko Medis & Air' },
-  { x: 1900, y: 540, labelPos: 'bottom' as const, sector: 'gempa' as const, sectorTitle: 'Posko Medis & Air' },
+  // ── SEKTOR 2: MITIGASI GEMPA SEKOLAH & RUMAH (Level 6 - 10) ──
+  { x: 1320, y: 530, labelPos: 'bottom' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
+  { x: 1540, y: 440, labelPos: 'top' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
+  { x: 1760, y: 540, labelPos: 'bottom' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
+  { x: 1980, y: 630, labelPos: 'top' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
+  { x: 2200, y: 530, labelPos: 'bottom' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
 
-  // ── SEKTOR 3: DAPUR TAGANA & HUNIAN ABU (Level 9 - 13) ──
-  { x: 2120, y: 430, labelPos: 'top' as const, sector: 'gunung' as const, sectorTitle: 'Dapur & Hunian' },
-  { x: 2350, y: 510, labelPos: 'bottom' as const, sector: 'gunung' as const, sectorTitle: 'Dapur & Hunian' },
-  { x: 2570, y: 600, labelPos: 'top' as const, sector: 'gunung' as const, sectorTitle: 'Dapur & Hunian' },
-  { x: 2790, y: 500, labelPos: 'bottom' as const, sector: 'gunung' as const, sectorTitle: 'Dapur & Hunian' },
-  { x: 3000, y: 410, labelPos: 'top' as const, sector: 'gunung' as const, sectorTitle: 'Dapur & Hunian' },
+  // ── SEKTOR 3: VULKANOLOGI & ERUPSI MERAPI (Level 11 - 15) ──
+  { x: 2420, y: 440, labelPos: 'top' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
+  { x: 2640, y: 530, labelPos: 'bottom' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
+  { x: 2860, y: 620, labelPos: 'top' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
+  { x: 3080, y: 510, labelPos: 'bottom' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
+  { x: 3300, y: 420, labelPos: 'top' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
 
-  // ── SEKTOR 4: BANTARAN LAHAR & TRUK RESCUE (Level 14 - 17) ──
-  { x: 3200, y: 480, labelPos: 'bottom' as const, sector: 'proyek' as const, sectorTitle: 'Lahar & Rescue' },
-  { x: 3400, y: 570, labelPos: 'top' as const, sector: 'proyek' as const, sectorTitle: 'Lahar & Rescue' },
-  { x: 3580, y: 440, labelPos: 'bottom' as const, sector: 'proyek' as const, sectorTitle: 'Lahar & Rescue' },
-  { x: 3720, y: 320, labelPos: 'top' as const, sector: 'proyek' as const, sectorTitle: 'Lahar & Rescue' },
+  // ── SEKTOR 4: JALUR EVAKUASI & GRAND CHALLENGE (Level 16 - 20) ──
+  { x: 3520, y: 510, labelPos: 'bottom' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
+  { x: 3740, y: 600, labelPos: 'top' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
+  { x: 3960, y: 500, labelPos: 'bottom' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
+  { x: 4180, y: 420, labelPos: 'top' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
+  { x: 4400, y: 500, labelPos: 'bottom' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
 ];
 
 // Smooth Catmull-Rom to Cubic Bezier spline generator (Tactical expedition trail style)
@@ -85,6 +91,12 @@ export default function Level3() {
     const activeId = student?.id || currentUser?.id || 'guest';
     useMissionStore.getState().syncUser(activeId);
     useWorkspaceStore.getState().syncUser(activeId);
+
+    // Passive sync: pastikan progres tersimpan di localStorage juga tersinkronisasi ke Dashboard Guru
+    const missions = loadMissionsForUser(activeId);
+    if (missions.length > 0) {
+      syncLevel3Progress(student);
+    }
   }, [student?.id, currentUser?.id]);
 
   const [soundOn, setSoundOn] = useState(() => retroAudio.isEnabled());
@@ -106,7 +118,7 @@ export default function Level3() {
   const [dragStartX, setDragStartX] = useState(0);
   const [dragScrollLeft, setDragScrollLeft] = useState(0);
 
-  // Build the complete list of path nodes across all 50 missions
+  // Build the complete list of path nodes across all 20 missions
   const pathNodes: PathNode[] = MISSIONS.map((mission, idx) => {
     const wave = Math.sin(idx * 0.65) * 115;
     const defaultY = Math.round(520 + wave);
@@ -283,12 +295,6 @@ export default function Level3() {
           <PixelIcon name="chevron-left" size={16} />
           <span>MENU UTAMA</span>
         </button>
-
-        <div className="bg-[#fffbeb]/95 border-2 border-[#b45309] px-3.5 py-1.5 rounded-xl shadow-2xl backdrop-blur-md hidden sm:flex items-center gap-2 font-pixel">
-          <span className="text-[#b45309] font-extrabold text-xs sm:text-sm tracking-wide">LEVEL 3: ACTION LAB</span>
-          <span className="text-[#d97706] text-xs">|</span>
-          <span className="text-xs sm:text-sm text-[#78350f] font-bold font-sans">Digital Twin Merapi</span>
-        </div>
       </div>
 
       {/* Top Right: Progress & Tools (No Emojis!) */}
@@ -307,30 +313,18 @@ export default function Level3() {
           <span className="text-xs font-extrabold text-[#15803d] font-pixel">{progressPercent}%</span>
         </div>
 
-        {/* LKPD Guide */}
-        <button
-          onClick={() => {
-            retroAudio.playSelect();
-            setShowLkpdModal(true);
-          }}
-          className="pixel-btn-wood-compact text-xs sm:text-sm py-2 px-3 text-amber-300 hover:text-amber-100 flex items-center gap-1.5 shadow-2xl backdrop-blur-md cursor-pointer font-bold"
-          title="Panduan Kegiatan Kelompok (LKPD)"
-        >
-          <PixelIcon name="backpack" size={16} />
-          <span className="hidden lg:inline">PANDUAN LKPD</span>
-        </button>
-
         {/* My Projects */}
         <button
+          id="tour-level3-my-projects"
           onClick={() => {
             retroAudio.playSelect();
             setShowProjectsModal(true);
           }}
-          className="pixel-btn-wood-compact text-xs sm:text-sm py-2 px-3 text-cyan-300 hover:text-cyan-100 flex items-center gap-1.5 shadow-2xl backdrop-blur-md cursor-pointer font-bold"
+          className="pixel-btn-wood-compact text-xs sm:text-sm py-2 px-3 text-amber-100 hover:text-white flex items-center gap-1.5 shadow-2xl backdrop-blur-md cursor-pointer font-bold font-pixel"
           title="Proyek Saya (Sandbox)"
         >
           <PixelIcon name="folder" size={16} />
-          <span className="hidden lg:inline">PROYEK SAYA</span>
+          <span>PROYEK SAYA</span>
         </button>
 
         {/* Sound toggle */}
@@ -360,9 +354,8 @@ export default function Level3() {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        className={`relative w-full h-full overflow-x-auto overflow-y-hidden select-none scroll-smooth bg-[#0c1a2e] ${
-          isDragging ? 'cursor-grabbing' : 'cursor-grab'
-        }`}
+        className={`relative w-full h-full overflow-x-auto overflow-y-hidden select-none scroll-smooth bg-[#0c1a2e] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
+          }`}
         style={{ scrollBehavior: 'smooth' }}
       >
         {/* World Map Wrapper (3800px wide, fills 100% of viewport height) */}
@@ -461,12 +454,13 @@ export default function Level3() {
             <circle cx="480" cy="140" r="85" fill="#fde047" opacity="0.35" />
             <circle cx="480" cy="140" r="125" fill="#fef08a" opacity="0.15" />
 
-            {/* Drifting Soft White Clouds Across Full 3800px Map */}
+            {/* Drifting Soft White Clouds Across Full 4650px Map */}
             {[
               { x: 120, y: 75, s: 1.15 }, { x: 580, y: 90, s: 0.9 },
               { x: 1080, y: 65, s: 1.2 }, { x: 1560, y: 80, s: 1.05 },
               { x: 2060, y: 65, s: 1.25 }, { x: 2580, y: 85, s: 0.95 },
               { x: 3080, y: 70, s: 1.1 }, { x: 3520, y: 60, s: 1.0 },
+              { x: 4020, y: 75, s: 1.15 }, { x: 4420, y: 85, s: 0.9 },
             ].map((cloud, i) => (
               <g key={`cloud_${i}`} transform={`translate(${cloud.x}, ${cloud.y}) scale(${cloud.s})`}>
                 <ellipse cx="40" cy="20" rx="38" ry="15" fill="#ffffff" opacity="0.92" />
@@ -481,6 +475,7 @@ export default function Level3() {
               { x: 260, y: 110 }, { x: 285, y: 102 }, { x: 310, y: 115 },
               { x: 1350, y: 105 }, { x: 1375, y: 98 }, { x: 1400, y: 112 },
               { x: 2420, y: 120 }, { x: 2445, y: 114 }, { x: 2470, y: 125 },
+              { x: 3620, y: 110 }, { x: 3645, y: 104 }, { x: 3670, y: 116 },
             ].map((b, i) => (
               <path
                 key={`bird_${i}`}
@@ -494,12 +489,12 @@ export default function Level3() {
 
             {/* Distant Mountain Silhouettes (Pegunungan Menoreh & Merbabu in Morning Haze) */}
             <path
-              d="M 0,380 Q 500,320 1000,360 T 2000,330 T 3000,350 L 3800,340 L 3800,600 L 0,600 Z"
+              d="M 0,380 Q 500,320 1000,360 T 2000,330 T 3000,350 T 4000,340 L 4650,340 L 4650,600 L 0,600 Z"
               fill="#0284c7"
               opacity="0.25"
             />
             <path
-              d="M 0,420 Q 600,350 1200,400 T 2200,370 T 3200,390 L 3800,380 L 3800,650 L 0,650 Z"
+              d="M 0,420 Q 600,350 1200,400 T 2200,370 T 3200,390 T 4200,380 L 4650,380 L 4650,650 L 0,650 Z"
               fill="#0369a1"
               opacity="0.3"
             />
@@ -508,43 +503,43 @@ export default function Level3() {
             <g id="merapi_volcano_realistic">
               {/* Distant Mountain Shoulder */}
               <path
-                d="M 1950,750 Q 2350,520 2750,360 Q 3100,220 3380,140 Q 3600,230 3800,340 L 3800,900 L 1950,900 Z"
+                d="M 2350,750 Q 2750,520 3150,360 Q 3450,220 3680,140 Q 3950,230 4650,340 L 4650,900 L 2350,900 Z"
                 fill="#334155"
                 opacity="0.45"
               />
 
               {/* Main Stratovolcano Massif with Steep Flanks */}
               <path
-                d="M 2050,780 Q 2450,540 2820,380 Q 3150,230 3380,140 Q 3580,220 3800,320 L 3800,900 L 2050,900 Z"
+                d="M 2450,780 Q 2850,540 3220,380 Q 3500,230 3680,140 Q 3900,220 4650,320 L 4650,900 L 2450,900 Z"
                 fill="url(#volcanoConeGrad)"
               />
 
               {/* East Flank Shading (Volcanic Ridge Contrast) */}
               <path
-                d="M 3380,140 Q 3580,220 3800,320 L 3800,900 L 3380,900 Z"
+                d="M 3680,140 Q 3900,220 4650,320 L 4650,900 L 3680,900 Z"
                 fill="url(#volcanoShadeGrad)"
                 opacity="0.55"
               />
 
-              {/* Caldera Summit Notch & Glowing Lava Dome (X: 3380, Y: 140) */}
-              <ellipse cx="3380" cy="142" rx="72" ry="20" fill="#1c1917" />
-              <ellipse cx="3380" cy="144" rx="55" ry="14" fill="url(#craterLavaGlow)" />
-              <ellipse cx="3380" cy="144" rx="38" ry="8" fill="#fef08a" opacity="0.85" />
+              {/* Caldera Summit Notch & Glowing Lava Dome (X: 3680, Y: 140) */}
+              <ellipse cx="3680" cy="142" rx="72" ry="20" fill="#1c1917" />
+              <ellipse cx="3680" cy="144" rx="55" ry="14" fill="url(#craterLavaGlow)" />
+              <ellipse cx="3680" cy="144" rx="38" ry="8" fill="#fef08a" opacity="0.85" />
 
               {/* Billowing Volcanic Smoke with Filter */}
               <g id="merapi_crater_smoke" filter="url(#merapiSmokeFilter)">
-                <ellipse cx="3370" cy="105" rx="35" ry="22" fill="#cbd5e1" opacity="0.6" />
-                <ellipse cx="3400" cy="85" rx="42" ry="26" fill="#e2e8f0" opacity="0.55" />
-                <circle cx="3360" cy="60" r="38" fill="#94a3b8" opacity="0.45" />
-                <circle cx="3410" cy="40" r="46" fill="#64748b" opacity="0.35" />
-                <ellipse cx="3380" cy="15" rx="55" ry="30" fill="#475569" opacity="0.25" />
-                <circle cx="3340" cy="95" r="24" fill="#fb923c" opacity="0.3" />
-                <circle cx="3420" cy="75" r="28" fill="#f97316" opacity="0.25" />
+                <ellipse cx="3670" cy="105" rx="35" ry="22" fill="#cbd5e1" opacity="0.6" />
+                <ellipse cx="3700" cy="85" rx="42" ry="26" fill="#e2e8f0" opacity="0.55" />
+                <circle cx="3660" cy="60" r="38" fill="#94a3b8" opacity="0.45" />
+                <circle cx="3710" cy="40" r="46" fill="#64748b" opacity="0.35" />
+                <ellipse cx="3680" cy="15" rx="55" ry="30" fill="#475569" opacity="0.25" />
+                <circle cx="3640" cy="95" r="24" fill="#fb923c" opacity="0.3" />
+                <circle cx="3720" cy="75" r="28" fill="#f97316" opacity="0.25" />
               </g>
 
               {/* Volcanic Gullies & Distant Lava Veins (Alur Lahar Kali Gendol) */}
               <path
-                d="M 3380,155 Q 3240,310 3020,510 T 2780,720"
+                d="M 3680,155 Q 3540,310 3320,510 T 3080,720"
                 fill="none"
                 stroke="#1c1917"
                 strokeWidth="20"
@@ -552,7 +547,7 @@ export default function Level3() {
                 opacity="0.85"
               />
               <path
-                d="M 3380,155 Q 3240,310 3020,510 T 2780,720"
+                d="M 3680,155 Q 3540,310 3320,510 T 3080,720"
                 fill="none"
                 stroke="#f97316"
                 strokeWidth="4"
@@ -560,7 +555,7 @@ export default function Level3() {
                 opacity="0.65"
               />
               <path
-                d="M 3380,155 Q 3480,300 3560,460"
+                d="M 3680,155 Q 3800,300 3920,460"
                 fill="none"
                 stroke="#1c1917"
                 strokeWidth="14"
@@ -569,17 +564,17 @@ export default function Level3() {
               />
             </g>
 
-            {/* ── FULL WIDTH ROLLING HILLS (Sektor 1 sampai Sektor 4, X: 0 to 3800) ── */}
+            {/* ── FULL WIDTH ROLLING HILLS (Sektor 1 sampai Sektor 4, X: 0 to 4650) ── */}
             <path
-              d="M 0,470 Q 500,420 1100,450 T 2100,440 T 3100,480 L 3800,500 L 3800,1000 L 0,1000 Z"
+              d="M 0,470 Q 500,420 1100,450 T 2100,440 T 3100,480 T 4100,470 L 4650,500 L 4650,1000 L 0,1000 Z"
               fill="url(#hillGreenGrad1)"
             />
             <path
-              d="M 0,530 Q 550,490 1200,510 T 2200,500 T 3200,540 L 3800,550 L 3800,1000 L 0,1000 Z"
+              d="M 0,530 Q 550,490 1200,510 T 2200,500 T 3200,540 T 4200,520 L 4650,550 L 4650,1000 L 0,1000 Z"
               fill="url(#hillGreenGrad2)"
             />
             <path
-              d="M 0,610 Q 600,570 1300,590 T 2300,580 T 3300,620 L 3800,630 L 3800,1000 L 0,1000 Z"
+              d="M 0,610 Q 600,570 1300,590 T 2300,580 T 3300,620 T 4300,600 L 4650,630 L 4650,1000 L 0,1000 Z"
               fill="url(#hillGreenGrad3)"
             />
 
@@ -590,6 +585,7 @@ export default function Level3() {
               { x: 1320, y: 420 }, { x: 1840, y: 410 }, { x: 1920, y: 390 },
               { x: 2380, y: 370 }, { x: 2460, y: 390 }, { x: 2850, y: 360 },
               { x: 2930, y: 380 }, { x: 3260, y: 370 }, { x: 3480, y: 390 },
+              { x: 3880, y: 390 }, { x: 4120, y: 410 }, { x: 4380, y: 420 },
             ].map((pt, i) => (
               <g key={`pine_${i}`} transform={`translate(${pt.x}, ${pt.y})`}>
                 <ellipse cx="10" cy="38" rx="14" ry="4" fill="#0f172a" opacity="0.3" />
@@ -609,6 +605,8 @@ export default function Level3() {
               { x: 2320, y: 560, isRock: true }, { x: 2540, y: 640, isRock: false },
               { x: 2820, y: 540, isRock: true }, { x: 3100, y: 460, isRock: false },
               { x: 3360, y: 520, isRock: true }, { x: 3640, y: 420, isRock: false },
+              { x: 3880, y: 530, isRock: true }, { x: 4120, y: 450, isRock: false },
+              { x: 4360, y: 510, isRock: true }, { x: 4520, y: 470, isRock: false },
             ].map((item, i) =>
               item.isRock ? (
                 <g key={`rock_${i}`} transform={`translate(${item.x}, ${item.y})`}>
@@ -690,6 +688,8 @@ export default function Level3() {
               <rect x="2024" y="504" width="20" height="6" fill="#d97706" rx="2" />
               <rect x="2960" y="470" width="28" height="8" fill="#b45309" rx="2" />
               <rect x="2964" y="464" width="20" height="6" fill="#d97706" rx="2" />
+              <rect x="3820" y="520" width="28" height="8" fill="#b45309" rx="2" />
+              <rect x="3824" y="514" width="20" height="6" fill="#d97706" rx="2" />
             </g>
 
             {/* 4. Tandon Air Bersih Stainless Steel & Pos Cuci Mata (X: 1120, Y: 460) - Tanpa Teks */}
@@ -783,8 +783,8 @@ export default function Level3() {
               <rect x="-66" y="114" width="11" height="6" fill="#475569" rx="1" />
             </g>
 
-            {/* 8. Rambu Bahaya Lahar Dingin & Sensor EWS (X: 3240, Y: 420) - Tanpa Teks */}
-            <g id="landmark_lahar_sign_ews" transform="translate(3240, 420)">
+            {/* 8. Rambu Bahaya Lahar Dingin & Sensor EWS (X: 3410, Y: 420) - Tanpa Teks */}
+            <g id="landmark_lahar_sign_ews" transform="translate(3410, 420)">
               {/* Tiang Rambu Baja Hitam-Kuning */}
               <rect x="-3" y="40" width="6" height="86" fill="#0f172a" rx="1" />
               <rect x="-3" y="60" width="6" height="8" fill="#facc15" />
@@ -801,8 +801,8 @@ export default function Level3() {
               <circle cx="0" cy="-12" r="10" fill="none" stroke="#ef4444" strokeWidth="1.5" opacity="0.6" />
             </g>
 
-            {/* 9. Mobil Evakuasi / Truk Rescue BNPB Gagah (X: 3560, Y: 370) - Tanpa Teks */}
-            <g id="landmark_rescue_truck_sector4" transform="translate(3560, 370)">
+            {/* 9. Mobil Evakuasi / Truk Rescue BNPB Gagah (X: 4290, Y: 370) - Tanpa Teks */}
+            <g id="landmark_rescue_truck_sector4" transform="translate(4290, 370)">
               <rect x="-8" y="78" width="116" height="12" fill="#334155" stroke="#1e293b" strokeWidth="1.5" rx="2" />
               <ellipse cx="18" cy="80" rx="12" ry="4" fill="#0f172a" opacity="0.45" />
               <ellipse cx="44" cy="80" rx="12" ry="4" fill="#0f172a" opacity="0.45" />
@@ -954,14 +954,12 @@ export default function Level3() {
                 {/* ── TACTICAL WAYPOINT NODE BUTTON (Disaster Expedition Style) ── */}
                 <button
                   onClick={() => handleNodeClick(node)}
-                  className={`group relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer shadow-xl focus:outline-none ${
-                    isCurrentActive
-                      ? 'scale-110'
-                      : 'hover:scale-108 hover:-translate-y-1'
-                  }`}
-                  title={`${node.levelNumber}. ${node.mission.title} (${
-                    isCompleted ? 'Selesai' : isLevelUnlocked ? 'Terbuka' : 'Terkunci'
-                  })`}
+                  className={`group relative w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer shadow-xl focus:outline-none ${isCurrentActive
+                    ? 'scale-110'
+                    : 'hover:scale-108 hover:-translate-y-1'
+                    }`}
+                  title={`${node.levelNumber}. ${node.mission.title} (${isCompleted ? 'Selesai' : isLevelUnlocked ? 'Terbuka' : 'Terkunci'
+                    })`}
                 >
                   {/* Outer Bevel Rim */}
                   <div className={`absolute inset-0 rounded-2xl border-4 transition-all ${theme.rim}`} />
@@ -1000,9 +998,8 @@ export default function Level3() {
                 {/* ── CLEAR & READABLE LEVEL TITLE PLAQUE (Plus Jakarta Sans) ── */}
                 <div
                   onClick={() => handleNodeClick(node)}
-                  className={`absolute pointer-events-auto cursor-pointer transition-all duration-200 hover:scale-105 ${
-                    node.labelPos === 'top' ? '-top-14' : 'top-20'
-                  }`}
+                  className={`absolute pointer-events-auto cursor-pointer transition-all duration-200 hover:scale-105 ${node.labelPos === 'top' ? '-top-14' : 'top-20'
+                    }`}
                 >
                   <div
                     className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 whitespace-nowrap backdrop-blur-md transition-all ${theme.plaque}`}
@@ -1109,6 +1106,18 @@ export default function Level3() {
                 {selectedMission.objective}
               </p>
             </div>
+
+            {/* Mission Block Location Guide */}
+            {selectedMission.hint && (
+              <div className="p-4 sm:p-5 rounded-2xl bg-cyan-50 border-3 border-cyan-600/70 shadow-xs">
+                <span className="text-xs sm:text-sm font-black text-cyan-800 uppercase tracking-wider mb-1.5 flex items-center gap-2">
+                  PANDUAN KATEGORI BLOK
+                </span>
+                <p className="text-sm sm:text-base font-semibold leading-relaxed text-cyan-950">
+                  {selectedMission.hint}
+                </p>
+              </div>
+            )}
 
             {/* Steps Count & Status */}
             <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-[#78350f] px-1">
@@ -1237,7 +1246,7 @@ export default function Level3() {
                 </span>
                 <div className="text-sm text-[#291305] leading-relaxed">
                   <strong className="text-[#451a03] block mb-1 text-base font-bold">Uji Diorama Fisik & Refleksi Mitigasi</strong>
-                  Hubungkan ke <strong>diorama fisik</strong> (ESP32 smart board) via WiFi atau USB untuk menyalakan sirine dan lampu fisik, lalu diskusikan efektivitas keselamatan warga.
+                  Hubungkan ke <strong>diorama fisik</strong> via WiFi atau USB untuk menyalakan sirine dan lampu fisik, lalu diskusikan efektivitas keselamatan warga.
                 </div>
               </div>
             </div>
@@ -1254,18 +1263,19 @@ export default function Level3() {
 
       {/* ── MODAL 4: PROYEK SAYA (SANDBOX) ── */}
       {showProjectsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-['Plus_Jakarta_Sans',sans-serif]">
-          <div className="relative w-full max-w-lg bg-[#fef3c7] border-4 sm:border-[5px] border-[#451a03] rounded-2xl sm:rounded-3xl shadow-[0_16px_0_#1c0d02] p-6 text-[#451a03] flex flex-col gap-4">
-            <div className="flex items-center justify-between border-b-3 border-[#78350f] pb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#b45309]/20 border-2 border-[#b45309] flex items-center justify-center shrink-0">
-                  <PixelIcon name="folder" size={20} className="text-[#92400e]" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-pixel">
+          <div className="relative w-full max-w-xl bg-[#fef3c7] border-4 sm:border-[5px] border-[#451a03] rounded-2xl sm:rounded-3xl shadow-[0_16px_0_#1c0d02] p-5 sm:p-7 text-[#260c02] flex flex-col gap-4 sm:gap-5">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b-3 border-[#78350f] pb-3.5">
+              <div className="flex items-center gap-3 sm:gap-3.5">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-900 text-amber-100 border-2 border-amber-950 flex items-center justify-center shrink-0 shadow-[0_2px_0_#231206]">
+                  <PixelIcon name="folder" size={26} />
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-bold text-[#451a03]">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-black text-[#260c02] font-pixel-title leading-tight">
                     Proyek Saya (Sandbox)
                   </h3>
-                  <p className="text-xs text-[#78350f]">
+                  <p className="text-xs sm:text-sm md:text-base text-[#381504] font-extrabold mt-0.5">
                     Rancang logika mitigasi bebas tanpa batasan skenario misi
                   </p>
                 </div>
@@ -1273,56 +1283,58 @@ export default function Level3() {
 
               <button
                 onClick={() => setShowProjectsModal(false)}
-                className="w-9 h-9 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-bold text-sm flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 border-2 border-amber-950 font-bold text-sm flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#231206] shrink-0"
+                title="Tutup Modal"
               >
-                <PixelIcon name="cross" size={14} />
+                <PixelIcon name="cross" size={16} />
               </button>
             </div>
 
             {/* Create Project Button */}
             <button
               onClick={() => setShowNewProjectModal(true)}
-              className="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 border-2 border-[#064e3b] shadow-[0_3px_0_#064e3b] cursor-pointer transition-all active:translate-y-0.5"
+              className="py-3.5 sm:py-4 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base md:text-lg flex items-center justify-center gap-2.5 border-2 border-[#064e3b] shadow-[0_4px_0_#064e3b] cursor-pointer transition-all active:translate-y-0.5"
             >
-              BUAT PROYEK BARU
+              <PixelIcon name="hammer" size={20} />
+              <span>BUAT PROYEK BARU</span>
             </button>
 
             {/* Project List */}
-            <div className="max-h-60 overflow-y-auto flex flex-col gap-2.5 pr-1">
+            <div className="max-h-72 overflow-y-auto flex flex-col gap-3 pr-1">
               {projects.length === 0 ? (
-                <div className="p-6 text-center text-xs sm:text-sm text-stone-600 bg-amber-100/70 rounded-xl border border-amber-300">
-                  Belum ada proyek sandbox. Klik tombol di atas untuk membuat proyek baru!
+                <div className="p-6 sm:p-8 text-center text-sm sm:text-base md:text-lg text-[#1e0a00] font-extrabold bg-[#fef08a] rounded-2xl border-2 sm:border-3 border-amber-900/40 shadow-sm leading-relaxed">
+                  Belum ada proyek sandbox. Klik tombol hijau di atas untuk membuat proyek barumu!
                 </div>
               ) : (
                 projects.map((proj) => (
                   <div
                     key={proj.id}
-                    className="p-3.5 rounded-xl bg-white border-2 border-[#b45309]/40 flex items-center justify-between gap-3 hover:border-emerald-600 transition-colors shadow-sm"
+                    className="p-4 rounded-xl bg-amber-50 border-2 border-amber-900/40 flex items-center justify-between gap-3 hover:border-emerald-600 transition-colors shadow-sm"
                   >
-                    <div>
-                      <h4 className="text-xs sm:text-sm font-bold text-stone-900">{proj.name}</h4>
-                      <p className="text-[11px] text-stone-500">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-sm sm:text-base md:text-lg font-black text-[#1e0a00] truncate">{proj.name}</h4>
+                      <p className="text-xs sm:text-sm text-amber-900 font-bold mt-0.5">
                         Diperbarui: {new Date(proj.updatedAt).toLocaleDateString('id-ID')}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       <button
                         onClick={() => {
                           setShowProjectsModal(false);
                           navigate(`/workspace?project=${proj.id}`);
                         }}
-                        className="py-1.5 px-3.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-black shadow"
+                        className="py-2 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm md:text-base font-black shadow-[0_2px_0_#064e3b] cursor-pointer active:translate-y-0.5"
                       >
                         BUKA
                       </button>
 
                       <button
                         onClick={() => setConfirmDeleteProjectId(proj.id)}
-                        className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-100 cursor-pointer"
+                        className="p-2.5 rounded-xl text-rose-700 hover:bg-rose-100 hover:text-rose-900 border border-rose-300 cursor-pointer"
                         title="Hapus Proyek"
                       >
-                        <svg className="w-4 h-4 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>
@@ -1334,7 +1346,7 @@ export default function Level3() {
 
             <button
               onClick={() => setShowProjectsModal(false)}
-              className="w-full py-2.5 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 font-bold text-xs sm:text-sm border-2 border-[#451a03] shadow-[0_2px_0_#451a03] cursor-pointer"
+              className="w-full py-3 sm:py-3.5 rounded-xl bg-[#853507] hover:bg-[#6c2803] text-white font-pixel-title font-bold text-xs sm:text-sm md:text-base border-2 border-[#451a03] shadow-[0_3px_0_#2b0d00] cursor-pointer active:translate-y-0.5"
             >
               TUTUP
             </button>
@@ -1344,36 +1356,39 @@ export default function Level3() {
 
       {/* ── MODAL 5: NEW PROJECT INPUT ── */}
       {showNewProjectModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-['Plus_Jakarta_Sans',sans-serif]">
-          <div className="w-full max-w-sm bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl sm:rounded-3xl p-6 text-[#451a03] flex flex-col gap-3.5 shadow-[0_16px_0_#1c0d02]">
-            <h3 className="font-bold text-base text-[#451a03]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-pixel">
+          <div className="w-full max-w-md bg-[#fef3c7] border-4 sm:border-[5px] border-[#451a03] rounded-2xl sm:rounded-3xl p-6 sm:p-7 text-[#260c02] flex flex-col gap-4 shadow-[0_16px_0_#1c0d02]">
+            <h3 className="font-pixel-title font-black text-base sm:text-lg md:text-xl text-[#260c02]">
               Buat Proyek Baru
             </h3>
+            <p className="text-xs sm:text-sm text-[#381504] font-extrabold -mt-2">
+              Beri nama proyek kreasi logika mitigasi mandirimu:
+            </p>
             <input
               type="text"
               autoFocus
               value={newProjectName}
               onChange={(e) => setNewProjectName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCreateNewProject()}
-              placeholder="Contoh: Alarm Banjir Lahar..."
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-[#b45309] text-stone-900 text-sm outline-none focus:ring-2 focus:ring-amber-500"
+              placeholder="Contoh: Alarm Banjir Lahar Kali Kuning..."
+              className="w-full px-4 py-3 rounded-xl bg-white border-2 border-amber-900/40 text-[#1a0800] text-sm sm:text-base font-bold outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
             />
-            <div className="flex gap-2.5 pt-1">
+            <div className="flex gap-3 pt-1">
               <button
                 onClick={() => {
                   setShowNewProjectModal(false);
                   setNewProjectName('');
                 }}
-                className="flex-1 py-2.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs sm:text-sm font-bold border-2 border-stone-400 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-900 text-xs sm:text-sm md:text-base font-bold border-2 border-stone-400 cursor-pointer active:translate-y-0.5"
               >
                 BATAL
               </button>
               <button
                 disabled={!newProjectName.trim()}
                 onClick={handleCreateNewProject}
-                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white text-xs sm:text-sm font-black border-2 border-[#064e3b] shadow-[0_2px_0_#064e3b] cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white text-xs sm:text-sm md:text-base font-black border-2 border-[#064e3b] shadow-[0_3px_0_#064e3b] cursor-pointer active:translate-y-0.5"
               >
-                BUAT
+                BUAT SEKARANG
               </button>
             </div>
           </div>
@@ -1382,18 +1397,18 @@ export default function Level3() {
 
       {/* ── MODAL 6: CONFIRM DELETE PROJECT ── */}
       {confirmDeleteProjectId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-['Plus_Jakarta_Sans',sans-serif]">
-          <div className="w-full max-w-sm bg-[#fef3c7] border-4 border-rose-800 rounded-2xl sm:rounded-3xl p-6 text-[#451a03] flex flex-col gap-3 shadow-[0_16px_0_#1c0d02]">
-            <h3 className="font-bold text-base text-rose-800">
-              Hapus Proyek?
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-pixel">
+          <div className="w-full max-w-md bg-[#fef3c7] border-4 sm:border-[5px] border-rose-800 rounded-2xl sm:rounded-3xl p-6 sm:p-7 text-[#260c02] flex flex-col gap-3.5 shadow-[0_16px_0_#1c0d02]">
+            <h3 className="font-pixel-title font-black text-base sm:text-lg md:text-xl text-rose-800">
+              Hapus Proyek Ini?
             </h3>
-            <p className="text-xs sm:text-sm text-[#291305] leading-relaxed">
-              Proyek dan seluruh blok rancangan di dalamnya akan dihapus secara permanen.
+            <p className="text-sm sm:text-base text-[#1e0a00] font-bold leading-relaxed">
+              Proyek dan seluruh blok rancangan mitigasi di dalamnya akan dihapus secara permanen.
             </p>
-            <div className="flex gap-2.5 pt-2">
+            <div className="flex gap-3 pt-2">
               <button
                 onClick={() => setConfirmDeleteProjectId(null)}
-                className="flex-1 py-2.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs sm:text-sm font-bold border-2 border-stone-400 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-900 text-xs sm:text-sm md:text-base font-bold border-2 border-stone-400 cursor-pointer active:translate-y-0.5"
               >
                 BATAL
               </button>
@@ -1402,7 +1417,7 @@ export default function Level3() {
                   deleteProject(confirmDeleteProjectId);
                   setConfirmDeleteProjectId(null);
                 }}
-                className="flex-1 py-2.5 rounded-xl bg-rose-700 hover:bg-rose-600 text-white text-xs sm:text-sm font-black border-2 border-rose-950 shadow-[0_2px_0_#4c0519] cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-rose-700 hover:bg-rose-600 text-white text-xs sm:text-sm md:text-base font-black border-2 border-rose-950 shadow-[0_3px_0_#4c0519] cursor-pointer active:translate-y-0.5"
               >
                 YA, HAPUS
               </button>
@@ -1410,6 +1425,12 @@ export default function Level3() {
           </div>
         </div>
       )}
+
+      {/* ── PANDUAN INTERAKTIF RESQY (ONBOARDING GAME TUTORIAL) ── */}
+      <ResqyTutorialOverlay
+        tour={TUTORIAL_TOURS.level3}
+        userId={student?.id || currentUser?.id || 'guest'}
+      />
     </div>
   );
 }

@@ -6,663 +6,1118 @@
 #include <WebSocketsServer.h>
 
 // =====================================================
-// KONFIGURASI WIFI & WEBSOCKET
-// Masukkan nama WiFi (SSID) dan Password di sini.
-// Jika dalam 10 detik WiFi tidak terhubung, ESP32 otomatis
-// membuat Hotspot AP mandiri "RESQ-BOX-ESP32" (IP: 192.168.4.1).
+// KONFIGURASI WEBSOCKET SERVER (PORT 81)
+// Web App RESQ-BOX terhubung melalui ws://192.168.4.1:81
 // =====================================================
-const char* WIFI_SSID = "RESQ-BOX-DIORAMA";
-const char* WIFI_PASS = "12345678";
+WebSocketsServer webSocket(81);
 
-// WebSocket Server berjalan di Port 81 (Sesuai Web App RESQ-BOX)
-WebSocketsServer webSocket = WebSocketsServer(81);
-
-// =====================================================
-// OLED SSD1306 (128x64 I2C)
-// =====================================================
-#define OLED_SDA       21
-#define OLED_SCL       22
-#define OLED_ADDRESS   0x3C
-
-#define SCREEN_WIDTH   128
-#define SCREEN_HEIGHT  64
-#define OLED_RESET     -1
-
-Adafruit_SSD1306 display(
-  SCREEN_WIDTH,
-  SCREEN_HEIGHT,
-  &Wire,
-  OLED_RESET
-);
-
-// =====================================================
-// DFPLAYER MINI (MP3 PLAYER)
-// DFPlayer TX -> ESP32 GPIO16
-// DFPlayer RX -> ESP32 GPIO17
-// =====================================================
-#define DF_RX 16
-#define DF_TX 17
-
-HardwareSerial dfSerial(2);
-DFRobotDFPlayerMini dfPlayer;
-
-bool dfPlayerReady = false;
-int currentVolume = 20;
-
-// =====================================================
-// BUZZER SFM-27 + TRANSISTOR 2N2222
-// GPIO25 -> resistor -> Base 2N2222
-// =====================================================
-#define BUZZER_PIN 25
-bool buzzerState = false;
-
-// =====================================================
-// MIST MAKER (PEMBUAT ASAP/KABUT) + 2N2222
-// GPIO26 -> resistor -> Base 2N2222
-// =====================================================
-#define MIST_PIN 26
-bool mistState = false;
-
-// =====================================================
-// RGB LED
-// R -> GPIO27
-// G -> GPIO32
-// B -> GPIO33
-//
-// COMMON ANODE: Common -> 3.3V (Active LOW)
-// COMMON CATHODE: Common -> GND (Active HIGH)
-// =====================================================
-#define RGB_R_PIN 27
-#define RGB_G_PIN 32
-#define RGB_B_PIN 33
-
-#define RGB_COMMON_ANODE true
-
-int rgbR = 0;
-int rgbG = 0;
-int rgbB = 0;
-
-// =====================================================
-// FUNCTION PROTOTYPES
-// =====================================================
-void oledMessage(String line1, String line2 = "", String line3 = "");
-void showTrack(int track);
-void buzzerON();
-void buzzerOFF();
-void testBuzzer();
-void mistON();
-void mistOFF();
-void testMist();
-void writeRGB(int r, int g, int b);
-void rgbOFF();
-void setRGBColor(String color);
-void testRGB();
-void testOLED();
-void playTrack(int track);
-void stopAudio();
-void stopAll();
-void testSpeaker();
-void testAll();
-void printMenu();
 void processCommand(String command, uint8_t clientNum = 255);
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length);
 
 // =====================================================
-// OLED DISPLAY FUNCTIONS
+// KONFIGURASI OLED SSD1306 (128x64 I2C)
 // =====================================================
-void oledMessage(String line1, String line2, String line3) {
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+#define OLED_ADDR 0x3C
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+// =====================================================
+// KONFIGURASI DFPLAYER MINI (SERIAL2)
+// =====================================================
+HardwareSerial dfSerial(2);
+DFRobotDFPlayerMini dfPlayer;
+
+#define DF_RX 16
+#define DF_TX 17
+
+bool dfPlayerReady = false;
+int volumeLevel = 25;
+
+// =====================================================
+// KONFIGURASI PIN HARDWARE DIORAMA RESQ-BOX
+// =====================================================
+#define BUZZER_PIN   25
+#define MIST_PIN     26
+
+#define RGB_R        27
+#define RGB_G        32
+#define RGB_B        33
+// Common Cathode (active HIGH) agar warna Lampu Aman (Hijau), Waspada (Kuning), Siaga (Oranye), Awas (Merah) menyala presisi
+bool RGB_COMMON_ANODE = false;
+
+#define RED_LED_PIN  14
+
+#define MOTOR_AIN1   19
+#define MOTOR_AIN2   18
+
+// =====================================================
+// VARIABEL & FUNGSI KOMPATIBILITAS ARDUINO C BLOCKLY
+// 100% Selaras dengan kode C++ yang di-generate Blockly Level 3
+// =====================================================
+int seismicLevel = 0;           // Digunakan oleh blok: resq_tipe_gempa
+String eruptionType = "EFUSIF"; // Digunakan oleh blok: resq_tipe_letusan
+
+#ifndef ESP32_TONE_COMPAT
+#define ESP32_TONE_COMPAT
+// Kompatibilitas fungsi tone() untuk blok resq_alarm_darurat
+inline void tone(uint8_t pin, unsigned int freq, unsigned long duration = 0) {
+  digitalWrite(BUZZER_PIN, HIGH);
+}
+inline void noTone(uint8_t pin) {
+  digitalWrite(BUZZER_PIN, LOW);
+}
+#endif
+
+// =====================================================
+// PARAMETER MOTOR GETAR (PWM & INTERVAL)
+// Selaras dengan pilihan blok resq_motor_getar & resq_gempa_sim
+// =====================================================
+int motorKickPWM = 200;
+int motorSustainPWM = 35;
+unsigned long motorKickDuration = 250;
+unsigned long motorKickStartTime = 0;
+bool motorKicking = false;
+
+int vibrationBasePWM = 35;
+int vibrationPeakPWM = 50;
+unsigned long vibrationInterval = 320;
+unsigned long lastVibrationChange = 0;
+bool vibrationHigh = false;
+bool vibrationPatternActive = false;
+
+bool motorState = false;
+
+// =====================================================
+// LEVEL GEMPA (SELARAS BLOCK CODING: PWM 20, 35, 50)
+// =====================================================
+struct GempaLevel {
+  int sustainPWM;
+  int peakPWM;
+  int kickPWM;
+  unsigned long interval;
+};
+
+const GempaLevel GEMPA_LEVELS[3] = {
+  {  20,     35,   200,   400  },  // LEVEL 1 - RINGAN (PWM 20, 3-4 SR)
+  {  35,     50,   210,   320  },  // LEVEL 2 - SEDANG (PWM 35, 5-6 SR)
+  {  50,     70,   220,   250  }   // LEVEL 3 - KUAT   (PWM 50, >7 SR)
+};
+
+// =====================================================
+// STATE SIMULASI BENCANA (GEMPA & GUNUNG INDEPENDEN)
+// =====================================================
+bool gempaActive = false;
+int gempaLevel = 2;
+
+bool gunungActive = false;
+int gunungLevel = 2;
+unsigned long gunungStartTime = 0;
+bool mistDelayed = false;
+
+enum DisasterMode {
+  MODE_NORMAL,
+  MODE_GEMPA,
+  MODE_GUNUNG
+};
+
+enum SimStage {
+  STAGE_IDLE,
+  STAGE_WARNING,
+  STAGE_ACTIVE
+};
+
+DisasterMode currentMode = MODE_NORMAL;
+SimStage currentStage = STAGE_IDLE;
+
+int currentLevel = 2;
+unsigned long stageStartTime = 0;
+const unsigned long WARNING_DURATION = 2000;
+
+// =====================================================
+// ANIMASI OLED
+// =====================================================
+unsigned long lastAnimFrame = 0;
+const unsigned long ANIM_INTERVAL = 120;
+uint8_t animFrame = 0;
+
+unsigned long lastQuakeAnim = 0;
+const unsigned long QUAKE_ANIM_INTERVAL = 80;
+int8_t quakeOffset = 0;
+int8_t quakeDir = 1;
+
+unsigned long lastSmokeAnim = 0;
+const unsigned long SMOKE_ANIM_INTERVAL = 150;
+uint8_t smokeFrame = 0;
+
+// =====================================================
+// SERIAL
+// =====================================================
+String inputCommand = "";
+
+// =====================================================
+// KONFIGURASI WIFI ACCESS POINT
+// ESP32 MEMANCARKAN HOTSPOT MANDIRI UNTUK WEB APP
+// =====================================================
+const char* AP_SSID     = "DIORAMA_ESP32";
+const char* AP_PASSWORD = "12345678";
+
+IPAddress AP_IP(192, 168, 4, 1);
+IPAddress AP_GATEWAY(192, 168, 4, 1);
+IPAddress AP_SUBNET(255, 255, 255, 0);
+
+void startWiFiAP() {
+  Serial.println();
+  Serial.println("==============================================");
+  Serial.println("       ESP32 WIFI ACCESS POINT");
+  Serial.println("==============================================");
+
+  WiFi.mode(WIFI_AP);
+
+  if (!WiFi.softAPConfig(AP_IP, AP_GATEWAY, AP_SUBNET)) {
+    Serial.println("Gagal mengatur konfigurasi IP AP!");
+  }
+
+  bool success = WiFi.softAP(AP_SSID, AP_PASSWORD);
+
+  if (success) {
+    Serial.println("WiFi AP berhasil dibuat!");
+    Serial.print("SSID     : ");
+    Serial.println(AP_SSID);
+    Serial.print("Password : ");
+    Serial.println(AP_PASSWORD);
+    Serial.print("IP ESP32 : ");
+    Serial.println(WiFi.softAPIP());
+    Serial.print("MAC AP   : ");
+    Serial.println(WiFi.softAPmacAddress());
+    Serial.print("Client   : ");
+    Serial.println(WiFi.softAPgetStationNum());
+  } else {
+    Serial.println("GAGAL membuat WiFi Access Point!");
+  }
+
+  Serial.println("==============================================");
+}
+
+void printWiFiStatus() {
+  Serial.println();
+  Serial.println("========== WIFI ACCESS POINT ==========");
+
+  if (WiFi.getMode() == WIFI_AP) {
+    Serial.println("Mode     : ACCESS POINT");
+    Serial.print("SSID     : ");
+    Serial.println(AP_SSID);
+    Serial.print("Password : ");
+    Serial.println(AP_PASSWORD);
+    Serial.print("IP       : ");
+    Serial.println(WiFi.softAPIP());
+    Serial.print("MAC      : ");
+    Serial.println(WiFi.softAPmacAddress());
+    Serial.print("Client   : ");
+    Serial.println(WiFi.softAPgetStationNum());
+  } else {
+    Serial.println("Mode     : BUKAN ACCESS POINT");
+  }
+
+  Serial.println("=======================================");
+}
+
+// =====================================================
+// OLED HELPER DENGAN FORMAT TERTATA & AUTO WRAP
+// =====================================================
+void oledMessage(String line1, String line2 = "", String line3 = "") {
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
+  display.setTextWrap(true);
 
-  // Header Title
+  // Baris Header
   display.setTextSize(1);
   display.setCursor(0, 0);
-  display.println("RESQ-BOX DIORAMA");
-  display.drawLine(0, 10, 127, 10, SSD1306_WHITE);
-
-  // Line 1 (Large)
-  display.setTextSize(2);
-  display.setCursor(0, 16);
   display.println(line1);
+  display.drawFastHLine(0, 10, 128, SSD1306_WHITE);
 
-  // Line 2 (Small)
-  display.setTextSize(1);
-  display.setCursor(0, 40);
-  display.println(line2);
-
-  // Line 3 (Small)
-  display.setCursor(0, 52);
-  display.println(line3);
-
-  display.display();
-}
-
-void showTrack(int track) {
-  display.clearDisplay();
-  display.setTextColor(SSD1306_WHITE);
-
-  display.setTextSize(1);
-  display.setCursor(0, 0);
-  display.println("DFPLAYER MINI");
-  display.drawLine(0, 11, 127, 11, SSD1306_WHITE);
-
-  display.setTextSize(2);
-  display.setCursor(0, 18);
-  display.println("PLAYING");
-
-  display.setTextSize(3);
-  display.setCursor(20, 39);
-
-  if (track < 10) display.print("000");
-  else if (track < 100) display.print("00");
-  else if (track < 1000) display.print("0");
-  display.println(track);
+  // Baris Isi
+  if (line3.length() > 0) {
+    display.setCursor(0, 15);
+    display.println(line2);
+    display.drawFastHLine(0, 48, 128, SSD1306_WHITE);
+    display.setCursor(0, 52);
+    display.println(line3);
+  } else if (line2.length() > 0) {
+    display.setCursor(0, 15);
+    display.println(line2);
+  }
 
   display.display();
 }
 
 // =====================================================
-// BUZZER FUNCTIONS
+// ANIMASI: SPLASH SCREEN
+// =====================================================
+void animSplash() {
+  for (int i = 0; i <= 100; i += 5) {
+    display.clearDisplay();
+
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(1);
+    display.setCursor(16, 8);
+    display.println("RESQ-BOX DIORAMA");
+
+    display.drawTriangle(30, 40, 50, 20, 70, 40, SSD1306_WHITE);
+    display.drawTriangle(55, 40, 75, 25, 95, 40, SSD1306_WHITE);
+
+    display.drawRect(14, 50, 100, 8, SSD1306_WHITE);
+    int fill = map(i, 0, 100, 0, 96);
+    display.fillRect(16, 52, fill, 4, SSD1306_WHITE);
+
+    display.setCursor(50, 44);
+    display.print(i);
+    display.print("%");
+
+    display.display();
+    delay(20);
+  }
+
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setCursor(20, 10);
+  display.println("SIAP!");
+  display.setTextSize(1);
+  display.setCursor(20, 40);
+  display.println("Diorama Bencana");
+  display.setCursor(44, 52);
+  display.println("ESP32 OK");
+  display.display();
+  delay(600);
+}
+
+// =====================================================
+// ANIMASI: PERINGATAN
+// =====================================================
+void animWarning(DisasterMode mode, int level) {
+  display.clearDisplay();
+
+  bool blink = (animFrame % 2) == 0;
+
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(28, 0);
+  if (mode == MODE_GEMPA) {
+    display.println("! ! ! GEMPA ! ! !");
+  } else {
+    display.println("! ! GUNUNG ! !");
+  }
+
+  if (blink) {
+    display.fillTriangle(64, 14, 44, 44, 84, 44, SSD1306_WHITE);
+    display.fillTriangle(62, 22, 66, 22, 64, 36, SSD1306_BLACK);
+    display.fillRect(62, 39, 5, 3, SSD1306_BLACK);
+  } else {
+    display.drawTriangle(64, 14, 44, 44, 84, 44, SSD1306_WHITE);
+    display.drawTriangle(62, 20, 60, 34, 68, 34, SSD1306_WHITE);
+    display.drawRect(62, 39, 5, 3, SSD1306_WHITE);
+  }
+
+  display.setTextSize(1);
+  display.setCursor(0, 50);
+  if (mode == MODE_GEMPA) {
+    display.print("BERSIAP! Level ");
+  } else {
+    display.print("AWAS! Level ");
+  }
+  display.print(level);
+
+  display.display();
+}
+
+// =====================================================
+// ANIMASI: AKTIF GEMPA
+// =====================================================
+void animActiveGempa(int level) {
+  display.clearDisplay();
+
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(16, 0);
+  display.println("== GEMPA AKTIF ==");
+
+  display.drawFastHLine(0, 32, 128, SSD1306_WHITE);
+
+  int amp = 4 + level * 3;
+  for (int x = 0; x < 128; x += 4) {
+    int y = 32 + (int)(sin((x + quakeOffset * 4) * 0.35) * amp);
+    if (y < 2) y = 2;
+    if (y > 42) y = 42;
+    display.drawPixel(x, y, SSD1306_WHITE);
+    display.drawPixel(x + 1, y + 1, SSD1306_WHITE);
+    display.drawPixel(x + 2, y, SSD1306_WHITE);
+  }
+
+  display.setCursor(0, 48);
+  display.print("LVL ");
+  display.print(level);
+  display.print("  PWM ");
+  display.print(vibrationBasePWM);
+
+  if ((animFrame % 2) == 0) {
+    display.fillCircle(118, 52, 4, SSD1306_WHITE);
+  } else {
+    display.drawCircle(118, 52, 4, SSD1306_WHITE);
+  }
+
+  display.display();
+}
+
+// =====================================================
+// ANIMASI: AKTIF GUNUNG MELETUS
+// =====================================================
+void animActiveGunung(int level) {
+  display.clearDisplay();
+
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(8, 0);
+  display.println("== GUNUNG MELETUS ==");
+
+  display.drawTriangle(64, 20, 20, 52, 108, 52, SSD1306_WHITE);
+  display.drawLine(64, 20, 50, 52, SSD1306_WHITE);
+
+  display.fillRect(58, 20, 12, 2, SSD1306_WHITE);
+
+  for (int i = 0; i < 4; i++) {
+    int smokeY = 20 - ((smokeFrame + i * 3) % 14);
+    int smokeX = 64 + ((i % 2 == 0) ? -3 : 3);
+    int smokeR = 2 + i;
+    if (smokeY > 2) {
+      display.drawCircle(smokeX, smokeY, smokeR, SSD1306_WHITE);
+    }
+  }
+
+  if ((animFrame % 2) == 0) {
+    display.drawPixel(60, 22, SSD1306_WHITE);
+    display.drawPixel(68, 22, SSD1306_WHITE);
+  }
+
+  display.setCursor(0, 56);
+  display.print("LVL ");
+  display.print(level);
+  display.print(" Mist ON");
+
+  display.display();
+}
+
+// =====================================================
+// ANIMASI: GEMPA & GUNUNG AKTIF BERSAMAAN
+// =====================================================
+void animActiveDual(int gLevel, int mLevel) {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(6, 0);
+  display.println("! GEMPA & ERUPSI !");
+  display.drawFastHLine(0, 10, 128, SSD1306_WHITE);
+
+  // Bagian Kiri: Gelombang Seismik Gempa
+  int amp = 2 + gLevel * 2;
+  for (int x = 2; x < 58; x += 3) {
+    int y = 30 + (int)(sin((x + quakeOffset * 4) * 0.4) * amp);
+    if (y < 12) y = 12;
+    if (y > 48) y = 48;
+    display.drawPixel(x, y, SSD1306_WHITE);
+    display.drawPixel(x + 1, y, SSD1306_WHITE);
+  }
+
+  // Garis Pemisah
+  display.drawFastVLine(60, 11, 39, SSD1306_WHITE);
+
+  // Bagian Kanan: Gunung Meletus & Asap Erupsi
+  display.drawTriangle(94, 26, 68, 48, 120, 48, SSD1306_WHITE);
+  display.fillRect(90, 26, 8, 2, SSD1306_WHITE);
+  for (int i = 0; i < 3; i++) {
+    int smokeY = 24 - ((smokeFrame + i * 2) % 12);
+    int smokeX = 94 + ((i % 2 == 0) ? -2 : 2);
+    if (smokeY > 12) {
+      display.drawCircle(smokeX, smokeY, 2 + i, SSD1306_WHITE);
+    }
+  }
+
+  // Status Bawah
+  display.drawFastHLine(0, 50, 128, SSD1306_WHITE);
+  display.setCursor(2, 54);
+  display.print("GMP:L"); display.print(gLevel);
+  display.setCursor(66, 54);
+  display.print("GNG:L"); display.print(mLevel);
+
+  display.display();
+}
+
+// =====================================================
+// ANIMASI: STOP
+// =====================================================
+void animStop() {
+  for (int i = 0; i < 2; i++) {
+    display.clearDisplay();
+    display.setTextSize(2);
+    display.setTextColor(SSD1306_WHITE);
+    display.setCursor(28, 20);
+    display.println("STOP");
+    display.display();
+    delay(120);
+
+    display.clearDisplay();
+    display.display();
+    delay(80);
+  }
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(24, 20);
+  display.println("SISTEM SIAP");
+  display.setCursor(18, 38);
+  display.println("Menunggu Misi...");
+  display.display();
+}
+
+// =====================================================
+// UPDATE ANIMASI
+// =====================================================
+void updateAnimation() {
+  unsigned long now = millis();
+
+  if (now - lastAnimFrame >= ANIM_INTERVAL) {
+    lastAnimFrame = now;
+    animFrame++;
+  }
+
+  if (currentStage == STAGE_WARNING) {
+    static unsigned long lastWarningDraw = 0;
+    if (now - lastWarningDraw >= ANIM_INTERVAL) {
+      lastWarningDraw = now;
+      animWarning(currentMode, currentLevel);
+    }
+    return;
+  }
+
+  // Jika kedua bencana aktif bersamaan
+  if (gempaActive && gunungActive) {
+    if (now - lastQuakeAnim >= QUAKE_ANIM_INTERVAL) {
+      lastQuakeAnim = now;
+      quakeOffset += quakeDir;
+      if (quakeOffset > 8 || quakeOffset < -8) quakeDir = -quakeDir;
+      smokeFrame++;
+      animActiveDual(gempaLevel, gunungLevel);
+    }
+    return;
+  }
+
+  // Jika hanya gempa aktif
+  if (gempaActive) {
+    if (now - lastQuakeAnim >= QUAKE_ANIM_INTERVAL) {
+      lastQuakeAnim = now;
+      quakeOffset += quakeDir;
+      if (quakeOffset > 8 || quakeOffset < -8) quakeDir = -quakeDir;
+      animActiveGempa(gempaLevel);
+    }
+    return;
+  }
+
+  // Jika hanya gunung aktif
+  if (gunungActive) {
+    if (now - lastSmokeAnim >= SMOKE_ANIM_INTERVAL) {
+      lastSmokeAnim = now;
+      smokeFrame++;
+      animActiveGunung(gunungLevel);
+    }
+    return;
+  }
+}
+
+// =====================================================
+// BUZZER (SFM-27 / SIRINE EWS)
 // =====================================================
 void buzzerON() {
   digitalWrite(BUZZER_PIN, HIGH);
-  buzzerState = true;
-  Serial.println("BUZZER: ON");
-  oledMessage("BUZZER ON", "Sirine Aktif", "SFM-27 GPIO 25");
+  Serial.println("Buzzer: ON");
 }
 
 void buzzerOFF() {
   digitalWrite(BUZZER_PIN, LOW);
-  buzzerState = false;
-  Serial.println("BUZZER: OFF");
-  oledMessage("BUZZER OFF", "Sirine Mati", "SFM-27 GPIO 25");
-}
-
-void testBuzzer() {
-  Serial.println("\n--- TEST BUZZER SFM-27 ---");
-  oledMessage("TEST BUZZER", "SFM-27 ON 1s...", "GPIO 25");
-  digitalWrite(BUZZER_PIN, HIGH);
-  delay(1000);
-  digitalWrite(BUZZER_PIN, LOW);
-  buzzerState = false;
-  delay(300);
-  Serial.println("Buzzer test selesai.");
-  oledMessage("BUZZER OK", "SFM-27 Siap", "2N2222 Driver");
+  Serial.println("Buzzer: OFF");
 }
 
 // =====================================================
-// MIST MAKER FUNCTIONS (KABUT / ASAP / VENTILASI)
+// MIST MAKER (ASAP ERUPSI)
 // =====================================================
 void mistON() {
   digitalWrite(MIST_PIN, HIGH);
-  mistState = true;
-  Serial.println("MIST MAKER: ON");
-  oledMessage("MIST ON", "Mist / Ventilasi", "GPIO 26 Aktif");
+  Serial.println("Mist: ON");
 }
 
 void mistOFF() {
   digitalWrite(MIST_PIN, LOW);
-  mistState = false;
-  Serial.println("MIST MAKER: OFF");
-  oledMessage("MIST OFF", "Mist / Ventilasi", "GPIO 26 Mati");
-}
-
-void testMist() {
-  Serial.println("\n--- TEST MIST MAKER ---");
-  oledMessage("TEST MIST", "Mist Maker 3s...", "GPIO 26");
-  digitalWrite(MIST_PIN, HIGH);
-  mistState = true;
-  delay(3000);
-  digitalWrite(MIST_PIN, LOW);
-  mistState = false;
-  Serial.println("Mist test selesai.");
-  oledMessage("MIST OK", "Test Selesai", "GPIO 26");
+  Serial.println("Mist: OFF");
 }
 
 // =====================================================
-// RGB LED FUNCTIONS
+// LED MERAH FISIK STANDALONE (PIN 14)
+// =====================================================
+void redLED_ON()  { digitalWrite(RED_LED_PIN, HIGH); Serial.println("LED Merah: ON"); }
+void redLED_OFF() { digitalWrite(RED_LED_PIN, LOW);  Serial.println("LED Merah: OFF"); }
+
+// =====================================================
+// RGB LED KONTROL (PIN 27, 32, 33)
 // =====================================================
 void writeRGB(int r, int g, int b) {
   r = constrain(r, 0, 255);
   g = constrain(g, 0, 255);
   b = constrain(b, 0, 255);
 
-  rgbR = r;
-  rgbG = g;
-  rgbB = b;
-
   if (RGB_COMMON_ANODE) {
-    analogWrite(RGB_R_PIN, 255 - r);
-    analogWrite(RGB_G_PIN, 255 - g);
-    analogWrite(RGB_B_PIN, 255 - b);
-  } else {
-    analogWrite(RGB_R_PIN, r);
-    analogWrite(RGB_G_PIN, g);
-    analogWrite(RGB_B_PIN, b);
+    r = 255 - r;
+    g = 255 - g;
+    b = 255 - b;
   }
+
+  analogWrite(RGB_R, r);
+  analogWrite(RGB_G, g);
+  analogWrite(RGB_B, b);
 }
 
 void rgbOFF() {
-  writeRGB(0, 0, 0);
+  if (RGB_COMMON_ANODE) {
+    analogWrite(RGB_R, 255);
+    analogWrite(RGB_G, 255);
+    analogWrite(RGB_B, 255);
+  } else {
+    analogWrite(RGB_R, 0);
+    analogWrite(RGB_G, 0);
+    analogWrite(RGB_B, 0);
+  }
   Serial.println("RGB: OFF");
-  oledMessage("RGB OFF", "Semua Warna Mati", "LED Normal");
 }
 
+// Selaras dengan pilihan blok resq_lampu_status:
+// Aman (Hijau), Waspada (Kuning), Siaga (Oranye), Awas (Merah), Mati
 void setRGBColor(String color) {
-  color.trim();
   color.toLowerCase();
 
-  if (color == "red" || color == "merah") {
+  if (color == "red") {
     writeRGB(255, 0, 0);
-    Serial.println("RGB: MERAH (BAHAYA)");
-    oledMessage("RGB MERAH", "Status: BAHAYA", "R=255 G=0 B=0");
-  }
-  else if (color == "green" || color == "hijau") {
+    redLED_ON(); // Lampu Bahaya / Awas menyalakan juga LED merah diorama
+  } else if (color == "green") {
     writeRGB(0, 255, 0);
-    Serial.println("RGB: HIJAU (AMAN)");
-    oledMessage("RGB HIJAU", "Status: AMAN", "R=0 G=255 B=0");
-  }
-  else if (color == "blue" || color == "biru") {
+    redLED_OFF();
+  } else if (color == "blue") {
     writeRGB(0, 0, 255);
-    Serial.println("RGB: BIRU (INFO)");
-    oledMessage("RGB BIRU", "Status: INFO", "R=0 G=0 B=255");
-  }
-  else if (color == "yellow" || color == "kuning") {
+    redLED_OFF();
+  } else if (color == "yellow") {
     writeRGB(255, 255, 0);
-    Serial.println("RGB: KUNING (WASPADA)");
-    oledMessage("RGB KUNING", "Status: WASPADA", "R=255 G=255 B=0");
-  }
-  else if (color == "cyan") {
+    redLED_OFF();
+  } else if (color == "cyan") {
     writeRGB(0, 255, 255);
-    Serial.println("RGB: CYAN");
-    oledMessage("RGB CYAN", "R=0 G=255 B=255", "");
-  }
-  else if (color == "purple" || color == "ungu") {
+    redLED_OFF();
+  } else if (color == "purple") {
     writeRGB(255, 0, 255);
-    Serial.println("RGB: UNGU");
-    oledMessage("RGB UNGU", "R=255 G=0 B=255", "");
-  }
-  else if (color == "orange" || color == "oranye") {
-    writeRGB(255, 100, 0);
-    Serial.println("RGB: ORANYE");
-    oledMessage("RGB ORANYE", "R=255 G=100 B=0", "");
-  }
-  else if (color == "pink") {
-    writeRGB(255, 50, 150);
-    Serial.println("RGB: PINK");
-    oledMessage("RGB PINK", "R=255 G=50 B=150", "");
-  }
-  else if (color == "white" || color == "putih") {
+    redLED_OFF();
+  } else if (color == "orange") {
+    writeRGB(255, 80, 0);
+    redLED_OFF();
+  } else if (color == "pink") {
+    writeRGB(255, 20, 100);
+    redLED_OFF();
+  } else if (color == "white") {
     writeRGB(255, 255, 255);
-    Serial.println("RGB: PUTIH");
-    oledMessage("RGB PUTIH", "R=255 G=255 B=255", "");
-  }
-  else if (color == "off" || color == "mati") {
+    redLED_OFF();
+  } else if (color == "off") {
     rgbOFF();
-  }
-  else {
+    redLED_OFF();
+    return;
+  } else {
     Serial.println("Warna RGB tidak dikenal: " + color);
+    return;
   }
+
+  Serial.print("RGB: ");
+  Serial.println(color);
 }
 
 void testRGB() {
-  Serial.println("\n--- TEST RGB LED ---");
-  oledMessage("TEST RGB", "Merah...", "");
-  writeRGB(255, 0, 0);
-  delay(800);
-  oledMessage("TEST RGB", "Hijau...", "");
-  writeRGB(0, 255, 0);
-  delay(800);
-  oledMessage("TEST RGB", "Biru...", "");
-  writeRGB(0, 0, 255);
-  delay(800);
-  oledMessage("TEST RGB", "Putih...", "");
-  writeRGB(255, 255, 255);
-  delay(800);
-  writeRGB(0, 0, 0);
+  Serial.println("Testing RGB...");
+  setRGBColor("red");    delay(700);
+  setRGBColor("green");  delay(700);
+  setRGBColor("blue");   delay(700);
+  setRGBColor("yellow"); delay(700);
+  setRGBColor("cyan");   delay(700);
+  setRGBColor("purple"); delay(700);
+  setRGBColor("orange"); delay(700);
+  setRGBColor("pink");   delay(700);
+  setRGBColor("white");  delay(700);
+  rgbOFF();
+  redLED_OFF();
   Serial.println("RGB test selesai.");
-  oledMessage("RGB OK", "Test Selesai", "READY");
-}
-
-void testOLED() {
-  Serial.println("\n--- TEST OLED ---");
-  oledMessage("OLED OK", "SSD1306 128x64", "I2C 0x3C");
-  delay(2000);
-  oledMessage("READY", "OLED Normal", "WebSocket Ready");
 }
 
 // =====================================================
-// DFPLAYER (AUDIO) FUNCTIONS
+// MOTOR GETAR - STOP
+// =====================================================
+void motorStop() {
+  motorKicking = false;
+  vibrationPatternActive = false;
+  vibrationHigh = false;
+
+  analogWrite(MOTOR_AIN1, 0);
+  digitalWrite(MOTOR_AIN1, LOW);
+  digitalWrite(MOTOR_AIN2, LOW);
+
+  motorState = false;
+
+  Serial.println("Motor: STOP");
+}
+
+// =====================================================
+// MOTOR GETAR - KICK START
+// =====================================================
+void motorStartKick(int sustainPWM, int kickPWM = 200) {
+  sustainPWM = constrain(sustainPWM, 0, 255);
+  kickPWM    = constrain(kickPWM, 0, 255);
+
+  if (sustainPWM <= 0) {
+    motorStop();
+    return;
+  }
+
+  motorSustainPWM = sustainPWM;
+  motorKickPWM    = kickPWM;
+
+  motorKickStartTime = millis();
+  motorKicking = true;
+  motorState = true;
+
+  vibrationPatternActive = true;
+  vibrationHigh = false;
+  lastVibrationChange = millis();
+
+  digitalWrite(MOTOR_AIN2, LOW);
+  analogWrite(MOTOR_AIN1, motorKickPWM);
+
+  Serial.print("Motor KICK START (kick=");
+  Serial.print(motorKickPWM);
+  Serial.print(", sustain=");
+  Serial.print(motorSustainPWM);
+  Serial.print(", peak=");
+  Serial.print(vibrationPeakPWM);
+  Serial.print(", interval=");
+  Serial.print(vibrationInterval);
+  Serial.println(" ms)");
+}
+
+// =====================================================
+// MOTOR GETAR - UPDATE
+// =====================================================
+void updateMotor() {
+  if (motorKicking) {
+    unsigned long elapsed = millis() - motorKickStartTime;
+
+    if (elapsed >= motorKickDuration) {
+      motorKicking = false;
+
+      analogWrite(MOTOR_AIN1, vibrationBasePWM);
+      motorState = true;
+
+      vibrationHigh = false;
+      lastVibrationChange = millis();
+
+      Serial.print("Motor masuk pola GETARAN (base=");
+      Serial.print(vibrationBasePWM);
+      Serial.println(")");
+    }
+    return;
+  }
+
+  if (!motorState || !vibrationPatternActive) return;
+
+  unsigned long now = millis();
+
+  if (now - lastVibrationChange >= vibrationInterval) {
+    lastVibrationChange = now;
+    vibrationHigh = !vibrationHigh;
+
+    if (vibrationHigh) {
+      analogWrite(MOTOR_AIN1, vibrationPeakPWM);
+    } else {
+      analogWrite(MOTOR_AIN1, vibrationBasePWM);
+    }
+  }
+}
+
+// =====================================================
+// SETTING PARAMETER GETARAN
+// =====================================================
+void setVibrationParams(int sustainPWM, int peakPWM, int kickPWM, unsigned long interval) {
+  vibrationBasePWM   = constrain(sustainPWM, 0, 255);
+  vibrationPeakPWM   = constrain(peakPWM, 0, 255);
+  motorKickPWM       = constrain(kickPWM, 0, 255);
+  vibrationInterval  = interval;
+}
+
+// =====================================================
+// KONTROL SIMULASI GEMPA (INDEPENDEN)
+// Buzzer TIDAK otomatis aktif (dikontrol terpisah via blok Sirine)
+// =====================================================
+void startGempa(int level) {
+  level = constrain(level, 1, 3);
+  int idx = level - 1;
+
+  setVibrationParams(
+    GEMPA_LEVELS[idx].sustainPWM,
+    GEMPA_LEVELS[idx].peakPWM,
+    GEMPA_LEVELS[idx].kickPWM,
+    GEMPA_LEVELS[idx].interval
+  );
+
+  gempaActive  = true;
+  gempaLevel   = level;
+  seismicLevel = level; // Sinkron ke Blockly resq_tipe_gempa
+
+  Serial.println();
+  Serial.println("================================");
+  Serial.print("  SIMULASI GEMPA AKTIF - LEVEL ");
+  Serial.println(level);
+  Serial.println("================================");
+  Serial.print("Sustain PWM : "); Serial.println(vibrationBasePWM);
+  Serial.print("Peak PWM    : "); Serial.println(vibrationPeakPWM);
+  Serial.print("Kick PWM    : "); Serial.println(motorKickPWM);
+  Serial.print("Interval    : "); Serial.print(vibrationInterval); Serial.println(" ms");
+
+  // Motor getar diorama langsung menyala sesuai pola getaran gempa
+  motorStartKick(vibrationBasePWM, motorKickPWM);
+
+  // SFX Gempa jika DFPlayer siap: Track 1 = Gempa Bumi (sesuai resq_audio)
+  if (dfPlayerReady) {
+    dfPlayer.play(1);
+    Serial.println("SFX Gempa: 0001.mp3");
+  }
+
+  // Tampilkan animasi OLED
+  lastQuakeAnim = 0;
+  quakeOffset   = 0;
+  if (gunungActive) {
+    animActiveDual(gempaLevel, gunungLevel);
+  } else {
+    animActiveGempa(gempaLevel);
+  }
+}
+
+void stopGempa() {
+  gempaActive  = false;
+  seismicLevel = 0; // Reset variabel seismik
+  motorStop();
+  Serial.println("Simulasi Gempa: STOP");
+  if (gunungActive) {
+    animActiveGunung(gunungLevel);
+  } else {
+    oledMessage("SISTEM SIAP", "Gempa Selesai", "Menunggu...");
+  }
+}
+
+// =====================================================
+// KONTROL SIMULASI GUNUNG MERAPI (INDEPENDEN)
+// Selaras dengan parameter blok resq_gunung_sim (Fase 1-3 & Efusif/Eksplosif)
+// =====================================================
+void startGunung(int level, bool isEfusif = false) {
+  level = constrain(level, 1, 3);
+  gunungActive    = true;
+  gunungLevel     = level;
+  gunungStartTime = millis();
+  eruptionType    = isEfusif ? "EFUSIF" : "EKSPLOSIF"; // Sinkron ke Blockly resq_tipe_letusan
+
+  Serial.println();
+  Serial.println("================================");
+  Serial.print("  SIMULASI GUNUNG MELETUS - LEVEL ");
+  Serial.print(level);
+  if (isEfusif) Serial.println(" (EFUSIF)");
+  else Serial.println(" (EKSPLOSIF)");
+  Serial.println("================================");
+
+  if (level >= 3) {
+    // Level 3 = AWAS: Erupsi Penuh
+    mistDelayed = true;
+    if (isEfusif) {
+      startGempa(1); // EFUSIF: Gempa vulkanik tremor ringan (Level 1)
+      oledMessage("STATUS: AWAS", "Erupsi Efusif", "Lava Pijar...");
+    } else {
+      startGempa(3); // EKSPLOSIF: Tremor vulkanik menyala kuat (Level 3)
+      oledMessage("STATUS: AWAS!", "Tremor Vulkanik", "Pre-Erupsi...");
+    }
+  } else if (level == 2) {
+    // Level 2 = SIAGA: Fase eskalasi magma. TIDAK ADA GEMPA & TIDAK ADA MIST!
+    mistDelayed = false;
+    mistOFF();
+    stopGempa();
+    oledMessage("STATUS: SIAGA", "Aktivitas Naik", "Waspada...");
+  } else {
+    // Level 1 = WASPADA: Pemantauan normal-tinggi. TIDAK ADA GEMPA & TIDAK ADA MIST!
+    mistDelayed = false;
+    mistOFF();
+    stopGempa();
+    oledMessage("STATUS: WASPADA", "Aktivitas Normal+", "Pemantauan...");
+  }
+}
+
+void stopGunung() {
+  gunungActive = false;
+  mistDelayed  = false;
+  mistOFF();
+  stopGempa();
+  Serial.println("Simulasi Gunung: STOP");
+  oledMessage("SISTEM SIAP", "Erupsi Selesai", "Menunggu...");
+}
+
+// =====================================================
+// MULAI SIMULASI (WRAPPER KOMPATIBILITAS BLOCKLY C)
+// =====================================================
+void startSimulation(DisasterMode mode, int level) {
+  if (mode == MODE_GEMPA) {
+    startGempa(level);
+  } else if (mode == MODE_GUNUNG) {
+    startGunung(level, false);
+  }
+}
+
+// =====================================================
+// UPDATE SIMULASI (TRANSISI PRE-ERUPSI & WARNING)
+// =====================================================
+void updateSimulation() {
+  // Transisi jeda pre-erupsi: gempa bergetar ~2 detik, lalu mist & SFX erupsi (Track 2) aktif!
+  if (gunungActive && mistDelayed && (millis() - gunungStartTime >= 2000)) {
+    mistDelayed = false;
+    mistON();
+    if (dfPlayerReady) {
+      dfPlayer.play(2); // Track 2: Gemuruh Erupsi (sesuai resq_audio)
+      Serial.println("SFX Erupsi: 0002.mp3");
+    }
+    lastSmokeAnim = 0;
+    smokeFrame    = 0;
+    animActiveDual(gempaLevel, gunungLevel);
+  }
+
+  if (currentStage != STAGE_WARNING) return;
+  if (millis() - stageStartTime < WARNING_DURATION) return;
+
+  currentStage = STAGE_ACTIVE;
+  if (currentMode == MODE_GEMPA) {
+    startGempa(currentLevel);
+  } else if (currentMode == MODE_GUNUNG) {
+    startGunung(currentLevel, false);
+  }
+}
+
+// =====================================================
+// DFPLAYER MINI AUDIO
+// Track 1: Gempa Bumi | Track 2: Gemuruh Erupsi | Track 3: Sirine Evakuasi
 // =====================================================
 void playTrack(int track) {
   if (!dfPlayerReady) {
-    Serial.println("ERROR: DFPlayer tidak siap!");
-    oledMessage("DFPLAYER ERR", "Tidak terdeteksi", "Cek SD Card");
+    Serial.println("DFPlayer belum siap.");
     return;
   }
-  if (track < 1 || track > 9999) {
-    Serial.println("Nomor lagu tidak valid (1-9999).");
+  if (track < 1) {
+    Serial.println("Nomor track tidak valid.");
     return;
   }
-  Serial.print("PLAY TRACK: ");
+
+  Serial.print("Memutar track: ");
   Serial.println(track);
-  dfPlayer.volume(currentVolume);
   dfPlayer.play(track);
-  showTrack(track);
+
+  oledMessage("DFPLAYER", "Track: " + String(track), "Audio Aktif");
 }
 
 void stopAudio() {
-  if (dfPlayerReady) {
-    dfPlayer.stop();
-  }
-  Serial.println("Speaker: STOP");
-  oledMessage("AUDIO STOP", "DFPlayer OFF", "Speaker Hening");
+  if (!dfPlayerReady) return;
+  dfPlayer.stop();
+  Serial.println("Audio: STOP");
 }
 
-void stopAll() {
-  if (dfPlayerReady) {
-    dfPlayer.stop();
-  }
-  digitalWrite(BUZZER_PIN, LOW);
-  buzzerState = false;
+void setVolume(int volume) {
+  volume = constrain(volume, 0, 30);
+  volumeLevel = volume;
 
-  digitalWrite(MIST_PIN, LOW);
-  mistState = false;
+  if (dfPlayerReady) dfPlayer.volume(volume);
 
-  writeRGB(0, 0, 0);
-  rgbR = 0; rgbG = 0; rgbB = 0;
-
-  Serial.println("\n==============================");
-  Serial.println("SEMUA OUTPUT DIORAMA OFF");
-  Serial.println("==============================");
-  oledMessage("STOP ALL", "Semua Output Mati", "Sistem Siaga");
+  Serial.print("Volume: ");
+  Serial.println(volume);
 }
 
 void testSpeaker() {
-  Serial.println("\n--- TEST SPEAKER ---");
   if (!dfPlayerReady) {
-    Serial.println("ERROR: DFPlayer tidak siap!");
-    oledMessage("DFPLAYER ERR", "Tidak terdeteksi", "Cek wiring");
+    Serial.println("DFPlayer tidak siap.");
     return;
   }
-  playTrack(1);
-}
 
-void testAll() {
-  Serial.println("\n==============================");
-  Serial.println("         TEST SEMUA");
-  Serial.println("==============================");
-  oledMessage("TEST ALL", "1. OLED...", "");
-  delay(1000);
+  dfPlayer.volume(volumeLevel);
 
-  oledMessage("TEST ALL", "2. BUZZER...", "");
-  digitalWrite(BUZZER_PIN, HIGH);
-  delay(800);
-  digitalWrite(BUZZER_PIN, LOW);
-  buzzerState = false;
-
-  oledMessage("TEST ALL", "3. MIST MAKER...", "");
-  digitalWrite(MIST_PIN, HIGH);
-  delay(2000);
-  digitalWrite(MIST_PIN, LOW);
-  mistState = false;
-
-  oledMessage("TEST ALL", "4. RGB LED...", "");
-  writeRGB(255, 0, 0); delay(400);
-  writeRGB(0, 255, 0); delay(400);
-  writeRGB(0, 0, 255); delay(400);
-  writeRGB(0, 0, 0);
-
-  if (dfPlayerReady) {
-    oledMessage("TEST ALL", "5. DFPLAYER...", "Track 1");
-    dfPlayer.volume(currentVolume);
-    dfPlayer.play(1);
-    delay(4000);
+  for (int i = 1; i <= 3; i++) {
+    Serial.print("Memutar track ");
+    Serial.println(i);
+    dfPlayer.play(i);
+    oledMessage("TEST SPEAKER", "Track: " + String(i), "Audio Test");
+    delay(3000);
     dfPlayer.stop();
+    delay(500);
   }
 
-  oledMessage("TEST ALL SELESAI", "Semua Perangkat OK", "READY");
-  Serial.println("Semua test selesai.");
+  Serial.println("Speaker test selesai.");
 }
 
+// =====================================================
+// TEST DIAGNOSTIK
+// =====================================================
+void testBuzzer() {
+  Serial.println("Testing buzzer...");
+  buzzerON();
+  delay(1000);
+  buzzerOFF();
+}
+
+void testMist() {
+  Serial.println("Testing mist...");
+  mistON();
+  delay(3000);
+  mistOFF();
+}
+
+void testOLED() {
+  oledMessage("OLED TEST", "Baris 1", "Baris 2");
+  delay(2000);
+  oledMessage("SISTEM DIORAMA", "OLED OK", "ESP32 RESQ-BOX");
+}
+
+// =====================================================
+// STOP SEMUA (STOP ALL - RESET TOTAL)
+// Selaras dengan blok resq_stopall & tombol Berhenti web
+// =====================================================
+void stopAll() {
+  Serial.println();
+  Serial.println("========== STOP SEMUA ==========");
+
+  gempaActive  = false;
+  gunungActive = false;
+  mistDelayed  = false;
+
+  seismicLevel = 0;
+  currentMode  = MODE_NORMAL;
+  currentStage = STAGE_IDLE;
+
+  if (dfPlayerReady) dfPlayer.stop();
+
+  motorStop();
+  mistOFF();
+  buzzerOFF();
+  rgbOFF();
+  redLED_OFF();
+
+  animStop();
+}
+
+// =====================================================
+// STATUS HARDWARE
+// =====================================================
+void printStatus() {
+  Serial.println();
+  Serial.println("========== STATUS HARDWARE ==========");
+
+  Serial.print("DFPlayer : "); Serial.println(dfPlayerReady ? "READY" : "NOT READY");
+  Serial.print("Volume   : "); Serial.println(volumeLevel);
+  Serial.print("WiFi AP  : "); Serial.println(AP_SSID);
+  Serial.print("IP WiFi  : "); Serial.println(WiFi.softAPIP());
+  Serial.print("Client   : "); Serial.println(WiFi.softAPgetStationNum());
+  Serial.print("Gempa    : "); Serial.println(gempaActive ? ("AKTIF (Lvl " + String(gempaLevel) + ")") : "OFF");
+  Serial.print("Gunung   : "); Serial.println(gunungActive ? ("AKTIF (Lvl " + String(gunungLevel) + ")") : "OFF");
+  Serial.print("Buzzer   : "); Serial.println(digitalRead(BUZZER_PIN) ? "ON" : "OFF");
+  Serial.print("Mist     : "); Serial.println(digitalRead(MIST_PIN) ? "ON" : "OFF");
+  Serial.print("LED Merah: "); Serial.println(digitalRead(RED_LED_PIN) ? "ON" : "OFF");
+  Serial.print("Motor    : "); Serial.println(motorState ? "ON" : "OFF");
+  Serial.print("RGB Anode: "); Serial.println(RGB_COMMON_ANODE ? "YES (Active LOW)" : "NO (Common Cathode - Active HIGH)");
+
+  Serial.print("Base PWM : "); Serial.println(vibrationBasePWM);
+  Serial.print("Peak PWM : "); Serial.println(vibrationPeakPWM);
+  Serial.print("Kick PWM : "); Serial.println(motorKickPWM);
+  Serial.print("Interval : "); Serial.print(vibrationInterval); Serial.println(" ms");
+
+  Serial.println("=====================================");
+}
+
+// =====================================================
+// MENU BANTUAN SERIAL
+// =====================================================
 void printMenu() {
-  Serial.println("\n========================================");
-  Serial.println("     RESQ-BOX ESP32 TEST SYSTEM");
-  Serial.println("========================================");
-  Serial.println("PERINTAH PROTOKOL BLOCK CODING (WEB):");
-  Serial.println("  PIN:10:HIGH / PIN:10:LOW   -> Lampu Bahaya (Merah)");
-  Serial.println("  PIN:11:HIGH / PIN:11:LOW   -> Lampu Aman (Hijau)");
-  Serial.println("  PIN:12:HIGH / PIN:12:LOW   -> Lampu Info (Biru)");
-  Serial.println("  PIN:13:HIGH / PIN:13:LOW   -> Lampu Bawaan (Kuning)");
-  Serial.println("  PIN:BUZZER:ON / OFF        -> Sirine Buzzer");
-  Serial.println("  PIN:MOTOR:FAST / OFF       -> Mist Maker / Asap");
-  Serial.println("  PIN:SERVO:OPEN / CLOSED    -> Pintu Evakuasi");
-  Serial.println("  PIN:ALL:OFF                -> Matikan Semua");
-  Serial.println("----------------------------------------");
-  Serial.println("PERINTAH TEXT LANGSUNG:");
-  Serial.println("  buzzer on / buzzer off / buzzer");
-  Serial.println("  mist on / mist off / mist");
-  Serial.println("  rgb red / green / blue / yellow / off");
-  Serial.println("  rgb 255 100 50 (custom RGB)");
-  Serial.println("  play <nomor_lagu> / stop / vol <0-30>");
-  Serial.println("  stopall / all / oled / rgbtest / help");
-  Serial.println("========================================\n");
-}
-
-// =====================================================
-// UNIFIED COMMAND PROCESSOR
-// Memproses perintah dari WebSocket dan Serial Monitor
-// =====================================================
-void processCommand(String command, uint8_t clientNum) {
-  command.trim();
-  if (command.length() == 0) return;
-
-  Serial.print("[COMMAND DITERIMA]: ");
-  Serial.println(command);
-
-  // ---------------------------------------------------
-  // 1. PROTOKOL BLOCK CODING RESQ-BOX (PIN:TARGET:VALUE)
-  // ---------------------------------------------------
-  if (command.startsWith("PIN:") || command.startsWith("pin:")) {
-    int firstColon = command.indexOf(':');
-    int secondColon = command.indexOf(':', firstColon + 1);
-
-    if (secondColon != -1) {
-      String target = command.substring(firstColon + 1, secondColon);
-      String value = command.substring(secondColon + 1);
-      target.toUpperCase();
-      value.toUpperCase();
-
-      // [A] LAMPU BAHAYA (Pin 10 -> RGB Merah)
-      if (target == "10") {
-        if (value == "HIGH" || value == "1" || value == "ON") {
-          setRGBColor("red");
-          oledMessage("LAMPU BAHAYA", "STATUS: NYALA", "LED Merah Aktif");
-        } else {
-          rgbOFF();
-          oledMessage("LAMPU BAHAYA", "STATUS: MATI", "LED Merah OFF");
-        }
-      }
-      // [B] LAMPU AMAN (Pin 11 -> RGB Hijau)
-      else if (target == "11") {
-        if (value == "HIGH" || value == "1" || value == "ON") {
-          setRGBColor("green");
-          oledMessage("LAMPU AMAN", "STATUS: NYALA", "LED Hijau Aktif");
-        } else {
-          rgbOFF();
-          oledMessage("LAMPU AMAN", "STATUS: MATI", "LED Hijau OFF");
-        }
-      }
-      // [C] LAMPU INFO (Pin 12 -> RGB Biru)
-      else if (target == "12") {
-        if (value == "HIGH" || value == "1" || value == "ON") {
-          setRGBColor("blue");
-          oledMessage("LAMPU INFO", "STATUS: NYALA", "LED Biru Aktif");
-        } else {
-          rgbOFF();
-          oledMessage("LAMPU INFO", "STATUS: MATI", "LED Biru OFF");
-        }
-      }
-      // [D] LAMPU BAWAAN / KUNING (Pin 13 -> RGB Kuning)
-      else if (target == "13") {
-        if (value == "HIGH" || value == "1" || value == "ON") {
-          setRGBColor("yellow");
-          oledMessage("LAMPU KUNING", "STATUS: NYALA", "LED Kuning Aktif");
-        } else {
-          rgbOFF();
-          oledMessage("LAMPU KUNING", "STATUS: MATI", "LED Kuning OFF");
-        }
-      }
-      // [E] SIRINE / BUZZER
-      else if (target == "BUZZER" || target == "5") {
-        if (value == "ON" || value == "HIGH" || value == "1") {
-          buzzerON();
-        } else {
-          buzzerOFF();
-        }
-      }
-      // [F] MOTOR / KIPAS VENTILASI -> Mengontrol Mist Maker (Asap/Ventilasi)
-      else if (target == "MOTOR" || target == "6" || target == "MIST") {
-        if (value == "OFF" || value == "0" || value == "LOW") {
-          mistOFF();
-        } else {
-          mistON();
-        }
-      }
-      // [G] SERVO / PINTU EVAKUASI
-      else if (target == "SERVO" || target == "9") {
-        if (value == "OPEN" || value == "180") {
-          oledMessage("PINTU EVAKUASI", "STATUS: TERBUKA", "Jalur Siap");
-          Serial.println("PINTU: TERBUKA");
-        } else if (value == "CLOSED" || value == "0") {
-          oledMessage("PINTU EVAKUASI", "STATUS: TERTUTUP", "Jalur Ditutup");
-          Serial.println("PINTU: TERTUTUP");
-        }
-      }
-      // [H] MATIKAN SEMUA
-      else if (target == "ALL" && value == "OFF") {
-        stopAll();
-      }
-    }
-
-    if (clientNum != 255) {
-      webSocket.sendTXT(clientNum, "ACK:" + command + "\n");
-    }
-    return;
-  }
-
-  // ---------------------------------------------------
-  // 2. PERINTAH TEXT MANUAL
-  // ---------------------------------------------------
-  String lowerCmd = command;
-  lowerCmd.toLowerCase();
-
-  // PLAY AUDIO
-  if (lowerCmd.startsWith("play ")) {
-    String numberString = lowerCmd.substring(5);
-    numberString.trim();
-    int track = numberString.toInt();
-    if (track > 0) playTrack(track);
-  }
-  // STOP AUDIO
-  else if (lowerCmd == "stop") {
-    stopAudio();
-  }
-  // STOP SEMUA
-  else if (lowerCmd == "stopall") {
-    stopAll();
-  }
-  // VOLUME AUDIO
-  else if (lowerCmd.startsWith("vol ")) {
-    String volumeString = lowerCmd.substring(4);
-    volumeString.trim();
-    int volume = volumeString.toInt();
-    if (volume >= 0 && volume <= 30) {
-      currentVolume = volume;
-      if (dfPlayerReady) dfPlayer.volume(currentVolume);
-      Serial.print("Volume = ");
-      Serial.println(currentVolume);
-      oledMessage("VOLUME", "Level: " + String(currentVolume), "DFPlayer");
-    }
-  }
-  // BUZZER
-  else if (lowerCmd == "buzzer on") {
-    buzzerON();
-  }
-  else if (lowerCmd == "buzzer off") {
-    buzzerOFF();
-  }
-  else if (lowerCmd == "buzzer") {
-    testBuzzer();
-  }
-  // MIST MAKER
-  else if (lowerCmd == "mist on") {
-    mistON();
-  }
-  else if (lowerCmd == "mist off") {
-    mistOFF();
-  }
-  else if (lowerCmd == "mist") {
-    testMist();
-  }
-  // RGB LED
-  else if (lowerCmd.startsWith("rgb ")) {
-    String rgbCommand = lowerCmd.substring(4);
-    rgbCommand.trim();
-    int firstSpace = rgbCommand.indexOf(' ');
-
-    if (firstSpace == -1) {
-      setRGBColor(rgbCommand);
-    } else {
-      int secondSpace = rgbCommand.indexOf(' ', firstSpace + 1);
-      if (secondSpace != -1) {
-        int r = rgbCommand.substring(0, firstSpace).toInt();
-        int g = rgbCommand.substring(firstSpace + 1, secondSpace).toInt();
-        int b = rgbCommand.substring(secondSpace + 1).toInt();
-        writeRGB(r, g, b);
-        oledMessage("RGB CUSTOM", "R:" + String(r) + " G:" + String(g), "B:" + String(b));
-      }
-    }
-  }
-  else if (lowerCmd == "rgbtest") {
-    testRGB();
-  }
-  else if (lowerCmd == "oled") {
-    testOLED();
-  }
-  else if (lowerCmd == "speaker") {
-    testSpeaker();
-  }
-  else if (lowerCmd == "all") {
-    testAll();
-  }
-  else if (lowerCmd == "help") {
-    printMenu();
-  }
-  else {
-    Serial.println("Perintah tidak dikenal: " + command);
-  }
-
-  if (clientNum != 255) {
-    webSocket.sendTXT(clientNum, "ACK:" + command + "\n");
-  }
+  Serial.println();
+  Serial.println("==============================================");
+  Serial.println("   SISTEM DIORAMA MITIGASI BENCANA RESQ-BOX");
+  Serial.println("==============================================");
+  Serial.println();
+  Serial.println("SIMULASI GEMPA:");
+  Serial.println("  gempa 1 / ringan   -> Level 1 (sustain PWM 20)");
+  Serial.println("  gempa 2 / sedang   -> Level 2 (sustain PWM 35)");
+  Serial.println("  gempa 3 / kuat     -> Level 3 (sustain PWM 50)");
+  Serial.println("  gempa 0 / stop     -> Hentikan simulasi gempa");
+  Serial.println();
+  Serial.println("SIMULASI GUNUNG MERAPI:");
+  Serial.println("  gunung 1 / waspada -> Level 1 (Waspada, mist off)");
+  Serial.println("  gunung 2 / siaga   -> Level 2 (Siaga, mist off)");
+  Serial.println("  gunung 3 / awas    -> Level 3 (Awas Eksplosif, mist on)");
+  Serial.println("  gunung 3 efusif    -> Level 3 (Awas Efusif, lava pijar)");
+  Serial.println("  gunung 0 / stop    -> Hentikan simulasi erupsi");
+  Serial.println();
+  Serial.println("KONTROL UTAMA:");
+  Serial.println("  stopall            -> Hentikan semua simulasi & perangkat");
+  Serial.println();
+  Serial.println("AUDIO DFPLAYER:");
+  Serial.println("  play 1             -> Track 1: Gempa Bumi");
+  Serial.println("  play 2             -> Track 2: Gemuruh Erupsi");
+  Serial.println("  play 3             -> Track 3: Sirine Evakuasi");
+  Serial.println("  stop               -> Stop audio");
+  Serial.println("  vol N              -> Set volume (0-30)");
+  Serial.println("  speaker            -> Test speaker");
+  Serial.println();
+  Serial.println("OUTPUT & AKTUATOR:");
+  Serial.println("  buzzer on / off    -> Kontrol Sirine EWS (pin 25)");
+  Serial.println("  mist on / off      -> Kontrol Mist Maker asap (pin 26)");
+  Serial.println("  led on / off       -> Kontrol LED Merah (pin 14)");
+  Serial.println("  rgb <warna>        -> green/yellow/orange/red/blue/off");
+  Serial.println("  rgb R G B          -> Custom warna RGB (0-255)");
+  Serial.println("  motor <pwm>        -> Kecepatan motor getar (20, 35, 50, off)");
+  Serial.println("  oled <pesan>       -> Tampilkan pesan ke layar OLED");
+  Serial.println();
+  Serial.println("PROTOKOL RESQ-BOX BLOCK CODING:");
+  Serial.println("  PIN:<target>:<val> -> PIN:10:HIGH, PIN:11:HIGH, PIN:BUZZER:ON");
+  Serial.println();
+  Serial.println("WIFI & SYSTEM:");
+  Serial.println("  wifi               -> Status WiFi AP (ws://192.168.4.1:81)");
+  Serial.println("  status             -> Tampilkan status semua aktuator");
+  Serial.println("  help               -> Tampilkan menu bantuan ini");
+  Serial.println();
+  Serial.println("==============================================");
 }
 
 // =====================================================
 // WEBSOCKET EVENT CALLBACK
+// Menghubungkan browser Web App RESQ-BOX secara live
 // =====================================================
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
   switch (type) {
     case WStype_DISCONNECTED:
       Serial.printf("[WS] Klien #%u Terputus.\n", num);
-      oledMessage("WEB TERPUTUS", "Client #" + String(num), "Menunggu Koneksi");
       break;
 
     case WStype_CONNECTED: {
       IPAddress ip = webSocket.remoteIP(num);
       Serial.printf("[WS] Klien #%u Terhubung dari %d.%d.%d.%d\n", num, ip[0], ip[1], ip[2], ip[3]);
-      oledMessage("WEB TERHUBUNG!", "Klien: " + ip.toString(), "Port 81 Siap!");
       webSocket.sendTXT(num, "CONNECTED_TO_ESP32\n");
+      oledMessage("WEB TERHUBUNG!", "Klien: " + ip.toString(), "Port 81 Siap!");
       break;
     }
 
@@ -679,117 +1134,354 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
 }
 
 // =====================================================
+// UNIFIED COMMAND PROCESSOR
+// Memproses perintah dari Serial Monitor (USB) dan WebSocket (WiFi)
+// =====================================================
+void processCommand(String command, uint8_t clientNum) {
+  command.trim();
+  if (command.length() == 0) return;
+
+  Serial.print(">> ");
+  Serial.println(command);
+
+  String lowerCmd = command;
+  lowerCmd.toLowerCase();
+
+  // ---------------------------------------------------
+  // 1. PROTOKOL PIN BLOCK CODING RESQ-BOX (PIN:TARGET:VALUE)
+  // ---------------------------------------------------
+  if (lowerCmd.startsWith("pin:")) {
+    int c1 = command.indexOf(':');
+    int c2 = command.indexOf(':', c1 + 1);
+    if (c2 != -1) {
+      String target = command.substring(c1 + 1, c2);
+      String val = command.substring(c2 + 1);
+      target.toUpperCase();
+      val.toUpperCase();
+      bool on = (val == "HIGH" || val == "1" || val == "ON");
+
+      if (target == "10") { // Bahaya / Awas -> Merah
+        if (on) { setRGBColor("red"); redLED_ON(); }
+        else { rgbOFF(); redLED_OFF(); }
+      } else if (target == "11") { // Aman -> Hijau
+        if (on) setRGBColor("green");
+        else rgbOFF();
+      } else if (target == "12") { // Info -> Biru
+        if (on) setRGBColor("blue");
+        else rgbOFF();
+      } else if (target == "13") { // Bawaan / Kuning Waspada
+        if (on) setRGBColor("yellow");
+        else rgbOFF();
+      } else if (target == "14" || target == "RED") { // LED Merah Fisik
+        if (on) redLED_ON();
+        else redLED_OFF();
+      } else if (target == "BUZZER" || target == "5") {
+        if (on) buzzerON();
+        else buzzerOFF();
+      } else if (target == "MIST" || target == "6") {
+        if (on) mistON();
+        else mistOFF();
+      } else if (target == "MOTOR") {
+        if (on) motorStartKick(vibrationBasePWM, motorKickPWM);
+        else motorStop();
+      } else if (target == "ALL" && !on) {
+        stopAll();
+      }
+    }
+    if (clientNum != 255) {
+      webSocket.sendTXT(clientNum, "ACK:" + command + "\n");
+    }
+    return;
+  }
+
+  // ---------------------------------------------------
+  // 2. SIMULASI GEMPA (INDEPENDEN & RESQ-BOX COMPATIBLE)
+  // ---------------------------------------------------
+  if (lowerCmd.startsWith("gempa")) {
+    if (lowerCmd == "gempa off" || lowerCmd == "gempa stop" || lowerCmd == "gempa 0" || lowerCmd.startsWith("gempa 0")) {
+      stopGempa();
+    } else {
+      int lvl = 2;
+      if (lowerCmd.indexOf("1") != -1 || lowerCmd.indexOf("ringan") != -1) lvl = 1;
+      else if (lowerCmd.indexOf("3") != -1 || lowerCmd.indexOf("kuat") != -1) lvl = 3;
+      startGempa(lvl);
+    }
+  }
+
+  // ---------------------------------------------------
+  // 3. SIMULASI GUNUNG MERAPI (INDEPENDEN & RESQ-BOX COMPATIBLE)
+  // ---------------------------------------------------
+  else if (lowerCmd.startsWith("gunung")) {
+    if (lowerCmd == "gunung off" || lowerCmd == "gunung stop" || lowerCmd == "gunung 0" || lowerCmd.startsWith("gunung 0")) {
+      stopGunung();
+    } else {
+      bool isEfusif = (lowerCmd.indexOf("efusif") != -1);
+      int lvl = 2;
+      if (lowerCmd.indexOf("1") != -1 || lowerCmd.indexOf("ringan") != -1 || lowerCmd.indexOf("waspada") != -1) lvl = 1;
+      else if (lowerCmd.indexOf("3") != -1 || lowerCmd.indexOf("kuat") != -1 || lowerCmd.indexOf("awas") != -1) lvl = 3;
+      else if (lowerCmd.indexOf("siaga") != -1) lvl = 2;
+      startGunung(lvl, isEfusif);
+    }
+  }
+
+  // ---------------------------------------------------
+  // 4. STOP SEMUA
+  // ---------------------------------------------------
+  else if (lowerCmd == "stopall" || lowerCmd == "stop all" || lowerCmd == "stop") {
+    stopAll();
+  }
+
+  // ---------------------------------------------------
+  // 5. MOTOR GETAR DIORAMA
+  // ---------------------------------------------------
+  else if (lowerCmd.startsWith("motor ")) {
+    String spdStr = lowerCmd.substring(6);
+    spdStr.trim();
+    int pwm = spdStr.toInt();
+    if (pwm == 0 || spdStr == "off" || spdStr == "stop") {
+      motorStop();
+    } else {
+      motorStartKick(pwm, motorKickPWM);
+    }
+  }
+  else if (lowerCmd == "motor on") {
+    motorStartKick(vibrationBasePWM, motorKickPWM);
+  }
+  else if (lowerCmd == "motor off" || lowerCmd == "motor stop") {
+    motorStop();
+  }
+
+  // ---------------------------------------------------
+  // 6. LED MERAH (PIN 14)
+  // ---------------------------------------------------
+  else if (lowerCmd == "led on" || lowerCmd == "redled on") {
+    redLED_ON();
+  }
+  else if (lowerCmd == "led off" || lowerCmd == "redled off") {
+    redLED_OFF();
+  }
+
+  // ---------------------------------------------------
+  // 7. BUZZER
+  // ---------------------------------------------------
+  else if (lowerCmd == "buzzer") {
+    testBuzzer();
+  }
+  else if (lowerCmd == "buzzer on") {
+    buzzerON();
+  }
+  else if (lowerCmd == "buzzer off") {
+    buzzerOFF();
+  }
+
+  // ---------------------------------------------------
+  // 8. MIST MAKER
+  // ---------------------------------------------------
+  else if (lowerCmd == "mist") {
+    testMist();
+  }
+  else if (lowerCmd == "mist on") {
+    mistON();
+  }
+  else if (lowerCmd == "mist off") {
+    mistOFF();
+  }
+
+  // ---------------------------------------------------
+  // 9. RGB LED
+  // ---------------------------------------------------
+  else if (lowerCmd == "anode" || lowerCmd == "rgb anode") {
+    RGB_COMMON_ANODE = true;
+    rgbOFF();
+    Serial.println("RGB Mode: Common ANODE (Active LOW)");
+  }
+  else if (lowerCmd == "cathode" || lowerCmd == "rgb cathode") {
+    RGB_COMMON_ANODE = false;
+    rgbOFF();
+    Serial.println("RGB Mode: Common CATHODE (Active HIGH)");
+  }
+  else if (lowerCmd == "rgbtest") {
+    testRGB();
+  }
+  else if (lowerCmd.startsWith("rgb ")) {
+    String rgbCmd = lowerCmd.substring(4);
+    rgbCmd.trim();
+
+    int sp1 = rgbCmd.indexOf(' ');
+    if (sp1 > 0) {
+      String rStr = rgbCmd.substring(0, sp1);
+      String rest = rgbCmd.substring(sp1 + 1);
+      int sp2 = rest.indexOf(' ');
+
+      if (sp2 > 0) {
+        int r = rStr.toInt();
+        int g = rest.substring(0, sp2).toInt();
+        int b = rest.substring(sp2 + 1).toInt();
+        writeRGB(r, g, b);
+        Serial.print("RGB custom: ");
+        Serial.print(r); Serial.print(", ");
+        Serial.print(g); Serial.print(", ");
+        Serial.println(b);
+      } else {
+        Serial.println("Format: rgb R G B");
+      }
+    } else {
+      setRGBColor(rgbCmd);
+    }
+  }
+
+  // ---------------------------------------------------
+  // 10. OLED
+  // ---------------------------------------------------
+  else if (lowerCmd.startsWith("oled ")) {
+    String msg = command.substring(5);
+    msg.trim();
+    oledMessage("INFO MITIGASI", msg, "RESQ-BOX");
+  }
+  else if (lowerCmd == "oled") {
+    testOLED();
+  }
+
+  // ---------------------------------------------------
+  // 11. AUDIO DFPLAYER
+  // ---------------------------------------------------
+  else if (lowerCmd.startsWith("play ")) {
+    int track = lowerCmd.substring(5).toInt();
+    playTrack(track);
+  }
+  else if (lowerCmd == "stop") {
+    stopAudio();
+  }
+  else if (lowerCmd.startsWith("vol ")) {
+    int vol = lowerCmd.substring(4).toInt();
+    setVolume(vol);
+  }
+  else if (lowerCmd == "speaker") {
+    testSpeaker();
+  }
+
+  // ---------------------------------------------------
+  // 12. WIFI & SYSTEM
+  // ---------------------------------------------------
+  else if (lowerCmd == "wifi") {
+    printWiFiStatus();
+  }
+  else if (lowerCmd == "status") {
+    printStatus();
+  }
+  else if (lowerCmd == "help") {
+    printMenu();
+  }
+
+  // ---------------------------------------------------
+  // 13. UNKNOWN
+  // ---------------------------------------------------
+  else {
+    Serial.println();
+    Serial.println("Command tidak dikenal: " + command);
+    Serial.println("Ketik 'help' untuk melihat menu.");
+  }
+
+  if (clientNum != 255) {
+    webSocket.sendTXT(clientNum, "ACK:" + command + "\n");
+  }
+  Serial.println();
+}
+
+// =====================================================
 // SETUP
 // =====================================================
 void setup() {
   Serial.begin(115200);
   delay(1000);
 
-  Serial.println("\n========================================");
-  Serial.println("      RESQ-BOX ESP32 DIORAMA SYSTEM     ");
-  Serial.println("========================================");
+  Serial.println();
+  Serial.println("==============================================");
+  Serial.println("  ESP32 DIORAMA MITIGASI BENCANA RESQ-BOX");
+  Serial.println("==============================================");
 
-  // 1. PIN OUTPUTS
+  startWiFiAP();
+
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
+  Serial.println("WebSocket Server aktif di ws://192.168.4.1:81");
+
   pinMode(BUZZER_PIN, OUTPUT);
-  digitalWrite(BUZZER_PIN, LOW);
-
   pinMode(MIST_PIN, OUTPUT);
+  pinMode(RED_LED_PIN, OUTPUT);
+  pinMode(RGB_R, OUTPUT);
+  pinMode(RGB_G, OUTPUT);
+  pinMode(RGB_B, OUTPUT);
+  pinMode(MOTOR_AIN1, OUTPUT);
+  pinMode(MOTOR_AIN2, OUTPUT);
+
+  digitalWrite(MOTOR_AIN1, LOW);
+  digitalWrite(MOTOR_AIN2, LOW);
+  digitalWrite(BUZZER_PIN, LOW);
   digitalWrite(MIST_PIN, LOW);
+  digitalWrite(RED_LED_PIN, LOW);
 
-  pinMode(RGB_R_PIN, OUTPUT);
-  pinMode(RGB_G_PIN, OUTPUT);
-  pinMode(RGB_B_PIN, OUTPUT);
+  rgbOFF();
+  motorStop();
 
-  // Matikan RGB saat booting
-  if (RGB_COMMON_ANODE) {
-    analogWrite(RGB_R_PIN, 255);
-    analogWrite(RGB_G_PIN, 255);
-    analogWrite(RGB_B_PIN, 255);
+  Wire.begin(21, 22);
+  if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
+    Serial.println("OLED gagal ditemukan!");
   } else {
-    analogWrite(RGB_R_PIN, 0);
-    analogWrite(RGB_G_PIN, 0);
-    analogWrite(RGB_B_PIN, 0);
+    Serial.println("OLED OK");
+    animSplash();
   }
 
-  // 2. OLED DISPLAY
-  Wire.begin(OLED_SDA, OLED_SCL);
-  if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDRESS)) {
-    Serial.println("ERROR: OLED SSD1306 tidak ditemukan! Periksa wiring I2C.");
-  } else {
-    Serial.println("OLED SSD1306: OK");
-    oledMessage("BOOTING...", "Inisialisasi...", "RESQ-BOX");
-  }
-
-  // 3. DFPLAYER MINI
   dfSerial.begin(9600, SERIAL_8N1, DF_RX, DF_TX);
-  Serial.println("Mencoba koneksi DFPlayer Mini...");
+  Serial.println("Initializing DFPlayer...");
+  delay(1000);
 
   if (dfPlayer.begin(dfSerial)) {
     dfPlayerReady = true;
-    Serial.println("DFPlayer Mini: OK");
-    dfPlayer.volume(currentVolume);
+    Serial.println("DFPlayer OK");
+    dfPlayer.volume(volumeLevel);
     dfPlayer.EQ(DFPLAYER_EQ_NORMAL);
-    delay(300);
+    dfPlayer.stop();
   } else {
     dfPlayerReady = false;
-    Serial.println("DFPlayer Mini: ERROR (Periksa wiring RX/TX dan SD Card)");
+    Serial.println("DFPlayer tidak ditemukan!");
+    Serial.println("Periksa: TX/RX, GND, 5V, SD card");
   }
 
-  // 4. WIFI & WEBSOCKET SETUP
-  oledMessage("MENGHUBUNGKAN", "WiFi: " + String(WIFI_SSID), "Harap Tunggu...");
-  Serial.print("Menghubungkan ke WiFi: ");
-  Serial.println(WIFI_SSID);
+  currentMode  = MODE_NORMAL;
+  currentStage = STAGE_IDLE;
+  currentLevel = 2;
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  motorStop();
+  buzzerOFF();
+  mistOFF();
+  redLED_OFF();
+  rgbOFF();
 
-  unsigned long startAttempt = millis();
-  // Tunggu maksimal 10 detik untuk koneksi WiFi
-  while (WiFi.status() != WL_CONNECTED && millis() - startAttempt < 10000) {
-    delay(500);
-    Serial.print(".");
-  }
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(24, 20);
+  display.println("SISTEM SIAP");
+  display.setCursor(16, 36);
+  display.println("AP: " + String(AP_SSID));
+  display.setCursor(20, 50);
+  display.println("IP: 192.168.4.1");
+  display.display();
 
-  String ipAddressStr = "";
-  if (WiFi.status() == WL_CONNECTED) {
-    ipAddressStr = WiFi.localIP().toString();
-    Serial.println("\nWiFi Berhasil Terhubung!");
-    Serial.print("Alamat IP ESP32: ");
-    Serial.println(ipAddressStr);
-
-    oledMessage("WIFI OK!", "IP: " + ipAddressStr, "PORT: 81 (WS)");
-  } else {
-    // Fallback: Aktifkan Access Point Mandiri jika WiFi tidak ada
-    Serial.println("\nWiFi STA tidak terhubung. Mengaktifkan Access Point mandiri...");
-    WiFi.mode(WIFI_AP);
-    WiFi.softAP("RESQ-BOX-ESP32", "12345678");
-    ipAddressStr = WiFi.softAPIP().toString();
-
-    Serial.print("Hotspot AP: RESQ-BOX-ESP32 (Pass: 12345678)\nIP: ");
-    Serial.println(ipAddressStr);
-
-    oledMessage("HOTSPOT AP", "SSID:RESQ-BOX-ESP32", "IP: " + ipAddressStr);
-  }
-
-  // Mulai WebSocket Server
-  webSocket.begin();
-  webSocket.onEvent(webSocketEvent);
-  Serial.println("WebSocket Server berjalan di ws://" + ipAddressStr + ":81");
-
-  delay(2000);
   printMenu();
 }
 
 // =====================================================
-// MAIN LOOP
+// LOOP UTAMA
 // =====================================================
 void loop() {
-  // 1. Layani komunikasi WebSocket dari browser Web App
   webSocket.loop();
+  updateMotor();
+  updateSimulation();
+  updateAnimation();
 
-  // 2. Layani perintah langsung dari Serial Monitor USB
   if (Serial.available()) {
-    String command = Serial.readStringUntil('\n');
-    processCommand(command);
+    inputCommand = Serial.readStringUntil('\n');
+    processCommand(inputCommand, 255);
   }
 }

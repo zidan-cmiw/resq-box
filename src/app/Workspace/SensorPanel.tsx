@@ -14,7 +14,6 @@ export default function SensorPanel() {
     oledMessage,
     rgbColor,
     pinStates,
-    mistActive,
   } = useRuntimeStore();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -121,6 +120,51 @@ export default function SensorPanel() {
 
   const isLembahSungai = selectedRoute.includes('Lembah Sungai');
 
+  // Konfigurasi lampu indikator status mitigasi yang sangat terang & menyala
+  const lightConfig = {
+    red: {
+      bg: '#ff1744',
+      glow: '0 0 16px #ff1744, 0 0 28px rgba(255, 23, 68, 0.9), inset 0 0 6px #ffffff',
+      label: 'MERAH (AWAS)',
+      color: '#dc2626',
+      pulse: true,
+    },
+    orange: {
+      bg: '#ff9100',
+      glow: '0 0 16px #ff9100, 0 0 28px rgba(255, 145, 0, 0.9), inset 0 0 6px #ffffff',
+      label: 'ORANYE (SIAGA)',
+      color: '#ea580c',
+      pulse: false,
+    },
+    yellow: {
+      bg: '#ffea00',
+      glow: '0 0 16px #ffea00, 0 0 28px rgba(255, 234, 0, 0.9), inset 0 0 6px #ffffff',
+      label: 'KUNING (WASPADA)',
+      color: '#ca8a04',
+      pulse: false,
+    },
+    green: {
+      bg: '#00e676',
+      glow: '0 0 16px #00e676, 0 0 28px rgba(0, 230, 118, 0.9), inset 0 0 6px #ffffff',
+      label: 'HIJAU (NORMAL)',
+      color: '#16a34a',
+      pulse: false,
+    },
+    off: {
+      bg: '#475569',
+      glow: 'inset 0 0 4px #1e293b',
+      label: 'MATI',
+      color: '#64748b',
+      pulse: false,
+    },
+  }[rgbColor] || {
+    bg: '#00e676',
+    glow: '0 0 16px #00e676, 0 0 28px rgba(0, 230, 118, 0.9), inset 0 0 6px #ffffff',
+    label: 'HIJAU (NORMAL)',
+    color: '#16a34a',
+    pulse: false,
+  };
+
   return (
     <div
       className="absolute bottom-4 right-[336px] z-50 w-80 bg-[#fffbeb] rounded-2xl border-2 border-[#b45309] shadow-2xl overflow-hidden text-[#1c1917]"
@@ -136,7 +180,7 @@ export default function SensorPanel() {
           </div>
         </div>
         <div className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#fde68a] text-[#78350f] border border-[#d97706]">
-          ESP32 SINKRON
+          STATUS AKTIF
         </div>
       </div>
 
@@ -207,35 +251,52 @@ export default function SensorPanel() {
         {/* 3. AKTIVITAS HARDWARE & AKTUATOR */}
         <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30">
           <div className="text-xs font-bold text-[#451a03] font-pixel mb-1.5">Status Aktuator Diorama</div>
-          <div className="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-            {/* Lampu RGB */}
-            <div className="p-1.5 rounded-lg bg-[#fffbeb] border border-stone-300 flex flex-col items-center gap-1">
-              <span className="text-[9px] text-stone-600 font-medium">Lampu Status</span>
-              <span
-                className="w-3.5 h-3.5 rounded-full border shadow-sm"
-                style={{
-                  backgroundColor:
-                    rgbColor === 'red' ? '#ef4444' :
-                    rgbColor === 'orange' ? '#f97316' :
-                    rgbColor === 'yellow' ? '#eab308' :
-                    rgbColor === 'green' ? '#10b981' : '#a8a29e',
-                }}
-              />
-              <span className="font-mono text-[9px] font-bold capitalize">{rgbColor}</span>
+          <div className="grid grid-cols-2 gap-2 text-center text-[10px]">
+            {/* Lampu Status Terang Benderang */}
+            <div className="p-2 rounded-xl bg-[#fffbeb] border-2 border-stone-300/80 flex flex-col items-center justify-between gap-1 shadow-xs">
+              <span className="text-[9px] text-[#78350f] font-bold">Lampu Status</span>
+              <div className="relative flex items-center justify-center p-1.5 rounded-full bg-stone-900/90 border border-stone-600 shadow-inner">
+                <span
+                  className={`w-5 h-5 rounded-full block border border-white/60 transition-all duration-300 ${lightConfig.pulse ? 'animate-pulse' : ''}`}
+                  style={{
+                    backgroundColor: lightConfig.bg,
+                    boxShadow: lightConfig.glow,
+                  }}
+                />
+              </div>
+              <span className="text-[8.5px] font-extrabold tracking-tight" style={{ color: lightConfig.color }}>
+                {lightConfig.label}
+              </span>
             </div>
 
             {/* Sirine EWS */}
-            <div className="p-1.5 rounded-lg bg-[#fffbeb] border border-stone-300 flex flex-col items-center gap-1">
-              <span className="text-[9px] text-stone-600 font-medium">Sirine EWS</span>
-              <span className={`w-3.5 h-3.5 rounded-full border shadow-sm ${pinStates.BUZZER ? 'bg-amber-500 animate-ping' : 'bg-stone-300'}`} />
-              <span className="font-mono text-[9px] font-bold">{pinStates.BUZZER ? 'BERBUNYI' : 'HENING'}</span>
-            </div>
-
-            {/* Mist Maker (Asap) */}
-            <div className="p-1.5 rounded-lg bg-[#fffbeb] border border-stone-300 flex flex-col items-center gap-1">
-              <span className="text-[9px] text-stone-600 font-medium">Asap Mist</span>
-              <span className={`w-3.5 h-3.5 rounded-full border shadow-sm ${mistActive ? 'bg-purple-500 animate-pulse' : 'bg-stone-300'}`} />
-              <span className="font-mono text-[9px] font-bold">{mistActive ? 'MENYEMBUR' : 'MATI'}</span>
+            <div className="p-2 rounded-xl bg-[#fffbeb] border-2 border-stone-300/80 flex flex-col items-center justify-between gap-1 shadow-xs">
+              <span className="text-[9px] text-[#78350f] font-bold">Sirine EWS</span>
+              <div className="relative flex items-center justify-center p-1.5 rounded-full bg-stone-900/90 border border-stone-600 shadow-inner">
+                <span
+                  className={`w-5 h-5 rounded-full block border border-white/60 transition-all duration-300 ${
+                    pinStates.BUZZER ? 'animate-pulse' : ''
+                  }`}
+                  style={
+                    pinStates.BUZZER
+                      ? {
+                          backgroundColor: '#fbbf24',
+                          boxShadow: '0 0 16px #f59e0b, 0 0 28px rgba(245, 158, 11, 0.9), inset 0 0 6px #ffffff',
+                        }
+                      : {
+                          backgroundColor: '#475569',
+                          boxShadow: 'inset 0 0 4px #1e293b',
+                        }
+                  }
+                />
+              </div>
+              <span
+                className={`text-[8.5px] font-extrabold tracking-tight ${
+                  pinStates.BUZZER ? 'text-amber-600' : 'text-stone-500'
+                }`}
+              >
+                {pinStates.BUZZER ? 'BERBUNYI' : 'HENING'}
+              </span>
             </div>
           </div>
         </div>
@@ -259,11 +320,11 @@ export default function SensorPanel() {
           </div>
         </div>
 
-        {/* 5. MONITOR LAYAR OLED */}
+        {/* 5. MONITOR LAYAR INFORMASI PUBLIK */}
         <div className="bg-[#0b132b] p-2 rounded-xl border border-[#1c2541] shadow-inner font-mono text-[10px] text-[#48cae4]">
           <div className="text-[9px] text-[#64dfdf] mb-1 flex items-center justify-between border-b border-[#1c2541] pb-0.5">
-            <span>OLED SSD1306 (128x64)</span>
-            <span>ESP32</span>
+            <span>Layar Informasi Publik</span>
+            <span>Siaga Digital</span>
           </div>
           <div className="py-1 px-1.5 bg-[#000814] rounded text-emerald-400 font-bold truncate">
             {oledMessage}

@@ -45,12 +45,19 @@ import { retroAudio } from '../../../utils/retroAudio';
 import { toggleFullscreen, isFullscreenActive } from '../../../utils/fullscreen';
 import { useAuthStore, getActiveCustomAvatar } from '../../../store/teacherStore';
 import { syncLevel2Progress } from '../level2Sync';
+import JourneyProgressTracker, {
+  LEVEL2_TRACKER_AREAS,
+  type JourneyProgressTrackerRef,
+} from '../../../components/JourneyProgressTracker';
+import ResqyTutorialOverlay from '../../../components/Tutorial/ResqyTutorialOverlay';
+import { TUTORIAL_TOURS } from '../../../components/Tutorial/tutorialConfig';
 
 export default function TectonicGame() {
   const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameStateRef = useRef<GameStateL2 | null>(null);
   const rafRef = useRef<number>(0);
+  const journeyTrackerRef = useRef<JourneyProgressTrackerRef>(null);
 
   const student = useAuthStore((state) => state.student);
   const currentUser = useAuthStore((state) => state.currentUser);
@@ -647,6 +654,16 @@ export default function TectonicGame() {
       // Render canvas dengan avatar kustom siswa
       renderTectonicGameL2(ctx, state, canvas.width, canvas.height, avatarConfig);
 
+      // Real-time update tracker posisi petualangan karakter (Level 2: 6 Area)
+      if (journeyTrackerRef.current && state) {
+        const maxW = state.zone.groundProfile ? state.zone.groundProfile.length : 2200;
+        const localRatio = Math.max(0, Math.min(1, state.player.x / (maxW || 2200)));
+        const totalPercent = ((state.currentAreaIndex + localRatio) / 6) * 100;
+        const activeCfg = LEVEL2_TRACKER_AREAS[state.currentAreaIndex];
+        const metricText = activeCfg ? `${activeCfg.shortName} • ${activeCfg.metricLabel}` : `${Math.round(localRatio * 100)}%`;
+        journeyTrackerRef.current.updateProgress(totalPercent, state.player.dir, metricText);
+      }
+
       rafRef.current = requestAnimationFrame(loop);
     };
 
@@ -1151,6 +1168,17 @@ export default function TectonicGame() {
         )}
       </div>
 
+      {/* ── 2.8 REAL-TIME JOURNEY PROGRESS TRACKER (Level 2: 6 Area Mitigasi) ── */}
+      <div className="absolute bottom-7 sm:bottom-8 lg:bottom-6 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+        <JourneyProgressTracker
+          ref={journeyTrackerRef}
+          totalAreas={6}
+          currentAreaIndex={currentAreaIndex}
+          areas={LEVEL2_TRACKER_AREAS}
+          avatarConfig={avatarConfig}
+        />
+      </div>
+
       {/* ── 3. DISCREET KEYBOARD CONTROLS GUIDE (Desktop Bottom Persis Level 1) ── */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[9px] font-pixel text-slate-300 pointer-events-none z-10 select-none">
         <span>← → Gerak</span>
@@ -1160,7 +1188,7 @@ export default function TectonicGame() {
 
       {/* ── 4. FLOATING INTERACTION HINT (BOTTOM CENTER PERSIS LEVEL 1) ── */}
       {nearInteractablePrompt && !isPaused && (
-        <div className="absolute bottom-12 sm:bottom-14 left-1/2 -translate-x-1/2 pointer-events-auto z-20 select-none animate-bounce w-[min(94vw,860px)] px-2">
+        <div className="absolute bottom-28 sm:bottom-32 left-1/2 -translate-x-1/2 pointer-events-auto z-30 select-none animate-bounce w-[min(94vw,860px)] px-2">
           <div className="bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-sm sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug">
             <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
             <span className="uppercase tracking-wide font-black">{nearInteractablePrompt}</span>
@@ -1170,26 +1198,31 @@ export default function TectonicGame() {
 
       {/* ── 5. MOBILE & TABLET TOUCH CONTROLS (4-Way D-Pad + Dedicated Jump & Interact 100% PERSIS LEVEL 1) ── */}
       {(isTouchDevice || (typeof window !== 'undefined' && window.innerWidth <= 1024)) && (
-        <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between pointer-events-none z-30 select-none">
+        <div 
+          onContextMenu={(e) => e.preventDefault()}
+          className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between pointer-events-none z-30 select-none touch-none"
+        >
           {/* Left 4-Way D-Pad (Atas, Bawah, Kiri, Kanan) */}
-          <div className="flex flex-col items-center pointer-events-auto">
+          <div className="flex flex-col items-center pointer-events-auto touch-none" onContextMenu={(e) => e.preventDefault()}>
             {/* Up button */}
             <button
               onPointerDown={() => handleMobileBtnDown('up')}
               onPointerUp={() => handleMobileBtnUp('up')}
               onPointerLeave={() => handleMobileBtnUp('up')}
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
+              onContextMenu={(e) => e.preventDefault()}
+              className="touch-control w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer select-none"
               title="Lompat ke Atas"
             >
               ▲
             </button>
             {/* Left, Center indicator, Right */}
-            <div className="flex items-center gap-1 sm:gap-1.5 my-1">
+            <div className="flex items-center gap-1 sm:gap-1.5 my-1 touch-none">
               <button
                 onPointerDown={() => handleMobileBtnDown('left')}
                 onPointerUp={() => handleMobileBtnUp('left')}
                 onPointerLeave={() => handleMobileBtnUp('left')}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
+                onContextMenu={(e) => e.preventDefault()}
+                className="touch-control w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer select-none"
                 title="Bergerak ke Kiri"
               >
                 ◀
@@ -1199,7 +1232,8 @@ export default function TectonicGame() {
                 onPointerDown={() => handleMobileBtnDown('right')}
                 onPointerUp={() => handleMobileBtnUp('right')}
                 onPointerLeave={() => handleMobileBtnUp('right')}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
+                onContextMenu={(e) => e.preventDefault()}
+                className="touch-control w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer select-none"
                 title="Bergerak ke Kanan"
               >
                 ▶
@@ -1210,7 +1244,8 @@ export default function TectonicGame() {
               onPointerDown={() => handleMobileBtnDown('down')}
               onPointerUp={() => handleMobileBtnUp('down')}
               onPointerLeave={() => handleMobileBtnUp('down')}
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
+              onContextMenu={(e) => e.preventDefault()}
+              className="touch-control w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer select-none"
               title="Merunduk / Jongkok"
             >
               ▼
@@ -1218,13 +1253,14 @@ export default function TectonicGame() {
           </div>
 
           {/* Right Action Buttons: Dedicated Jump (LONCAT) & Interact (AKSI) */}
-          <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
+          <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto touch-none" onContextMenu={(e) => e.preventDefault()}>
             {/* Tombol Loncat: LONCAT */}
             <button
               onPointerDown={() => handleMobileBtnDown('jump')}
               onPointerUp={() => handleMobileBtnUp('jump')}
               onPointerLeave={() => handleMobileBtnUp('jump')}
-              className="w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-blue-700 to-blue-900 active:from-blue-600 active:to-blue-800 border-2 border-blue-400 text-blue-100 font-pixel text-[11px] sm:text-xs flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#1e3a8a] active:translate-y-0.5 cursor-pointer"
+              onContextMenu={(e) => e.preventDefault()}
+              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-blue-700 to-blue-900 active:from-blue-600 active:to-blue-800 border-2 border-blue-400 text-blue-100 font-pixel text-[11px] sm:text-xs flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#1e3a8a] active:translate-y-0.5 cursor-pointer select-none"
               title="Lompat"
             >
               <span className="text-sm font-bold leading-none">▲</span>
@@ -1236,7 +1272,8 @@ export default function TectonicGame() {
               onPointerDown={() => handleMobileBtnDown('interact')}
               onPointerUp={() => handleMobileBtnUp('interact')}
               onPointerLeave={() => handleMobileBtnUp('interact')}
-              className="w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 border-amber-400 text-amber-50 font-pixel text-[11px] sm:text-xs flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#78350f] active:translate-y-0.5 cursor-pointer"
+              onContextMenu={(e) => e.preventDefault()}
+              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 border-amber-400 text-amber-50 font-pixel text-[11px] sm:text-xs flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#78350f] active:translate-y-0.5 cursor-pointer select-none"
               title="Interaksi (E)"
             >
               <span className="text-xs font-bold leading-none">[E]</span>
@@ -1625,6 +1662,12 @@ export default function TectonicGame() {
           onRetry={handleRetryVolcanoRescue}
         />
       )}
+
+      {/* ── PANDUAN INTERAKTIF RESQY (ONBOARDING GAME TUTORIAL) ── */}
+      <ResqyTutorialOverlay
+        tour={TUTORIAL_TOURS.level2}
+        userId={activeUserId}
+      />
     </div>
   );
 }

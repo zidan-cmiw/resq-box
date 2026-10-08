@@ -23,10 +23,11 @@ tags:
 
 | Dokumen | Deskripsi & Isi Utama | Status / Versi |
 | :--- | :--- | :---: |
-| 📋 **[[PRD]]** | **Product Requirement Document**: Spesifikasi teknis komprehensif, arsitektur sistem, skema kurikulum SMP Kelas 8, dan 76 rekam milestone pengembangan. | `v3.12 (Aktif)` |
-| 📈 **[[progress_report]]** | **Laporan Progres Lengkap**: Dokumentasi teknis terperinci per fitur (Bab 85: Penggantian Total Background Map Level 3 Menjadi Map Area 6 Level 2 3.800px Tanpa Dinding Kelas & Tanpa NPC). | `v3.13 (Update)` |
+| 📋 **[[PRD]]** | **Product Requirement Document**: Spesifikasi teknis komprehensif, arsitektur sistem, skema kurikulum SMP Kelas 8, dan 94 rekam milestone pengembangan. | `v3.32 (Aktif)` |
+| 📈 **[[progress_report]]** | **Laporan Progres Lengkap**: Dokumentasi teknis terperinci per fitur (Bab 103: Sistem Panduan Maskot Resqy; Bab 104: Kurikulum 2 Pertemuan & LKPD PjBL 5 Kelompok). | `v3.32 (Update)` |
 | 🎨 **[[design]]** | **Design System & Visual Guidelines**: Pedoman warna pixel art, tipografi retro 8-bit, prinsip visual game, dan panduan antarmuka responsif. | `v2.0` |
-| 🧭 **[[walkthrough]]** | **Walkthrough & Panduan Pengujian**: Panduan verifikasi fitur, audit dialog interaktif bebas freeze, konsistensi potret & identitas NPC Level 1 & 2, serta pengujian build produksi. | `v3.13 (Update)` |
+| 🧭 **[[walkthrough]]** | **Walkthrough & Panduan Pengujian**: Panduan verifikasi fitur, pengujian kurikulum 2 pertemuan, LKPD PjBL, 20 tugas mandiri, dan build produksi. | `v3.32 (Update)` |
+| 📚 **[[LKPD_PJBL_RESQ_BOX_5_KELOMPOK|LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md]]** | **Panduan Implementasi 2 Pertemuan & LKPD PjBL**: Skenario KBM sekolah mitra 2 pertemuan, 20 tugas mandiri individu Level 3 ringkas beserta kunci blok, dan 5 studi kasus kelompok PjBL. | `v1.0 (Resmi)` |
 | 📖 **[[Readme]]** | **Dokumentasi Umum Repositori**: Gambaran umum proyek, arsitektur teknologi, lisensi, dan profil anggota tim pengembang LIDM 2026. | `v2.5` |
 | 🤖 **[[agent]]** | **Pedoman Agentic AI Coding**: Konteks arsitektur, boundary pengerjaan, dan panduan bagi asisten pengembang AI. | `v1.0` |
 | 📝 **[[update]]** | **Catatan Ringkas Pembaruan**: Catatan log pembaruan fitur cepat lintas modul. | `v1.5` |
@@ -34,7 +35,444 @@ tags:
 
 ---
 
-## ⚡ Sorotan Pembaruan Terkini: Transformasi Map Penuh Level 3 Menjadi Lanskap Murni Area 6 Level 2 (Barak Pengungsian & Pemulihan KRB I) 3.800px — Bersih Tanpa Nama Bangunan, Tanpa Teks Label, dan Tanpa NPC (Bab 85)
+## ⚡ Sorotan Pembaruan Terkini: Kurikulum Implementasi 2 Pertemuan Mitra, LKPD PjBL 5 Kelompok, & 20 Tugas Mandiri Level 3 (Bab 104 & Milestone 94)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 104: Penyusunan Panduan Implementasi 2 Pertemuan KBM Sekolah Mitra, Integrasi LKPD PjBL 5 Kelompok Merapi & Gempa Bumi, Rekapitulasi Ringkas 20 Tugas Mandiri Individu Level 3, serta Peningkatan Readability Modal UI|progress_report.md (Bab 104)]]** dan **[[LKPD_PJBL_RESQ_BOX_5_KELOMPOK|LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md]]**.
+
+1. **📅 Desain Alur Pembelajaran Sekolah Mitra (2 Pertemuan + PR Mandiri)**:
+   - **Pertemuan 1 (80 Menit)**: Orientasi masalah kebencanaan, penuntasan **Level 1** (*Earth Explorer: 8 strata geologis*) dan **Level 2** (*Disaster Analyst: 6 pos mitigasi lereng Merapi*), serta pengarahan tugas mandiri rumah.
+   - **Tugas Mandiri di Rumah (PR)**: Pengerjaan mandiri **20 Misi Studi Kasus Level 3 (Job 1 s.d. Job 20)** di web RESQ-BOX secara ringkas (skenario + tujuan + kunci blok) sebelum masuk pertemuan berikutnya.
+   - **Pertemuan 2 (80 Menit)**: PjBL 5 kelompok memprogram sistem mitigasi kompleks di simulator Level 3 (Action Lab / Proyek Saya) tanpa panduan blok, uji simulasi 20 detik target 0 korban jiwa, presentasi, dan asesmen.
+2. **🌋 5 Studi Kasus Kelompok PjBL Menantang (Pertemuan 2)**:
+   - *Kelompok 1 (Lembah Sungai)*: Erupsi Merapi mengancam lembah sungai ➔ Blok aksi: `Evakuasi Menjauh dari Wilayah Sungai`.
+   - *Kelompok 2 (Sekolah)*: Gempa sedang (5-6 SR) saat jam belajar ➔ Blok aksi: `Evakuasi Keluar Bangunan`.
+   - *Kelompok 3 (Pemukiman)*: Gempa besar (>7 SR) di pemukiman padat ➔ Blok aksi: `Evakuasi ke Tanah Lapang Terdekat`.
+   - *Kelompok 4 (Lereng Atas)*: Aktivitas magma Waspada & Siaga ➔ Blok aksi: `Evakuasi Warga ke Zona KRB II & KRB I`.
+   - *Kelompok 5 (Puncak & Seluruh Lereng)*: Letusan eksplosif awan panas ➔ Blok aksi: `Evakuasi Total ke Luar Area Peta`.
+3. **🎯 4 Batasan Pedagogis & Teknis yang Ditegakkan Mutlak**:
+   - **Zero Etnosains**: Dihapus total dari materi dan tugas (hanya mengadopsi struktur sintaks LKPD).
+   - **Zero Sensor Fisik**: Mengeliminasi istilah sensor analog hardware; alat peraga mengacu pada aktuator LED RGB, sirine EWS, dan display maket diorama.
+   - **Zero Banjir Lahar Dingin**: Materi mitigasi murni fokus pada Gempa Bumi dan Erupsi Merapi.
+   - **Bahasa Ramah Anak SMP Kelas 8**: Kalimat lugas, mudah dipahami, tanpa istilah asing rumit.
+   - **100% Selaras Toolbox Blockly**: Hanya menggunakan 19 blok resmi di toolbox Level 3 (`INITIAL_TOOLBOX`).
+4. **🔍 Peningkatan Readability & Keterbacaan Modal UI**:
+   - Memperbesar ukuran teks dan menebalkan tipografi modal interaktif (Panduan Resqy, Proyek Saya, pop-up studi kasus, dan Discovery Modal) agar terbaca jelas dari perangkat laptop maupun tablet siswa.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Sistem Panduan Interaktif Game Onboarding Maskot Resqy (Bab 103 & Milestone 93)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 103: Sistem Panduan Interaktif Game Onboarding Maskot Resqy (Onboarding Walkthrough Ala Game RPG / Mobile Legends, Spotlight Highlight Glow, Narasi Dialog Bertahap, Diferensiasi Akun Siswa & Guru, serta Persistensi Per Rute)|progress_report.md (Bab 103)]]**.
+
+1. **🦉 Maskot Visual Resqy 2D Pixel Art SVG (`ResqyMascot.tsx`)**:
+   - Menghadirkan karakter maskot resmi burung hantu berbulu cokelat dengan kacamata emas penjelajah (*golden goggles*), ekspresi mata ramah, sayap mengepak, dan animasi berbicara interaktif.
+2. **🌟 Spotlight Highlight Glow & Dialog Ala Game RPG / Mobile Legends**:
+   - Efek sorot dinamis dengan bounding box tepat pada elemen yang sedang dijelaskan (`boxShadow` 9999px + pulsing border emas amber).
+   - Dialog speech box adaptif (otomatis memilih letak atas/bawah agar tidak menutupi elemen target), dilengkapi badge topik, indikator dot steps, dan navigasi keyboard.
+3. **🗺️ 9 Alur Panduan Komprehensif Seluruh Rute Platform**:
+   - `/login`: Pengenalan RESQ-BOX, opsi Masuk/Daftar Siswa & Guru, form kredensial, dan tombol demo cepat.
+   - `/` (Dashboard Siswa): Runtutan materi kurikulum 3 level, strategi pembelajaran bertingkat, teknik evaluasi (Wordle, TTS, 20 Misi), HUD pemain, tombol Panduan & Bengkel Profil.
+   - `/` (Dashboard Guru): Portal guru untuk menguji modul ajar dan tombol akses ke Posko Guru.
+   - `/profile`: Bengkel Avatar Pixel, form identitas siswa, keamanan ganti password, dan rekam kesiapsiagaan.
+   - `/level1`: Panduan kontrol gerak & aksi, modul sains tim ekspedisi [🔍], Radar Bumi, dan gerbang Wordle Sains.
+   - `/level2`: Panduan 6 pos mitigasi lereng Merapi (SOP 72 Jam TSB, Drill Gempa, Status PVMBG, Zonasi KRB, Barak BNPB), dan TTS Crossword.
+   - `/level3`: Peta 20 Misi 4 Sektor, cara kerja visual block coding, maket Digital Twin 3D 20 detik, dan rapor guru.
+   - `/workspace`: Studio pemrograman mitigasi, kanvas 3D 75 AI warga, panel telemetri sensor, dan tombol Uji Algoritma.
+   - `/teacher`: Posko Guru, manajemen kelas, kode kelas, rekap nilai gabungan, cetak rapor resmi, dan ekspor CSV.
+4. **💾 Persistensi Otomatis & Replay Trigger `[🦉 Panduan Resqy]`**:
+   - Muncul otomatis hanya sekali saat pertama kali mengunjungi rute terkait, disimpan di `localStorage` per akun user (`resqbox_tour_completed_${tourKey}_${userId}`).
+   - Pengguna dapat memanggil ulang tutorial kapan saja dengan menekan tombol mengambang `[🦉 Panduan Resqy]`.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Penyelarasan Total Modal Panduan & Misi Pembelajaran (Bab 102 & Milestone 93)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 102: Penyelarasan Total Modal Panduan & Misi Pembelajaran Dashboard (Tab Interaktif 4 Sektor, Rincian 8 Area Geologis Level 1, 6 Pos Mitigasi Level 2, 20 Misi Studi Kasus Level 3, dan Tombol Kontekstual Dinamis)|progress_report.md (Bab 102)]]**.
+
+1. **📑 Sistem 4 Tab Interaktif (`SEMUA TAHAP`, `TAHAP 1`, `TAHAP 2`, `TAHAP 3`)**:
+   - Menghadirkan bilah navigasi tab pixel kayu di modal notice board `PANDUAN & MISI` (`src/app/Dashboard/index.tsx`).
+   - Menyajikan ringkasan komprehensif alur kurikulum IPA SMP Kelas 8 dan status ketuntasan siswa saat ini.
+2. **🌍 Penyelarasan Penuh Tahap 1 (Earth Explorer)**:
+   - Memetakan 8 Area Geologis (Permukaan, Kerak, Mantel, Inti Luar, Inti Dalam, Batas Divergen, Konvergen, dan Transform top-down).
+   - Menjelaskan kehadiran 5 Karakter Ekspedisi & Resqy, kristal geotermal, modul sains [🔍], dan evaluasi **Wordle Sains** Bu Tyas, M.Pd. sebagai syarat kelulusan ke Level 2.
+3. **🌋 Penyelarasan Penuh Tahap 2 (Disaster Analyst)**:
+   - Menggantikan deskripsi usang puzzle drag-and-drop dengan 6 Pos Mitigasi Kebencanaan: Ruang Kelas (SOP 72 Jam TSB), Drill Gempa (Drop-Cover-Hold On), Lapangan Evakuasi (Titik Kumpul), Pos PGA Merapi (Seismograf & Status PVMBG), Simulasi Erupsi (KRB I–III saat AWAS), dan Barak Pengungsian BNPB.
+   - Evaluasi **TTS Crossword Mitigasi** Bu Tyas, M.Pd. sebagai syarat kelulusan ke Level 3.
+4. **🎮 Penyelarasan Penuh Tahap 3 (Simulation Game / Action Lab)**:
+   - Memetakan 20 Misi Studi Kasus dalam 4 Sektor Tematik (EWS & Sensor, Gempa 3-Tingkat, Erupsi Efusif Lahar Sungai, dan Erupsi Eksplosif Awan Panas).
+   - Menjelaskan Visual Block Coding ramah anak, Digital Twin 3D Merapi dengan observasi 20 detik dan tombol *Reset Kondisi*, serta sinkronisasi otomatis ke Posko Guru (`/teacher`) dan diorama fisik ESP32.
+5. **🎯 Tombol Kontekstual Pintar**:
+   - Tombol aksi di bawah modal otomatis beradaptasi dengan tab aktif dan status unlock level pemain (`unlockedLevel`).
+
+---
+
+## ⚡ Sorotan Sebelumnya: Minimalist Overhaul Journey Progress Tracker & Restorasi Highlight Dinamis Radar Bumi (Bab 101 & Milestone 92)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 101: Minimalist Overhaul Journey Progress Tracker (Anti-Collision, Z-Index Optimization) & Restorasi Highlight Dinamis Radar Bumi (PixelEarthDiagram)|progress_report.md (Bab 101)]]** dan **[[PRD#92. Minimalist Overhaul Journey Progress Tracker (Anti-Collision, Z-Index Optimization) & Restorasi Highlight Dinamis Radar Bumi (PixelEarthDiagram)|PRD.md (Milestone 92)]]**.
+
+1. **✂️ Desain Minimalis & Borderless Murni**:
+   - Menghapus kotak card latar belakang gelap tebal, border amber ganda, dan padding berlebih pada `JourneyProgressTracker.tsx`.
+   - Mengeliminasi seluruh bilah header (judul teks, badge level, badge area aktif, dan tombol toggle `[−]`/`[+]`).
+   - Tampilan murni menyajikan progress bar kapsul ramping yang melayang ringan di atas latar belakang permainan.
+2. **🛡️ Tata Letak Anti-Collision (Bebas Tabrakan Teks Metrik)**:
+   - Avatar karakter mini dan panah penunjuk `▼` diposisikan di **atas** bar kapsul menunjuk ke bawah.
+   - Label jarak dan metrik area (`0 km`, `35 km`, `2.900 km`, dll.) berada rapi di **bawah** node checkpoint.
+   - Menghilangkan tumpang tindih visual 100% saat avatar melintasi node checkpoint.
+3. **🔝 Z-Index Non-Blocking & Bebas Hambatan Popup**:
+   - Kontainer tracker disetel ke `z-10` dengan `pointer-events-none` agar klik/sentuhan mouse tembus langsung ke elemen game di bawahnya.
+   - Tombol prompt interaksi di Level 1 (`hudData.nearObjectType`) dinaikkan ke `bottom-20 sm:bottom-24` dengan `z-30 pointer-events-auto`, memastikan tombol interaksi dan popup selalu tampil di atas tracker dan responsif.
+4. **🌍 Restorasi Highlight Dinamis Radar Bumi (`PixelEarthDiagram.tsx`)**:
+   - Mengembalikan logika selektif `hasActive = !!activeLayerId`: lapisan interior bumi yang sedang dijelajahi karakter menyala terang dengan aura putar dan pembesaran halus, sementara lapisan lainnya diredupkan ke `opacity: 0.32` demi fokus edukatif.
+5. **✅ Verifikasi Build 100%**:
+   - `npx tsc -b` sukses 0 error dan `npm run build` sukses 100% dalam 2.62s - 4.16s (32 precache entries valid).
+
+---
+
+## ⚡ Sorotan Sebelumnya: Real-Time Journey Progress Tracker 2D Pixel Art & Preview Avatar Karakter di Level 1 & Level 2 (Bab 100 & Milestone 91)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 100: Real-Time Journey Progress Tracker 2D Pixel Art & Preview Avatar Karakter di Level 1 & Level 2|progress_report.md (Bab 100)]]** dan **[[PRD#91. Real-Time Journey Progress Tracker 2D Pixel Art & Preview Avatar Karakter (Level 1 & Level 2)|PRD.md (Milestone 91)]]**.
+
+1. **🗺️ Komponen Reusable `JourneyProgressTracker.tsx`**:
+   - Dibuat dengan antarmuka kapsul retro 2D pixel (`bg-slate-950/90`, border amber, shadow tegas) di *bottom-center* viewport (di area batuan dasar atas bar pintasan kontrol keyboard).
+   - Menampilkan judul bernuansa retro `'Press Start 2P'`, badge nama area aktif, tombol ciutkan/perluas (`−`/`+`), fill gradient dinamis (Hijau ➔ Kuning ➔ Oranye ➔ Merah), dan tooltip hover.
+2. **📍 Segmentasi Checkpoint Area Presisi**:
+   - **Level 1 (8 Area Geologis)**: Permukaan Bumi (`mountain`, 0 km), Kerak Bumi (`pickaxe`, 35 km), Mantel Bumi (`flame`, 2.900 km), Inti Luar (`zap`, 5.150 km), Inti Dalam (`crystal`, 6.371 km), Batas Divergen (`divergent`, Pemekaran), Batas Konvergen (`convergent`, Subduksi), dan Batas Transform (`transform`, Sesar S.A.).
+   - **Level 2 (6 Area Mitigasi)**: Ruang Kelas Teori (`book`, SOP 72 Jam), Simulasi Drill (`earthquake`, Drop-Cover), Lapangan Evakuasi (`runner`, Titik Kumpul), Pos PGA Merapi (`seismogram`, Status PVMBG), Simulasi Erupsi (`volcano`, Status AWAS), dan Barak Pengungsian (`tent`, Zona Aman KRB I).
+   - Indikator status node visual: *Tuntas* (lingkaran hijau zamrud dengan centang pixel `✓`), *Aktif* (lingkaran amber berpendar dengan efek pulse halo), dan *Terkunci* (lingkaran slate abu-abu).
+3. **🏃 Preview Avatar Karakter Bergerak Real-Time (60 FPS)**:
+   - Preview miniatur avatar kustom siswa (`PixelAvatarRenderer`) dengan penunjuk segitiga `▲` bergerak mulus melintasi bar progress secara real-time mengikuti pergerakan langkah karakter di peta kanvas tanpa re-render React berlebih.
+   - Avatar otomatis membalik hadap kiri/kanan (`scaleX`) mengikuti arah hadap karakter pemain.
+4. **🎨 Zero OS Emoji & Ikon Pixel Baru**:
+   - Seluruh icon checkpoint menggunakan SVG 2D pixel art kustom dengan `shapeRendering="crispEdges"`.
+   - Menambahkan ikon pixel art tenda BNPB kustom 16x16 (`tent`) di `PixelIcon.tsx`.
+5. **✅ Verifikasi Build 100%**:
+   - `npx tsc -b` bersih 0 error dan `npm run build` sukses 100% dalam 2.73 detik (32 precache entries valid).
+
+---
+
+## ⚡ Sorotan Sebelumnya: Sinkronisasi Real-Time Misi Level 3 ke Dashboard Guru, Evaluasi Bertingkat [PROGRES] / [TUNTAS], Isolasi Mutlak Per-Akun Siswa, dan Rekonsiliasi Otomatis (Bab 99 & Milestone 90)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 99: Sinkronisasi Real-Time Misi Level 3 ke Dashboard Guru, Evaluasi Bertingkat [PROGRES] / [TUNTAS], Isolasi Mutlak Per-Akun Siswa, dan Rekonsiliasi Otomatis|progress_report.md (Bab 99)]]** dan **[[PRD#90. Sinkronisasi Real-Time Misi Level 3 ke Dashboard Guru, Evaluasi Bertingkat [PROGRES] / [TUNTAS], Isolasi Mutlak Per-Akun Siswa, dan Rekonsiliasi Otomatis|PRD.md (Milestone 90)]]**.
+
+1. **🔄 Pembuatan Modul Sinkronisasi Level 3 (`level3Sync.ts`)**:
+   - Menghadirkan fungsi `syncLevel3Progress()` yang menghitung skor proporsional 20 level misi ($\text{skor} = \frac{\text{misi}}{20} \times 100$) dan mengirimkan payload lengkap (`completed_missions`, `completed_count`, `last_completed_id`, status teks, stage label) ke `submitLevelProgress()`.
+   - Mengintegrasikan pemanggilan instan di `completeMission()` (`missionStore.ts`) setiap kali siswa menyelesaikan misi apa pun (misal Job 1, Job 2) tanpa harus menunggu seluruh 20 misi tuntas.
+   - Menambahkan *passive sync* di `Level3/index.tsx` saat mount untuk menjamin progres di localStorage langsung tersinkronkan ke server.
+2. **📊 Overhaul Evaluasi Level 3 di Dashboard Guru (`TeacherDashboard/index.tsx`)**:
+   - Menghubungkan pembacaan `sub3` untuk seluruh siswa di tabel pemantauan.
+   - Mengubah status Level 3 dari teks statis menjadi badge reaktif:
+     - `[ PROGRES ]` (cyan) dengan subtext `${score3} Poin (${completedCount}/20)` saat ada misi selesai (misal Job 1 & 2 = 10 Poin).
+     - `[ TUNTAS ]` (emerald) dengan subtext `100 Poin` saat seluruh 20 misi tuntas.
+     - `AKTIF` (purple) dengan subtext `Lab Simulasi` saat level terbuka namun belum ada misi dikerjakan.
+     - `TERKUNCI` (slate) saat siswa masih di Level 1 atau 2.
+   - Memperbarui Modal Detail Siswa: kartu Level 3 kini menampilkan Nilai Simulasi, Rasio Misi Selesai (`X / 20`), progress bar dinamis, dan deskripsi stage.
+   - Memperbarui Cetak Rapor Siswa & Ekspor CSV: menyertakan kolom Skor Lv 3, status evaluasi, dan jumlah misi tuntas.
+3. **🛡️ Penguatan Isolasi Progres Multi-Akun & Rekonsiliasi Otomatis**:
+   - Seluruh penyimpanan misi (`resqbox_missions_${userId}`) dan workspace terisolasi mutlak per ID akun siswa.
+   - Mengembangkan mekanisme rekonsiliasi otomatis di `fetchClassroomSubmissions()` (`supabaseClient.ts`) yang memindai progres lokal siswa dan langsung menyintesis submisi Level 3 jika siswa telah mengerjakan misi sebelumnya.
+4. **✅ Verifikasi Build 100%**:
+   - `npx tsc --noEmit` lolos 100% (0 error) dan `npm run build` sukses 100% dalam 2.56 detik (32 precache entries valid).
+
+---
+
+## ⚡ Sorotan Sebelumnya: Eliminasi Redundansi Blok Evakuasi, Durasi Simulasi 20 Detik, Preservasi Dampak Lingkungan Pasca-Bencana, dan Tombol Reset Kondisi Peta 3D (Bab 98 & Milestone 89)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 98 Eliminasi Redundansi Blok Evakuasi Penyesuaian 20 Misi Studi Kasus Pembatasan Durasi Bencana 20 Detik Preservasi Dampak Lingkungan Pasca-Bencana dan Tombol Reset Kondisi Peta 3D|progress_report.md (Bab 98)]]** dan **[[PRD#89. Eliminasi Redundansi Blok Evakuasi, Penyesuaian 20 Misi Studi Kasus, Pembatasan Durasi Bencana 20 Detik, Preservasi Dampak Lingkungan Pasca-Bencana, dan Tombol Reset Kondisi Peta 3D|PRD.md (Milestone 89)]]**.
+
+1. **✂️ Eliminasi Blok Redundan "Tentukan Jalur Evakuasi" & Penyelarasan 20 Study Cases (`missions.ts`)**:
+   - Blok `resq_jalur_evakuasi` dihapus dari `core.ts`, `jsGenerator.ts`, `BlocklyComponent.tsx`, dan `validationEngine.ts`.
+   - Kategori *Aksi & Evakuasi* kini rapi menyajikan 5 blok aksi evakuasi nyata: `resq_evak_keluar_bangunan`, `resq_evak_tanah_lapang`, `resq_evak_krb`, `resq_evak_luar_map`, `resq_evak_jauhi_sungai`.
+   - Ke-20 studi kasus misi disesuaikan (Job 10, Job 16–20) tanpa lagi memerlukan blok rute evakuasi lama.
+2. **⏱️ Pembatasan Durasi Bencana Menjadi Tepat 20 Detik & Countdown Timer**:
+   - Simulasi gempa dan letusan Merapi kini otomatis dibatasi tepat **20 detik** (`SIMULATION_DURATION_MS = 20000`) di Workspace.
+   - Tombol eksekusi menampilkan hitung mundur waktu riil: `BERHENTI (Xs)` saat aktif dan kembali ke `MULAI` setelah 20 detik selesai.
+   - Pengguna tetap dapat mengklik tombol manual `BERHENTI` kapan saja jika ingin menghentikan simulasi lebih awal.
+3. **🌋 Preservasi Dampak Lingkungan Pasca-Bencana pada Peta 3D (`Merapi3DScene.tsx`)**:
+   - Saat 20 detik habis, **hanya aktivitas fisika bencananya yang mereda** (getaran tanah/kamera berhenti, semburan kolom kawah dan lontaran bom berhenti, hardware mist/motor/gempa dinonaktifkan).
+   - **Kondisi lingkungan dan dampak bencana tetap dipertahankan**:
+     - *Gempa*: Rekahan aspal jalan tetap menganga, bangunan roboh/amblas tetap hancur beserta puing-puingnya, tiang listrik tetap miring/tumbang.
+     - *Erupsi Eksplosif*: Awan panas (*wedhus gembel*) tetap menyelimuti lereng dan lembah sungai (Kali Gendol, Kali Kuning, Boyong), bangunan tetap hangus berjelaga hitam, pohon tetap arang tanpa daun, air sungai tetap keruh berlumpur lahar dingin.
+     - *Erupsi Efusif*: Lidah aliran lelehan lava pijar tetap membeku/membara di lereng kawah & hulu sungai, sungai tetap berwarna lahar, pepohonan tetap terbakar.
+     - *Warga / NPC*: Tetap bertahan di zona aman hasil evakuasi (lapangan terbuka / barak KRB I / luar peta).
+     - Label status informatif: `PASCA-GEMPA: DAMPAK KERUSAKAN BANGUNAN & JALAN`, `PASCA-ERUPSI EKSPLOSIF: DAMPAK AWAN PANAS & ABU VULKANIK`, atau `PASCA-ERUPSI EFUSIF: ENDAPAN LAVA PIJAR & LAHAR`.
+4. **↺ Tombol "Reset Kondisi" pada Toolbar Pojok Kanan Atas Peta 3D**:
+   - Ditambahkan tepat pada toolbar diorama: `[ Garis KRB ] [ Reset View ] [ Gedein Peta ] [ Reset Kondisi ]`.
+   - Berkedip lembut (*pulse animation*) dengan aksen warna rose saat peta mendeteksi kerusakan pasca-bencana.
+   - Mengembalikan 100% kondisi peta ke keadaan normal: bangunan kembali utuh, tiang tegak, jalan menutup, pohon berdaun hijau kembali, air sungai biru jernih, awan panas & lava dibersihkan, dan 75 NPC kembali ke posisi awal.
+5. **✅ Verifikasi Build 100%**:
+   - `npx tsc --noEmit` lolos 100% (0 error) dan `npm run build` sukses 100% dalam 3.73 detik (32 precache entries valid).
+
+---
+
+## ⚡ Sorotan Sebelumnya: Standardisasi Panduan Lokasi Kategori Blok di Seluruh 20 Level Study Case Level 3 (Bab 98 & Milestone 88)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#D. Standardisasi Panduan Lokasi Kategori Blok di Seluruh 20 Level Study Case (Blockly Toolbox Guidance UX)|progress_report.md (Bab 98)]]** dan **[[PRD#88. Standardisasi Panduan Lokasi Kategori Blok di Seluruh 20 Level Study Case (Blockly Toolbox Guidance UX)|PRD.md (Milestone 88)]]**.
+
+1. **🧩 Panduan Eksplisit Kategori Toolbox di Semua 20 Level (`missions.ts`)**:
+   - Seluruh 20 level study case Level 3 (`job_01` hingga `job_20`) kini secara eksplisit mencantumkan nama kategori asal saat menginstruksikan siswa mengambil blok di kanvas.
+   - Format navigasi: `Kategori [Nama Kategori] ➔ ambil blok '[Nama Blok]'`.
+   - Memetakan 6 kategori toolbox resmi: **Sistem** (oranye), **Simulasi Bencana** (merah), **Peringatan & EWS** (tosca), **Aksi & Evakuasi** (ungu), **Kondisi Bencana** (biru), dan **Pengambilan Keputusan** (pink).
+2. **🧭 Kartu Panduan Lokasi Blok di Pop-up Modal Level 3 & MissionPanel**:
+   - Modal pop-up peta Level 3 memuat kartu cyan `🧭 PANDUAN KATEGORI BLOK` sebelum siswa memulai misi.
+   - Sidebar MissionPanel di Workspace menyajikan kartu hijau `🧭 PANDUAN LOKASI BLOK:` sebagai petunjuk cepat permanen.
+   - Engine validasi (`validationEngine.ts`) memberi tahu kategori asal blok jika ada blok yang terlewat saat validasi.
+3. **🗺️ Peta Level 3 Dipangkas Menjadi Tepat 20 Level**:
+   - Menghapus 30 level ekstra (Level 21–50) sehingga pas **20 level bertingkat** sesuai 4 sektor tematik kurikulum SMP Kelas 8 (Sektor 1: EWS & Sensor; Sektor 2: Gempa Bumi; Sektor 3: Erupsi Efusif & Lahar; Sektor 4: Erupsi Eksplosif & Awan Panas).
+   - Lebar kanvas disesuaikan `4650px` dengan scrollbar horizontal responsif, indikator `TUNTAS: 0 / 20`, dan tiang bendera finish di ujung Level 20.
+2. **🛡️ Konseptualisasi & Integrasi Rute "Jalur Lingkar Utama (Bebas Lahar)"**:
+   - Lembah alur sungai (Kali Gendol/Kuning) adalah *death trap* lahar dingin dan awan panas.
+   - **Jalur Lingkar Utama** adalah jaringan jalan evakuasi lingkar di punggung bukit (*ridge*) yang bebas dari ancaman lahar karena berada di elevasi tinggi di atas tebing sungai, menghubungkan lereng atas langsung ke Barak Pengungsian KRB I di selatan.
+   - Terkoneksi dinamis ke blok Blockly `resq_jalur_evakuasi`, `resq_posko`, dan `resq_sirine_ews`.
+3. **🚶 Eliminasi Total "Conga-Line" (Multi-Lane Lateral Spreading)**:
+   - Menghitung vektor normal tegak lurus sumbu jalan: NPC tidak lagi berjalan di satu garis tengah tipis, melainkan menyebar melintang di lebar jalan ($-0.65$ s/d $+0.65$) di trotoar kiri, bahu jalan, tengah jalan, dan trotoar kanan.
+   - Tiap individu memiliki `walkPhase` dan kecepatan unik sehingga langkah kaki tidak sinkron serempak seperti robot.
+4. **👥 4 Arketipe Realistis Warga Desa (75 NPC)**:
+   - **20 Anak Sekolah (`role: 'student'`)**: Seragam biru-putih dan pramuka, tubuh mungil, langkah lincah. 10 anak di dalam kelas sekolah beton, 10 di pekarangan.
+   - **10 Petugas BPBD/TAGANA (`role: 'officer'`)**: Rompi oranye khas BPBD dan helm keselamatan kuning bersiaga di Posko BPBD, RSUD, dan Barak KRB I.
+   - **13 Lansia (`role: 'elder'`)**: Pakaian warna tanah/khaki, langkah santai dan hati-hati.
+   - **32 Warga Dewasa (`role: 'adult'`)**: Baju warna-warni, 12 orang berada di dalam rumah tinggal kayu.
+5. **🏢 Respons Bencana Cerdas Berbasis Material Dinding**:
+   - **Gempa Ringan**: Indoor jalan cepat keluar ruangan; outdoor berhenti sejenak ($1.5$s) mendongak ke atas memeriksa genteng dan plang (`lookUpTimer`), lalu jalan menjauhi dinding.
+   - **Gempa Sedang**: Bangunan kayu lari keluar ($1.8\times$) karena rawan runtuh; gedung beton (Sekolah/RSUD/BPBD) memicu **Duck and Cover** (merunduk di kolong meja/pilar kokoh lindungi kepala dan bertahan di tempat); outdoor lari cepat ($1.9\times$) ke Lapangan Terbuka.
+   - **Gempa Besar**: Semua tiarap di tanah/lantai. NPC yang Duck & cover di bawah meja beton / lapangan terbuka selamat; yang dekat dinding roboh non-beton tertimpa reruntuhan (knocked out).
+6. **🌋 Erupsi Merapi Multi-Phase & Dynamic Bomb Dodge**:
+   - **Waspada**: 90% normal, sesekali berhenti menatap puncak kawah Merapi (`gazeTimer`) melihat kepulan asap kawah.
+   - **Siaga**: Warga berkemas, kecepatan $1.7\times$, evakuasi ke KRB I di selatan, mobil evakuasi patroli sirine.
+   - **Awas**: Evakuasi massal tanpa henti ($2.5\times$) menuju batas selatan ($Z \ge 104$).
+   - **Dynamic Bomb Dodge**: NPC mendeteksi bom vulkanik yang meluncur turun dalam radius $< 8.5$m dan meliuk ke samping ($1.6$m) secara dinamis untuk menghindar!
+   - **Awan Panas**: Gedung beton kokoh melindungi dari awan panas 600°C; warga di ruang terbuka tanpa gedung beton tereliminasi.
+   - **Erupsi Efusif**: Aliran sungai ditandai sebagai Danger Grid, NPC mengambil jalan lingkar bukit menjauhi lava.
+7. **✅ Verifikasi Build 100%**:
+   - `npx tsc --noEmit` bersih 0 error dan `npm run build` sukses 100% dalam 2.29 detik.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Overhaul Visual Bundaran Lampu Sensor LED Pusat (Digital Twin 3D Merapi) — Super Terang, Dual Glow Halo, Ground Light Pool & PointLight Ultra-Luminance (Bab 96)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#96. Overhaul Visual Bundaran Lampu Sensor LED Pusat (Digital Twin 3D Merapi): Bola Lampu Raksasa, Inti Pijar Putih, Dual Volumetric Glow Halo, Ground Light Pool, dan PointLight Ultra-Terang|progress_report.md (Bab 96)]]** dan **[[PRD#86. Overhaul Visual Bundaran Lampu Sensor LED Pusat (Digital Twin 3D Merapi — Super Terang, Dual Glow Halo, Ground Light Pool & PointLight Ultra-Luminance)|PRD.md (Milestone 86)]]**.
+
+1. **🔴 Respons Tanggapan Screenshot Pengguna**:
+   - Pengguna menandai bundaran lampu di persimpangan jalan dekat KRB II: *"lampu yang disini itu loh kurang terang banget"*.
+   - Dilakukan perombakan total pada `buildCentralLed()` di [`Merapi3DScene.tsx`](./src/app/EvacuationGame/Merapi3DScene.tsx).
+2. **💡 Bola Lampu Raksasa & Inti Putih Panas**:
+   - Radius bola utama diperbesar dari 0.48 menjadi **1.35 unit** dengan `emissiveIntensity: 8.5` (hampir 3x lipat).
+   - Di dalam bola lampu disematkan bola inti putih murni (`radius: 0.85`, `#ffffff`) untuk mereplikasi pijar fisik lampu LED berdaya tinggi.
+3. **✨ Dual Volumetric Glow Halos**:
+   - *Inner Halo*: Bola radius 2.6 unit dengan `AdditiveBlending` dan opacity 0.65 (`BackSide`).
+   - *Outer Corona Flare*: Bola radius 5.2 unit dengan `AdditiveBlending` dan opacity 0.35 (`BackSide`), menciptakan kabut aura cahaya atmosfer yang tebal dan dramatis.
+4. **🛣️ Kolam Cahaya di Atas Aspal & Rumput (Ground Light Pool)**:
+   - Cincin proyeksi cahaya horizontal selebar 17 unit (`RingGeometry(0.3, 8.5, 36)`) ber-`AdditiveBlending` diletakkan tepat di atas jalan persimpangan ($y = 0.08$), menyinari aspal dan lingkungan sekitar secara nyata.
+5. **🔦 PointLight Intensitas 25.0**:
+   - Sumber cahaya dinaikkan 10x lipat dari 2.5 menjadi **25.0** dengan jarak penerangan 60 unit dan decay 1.2.
+6. **🌈 Animasi Denyut Pulse & Sinkronisasi 4 Warna Neon Murni**:
+   - Render loop `animate()` mempertahankan intensitas puncak `8.5 * pulse` dan `25.0 * pulse` tanpa terpotong.
+   - Sinkronisasi warna otomatis memperbarui kelima komponen (mesh utama, inti, halo dalam, halo luar, kolam tanah, dan pointlight) secara serempak dengan warna neon intensif (`#00ff66`, `#ffea00`, `#ff6600`, `#ff0033`).
+7. **✅ Verifikasi Build Produksi 100%**:
+   - `npx tsc --noEmit` lolos 0 error dan `npm run build` selesai sukses dalam 2.83 detik.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Perbaikan Evaluasi Logika Letusan Blockly, Audio Sintesis Sirine EWS Kontinu, Peningkatan Luminansi Lampu Status, Penghapusan Indikator Asap Mist, dan Eliminasi Istilah Teknis Hardware (Bab 95)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#95. Perbaikan Evaluasi Logika Kondisional Letusan Blockly, Audio Sintesis Sirine EWS Kontinu, Peningkatan Luminansi Lampu Status, Penghapusan Indikator Asap Mist, dan Eliminasi Istilah Teknis Hardware|progress_report.md (Bab 95)]]** dan **[[PRD#85. Perbaikan Evaluasi Logika Letusan Blockly, Audio Sintesis Sirine EWS Kontinu, Peningkatan Luminansi Lampu Status, Penghapusan Indikator Asap Mist, dan Eliminasi Istilah Teknis Hardware|PRD.md (Milestone 85)]]**.
+
+1. **🧩 Evaluasi Logika Blok Predikat Letusan**:
+   - Blok `resq_tipe_letusan` kini mengembalikan predikat kondisi boolean runtime `(api.getEruptionType() === '${tipe}')`.
+   - Menghilangkan bug di mana string `"EFUSIF"` selalu bernilai *truthy* di JavaScript. Kini saat simulasi bertipe Eksplosif, kondisi `Kalau [Tipe Letusan: Efusif]` menghasilkan `false` dan sirine EWS **tidak akan berbunyi keliru**.
+2. **🔊 Audio Sintesis Sirine EWS & Alarm Kontinu**:
+   - Modul `retroAudio` dilengkapi `startEwsSiren()` dan `stopEwsSiren()` dengan dual oscillator (sawtooth + sine) dan filter bandpass 750 Hz.
+   - Suara sirine berbunyi looping terus-menerus selama `api.setBuzzer(true)` aktif, dan terputus seketika saat buzzer mati atau simulasi dihentikan.
+3. **💡 Lampu Status LED Ultra-Terang**:
+   - Diameter lampu diperbesar ($20\text{px}$) dengan ring reflektor gelap, gradien lensa, dan multi-layer neon bloom box-shadow (Merah: `#ff1744` + glow 28px + pulse; Hijau: `#00e676` + glow 28px; Oranye: `#ff9100`; Kuning: `#ffea00`) dengan label status kontras tebal.
+4. **🗑️ Eliminasi Kartu Asap Mist**:
+   - Kartu "Asap Mist" dihapus dari panel telemetri dan aktuator diubah menjadi 2 kolom (`grid-cols-2`) seimbang dan lapang.
+5. **🏷️ Pembersihan Istilah Teknis Hardware**:
+   - Badge `ESP32 SINKRON` diubah ke `STATUS AKTIF`, monitor `OLED SSD1306 (128x64)` diubah ke `Layar Informasi Publik` & `Siaga Digital`, serta teks misi/LKPD dibersihkan dari istilah chipset. Peringatan hardware belum terhubung tetap dipertahankan sesuai arahan.
+6. **✅ Verifikasi Build 100%**:
+   - `npx tsc --noEmit` lolos 0 error dan `npm run build` sukses 100% dalam 2.63 detik.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Penyempurnaan Erupsi Efusif Merapi (Multi-Stream 6 Lidah Lava Lereng Atas, Batasan Radius KRB III, Tremor Ringan Level 1, dan Perambatan Kekeruhan Sungai Bertahap ke Hilir) (Bab 92)
+
+> [!NOTE]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 92: Penyempurnaan Simulasi Erupsi Efusif Level 3 (Multi-Stream 6 Lidah Lava Lereng Atas, Batasan Radius KRB III, Tremor Ringan Level 1, dan Perambatan Kekeruhan Sungai Bertahap)|progress_report.md (Bab 92)]]** dan **[[PRD#82. Penyempurnaan Simulasi Erupsi Efusif Level 3|PRD.md (Milestone 82)]]**.
+
+1. **🌋 Tahap Awal (Pre-Erupsi Efusif)**:
+   - **Tanpa Gempa Besar (No Screen Shake)**: Getaran kamera dan tremor tanah dimatikan (`effectiveSeismic = 0`), menjaga layar tenang dan stabil.
+   - **Asap Putih Tipis (Steam/Gas Sulfur)**: Kawah mengepulkan uap air dan gas putih bersih konstan (`#f8fafc`, opacity 0.58, size 3.2), bukan kepulan hitam pekat meledak.
+   - **Pertumbuhan Kubah Lava (Lava Dome)**: Objek 3D kubah lava di kawah menggembung perlahan ($0.0\text{s} - 4.0\text{s}$) dengan pendaran magma merah-oranye berdenyut sebelum lava meluap ke lembah.
+2. **🔥 Logika Aliran Lava (Gravity Pathfinding & Cooling Texture)**:
+   - Aliran lava mengikuti kontur lembah terendah (Kali Gendol, Kali Kuning, Kali Boyong).
+   - Efek pendinginan tekstur dinamis (*Cooling Texture Transition* via vertex colors): Ujung depan Merah Pijar (`#ff3b00`–`#ffdd00`) ➔ Badan tengah Jingga Panas (`#f97316`) ➔ Ekor & kerak luar membeku menjadi Batuan Basal Hitam/Abu-abu (`#18181b` / `#27272a`).
+   - Kecepatan lambat realistis (aliran memerlukan ~22 detik untuk menuruni lereng), NPC dapat mendahului aliran lava dengan mudah saat evakuasi.
+3. **🏚️ Logika Kerusakan Bangunan (Slow & Thermal Damage)**:
+   - Kerusakan murni terjadi saat aliran lava menyentuh bounding box bangunan (`minDist <= 3.8 / 4.5 unit`).
+   - Logika Damage over Time (DoT): HP bangunan berkurang ~5.5% per detik; memicu partikel api/asap di titik kontak; dinding menghangus; bangunan perlahan tenggelam/runtuh meleleh tertimbun lava yang meninggi.
+4. **🌲 Efek Lingkungan & Atmosfer**:
+   - **Kebakaran Hutan/Lahan**: Pohon yang terkena lava memicu partikel api, daunnya gugur habis, dan batangnya berubah menjadi arang hitam legam.
+   - **Efek Uap Air Sungai (Steam Trigger)**: Kontak aliran lava bersuhu tinggi dengan badan air sungai memicu semburan kabut uap putih tebal membubung tinggi akibat air mendidih instan.
+   - **Pasca-Erupsi**: Jalur lelehan membeku menjadi timbunan batuan basal vulkanik hitam permanen.
+5. **⚙️ Integrasi Penuh Block Coding & Hardware ESP32**:
+   - Blok `resq_gunung_sim` dengan opsi `Efusif` tereksekusi mulus di browser dan mengirim sinyal `gempa 0`, `gunung 3 efusif`, `mist on` ke hardware ESP32 (`yom.ino` & `program_esp.ino`).
+6. **✅ Verifikasi Build 100%**:
+   - Lolos uji statis `npx tsc --noEmit` 0 error dan `npm run build` sukses 100% dalam 2.17 detik.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Integrasi Seismik-Vulkanik Erupsi Merapi (Episenter Kawah, Tremor Level 3 Kontinu AWAS, Seismograf Aktif & Bebas Gempa SIAGA), Penataan Hierarki Layering Sungai Lapisan Paling Dasar di Bawah Jalan dan Jembatan, Kalibrasi Proporsional Skala Awan Panas (Wedhus Gembel), dan Penyelarasan Warna Kolom Asap Erupsi (Bab 90)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 90: Integrasi Seismik-Vulkanik Erupsi Merapi (Episenter Kawah, Tremor Level 3 Kontinu AWAS, Seismograf Aktif & Bebas Gempa SIAGA), Penataan Hierarki Layering Sungai Lapisan Paling Dasar di Bawah Jalan dan Jembatan, Kalibrasi Proporsional Skala Awan Panas (Wedhus Gembel), dan Penyelarasan Warna Kolom Asap Erupsi|progress_report.md (Bab 90)]]** dan **[[PRD#80. Integrasi Seismik-Vulkanik Erupsi Merapi (Episenter Kawah, Tremor Level 3 Kontinu AWAS, Seismograf Aktif & Bebas Gempa SIAGA), Penataan Hierarki Layering Sungai Lapisan Paling Dasar di Bawah Jalan dan Jembatan, Kalibrasi Proporsional Skala Awan Panas (Wedhus Gembel), dan Penyelarasan Warna Kolom Asap Erupsi|PRD.md (Milestone 80)]]**.
+
+1. **🌋 Episenter Kawah Merapi & Formula Atenuasi Jarak Seismik**:
+   - Pusat gempa dipindahkan dari titik asal tengah peta ke koordinat kawah Merapi (`PEAK_X = -0.5, PEAK_Z = -44.0`).
+   - Formula peluruhan getaran $att = \frac{1}{1 + 0.018 \cdot \text{dist}}$ diintegrasikan ke guncangan kamera, getaran mikro tanah maket, dan kepanikan NPC (getaran di lereng atas puncak $\approx 1.0\times$, sedangkan di dataran bawah barak pengungsian meluruh lembut ke $\approx 0.35\times$).
+   - Cincin gelombang riak merah neon yang terkesan berlebihan (*alay*) dihapus total, digantikan getaran mekanis riil.
+2. **🔇 Status SIAGA Bebas Gempa (Zero Tremor on SIAGA)**:
+   - Status SIAGA (`volcanoStatus === 2`) murni menetapkan status waspada dengan kepulan uap fumarol tipis tanpa guncangan gempa (`effectiveSeismic = 0`). Jarum instrumen seismograf tenang pada baseline $0.0\text{ mm}$.
+3. **📈 Kopling Gempa Vulkanik AWAS Kontinu & Seismograf Aktif**:
+   - Status AWAS (`volcanoStatus === 3`) secara otomatis mengaktifkan getaran gempa Level 3 (`effectiveSeismic = 3`) secara kontinu dari awal hingga akhir siklus erupsi.
+   - Panel instrumen Seismograf membaca gelombang tremor vulkanik secara aktif dan real-time.
+   - Firmware Arduino/ESP32 (`yom.ino` & `program_esp/program_esp.ino`) disinkronkan: SIAGA mematikan gempa & mist, sedangkan AWAS memicu motor getar & mist uap erupsi.
+4. **🌊 Penataan Hierarki Layering Sungai Lapisan Paling Dasar di Bawah Jalan & Jembatan**:
+   - Mengembangkan fungsi pita sungai mandiri `createRiverRibbonGeometry` yang murni mengevaluasi centerline palung lembah terendah pada elevasi $0.08$ unit.
+   - Mengonfigurasi `renderOrder: 1` dengan polygon offset WebGL (`factor: -1, units: -2`) pada material `riverMat`.
+   - Menjaga jalan aspal pada `renderOrder: 6` (elevasi $0.36$) dan jembatan beton 3D pada `renderOrder: 10–12` yang menumpu kokoh pada tepi bantaran jalan (`gy = Math.max(maxBankY + 0.28, riverBedY + 0.65)`).
+   - Air sungai mengalir bebas dan mulus di bawah kolong jembatan dan di bawah badan jalan aspal tanpa pemotongan geometri (zero clipping).
+5. **☁️ Skala Awan Panas Proporsional (Wedhus Gembel Goldilocks Size)**:
+   - Geometri gumpalan awan panas dikalibrasi pada radius dasar `3.4 unit` dengan 3-tier penskalaan ketinggian ($1.1\times, 1.4\times, 2.0\times$) dan faktor ekspansi $1.0 + 0.4 \cdot pProg$.
+   - Menghasilkan diameter gumpalan $8\text{–}18\text{ unit}$ yang proporsional: tebal bervolume dan terlihat jelas dari kejauhan saat di-zoom out, namun tetap terkurung rapi di alur palung Kali Gendol tanpa menutupi seluruh maket permukiman.
+   - Alur animasi realistis: diawali pembubungan kolom abu vertikal, keruntuhan kolom karena gravitasi (*column collapse*), dan aliran deras menuruni lereng.
+6. **🎨 Penyelarasan Warna Kolom Erupsi & Awan Panas**:
+   - Kolom abu Plinian, umbrella cloud, runtuhan semburan debu (*collapse torrents*), dan partikel kawah diselaraskan menggunakan material abu pekat kelabu cerah seragam (`#f1f5f9`, emissive `#475569`, opacity 0.98), 100% senada dengan awan panas wedhus gembel.
+7. **✅ Verifikasi Build 100%**:
+   - Lolos uji statis `npx tsc --noEmit` dengan 0 error dan `npm run build` sukses 100% (exit code 0 dalam 3.48s).
+
+---
+
+## ⚡ Sorotan Sebelumnya: Eliminasi Z-Fighting & Anti-Clipping Pita Sungai dan Jalan 3D (Depth-Bias Polygon Offset WebGL, Densifikasi Subdivisi Ribbon 0.45, 5-Point Cross-Section Elevation Sampling, Anti-Sagging Pass, dan Perpanjangan Alur Kali Gendol ke Batas Selatan) (Bab 89)
+
+> [!NOTE]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 89: Eliminasi Z-Fighting & Anti-Clipping Pita Sungai dan Jalan 3D via WebGL Polygon Offset, Densifikasi Subdivisi Ribbon 0.45, 5-Point Cross-Section Elevation Sampling, Anti-Sagging Pass, dan Perpanjangan Alur Kali Gendol ke Batas Selatan|progress_report.md (Bab 89)]]** dan **[[PRD#79. Eliminasi Z-Fighting & Anti-Clipping Pita Sungai dan Jalan 3D (Depth-Bias Polygon Offset WebGL, Densifikasi Subdivisi Ribbon 0.45, 5-Point Cross-Section Elevation Sampling, Anti-Sagging Pass, dan Perpanjangan Alur Kali Gendol ke Batas Selatan)|PRD.md (Milestone 79)]]**.
+
+1. **🛡️ Eliminasi Z-Fighting via WebGL Hardware Polygon Offset**:
+   - Mengaktifkan `polygonOffset: true` dengan bias negatif pada material `riverMat` (`factor: -3, units: -6`), `roadMat` (`factor: -2, units: -4`), dan `lineMat` (`factor: -4, units: -8`) serta `depthWrite: true`.
+   - Menggeser kalkulasi z-buffer fragment pita sungai dan jalan maju di depan poligon terrain STL (`terrain-688.stl`), melenyapkan fenomena *flickering* atau garis hilang saat di-orbit, di-pan, atau di-zoom.
+2. **📐 Layered Vertical Stacking Elevation**:
+   - Elevasi vertikal disesuaikan bertingkat: permukaan sungai `0.32` unit, aspal jalan `0.38` unit, marka garis tengah putih `0.42` unit, geladak jembatan `0.20` unit (presisi flush), busur KRB `0.44` unit, dan garis neon putus-putus KRB `0.48` unit.
+3. **🔄 Densifikasi Subdivisi Spline (maxStep = 0.45) & 5-Point Cross-Section Elevation Sampling**:
+   - Resolusi subdivisi spline diperhalus dari `1.0` menjadi `0.45` unit (lebih rapat dari grid heightmap STL $0.5$ unit), menghasilkan pita adaptif yang luwes mengikuti lereng bergelombang.
+   - Ketinggian simpul mengevaluasi 5 titik melintang sepanjang lebar pita: tepi kiri ($L$), kuartil kiri ($Q_1$), poros tengah ($C$), kuartil kanan ($Q_2$), dan tepi kanan ($R$) dengan rumus `Math.max(cy, ly, ry, q1y, q2y)`.
+4. **⛰️ Quadratic Anti-Sagging Pass**:
+   - Mencegah quad segmen datar menancap ke dalam cembungan bukit tanah dengan mengevaluasi elevasi titik interpolasi tengah $(P_i + P_{i+1})/2$ dan mengangkat kedua ujung quad jika terdeteksi gundukan di tengah.
+5. **🌊 Penyelarasan Kali Kuning di KRB I (Lingkaran Merah Kiri)**:
+   - Menambahkan 4 titik kontrol spline pada alur Kali Kuning rentang $Z = 60.37 \rightarrow 78.22$ (`[-10.78, 64.0]`, `[-10.72, 68.0]`, `[-10.65, 72.0]`, `[-10.60, 76.0]`), menjamin air mengalir mulus tanpa terputus di bawah dataran hijau KRB I.
+6. **🏞️ Ekstensi Kali Gendol ke Batas Selatan (Lingkaran Merah Kanan)**:
+   - Menyambungkan titik buntu lama di $Z = 24.18$ menyusuri koridor lembah timur hingga menembus batas selatan maket ($Z = 108.5$) melewati 11 titik kontrol baru, aman tanpa memotong bangunan barak maupun jalan desa.
+7. **✅ Orbit, Pan, and Zoom Invariance**:
+   - Visual maket 3D 100% stabil, sungai dan jalan tetap utuh tanpa ada segmen yang tenggelam di seluruh rentang zoom (30 s.d. 260 unit) maupun sudut orbit miring. Lolos build TypeScript dan Vite 100%.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Kalibrasi Peta Lengkung 3D Denah 1:1, Penyelarasan Jembatan & Poros Jalan Segaris Bebas Clipping, Relokasi Bangunan & Pohon Sempadan Sungai, Zonasi Bahaya KRB I-III (Kliping Kontur Terrain, Ribbon 3D & Badge Mengambang), Overhaul Kompleks Barak Pengungsian BNPB/BPBD, dan Penyederhanaan Toolbar Navigasi 3D (Bab 88)
+
+> [!NOTE]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 88: Kalibrasi Peta Lengkung 3D Denah 1:1, Penyelarasan Jembatan & Poros Jalan Segaris Bebas Clipping, Relokasi Bangunan & Pohon Sempadan Sungai, Zonasi Bahaya KRB I-III (Kliping Kontur Terrain, Ribbon 3D & Badge Mengambang), Overhaul Kompleks Barak Pengungsian BNPB/BPBD, dan Penyederhanaan Toolbar Navigasi 3D|progress_report.md (Bab 88)]]** dan **[[PRD#78. Kalibrasi Peta Lengkung 3D Denah 1:1, Penyelarasan Jembatan & Poros Jalan Segaris Bebas Clipping, Relokasi Bangunan & Pohon Sempadan Sungai, Zonasi Bahaya KRB I-III (Kliping Kontur Terrain, Ribbon 3D & Badge Mengambang), Overhaul Kompleks Barak Pengungsian BNPB/BPBD, dan Penyederhanaan Toolbar Navigasi 3D|PRD.md (Milestone 78)]]**.
+
+1. **🏫 Kalibrasi Denah Lengkung 1:1 & Sekolah U-Shape**:
+   - Geometri sekolah ditransformasi menjadi gedung U-shape tapal kuda (`12 × 4 unit` & `7 × 3.5 unit`) beratap limasan biru, selasar beratap, dan lapangan upacara berbendera Merah Putih dengan orientasi gerbang langsung menghadap jalan.
+2. **🌉 Rekonfigurasi Jalan, Jembatan Kali Gendol & Pelurusan Presisi Anti-Clipping**:
+   - Menghubungkan jalan barat menyeberangi Kali Gendol ke timur dengan jembatan beton baru `{ x: 26.8, z: 12.8, rot: 0 }`, segaris lurus dengan aspal $z = 12.8$.
+   - Menyelaraskan jembatan Kali Boyong barat `{ x: -13.31, z: 40.08, rot: 0.243 }` dengan jalan tembus pada sudut collinear $0.243$ rad sehingga guardrail jembatan terpasang rapi di luar aspal tanpa memotong badan jalan.
+   - Menghubungkan jalan lereng atas kiri `[-10.14, -8.91]` ke simpang utara `[-13.76, -23.43]` dan menghitung ulang 207 `ROAD_JUNCTION_NODES`.
+3. **🌊 Ekstensi Garis Peta & Relokasi Pohon Bantaran**:
+   - Alur jalan dan sungai diperpanjang menembus tepi maket ($z = \pm 106$, $x = \pm 66.5$) untuk ilusi bentang alam kontinu.
+   - Pohon di bantaran sungai digeser menjauh dengan jarak bebas aman $\ge 3.5\text{m}$ dari garis air.
+4. **🏡 Orientasi Fasad Bangunan & Relokasi Rumah 31**:
+   - Bangunan ditata dengan setback 2–3 unit dan fasad menghadap jalan terdekat. Rumah 31 digeser ke $x = -15.2$ (>3m dari Kali Gendol); Rumah EWS digeser ke kanan 3.5 unit.
+5. **🎥 Penyederhanaan Toolbar & Kontrol Orbit 3D (Langsung POV Samping)**:
+   - Menghapus tombol "POV Atas" dan "Rute Evakuasi" dari toolbar. Inisialisasi awal kamera sejak frame pertama langsung dikunci pada POV Samping Axonometric di `(38, 78, 122)` memandang `(-5, 0, 15)` tanpa perlu menekan tombol reset view, lengkap dengan orbit rotation (`enableRotate = true`, `maxPolarAngle = \pi/2.05`), pan, dan zoom.
+6. **🚨 Zonasi Bahaya KRB I-III**:
+   - Busur KRB dikliping presisi di dalam batas terrain ($X \in [-66.5, 66.5]$, $Z \in [-52, 106]$), zero void dangling.
+   - Ribbon 3D tebal `0.85 unit` bergaris neon putus-putus putih; overlay drape merah (KRB III) & kuning (KRB II); 3 billboard badge 3D mengambang (`🔴 KRB III`, `🟡 KRB II`, `🟢 KRB I`); serta penghapusan cincin busur hijau luar KRB 1 pada radius 102 menjaga dataran rendah tetap luas dan alami.
+7. **⛺ Kompleks Evakuasi Darurat BNPB/BPBD**:
+   - Pelataran beton bertulang (staging pad) ber-hazard marking, tenda pleton utama A-frame kanvas kuning keselamatan (`#eab308`), plang kayu resmi `"BARAK PENGUNGSIAN BNPB"`, tenda satelit medis berlambang Palang Merah 3D, menara tandon air bersih 4 kaki, unit genset diesel darurat, tumpukan palet kotak logistik pangan, tiang bendera Merah Putih, dan menara lampu sorot darurat.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Penyelarasan Skala Proporsional Maket 3D, Pemodelan Arsitektural Bangunan Asli (RSUD Helipad, BPBD Menara, Barak Pleton Lengkung, Sekolah & Rumah Limasan), Penataan Kavling Pinggir Jalan Bebas Tabrakan, Efek Seismik Nyata, Simulasi Erupsi Eksplosif vs Efusif Aliran Lava Pijar, Pembersihan UI & Panel Samping Telemetri Digital Twin (Bab 87)
+
+> [!NOTE]
+> Rincian lengkap dapat dibaca di **[[progress_report#Bab 87: Penyelarasan Skala Proporsional Maket 3D, Pemodelan Arsitektural Bangunan Asli (RSUD Helipad, BPBD Menara, Barak Pleton Lengkung, Sekolah & Rumah Limasan), Penataan Kavling Pinggir Jalan Bebas Tabrakan, Efek Seismik Nyata, Simulasi Erupsi Eksplosif vs Efusif Aliran Lava Pijar, Pembersihan UI & Panel Samping Telemetri Digital Twin|progress_report.md (Bab 87)]]** dan **[[PRD#77. Penyelarasan Skala Proporsional Maket 3D, Pemodelan Arsitektural Bangunan Asli, Penataan Kavling Pinggir Jalan, Efek Gempa Seismik Nyata, Simulasi Erupsi Eksplosif vs Efusif Aliran Lava Pijar, dan Panel Samping Telemetri Digital Twin|PRD.md (Milestone 77)]]**.
+
+1. **📏 Penyesuaian Skala Proporsional Maket terhadap Gunung Merapi**:
+   - Lebar jalan aspal diperkecil dari 2.8 ke 1.35 unit; lebar sungai 1.8 unit; figur miniatur NPC manusiawi 0.75 unit; pohon miniatur 1.4 unit. Puncak kawah Gunung Merapi menjulang gagah dan proporsional di atas pemukiman.
+2. **🏛️ Pemodelan Arsitektural Bangunan Asli (Bukan Kotak-Kotak)**:
+   - RSUD 2 tingkat beratap helipad 'H', jendela pita kaca, kanopi drop-off lobi IGD, palang merah 3D timbul, dan miniatur ambulans.
+   - Kantor BPBD oranye-bata, garasi roll-shutter armada rescue, tiang menara komunikasi truss dengan beacon merah.
+   - Barak Pengungsian model tenda pleton lengkung BNPB (*arched barrel-vault*) kanvas kuning keselamatan (`#facc15`), interior palet kayu & matras biru, serta tandon air stainless.
+   - Sekolah U-shape berdinding krem lis biru (*wainscot*), atap limasan biru, dan tiang bendera Merah Putih.
+   - 35+ Rumah limasan Jawa Sleman beratap genteng tanah liat bakar (`#b45309`), bubungan nok kayu, dinding bata plester putih, dan teras *emperan*.
+3. **🛣️ Penataan Kavling Pinggir Jalan (Zero Road Blockage)**:
+   - Bangunan ditata di kavling samping jalan dengan jarak aman 2.5–3.5 unit dari centerline jalan. 0 bangunan menghalangi badan jalan.
+4. **⚡ Efek Seismik Gempa Bumi Nyata & Responsif**:
+   - Guncangan kamera multi-frekuensi proporsional Skala Richter (0.7 / 1.8 / 3.8 unit), getaran fisik tanah diorama (*ground tremor jitter*), gelombang seismik riak melingkar (*Rayleigh surface waves*), animasi NPC gemetar panik, dan banner peringatan gempa bumi aktif.
+5. **🌋 Simulasi Erupsi Realistis: Eksplosif vs Efusif Aliran Lava Pijar**:
+   - *Eruspi Efusif*: Lelehan aliran lava pijar 3D dinamis mengalir menuruni 3 alur sungai (Kali Gendol, Kali Kuning, Kali Boyong) berpendar terang dengan point lights lereng dan uap fumarol lembut.
+   - *Erupsi Eksplosif*: Kolom abu vulkanik pekat (*wedhus gembel*) gelap membubung tinggi ke langit, lontaran bom vulkanik berlintasan parabola yang memercikkan api saat menghantam lereng, serta kilatan letusan kawah.
+6. **🎨 Pembersihan Antarmuka & Panel Telemetri Samping**:
+   - Menghapus tombol "Tes Perangkat" dan "Sensor" dari header; menyematkan panel Telemetri Digital Twin langsung di sisi kanan kanvas 3D diorama (Screenshot 3).
+   - Badge pojok kiri atas hanya menampilkan status gunung (`LEVEL I: NORMAL`, dsb.); legenda kiri bawah dihapus 100%; menambahkan tombol `[ 🗖 Gedein Peta ]` untuk perbesaran tampilan view map.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Transformasi Penuh Digital Twin 3D Gunung Merapi Menggunakan Model STL Asli (`terrain-688.stl`), Replikasi Presisi Diorama Fisik, Sudut Pandang Axonometric Tetap (Zero-Rotate), Integrasi Live Blockly IoT, dan Optimasi Performa 60 FPS Bebas Lag (Bab 86)
+   - Memuat model 3D topografi asli Gunung Merapi biner STL (~3.16 MB, 63.314 poligon) via `STLLoader`.
+   - Mengubah skala vertikal Y sebesar 2.8x (`HEIGHT_SCALE = 2.8`) sehingga kawah Merapi menjulang gagah hingga elevasi +23.3 unit.
+   - Pewarnaan prosedural lereng (*topographic vertex coloring*) menampilkan fissure lava kawah merah-oranye pijar, punggungan hijau dan celah abu putih, lereng pinus zaitun, dan dataran rumput subur.
+2. **🏛️ Replikasi Presisi Seluruh Elemen & Aset Diorama Fisik Tim (Zero Text Clutter)**:
+   - Jaringan jalan raya 27 node aspal abu-abu gelap menghubungkan seluruh pemukiman, fasilitas umum, dan kaki gunung tanpa putus.
+   - 3 Aliran sungai biru (Kali Boyong, Kali Kuning, Kali Woro) dengan jembatan beton penyeberangan di persimpangan jalan.
+   - RSUD berlantai 2 dengan kubus Palang Merah 3D menyala di fasad depan.
+   - Posko Utama BPBD Sleman dengan menara tiang antena radio komunikasi setinggi 7 unit dan lampu beacon merah.
+   - 3 Barak Pengungsian atap kuning keselamatan (Shelter A, B, C) di radius aman.
+   - 3 Sekolah atap biru U-shape (SMP 1 Merapi, SD Inpres, Sekolah Lereng).
+   - 35+ Rumah warga terakota pedesaan dan 40+ pohon pinus/kanopi asri.
+   - Lampu Indikator LED RGB Sentral di bibir plinth diorama dan Medallion Kompas 8 mata angin putih.
+   - Seluruh bangunan bebas dari teks mengambang, menghasilkan estetika maket arsitektural yang bersih dan profesional.
+3. **🎥 Sudut Pandang Kamera Axonometric Samping-Atas Tetap (Zero-Rotate)**:
+   - Kamera diposisikan miring samping-atas di `(38, 78, 122)` memandang pusat aktivitas `(-5, 0, 15)` dengan FOV 36°.
+   - Fitur rotasi dinonaktifkan (`enableRotate = false`) agar orientasi tidak berubah dan siswa tidak pusing.
+   - Kontrol geser (*pan*) via drag mouse/touch dan kontrol perbesaran (*zoom*) via scroll/pinch berfungsi mulus dengan batas aman `50..220`.
+4. **⚡ Integrasi Reaktif Penuh Block Coding (Blockly) & IoT Digital Twin**:
+   - Status 'AWAS' memicu letusan kepulan awan abu vulkanik berputar dinamis yang membubung ke langit, rekahan lava kawah menyala merah membara, dan 75 NPC panik berlari menuju barak dan RSUD.
+   - Blok `setRgb(color)` mengubah warna LED RGB sentral di sudut plinth secara real-time.
+   - Sensor getaran gempa `seismicLevel` menggetarkan kamera secara proporsional.
+   - Menara EWS mengaktifkan strobo berkedip cepat saat sirine berbunyi.
+   - Pilihan rute evakuasi menyinari jalur jalan dengan garis neon hijau terang (`#10b981`).
+5. **🚀 Arsitektur Optimasi Performa 60 FPS Bebas Lag**:
+   - Mendiagnosa dan mengatasi bottleneck lag berat (2-5 FPS) akibat 4.748.550 uji perpotongan raycaster per frame (75 NPC × 63.314 segitiga).
+   - Pre-kalkulasi elevasi `y` seluruh 27 node jalan saat inisialisasi; ketinggian NPC dihitung seketika menggunakan matematis `lerp` $O(1)$ dengan **0 raycast per frame**.
+   - Proyeksi bayangan medan dinonaktifkan (`terrainMesh.castShadow = false`), shadow map dikecilkan ke 1024x1024 `BasicShadowMap`, pixel ratio dibatasi maksimal 1.25x, serta material/geometri di-share.
+   - Frame rate melonjak stabil ke **60 FPS terkunci**.
+6. **🧹 Eliminasi Total Kanvas 2.5D Legacy & Build Produksi 100% Sukses**:
+   - Berkas `EvacuationCanvas.tsx` dibersihkan dari seluruh kode 2.5D lama dan langsung merender `Merapi3DScene.tsx`.
+   - `npm run build` lolos bersih tanpa error dalam 2.19 detik.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Transformasi Map Penuh Level 3 Menjadi Lanskap Murni Area 6 Level 2 (Barak Pengungsian & Pemulihan KRB I) 3.800px — Bersih Tanpa Nama Bangunan, Tanpa Teks Label, dan Tanpa NPC (Bab 85)
 
 > [!TIP]
 > Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 85: Transformasi Map Penuh Level 3 (`/level3`) Menjadi Lanskap Murni Area 6 Level 2 (Barak Pengungsian & Pemulihan KRB I) 3.800px — Bersih Tanpa Nama Bangunan, Tanpa Teks Label, dan Tanpa NPC|progress_report.md (Bab 85)]]**.

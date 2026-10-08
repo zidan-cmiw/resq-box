@@ -23,7 +23,7 @@ export function defineCoreBlocks() {
   arduinoGenerator.forBlock['resq_program'] = function (block: Blockly.Block) {
     const setup = arduinoGenerator.statementToCode(block, 'SETUP') || '';
     const loop = arduinoGenerator.statementToCode(block, 'LOOP') || '';
-    return `#include <Arduino.h>\n\nvoid setup() {\n  Serial.begin(9600);\n${setup}}\n\nvoid loop() {\n${loop}}\n`;
+    return `#include <Arduino.h>\n\nvoid setup() {\n  Serial.begin(115200);\n${setup}}\n\nvoid loop() {\n${loop}}\n`;
   };
 
   // ── 2. Lampu Peringatan ──────────────────────────────────────
@@ -45,9 +45,17 @@ export function defineCoreBlocks() {
   };
   arduinoGenerator.forBlock['resq_led'] = function (block: Blockly.Block) {
     const color = block.getFieldValue('COLOR');
-    const pin = LED_PIN[color] || '13';
     const state = block.getFieldValue('STATE');
-    return `pinMode(${pin}, OUTPUT);\ndigitalWrite(${pin}, ${state}); // Lampu ${color}\n`;
+    const isHigh = state === 'HIGH';
+    if (color === 'Bahaya') {
+      return isHigh ? `setRGBColor("red");\nredLED_ON(); // Lampu Bahaya Nyala\n` : `rgbOFF();\nredLED_OFF(); // Lampu Bahaya Mati\n`;
+    } else if (color === 'Aman') {
+      return isHigh ? `setRGBColor("green"); // Lampu Aman Nyala\n` : `rgbOFF(); // Lampu Aman Mati\n`;
+    } else if (color === 'Info') {
+      return isHigh ? `setRGBColor("blue"); // Lampu Info Nyala\n` : `rgbOFF(); // Lampu Info Mati\n`;
+    } else {
+      return isHigh ? `setRGBColor("yellow"); // Lampu Bawaan Nyala\n` : `rgbOFF(); // Lampu Bawaan Mati\n`;
+    }
   };
 
   // ── 3. Sirine Peringatan ─────────────────────────────────────
@@ -65,7 +73,7 @@ export function defineCoreBlocks() {
   };
   arduinoGenerator.forBlock['resq_buzzer'] = function (block: Blockly.Block) {
     const ms = block.getFieldValue('MS');
-    return `tone(5, 1000, ${ms});\ndelay(${ms});\n`;
+    return `buzzerON();\ndelay(${ms});\nbuzzerOFF();\n`;
   };
 
   // ── 4. Sirine Berhenti ───────────────────────────────────────
@@ -79,7 +87,7 @@ export function defineCoreBlocks() {
     },
   };
   arduinoGenerator.forBlock['resq_buzzer_stop'] = function () {
-    return `noTone(5);\n`;
+    return `buzzerOFF();\n`;
   };
 
   Blockly.Blocks['resq_sirine_stop'] = {
@@ -111,7 +119,9 @@ export function defineCoreBlocks() {
     },
   };
   arduinoGenerator.forBlock['resq_motor'] = function (block: Blockly.Block) {
-    return `analogWrite(6, ${block.getFieldValue('SPEED')});\n`;
+    const spd = block.getFieldValue('SPEED');
+    if (spd === '0') return `motorStop();\n`;
+    return `analogWrite(MOTOR_AIN1, ${spd});\ndigitalWrite(MOTOR_AIN2, LOW);\n`;
   };
 
   // ── 6. Pintu Evakuasi ────────────────────────────────────────
@@ -137,16 +147,18 @@ export function defineCoreBlocks() {
     init() {
       this.appendDummyInput()
         .appendField('Jeda Sebentar')
-        .appendField(new Blockly.FieldNumber(1000, 0), 'MS')
-        .appendField('ms');
+        .appendField(new Blockly.FieldNumber(1, 0), 'DETIK')
+        .appendField('detik');
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour('#fd761a');
-      this.setTooltip('Jeda sejenak sebelum melanjutkan aksi berikutnya.');
+      this.setTooltip('Jeda sejenak beberapa detik sebelum melanjutkan aksi berikutnya.');
     },
   };
   arduinoGenerator.forBlock['resq_tunggu'] = function (block: Blockly.Block) {
-    return `delay(${block.getFieldValue('MS')});\n`;
+    const sec = Number(block.getFieldValue('DETIK') ?? block.getFieldValue('MS')) || 1;
+    const ms = sec > 50 ? sec : sec * 1000;
+    return `delay(${ms});\n`;
   };
 
   // ── 8. Laporkan ke Monitor ───────────────────────────────────
@@ -167,31 +179,6 @@ export function defineCoreBlocks() {
 
 
 
-  // ── 10. Pantau Intensitas Gempa ──────────────────────────────
-  Blockly.Blocks['resq_sensor_getar'] = {
-    init() {
-      this.appendDummyInput().appendField('Pantau Intensitas Gempa');
-      this.setOutput(true, 'Number');
-      this.setColour('#2563EB');
-      this.setTooltip('Membaca intensitas getaran gempa. Semakin tinggi nilainya, gempa semakin kuat.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_sensor_getar'] = function () {
-    return [`analogRead(A1)`, 0];
-  };
-
-  // ── 11. Pantau Suhu Lingkungan ───────────────────────────────
-  Blockly.Blocks['resq_sensor_suhu'] = {
-    init() {
-      this.appendDummyInput().appendField('Pantau Suhu Lingkungan');
-      this.setOutput(true, 'Number');
-      this.setColour('#2563EB');
-      this.setTooltip('Membaca suhu lingkungan dalam derajat Celsius.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_sensor_suhu'] = function () {
-    return [`(analogRead(A2) * 0.4887)`, 0];
-  };
 
   // ── 12. Tombol Darurat 1 ─────────────────────────────────────
   Blockly.Blocks['resq_tombol_1'] = {
@@ -429,7 +416,7 @@ export function defineCoreBlocks() {
     },
   };
   arduinoGenerator.forBlock['resq_semua_led_mati'] = function () {
-    return `digitalWrite(10, LOW); // Bahaya\ndigitalWrite(11, LOW); // Aman\ndigitalWrite(12, LOW); // Info\ndigitalWrite(LED_BUILTIN, LOW);\n`;
+    return `rgbOFF();\nredLED_OFF();\n`;
   };
 
   // ── 26. Sirine Nada ──────────────────────────────────────────
@@ -450,37 +437,30 @@ export function defineCoreBlocks() {
     },
   };
   arduinoGenerator.forBlock['resq_buzzer_nada'] = function (block: Blockly.Block) {
-    const freq = block.getFieldValue('FREQ');
     const ms = block.getFieldValue('MS');
-    return `tone(5, ${freq}, ${ms});\ndelay(${ms});\n`;
+    return `buzzerON();\ndelay(${ms});\nbuzzerOFF();\n`;
   };
 
 
 
-  // ── 29. Gempa Terdeteksi Kuat? ───────────────────────────────
-  Blockly.Blocks['resq_getar_kuat'] = {
+  // ── 29. Tipe Gempa (Kondisi Predikat) ────────────────────────
+  Blockly.Blocks['resq_tipe_gempa'] = {
     init() {
-      this.appendDummyInput().appendField('Gempa Terdeteksi Kuat?');
+      this.appendDummyInput()
+        .appendField('Tipe Gempa:')
+        .appendField(new Blockly.FieldDropdown([
+          ['Ringan (3-4 SR)', '1'],
+          ['Sedang (5-6 SR)', '2'],
+          ['Besar (>7 SR)', '3'],
+        ]), 'LEVEL');
       this.setOutput(true, 'Boolean');
-      this.setColour('#2563EB');
-      this.setTooltip('Benar jika intensitas gempa terdeteksi KUAT.');
+      this.setColour('#DC2626');
+      this.setTooltip('Kondisi tingkat guncangan gempa: bernilai Benar jika intensitas gempa aktif sesuai pilihan.');
     },
   };
-  arduinoGenerator.forBlock['resq_getar_kuat'] = function () {
-    return [`analogRead(A1) > 700`, 0];
-  };
-
-  // ── 30. Suhu Berbahaya? ──────────────────────────────────────
-  Blockly.Blocks['resq_suhu_panas'] = {
-    init() {
-      this.appendDummyInput().appendField('Suhu Berbahaya? (>35°C)');
-      this.setOutput(true, 'Boolean');
-      this.setColour('#2563EB');
-      this.setTooltip('Benar jika suhu lingkungan di atas 35 derajat Celsius — berbahaya!');
-    },
-  };
-  arduinoGenerator.forBlock['resq_suhu_panas'] = function () {
-    return [`(analogRead(A2) * 0.4887) > 35.0`, 0];
+  arduinoGenerator.forBlock['resq_tipe_gempa'] = function (block: Blockly.Block) {
+    const lvl = block.getFieldValue('LEVEL') || '1';
+    return [`(seismicLevel == ${lvl})`, 0];
   };
 
   // ── 31. Lampu Status Bencana (RGB) ───────────────────────────
@@ -532,7 +512,7 @@ export function defineCoreBlocks() {
         .appendField(new Blockly.FieldDropdown([
           ['Ringan (3-4 SR)', '1'],
           ['Sedang (5-6 SR)', '2'],
-          ['Kuat (>7 SR)', '3'],
+          ['Besar (>7 SR)', '3'],
         ]), 'LEVEL');
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
@@ -580,77 +560,99 @@ export function defineCoreBlocks() {
           ['Eksplosif (Ledakan & Kolom Abu)', 'EKSPLOSIF'],
           ['Efusif (Lelehan Kubah Lava)', 'EFUSIF'],
         ]), 'TIPE');
-      this.setOutput(true, 'String');
+      this.setOutput(true, 'Boolean');
       this.setColour('#DC2626');
-      this.setTooltip('Pilih karakteristik letusan gunung api: Eksplosif atau Efusif.');
+      this.setTooltip('Kondisi tipe letusan gunung api: bernilai Benar jika tipe letusan aktif sesuai pilihan.');
     },
   };
   arduinoGenerator.forBlock['resq_tipe_letusan'] = function (block: Blockly.Block) {
-    return [`"${block.getFieldValue('TIPE')}"`, 0];
+    const tipe = block.getFieldValue('TIPE') || 'EFUSIF';
+    return [`(eruptionType == "${tipe}")`, 0];
   };
 
-  // ── 36. Penentuan Jalur Evakuasi ─────────────────────────────
-  Blockly.Blocks['resq_jalur_evakuasi'] = {
+
+  // ── 37. Blok Evakuasi: Keluar Bangunan ───────────────────────
+  Blockly.Blocks['resq_evak_keluar_bangunan'] = {
     init() {
       this.appendDummyInput()
-        .appendField('Tentukan Jalur Evakuasi ke')
-        .appendField(new Blockly.FieldDropdown([
-          ['Jalur Lingkar Utama (Bebas Lahar)', 'LINGKAR_UTAMA'],
-          ['Jalur Lembah Sungai (Rawan Lahar)', 'LEMBAH_SUNGAI'],
-          ['Jalur Lapangan Terbuka', 'LAPANGAN_TERBUKA'],
-        ]), 'JALUR');
+        .appendField('Evakuasi Keluar Bangunan');
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour('#7C3AED');
-      this.setTooltip('Tentukan arah dan jalur evakuasi warga yang paling aman di peta.');
+      this.setTooltip('Arahkan warga di dalam bangunan untuk segera keluar menuju area terbuka di luar gedung (digunakan saat gempa sedang).');
     },
   };
-  arduinoGenerator.forBlock['resq_jalur_evakuasi'] = function (block: Blockly.Block) {
-    return `// Jalur Evakuasi: ${block.getFieldValue('JALUR')}\n`;
+  arduinoGenerator.forBlock['resq_evak_keluar_bangunan'] = function () {
+    return `// Evakuasi: Keluar dari Bangunan\n`;
   };
 
-  // ── 37. Buka Posko Pengungsian ───────────────────────────────
-  Blockly.Blocks['resq_posko'] = {
+  // ── 38. Blok Evakuasi: Tanah Lapang Terdekat ──────────────────
+  Blockly.Blocks['resq_evak_tanah_lapang'] = {
     init() {
       this.appendDummyInput()
-        .appendField('Buka Posko Pengungsian')
-        .appendField(new Blockly.FieldDropdown([
-          ['Barak Pengungsian Terpadu (KRB I)', 'BARAK_KRB1'],
-          ['Posko Medis BPBD', 'POSKO_MEDIS'],
-          ['Titik Kumpul Lapangan', 'LAPANGAN'],
-        ]), 'POSKO');
+        .appendField('Evakuasi ke Tanah Lapang Terdekat');
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour('#7C3AED');
-      this.setTooltip('Buka dan siapkan tenda posko evakuasi bagi warga yang mengungsi.');
+      this.setTooltip('Arahkan warga mencari dan berkumpul di tanah lapang terdekat yang jauh dari bangunan (digunakan saat gempa besar).');
     },
   };
-  arduinoGenerator.forBlock['resq_posko'] = function (block: Blockly.Block) {
-    return `// Aktifkan Posko: ${block.getFieldValue('POSKO')}\n`;
+  arduinoGenerator.forBlock['resq_evak_tanah_lapang'] = function () {
+    return `// Evakuasi: Menuju Tanah Lapang Terdekat\n`;
   };
 
-  // ── 38. Lokasi Mitigasi ──────────────────────────────────────
-  Blockly.Blocks['resq_lokasi_mitigasi'] = {
+  // ── 39. Blok Evakuasi: Menuju Zona KRB ────────────────────────
+  Blockly.Blocks['resq_evak_krb'] = {
     init() {
       this.appendDummyInput()
-        .appendField('Lokasi Kejadian:')
+        .appendField('Evakuasi Warga ke')
         .appendField(new Blockly.FieldDropdown([
-          ['Gedung Sekolah', 'SEKOLAH'],
-          ['Pemukiman Warga', 'RUMAH'],
-          ['Rumah Sakit', 'RS'],
-          ['Dekat Jembatan Sungai', 'JEMBATAN'],
-        ]), 'LOKASI');
+          ['Zona KRB II (Status Waspada)', 'KRB2'],
+          ['Zona KRB I (Status Siaga)', 'KRB1'],
+        ]), 'ZONA');
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour('#2563EB');
-      this.setTooltip('Pilih konteks lokasi tempat mitigasi bencana dijalankan.');
+      this.setColour('#7C3AED');
+      this.setTooltip('Arahkan warga mengungsi bertahap menuju zona KRB II atau KRB I sesuai peningkatan aktivitas gunung api.');
     },
   };
-  arduinoGenerator.forBlock['resq_lokasi_mitigasi'] = function (block: Blockly.Block) {
-    return `// Lokasi: ${block.getFieldValue('LOKASI')}\n`;
+  arduinoGenerator.forBlock['resq_evak_krb'] = function (block: Blockly.Block) {
+    const zona = block.getFieldValue('ZONA');
+    return `// Evakuasi: Menuju ${zona}\n`;
   };
 
-  // ── 39. Layar OLED Informasi ─────────────────────────────────
+  // ── 40. Blok Evakuasi: Menjauh dari KRB I (Luar Area Peta) ────
+  Blockly.Blocks['resq_evak_luar_map'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Evakuasi Menjauh dari KRB I (Luar Area Peta)');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#7C3AED');
+      this.setTooltip('Arahkan seluruh warga evakuasi total ke selatan hingga keluar area peta menjauhi letusan eksplosif.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_evak_luar_map'] = function () {
+    return `// Evakuasi: Keluar dari Area Peta\n`;
+  };
+
+  // ── 41. Blok Evakuasi: Menjauh dari Wilayah Sungai ────────────
+  Blockly.Blocks['resq_evak_jauhi_sungai'] = {
+    init() {
+      this.appendDummyInput()
+        .appendField('Evakuasi Menjauh dari Wilayah Sungai');
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour('#7C3AED');
+      this.setTooltip('Arahkan warga segera menjauhi bantaran aliran sungai untuk menghindari bahaya lahar dingin.');
+    },
+  };
+  arduinoGenerator.forBlock['resq_evak_jauhi_sungai'] = function () {
+    return `// Evakuasi: Menjauhi Wilayah Aliran Sungai\n`;
+  };
+
+
+  // ── 39. Layar Informasi Publik ───────────────────────────────
   Blockly.Blocks['resq_layar_oled'] = {
     init() {
       this.appendDummyInput()
@@ -659,7 +661,7 @@ export function defineCoreBlocks() {
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour('#fd761a');
-      this.setTooltip('Tampilkan informasi publik pada layar OLED SSD1306.');
+      this.setTooltip('Tampilkan pengumuman evakuasi pada layar monitor informasi publik.');
     },
   };
   arduinoGenerator.forBlock['resq_layar_oled'] = function (block: Blockly.Block) {
@@ -667,18 +669,6 @@ export function defineCoreBlocks() {
     return `oledMessage("INFO MITIGASI", "${text}");\n`;
   };
 
-  // ── 40. Sensor Getaran Seismik (Nilai) ───────────────────────
-  Blockly.Blocks['resq_sensor_seismik'] = {
-    init() {
-      this.appendDummyInput().appendField('Tingkat Getaran Seismik');
-      this.setOutput(true, 'Number');
-      this.setColour('#2563EB');
-      this.setTooltip('Membaca intensitas getaran seismik gempa bumi.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_sensor_seismik'] = function () {
-    return [`analogRead(A1)`, 0];
-  };
 
   // ── 41. Hentikan Semua (STOP ALL) ─────────────────────────────
   Blockly.Blocks['resq_stopall'] = {

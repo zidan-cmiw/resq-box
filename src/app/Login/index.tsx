@@ -4,6 +4,8 @@ import { useAuthStore } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
 import { registerStudent } from '../../utils/supabaseClient';
 import PixelIcon from '../../components/PixelIcon';
+import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
+import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -229,7 +231,7 @@ export default function Login() {
           </div>
 
           {/* ── ROLE SWITCHER TABS ── */}
-          <div className="grid grid-cols-2 gap-2 p-1 bg-amber-950/15 rounded-xl border-2 border-amber-950/30 shadow-inner">
+          <div id="tour-login-roles" className="grid grid-cols-2 gap-2 p-1 bg-amber-950/15 rounded-xl border-2 border-amber-950/30 shadow-inner">
             <button
               type="button"
               onClick={() => {
@@ -266,7 +268,7 @@ export default function Login() {
 
           {/* ── SUB-HEADER PER ROLE ── */}
           {role === 'student' ? (
-            <div className="flex items-center justify-center gap-3 text-xs">
+            <div id="tour-login-modes" className="flex items-center justify-center gap-3 text-xs">
               <button
                 type="button"
                 onClick={() => {
@@ -312,7 +314,7 @@ export default function Login() {
 
           {/* ── 1. FORM LOGIN (SISWA ATAU GURU) ── */}
           {(authMode === 'login' || role === 'teacher') && (
-            <form onSubmit={handleLogin} className="space-y-3">
+            <form id="tour-login-inputs" onSubmit={handleLogin} className="space-y-3">
               <div>
                 <label className="block text-[10px] font-bold text-amber-950 mb-1 uppercase tracking-wide">
                   Username {role === 'teacher' ? 'Guru' : 'Siswa'}
@@ -342,7 +344,7 @@ export default function Login() {
               </div>
 
               {role === 'teacher' ? (
-                <div className="p-2.5 bg-emerald-950/10 rounded-xl border-2 border-emerald-900/30 text-center space-y-1">
+                <div id="tour-login-quick-demo" className="p-2.5 bg-emerald-950/10 rounded-xl border-2 border-emerald-900/30 text-center space-y-1">
                   <span className="text-[10px] font-bold text-emerald-950 block uppercase font-pixel-title">
                     Kredensial Akses Guru:
                   </span>
@@ -360,7 +362,7 @@ export default function Login() {
                   </button>
                 </div>
               ) : (
-                <div className="p-2.5 bg-amber-950/10 rounded-xl border-2 border-amber-900/30 text-center space-y-1">
+                <div id="tour-login-quick-demo" className="p-2.5 bg-amber-950/10 rounded-xl border-2 border-amber-900/30 text-center space-y-1">
                   <span className="text-[10px] font-bold text-amber-950 block uppercase font-pixel-title">
                     Akun Demo (Semua Level Terbuka):
                   </span>
@@ -473,6 +475,9 @@ export default function Login() {
 
         </div>
       </div>
+
+      {/* ── 3. RESQY TUTORIAL WALKTHROUGH OVERLAY ── */}
+      <ResqyTutorialOverlay tour={TUTORIAL_TOURS.login} />
 
     </div>
   );

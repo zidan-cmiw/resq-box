@@ -5,6 +5,8 @@ import { retroAudio } from '../../utils/retroAudio';
 import { toggleFullscreen, isFullscreenActive } from '../../utils/fullscreen';
 import { PixelAvatarRenderer } from '../../components/PixelAvatar/PixelAvatarRenderer';
 import PixelIcon from '../../components/PixelIcon';
+import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
+import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ export default function Dashboard() {
   const [soundOn, setSoundOn] = useState(() => retroAudio.isEnabled());
   const [isFullscreen, setIsFullscreen] = useState(() => isFullscreenActive());
   const [showGuideModal, setShowGuideModal] = useState(false);
+  const [guideTab, setGuideTab] = useState<'all' | 'level1' | 'level2' | 'level3'>('all');
 
   // Monitor fullscreen state changes
   useEffect(() => {
@@ -459,7 +462,7 @@ export default function Dashboard() {
       </div>
 
       {/* ── 2. TOP HUD: PLAYER PROFILE CARD & UTILITIES ── */}
-      <header className="relative z-20 w-full px-4 md:px-8 pt-4 flex items-start justify-between">
+      <header id="tour-dash-hud" className="relative z-20 w-full px-4 md:px-8 pt-4 flex items-start justify-between">
 
         {/* Top Left: Player Profile Badge Button */}
         <button
@@ -488,7 +491,7 @@ export default function Dashboard() {
             <h2 className="font-pixel text-base font-bold text-white tracking-wide truncate max-w-[150px] sm:max-w-[200px]">
               {currentUser?.role === 'teacher' ? (currentUser.name || 'Bapak Guru IPA') : studentDisplayName}
             </h2>
-            <p className="text-[11px] text-slate-400 font-pixel">
+            <p className="text-[11px] text-slate-400 font-pixel hidden sm:block">
               {currentUser?.role === 'teacher' ? 'Guru IPA • Klik ke Posko Guru' : `${studentClass} • Klik untuk edit`}
             </p>
           </div>
@@ -523,7 +526,7 @@ export default function Dashboard() {
             title="Ganti Akun / Masuk"
           >
             <PixelIcon name="user" size={13} />
-            <span>GANTI AKUN</span>
+            <span className="hidden sm:inline">GANTI AKUN</span>
           </button>
 
           {/* Sound toggle button */}
@@ -601,6 +604,7 @@ export default function Dashboard() {
 
           {/* Button 1: Earth Explorer */}
           <button
+            id="tour-dash-level1"
             onClick={() => handleLevelClick(1, '/level1')}
             onMouseEnter={() => retroAudio.playHover()}
             className="pixel-btn-wood-plank cursor-pointer"
@@ -611,6 +615,7 @@ export default function Dashboard() {
           {/* Button 2: Disaster Analyst */}
           {unlockedLevel >= 2 ? (
             <button
+              id="tour-dash-level2"
               onClick={() => handleLevelClick(2, '/level2')}
               onMouseEnter={() => retroAudio.playHover()}
               className="pixel-btn-wood-plank cursor-pointer"
@@ -619,6 +624,7 @@ export default function Dashboard() {
             </button>
           ) : (
             <button
+              id="tour-dash-level2"
               onClick={() => {
                 retroAudio.playLocked();
               }}
@@ -634,6 +640,7 @@ export default function Dashboard() {
           {/* Button 3: Simulation Game */}
           {unlockedLevel >= 3 ? (
             <button
+              id="tour-dash-level3"
               onClick={() => handleLevelClick(3, '/level3')}
               onMouseEnter={() => retroAudio.playHover()}
               className="pixel-btn-wood-plank cursor-pointer"
@@ -642,6 +649,7 @@ export default function Dashboard() {
             </button>
           ) : (
             <button
+              id="tour-dash-level3"
               onClick={() => {
                 retroAudio.playLocked();
               }}
@@ -656,6 +664,7 @@ export default function Dashboard() {
 
           {/* Button 4: Panduan / How to Play */}
           <button
+            id="tour-dash-guide"
             onClick={() => {
               retroAudio.playSelect();
               setShowGuideModal(true);
@@ -668,6 +677,7 @@ export default function Dashboard() {
 
           {/* Button 5: Profil Siswa */}
           <button
+            id="tour-dash-profile"
             onClick={() => {
               retroAudio.playSelect();
               if (currentUser?.role === 'teacher') {
@@ -684,6 +694,7 @@ export default function Dashboard() {
 
           {/* Button 6: Credits */}
           <button
+            id="tour-dash-extra"
             onClick={() => {
               retroAudio.playSelect();
               navigate('/credits');
@@ -714,91 +725,527 @@ export default function Dashboard() {
 
       </main>
 
-      {/* ── 5. RETRO WOODEN NOTICE BOARD MODAL (PANDUAN) ── */}
+      {/* ── 5. RETRO WOODEN NOTICE BOARD MODAL (PANDUAN & MISI) ── */}
       {showGuideModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in select-none"
           onClick={() => setShowGuideModal(false)}
         >
           <div
-            className="pixel-wood-board p-5 md:p-6 text-amber-950 space-y-4 max-h-[88vh] overflow-y-auto font-pixel"
-            style={{ width: '580px', maxWidth: '92vw' }}
+            className="pixel-wood-board p-4 sm:p-6 md:p-7 text-[#260c02] space-y-4 sm:space-y-5 max-h-[92vh] overflow-y-auto font-pixel"
+            style={{ width: '880px', maxWidth: '96vw' }}
             onClick={(e) => e.stopPropagation()}
           >
 
             {/* Header */}
-            <div className="flex items-center justify-between border-b-2 border-amber-950/30 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-2xl text-amber-900 font-bold">
-                  menu_book
-                </span>
-                <h3 className="font-pixel-title text-sm md:text-base font-bold text-amber-950">
-                  PANDUAN PEMBELAJARAN
-                </h3>
+            <div className="flex items-center justify-between border-b-2 sm:border-b-3 border-amber-950/30 pb-3 sm:pb-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl bg-amber-900 text-amber-100 flex items-center justify-center border-2 border-amber-950 shadow-[0_2px_0_#231206] shrink-0">
+                  <PixelIcon name="book" size={24} />
+                </div>
+                <div>
+                  <h3 className="font-pixel-title text-base sm:text-lg md:text-xl lg:text-2xl font-black text-[#260c02] flex items-center gap-2">
+                    <span>PANDUAN &amp; MISI PEMBELAJARAN</span>
+                  </h3>
+                  <p className="text-xs sm:text-sm md:text-base text-[#381504] font-extrabold font-pixel mt-0.5">
+                    Kurikulum IPA SMP Kelas 8 • Gamifikasi Mitigasi Bencana RESQ-BOX
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => {
                   retroAudio.playSelect();
                   setShowGuideModal(false);
                 }}
-                className="w-8 h-8 rounded bg-amber-900 hover:bg-amber-800 text-amber-100 flex items-center justify-center border border-amber-950 font-bold shadow-[0_2px_0_#231206] cursor-pointer"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 flex items-center justify-center border-2 border-amber-950 font-bold shadow-[0_2px_0_#231206] cursor-pointer shrink-0 transition-transform active:scale-95"
                 title="Tutup Panduan"
               >
-                <PixelIcon name="cross" size={12} />
+                <PixelIcon name="cross" size={16} />
               </button>
             </div>
 
-            {/* Content list in Pixel Font */}
-            <div className="space-y-3 text-xs md:text-sm text-amber-950 leading-relaxed">
+            {/* Tab Navigation */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 p-1.5 bg-amber-950/20 rounded-xl border border-amber-950/40 text-xs sm:text-sm md:text-base">
+              <button
+                type="button"
+                onClick={() => {
+                  retroAudio.playHover();
+                  setGuideTab('all');
+                }}
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-xs sm:text-sm md:text-base ${guideTab === 'all'
+                  ? 'bg-amber-900 text-amber-100 shadow-[0_2px_0_#231206]'
+                  : 'bg-amber-100/70 hover:bg-amber-100 text-amber-950 border border-amber-900/20'
+                  }`}
+              >
+                <PixelIcon name="map" size={16} />
+                <span>SEMUA TAHAP</span>
+              </button>
 
-              <div className="p-3.5 rounded-lg bg-amber-100/80 border-2 border-amber-900/40">
-                <h4 className="font-pixel font-bold text-xs text-amber-900 mb-1 flex items-center gap-2">
-                  <span className="px-1.5 py-0.5 rounded bg-amber-900 text-amber-100 font-pixel-title text-[9px]">TAHAP 1</span>
-                  EARTH EXPLORER (Struktur Bumi)
-                </h4>
-                <p className="font-pixel">
-                  Eksplorasi lapisan kerak bumi, mantel, dan pergerakan lempeng tektonik konvergen, divergen, dan sesar geser. Selesaikan tebak kata untuk membuka Level 2!
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  retroAudio.playHover();
+                  setGuideTab('level1');
+                }}
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-xs sm:text-sm md:text-base ${guideTab === 'level1'
+                  ? 'bg-amber-900 text-amber-100 shadow-[0_2px_0_#231206]'
+                  : 'bg-amber-100/70 hover:bg-amber-100 text-amber-950 border border-amber-900/20'
+                  }`}
+              >
+                <PixelIcon name="divergent" size={16} />
+                <span>TAHAP 1</span>
+              </button>
 
-              <div className="p-3.5 rounded-lg bg-amber-100/80 border-2 border-amber-900/40">
-                <h4 className="font-pixel font-bold text-xs text-amber-900 mb-1 flex items-center gap-2">
-                  <span className="px-1.5 py-0.5 rounded bg-amber-900 text-amber-100 font-pixel-title text-[9px]">TAHAP 2</span>
-                  DISASTER ANALYST (Gempa & Vulkanik)
-                </h4>
-                <p className="font-pixel">
-                  Pelajari analisis potensi bahaya seismik dan erupsi gunung api. Susun urutan langkah mitigasi penyelamatan sebelum, saat, dan sesudah bencana!
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  retroAudio.playHover();
+                  setGuideTab('level2');
+                }}
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-xs sm:text-sm md:text-base ${guideTab === 'level2'
+                  ? 'bg-amber-900 text-amber-100 shadow-[0_2px_0_#231206]'
+                  : 'bg-amber-100/70 hover:bg-amber-100 text-amber-950 border border-amber-900/20'
+                  }`}
+              >
+                <PixelIcon name="earthquake" size={16} />
+                <span>TAHAP 2</span>
+              </button>
 
-              <div className="p-3.5 rounded-lg bg-amber-100/80 border-2 border-amber-900/40">
-                <h4 className="font-pixel font-bold text-xs text-amber-900 mb-1 flex items-center gap-2">
-                  <span className="px-1.5 py-0.5 rounded bg-amber-900 text-amber-100 font-pixel-title text-[9px]">TAHAP 3</span>
-                  SIMULATION GAME (Rescue Lab)
-                </h4>
-                <p className="font-pixel">
-                  Rakit logika sensor peringatan dini kebencanaan dan jalankan simulasi respon mitigasi evakuasi secara interaktif!
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  retroAudio.playHover();
+                  setGuideTab('level3');
+                }}
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-xs sm:text-sm md:text-base ${guideTab === 'level3'
+                  ? 'bg-amber-900 text-amber-100 shadow-[0_2px_0_#231206]'
+                  : 'bg-amber-100/70 hover:bg-amber-100 text-amber-950 border border-amber-900/20'
+                  }`}
+              >
+                <PixelIcon name="volcano" size={16} />
+                <span>TAHAP 3</span>
+              </button>
+            </div>
+
+            {/* Content Display */}
+            <div className="space-y-4 font-pixel text-[#1a0800]">
+
+              {/* ── TAB: SEMUA TAHAP (OVERVIEW) ── */}
+              {guideTab === 'all' && (
+                <>
+                  {/* Kartu Pengantar: Apa itu RESQ-BOX & Apa yang Dipelajari */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-200/95 border-2 sm:border-3 border-amber-900/40 space-y-3 shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="px-3 py-1 rounded-md bg-amber-900 text-amber-100 font-pixel-title text-xs sm:text-sm font-bold shadow-[0_1px_0_#231206]">
+                          TENTANG PLATFORM
+                        </span>
+                        <h4 className="font-pixel-title font-black text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02]">
+                          SELAMAT DATANG DI RESQ-BOX!
+                        </h4>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-md bg-amber-800 text-amber-100 font-black text-xs sm:text-sm shadow-sm">
+                        MEDIA IPA SMP KELAS 8
+                      </span>
+                    </div>
+                    <p className="text-sm sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
+                      Hai penjelajah muda! <strong className="font-black text-[#1a0800]">RESQ-BOX</strong> adalah platform web media pembelajaran interaktif IPA SMP Kelas 8 berbasis petualangan eksplorasi dan gamifikasi mitigasi bencana geologis.
+                    </p>
+                    <div className="text-sm sm:text-base md:text-[17px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
+                      <div className="font-black text-[#1a0800] uppercase tracking-wide">
+                        Materi Utama yang Akan Kamu Pelajari di Sini:
+                      </div>
+                      <ul className="list-disc list-inside space-y-2 text-[#200b01] font-bold">
+                        <li>
+                          <strong className="font-black text-[#1a0800]">1. Struktur Interior Bumi &amp; Batas Lempeng:</strong> Menembus interior bumi dari kerak (0 km), mantel, hingga bola besi padat inti dalam (6.371 km) serta dinamika 3 batas lempeng tektonik (Divergen, Konvergen subduksi laut, dan Transform patahan sesar San Andreas).
+                        </li>
+                        <li>
+                          <strong className="font-black text-[#1a0800]">2. Kesiapsiagaan Bencana Geologis:</strong> Menelusuri kawasan lereng Gunung Merapi, menguasai SOP Kesiapsiagaan Mandiri 72 Jam &amp; Tas Siaga Bencana (TSB), drill darurat gempa (Drop, Cover, and Hold On), pembacaan seismograf &amp; 4 status PVMBG, peta Kawasan Rawan Bencana (KRB), dan manajemen barak pengungsian BNPB.
+                        </li>
+                        <li>
+                          <strong className="font-black text-[#1a0800]">3. Otomatisasi Sistem Peringatan Dini (EWS):</strong> Merakit logika aksi-reaksi sensor bencana (piezo seismik, suhu kawah) ke lampu 4 warna dan sirine EWS melalui Visual Block Coding ramah anak, serta menguji dampaknya pada respon evakuasi 75 AI warga di maket Digital Twin 3D Merapi!
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Tahap 1 Card */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 space-y-3 shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="px-3 py-1 rounded-md bg-amber-900 text-amber-100 font-pixel-title text-xs sm:text-sm font-bold shadow-[0_1px_0_#231206]">
+                          TAHAP 1
+                        </span>
+                        <h4 className="font-pixel-title font-black text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02]">
+                          EARTH EXPLORER (Struktur Bumi &amp; Dinamika Lempeng)
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-md bg-sky-200 text-sky-950 font-black text-xs sm:text-sm border border-sky-800/40">
+                          8 Area Geologis
+                        </span>
+                        <span className="px-2.5 py-1 rounded-md bg-emerald-600 text-white font-black text-xs sm:text-sm shadow-sm">
+                          {unlockedLevel >= 2 ? '✓ TUNTAS' : 'AKTIF'}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
+                      Petualangan vertikal menembus interior bumi dari Permukaan (0 km), Kerak, Mantel, Inti Luar, Inti Dalam (6.371 km), hingga 3 batas lempeng tektonik: Divergen, Konvergen (subduksi laut), dan Transform (sesar San Andreas).
+                    </p>
+                    <div className="text-sm sm:text-base md:text-[17px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
+                      <div>
+                        <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
+                        <span className="font-bold text-[#200b01]">5 Karakter Ekspedisi &amp; Resqy, modul sains [🔍], kristal geotermal, kostum pelindung, dan avatar tracker 60 FPS.</span>
+                      </div>
+                      <div>
+                        <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
+                        <span className="font-bold text-[#200b01]">Pecahkan kuis tebak kata <strong className="font-black text-[#1a0800] underline decoration-amber-700/60">Wordle Sains</strong> bersama Bu Tyas, M.Pd. di tiap gerbang strata untuk membuka akses ke <strong className="font-black text-[#1a0800]">Level 2</strong>!</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tahap 2 Card */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 space-y-3 shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="px-3 py-1 rounded-md bg-orange-800 text-orange-100 font-pixel-title text-xs sm:text-sm font-bold shadow-[0_1px_0_#231206]">
+                          TAHAP 2
+                        </span>
+                        <h4 className="font-pixel-title font-black text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02]">
+                          DISASTER ANALYST (Karakteristik Bencana &amp; Mitigasi)
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-md bg-amber-200 text-amber-950 font-black text-xs sm:text-sm border border-amber-800/40">
+                          6 Pos Mitigasi
+                        </span>
+                        <span className={`px-2.5 py-1 rounded-md font-black text-xs sm:text-sm shadow-sm ${unlockedLevel >= 3
+                          ? 'bg-emerald-600 text-white'
+                          : unlockedLevel >= 2
+                            ? 'bg-amber-600 text-white'
+                            : 'bg-stone-300 text-stone-700'
+                          }`}>
+                          {unlockedLevel >= 3 ? '✓ TUNTAS' : unlockedLevel >= 2 ? 'AKTIF' : '🔒 TERKUNCI'}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
+                      Simulasi kesiapsiagaan 6 pos: Ruang Kelas (SOP 72 Jam &amp; Tas Siaga Bencana), Drill Gempa (Drop-Cover-Hold On), Lapangan Evakuasi (Titik Kumpul), Pos PGA Merapi (Seismograf &amp; Status PVMBG), Simulasi Erupsi (KRB I–III saat AWAS), dan Barak Pengungsian BNPB.
+                    </p>
+                    <div className="text-sm sm:text-base md:text-[17px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
+                      <div>
+                        <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
+                        <span className="font-bold text-[#200b01]">Visual Novel modul mitigasi BNPB [🔍], pemahaman zonasi KRB, dan rute keselamatan lereng gunung.</span>
+                      </div>
+                      <div>
+                        <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
+                        <span className="font-bold text-[#200b01]">Jawab seluruh <strong className="font-black text-[#1a0800] underline decoration-amber-700/60">Teka-Teki Silang (TTS Crossword Sains &amp; Mitigasi)</strong> di pos pengujian Bu Tyas untuk membuka akses ke <strong className="font-black text-[#1a0800]">Level 3</strong>!</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tahap 3 Card */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 space-y-3 shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="px-3 py-1 rounded-md bg-purple-900 text-purple-100 font-pixel-title text-xs sm:text-sm font-bold shadow-[0_1px_0_#231206]">
+                          TAHAP 3
+                        </span>
+                        <h4 className="font-pixel-title font-black text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02]">
+                          SIMULATION GAME (Action Lab &amp; Digital Twin 3D)
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-md bg-purple-200 text-purple-950 font-black text-xs sm:text-sm border border-purple-800/40">
+                          20 Misi Studi Kasus
+                        </span>
+                        <span className={`px-2.5 py-1 rounded-md font-black text-xs sm:text-sm shadow-sm ${unlockedLevel >= 3 ? 'bg-amber-600 text-white' : 'bg-stone-300 text-stone-700'
+                          }`}>
+                          {unlockedLevel >= 3 ? 'AKTIF' : '🔒 TERKUNCI'}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
+                      Rakit logika sistem peringatan dini melalui <strong className="font-black text-[#1a0800]">Visual Block Coding Ramah Anak</strong> (Sensor ➔ Lampu 4 Warna ➔ Sirine EWS ➔ Tindakan Evakuasi) dan uji dampaknya pada maket <strong className="font-black text-[#1a0800]">Digital Twin 3D Merapi</strong> topografi STL asli.
+                    </p>
+                    <div className="text-sm sm:text-base md:text-[17px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
+                      <div>
+                        <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
+                        <span className="font-bold text-[#200b01]">20 Misi Studi Kasus, Mode Bebas (Proyek Saya Sandbox), gempa 3-tingkat, erupsi eksplosif vs efusif, reaksi 75 AI warga, observasi 20 detik pasca-bencana, tombol Reset Kondisi, dan koneksi ESP32.</span>
+                      </div>
+                      <div>
+                        <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
+                        <span className="font-bold text-[#200b01]">Tuntaskan 20 Misi Studi Kasus; nilai otomatis tersinkronisasi ke Rapor Siswa di Posko Guru (/teacher)!</span>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* ── TAB: TAHAP 1 (EARTH EXPLORER) ── */}
+              {guideTab === 'level1' && (
+                <div className="space-y-4 animate-fade-in font-pixel">
+                  <div className="p-4 sm:p-5 bg-amber-200/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl shadow-sm">
+                    <h4 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02] flex items-center gap-2 mb-2">
+                      <PixelIcon name="divergent" size={18} />
+                      <span>Fokus Materi: Struktur Interior Bumi &amp; Batas Lempeng Tektonik</span>
+                    </h4>
+                    <p className="text-sm sm:text-base md:text-lg text-[#1a0800] font-extrabold leading-relaxed">
+                      Siswa mengeksplorasi karakteristik fisik, suhu, dan tekanan setiap lapisan bumi secara vertikal serta mengamati fenomena pergerakan lempeng yang memicu fenomena geologis.
+                    </p>
+                  </div>
+
+                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-3 shadow-sm">
+                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                      <PixelIcon name="map" size={16} />
+                      <span>8 Checkpoint Area Geologis yang Dijelajahi:</span>
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm md:text-base leading-relaxed text-[#1a0800] font-bold">
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">1. Permukaan Bumi (0 km):</strong> Basecamp ekspedisi, perkenalan tim, dan arahan Resqy.
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">2. Kerak Bumi (35 km):</strong> Eksplorasi litosfer, batuan tambang, fosil purba, &amp; rompi safety.
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">3. Mantel Bumi (2.900 km):</strong> Magma silikat, arus konveksi astenosfer, &amp; baju Cryo-Suit.
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">4. Inti Luar (5.150 km):</strong> Logam cair besi-nikel &amp; pembangkit medan geomagnetik bumi.
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">5. Inti Dalam (6.371 km):</strong> Bola besi padat bersuhu tinggi bertekanan &gt;3,6 juta atm.
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">6. Batas Divergen:</strong> Lembah retakan lempeng saling menjauh (East African Rift).
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">7. Batas Konvergen:</strong> Palung subduksi samudra menunjam miring &amp; busur vulkanik.
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">8. Batas Transform:</strong> Patahan sesar San Andreas (Top-Down View, loncat rekahan).
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-2.5 text-sm sm:text-base md:text-[17px] leading-relaxed text-[#1a0800] font-bold shadow-sm">
+                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                      <PixelIcon name="star" size={16} />
+                      <span>Panduan Bermain &amp; Evaluasi Gerbang:</span>
+                    </h5>
+                    <ul className="list-disc list-inside space-y-2 text-[#1a0800] font-bold">
+                      <li>Gunakan tombol <strong className="font-black text-[#1a0800]">A/D</strong> atau <strong className="font-black text-[#1a0800]">Panah Kiri/Kanan</strong> untuk bergerak, <strong className="font-black text-[#1a0800]">Spasi</strong> untuk melompat, dan <strong className="font-black text-[#1a0800]">E</strong> untuk berinteraksi.</li>
+                      <li>Dekati rekan ekspedisi (Zidane, Zahra, Ican, Lintang) bertanda <strong className="font-black text-[#1a0800]">kaca pembesar [🔍]</strong> untuk membaca materi sains.</li>
+                      <li>Setiap gerbang strata dijaga oleh <strong className="font-black text-[#1a0800]">Bu Tyas, M.Pd.</strong> yang memberikan tantangan <strong className="font-black text-[#1a0800]">Wordle Tebak Kata</strong>. Seluruh kata kunci evaluasi diambil langsung dari materi rekan tim di area terkait!</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {/* ── TAB: TAHAP 2 (DISASTER ANALYST) ── */}
+              {guideTab === 'level2' && (
+                <div className="space-y-4 animate-fade-in font-pixel">
+                  <div className="p-4 sm:p-5 bg-orange-200/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl shadow-sm">
+                    <h4 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02] flex items-center gap-2 mb-2">
+                      <PixelIcon name="earthquake" size={18} />
+                      <span>Fokus Materi: Karakteristik Bahaya Gempa, Vulkanisme &amp; Kesiapsiagaan Bencana</span>
+                    </h4>
+                    <p className="text-sm sm:text-base md:text-lg text-[#1a0800] font-extrabold leading-relaxed">
+                      Siswa mempraktikkan mitigasi pra-bencana, saat bencana, dan pasca-bencana secara kontekstual di kawasan rawan bencana lereng Gunung Merapi.
+                    </p>
+                  </div>
+
+                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-3 shadow-sm">
+                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                      <PixelIcon name="map" size={16} />
+                      <span>6 Pos Mitigasi Kebencanaan Sekuensial:</span>
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm md:text-base leading-relaxed text-[#1a0800] font-bold">
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">1. Ruang Kelas Teori:</strong> SOP Kesiapsiagaan Mandiri 72 Jam &amp; 10 barang wajib Tas Siaga Bencana (TSB).
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">2. Simulasi Drill Gempa:</strong> Prosedur darurat Drop, Cover, and Hold On (merunduk di bawah meja kokoh).
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">3. Lapangan Evakuasi:</strong> Prosedur evakuasi tertib menuju titik kumpul terbuka bebas reruntuhan.
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">4. Pos PGA Merapi:</strong> Pembacaan seismograf &amp; 4 Status PVMBG (Normal, Waspada, Siaga, Awas).
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">5. Simulasi Erupsi Merapi:</strong> Peta zonasi KRB I, II, III saat AWAS, bahaya awan panas, dan EWS.
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">6. Barak Pengungsian BNPB:</strong> Tata kelola posko evakuasi mandiri terpadu di Zona Aman KRB I.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-2.5 text-sm sm:text-base md:text-[17px] leading-relaxed text-[#1a0800] font-bold shadow-sm">
+                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                      <PixelIcon name="star" size={16} />
+                      <span>Panduan Bermain &amp; Evaluasi Gerbang:</span>
+                    </h5>
+                    <ul className="list-disc list-inside space-y-2 text-[#1a0800] font-bold">
+                      <li>Jelajahi setiap pos mitigasi dan pelajari modul panduan buku saku BNPB bertanda <strong className="font-black text-[#1a0800]">kaca pembesar [🔍]</strong>.</li>
+                      <li>Di setiap pos, temui <strong className="font-black text-[#1a0800]">Bu Tyas, M.Pd.</strong> untuk menyelesaikan kuis <strong className="font-black text-[#1a0800]">Teka-Teki Silang (TTS Crossword Mitigasi)</strong>.</li>
+                      <li>Menuntaskan seluruh 6 pos mitigasi akan membuka kunci <strong className="font-black text-[#1a0800]">Level 3: Simulation Game</strong>!</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+              {/* ── TAB: TAHAP 3 (SIMULATION GAME) ── */}
+              {guideTab === 'level3' && (
+                <div className="space-y-4 animate-fade-in font-pixel">
+                  <div className="p-4 sm:p-5 bg-purple-200/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl shadow-sm">
+                    <h4 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02] flex items-center gap-2 mb-2">
+                      <PixelIcon name="volcano" size={18} />
+                      <span>Fokus Materi: Logika Otomatisasi EWS &amp; Uji Respon Warga Digital Twin 3D</span>
+                    </h4>
+                    <p className="text-sm sm:text-base md:text-lg text-[#1a0800] font-extrabold leading-relaxed">
+                      Siswa merakit logika sistem peringatan dini bencana menggunakan visual block coding ramah anak dan menguji efektivitas mitigasi pada maket digital 3D berwarga nyata.
+                    </p>
+                  </div>
+
+                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-3 shadow-sm">
+                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                      <PixelIcon name="map" size={16} />
+                      <span>20 Misi Studi Kasus Terbagi dalam 4 Sektor:</span>
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm md:text-base leading-relaxed text-[#1a0800] font-bold">
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">Sektor 1 (Misi 1–5):</strong> Pengenalan EWS &amp; Pembacaan Sensor Bencana (piezo seismik, suhu kawah, lampu EWS).
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">Sektor 2 (Misi 6–10):</strong> Mitigasi Gempa Bumi 3 Tingkat (Ringan: lari santai, Sedang: duck &amp; cover, Kuat: tiarap).
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">Sektor 3 (Misi 11–15):</strong> Mitigasi Erupsi Efusif (Pemantauan kubah lava &amp; evakuasi menjauhi alur sungai Kali Gendol/Kuning).
+                      </div>
+                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
+                        <strong className="font-black text-[#1a0800]">Sektor 4 (Misi 16–20):</strong> Mitigasi Erupsi Eksplosif (Awan panas wedhus gembel, bom lava, &amp; Grand Challenge).
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-2.5 text-sm sm:text-base md:text-[17px] leading-relaxed text-[#1a0800] font-bold shadow-sm">
+                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                      <PixelIcon name="star" size={16} />
+                      <span>Alat Bantu &amp; Sinkronisasi Rapor:</span>
+                    </h5>
+                    <ul className="list-disc list-inside space-y-2 text-[#1a0800] font-bold">
+                      <li><strong className="font-black text-[#1a0800]">Blockly Ramah Anak:</strong> Susun blok aksi-reaksi (Sensor ➔ Lampu Status ➔ Sirine EWS ➔ Tindakan Evakuasi). Setiap misi dilengkapi panduan kategori toolbox.</li>
+                      <li><strong className="font-black text-[#1a0800]">Digital Twin 3D Merapi:</strong> Amati reaksi 75 AI warga selama 20 detik pasca-bencana. Kerusakan tetap terlihat untuk evaluasi dan dapat direset dengan tombol <strong className="font-black text-[#1a0800]">[Reset Kondisi]</strong>.</li>
+                      <li><strong className="font-black text-[#1a0800]">Sinkronisasi Guru &amp; Hardware:</strong> Setiap misi yang tuntas langsung terkirim ke Dashboard Guru (5 poin per misi, total 100 poin) dan opsional terhubung ke diorama fisik ESP32.</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
 
             </div>
 
-            {/* Action button */}
-            <button
-              onClick={() => {
-                retroAudio.playSelect();
-                setShowGuideModal(false);
-                handleLevelClick(1, '/level1');
-              }}
-              className="pixel-btn-wood-plank !w-full !h-12 !text-xs !bg-amber-800 !text-white mt-2 cursor-pointer flex items-center justify-center gap-2"
-            >
-              <span>MULAI PETUALANGAN TAHAP 1</span>
-              <span className="font-bold">&gt;</span>
-            </button>
+            {/* Smart Contextual Action Button */}
+            {guideTab === 'all' && (
+              <button
+                onClick={() => {
+                  retroAudio.playSelect();
+                  setShowGuideModal(false);
+                  if (unlockedLevel >= 3) {
+                    handleLevelClick(3, '/level3');
+                  } else if (unlockedLevel >= 2) {
+                    handleLevelClick(2, '/level2');
+                  } else {
+                    handleLevelClick(1, '/level1');
+                  }
+                }}
+                className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
+              >
+                <span>
+                  {unlockedLevel >= 3
+                    ? 'LANJUTKAN KE TAHAP 3 (SIMULATION GAME)'
+                    : unlockedLevel >= 2
+                      ? 'LANJUTKAN KE TAHAP 2 (DISASTER ANALYST)'
+                      : 'MULAI PETUALANGAN TAHAP 1'}
+                </span>
+                <span className="font-bold">&gt;</span>
+              </button>
+            )}
+
+            {guideTab === 'level1' && (
+              <button
+                onClick={() => {
+                  retroAudio.playSelect();
+                  setShowGuideModal(false);
+                  handleLevelClick(1, '/level1');
+                }}
+                className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
+              >
+                <span>MASUK KE TAHAP 1: EARTH EXPLORER</span>
+                <span className="font-bold">&gt;</span>
+              </button>
+            )}
+
+            {guideTab === 'level2' && (
+              unlockedLevel >= 2 ? (
+                <button
+                  onClick={() => {
+                    retroAudio.playSelect();
+                    setShowGuideModal(false);
+                    handleLevelClick(2, '/level2');
+                  }}
+                  className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
+                >
+                  <span>MASUK KE TAHAP 2: DISASTER ANALYST</span>
+                  <span className="font-bold">&gt;</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => retroAudio.playLocked()}
+                  className="pixel-btn-wood-plank locked !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base mt-3 flex items-center justify-center gap-2.5 cursor-not-allowed opacity-85 font-pixel-title font-bold"
+                  title="Selesaikan Level 1 Terlebih Dahulu"
+                >
+                  <PixelIcon name="lock" size={16} />
+                  <span>SELESAIKAN TAHAP 1 UNTUK MEMBUKA TAHAP 2</span>
+                </button>
+              )
+            )}
+
+            {guideTab === 'level3' && (
+              unlockedLevel >= 3 ? (
+                <button
+                  onClick={() => {
+                    retroAudio.playSelect();
+                    setShowGuideModal(false);
+                    handleLevelClick(3, '/level3');
+                  }}
+                  className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
+                >
+                  <span>MASUK KE TAHAP 3: SIMULATION GAME</span>
+                  <span className="font-bold">&gt;</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => retroAudio.playLocked()}
+                  className="pixel-btn-wood-plank locked !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base mt-3 flex items-center justify-center gap-2.5 cursor-not-allowed opacity-85 font-pixel-title font-bold"
+                  title="Selesaikan Level 2 Terlebih Dahulu"
+                >
+                  <PixelIcon name="lock" size={16} />
+                  <span>SELESAIKAN TAHAP 2 UNTUK MEMBUKA TAHAP 3</span>
+                </button>
+              )
+            )}
 
           </div>
         </div>
       )}
+
+      {/* ── 6. RESQY TUTORIAL WALKTHROUGH OVERLAY ── */}
+      <ResqyTutorialOverlay
+        tour={currentUser?.role === 'teacher' ? TUTORIAL_TOURS.dashboard_teacher : TUTORIAL_TOURS.dashboard_student}
+        userId={currentUser?.id}
+      />
 
     </div>
   );

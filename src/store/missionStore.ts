@@ -11,6 +11,12 @@ export function getActiveUserId(): string {
     if (raw) {
       const user = JSON.parse(raw);
       if (user?.id) return user.id;
+      if (user?.username) return user.username;
+    }
+    const profileRaw = localStorage.getItem('resqbox-student-profile');
+    if (profileRaw) {
+      const profile = JSON.parse(profileRaw);
+      if (profile?.id) return profile.id;
     }
   } catch {}
   return 'guest';
@@ -23,15 +29,39 @@ function getUserMissionKey(userId?: string): string {
 export function loadMissionsForUser(userId?: string): string[] {
   if (typeof window === 'undefined') return [];
   try {
-    const key = getUserMissionKey(userId);
-    const raw = localStorage.getItem(key);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        const validIds = new Set(MISSIONS.map((m) => m.id));
-        return parsed.filter((id) => validIds.has(id));
+    const validIds = new Set(MISSIONS.map((m) => m.id));
+    const targetId = userId || getActiveUserId();
+    const candidateKeys = [
+      `resqbox_missions_${targetId}`,
+    ];
+
+    const rawUser = localStorage.getItem('resqbox-current-user');
+    if (rawUser) {
+      try {
+        const u = JSON.parse(rawUser);
+        if (u.id && u.id !== targetId) candidateKeys.push(`resqbox_missions_${u.id}`);
+        if (u.username) candidateKeys.push(`resqbox_missions_${u.username}`);
+        if (u.username === 'demo') {
+          candidateKeys.push('resqbox_missions_std-demo-all-unlocked');
+          candidateKeys.push('resqbox_missions_demo');
+        }
+      } catch {}
+    }
+
+    let bestMissions: string[] = [];
+    for (const key of candidateKeys) {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          const filtered = parsed.filter((id) => validIds.has(id));
+          if (filtered.length > bestMissions.length) {
+            bestMissions = filtered;
+          }
+        }
       }
     }
+    return bestMissions;
   } catch {}
   return [];
 }
@@ -39,8 +69,22 @@ export function loadMissionsForUser(userId?: string): string[] {
 export function saveMissionsForUser(userId: string | undefined, missionIds: string[]) {
   if (typeof window === 'undefined') return;
   try {
-    const key = getUserMissionKey(userId);
-    localStorage.setItem(key, JSON.stringify(missionIds));
+    const targetId = userId || getActiveUserId();
+    const data = JSON.stringify(missionIds);
+    localStorage.setItem(getUserMissionKey(targetId), data);
+
+    const rawUser = localStorage.getItem('resqbox-current-user');
+    if (rawUser) {
+      try {
+        const u = JSON.parse(rawUser);
+        if (u.id && u.id !== targetId) localStorage.setItem(`resqbox_missions_${u.id}`, data);
+        if (u.username) localStorage.setItem(`resqbox_missions_${u.username}`, data);
+        if (u.username === 'demo') {
+          localStorage.setItem('resqbox_missions_std-demo-all-unlocked', data);
+          localStorage.setItem('resqbox_missions_demo', data);
+        }
+      } catch {}
+    }
   } catch {}
 }
 
@@ -109,23 +153,18 @@ export const useMissionStore = create<MissionState>()((set, get) => ({
       if (allMissionsDone) {
         // Unlock beyond Level 3
         authState.unlockLevel(4);
-
-        // Submit Level 3 completion to cloud
-        import('../utils/supabaseClient').then(({ submitLevelProgress }) => {
-          const student = authState.student;
-          submitLevelProgress({
-            student_id: student?.id || userId,
-            student_name: student?.name || 'RESQ-Team',
-            classroom_code: student?.classroom_id || 'RESQ-8A',
-            level_number: 3,
-            score: 100,
-            details: {
-              missions_completed: MISSIONS.length,
-              categories_completed: CATEGORIES.map((c) => c.id),
-            },
-          });
-        });
       }
+
+      // Sync progress for this mission immediately to cloud & teacher dashboard!
+      import('../app/Level3/level3Sync').then(({ syncLevel3Progress }) => {
+        syncLevel3Progress(authState.student, {
+          completedMissions: next,
+          completedCount: next.length,
+          totalMissions: MISSIONS.length,
+          lastCompletedId: id,
+          isCompleted: allMissionsDone,
+        });
+      });
     });
   },
 

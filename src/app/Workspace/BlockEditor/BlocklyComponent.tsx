@@ -31,8 +31,6 @@ const INITIAL_TOOLBOX = {
       contents: [
         { kind: 'block', type: 'resq_gempa_sim' },
         { kind: 'block', type: 'resq_gunung_sim' },
-        { kind: 'block', type: 'resq_tipe_letusan' },
-        { kind: 'block', type: 'resq_lokasi_mitigasi' },
       ],
     },
     {
@@ -51,18 +49,20 @@ const INITIAL_TOOLBOX = {
       name: 'Aksi & Evakuasi',
       colour: '#7C3AED',
       contents: [
-        { kind: 'block', type: 'resq_jalur_evakuasi' },
-        { kind: 'block', type: 'resq_posko' },
+        { kind: 'block', type: 'resq_evak_keluar_bangunan' },
+        { kind: 'block', type: 'resq_evak_tanah_lapang' },
+        { kind: 'block', type: 'resq_evak_krb' },
+        { kind: 'block', type: 'resq_evak_luar_map' },
+        { kind: 'block', type: 'resq_evak_jauhi_sungai' },
       ],
     },
     {
       kind: 'category',
-      name: 'Pemantauan Alam',
+      name: 'Kondisi Bencana',
       colour: '#2563EB',
       contents: [
-        { kind: 'block', type: 'resq_sensor_seismik' },
-        { kind: 'block', type: 'resq_sensor_suhu' },
-        { kind: 'block', type: 'resq_getar_kuat' },
+        { kind: 'block', type: 'resq_tipe_gempa' },
+        { kind: 'block', type: 'resq_tipe_letusan' },
       ],
     },
     {
@@ -103,7 +103,7 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
       zoom: {
         controls: true,
         wheel: true,
-        startScale: 0.9,
+        startScale: 1.05,
         maxScale: 3,
         minScale: 0.3,
         scaleSpeed: 1.2,
@@ -128,7 +128,7 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
         flyout.autoScale_ = false;
         // Force reset scale to initial
         if (flyout.getWorkspace()) {
-          flyout.getWorkspace().setScale(0.9);
+          flyout.getWorkspace().setScale(1.05);
         }
       }
     }
@@ -194,7 +194,7 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
     };
   }, []); // Empty dependency array to run only once on mount
 
-  // Force resize blockly on window resize
+  // Force resize blockly on window resize and container resize
   useEffect(() => {
     const handleResize = () => {
       if (workspaceRef.current) {
@@ -202,7 +202,21 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
       }
     };
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (blocklyDiv.current && typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        handleResize();
+      });
+      resizeObserver.observe(blocklyDiv.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
   }, []);
 
   return (

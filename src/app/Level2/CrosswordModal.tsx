@@ -35,7 +35,7 @@ const CLUES_AREA_1: ClueItem[] = [
     number: 1,
     direction: 'across',
     answer: 'BERLINDUNG',
-    clue: 'Aksi masuk ke bawah meja belajar yang kokoh untuk mendekap kepala saat bumi berguncang.',
+    clue: 'Masuk ke bawah meja saat terjadi gempa untuk ... dari material yang jatuh.',
     startRow: 1,
     startCol: 1,
   },

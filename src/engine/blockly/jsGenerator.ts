@@ -33,7 +33,7 @@ javascriptGenerator.forBlock['resq_led'] = function(block: Blockly.Block) {
 // ── resq_buzzer ─────────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_buzzer'] = function(block: Blockly.Block) {
   const ms = block.getFieldValue('MS');
-  return `await api.print('Sirine berbunyi selama ${ms}ms', 'info');\nawait api.delay(${ms});\nawait api.print('Sirine berhenti', 'info');\n`;
+  return `await api.setBuzzer(true);\nawait api.print('Sirine berbunyi selama ${ms}ms', 'info');\nawait api.delay(${ms});\nawait api.setBuzzer(false);\nawait api.print('Sirine berhenti', 'info');\n`;
 };
 
 // ── resq_buzzer_stop ────────────────────────────────────────────
@@ -63,7 +63,9 @@ javascriptGenerator.forBlock['resq_servo'] = function(block: Blockly.Block) {
 
 // ── resq_tunggu ─────────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_tunggu'] = function(block: Blockly.Block) {
-  return `await api.delay(${block.getFieldValue('MS')});\n`;
+  const sec = Number(block.getFieldValue('DETIK') ?? block.getFieldValue('MS')) || 1;
+  const ms = sec > 50 ? sec : sec * 1000;
+  return `await api.delay(${ms});\n`;
 };
 
 // ── resq_tampil ─────────────────────────────────────────────────
@@ -73,15 +75,7 @@ javascriptGenerator.forBlock['resq_tampil'] = function(block: Blockly.Block) {
 };
 
 
-// ── resq_sensor_getar ───────────────────────────────────────────
-javascriptGenerator.forBlock['resq_sensor_getar'] = function() {
-  return [`api.getSensor('A1')`, 0];
-};
 
-// ── resq_sensor_suhu ────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_sensor_suhu'] = function() {
-  return [`(api.getSensor('A2') * 0.4887)`, 0];
-};
 
 // ── resq_tombol_1 ───────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_tombol_1'] = function() {
@@ -161,11 +155,12 @@ javascriptGenerator.forBlock['resq_hitung'] = function(block: Blockly.Block) {
 // ── resq_alarm_darurat ──────────────────────────────────────────
 javascriptGenerator.forBlock['resq_alarm_darurat'] = function(block: Blockly.Block) {
   const n = parseInt(block.getFieldValue('KALI') || '3');
-  let code = '';
+  let code = `await api.setBuzzer(true);\n`;
   for (let i = 0; i < Math.min(n, 5); i++) {
-    code += `await api.print('[ALARM] ALARM EVAKUASI! (${i + 1}/${n})', 'error');\nawait api.setPin('10', 'HIGH');\nawait api.print('Sirine berbunyi', 'error');\nawait api.delay(300);\nawait api.setPin('10', 'LOW');\nawait api.print('Sirine berhenti', 'error');\nawait api.delay(200);\n`;
+    code += `await api.print('[ALARM] ALARM EVAKUASI! (${i + 1}/${n})', 'error');\nawait api.setPin('10', 'HIGH');\nawait api.delay(350);\nawait api.setPin('10', 'LOW');\nawait api.delay(200);\n`;
   }
   if (n > 5) code += `await api.print('[ALARM] ... +${n - 5} alarm lagi', 'error');\n`;
+  code += `await api.setBuzzer(false);\n`;
   return code;
 };
 
@@ -193,14 +188,10 @@ javascriptGenerator.forBlock['resq_buzzer_nada'] = function(block: Blockly.Block
 };
 
 
-// ── resq_getar_kuat ─────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_getar_kuat'] = function() {
-  return [`api.getSensor('A1') > 700`, 0];
-};
-
-// ── resq_suhu_panas ─────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_suhu_panas'] = function() {
-  return [`(api.getSensor('A2') * 0.4887) > 35.0`, 0];
+// ── resq_tipe_gempa ─────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_tipe_gempa'] = function(block: Blockly.Block) {
+  const lvl = parseInt(block.getFieldValue('LEVEL') || '1', 10);
+  return [`(api.getSeismicLevel() === ${lvl})`, 0];
 };
 
 // ── resq_lampu_status ───────────────────────────────────────────
@@ -229,7 +220,7 @@ javascriptGenerator.forBlock['resq_gempa_sim'] = function(block: Blockly.Block) 
   const lvlNames: Record<number, string> = {
     1: 'Ringan (3-4 SR)',
     2: 'Sedang (5-6 SR)',
-    3: 'Kuat (>7 SR)',
+    3: 'Besar (>7 SR)',
   };
   const label = lvlNames[lvl] || `Level ${lvl}`;
   return `await api.simGempa(${lvl});\nawait api.print('Simulasi Gempa Bumi: ${label} aktif! (Motor getar & audio berbunyi)', 'error');\n`;
@@ -245,57 +236,47 @@ javascriptGenerator.forBlock['resq_gunung_sim'] = function(block: Blockly.Block)
 
 // ── resq_tipe_letusan ───────────────────────────────────────────
 javascriptGenerator.forBlock['resq_tipe_letusan'] = function(block: Blockly.Block) {
-  return [`"${block.getFieldValue('TIPE')}"`, 0];
+  const tipe = block.getFieldValue('TIPE') || 'EFUSIF';
+  return [`(api.getEruptionType() === '${tipe}')`, 0];
 };
 
-// ── resq_jalur_evakuasi ─────────────────────────────────────────
-javascriptGenerator.forBlock['resq_jalur_evakuasi'] = function(block: Blockly.Block) {
-  const jalur = block.getFieldValue('JALUR');
-  const jalurNames: Record<string, string> = {
-    'LINGKAR_UTAMA': 'Jalur Lingkar Utama (Bebas Lahar)',
-    'LEMBAH_SUNGAI': 'Jalur Lembah Sungai (Rawan Lahar)',
-    'LAPANGAN_TERBUKA': 'Jalur Lapangan Terbuka',
-  };
-  const label = jalurNames[jalur] || jalur;
-  const logType = jalur === 'LEMBAH_SUNGAI' ? 'error' : 'success';
-  return `await api.setEvacRoute('${label}');\nawait api.print('Jalur Evakuasi ditetapkan: ${label}', '${logType}');\n`;
+
+// ── resq_evak_keluar_bangunan ───────────────────────────────────
+javascriptGenerator.forBlock['resq_evak_keluar_bangunan'] = function() {
+  return `await api.setEvacCommand('KELUAR_BANGUNAN');\nawait api.print('Perintah Evakuasi: Warga diarahkan keluar dari bangunan ke area terbuka!', 'success');\n`;
 };
 
-// ── resq_posko ──────────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_posko'] = function(block: Blockly.Block) {
-  const posko = block.getFieldValue('POSKO');
-  const poskoNames: Record<string, string> = {
-    'BARAK_KRB1': 'Barak Pengungsian Terpadu (KRB I)',
-    'POSKO_MEDIS': 'Posko Medis BPBD',
-    'LAPANGAN': 'Titik Kumpul Lapangan',
-  };
-  const label = poskoNames[posko] || posko;
-  return `await api.setActiveShelter('${label}');\nawait api.print('Posko Evakuasi dibuka: ${label}', 'success');\n`;
+// ── resq_evak_tanah_lapang ──────────────────────────────────────
+javascriptGenerator.forBlock['resq_evak_tanah_lapang'] = function() {
+  return `await api.setEvacCommand('TANAH_LAPANG');\nawait api.print('Perintah Evakuasi: Warga diarahkan ke tanah lapang terdekat yang jauh dari bangunan!', 'success');\n`;
 };
 
-// ── resq_lokasi_mitigasi ────────────────────────────────────────
-javascriptGenerator.forBlock['resq_lokasi_mitigasi'] = function(block: Blockly.Block) {
-  const loc = block.getFieldValue('LOKASI');
-  const locNames: Record<string, string> = {
-    'SEKOLAH': 'Gedung Sekolah',
-    'RUMAH': 'Pemukiman Warga',
-    'RS': 'Rumah Sakit',
-    'JEMBATAN': 'Dekat Jembatan Sungai',
-  };
-  const label = locNames[loc] || loc;
-  return `await api.setLocation('${label}');\nawait api.print('Lokasi Mitigasi: ${label}', 'info');\n`;
+// ── resq_evak_krb ───────────────────────────────────────────────
+javascriptGenerator.forBlock['resq_evak_krb'] = function(block: Blockly.Block) {
+  const zona = block.getFieldValue('ZONA') || 'KRB2';
+  const label = zona === 'KRB1' ? 'Zona KRB I (Status Siaga)' : 'Zona KRB II (Status Waspada)';
+  return `await api.setEvacCommand('${zona}');\nawait api.print('Perintah Evakuasi: Warga diarahkan mengungsi menuju ${label}!', 'success');\n`;
 };
+
+// ── resq_evak_luar_map ──────────────────────────────────────────
+javascriptGenerator.forBlock['resq_evak_luar_map'] = function() {
+  return `await api.setEvacCommand('LUAR_MAP');\nawait api.print('Perintah Evakuasi: Seluruh warga evakuasi total menjauh dari KRB I ke luar area peta!', 'success');\n`;
+};
+
+// ── resq_evak_jauhi_sungai ──────────────────────────────────────
+javascriptGenerator.forBlock['resq_evak_jauhi_sungai'] = function() {
+  return `await api.setEvacCommand('JAUHI_SUNGAI');\nawait api.print('Perintah Evakuasi: Warga diarahkan menjauhi sempadan wilayah sungai!', 'warn');\n`;
+};
+
+
 
 // ── resq_layar_oled ─────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_layar_oled'] = function(block: Blockly.Block) {
   const txt = block.getFieldValue('TEXT') || '';
-  return `await api.setOledMessage('${txt}');\nawait api.print('Layar Informasi OLED: "${txt}"', 'info');\n`;
+  return `await api.setOledMessage('${txt}');\nawait api.print('Layar Informasi: "${txt}"', 'info');\n`;
 };
 
-// ── resq_sensor_seismik ─────────────────────────────────────────
-javascriptGenerator.forBlock['resq_sensor_seismik'] = function() {
-  return [`api.getSensor('A1')`, 0];
-};
+
 
 // ── resq_stopall ────────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_stopall'] = function() {

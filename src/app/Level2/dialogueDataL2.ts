@@ -1531,7 +1531,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       satria_v_1: {
         id: 'satria_v_1',
         speakerId: 'bu_tyas',
-        text: 'Selamat siang anak-anakku para analis muda! Ibu sangat bangga melihat ketekunan kalian mempelajari sistem pemantauan Merapi.',
+        text: 'Halo, penjelajah muda! Ibu sangat bangga melihat ketekunan kalian mempelajari sistem pemantauan Merapi.',
         expression: 'happy',
         nextNodeId: 'satria_v_2',
       },
@@ -1619,7 +1619,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       resqy_b5_2: {
         id: 'resqy_b5_2',
         speakerId: 'resqy',
-        text: 'Dusun ini berada di Kawasan Rawan Bencana (KRB) III. Jika aktivitas vulkanik meningkat, kamu harus sigap membunyikan kentongan di pos ronda, mencari & menyelamatkan 3 warga dusun yang membutuhkan pertolongan, lalu lari bersama menuju Mobil Evakuasi!',
+        text: 'Dusun ini berada di Kawasan Rawan Bencana (KRB) III. Jika aktivitas vulkanik meningkat, kamu harus sigap membunyikan sirine bahaya di pos ronda, mencari & menyelamatkan 3 warga dusun yang membutuhkan pertolongan, lalu lari bersama menuju Mobil Evakuasi!',
         expression: 'serious',
         nextNodeId: 'resqy_b5_3',
       },
@@ -1773,7 +1773,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       satria_vc_2: {
         id: 'satria_vc_2',
         speakerId: 'pak_joko',
-        text: 'Matur nuwun sanget anak-anakku! Kamu telah membuktikan arti sejati Desa Tangguh Bencana.',
+        text: 'Matur nuwun sanget anakku! Kamu telah membuktikan arti sejati Desa Tangguh Bencana.',
         expression: 'happy',
         nextNodeId: 'satria_vc_3',
       },

@@ -19,6 +19,12 @@ import { useAuthStore, getActiveCustomAvatar, type CustomAvatarConfig } from '..
 import { syncEarthDiveProgress } from './earthDiveSync';
 import Wordle from '../Wordle';
 import PixelIcon from '../../../components/PixelIcon';
+import JourneyProgressTracker, {
+  LEVEL1_TRACKER_AREAS,
+  type JourneyProgressTrackerRef,
+} from '../../../components/JourneyProgressTracker';
+import ResqyTutorialOverlay from '../../../components/Tutorial/ResqyTutorialOverlay';
+import { TUTORIAL_TOURS } from '../../../components/Tutorial/tutorialConfig';
 import {
   createGameState,
   initGame,
@@ -98,6 +104,7 @@ export default function EarthDiveGame() {
   const gameRef = useRef<GameState | null>(null);
   const rafRef = useRef<number>(0);
   const toastTimeoutRef = useRef<number>(0);
+  const journeyTrackerRef = useRef<JourneyProgressTrackerRef>(null);
 
   // Sound & Fullscreen states
   const [soundOn, setSoundOn] = useState(() => retroAudio.isEnabled());
@@ -827,6 +834,17 @@ export default function EarthDiveGame() {
       // Render with student custom avatar
       renderGame(ctx, canvas.width, canvas.height, game, avatarConfig);
 
+      // Real-time update tracker posisi petualangan karakter (Level 1: 8 Area)
+      if (journeyTrackerRef.current && game) {
+        const currentZoneObj = getZone(game.currentZone);
+        const maxW = currentZoneObj.groundProfile ? currentZoneObj.groundProfile.length : currentZoneObj.cols * TILE;
+        const localRatio = Math.max(0, Math.min(1, game.player.x / (maxW || 1280)));
+        const totalPercent = ((game.currentZone + localRatio) / 8) * 100;
+        const activeCfg = LEVEL1_TRACKER_AREAS[game.currentZone];
+        const metricText = activeCfg ? `${activeCfg.shortName} • ${activeCfg.metricLabel}` : `${Math.round(localRatio * 100)}%`;
+        journeyTrackerRef.current.updateProgress(totalPercent, game.player.dir, metricText);
+      }
+
       rafRef.current = requestAnimationFrame(loop);
     };
 
@@ -1524,7 +1542,7 @@ export default function EarthDiveGame() {
 
       {/* ── 5. DYNAMIC FLOATING INTERACTION PROMPT (BOTTOM CENTER) 100% PERSIS LEVEL 2 ── */}
       {hudData.nearObjectType && !isPaused && (
-        <div className="absolute bottom-12 sm:bottom-14 left-1/2 -translate-x-1/2 z-20 pointer-events-auto select-none animate-bounce w-[min(94vw,860px)] px-2">
+        <div className="absolute bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-30 pointer-events-auto select-none animate-bounce w-[min(94vw,860px)] px-2">
           {hudData.nearObjectType === 'portal_down' && (
             <button
               onClick={handleDiveClick}
@@ -1592,6 +1610,17 @@ export default function EarthDiveGame() {
         </div>
       )}
 
+      {/* ── 5.8 REAL-TIME JOURNEY PROGRESS TRACKER (Level 1: 8 Area Geologis) ── */}
+      <div className="absolute bottom-7 sm:bottom-8 lg:bottom-6 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+        <JourneyProgressTracker
+          ref={journeyTrackerRef}
+          totalAreas={8}
+          currentAreaIndex={hudData.zoneIndex}
+          areas={LEVEL1_TRACKER_AREAS}
+          avatarConfig={avatarConfig}
+        />
+      </div>
+
       {/* ── 6. DISCREET KEYBOARD CONTROLS GUIDE (Desktop Bottom) ── */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[9px] font-pixel text-slate-300 pointer-events-none z-10 select-none">
         {hudData.zoneIndex === 7 ? (
@@ -1618,36 +1647,42 @@ export default function EarthDiveGame() {
 
       {/* ── 7. MOBILE & TABLET TOUCH CONTROLS (4-Way D-Pad + Dedicated Jump & Interact) ── */}
       {(isTouchDevice || (typeof window !== 'undefined' && window.innerWidth <= 1024)) && (
-        <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between pointer-events-none z-30 select-none">
-          {/* Left 4-Way D-Pad (Atas, Bawah, Kiri, Kanan) */}
-          <div className="flex flex-col items-center pointer-events-auto">
+        <>
+          {/* A. Left 4-Way D-Pad: Dibuat Ekstra Besar & Digeser ke Kanan Sesuai Permintaan */}
+          <div 
+            onContextMenu={(e) => e.preventDefault()}
+            className="fixed bottom-8 sm:bottom-10 md:bottom-12 left-8 sm:left-12 md:left-16 z-30 pointer-events-auto select-none flex flex-col items-center touch-none"
+          >
             {/* Up button */}
             <button
               onPointerDown={() => handleMobileBtnDown('up')}
               onPointerUp={() => handleMobileBtnUp('up')}
               onPointerLeave={() => handleMobileBtnUp('up')}
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
+              onContextMenu={(e) => e.preventDefault()}
+              className="touch-control w-15 h-15 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl sm:rounded-3xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-3 border-slate-500/90 text-slate-100 font-bold text-2xl sm:text-3xl md:text-4xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
               title={hudData.zoneIndex === 7 ? "Bergerak ke Atas (Utara)" : hudData.zoneIndex === 5 ? "Berenang ke Atas" : "Lompat ke Atas"}
             >
               ▲
             </button>
             {/* Left, Center indicator, Right */}
-            <div className="flex items-center gap-1 sm:gap-1.5 my-1">
+            <div className="flex items-center gap-2 sm:gap-2.5 my-1.5 sm:my-2 touch-none">
               <button
                 onPointerDown={() => handleMobileBtnDown('left')}
                 onPointerUp={() => handleMobileBtnUp('left')}
                 onPointerLeave={() => handleMobileBtnUp('left')}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
+                onContextMenu={(e) => e.preventDefault()}
+                className="touch-control w-15 h-15 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl sm:rounded-3xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-3 border-slate-500/90 text-slate-100 font-bold text-2xl sm:text-3xl md:text-4xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
                 title="Bergerak ke Kiri"
               >
                 ◀
               </button>
-              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-700/70 border border-slate-600/80" />
+              <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-slate-700/90 border-2 border-slate-500 shadow-inner" />
               <button
                 onPointerDown={() => handleMobileBtnDown('right')}
                 onPointerUp={() => handleMobileBtnUp('right')}
                 onPointerLeave={() => handleMobileBtnUp('right')}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
+                onContextMenu={(e) => e.preventDefault()}
+                className="touch-control w-15 h-15 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl sm:rounded-3xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-3 border-slate-500/90 text-slate-100 font-bold text-2xl sm:text-3xl md:text-4xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
                 title="Bergerak ke Kanan"
               >
                 ▶
@@ -1658,25 +1693,30 @@ export default function EarthDiveGame() {
               onPointerDown={() => handleMobileBtnDown('down')}
               onPointerUp={() => handleMobileBtnUp('down')}
               onPointerLeave={() => handleMobileBtnUp('down')}
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-blue-600 border-2 border-slate-600 text-slate-100 font-bold text-base flex items-center justify-center touch-none shadow-sm cursor-pointer"
+              onContextMenu={(e) => e.preventDefault()}
+              className="touch-control w-15 h-15 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl sm:rounded-3xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-3 border-slate-500/90 text-slate-100 font-bold text-2xl sm:text-3xl md:text-4xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
               title={hudData.zoneIndex === 7 ? "Bergerak ke Bawah (Selatan)" : hudData.zoneIndex === 5 ? "Berenang ke Bawah / Menyelam" : "Turun / Jongkok"}
             >
               ▼
             </button>
           </div>
 
-          {/* Right Action Buttons: Dedicated Jump (LONCAT) & Interact (AKSI) */}
-          <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
+          {/* B. Right Action Buttons: Dibuat Lebih Besar & Dinaikkan di Atas Tombol Panduan Resqy */}
+          <div 
+            onContextMenu={(e) => e.preventDefault()}
+            className="fixed bottom-16 sm:bottom-20 md:bottom-20 right-4 sm:right-6 md:right-8 z-30 pointer-events-auto select-none flex items-center gap-2.5 sm:gap-3.5 touch-none"
+          >
             {/* Tombol Loncat: Di area transform melompati celah, di area divergent renang naik, di platformer melompat tinggi */}
             <button
               onPointerDown={() => handleMobileBtnDown('jump')}
               onPointerUp={() => handleMobileBtnUp('jump')}
               onPointerLeave={() => handleMobileBtnUp('jump')}
-              className="w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-blue-700 to-blue-900 active:from-blue-600 active:to-blue-800 border-2 border-blue-400 text-blue-100 font-pixel text-[11px] sm:text-xs flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#1e3a8a] active:translate-y-0.5 cursor-pointer"
+              onContextMenu={(e) => e.preventDefault()}
+              className="touch-control w-16 h-14 sm:w-20 sm:h-16 md:w-22 md:h-18 rounded-2xl bg-gradient-to-b from-blue-600 to-blue-800 active:from-blue-500 active:to-blue-700 border-2 sm:border-3 border-blue-400 text-blue-50 font-pixel flex flex-col items-center justify-center touch-none shadow-[0_4px_0_#172554,0_8px_16px_rgba(0,0,0,0.5)] active:translate-y-0.5 cursor-pointer transition-transform select-none"
               title={hudData.zoneIndex === 5 ? "Berenang Naik" : "Lompat"}
             >
-              <span className="text-sm font-bold leading-none">▲</span>
-              <span className="text-[9px] font-pixel-title mt-0.5 tracking-wider">{hudData.zoneIndex === 5 ? "RENANG" : "LONCAT"}</span>
+              <span className="text-base sm:text-lg md:text-xl font-bold leading-none">▲</span>
+              <span className="text-[10px] sm:text-xs md:text-sm font-pixel-title mt-1 tracking-wider">{hudData.zoneIndex === 5 ? "RENANG" : "LONCAT"}</span>
             </button>
 
             {/* Tombol Interaksi [E] */}
@@ -1684,14 +1724,15 @@ export default function EarthDiveGame() {
               onPointerDown={() => handleMobileBtnDown('interact')}
               onPointerUp={() => handleMobileBtnUp('interact')}
               onPointerLeave={() => handleMobileBtnUp('interact')}
-              className="w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 border-amber-400 text-amber-50 font-pixel text-[11px] sm:text-xs flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#78350f] active:translate-y-0.5 cursor-pointer"
+              onContextMenu={(e) => e.preventDefault()}
+              className="touch-control w-16 h-14 sm:w-20 sm:h-16 md:w-22 md:h-18 rounded-2xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 sm:border-3 border-amber-400 text-amber-50 font-pixel flex flex-col items-center justify-center touch-none shadow-[0_4px_0_#451a03,0_8px_16px_rgba(0,0,0,0.5)] active:translate-y-0.5 cursor-pointer transition-transform select-none"
               title="Interaksi (E)"
             >
-              <span className="text-xs font-bold leading-none">[E]</span>
-              <span className="text-[9px] font-pixel-title mt-0.5 tracking-wider">AKSI</span>
+              <span className="text-sm sm:text-base md:text-lg font-bold leading-none">[E]</span>
+              <span className="text-[10px] sm:text-xs md:text-sm font-pixel-title mt-1 tracking-wider">AKSI</span>
             </button>
           </div>
-        </div>
+        </>
       )}
 
       {/* ── 8. MODALS INTEGRATION ── */}
@@ -1937,6 +1978,11 @@ export default function EarthDiveGame() {
         </div>
       )}
 
+      {/* ── PANDUAN INTERAKTIF RESQY (ONBOARDING GAME TUTORIAL) ── */}
+      <ResqyTutorialOverlay
+        tour={TUTORIAL_TOURS.level1}
+        userId={activeUserId}
+      />
     </div>
   );
 }

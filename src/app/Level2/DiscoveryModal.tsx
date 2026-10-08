@@ -4895,9 +4895,6 @@ function VolcanoStatusIllustration() {
                   >
                     {currentLevelData.name}
                   </span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-300 font-sans">
-                    PVMBG TINGKAT {currentLevelData.lvl}
-                  </span>
                 </div>
 
                 {/* Deskripsi Sains Resmi (Font Besar, Kontras Tinggi & Sangat Mudah Dibaca) */}
@@ -5061,6 +5058,9 @@ function VolcanoResponseIllustration() {
       actionLabel: 'PRIORITAS EVAKUASI:',
       actionText:
         'Tinggalkan seluruh zona KRB III seketika dan ikuti arahan relawan menuju barak pengungsian resmi di dataran rendah!',
+      sourceUrl: 'https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif',
+      sourceText: 'Dokumentasi Erupsi Merapi (Kompas.com)',
+      sourceShort: 'Kompas.com',
     },
     lahar: {
       title: 'BANJIR LAHAR HUJAN (LAHAR DINGIN)',
@@ -5088,6 +5088,9 @@ function VolcanoResponseIllustration() {
       actionLabel: 'PROTOKOL BANTARAN SUNGAI:',
       actionText:
         'DILARANG menonton lahar di atas jembatan! Jauhi sempadan dan tebing sungai minimal 300 - 500 meter saat mendung di hulu!',
+      sourceUrl: 'https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang',
+      sourceText: 'Dokumentasi Banjir Lahar Dingin (Detikcom)',
+      sourceShort: 'Detikcom',
     },
     krb: {
       title: 'PETA KAWASAN RAWAN BENCANA (KRB)',
@@ -5115,6 +5118,9 @@ function VolcanoResponseIllustration() {
       actionLabel: 'PEDOMAN TANGGAP ZONA:',
       actionText:
         'Kenali status zona tempat tinggalmu pada peta resmi dan selalu patuhi rambu serta radius aman PVMBG!',
+      sourceUrl: 'https://syawal88.wordpress.com/2010/11/17/dapatkah-gunung-mati-menjadi-gunung-aktif/',
+      sourceText: 'Peta Kawasan Rawan Bencana Merapi (syawal88.wordpress.com)',
+      sourceShort: 'syawal88.wordpress.com',
     },
   };
 
@@ -5198,6 +5204,16 @@ function VolcanoResponseIllustration() {
           <div className="w-full h-full flex items-center justify-center relative overflow-hidden bg-slate-950">
             <img
               src="/images (1).jpeg"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.dataset.tried) {
+                  target.dataset.tried = '1';
+                  target.src = '/wedhus_gembel.jpg';
+                } else if (target.dataset.tried === '1') {
+                  target.dataset.tried = '2';
+                  target.src = '/images (1).jpg';
+                }
+              }}
               alt="Awan Panas Guguran (Wedhus Gembel) Gunung Merapi Asli"
               className={`w-full h-full object-cover rounded-none ${isExpanded ? 'max-h-[75vh]' : ''}`}
             />
@@ -5207,6 +5223,16 @@ function VolcanoResponseIllustration() {
                 <span>● AWAN PANAS GUGURAN (WEDHUS GEMBEL)</span>
               </div>
             )}
+            <a
+              href="https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-rose-500/80 hover:border-rose-400 text-rose-300 hover:text-rose-200 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
+              title="Buka sumber dokumentasi: Kompas.com"
+            >
+              <span>📷 Sumber: Kompas.com ↗</span>
+            </a>
           </div>
         );
 
@@ -5215,6 +5241,13 @@ function VolcanoResponseIllustration() {
           <div className="w-full h-full flex items-center justify-center relative">
             <img
               src="/images.jpeg"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.dataset.tried) {
+                  target.dataset.tried = '1';
+                  target.src = '/lahar_dingin.jpg';
+                }
+              }}
               alt="Banjir Lahar Hujan Dingin Kali Gendol & Woro Merapi"
               className={`w-full h-full object-cover rounded-none ${isExpanded ? 'max-h-[75vh]' : ''}`}
             />
@@ -5224,6 +5257,16 @@ function VolcanoResponseIllustration() {
                 <span>● ALIRAN LAHAR HUJAN DINGIN (ALUR SUNGAI)</span>
               </div>
             )}
+            <a
+              href="https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-sky-400/80 hover:border-sky-300 text-sky-300 hover:text-sky-200 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
+              title="Buka sumber dokumentasi: Detikcom"
+            >
+              <span>📷 Sumber: Detikcom ↗</span>
+            </a>
           </div>
         );
 
@@ -5241,6 +5284,16 @@ function VolcanoResponseIllustration() {
                 <span>● PETA KRB MERAPI (III, II, I)</span>
               </div>
             )}
+            <a
+              href="https://syawal88.wordpress.com/2010/11/17/dapatkah-gunung-mati-menjadi-gunung-aktif/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-amber-400/80 hover:border-amber-300 text-amber-300 hover:text-amber-200 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
+              title="Buka sumber rujukan peta: syawal88.wordpress.com"
+            >
+              <span>📷 Sumber: syawal88.wordpress.com ↗</span>
+            </a>
           </div>
         );
     }
@@ -5307,6 +5360,28 @@ function VolcanoResponseIllustration() {
                 {currentTab.actionText}
               </p>
             </div>
+
+            {/* Kotak Rujukan / Sumber Materi Edukasi */}
+            {(currentTab as any).sourceUrl && (
+              <div className="p-2.5 bg-slate-900/95 border border-slate-800 rounded-lg text-slate-200 mt-2 shadow-sm flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 overflow-hidden">
+                  <span className="text-amber-400 font-pixel text-xs font-bold shrink-0">SUMBER:</span>
+                  <span className="text-xs text-slate-300 font-sans truncate font-medium">
+                    {(currentTab as any).sourceText}
+                  </span>
+                </div>
+                <a
+                  href={(currentTab as any).sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/80 text-amber-300 text-[11px] font-sans font-bold rounded flex items-center gap-1 shrink-0 transition-all cursor-pointer"
+                  title={`Kunjungi rujukan sumber: ${(currentTab as any).sourceUrl}`}
+                >
+                  <span>Buka Tautan</span>
+                  <span className="text-[10px]">↗</span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -5399,10 +5474,23 @@ function VolcanoResponseIllustration() {
               </div>
             </div>
 
-            {/* Footer Petunjuk */}
-            <div className="w-full pt-2.5 flex items-center justify-between text-[11px] text-slate-400 font-sans shrink-0 border-t border-slate-800/80 mt-1">
-              <span>Klik tombol Tutup, tekan tombol [ESC], atau klik di luar kotak untuk kembali</span>
-              <span className="text-amber-400 font-pixel font-bold">RESQ-BOX KESIAPSIAGAAN MERAPI</span>
+            {/* Footer Petunjuk & Sumber Rujukan */}
+            <div className="w-full pt-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-300 font-sans shrink-0 border-t border-slate-800/80 mt-1">
+              <span className="text-slate-400">Klik tombol Tutup, tekan tombol [ESC], atau klik di luar kotak untuk kembali</span>
+              {(currentTab as any).sourceUrl ? (
+                <a
+                  href={(currentTab as any).sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-amber-300 hover:text-amber-200 underline font-medium flex items-center gap-1 shrink-0"
+                >
+                  <span className="font-pixel text-amber-400">Sumber Dokumentasi:</span>
+                  <span>{(currentTab as any).sourceText}</span>
+                  <span className="text-[10px]">↗</span>
+                </a>
+              ) : (
+                <span className="text-amber-400 font-pixel font-bold">RESQ-BOX KESIAPSIAGAAN MERAPI</span>
+              )}
             </div>
           </div>
         </div>
@@ -6508,17 +6596,22 @@ function VolcanoPostLaharIllustration() {
                 <rect x="0" y="0" width="214" height="205" rx="10" fill="none" stroke="#059669" strokeWidth="1.8" />
 
                 {/* Badge Keterangan Foto di Bawah */}
-                <g transform="translate(8, 156)">
-                  <rect x="0" y="0" width="198" height="40" rx="6" fill="#0f172a" fillOpacity="0.92" stroke="#34d399" strokeWidth="1.2" />
-                  <text x="99" y="14" fill="#a7f3d0" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
+                <g transform="translate(8, 146)">
+                  <rect x="0" y="0" width="198" height="52" rx="6" fill="#0f172a" fillOpacity="0.94" stroke="#34d399" strokeWidth="1.2" />
+                  <text x="99" y="13" fill="#a7f3d0" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     BANJIR LAHAR DINGIN MERAPI
                   </text>
-                  <text x="99" y="25" fill="#f1f5f9" fontSize="6.8" textAnchor="middle" fontFamily="sans-serif">
+                  <text x="99" y="24" fill="#f1f5f9" fontSize="6.8" textAnchor="middle" fontFamily="sans-serif">
                     Aliran Debris Lumpur &amp; Batu Andesit
                   </text>
-                  <text x="99" y="34" fill="#38bdf8" fontSize="6.2" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
+                  <text x="99" y="33" fill="#38bdf8" fontSize="6.2" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     Kecepatan Arus: 40 — 60 km/jam
                   </text>
+                  <a href="https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang" target="_blank" rel="noopener noreferrer">
+                    <text x="99" y="44" fill="#fbbf24" fontSize="6" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif" textDecoration="underline" cursor="pointer">
+                      Sumber: Detikcom ↗
+                    </text>
+                  </a>
                 </g>
               </g>
 
@@ -6878,6 +6971,18 @@ function VolcanoPostLaharIllustration() {
               {tabDetails[activeTab].title}
             </h4>
           </div>
+          {activeTab === 'lahar' && (
+            <a
+              href="https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-amber-300 hover:text-amber-200 text-[10px] font-sans font-bold flex items-center gap-1 transition-all"
+              title="Kunjungi sumber dokumentasi Detikcom"
+            >
+              <span>Sumber: Detikcom</span>
+              <span>↗</span>
+            </a>
+          )}
         </div>
         <p className="font-sans text-xs sm:text-[13px] text-slate-200 leading-relaxed font-normal mb-2">
           {tabDetails[activeTab].desc}

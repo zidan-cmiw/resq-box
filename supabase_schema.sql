@@ -67,10 +67,21 @@ CREATE INDEX IF NOT EXISTS idx_students_classroom ON students(classroom_code);
 CREATE INDEX IF NOT EXISTS idx_submissions_classroom ON level_submissions(classroom_code);
 CREATE INDEX IF NOT EXISTS idx_submissions_student ON level_submissions(student_id);
 
-ALTER PUBLICATION supabase_realtime ADD TABLE user_accounts;
-ALTER PUBLICATION supabase_realtime ADD TABLE classrooms;
-ALTER PUBLICATION supabase_realtime ADD TABLE students;
-ALTER PUBLICATION supabase_realtime ADD TABLE level_submissions;
+DO $$
+BEGIN
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE user_accounts;
+  EXCEPTION WHEN duplicate_object THEN END;
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE classrooms;
+  EXCEPTION WHEN duplicate_object THEN END;
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE students;
+  EXCEPTION WHEN duplicate_object THEN END;
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE level_submissions;
+  EXCEPTION WHEN duplicate_object THEN END;
+END $$;
 
 -- ══════════════════════════════════════════════════════════════════════════
 -- 6. ROW LEVEL SECURITY — Membatasi akses berdasarkan operasi
@@ -82,11 +93,15 @@ ALTER TABLE classrooms ENABLE ROW LEVEL SECURITY;
 ALTER TABLE students ENABLE ROW LEVEL SECURITY;
 ALTER TABLE level_submissions ENABLE ROW LEVEL SECURITY;
 
--- Drop old permissive policies
+-- Drop old policies
 DROP POLICY IF EXISTS "Allow All Users" ON user_accounts;
 DROP POLICY IF EXISTS "Allow All Classrooms" ON classrooms;
 DROP POLICY IF EXISTS "Allow All Students" ON students;
 DROP POLICY IF EXISTS "Allow All Submissions" ON level_submissions;
+DROP POLICY IF EXISTS "anon_select_users" ON user_accounts;
+DROP POLICY IF EXISTS "anon_select_classrooms" ON classrooms;
+DROP POLICY IF EXISTS "anon_select_students" ON students;
+DROP POLICY IF EXISTS "anon_select_submissions" ON level_submissions;
 
 -- user_accounts: SELECT tanpa kolom password (handled by RPC)
 CREATE POLICY "anon_select_users" ON user_accounts
@@ -117,7 +132,7 @@ CREATE OR REPLACE FUNCTION verify_login(
 ) RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, extensions
 AS $$
 DECLARE
   v_user user_accounts%ROWTYPE;
@@ -193,7 +208,7 @@ CREATE OR REPLACE FUNCTION register_student_account(
 ) RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, extensions
 AS $$
 DECLARE
   v_user_id UUID;
@@ -248,7 +263,7 @@ CREATE OR REPLACE FUNCTION register_teacher_account(
 ) RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, extensions
 AS $$
 DECLARE
   v_user_id UUID;
@@ -289,7 +304,7 @@ CREATE OR REPLACE FUNCTION create_student_by_teacher(
 ) RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = public, extensions
 AS $$
 DECLARE
   v_user_id UUID;
@@ -328,7 +343,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION rpc_upsert_student(p_data JSONB)
 RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, extensions AS $$
 BEGIN
   INSERT INTO students (id, classroom_code, name, class_name, absent_number, avatar_config, unlocked_level, updated_at)
   VALUES (
@@ -353,7 +368,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION rpc_insert_submission(p_data JSONB)
 RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, extensions AS $$
 BEGIN
   INSERT INTO level_submissions (id, student_id, student_name, classroom_code, level_number, score, details, completed_at)
   VALUES (
@@ -371,7 +386,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION rpc_create_classroom(p_code TEXT, p_name TEXT, p_teacher TEXT, p_school TEXT)
 RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, extensions AS $$
 BEGIN
   INSERT INTO classrooms (code, name, teacher_username, school_name)
   VALUES (p_code, p_name, p_teacher, COALESCE(p_school, 'SMP Negeri 1'));
@@ -380,7 +395,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION rpc_update_classroom_name(p_code TEXT, p_name TEXT)
 RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, extensions AS $$
 BEGIN
   UPDATE classrooms SET name = p_name WHERE code = p_code;
   UPDATE students SET class_name = p_name WHERE classroom_code = p_code;
@@ -389,7 +404,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION rpc_delete_classroom(p_code TEXT)
 RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, extensions AS $$
 BEGIN
   DELETE FROM level_submissions WHERE classroom_code = p_code;
   DELETE FROM students WHERE classroom_code = p_code;
@@ -400,7 +415,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION rpc_delete_student(p_student_id UUID)
 RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, extensions AS $$
 BEGIN
   DELETE FROM level_submissions WHERE student_id = p_student_id::TEXT;
   DELETE FROM students WHERE id = p_student_id;
@@ -410,7 +425,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION rpc_update_teacher_profile(p_username TEXT, p_name TEXT, p_school TEXT)
 RETURNS VOID
-LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, extensions AS $$
 BEGIN
   UPDATE user_accounts
   SET name = COALESCE(p_name, name),

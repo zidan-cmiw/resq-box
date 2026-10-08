@@ -9,6 +9,8 @@ import { retroAudio } from '../../utils/retroAudio';
 import { PixelAvatarRenderer } from '../../components/PixelAvatar/PixelAvatarRenderer';
 import { AvatarCustomizerModal } from '../../components/PixelAvatar/AvatarCustomizerModal';
 import PixelIcon from '../../components/PixelIcon';
+import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
+import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 import {
   getLocalUsers,
   saveLocalUsers,
@@ -32,9 +34,13 @@ export default function Profile() {
   );
   const [absentNumber, setAbsentNumber] = useState(student?.absent_number || currentUser?.absent_number || '1');
   const [schoolName, setSchoolName] = useState(student?.school_name || currentUser?.school_name || 'SMP Negeri 1');
-  const [customAvatar, setCustomAvatar] = useState<CustomAvatarConfig>(
-    student?.custom_avatar || currentUser?.avatar_config || DEFAULT_CUSTOM_AVATAR
-  );
+  const [customAvatar, setCustomAvatar] = useState<CustomAvatarConfig>(() => {
+    const raw = student?.custom_avatar || currentUser?.avatar_config;
+    if (raw && typeof raw === 'object') {
+      return { ...DEFAULT_CUSTOM_AVATAR, ...raw };
+    }
+    return DEFAULT_CUSTOM_AVATAR;
+  });
   
   // Password change states
   const [newPassword, setNewPassword] = useState('');
@@ -304,7 +310,7 @@ export default function Profile() {
         </div>
 
         {/* ── AVATAR CUSTOMIZER CALLOUT BANNER ── */}
-        <div className="bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 border-2 border-amber-950/40 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
+        <div id="tour-profile-avatar" className="bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 border-2 border-amber-950/40 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
           <div className="flex items-center gap-3">
             <PixelAvatarRenderer config={customAvatar} size={48} animate={false} />
             <div>
@@ -333,7 +339,7 @@ export default function Profile() {
         <form onSubmit={handleSave} className="space-y-4">
           
           {/* Form Fields Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div id="tour-profile-fields" className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
               <label className="block text-xs font-bold text-amber-950 uppercase tracking-wider mb-1">
                 Nama Lengkap Siswa:
@@ -392,7 +398,7 @@ export default function Profile() {
           </div>
 
           {/* Ganti Password Akun Siswa */}
-          <div className="p-3.5 bg-amber-900/10 rounded-xl border-2 border-amber-950/30 space-y-2.5">
+          <div id="tour-profile-password" className="p-3.5 bg-amber-900/10 rounded-xl border-2 border-amber-950/30 space-y-2.5">
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-xs font-bold text-amber-950 block">
@@ -442,7 +448,7 @@ export default function Profile() {
           </div>
 
           {/* Tingkat Kesiapsiagaan / Level Progress Banner */}
-          <div className="p-3 bg-amber-950 text-amber-100 rounded-xl border-2 border-amber-950 shadow-[0_3px_0_#231206]">
+          <div id="tour-profile-readiness" className="p-3 bg-amber-950 text-amber-100 rounded-xl border-2 border-amber-950 shadow-[0_3px_0_#231206]">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-pixel-title text-amber-400">
                 TINGKAT KESIAPSIAGAAN:
@@ -498,7 +504,7 @@ export default function Profile() {
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-2 flex flex-col gap-2">
+          <div id="tour-profile-actions" className="pt-2 flex flex-col gap-2">
             <button
               type="submit"
               className="w-full py-3.5 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-pixel-title text-sm tracking-wider border-3 border-amber-950 shadow-[0_5px_0_#231206] transition-transform active:translate-y-1 cursor-pointer flex items-center justify-center gap-2"
@@ -537,6 +543,12 @@ export default function Profile() {
           <span className="text-sm font-bold">Profil Berhasil Disimpan!</span>
         </div>
       )}
+
+      {/* ── RESQY TUTORIAL WALKTHROUGH OVERLAY ── */}
+      <ResqyTutorialOverlay
+        tour={TUTORIAL_TOURS.profile}
+        userId={currentUser?.id}
+      />
     </div>
   );
 }

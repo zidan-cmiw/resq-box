@@ -4,6 +4,8 @@ import { useAuthStore } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
 import { PixelAvatarRenderer } from '../../components/PixelAvatar/PixelAvatarRenderer';
 import PixelIcon from '../../components/PixelIcon';
+import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
+import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 import type {
   StudentDbRecord,
   LevelSubmissionDbRecord,
@@ -175,21 +177,33 @@ export default function TeacherDashboard() {
   const totalStudents = students.length;
 
   // Calculate average class progress across all 3 levels
-  // Lv 1 only = 33%, Lv 2 = 66%, Lv 3 = 100%
   const totalClassProgress = useMemo(() => {
     if (totalStudents === 0) return 0;
     const progressSum = students.reduce((acc, s) => {
-      if (s.unlocked_level >= 3) return acc + 100;
-      if (s.unlocked_level === 2) return acc + 66;
-      return acc + 33;
+      const sub1 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 1);
+      const sub2 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 2);
+      const sub3 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 3);
+
+      const s1 = sub1 ? sub1.score : (s.unlocked_level >= 2 ? 100 : 0);
+      const s2 = sub2 ? sub2.score : (s.unlocked_level >= 3 ? 100 : 0);
+      const s3 = sub3 ? sub3.score : 0;
+
+      const studentScore = (s1 + s2 + s3) / 3;
+      return acc + studentScore;
     }, 0);
     return Math.round(progressSum / totalStudents);
-  }, [students, totalStudents]);
+  }, [students, totalStudents, submissions]);
 
-  const tuntasLv3Count = students.filter((s) => s.unlocked_level >= 3).length;
-  const tuntasLv2Count = students.filter((s) => s.unlocked_level >= 2).length;
+  const tuntasLv3Count = students.filter((s) => {
+    const sub3 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 3);
+    return sub3 && (sub3.score >= 100 || Boolean(sub3.details?.is_completed));
+  }).length;
+  const tuntasLv2Count = students.filter((s) => {
+    const sub2 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 2);
+    return (sub2 && sub2.score >= 100) || s.unlocked_level >= 3;
+  }).length;
 
-  // Average Quiz score across Level 1 & 2
+  // Average Quiz score across Level 1, 2, and 3
   const allGradedSubs = submissions.filter((s) => s.score !== undefined && s.score > 0);
   const avgOverallScore = useMemo(() => {
     if (allGradedSubs.length > 0) {
@@ -210,15 +224,16 @@ export default function TeacherDashboard() {
 
       let matchLevel = true;
       if (filterLevel !== 'all') {
-        const sub1 = submissions.find((sub) => sub.student_id === s.id && sub.level_number === 1);
-        const sub2 = submissions.find((sub) => sub.student_id === s.id && sub.level_number === 2);
+        const sub1 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 1);
+        const sub2 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 2);
+        const sub3 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 3);
         const isLv1Done = (sub1 && sub1.score >= 100) || Boolean(sub1?.details?.is_completed);
         const isLv2Done = (sub2 && sub2.score >= 100) || Boolean(sub2?.details?.is_completed);
 
         let studentActiveLevel = 1;
         if (s.username === 'demo') {
           studentActiveLevel = s.unlocked_level || 3;
-        } else if (isLv2Done || (s.unlocked_level >= 3 && isLv1Done)) {
+        } else if (isLv2Done || (s.unlocked_level >= 3 && isLv1Done) || Boolean(sub3)) {
           studentActiveLevel = 3;
         } else if (isLv1Done || (s.unlocked_level >= 2 && !sub1)) {
           studentActiveLevel = 2;
@@ -347,17 +362,30 @@ export default function TeacherDashboard() {
       'Status Lv 2 (Tektonik)',
       'Skor Lv 2',
       'Status Lv 3 (Simulasi)',
+      'Skor Lv 3',
+      'Misi Lv 3 Tuntas',
       'Waktu Update'
     ];
     const rows = students.map((s) => {
-      const sub1 = submissions.find((sub) => sub.student_id === s.id && sub.level_number === 1);
-      const sub2 = submissions.find((sub) => sub.student_id === s.id && sub.level_number === 2);
+      const sub1 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 1);
+      const sub2 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 2);
+      const sub3 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 3);
+
       const score1 = sub1 ? sub1.score : (s.unlocked_level >= 2 ? 100 : 0);
       const isLv1 = score1 >= 100;
       const isLv1InProgress = !isLv1 && (score1 > 0 || Boolean(sub1?.details?.current_layer));
+
       const score2 = sub2 ? sub2.score : (s.unlocked_level >= 3 ? 100 : 0);
       const isLv2 = score2 >= 100 || Boolean(sub2?.details?.is_completed) || s.unlocked_level >= 3;
       const isLv2InProgress = !isLv2 && (score2 > 0 || Boolean(sub2?.details?.current_mission) || s.unlocked_level >= 2 || isLv1);
+
+      const completedLv3 =
+        sub3?.details?.completed_count ??
+        (Array.isArray(sub3?.details?.completed_missions) ? sub3.details.completed_missions.length : 0);
+      const score3 = sub3 ? sub3.score : (completedLv3 > 0 ? Math.round((completedLv3 / 20) * 100) : 0);
+      const isLv3 = score3 >= 100 || Boolean(sub3?.details?.is_completed) || completedLv3 >= 20;
+      const isLv3InProgress = !isLv3 && (score3 > 0 || completedLv3 > 0);
+
       return [
         s.absent_number,
         `"${s.name}"`,
@@ -368,7 +396,9 @@ export default function TeacherDashboard() {
         score1,
         isLv2 ? 'Tuntas' : (isLv2InProgress ? 'Dalam Progres' : 'Terkunci'),
         score2,
-        isLv2 ? 'Dalam Progres / Aktif' : 'Terkunci',
+        isLv3 ? 'Tuntas' : (isLv3InProgress ? 'Dalam Progres' : (isLv2 ? 'Aktif' : 'Terkunci')),
+        score3,
+        `${completedLv3}/20 Misi`,
         s.updated_at ? new Date(s.updated_at).toLocaleString('id-ID') : '-',
       ];
     });
@@ -386,8 +416,9 @@ export default function TeacherDashboard() {
   // Print Individual Student Report Card
   const handlePrintStudentReport = (student: StudentDbRecord) => {
     retroAudio.playSelect();
-    const sub1 = submissions.find((s) => s.student_id === student.id && s.level_number === 1);
-    const sub2 = submissions.find((s) => s.student_id === student.id && s.level_number === 2);
+    const sub1 = submissions.find((s) => (s.student_id === student.id || s.student_id === student.username) && s.level_number === 1);
+    const sub2 = submissions.find((s) => (s.student_id === student.id || s.student_id === student.username) && s.level_number === 2);
+    const sub3 = submissions.find((s) => (s.student_id === student.id || s.student_id === student.username) && s.level_number === 3);
 
     const scoreLv1 = sub1 ? sub1.score : (student.unlocked_level >= 2 ? 100 : 0);
     const isLv1Done = scoreLv1 >= 100;
@@ -395,10 +426,13 @@ export default function TeacherDashboard() {
     const scoreLv2 = sub2 ? sub2.score : (student.unlocked_level >= 3 ? 100 : 0);
     const isLv2Done = scoreLv2 >= 100 || Boolean(sub2?.details?.is_completed) || student.unlocked_level >= 3;
     const isLv2InProgress = !isLv2Done && (scoreLv2 > 0 || Boolean(sub2?.details?.current_mission) || student.unlocked_level >= 2 || isLv1Done);
-    const isLv3Done = student.unlocked_level > 3;
 
-    const sub3 = submissions.find((s) => s.student_id === student.id && s.level_number === 3);
-    const scoreLv3 = sub3 ? sub3.score : 0;
+    const completedLv3Count =
+      sub3?.details?.completed_count ??
+      (Array.isArray(sub3?.details?.completed_missions) ? sub3.details.completed_missions.length : 0);
+    const scoreLv3 = sub3 ? sub3.score : (completedLv3Count > 0 ? Math.round((completedLv3Count / 20) * 100) : 0);
+    const isLv3Done = scoreLv3 >= 100 || Boolean(sub3?.details?.is_completed) || completedLv3Count >= 20;
+    const isLv3InProgress = !isLv3Done && (scoreLv3 > 0 || completedLv3Count > 0);
 
     const currentLayer1 = sub1?.details?.current_layer || (isLv1Done ? 'Inti Dalam (6.371 km)' : 'Kerak Bumi (0–100 km)');
     const crystals1 = sub1?.details?.crystals ?? (isLv1Done ? 5 : 0);
@@ -477,9 +511,9 @@ export default function TeacherDashboard() {
                 <tr>
                   <td class="text-center">3</td>
                   <td>Level 3: Simulation Game (Digital Twin &amp; Action Lab)</td>
-                  <td class="text-center"><strong>${isLv3Done ? 'TUNTAS' : (isLv2Done ? 'AKTIF' : 'TERKUNCI')}</strong></td>
-                  <td class="text-center"><strong>${isLv3Done ? scoreLv3 + '/100' : '&mdash;'}</strong></td>
-                  <td>Logika sensor aksi &amp; penyelamatan warga</td>
+                  <td class="text-center"><strong>${isLv3Done ? 'TUNTAS' : (isLv3InProgress ? 'PROGRES' : (isLv2Done ? 'AKTIF' : 'TERKUNCI'))}</strong></td>
+                  <td class="text-center"><strong>${isLv3Done ? scoreLv3 + '/100 Poin' : isLv3InProgress ? `${scoreLv3}/100 Poin (${completedLv3Count}/20 Misi)` : (isLv2Done ? '0/100 Poin' : '&mdash;')}</strong></td>
+                  <td>${sub3?.details?.stage_label ? escapeHtml(sub3.details.stage_label) : 'Logika sensor aksi &amp; penyelamatan warga'}</td>
                 </tr>
               </tbody>
             </table>
@@ -574,7 +608,7 @@ export default function TeacherDashboard() {
       </div>
 
       {/* ── TOP NAV HEADER: WARM WOODEN LIGHT STYLE ── */}
-      <header className="relative z-10 w-full max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 mb-4 border-b-4 border-amber-950/40">
+      <header id="tour-teacher-header" className="relative z-10 w-full max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 mb-4 border-b-4 border-amber-950/40">
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
@@ -623,7 +657,7 @@ export default function TeacherDashboard() {
       <main className="relative z-10 w-full max-w-6xl mx-auto space-y-4 flex-1">
 
         {/* ── CLASSROOM SELECTOR TABS ── */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <div id="tour-teacher-classroom" className="flex items-center gap-2 overflow-x-auto pb-1">
           {classrooms.map((cls) => (
             <button
               key={cls.code}
@@ -671,7 +705,7 @@ export default function TeacherDashboard() {
           </div>
 
           {/* Unified Action Buttons */}
-          <div className="flex items-center gap-2 flex-wrap">
+          <div id="tour-teacher-actions" className="flex items-center gap-2 flex-wrap">
             <button
               onClick={handleCopyCode}
               className="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-amber-950 font-pixel-title font-bold text-xs border-2 border-amber-950 shadow-[0_2px_0_#78350f] cursor-pointer flex items-center gap-1.5 transition-transform active:translate-y-0.5"
@@ -703,7 +737,7 @@ export default function TeacherDashboard() {
         </div>
 
         {/* ── KPI TELEMETRY CARDS (OVERALL PROGRESS ACROSS ALL LEVELS) ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        <div id="tour-teacher-kpi" className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           {/* Card 1: Total Siswa */}
           <div className="pixel-wood-board p-4 rounded-2xl shadow-[0_4px_0_#231206] space-y-1" style={{ background: '#fef3c7' }}>
             <span className="text-[10px] font-pixel-title font-bold text-amber-900 uppercase block">
@@ -748,7 +782,7 @@ export default function TeacherDashboard() {
         </div>
 
         {/* ── FILTER & LIVE TABLE SECTION (LIGHT PARCHMENT WOOD BOARD) ── */}
-        <div className="pixel-wood-board p-4 sm:p-5 rounded-2xl shadow-[0_8px_0_#231206] space-y-4" style={{ background: '#fef3c7' }}>
+        <div id="tour-teacher-table" className="pixel-wood-board p-4 sm:p-5 rounded-2xl shadow-[0_8px_0_#231206] space-y-4" style={{ background: '#fef3c7' }}>
 
           {/* Controls Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pb-3 border-b-2 border-amber-950/20">
@@ -819,8 +853,9 @@ export default function TeacherDashboard() {
                   </tr>
                 ) : (
                   filteredStudents.map((s) => {
-                    const sub1 = submissions.find((sub) => sub.student_id === s.id && sub.level_number === 1);
-                    const sub2 = submissions.find((sub) => sub.student_id === s.id && sub.level_number === 2);
+                    const sub1 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 1);
+                    const sub2 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 2);
+                    const sub3 = submissions.find((sub) => (sub.student_id === s.id || sub.student_id === s.username) && sub.level_number === 3);
 
                     // Status Level 1: Hanya dianggap TUNTAS jika nilainya sudah mencapai 100 poin penuh.
                     // Jika nilai belum sampai 100 (misal 20, 40, 60, 80 poin), statusnya PROGRES (bukan TUNTAS).
@@ -829,14 +864,18 @@ export default function TeacherDashboard() {
                     const isLv1InProgress = !isLv1Done && (score1 > 0 || Boolean(sub1?.details?.current_layer));
 
                     const isLv2Done = (sub2 && sub2.score >= 100) || Boolean(sub2?.details?.is_completed) || (s.unlocked_level >= 3 && isLv1Done);
-                    const isLv3Done = s.unlocked_level > 3 && isLv2Done;
-
                     const score2 = sub2 ? sub2.score : (isLv2Done ? 100 : 0);
                     const isLv2InProgress = !isLv2Done && (score2 > 0 || Boolean(sub2?.details?.current_mission) || s.unlocked_level >= 2 || isLv1Done);
 
+                    const completedMissionsCount3 =
+                      sub3?.details?.completed_count ??
+                      (Array.isArray(sub3?.details?.completed_missions) ? sub3.details.completed_missions.length : 0);
+                    const score3 = sub3 ? sub3.score : (completedMissionsCount3 > 0 ? Math.round((completedMissionsCount3 / 20) * 100) : 0);
+                    const isLv3Done = score3 >= 100 || Boolean(sub3?.details?.is_completed) || completedMissionsCount3 >= 20;
+                    const isLv3InProgress = !isLv3Done && (score3 > 0 || completedMissionsCount3 > 0);
+                    const isLv3Unlocked = isLv2Done || s.unlocked_level >= 3 || s.username === 'demo';
+
                     // Hitung level aktif murid yang sesungguhnya:
-                    // Murid TETAP di LEVEL 1 selama Level 1 belum tuntas 100 poin sampai gerbang akhir.
-                    // Baru berubah menjadi LEVEL 2 setelah menyelesaikan seluruh tantangan geologi sampai gerbang akhir terbuka.
                     let studentActiveLevel = 1;
                     if (s.username === 'demo') {
                       studentActiveLevel = s.unlocked_level || 3;
@@ -935,7 +974,11 @@ export default function TeacherDashboard() {
                             <span className="px-2.5 py-1 rounded-md bg-emerald-500 text-slate-950 text-[9px] font-pixel-title border border-emerald-950 font-bold inline-block whitespace-nowrap shadow-[0_1px_0_#064e3b]">
                               [ TUNTAS ]
                             </span>
-                          ) : isLv2Done ? (
+                          ) : isLv3InProgress ? (
+                            <span className="px-2.5 py-1 rounded-md bg-sky-200 text-sky-950 text-[9px] font-pixel-title border border-sky-600 font-bold inline-block whitespace-nowrap shadow-[0_1px_0_#0284c7]">
+                              [ PROGRES ]
+                            </span>
+                          ) : isLv3Unlocked ? (
                             <span className="px-2.5 py-1 rounded-md bg-purple-200 text-purple-950 text-[9px] font-pixel-title border border-purple-500 font-bold inline-block whitespace-nowrap">
                               AKTIF
                             </span>
@@ -945,7 +988,13 @@ export default function TeacherDashboard() {
                             </span>
                           )}
                           <span className="text-[9px] font-pixel block text-amber-900 mt-1 whitespace-nowrap">
-                            {isLv2Done ? 'Lab Simulasi' : '—'}
+                            {isLv3Done
+                              ? `${score3} Poin`
+                              : isLv3InProgress
+                                ? `${score3} Poin (${completedMissionsCount3}/20)`
+                                : isLv3Unlocked
+                                  ? 'Lab Simulasi'
+                                  : '—'}
                           </span>
                         </td>
 
@@ -1331,17 +1380,68 @@ export default function TeacherDashboard() {
 
               {/* Level 3 Detail */}
               {(() => {
-                const isLv3Done = selectedStudentForDetail.unlocked_level > 3;
-                const isLv3Active = selectedStudentForDetail.unlocked_level >= 3;
+                const sub3 = submissions.find(
+                  (s) =>
+                    (s.student_id === selectedStudentForDetail.id ||
+                      s.student_id === selectedStudentForDetail.username) &&
+                    s.level_number === 3
+                );
+                const completedMissionsCount =
+                  sub3?.details?.completed_count ??
+                  (Array.isArray(sub3?.details?.completed_missions)
+                    ? sub3.details.completed_missions.length
+                    : 0);
+                const score3 = sub3 ? sub3.score : (completedMissionsCount > 0 ? Math.round((completedMissionsCount / 20) * 100) : 0);
+                const isLv3Done = score3 >= 100 || Boolean(sub3?.details?.is_completed) || completedMissionsCount >= 20;
+                const isLv3InProgress = !isLv3Done && (score3 > 0 || completedMissionsCount > 0);
+                const isLv3Active = selectedStudentForDetail.unlocked_level >= 3 || selectedStudentForDetail.username === 'demo';
 
                 return (
-                  <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-1 text-xs">
+                  <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-2 text-xs">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-amber-950 font-pixel">Level 3: Simulation Game (Digital Twin Lab)</span>
-                      <span className={`px-2 py-0.5 rounded font-pixel-title text-[9px] font-bold ${isLv3Done ? 'bg-emerald-100 text-emerald-800' : isLv3Active ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-600'}`}>
-                        {isLv3Done ? 'TUNTAS' : isLv3Active ? 'AKTIF DI LAB' : 'TERKUNCI'}
+                      <span
+                        className={`px-2 py-0.5 rounded font-pixel-title text-[9px] font-bold ${
+                          isLv3Done
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : isLv3InProgress
+                              ? 'bg-sky-100 text-sky-800'
+                              : isLv3Active
+                                ? 'bg-purple-100 text-purple-800'
+                                : 'bg-slate-100 text-slate-600'
+                        }`}
+                      >
+                        {isLv3Done ? 'TUNTAS' : isLv3InProgress ? 'PROGRES' : isLv3Active ? 'AKTIF DI LAB' : 'TERKUNCI'}
                       </span>
                     </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-[11px] font-pixel text-amber-900">
+                      <div>
+                        <span className="text-amber-950/60 block text-[9px] uppercase">Nilai Simulasi:</span>
+                        <strong className="text-amber-950 font-pixel-title text-[10px]">
+                          {score3} / 100 Poin
+                        </strong>
+                      </div>
+                      <div>
+                        <span className="text-amber-950/60 block text-[9px] uppercase">Misi Selesai:</span>
+                        <strong className="text-amber-950 font-pixel-title text-[10px]">
+                          {completedMissionsCount} / 20 Misi
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="w-full bg-amber-100 rounded-full h-2 overflow-hidden border border-amber-950/20">
+                      <div
+                        className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(100, Math.round((completedMissionsCount / 20) * 100))}%` }}
+                      />
+                    </div>
+
+                    {sub3?.details?.stage_label && (
+                      <p className="text-[10px] text-amber-800 font-pixel italic">
+                        {sub3.details.stage_label}
+                      </p>
+                    )}
                   </div>
                 );
               })()}
@@ -1497,6 +1597,12 @@ export default function TeacherDashboard() {
           </div>
         </div>
       )}
+
+      {/* ── RESQY TUTORIAL WALKTHROUGH OVERLAY ── */}
+      <ResqyTutorialOverlay
+        tour={TUTORIAL_TOURS.teacher_dashboard}
+        userId={currentUser?.id}
+      />
 
     </div>
   );

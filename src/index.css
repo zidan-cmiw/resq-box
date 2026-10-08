@@ -247,6 +247,57 @@
   box-shadow: 0 0 20px rgba(248, 113, 113, 0.3), 0 0 60px rgba(248, 113, 113, 0.1);
 }
 
+/* ─── Mobile Game Safeguards: Anti-Context-Menu, Anti-Callout & Anti-Double-Tap Zoom ─── */
+html,
+body,
+#root {
+  touch-action: manipulation;
+  -webkit-touch-callout: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+  overscroll-behavior: none;
+}
+
+/* Matikan menu tekan-lama di iOS Safari, Android Chrome/Brave/Edge pada seluruh elemen */
+*,
+*::before,
+*::after {
+  -webkit-touch-callout: none !important;
+}
+
+/* Izinkan seleksi teks hanya untuk formulir input & textarea */
+input,
+textarea {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  touch-action: auto !important;
+}
+
+/* Elemen interaktif game, canvas, tombol, dsb */
+button,
+canvas,
+img,
+svg,
+a {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+/* Kontrol sentuh gameplay (D-Pad, Loncat, Aksi) */
+.touch-control,
+[data-touch-control="true"] {
+  touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
 /* ─── Gradient Backgrounds ─── */
 .gradient-hero {
   background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
@@ -296,9 +347,34 @@
   background: var(--outline);
 }
 
-/* ─── Fix Blockly Ghost Scrollbar ─── */
+/* ─── Fix Blockly Ghost Scrollbar & Z-Index Containment ─── */
 .blocklyFlyout[style*="display: none"]~.blocklyFlyoutScrollbar {
   display: none !important;
+}
+
+/* Isolasi stacking context Blockly agar toolbox dan balok terkendali dan tidak menembus drawer/modal */
+#tour-ws-editor,
+.blockly-editor-container {
+  isolation: isolate;
+  position: relative;
+  z-index: 1;
+}
+
+.blocklyToolboxDiv {
+  z-index: 20 !important;
+}
+
+.blocklyFlyout {
+  z-index: 21 !important;
+}
+
+.blocklyFlyoutScrollbar {
+  z-index: 22 !important;
+}
+
+/* ─── Resqy Tutorial Overlay (Layer Teratas Mutlak di Atas Blockly & 3D Canvas) ─── */
+.resqy-tutorial-overlay {
+  z-index: 999999 !important;
 }
 
 /* ─── Slider Thumb Styling ─── */
@@ -2389,4 +2465,31 @@ html, body {
 
 .custom-pixel-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(245, 158, 11, 0.95);
+}
+
+/* ── Resqy Mascot Micro-Animations ── */
+@keyframes bounceSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.animate-bounce-subtle {
+  animation: bounceSubtle 1.2s ease-in-out infinite;
+}
+
+@keyframes wingLeft {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-8deg); }
+}
+.animate-wing-left {
+  transform-origin: 7px 14px;
+  animation: wingLeft 0.45s ease-in-out infinite;
+}
+
+@keyframes wingRight {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(8deg); }
+}
+.animate-wing-right {
+  transform-origin: 27px 14px;
+  animation: wingRight 0.45s ease-in-out infinite;
 }

@@ -33,6 +33,14 @@ const DEFAULT_PIN_STATES: PinStates = {
 export type SeismicLevel = 0 | 1 | 2 | 3;
 export type VolcanoStatus = 'NORMAL' | 'WASPADA' | 'SIAGA' | 'AWAS';
 export type EruptionType = 'NONE' | 'EKSPLOSIF' | 'EFUSIF';
+export type EvacuationCommand =
+  | 'NONE'
+  | 'KELUAR_BANGUNAN'
+  | 'TANAH_LAPANG'
+  | 'KRB2'
+  | 'KRB1'
+  | 'LUAR_MAP'
+  | 'JAUHI_SUNGAI';
 
 interface RuntimeState {
   isRunning: boolean;
@@ -50,10 +58,13 @@ interface RuntimeState {
   eruptionType: EruptionType;
   selectedRoute: string;
   activeShelter: string;
+  activeEvacCommand: EvacuationCommand;
   oledMessage: string;
   locationContext: string;
   rgbColor: 'green' | 'yellow' | 'orange' | 'red' | 'off';
   mistActive: boolean;
+  isMapExpanded: boolean;
+  disasterResetCounter: number;
 
   setRunning: (running: boolean) => void;
   setSensorValue: (pin: keyof SensorValues, value: number | boolean) => void;
@@ -61,6 +72,9 @@ interface RuntimeState {
   clearLogs: () => void;
   toggleSensorPanel: () => void;
   toggleConsole: () => void;
+  toggleMapExpanded: () => void;
+  triggerDisasterReset: () => void;
+
   setPinState: (pin: string, state: string) => void;
   resetPinStates: () => void;
 
@@ -68,6 +82,7 @@ interface RuntimeState {
   setVolcanoSimulation: (status: VolcanoStatus, type?: EruptionType) => void;
   setEvacuationRoute: (route: string) => void;
   setActiveShelter: (shelter: string) => void;
+  setEvacuationCommand: (cmd: EvacuationCommand) => void;
   setOledMessage: (msg: string) => void;
   setLocationContext: (loc: string) => void;
   setRgbColor: (color: 'green' | 'yellow' | 'orange' | 'red' | 'off') => void;
@@ -95,12 +110,16 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
   eruptionType: 'NONE',
   selectedRoute: 'Belum Ditentukan',
   activeShelter: 'Belum Diaktifkan',
+  activeEvacCommand: 'NONE',
   oledMessage: 'SISTEM SIAP: MENUNGGU...',
   locationContext: 'Pemukiman Warga',
   rgbColor: 'green',
   mistActive: false,
+  isMapExpanded: false,
+  disasterResetCounter: 0,
 
   setRunning: (running) => set({ isRunning: running }),
+  triggerDisasterReset: () => set((s) => ({ disasterResetCounter: s.disasterResetCounter + 1 })),
 
   setSensorValue: (pin, value) =>
     set((s) => ({
@@ -120,6 +139,8 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
   clearLogs: () => set({ consoleLogs: [] }),
   toggleSensorPanel: () => set((s) => ({ showSensorPanel: !s.showSensorPanel })),
   toggleConsole: () => set((s) => ({ showConsole: !s.showConsole })),
+  toggleMapExpanded: () => set((s) => ({ isMapExpanded: !s.isMapExpanded })),
+
 
   setPinState: (pin, state) => set((s) => {
     const next = { ...s.pinStates } as any;
@@ -156,11 +177,45 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
     let temp = 27.5;
     let rgb: 'green' | 'yellow' | 'orange' | 'red' | 'off' = 'green';
     let mist = false;
+    let seismic: SeismicLevel = s.seismicLevel;
+    let richter = s.richterScale;
+    let a1Val = s.sensorValues.A1;
 
-    if (status === 'NORMAL') { temp = 27.5; rgb = 'green'; mist = false; }
-    else if (status === 'WASPADA') { temp = 43.8; rgb = 'yellow'; mist = false; }
-    else if (status === 'SIAGA') { temp = 68.4; rgb = 'orange'; mist = type === 'EFUSIF'; }
-    else if (status === 'AWAS') { temp = 94.6; rgb = 'red'; mist = true; }
+    if (status === 'NORMAL') {
+      temp = 27.5;
+      rgb = 'green';
+      mist = false;
+      seismic = 0;
+      richter = 0.0;
+      a1Val = 0;
+    } else if (status === 'WASPADA') {
+      temp = 43.8;
+      rgb = 'yellow';
+      mist = false;
+    } else if (status === 'SIAGA') {
+      temp = 68.4;
+      rgb = 'orange';
+      mist = false;
+      // Saat SIAGA: fase kesiapsiagaan, belum meletus dan belum ada gempa
+      seismic = 0;
+      richter = 0.0;
+      a1Val = 0;
+    } else if (status === 'AWAS') {
+      temp = 94.6;
+      rgb = 'red';
+      mist = true;
+      if (type === 'EFUSIF') {
+        // Erupsi Efusif: Gempa vulkanik tremor ringan (Level 1)
+        seismic = 1;
+        richter = 2.4;
+        a1Val = 210;
+      } else {
+        // Erupsi Eksplosif: Disertai gempa tremor vulkanik kuat terus-menerus
+        seismic = 3;
+        richter = 6.2;
+        a1Val = 850;
+      }
+    }
 
     const rawA2 = Math.round((temp / 100) * 1023);
 
@@ -170,12 +225,15 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
       eruptionType: type,
       rgbColor: rgb,
       mistActive: mist,
-      sensorValues: { ...s.sensorValues, A2: rawA2 }
+      seismicLevel: seismic,
+      richterScale: richter,
+      sensorValues: { ...s.sensorValues, A1: a1Val, A2: rawA2 }
     };
   }),
 
   setEvacuationRoute: (route) => set({ selectedRoute: route }),
   setActiveShelter: (shelter) => set({ activeShelter: shelter }),
+  setEvacuationCommand: (cmd) => set({ activeEvacCommand: cmd }),
   setOledMessage: (msg) => set({ oledMessage: msg }),
   setLocationContext: (loc) => set({ locationContext: loc }),
   setRgbColor: (color) => set({ rgbColor: color }),
@@ -190,6 +248,7 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
     eruptionType: 'NONE',
     selectedRoute: 'Belum Ditentukan',
     activeShelter: 'Belum Diaktifkan',
+    activeEvacCommand: 'NONE',
     oledMessage: 'SISTEM SIAP: MENUNGGU...',
     rgbColor: 'green',
     mistActive: false,
