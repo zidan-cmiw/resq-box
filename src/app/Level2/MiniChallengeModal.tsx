@@ -53,10 +53,10 @@ export default function MiniChallengeModal({
               <PixelIcon name="key" size={22} className="text-[#92400e]" />
             </div>
             <div>
-              <span className="text-xs sm:text-sm text-[#b45309] uppercase tracking-widest block font-bold">
+              <span className="text-[13px] sm:text-[15px] text-[#b45309] uppercase tracking-widest block font-bold">
                 GERBANG TANTANGAN TEKTONIK
               </span>
-              <h2 className="text-sm sm:text-base md:text-xl text-[#451a03] font-pixel-title font-bold">
+              <h2 className="text-[15px] sm:text-base md:text-xl text-[#451a03] font-pixel-title font-bold">
                 {challenge.title}
               </h2>
             </div>
@@ -66,7 +66,7 @@ export default function MiniChallengeModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-sm flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
           >
             <PixelIcon name="cross" size={14} />
           </button>
@@ -104,10 +104,10 @@ export default function MiniChallengeModal({
                 disabled={isAnswered}
                 className={`w-full p-3.5 sm:p-4.5 rounded-xl border-2 sm:border-3 text-left transition-all cursor-pointer flex items-start gap-3 ${optStyle}`}
               >
-                <span className="font-pixel-title text-xs sm:text-sm shrink-0 uppercase mt-0.5 font-bold">
+                <span className="font-pixel-title text-[13px] sm:text-[15px] shrink-0 uppercase mt-0.5 font-bold">
                   [{opt.id}]
                 </span>
-                <span className="font-sans text-sm sm:text-base md:text-lg font-medium leading-relaxed">{opt.text}</span>
+                <span className="font-sans text-[15px] sm:text-base md:text-lg font-medium leading-relaxed">{opt.text}</span>
               </button>
             );
           })}
@@ -116,17 +116,17 @@ export default function MiniChallengeModal({
         {/* Result Explanation */}
         {isAnswered && (
           <div
-            className={`p-4 sm:p-5 rounded-2xl border-3 mb-4.5 text-sm sm:text-base font-sans leading-relaxed animate-fadeIn ${
+            className={`p-4 sm:p-5 rounded-2xl border-3 mb-4.5 text-[15px] sm:text-base font-sans leading-relaxed animate-fadeIn ${
               isCorrect
                 ? 'bg-emerald-50 border-emerald-500 text-emerald-950'
                 : 'bg-rose-50 border-rose-500 text-rose-950'
             }`}
           >
-            <span className="font-pixel-title text-xs sm:text-sm font-bold flex items-center gap-2 mb-2">
+            <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold flex items-center gap-2 mb-2">
               <PixelIcon name={isCorrect ? 'unlock' : 'alert'} size={16} />
               <span>{isCorrect ? 'KUNCI GERBANG TERBUKA!' : 'JAWABAN BELUM TEPAT'}</span>
             </span>
-            <p className="font-sans text-sm sm:text-base font-medium leading-relaxed">{challenge.explanation}</p>
+            <p className="font-sans text-[15px] sm:text-base font-medium leading-relaxed">{challenge.explanation}</p>
           </div>
         )}
 
@@ -136,7 +136,7 @@ export default function MiniChallengeModal({
             <button
               onClick={handleSubmit}
               disabled={!selectedOptId}
-              className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs sm:text-sm md:text-base font-pixel-title font-bold border-3 border-[#451a03] shadow-[0_4px_0_#231206] cursor-pointer active:translate-y-0.5"
+              className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-[13px] sm:text-[15px] md:text-base font-pixel-title font-bold border-3 border-[#451a03] shadow-[0_4px_0_#231206] cursor-pointer active:translate-y-0.5"
             >
               BUKA GERBANG TEKTONIK ➔
             </button>
@@ -148,7 +148,7 @@ export default function MiniChallengeModal({
                     retroAudio.playSelect();
                     onSuccess();
                   }}
-                  className="px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm md:text-base font-pixel-title font-bold border-3 border-emerald-950 shadow-[0_4px_0_#064e3b] cursor-pointer active:translate-y-0.5 flex items-center gap-2"
+                  className="px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[13px] sm:text-[15px] md:text-base font-pixel-title font-bold border-3 border-emerald-950 shadow-[0_4px_0_#064e3b] cursor-pointer active:translate-y-0.5 flex items-center gap-2"
                 >
                   <span>LANJUT KE AREA BERIKUTNYA</span>
                   <span>&gt;</span>
@@ -159,7 +159,7 @@ export default function MiniChallengeModal({
                     setIsAnswered(false);
                     setSelectedOptId(null);
                   }}
-                  className="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs sm:text-sm md:text-base font-pixel-title font-bold border-2 border-amber-950 shadow-[0_3px_0_#451a03] cursor-pointer active:translate-y-0.5"
+                  className="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-[13px] sm:text-[15px] md:text-base font-pixel-title font-bold border-2 border-amber-950 shadow-[0_3px_0_#451a03] cursor-pointer active:translate-y-0.5"
                 >
                   COBA LAGI ↺
                 </button>

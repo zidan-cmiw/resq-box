@@ -91,25 +91,25 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
       {/* Header Bar */}
       <div className="flex items-center justify-between bg-amber-100/90 border-2 border-amber-900/40 p-3 rounded-xl">
         <div className="flex items-center gap-2">
-          <span className="w-6 h-6 rounded-full bg-amber-900 text-amber-100 flex items-center justify-center font-pixel-title text-xs font-bold">
+          <span className="w-6 h-6 rounded-full bg-amber-900 text-amber-100 flex items-center justify-center font-pixel-title text-[13px] font-bold">
             4
           </span>
-          <span className="font-pixel-title text-xs md:text-sm font-bold text-amber-950">
+          <span className="font-pixel-title text-[13px] md:text-[15px] font-bold text-amber-950">
             MISI 4: AFTER DISASTER (TANGGAP DARURAT & PEMULIHAN)
           </span>
         </div>
-        <span className="px-3 py-1 rounded bg-slate-800 text-amber-300 font-pixel-title text-[10px]">
+        <span className="px-3 py-1 rounded bg-slate-800 text-amber-300 font-pixel-title text-[13.5px]">
           SOP EVAKUASI PASCA BENCANA
         </span>
       </div>
 
       {/* Situational Context Card */}
       <div className="bg-amber-950/5 border-2 border-amber-900/30 rounded-2xl p-4">
-        <h3 className="text-xs md:text-sm font-bold text-amber-950 mb-1 flex items-center gap-2">
+        <h3 className="text-[13px] md:text-[15px] font-bold text-amber-950 mb-1 flex items-center gap-2">
           <PixelIcon name="clipboard" size={18} />
           <span>Guncangan Utama Telah Mereda: Apa yang Harus Dilakukan?</span>
         </h3>
-        <p className="text-[11px] text-amber-900 leading-relaxed">
+        <p className="text-[14.5px] text-amber-900 leading-relaxed">
           Setelah gempa utama atau luncuran awan panas mereda, ancaman belum sepenuhnya selesai! Terdapat bahaya
           gempa susulan (<em>aftershocks</em>), jalanan tertimbun reruntuhan genteng, dan kebocoran instalasi.
           Susunlah <strong>4 Prioritas Tanggap Darurat</strong> berikut dari yang paling mendesak (Prioritas 1)
@@ -129,17 +129,17 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
               className="p-3.5 rounded-xl border-2 border-dashed border-amber-900/40 bg-amber-100/60 flex flex-col justify-between min-h-[160px]"
             >
               <div>
-                <span className="text-[10px] font-pixel-title font-bold text-amber-900 block mb-2">
+                <span className="text-[13.5px] font-pixel-title font-bold text-amber-900 block mb-2">
                   PRIORITAS #{pNum}
                 </span>
 
                 {stepData ? (
                   <div className="p-3 rounded-lg bg-amber-900 text-amber-100 border border-amber-950 shadow">
-                    <span className="font-bold text-xs block mb-1">{stepData.title}</span>
-                    <p className="text-[10px] text-amber-200/90 leading-tight">{stepData.desc}</p>
+                    <span className="font-bold text-[13px] block mb-1">{stepData.title}</span>
+                    <p className="text-[13.5px] text-amber-200/90 leading-tight">{stepData.desc}</p>
                   </div>
                 ) : (
-                  <span className="text-[10px] text-amber-800/60 italic block text-center py-6">
+                  <span className="text-[13.5px] text-amber-800/60 italic block text-center py-6">
                     [Belum Terisi]
                   </span>
                 )}
@@ -148,7 +148,7 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
               {stepData && (
                 <button
                   onClick={() => handleSelectStep(stepData.id)}
-                  className="text-[9px] text-rose-700 underline mt-2 self-center cursor-pointer"
+                  className="text-[12.5px] text-rose-700 underline mt-2 self-center cursor-pointer"
                 >
                   Batal Pilih
                 </button>
@@ -160,7 +160,7 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
 
       {/* Selectable Step Options */}
       <div className="p-4 rounded-xl bg-slate-900 border-2 border-amber-900/40 space-y-3">
-        <span className="text-xs font-bold text-amber-300 block">
+        <span className="text-[13px] font-bold text-amber-300 block">
           KLIK KARTU SESUAI URUTAN PRIORITAS PENYELAMATAN:
         </span>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
@@ -183,16 +183,16 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-amber-200 block mb-0.5">
+                    <span className="font-bold text-[13px] text-amber-200 block mb-0.5">
                       {step.title}
                     </span>
                     {isPicked && (
-                      <span className="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-bold text-[9px]">
+                      <span className="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-bold text-[12.5px]">
                         Urutan #{pickedIndex + 1}
                       </span>
                     )}
                   </div>
-                  <p className="text-[10px] text-slate-300">{step.desc}</p>
+                  <p className="text-[13.5px] text-slate-300">{step.desc}</p>
                 </div>
               </button>
             );
@@ -203,7 +203,7 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
       {/* Feedback Message */}
       {feedback && (
         <div
-          className={`p-3.5 rounded-xl border text-xs leading-relaxed ${
+          className={`p-3.5 rounded-xl border text-[13px] leading-relaxed ${
             isSuccess
               ? 'bg-emerald-100 border-emerald-500 text-emerald-950'
               : 'bg-rose-100 border-rose-500 text-rose-950'
@@ -221,20 +221,20 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
             setPlacedStepIds([]);
             setFeedback(null);
           }}
-          className="px-4 py-2 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 text-xs font-pixel-title font-bold border border-amber-900/30 cursor-pointer"
+          className="px-4 py-2 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 text-[13px] font-pixel-title font-bold border border-amber-900/30 cursor-pointer"
         >
           RESET PILIHAN
         </button>
 
         {isSuccess || isAlreadyCompleted ? (
-          <span className="px-4 py-2 rounded-xl bg-emerald-100 border border-emerald-500 text-emerald-800 text-xs font-bold">
+          <span className="px-4 py-2 rounded-xl bg-emerald-100 border border-emerald-500 text-emerald-800 text-[13px] font-bold">
             ✓ MISI 4 SELESAI (+20 RP)
           </span>
         ) : (
           <button
             onClick={handleVerifyPriority}
             disabled={placedStepIds.length !== 4}
-            className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-pixel-title font-bold border-2 border-amber-950 shadow-[0_4px_0_#78350f] cursor-pointer active:translate-y-0.5"
+            className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-[13px] font-pixel-title font-bold border-2 border-amber-950 shadow-[0_4px_0_#78350f] cursor-pointer active:translate-y-0.5"
           >
             VALIDASI PRIORITAS EVAKUASI
           </button>

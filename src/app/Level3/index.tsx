@@ -290,7 +290,7 @@ export default function Level3() {
             retroAudio.playSelect();
             navigate('/');
           }}
-          className="pixel-btn-wood-compact text-xs sm:text-sm py-2 px-3.5 text-amber-100 hover:text-white flex items-center gap-2 shadow-2xl backdrop-blur-md cursor-pointer font-bold"
+          className="pixel-btn-wood-compact text-[13px] sm:text-[15px] py-2 px-3.5 text-amber-100 hover:text-white flex items-center gap-2 shadow-2xl backdrop-blur-md cursor-pointer font-bold"
         >
           <PixelIcon name="chevron-left" size={16} />
           <span>MENU UTAMA</span>
@@ -301,7 +301,7 @@ export default function Level3() {
       <div className="fixed top-3 right-3 z-40 flex items-center gap-2 pointer-events-auto">
         {/* Progress pill (SS 3 Warm Parchment) */}
         <div className="bg-[#fffbeb]/95 border-2 border-[#b45309] px-3.5 py-1.5 rounded-xl shadow-2xl backdrop-blur-md hidden md:flex items-center gap-2.5">
-          <span className="text-xs sm:text-sm font-bold text-[#78350f] font-pixel">
+          <span className="text-[13px] sm:text-[15px] font-bold text-[#78350f] font-pixel">
             TUNTAS: {totalCompleted} / {MISSIONS.length}
           </span>
           <div className="w-24 h-2.5 bg-[#fefce8] rounded-full border border-[#b45309] overflow-hidden">
@@ -310,7 +310,7 @@ export default function Level3() {
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <span className="text-xs font-extrabold text-[#15803d] font-pixel">{progressPercent}%</span>
+          <span className="text-[13px] font-extrabold text-[#15803d] font-pixel">{progressPercent}%</span>
         </div>
 
         {/* My Projects */}
@@ -320,7 +320,7 @@ export default function Level3() {
             retroAudio.playSelect();
             setShowProjectsModal(true);
           }}
-          className="pixel-btn-wood-compact text-xs sm:text-sm py-2 px-3 text-amber-100 hover:text-white flex items-center gap-1.5 shadow-2xl backdrop-blur-md cursor-pointer font-bold font-pixel"
+          className="pixel-btn-wood-compact text-[13px] sm:text-[15px] py-2 px-3 text-amber-100 hover:text-white flex items-center gap-1.5 shadow-2xl backdrop-blur-md cursor-pointer font-bold font-pixel"
           title="Proyek Saya (Sandbox)"
         >
           <PixelIcon name="folder" size={16} />
@@ -940,7 +940,7 @@ export default function Level3() {
                 {isCurrentActive && (
                   <div className="absolute -top-20 z-30 flex flex-col items-center animate-bounce pointer-events-none font-['Plus_Jakarta_Sans',sans-serif]">
                     {/* Speech bubble */}
-                    <div className="bg-[#fef3c7] text-[#451a03] px-3 py-1 rounded-full text-xs font-black shadow-md border-2 border-[#b45309] whitespace-nowrap mb-1">
+                    <div className="bg-[#fef3c7] text-[#451a03] px-3 py-1 rounded-full text-[13px] font-black shadow-md border-2 border-[#b45309] whitespace-nowrap mb-1">
                       {student?.name && student.name !== '-' ? `Ayo ${student.name.split(' ')[0]}!` : 'Misi Aktif!'}
                     </div>
 
@@ -1002,15 +1002,15 @@ export default function Level3() {
                     }`}
                 >
                   <div
-                    className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 whitespace-nowrap backdrop-blur-md transition-all ${theme.plaque}`}
+                    className={`px-3.5 py-1.5 rounded-xl text-[13px] sm:text-[15px] font-bold flex items-center gap-2 whitespace-nowrap backdrop-blur-md transition-all ${theme.plaque}`}
                   >
                     {/* Level Number Badge */}
-                    <span className={`px-2 py-0.5 rounded text-[11px] font-black tracking-wider ${theme.badge}`}>
+                    <span className={`px-2 py-0.5 rounded text-[14.5px] font-black tracking-wider ${theme.badge}`}>
                       LV.{node.levelNumber}
                     </span>
 
                     {/* Mission Title */}
-                    <span className="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-xs sm:text-sm tracking-tight text-[#291305]">
+                    <span className="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[13px] sm:text-[15px] tracking-tight text-[#291305]">
                       {node.mission.title}
                     </span>
 
@@ -1020,7 +1020,7 @@ export default function Level3() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     ) : isCurrentActive ? (
-                      <span className="text-[#b45309] text-[10px] font-black tracking-wider uppercase animate-pulse">AKTIF</span>
+                      <span className="text-[#b45309] text-[13.5px] font-black tracking-wider uppercase animate-pulse">AKTIF</span>
                     ) : null}
                   </div>
                 </div>
@@ -1063,10 +1063,10 @@ export default function Level3() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs sm:text-sm text-[#b45309] uppercase tracking-widest font-black">
+                    <span className="text-[13px] sm:text-[15px] text-[#b45309] uppercase tracking-widest font-black">
                       {CATEGORIES.find((c) => c.id === selectedMission.category)?.title || 'MISI MITIGASI'}
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-[#b45309] text-white text-[10px] font-black tracking-wider">
+                    <span className="px-2 py-0.5 rounded bg-[#b45309] text-white text-[13.5px] font-black tracking-wider">
                       LEVEL {pathNodes.find((n) => n.mission.id === selectedMission.id)?.levelNumber}
                     </span>
                   </div>
@@ -1081,7 +1081,7 @@ export default function Level3() {
                   retroAudio.playSelect();
                   setSelectedMission(null);
                 }}
-                className="w-10 h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-bold text-sm flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
+                className="w-10 h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-bold text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
               >
                 <PixelIcon name="cross" size={14} />
               </button>
@@ -1089,20 +1089,20 @@ export default function Level3() {
 
             {/* Scenario Story */}
             <div className="p-4 sm:p-5 rounded-2xl bg-amber-100/90 border-3 border-[#b45309]/40 shadow-xs">
-              <span className="text-xs sm:text-sm font-black text-[#78350f] uppercase tracking-wider mb-1.5 flex items-center gap-2">
+              <span className="text-[13px] sm:text-[15px] font-black text-[#78350f] uppercase tracking-wider mb-1.5 flex items-center gap-2">
                 SITUASI KEBENCANAAN
               </span>
-              <p className="text-sm sm:text-base font-semibold leading-relaxed text-[#291305]">
+              <p className="text-[15px] sm:text-base font-semibold leading-relaxed text-[#291305]">
                 {selectedMission.scenario}
               </p>
             </div>
 
             {/* Mission Objective */}
             <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border-3 border-emerald-600/70 shadow-xs">
-              <span className="text-xs sm:text-sm font-black text-emerald-800 uppercase tracking-wider mb-1.5 flex items-center gap-2">
+              <span className="text-[13px] sm:text-[15px] font-black text-emerald-800 uppercase tracking-wider mb-1.5 flex items-center gap-2">
                 TARGET MISI PENYELAMATAN
               </span>
-              <p className="text-sm sm:text-base font-bold leading-relaxed text-emerald-950">
+              <p className="text-[15px] sm:text-base font-bold leading-relaxed text-emerald-950">
                 {selectedMission.objective}
               </p>
             </div>
@@ -1110,17 +1110,17 @@ export default function Level3() {
             {/* Mission Block Location Guide */}
             {selectedMission.hint && (
               <div className="p-4 sm:p-5 rounded-2xl bg-cyan-50 border-3 border-cyan-600/70 shadow-xs">
-                <span className="text-xs sm:text-sm font-black text-cyan-800 uppercase tracking-wider mb-1.5 flex items-center gap-2">
+                <span className="text-[13px] sm:text-[15px] font-black text-cyan-800 uppercase tracking-wider mb-1.5 flex items-center gap-2">
                   PANDUAN KATEGORI BLOK
                 </span>
-                <p className="text-sm sm:text-base font-semibold leading-relaxed text-cyan-950">
+                <p className="text-[15px] sm:text-base font-semibold leading-relaxed text-cyan-950">
                   {selectedMission.hint}
                 </p>
               </div>
             )}
 
             {/* Steps Count & Status */}
-            <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-[#78350f] px-1">
+            <div className="flex items-center justify-between text-[13px] sm:text-[15px] font-bold text-[#78350f] px-1">
               <span className="flex items-center gap-1.5">
                 {selectedMission.steps.length} Langkah Terpandu
               </span>
@@ -1142,14 +1142,14 @@ export default function Level3() {
                   retroAudio.playSelect();
                   setSelectedMission(null);
                 }}
-                className="flex-1 py-3 px-5 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 font-bold text-sm border-2 border-[#451a03] shadow-[0_3px_0_#451a03] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+                className="flex-1 py-3 px-5 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 font-bold text-[15px] border-2 border-[#451a03] shadow-[0_3px_0_#451a03] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
               >
                 KEMBALI
               </button>
 
               <button
                 onClick={() => handleStartMission(selectedMission.id)}
-                className="flex-[2] py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm border-2 border-[#064e3b] shadow-[0_4px_0_#064e3b] active:translate-y-1 active:shadow-none transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="flex-[2] py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[15px] border-2 border-[#064e3b] shadow-[0_4px_0_#064e3b] active:translate-y-1 active:shadow-none transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <span>{completedMissionIds.includes(selectedMission.id) ? 'ULANGI MISI' : 'MULAI MISI SEKARANG'}</span>
               </button>
@@ -1170,19 +1170,19 @@ export default function Level3() {
                 Ulangi Misi Ini?
               </h3>
             </div>
-            <p className="text-sm text-[#291305] leading-relaxed">
+            <p className="text-[15px] text-[#291305] leading-relaxed">
               Kamu sudah menuntaskan misi ini. Jika kamu memilih ulangi, draft blok kode lama akan dibersihkan agar kamu bisa berlatih kembali dari awal.
             </p>
             <div className="flex gap-3 pt-2">
               <button
                 onClick={() => setConfirmReplayMissionId(null)}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 text-sm font-bold border-2 border-stone-400 shadow-[0_2px_0_#78716c] cursor-pointer"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 text-[15px] font-bold border-2 border-stone-400 shadow-[0_2px_0_#78716c] cursor-pointer"
               >
                 BATAL
               </button>
               <button
                 onClick={() => handleConfirmReplay(confirmReplayMissionId)}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-white text-sm font-black border-2 border-[#451a03] shadow-[0_3px_0_#451a03] cursor-pointer"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-white text-[15px] font-black border-2 border-[#451a03] shadow-[0_3px_0_#451a03] cursor-pointer"
               >
                 YA, ULANGI
               </button>
@@ -1205,14 +1205,14 @@ export default function Level3() {
                   <h2 className="text-lg sm:text-xl font-bold text-[#451a03]">
                     Panduan Praktik Kelompok (LKPD)
                   </h2>
-                  <p className="text-xs sm:text-sm text-[#78350f]">
+                  <p className="text-[13px] sm:text-[15px] text-[#78350f]">
                     Pedoman Praktik Digital Twin & Diorama Fisik Smart Education Board
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setShowLkpdModal(false)}
-                className="w-10 h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-bold text-sm flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
+                className="w-10 h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-bold text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
               >
                 <PixelIcon name="cross" size={14} />
               </button>
@@ -1221,30 +1221,30 @@ export default function Level3() {
             {/* 3 Step Instructions */}
             <div className="flex flex-col gap-3 py-1">
               <div className="p-4 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-[#b45309]/40 flex gap-3.5 items-start shadow-xs">
-                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#b45309] text-white font-black text-sm shrink-0 shadow-sm">
+                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#b45309] text-white font-black text-[15px] shrink-0 shadow-sm">
                   1
                 </span>
-                <div className="text-sm text-[#291305] leading-relaxed">
+                <div className="text-[15px] text-[#291305] leading-relaxed">
                   <strong className="text-[#451a03] block mb-1 text-base font-bold">Pelajari Skenario & Masalah Bencana</strong>
                   Peserta didik dalam kelompok membaca situasi bencana di LKPD dan merancang urutan logika respon keselamatan darurat bersama tim.
                 </div>
               </div>
 
               <div className="p-4 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-[#b45309]/40 flex gap-3.5 items-start shadow-xs">
-                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#b45309] text-white font-black text-sm shrink-0 shadow-sm">
+                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#b45309] text-white font-black text-[15px] shrink-0 shadow-sm">
                   2
                 </span>
-                <div className="text-sm text-[#291305] leading-relaxed">
+                <div className="text-[15px] text-[#291305] leading-relaxed">
                   <strong className="text-[#451a03] block mb-1 text-base font-bold">Susun Blok Logika & Uji Digital Twin</strong>
                   Rangkai blok aksi-reaksi mitigasi di Action Lab. Amati respon simulator <strong>Digital Twin</strong> (pergerakan warga evakuasi) saat logika dijalankan.
                 </div>
               </div>
 
               <div className="p-4 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-[#b45309]/40 flex gap-3.5 items-start shadow-xs">
-                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#b45309] text-white font-black text-sm shrink-0 shadow-sm">
+                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#b45309] text-white font-black text-[15px] shrink-0 shadow-sm">
                   3
                 </span>
-                <div className="text-sm text-[#291305] leading-relaxed">
+                <div className="text-[15px] text-[#291305] leading-relaxed">
                   <strong className="text-[#451a03] block mb-1 text-base font-bold">Uji Diorama Fisik & Refleksi Mitigasi</strong>
                   Hubungkan ke <strong>diorama fisik</strong> via WiFi atau USB untuk menyalakan sirine dan lampu fisik, lalu diskusikan efektivitas keselamatan warga.
                 </div>
@@ -1253,7 +1253,7 @@ export default function Level3() {
 
             <button
               onClick={() => setShowLkpdModal(false)}
-              className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base border-3 border-[#064e3b] shadow-[0_4px_0_#064e3b] mt-1 cursor-pointer active:translate-y-1 active:shadow-none transition-all"
+              className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[15px] sm:text-base border-3 border-[#064e3b] shadow-[0_4px_0_#064e3b] mt-1 cursor-pointer active:translate-y-1 active:shadow-none transition-all"
             >
               MENGERTI & KEMBALI KE PETA
             </button>
@@ -1275,7 +1275,7 @@ export default function Level3() {
                   <h3 className="text-lg sm:text-xl md:text-2xl font-black text-[#260c02] font-pixel-title leading-tight">
                     Proyek Saya (Sandbox)
                   </h3>
-                  <p className="text-xs sm:text-sm md:text-base text-[#381504] font-extrabold mt-0.5">
+                  <p className="text-[13px] sm:text-[15px] md:text-base text-[#381504] font-extrabold mt-0.5">
                     Rancang logika mitigasi bebas tanpa batasan skenario misi
                   </p>
                 </div>
@@ -1283,7 +1283,7 @@ export default function Level3() {
 
               <button
                 onClick={() => setShowProjectsModal(false)}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 border-2 border-amber-950 font-bold text-sm flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#231206] shrink-0"
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 border-2 border-amber-950 font-bold text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#231206] shrink-0"
                 title="Tutup Modal"
               >
                 <PixelIcon name="cross" size={16} />
@@ -1293,7 +1293,7 @@ export default function Level3() {
             {/* Create Project Button */}
             <button
               onClick={() => setShowNewProjectModal(true)}
-              className="py-3.5 sm:py-4 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base md:text-lg flex items-center justify-center gap-2.5 border-2 border-[#064e3b] shadow-[0_4px_0_#064e3b] cursor-pointer transition-all active:translate-y-0.5"
+              className="py-3.5 sm:py-4 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[15px] sm:text-base md:text-lg flex items-center justify-center gap-2.5 border-2 border-[#064e3b] shadow-[0_4px_0_#064e3b] cursor-pointer transition-all active:translate-y-0.5"
             >
               <PixelIcon name="hammer" size={20} />
               <span>BUAT PROYEK BARU</span>
@@ -1302,7 +1302,7 @@ export default function Level3() {
             {/* Project List */}
             <div className="max-h-72 overflow-y-auto flex flex-col gap-3 pr-1">
               {projects.length === 0 ? (
-                <div className="p-6 sm:p-8 text-center text-sm sm:text-base md:text-lg text-[#1e0a00] font-extrabold bg-[#fef08a] rounded-2xl border-2 sm:border-3 border-amber-900/40 shadow-sm leading-relaxed">
+                <div className="p-6 sm:p-8 text-center text-[15px] sm:text-base md:text-lg text-[#1e0a00] font-extrabold bg-[#fef08a] rounded-2xl border-2 sm:border-3 border-amber-900/40 shadow-sm leading-relaxed">
                   Belum ada proyek sandbox. Klik tombol hijau di atas untuk membuat proyek barumu!
                 </div>
               ) : (
@@ -1312,8 +1312,8 @@ export default function Level3() {
                     className="p-4 rounded-xl bg-amber-50 border-2 border-amber-900/40 flex items-center justify-between gap-3 hover:border-emerald-600 transition-colors shadow-sm"
                   >
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm sm:text-base md:text-lg font-black text-[#1e0a00] truncate">{proj.name}</h4>
-                      <p className="text-xs sm:text-sm text-amber-900 font-bold mt-0.5">
+                      <h4 className="text-[15px] sm:text-base md:text-lg font-black text-[#1e0a00] truncate">{proj.name}</h4>
+                      <p className="text-[13px] sm:text-[15px] text-amber-900 font-bold mt-0.5">
                         Diperbarui: {new Date(proj.updatedAt).toLocaleDateString('id-ID')}
                       </p>
                     </div>
@@ -1324,7 +1324,7 @@ export default function Level3() {
                           setShowProjectsModal(false);
                           navigate(`/workspace?project=${proj.id}`);
                         }}
-                        className="py-2 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm md:text-base font-black shadow-[0_2px_0_#064e3b] cursor-pointer active:translate-y-0.5"
+                        className="py-2 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[13px] sm:text-[15px] md:text-base font-black shadow-[0_2px_0_#064e3b] cursor-pointer active:translate-y-0.5"
                       >
                         BUKA
                       </button>
@@ -1346,7 +1346,7 @@ export default function Level3() {
 
             <button
               onClick={() => setShowProjectsModal(false)}
-              className="w-full py-3 sm:py-3.5 rounded-xl bg-[#853507] hover:bg-[#6c2803] text-white font-pixel-title font-bold text-xs sm:text-sm md:text-base border-2 border-[#451a03] shadow-[0_3px_0_#2b0d00] cursor-pointer active:translate-y-0.5"
+              className="w-full py-3 sm:py-3.5 rounded-xl bg-[#853507] hover:bg-[#6c2803] text-white font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base border-2 border-[#451a03] shadow-[0_3px_0_#2b0d00] cursor-pointer active:translate-y-0.5"
             >
               TUTUP
             </button>
@@ -1361,7 +1361,7 @@ export default function Level3() {
             <h3 className="font-pixel-title font-black text-base sm:text-lg md:text-xl text-[#260c02]">
               Buat Proyek Baru
             </h3>
-            <p className="text-xs sm:text-sm text-[#381504] font-extrabold -mt-2">
+            <p className="text-[13px] sm:text-[15px] text-[#381504] font-extrabold -mt-2">
               Beri nama proyek kreasi logika mitigasi mandirimu:
             </p>
             <input
@@ -1371,7 +1371,7 @@ export default function Level3() {
               onChange={(e) => setNewProjectName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCreateNewProject()}
               placeholder="Contoh: Alarm Banjir Lahar Kali Kuning..."
-              className="w-full px-4 py-3 rounded-xl bg-white border-2 border-amber-900/40 text-[#1a0800] text-sm sm:text-base font-bold outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+              className="w-full px-4 py-3 rounded-xl bg-white border-2 border-amber-900/40 text-[#1a0800] text-[15px] sm:text-base font-bold outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
             />
             <div className="flex gap-3 pt-1">
               <button
@@ -1379,14 +1379,14 @@ export default function Level3() {
                   setShowNewProjectModal(false);
                   setNewProjectName('');
                 }}
-                className="flex-1 py-3 px-4 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-900 text-xs sm:text-sm md:text-base font-bold border-2 border-stone-400 cursor-pointer active:translate-y-0.5"
+                className="flex-1 py-3 px-4 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-900 text-[13px] sm:text-[15px] md:text-base font-bold border-2 border-stone-400 cursor-pointer active:translate-y-0.5"
               >
                 BATAL
               </button>
               <button
                 disabled={!newProjectName.trim()}
                 onClick={handleCreateNewProject}
-                className="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white text-xs sm:text-sm md:text-base font-black border-2 border-[#064e3b] shadow-[0_3px_0_#064e3b] cursor-pointer active:translate-y-0.5"
+                className="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white text-[13px] sm:text-[15px] md:text-base font-black border-2 border-[#064e3b] shadow-[0_3px_0_#064e3b] cursor-pointer active:translate-y-0.5"
               >
                 BUAT SEKARANG
               </button>
@@ -1402,13 +1402,13 @@ export default function Level3() {
             <h3 className="font-pixel-title font-black text-base sm:text-lg md:text-xl text-rose-800">
               Hapus Proyek Ini?
             </h3>
-            <p className="text-sm sm:text-base text-[#1e0a00] font-bold leading-relaxed">
+            <p className="text-[15px] sm:text-base text-[#1e0a00] font-bold leading-relaxed">
               Proyek dan seluruh blok rancangan mitigasi di dalamnya akan dihapus secara permanen.
             </p>
             <div className="flex gap-3 pt-2">
               <button
                 onClick={() => setConfirmDeleteProjectId(null)}
-                className="flex-1 py-3 px-4 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-900 text-xs sm:text-sm md:text-base font-bold border-2 border-stone-400 cursor-pointer active:translate-y-0.5"
+                className="flex-1 py-3 px-4 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-900 text-[13px] sm:text-[15px] md:text-base font-bold border-2 border-stone-400 cursor-pointer active:translate-y-0.5"
               >
                 BATAL
               </button>
@@ -1417,7 +1417,7 @@ export default function Level3() {
                   deleteProject(confirmDeleteProjectId);
                   setConfirmDeleteProjectId(null);
                 }}
-                className="flex-1 py-3 px-4 rounded-xl bg-rose-700 hover:bg-rose-600 text-white text-xs sm:text-sm md:text-base font-black border-2 border-rose-950 shadow-[0_3px_0_#4c0519] cursor-pointer active:translate-y-0.5"
+                className="flex-1 py-3 px-4 rounded-xl bg-rose-700 hover:bg-rose-600 text-white text-[13px] sm:text-[15px] md:text-base font-black border-2 border-rose-950 shadow-[0_3px_0_#4c0519] cursor-pointer active:translate-y-0.5"
               >
                 YA, HAPUS
               </button>

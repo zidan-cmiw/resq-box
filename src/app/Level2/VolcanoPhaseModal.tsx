@@ -135,7 +135,7 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
 
         {/* 1. Header Pill */}
         <div className="text-center">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-[#78350f] border-2 border-[#451a03] text-amber-50 font-pixel-title text-xs sm:text-sm font-bold tracking-wider uppercase shadow-sm">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-[#78350f] border-2 border-[#451a03] text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider uppercase shadow-sm">
             {data.pill}
           </span>
         </div>
@@ -145,7 +145,7 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
           <h2 className="font-pixel-title text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-wide text-[#451a03] drop-shadow-sm">
             {data.title}
           </h2>
-          <p className="font-pixel text-xs sm:text-sm md:text-base font-bold text-[#78350f] mt-1.5 uppercase tracking-wide">
+          <p className="font-pixel text-[13px] sm:text-[15px] md:text-base font-bold text-[#78350f] mt-1.5 uppercase tracking-wide">
             {data.subtitle}
           </p>
         </div>
@@ -155,12 +155,12 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
           {/* Karakteristik / Tanda-Tanda Geologis */}
           <div className="bg-[#fef9c3] border-3 border-[#b45309]/60 rounded-2xl p-4 sm:p-5 shadow-sm text-[#291305]">
             <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-xs sm:text-sm font-bold tracking-wider shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
                 <PixelIcon name="volcano" size={17} className="text-amber-200 shrink-0" />
                 <span>CIRI &amp; INDIKATOR GEOLOGIS</span>
               </span>
             </div>
-            <ul className="grid grid-cols-1 gap-2.5 font-sans text-sm sm:text-base md:text-[17px] text-[#291305] font-semibold leading-relaxed">
+            <ul className="grid grid-cols-1 gap-2.5 font-sans text-[15px] sm:text-base md:text-[19px] text-[#291305] font-semibold leading-relaxed">
               {data.characteristics.map((c, idx) => (
                 <li key={idx} className="flex items-start gap-3">
                   <span className="text-[#b45309] shrink-0 font-black text-lg select-none leading-none mt-0.5">•</span>
@@ -173,12 +173,12 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
           {/* Apa Yang Harus Dilakukan? (Tindakan Mitigasi Berlatar Hangat) */}
           <div className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-2xl p-4 sm:p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#9a3412] text-amber-50 font-pixel-title text-xs sm:text-sm font-bold tracking-wider shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#9a3412] text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
                 <PixelIcon name="alert" size={17} className="text-amber-200 shrink-0" />
                 <span>{data.actionTitle.toUpperCase()}</span>
               </span>
             </div>
-            <ul className="grid grid-cols-1 gap-2.5 font-sans text-sm sm:text-base md:text-[17px] font-bold leading-snug">
+            <ul className="grid grid-cols-1 gap-2.5 font-sans text-[15px] sm:text-base md:text-[19px] font-bold leading-snug">
               {data.actionItems.map((act, idx) => (
                 <li
                   key={idx}
@@ -196,7 +196,7 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
         <div className="flex justify-center pt-1.5 border-t-2 border-[#b45309]/30">
           <button
             onClick={handleProceed}
-            className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-sm sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center justify-center gap-2.5 transition-all"
+            className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center justify-center gap-2.5 transition-all"
           >
             <PixelIcon name="check" size={18} className="text-amber-200" />
             <span>{data.buttonText}</span>

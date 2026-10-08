@@ -1,7 +1,7 @@
 // ── src/app/Level2/missions/Mission3During.tsx ────────────────────────
 // MISI 3: DURING DISASTER (Saat Bencana Terjadi - Tactical Crisis Decisions)
 // Fitur:
-// - 🚨 DISASTER ALERT: Efek guncangan layar (screen shake), sirine darurat, timer countdown 30s
+// - DISASTER ALERT: Efek guncangan layar (screen shake), sirine darurat, timer countdown 30s
 // - Pengambilan keputusan taktis cepat (Gempa 6.5 SR & Erupsi Abu Vulkanik)
 // - Sistem konsekuensi visual: Jumlah Warga Selamat (+40 Warga) & Resilience Points
 
@@ -153,15 +153,15 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
       <div className="flex items-center justify-between bg-rose-600 text-white p-3 rounded-xl border-2 border-rose-950 shadow-[0_4px_0_#4c0519] animate-pulse">
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-2xl animate-spin">e911_emergency</span>
-          <span className="font-pixel-title text-xs md:text-sm font-bold tracking-wider">
+          <span className="font-pixel-title text-[13px] md:text-[15px] font-bold tracking-wider">
             SITUASI DARURAT: SKENARIO {currentScenarioIdx + 1} / {CRISIS_SCENARIOS.length}
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <div className="px-2.5 py-1 rounded bg-black/40 border border-white/30 text-xs font-mono font-bold">
+          <div className="px-2.5 py-1 rounded bg-black/40 border border-white/30 text-[13px] font-mono font-bold">
             WAKTU REAKSI: <span className={timeLeft <= 10 ? 'text-yellow-300 animate-ping' : ''}>{timeLeft}s</span>
           </div>
-          <div className="px-2.5 py-1 rounded bg-emerald-900 border border-emerald-400 text-xs font-pixel-title font-bold">
+          <div className="px-2.5 py-1 rounded bg-emerald-900 border border-emerald-400 text-[13px] font-pixel-title font-bold">
             WARGA SELAMAT: {citizensSaved}
           </div>
         </div>
@@ -178,19 +178,19 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
           <div className="w-8 h-8 rounded-lg bg-rose-900/60 border border-rose-500 flex items-center justify-center">
             <PixelIcon name={scenario.disasterType === 'gempa' ? 'earthquake' : 'volcano'} size={18} />
           </div>
-          <h3 className="font-pixel-title text-xs md:text-sm font-bold text-rose-400">
+          <h3 className="font-pixel-title text-[13px] md:text-[15px] font-bold text-rose-400">
             {scenario.title}
           </h3>
         </div>
 
         {/* Narrative Box */}
-        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 leading-relaxed mb-5">
+        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-[13px] text-slate-200 leading-relaxed mb-5">
           {scenario.situation}
         </div>
 
         {/* Tactical Choice Options */}
         <div className="space-y-3">
-          <span className="text-[11px] font-bold text-amber-300 block">
+          <span className="text-[14.5px] font-bold text-amber-300 block">
             PILIH KEPUTUSAN TAKTIS SEGERA:
           </span>
           <div className="grid grid-cols-1 gap-2.5">
@@ -211,9 +211,9 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
                       : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-200 active:translate-y-0.5'
                   }`}
                 >
-                  <span className="text-xs font-bold leading-relaxed">{opt.text}</span>
+                  <span className="text-[13px] font-bold leading-relaxed">{opt.text}</span>
                   {isSelected && (
-                    <span className="text-sm font-bold ml-2">
+                    <span className="text-[15px] font-bold ml-2">
                       {opt.isCorrect ? '✓ TEPAT (+RP)' : '✗ BERISIKO'}
                     </span>
                   )}
@@ -233,25 +233,25 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-pixel-title text-xs font-bold">
+              <span className="font-pixel-title text-[13px] font-bold">
                 {decisionFeedback.isCorrect ? '★ KEPUTUSAN EFEKTIF TERCAPAI!' : 'KONSEKUENSI KEPUTUSAN BERISIKO:'}
               </span>
             </div>
-            <p className="text-xs leading-relaxed">{decisionFeedback.text}</p>
+            <p className="text-[13px] leading-relaxed">{decisionFeedback.text}</p>
           </div>
         )}
       </div>
 
       {/* ── Footer Navigation ── */}
       <div className="flex items-center justify-between pt-2">
-        <span className="text-xs font-bold text-amber-900">
+        <span className="text-[13px] font-bold text-amber-900">
           Status Analis: {currentScenarioIdx + 1} dari {CRISIS_SCENARIOS.length} Skenario Darurat
         </span>
 
         {decisionFeedback && (
           <button
             onClick={handleNextScenario}
-            className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-pixel-title font-bold border-2 border-amber-950 shadow-[0_4px_0_#78350f] cursor-pointer flex items-center gap-2 active:translate-y-0.5"
+            className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-[13px] font-pixel-title font-bold border-2 border-amber-950 shadow-[0_4px_0_#78350f] cursor-pointer flex items-center gap-2 active:translate-y-0.5"
           >
             <span>
               {currentScenarioIdx < CRISIS_SCENARIOS.length - 1
@@ -263,7 +263,7 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
         )}
 
         {isAlreadyCompleted && !decisionFeedback && (
-          <span className="px-4 py-2 rounded-xl bg-emerald-100 border border-emerald-500 text-emerald-800 text-xs font-bold">
+          <span className="px-4 py-2 rounded-xl bg-emerald-100 border border-emerald-500 text-emerald-800 text-[13px] font-bold">
             ✓ MISI 3 SELESAI (+20 RP)
           </span>
         )}

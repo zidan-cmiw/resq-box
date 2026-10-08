@@ -263,7 +263,7 @@ export default function Credits() {
               <h1 className="font-pixel-title text-base md:text-lg font-bold text-amber-950">
                 TIM PENGEMBANG RESQ-BOX
               </h1>
-              <p className="text-xs text-amber-900/80 font-pixel">
+              <p className="text-[13px] text-amber-900/80 font-pixel">
                 LIDM 2026 • Divisi Inovasi Pembelajaran Digital Pendidikan (IPDP)
               </p>
             </div>
@@ -294,13 +294,13 @@ export default function Credits() {
                 </span>
               </div>
               <div className="min-w-0">
-                <h4 className="font-pixel font-bold text-xs text-amber-950 truncate">
+                <h4 className="font-pixel font-bold text-[13px] text-amber-950 truncate">
                   {member.name}
                 </h4>
-                <p className="text-[11px] font-bold text-amber-900 mt-0.5">
+                <p className="text-[14.5px] font-bold text-amber-900 mt-0.5">
                   {member.role}
                 </p>
-                <span className="inline-block mt-1 px-2 py-0.5 rounded bg-amber-900/10 text-amber-950 border border-amber-900/20 text-[10px] font-pixel">
+                <span className="inline-block mt-1 px-2 py-0.5 rounded bg-amber-900/10 text-amber-950 border border-amber-900/20 text-[13.5px] font-pixel">
                   {member.division}
                 </span>
               </div>
@@ -316,13 +316,13 @@ export default function Credits() {
             </span>
           </div>
           <div>
-            <span className="inline-block px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-pixel-title font-bold uppercase mb-1">
+            <span className="inline-block px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[12.5px] font-pixel-title font-bold uppercase mb-1">
               Dosen Pembimbing
             </span>
-            <h3 className="font-pixel font-bold text-sm text-white">
+            <h3 className="font-pixel font-bold text-[15px] text-white">
               Rizki Arumning Tyas
             </h3>
-            <p className="text-xs text-amber-200 mt-0.5 leading-relaxed font-pixel">
+            <p className="text-[13px] text-amber-200 mt-0.5 leading-relaxed font-pixel">
               Dosen Pendamping Inovasi Pembelajaran Digital Mitigasi Bencana • Universitas Negeri Yogyakarta
             </p>
           </div>
@@ -334,7 +334,7 @@ export default function Credits() {
             retroAudio.playSelect();
             navigate('/');
           }}
-          className="pixel-btn-wood-plank !w-full !h-12 !text-xs !bg-amber-800 !text-white cursor-pointer"
+          className="pixel-btn-wood-plank !w-full !h-12 !text-[13px] !bg-amber-800 !text-white cursor-pointer"
         >
           ⯇ KEMBALI KE MENU UTAMA
         </button>

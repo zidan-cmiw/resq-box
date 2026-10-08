@@ -168,11 +168,11 @@ export default function TelemetrySidePanel() {
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-[#10b981] animate-ping" />
           <div>
-            <div className="font-pixel text-xs sm:text-[13px] font-bold text-[#451a03] leading-tight">Telemetri Digital Twin</div>
-            <div className="text-[10px] text-[#78350f] font-semibold leading-none mt-0.5">Monitoring Merapi & EWS</div>
+            <div className="font-pixel text-[13px] sm:text-[16px] font-bold text-[#451a03] leading-tight">Telemetri Digital Twin</div>
+            <div className="text-[13.5px] text-[#78350f] font-semibold leading-none mt-0.5">Monitoring Merapi & EWS</div>
           </div>
         </div>
-        <div className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#fde68a] text-[#78350f] border border-[#d97706] shadow-xs">
+        <div className="text-[13.5px] font-mono font-bold px-2 py-0.5 rounded bg-[#fde68a] text-[#78350f] border border-[#d97706] shadow-xs">
           STATUS AKTIF
         </div>
       </div>
@@ -182,8 +182,8 @@ export default function TelemetrySidePanel() {
         {/* 1. SEISMOGRAF DINAMIS */}
         <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-bold text-[#451a03] font-pixel">Seismograf Dinamis</span>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${quakeBadge.bg}`}>
+            <span className="text-[13px] font-bold text-[#451a03] font-pixel">Seismograf Dinamis</span>
+            <span className={`text-[13.5px] font-bold px-2 py-0.5 rounded border ${quakeBadge.bg}`}>
               {quakeBadge.label}
             </span>
           </div>
@@ -192,9 +192,9 @@ export default function TelemetrySidePanel() {
             <canvas ref={canvasRef} width={260} height={52} className="w-full h-[52px] block" />
           </div>
 
-          <div className="flex justify-between items-center bg-[#fdf2e9] px-2.5 py-1 rounded border border-[#ea580c]/30 text-xs">
-            <span className="text-xs text-[#78350f] font-semibold">Skala Richter (ML):</span>
-            <span className="font-mono font-bold text-xs sm:text-sm text-[#9a3412]">
+          <div className="flex justify-between items-center bg-[#fdf2e9] px-2.5 py-1 rounded border border-[#ea580c]/30 text-[13px]">
+            <span className="text-[13px] text-[#78350f] font-semibold">Skala Richter (ML):</span>
+            <span className="font-mono font-bold text-[13px] sm:text-[15px] text-[#9a3412]">
               {richterScale.toFixed(1)} SR
             </span>
           </div>
@@ -203,17 +203,17 @@ export default function TelemetrySidePanel() {
         {/* 2. SUHU & STATUS GUNUNG MERAPI */}
         <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-bold text-[#451a03] font-pixel">Kawah Gunung Merapi</span>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${volcanoBadge.bg}`}>
+            <span className="text-[13px] font-bold text-[#451a03] font-pixel">Kawah Gunung Merapi</span>
+            <span className={`text-[13.5px] font-bold px-2 py-0.5 rounded border ${volcanoBadge.bg}`}>
               {volcanoBadge.label}
             </span>
           </div>
 
           {/* Suhu Gauge Bar */}
           <div className="mb-2">
-            <div className="flex justify-between text-xs font-semibold mb-1">
+            <div className="flex justify-between text-[13px] font-semibold mb-1">
               <span className="text-[#78350f]">Suhu Termal Kawah:</span>
-              <span className="font-mono font-bold text-red-600 text-xs">{volcanoTemp.toFixed(1)}°C</span>
+              <span className="font-mono font-bold text-red-600 text-[13px]">{volcanoTemp.toFixed(1)}°C</span>
             </div>
             <div className="w-full bg-[#e2e8f0] h-2.5 rounded-full overflow-hidden border border-stone-300">
               <div
@@ -224,7 +224,7 @@ export default function TelemetrySidePanel() {
                 }}
               />
             </div>
-            <div className="flex justify-between text-[10px] text-stone-600 font-bold mt-1">
+            <div className="flex justify-between text-[13.5px] text-stone-600 font-bold mt-1">
               <span>20°C (Normal)</span>
               <span>50°C</span>
               <span>100°C (Kritis)</span>
@@ -233,7 +233,7 @@ export default function TelemetrySidePanel() {
 
           {/* Tipe Erupsi */}
           {eruptionType !== 'NONE' && (
-            <div className="flex items-center justify-between bg-amber-50 px-2 py-1.5 rounded border border-amber-300 text-[10.5px]">
+            <div className="flex items-center justify-between bg-amber-50 px-2 py-1.5 rounded border border-amber-300 text-[14px]">
               <span className="font-bold text-amber-900">Tipe Letusan Aktif:</span>
               <span className="font-mono font-bold px-2 py-0.5 bg-amber-200 text-amber-950 rounded">
                 {eruptionType === 'EKSPLOSIF' ? 'EKSPLOSIF (Kolom Abu)' : 'EFUSIF (Lava Pijar)'}
@@ -244,11 +244,11 @@ export default function TelemetrySidePanel() {
 
         {/* 3. AKTIVITAS HARDWARE & AKTUATOR */}
         <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
-          <div className="text-xs font-bold text-[#451a03] font-pixel mb-2">Status Aktuator Diorama</div>
+          <div className="text-[13px] font-bold text-[#451a03] font-pixel mb-2">Status Aktuator Diorama</div>
           <div className="grid grid-cols-2 gap-2.5 text-center">
             {/* Lampu Status Terang Benderang */}
             <div className="p-2 rounded-xl bg-[#fffbeb] border-2 border-stone-300/80 flex flex-col items-center justify-between gap-1.5 shadow-xs">
-              <span className="text-[10px] text-[#78350f] font-bold">Lampu Status</span>
+              <span className="text-[13.5px] text-[#78350f] font-bold">Lampu Status</span>
               <div className="relative flex items-center justify-center p-1.5 rounded-full bg-stone-900/90 border border-stone-600 shadow-inner">
                 <span
                   className={`w-5 h-5 rounded-full block border border-white/60 transition-all duration-300 ${lightConfig.pulse ? 'animate-pulse' : ''}`}
@@ -258,14 +258,14 @@ export default function TelemetrySidePanel() {
                   }}
                 />
               </div>
-              <span className="text-[9.5px] font-extrabold tracking-tight" style={{ color: lightConfig.color }}>
+              <span className="text-[13px] font-extrabold tracking-tight" style={{ color: lightConfig.color }}>
                 {lightConfig.label}
               </span>
             </div>
 
             {/* Sirine EWS */}
             <div className="p-2 rounded-xl bg-[#fffbeb] border-2 border-stone-300/80 flex flex-col items-center justify-between gap-1.5 shadow-xs">
-              <span className="text-[10px] text-[#78350f] font-bold">Sirine EWS</span>
+              <span className="text-[13.5px] text-[#78350f] font-bold">Sirine EWS</span>
               <div className="relative flex items-center justify-center p-1.5 rounded-full bg-stone-900/90 border border-stone-600 shadow-inner">
                 <span
                   className={`w-5 h-5 rounded-full block border border-white/60 transition-all duration-300 ${
@@ -285,7 +285,7 @@ export default function TelemetrySidePanel() {
                 />
               </div>
               <span
-                className={`text-[9.5px] font-extrabold tracking-tight ${
+                className={`text-[13px] font-extrabold tracking-tight ${
                   pinStates.BUZZER ? 'text-amber-600' : 'text-stone-500'
                 }`}
               >
@@ -297,30 +297,30 @@ export default function TelemetrySidePanel() {
 
         {/* 4. PENENTUAN JALUR EVAKUASI & POSKO */}
         <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
-          <div className="text-xs font-bold text-[#451a03] font-pixel mb-1.5">Manajemen Evakuasi Warga</div>
-          <div className="space-y-1.5 text-xs">
+          <div className="text-[13px] font-bold text-[#451a03] font-pixel mb-1.5">Manajemen Evakuasi Warga</div>
+          <div className="space-y-1.5 text-[13px]">
             <div className="flex justify-between items-center px-2 py-1 rounded bg-[#fffbeb] border border-stone-200">
-              <span className="font-semibold text-[#78350f] text-[10.5px]">Rute Evakuasi:</span>
-              <span className={`font-bold px-2 py-0.5 rounded text-[10.5px] truncate max-w-[145px] ${
+              <span className="font-semibold text-[#78350f] text-[14px]">Rute Evakuasi:</span>
+              <span className={`font-bold px-2 py-0.5 rounded text-[14px] truncate max-w-[145px] ${
                 isLembahSungai ? 'bg-red-200 text-red-900 border border-red-400' : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
               }`}>
                 {selectedRoute}
               </span>
             </div>
             <div className="flex justify-between items-center px-2 py-1 rounded bg-[#fffbeb] border border-stone-200">
-              <span className="font-semibold text-[#78350f] text-[10.5px]">Posko Penampungan:</span>
-              <span className="font-bold text-stone-800 text-[10.5px] truncate max-w-[145px]">{activeShelter}</span>
+              <span className="font-semibold text-[#78350f] text-[14px]">Posko Penampungan:</span>
+              <span className="font-bold text-stone-800 text-[14px] truncate max-w-[145px]">{activeShelter}</span>
             </div>
           </div>
         </div>
 
         {/* 5. MONITOR LAYAR INFORMASI PUBLIK */}
-        <div className="bg-[#0b132b] p-2 rounded-xl border border-[#1c2541] shadow-inner font-mono text-[10px] text-[#48cae4]">
-          <div className="text-[9px] text-[#64dfdf] mb-1 flex items-center justify-between border-b border-[#1c2541] pb-1">
+        <div className="bg-[#0b132b] p-2 rounded-xl border border-[#1c2541] shadow-inner font-mono text-[13.5px] text-[#48cae4]">
+          <div className="text-[12.5px] text-[#64dfdf] mb-1 flex items-center justify-between border-b border-[#1c2541] pb-1">
             <span className="font-bold">Layar Informasi Publik</span>
             <span>Siaga Digital</span>
           </div>
-          <div className="py-1 px-2 bg-[#000814] rounded text-emerald-400 font-bold text-[11px] truncate">
+          <div className="py-1 px-2 bg-[#000814] rounded text-emerald-400 font-bold text-[14.5px] truncate">
             {oledMessage}
           </div>
         </div>

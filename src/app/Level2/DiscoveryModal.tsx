@@ -46,7 +46,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-sm sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_#451a03] shrink-0 transition-colors"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_#451a03] shrink-0 transition-colors"
             title="Tutup"
           >
             ✕
@@ -61,7 +61,7 @@ export default function DiscoveryModal({
         {/* ── PENJELASAN MATERI (RINGKAS & MUDAH DIPAHAMI UNTUK SMP) ── */}
         <div className="bg-[#fef9c3] p-3.5 sm:p-5 md:p-6 rounded-2xl border-3 border-[#b45309]/60 shadow-md text-[#291305] space-y-2 sm:space-y-3">
           <div className="flex items-center gap-2 mb-0.5">
-            <span className="px-2.5 py-1 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-xs sm:text-sm font-bold tracking-wider shadow-sm">
+            <span className="px-2.5 py-1 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
               MATERI PEMBELAJARAN
             </span>
           </div>
@@ -74,7 +74,7 @@ export default function DiscoveryModal({
             <div className="mt-3 pt-3.5 border-t-2 border-[#b45309]/30 space-y-3">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
-                <span className="font-pixel-title text-sm sm:text-base md:text-lg font-bold text-[#78350f]">
+                <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-[#78350f]">
                   4 KOMPONEN WAJIB TAS SIAGA BENCANA (STANDAR BNPB)
                 </span>
               </div>
@@ -83,11 +83,11 @@ export default function DiscoveryModal({
                 <div className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3 shadow-sm flex flex-col gap-1.5 hover:bg-amber-100 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-sky-500 shrink-0" />
-                    <span className="font-pixel-title text-xs sm:text-sm font-bold text-[#78350f]">
+                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f]">
                       1. AIR &amp; RANSUM
                     </span>
                   </div>
-                  <p className="font-sans text-xs sm:text-sm text-[#291305] font-semibold leading-snug">
+                  <p className="font-sans text-[13px] sm:text-[15px] text-[#291305] font-semibold leading-snug">
                     Min. 3 liter air per orang per hari serta biskuit/makanan kaleng kalori tinggi untuk 72 jam mandiri.
                   </p>
                 </div>
@@ -95,11 +95,11 @@ export default function DiscoveryModal({
                 <div className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3 shadow-sm flex flex-col gap-1.5 hover:bg-amber-100 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" />
-                    <span className="font-pixel-title text-xs sm:text-sm font-bold text-[#78350f]">
+                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f]">
                       2. KOTAK P3K
                     </span>
                   </div>
-                  <p className="font-sans text-xs sm:text-sm text-[#291305] font-semibold leading-snug">
+                  <p className="font-sans text-[13px] sm:text-[15px] text-[#291305] font-semibold leading-snug">
                     Kasa steril, perban, plester, cairan antiseptik luka, pereda nyeri, dan obat-obatan rutin pribadi.
                   </p>
                 </div>
@@ -107,11 +107,11 @@ export default function DiscoveryModal({
                 <div className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3 shadow-sm flex flex-col gap-1.5 hover:bg-amber-100 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
-                    <span className="font-pixel-title text-xs sm:text-sm font-bold text-[#78350f]">
+                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f]">
                       3. SENTER &amp; PELUIT
                     </span>
                   </div>
-                  <p className="font-sans text-xs sm:text-sm text-[#291305] font-semibold leading-snug">
+                  <p className="font-sans text-[13px] sm:text-[15px] text-[#291305] font-semibold leading-snug">
                     Senter LED waterproof dengan baterai cadangan serta peluit darurat untuk panggilan sinyal evakuasi SAR.
                   </p>
                 </div>
@@ -119,11 +119,11 @@ export default function DiscoveryModal({
                 <div className="bg-emerald-100/90 border-2 border-emerald-600/70 rounded-xl p-3 shadow-sm flex flex-col gap-1.5 hover:bg-emerald-100 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0" />
-                    <span className="font-pixel-title text-xs sm:text-sm font-bold text-emerald-900">
+                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-emerald-900">
                       4. DOKUMEN &amp; UANG
                     </span>
                   </div>
-                  <p className="font-sans text-xs sm:text-sm text-[#064e3b] font-bold leading-snug">
+                  <p className="font-sans text-[13px] sm:text-[15px] text-[#064e3b] font-bold leading-snug">
                     Fotokopi KK, KTP, ijazah, akta lahir dalam ziplock anti-air, serta uang tunai pecahan kecil.
                   </p>
                 </div>
@@ -137,11 +137,11 @@ export default function DiscoveryModal({
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
-                  <span className="font-pixel-title text-sm sm:text-base md:text-lg font-bold text-[#78350f]">
+                  <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-[#78350f]">
                     {CONVERGENT_LANDFORMS_DATA[selectedLandform].title}
                   </span>
                 </div>
-                <span className="text-xs sm:text-sm font-pixel font-bold uppercase text-[#78350f] bg-amber-200/80 px-2.5 py-1 rounded-lg border border-[#b45309]/40">
+                <span className="text-[13px] sm:text-[15px] font-pixel font-bold uppercase text-[#78350f] bg-amber-200/80 px-2.5 py-1 rounded-lg border border-[#b45309]/40">
                   {CONVERGENT_LANDFORMS_DATA[selectedLandform].subtitle}
                 </span>
               </div>
@@ -155,7 +155,7 @@ export default function DiscoveryModal({
                     <div className="w-7 h-7 rounded-lg bg-[#b45309]/20 border border-[#b45309]/50 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
                       <PixelIcon name={pt.icon as any} size={15} className="text-[#92400e]" />
                     </div>
-                    <p className="font-sans text-sm sm:text-base md:text-[17px] leading-relaxed text-[#291305] font-semibold">
+                    <p className="font-sans text-[15px] sm:text-base md:text-[19px] leading-relaxed text-[#291305] font-semibold">
                       {pt.text}
                     </p>
                   </div>
@@ -169,7 +169,7 @@ export default function DiscoveryModal({
             <div className="mt-3 pt-3.5 border-t-2 border-[#b45309]/30 space-y-3">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
-                <span className="font-pixel-title text-sm sm:text-base md:text-lg font-bold text-[#78350f]">
+                <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-[#78350f]">
                   3 KARAKTERISTIK UTAMA BATAS TRANSFORM
                 </span>
               </div>
@@ -184,10 +184,10 @@ export default function DiscoveryModal({
                       <PixelIcon name={pt.icon as any} size={15} className="text-[#92400e]" />
                     </div>
                     <div className="space-y-1">
-                      <span className="font-pixel-title text-xs sm:text-sm font-bold text-[#78350f] block">
+                      <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f] block">
                         {pt.title}
                       </span>
-                      <p className="font-sans text-sm sm:text-base md:text-[17px] leading-relaxed text-[#291305] font-semibold">
+                      <p className="font-sans text-[15px] sm:text-base md:text-[19px] leading-relaxed text-[#291305] font-semibold">
                         {pt.text}
                       </p>
                     </div>
@@ -198,7 +198,7 @@ export default function DiscoveryModal({
           )}
           {discovery.fact && (
             <div className="pt-3 border-t-2 border-[#b45309]/25 flex items-start gap-2.5 sm:gap-3">
-              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[10px] sm:text-xs md:text-sm font-bold shrink-0 mt-0.5">
+              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[13.5px] sm:text-[13px] md:text-[15px] font-bold shrink-0 mt-0.5">
                 FAKTA KUNCI
               </span>
               <p className="font-sans text-base sm:text-lg md:text-xl leading-relaxed text-[#451a03] font-semibold italic">
@@ -215,7 +215,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="px-8 py-3 sm:px-10 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-sm sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all"
+            className="px-8 py-3 sm:px-10 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all"
           >
             <PixelIcon name="check" size={18} className="text-amber-200" />
             <span>SAYA MENGERTI!</span>
@@ -254,13 +254,13 @@ function DivergentAnimIllustration({
     <div className="w-full h-full relative flex flex-col items-center justify-between p-2 sm:p-3 overflow-hidden" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {/* Top Bar Controls */}
       <div className="w-full flex items-center justify-between px-3.5 py-2 bg-slate-900/95 border border-orange-500/70 rounded-xl z-10 shadow-lg">
-        <span className="text-xs sm:text-sm font-bold text-orange-400 flex items-center gap-2">
+        <span className="text-[13px] sm:text-[15px] font-bold text-orange-400 flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping" />
           <span>SIMULATOR GEOLOGI: PEMEKARAN DASAR SAMUDRA &amp; PEMATANG TENGAH</span>
         </span>
         <button
           onClick={handleToggle}
-          className="px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl text-white text-xs sm:text-sm font-bold border-2 cursor-pointer active:translate-y-0.5 transition-all flex items-center gap-2 shadow-md bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 border-orange-400/80 shadow-[0_3px_0_#7c2d12]"
+          className="px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl text-white text-[13px] sm:text-[15px] font-bold border-2 cursor-pointer active:translate-y-0.5 transition-all flex items-center gap-2 shadow-md bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 border-orange-400/80 shadow-[0_3px_0_#7c2d12]"
         >
           <PixelIcon name="zap" size={15} />
           <span>{isDiverged ? '↺ GABUNGKAN KEMBALI DARATAN' : '▶ SIMULASI PEMISAHAN'}</span>
@@ -501,7 +501,7 @@ function DivergentAnimIllustration({
       </div>
 
       {/* Scientific Legend & Process Overview (Keterangan Rapi di Luar Gambar) */}
-      <div className="w-full bg-[#0f172a]/95 border-2 border-orange-500/70 rounded-xl p-2.5 sm:p-3 text-slate-200 text-xs sm:text-sm z-10 flex flex-wrap items-center justify-between gap-2 shadow-lg">
+      <div className="w-full bg-[#0f172a]/95 border-2 border-orange-500/70 rounded-xl p-2.5 sm:p-3 text-slate-200 text-[13px] sm:text-[15px] z-10 flex flex-wrap items-center justify-between gap-2 shadow-lg">
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-orange-500 shrink-0" />
           <span className="font-bold text-orange-300">Pematang Tengah Samudra (Mid-Ocean Ridge):</span>
@@ -801,11 +801,11 @@ function PangeaIllustration() {
     <div className="relative w-full h-full flex flex-col items-center justify-between bg-[#93c5fd] select-none p-2 sm:p-3 overflow-hidden rounded-xl" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {/* Top Header Mode Toggle */}
       <div className="w-full flex items-center justify-between px-3.5 py-2 bg-slate-900/95 border border-amber-500/70 rounded-xl z-10 shadow-lg">
-        <span className="text-amber-300 font-bold text-sm sm:text-base flex items-center gap-2 tracking-wide">
+        <span className="text-amber-300 font-bold text-[15px] sm:text-base flex items-center gap-2 tracking-wide">
           <PixelIcon name="globe" size={18} className="text-amber-400" />
           <span>SUPERKONTINEN PANGEA (~250 JUTA TAHUN LALU)</span>
         </span>
-        <span className="hidden sm:inline-block text-[11px] text-slate-300 font-medium bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700">
+        <span className="hidden sm:inline-block text-[14.5px] text-slate-300 font-medium bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700">
           Teori Alfred Wegener (1912)
         </span>
       </div>
@@ -1071,17 +1071,17 @@ function PangeaIllustration() {
       <div className="w-full bg-[#0f172a] border-2 border-emerald-500/60 rounded-xl p-3 sm:p-3.5 text-slate-200 z-10 flex items-center justify-between gap-3 shadow-lg">
         {activePlateInfo ? (
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 animate-fadeIn w-full">
-            <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-bold text-xs sm:text-sm border border-emerald-500/50 whitespace-nowrap shadow-sm">
+            <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-bold text-[13px] sm:text-[15px] border border-emerald-500/50 whitespace-nowrap shadow-sm">
               {activePlateInfo.title}
             </span>
-            <span className="text-slate-100 font-medium text-xs sm:text-sm leading-relaxed">
+            <span className="text-slate-100 font-medium text-[13px] sm:text-[15px] leading-relaxed">
               {activePlateInfo.desc}
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2.5 text-slate-200 font-semibold text-xs sm:text-sm">
+          <div className="flex items-center gap-2.5 text-slate-200 font-semibold text-[13px] sm:text-[15px]">
             <PixelIcon name="bulb" size={18} className="text-amber-400 shrink-0" />
-            <span className="text-amber-400 font-bold text-xs sm:text-sm">PETUNJUK:</span>
+            <span className="text-amber-400 font-bold text-[13px] sm:text-[15px]">PETUNJUK:</span>
             <span>Arahkan kursor atau sentuh tiap benua di atas untuk mempelajari kepingan Pangea!</span>
           </div>
         )}
@@ -1205,21 +1205,21 @@ export function ConvergentSubductionIllustration() {
       {/* ── TOP CONTROL & STATUS HEADER (TANPA TAB SELECTOR) ── */}
       <div className="w-full flex items-center justify-between px-3 py-2 bg-slate-950/95 border-b border-amber-800/60 z-20 shadow-md gap-2 shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-amber-300 font-pixel-title text-xs sm:text-sm font-bold flex items-center gap-2">
+          <span className="text-amber-300 font-pixel-title text-[13px] sm:text-[15px] font-bold flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
             DINAMIKA BATAS KONVERGEN: SUBDUKSI
           </span>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className={`px-2.5 py-1 rounded-full border text-[10px] sm:text-xs font-bold flex items-center gap-1.5 ${badgeStyle}`}>
+          <div className={`px-2.5 py-1 rounded-full border text-[13.5px] sm:text-[13px] font-bold flex items-center gap-1.5 ${badgeStyle}`}>
             <span className={`w-2 h-2 rounded-full ${dotAnim}`} />
             <span>{statusBadge}</span>
           </div>
 
           <button
             onClick={handleTriggerSubduction}
-            className="px-3 py-1 rounded bg-amber-600 hover:bg-amber-500 text-slate-950 text-xs font-bold transition-all active:scale-95 border border-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.5)] cursor-pointer hidden sm:flex items-center gap-1"
+            className="px-3 py-1 rounded bg-amber-600 hover:bg-amber-500 text-slate-950 text-[13px] font-bold transition-all active:scale-95 border border-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.5)] cursor-pointer hidden sm:flex items-center gap-1"
             title="Klik untuk memicu proses penunjaman dan peleburan magma"
           >
             <span>Picu Subduksi</span>
@@ -1227,7 +1227,7 @@ export function ConvergentSubductionIllustration() {
 
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-600 transition-all cursor-pointer"
+            className="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[13px] font-bold border border-slate-600 transition-all cursor-pointer"
           >
             {isPlaying ? '⏸ Jeda' : '▶ Putar'}
           </button>
@@ -1793,7 +1793,7 @@ function ConvergentLandformsIllustration({
     <div className="w-full h-full relative flex flex-col justify-between select-none">
       {/* Tab Switcher Top - Padding cukup agar tombol atas tidak terpotong */}
       <div className="w-full pt-2.5 px-2 sm:px-3 pb-2 flex items-center justify-between border-b border-slate-800 bg-slate-950/95 z-20 shrink-0 gap-1 overflow-x-auto">
-        <span className="text-xs sm:text-sm font-pixel-title text-amber-400 font-bold shrink-0 flex items-center gap-1.5">
+        <span className="text-[13px] sm:text-[15px] font-pixel-title text-amber-400 font-bold shrink-0 flex items-center gap-1.5">
           <PixelIcon name="layers" size={14} className="text-amber-400" />
           <span className="hidden sm:inline">PILIH BENTANG ALAM:</span>
           <span className="sm:hidden">BENTANG ALAM:</span>
@@ -1801,7 +1801,7 @@ function ConvergentLandformsIllustration({
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={() => handleSelect('trench')}
-            className={`px-3 py-1.5 rounded-lg text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'trench'
+            className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'trench'
               ? 'bg-cyan-600 text-white border-cyan-300 shadow-[0_2px_0_#083344]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
               }`}
@@ -1810,7 +1810,7 @@ function ConvergentLandformsIllustration({
           </button>
           <button
             onClick={() => handleSelect('mountains')}
-            className={`px-3 py-1.5 rounded-lg text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'mountains'
+            className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'mountains'
               ? 'bg-amber-600 text-white border-amber-300 shadow-[0_2px_0_#451a03]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
               }`}
@@ -1819,7 +1819,7 @@ function ConvergentLandformsIllustration({
           </button>
           <button
             onClick={() => handleSelect('volcano')}
-            className={`px-3 py-1.5 rounded-lg text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'volcano'
+            className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'volcano'
               ? 'bg-rose-600 text-white border-rose-300 shadow-[0_2px_0_#4c0519]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
               }`}
@@ -2484,14 +2484,14 @@ function MegathrustIllustration() {
     <div className="w-full h-full relative flex flex-col items-center justify-between p-2 select-none">
       {/* Top Controller */}
       <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800 z-10">
-        <span className="text-[9px] font-pixel-title text-rose-400 font-bold flex items-center gap-1.5">
+        <span className="text-[12.5px] font-pixel-title text-rose-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="alert" size={13} className="text-rose-500 animate-pulse" />
           <span>SIMULATOR MEKANISME GEMPA MEGATHRUST &amp; TSUNAMI</span>
         </span>
         <div className="flex items-center gap-2">
           <button
             onClick={() => handleTogglePhase('locked')}
-            className={`px-3 py-1 rounded-lg text-[8.5px] font-pixel-title font-bold border-2 cursor-pointer transition-all ${!isRupture
+            className={`px-3 py-1 rounded-lg text-[12.5px] font-pixel-title font-bold border-2 cursor-pointer transition-all ${!isRupture
               ? 'bg-amber-600 text-white border-amber-300 shadow-[0_2px_0_#451a03] -translate-y-0.5'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200'
               }`}
@@ -2500,7 +2500,7 @@ function MegathrustIllustration() {
           </button>
           <button
             onClick={() => handleTogglePhase('rupture')}
-            className={`px-3 py-1 rounded-lg text-[8.5px] font-pixel-title font-bold border-2 cursor-pointer transition-all ${isRupture
+            className={`px-3 py-1 rounded-lg text-[12.5px] font-pixel-title font-bold border-2 cursor-pointer transition-all ${isRupture
               ? 'bg-rose-600 text-white border-rose-300 shadow-[0_2px_0_#4c0519] -translate-y-0.5'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200'
               }`}
@@ -2729,12 +2729,12 @@ function MegathrustIllustration() {
       </svg>
 
       {/* Bottom Educational Summary */}
-      <div className="w-full bg-[#0f172a] border-2 border-rose-500/80 rounded-xl p-2.5 text-slate-200 text-xs flex items-center justify-between gap-3 shadow-lg">
+      <div className="w-full bg-[#0f172a] border-2 border-rose-500/80 rounded-xl p-2.5 text-slate-200 text-[13px] flex items-center justify-between gap-3 shadow-lg">
         <div className="flex items-center gap-2">
-          <span className="px-2 py-0.5 rounded bg-rose-600/30 text-rose-300 font-pixel-title text-[9px] border border-rose-500 font-bold whitespace-nowrap">
+          <span className="px-2 py-0.5 rounded bg-rose-600/30 text-rose-300 font-pixel-title text-[12.5px] border border-rose-500 font-bold whitespace-nowrap">
             {!isRupture ? 'FASE 1: AKUMULASI TEGANGAN' : 'FASE 2: PELEPASAN & TSUNAMI'}
           </span>
-          <p className="text-[10px] sm:text-[11px] leading-snug text-slate-300">
+          <p className="text-[13.5px] sm:text-[14.5px] leading-snug text-slate-300">
             {!isRupture
               ? 'Selama puluhan tahun, bidang kontak terkunci menahan gesekan. Ujung lempeng benua tertekuk ke bawah dan menyimpan tegangan elastis raksasa.'
               : 'Ketika batas elastis terlampaui, batuan patah mendadak! Ujung lempeng benua terpelanting naik (<Rebound Elastis>), mendesak miliaran kubik air laut membentuk Tsunami!'}
@@ -2754,14 +2754,14 @@ export function SeismographPlatesIllustration() {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-between bg-[#09090b] select-none p-1 sm:p-2 font-pixel">
       {/* Top Header Mode Switcher (Tab Anti-Clipping) */}
-      <div className="w-full flex items-center justify-between px-2 pt-2 pb-1.5 bg-slate-950/95 border-b border-amber-800/60 text-[10px] z-10 shadow-sm gap-2">
+      <div className="w-full flex items-center justify-between px-2 pt-2 pb-1.5 bg-slate-950/95 border-b border-amber-800/60 text-[13.5px] z-10 shadow-sm gap-2">
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => {
               retroAudio.playSelect();
               setActiveTab('seismograph');
             }}
-            className={`pt-2 px-3 pb-1.5 rounded-t-lg font-pixel-title text-[9px] font-bold cursor-pointer transition-all border-t-2 border-x-2 ${activeTab === 'seismograph'
+            className={`pt-2 px-3 pb-1.5 rounded-t-lg font-pixel-title text-[12.5px] font-bold cursor-pointer transition-all border-t-2 border-x-2 ${activeTab === 'seismograph'
               ? 'bg-[#1e1b4b] text-cyan-300 border-cyan-500 shadow-[0_-2px_6px_rgba(6,182,212,0.3)]'
               : 'bg-slate-900/80 text-slate-400 border-slate-700 hover:text-slate-200'
               }`}
@@ -2773,7 +2773,7 @@ export function SeismographPlatesIllustration() {
               retroAudio.playSelect();
               setActiveTab('plates');
             }}
-            className={`pt-2 px-3 pb-1.5 rounded-t-lg font-pixel-title text-[9px] font-bold cursor-pointer transition-all border-t-2 border-x-2 ${activeTab === 'plates'
+            className={`pt-2 px-3 pb-1.5 rounded-t-lg font-pixel-title text-[12.5px] font-bold cursor-pointer transition-all border-t-2 border-x-2 ${activeTab === 'plates'
               ? 'bg-[#1e1b4b] text-amber-300 border-amber-500 shadow-[0_-2px_6px_rgba(245,158,11,0.3)]'
               : 'bg-slate-900/80 text-slate-400 border-slate-700 hover:text-slate-200'
               }`}
@@ -2781,7 +2781,7 @@ export function SeismographPlatesIllustration() {
             [2. PETA 20 LEMPENG BUMI]
           </button>
         </div>
-        <span className="text-[8px] text-slate-400 hidden sm:inline">
+        <span className="text-[12px] text-slate-400 hidden sm:inline">
           INSTRUMEN PENCATAT GELOMBANG SEISMIK
         </span>
       </div>
@@ -3020,32 +3020,32 @@ export function SeismographPlatesIllustration() {
 
       {/* 3-Card Scientific Explanation for SMP Kelas 8 */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1">
-        <div className="bg-[#0f172a] border-2 border-cyan-500/80 rounded-xl p-2.5 text-slate-200 text-xs shadow-md">
-          <div className="flex items-center gap-1.5 mb-1.5 text-cyan-300 font-pixel-title text-[10.5px] sm:text-xs font-bold">
+        <div className="bg-[#0f172a] border-2 border-cyan-500/80 rounded-xl p-2.5 text-slate-200 text-[13px] shadow-md">
+          <div className="flex items-center gap-1.5 mb-1.5 text-cyan-300 font-pixel-title text-[14px] sm:text-[13px] font-bold">
             <PixelIcon name="shield" size={14} />
             <span>1. INERSIA MASSA</span>
           </div>
-          <p className="text-xs sm:text-[13px] leading-relaxed text-slate-100 font-sans font-medium">
+          <p className="text-[13px] sm:text-[16px] leading-relaxed text-slate-100 font-sans font-medium">
             Bandul berat tetap diam di posisinya karena gaya inersia saat rangka penopang dan tanah bergetar hebat.
           </p>
         </div>
 
-        <div className="bg-[#0f172a] border-2 border-amber-500/80 rounded-xl p-2.5 text-slate-200 text-xs shadow-md">
-          <div className="flex items-center gap-1.5 mb-1.5 text-amber-300 font-pixel-title text-[10.5px] sm:text-xs font-bold">
+        <div className="bg-[#0f172a] border-2 border-amber-500/80 rounded-xl p-2.5 text-slate-200 text-[13px] shadow-md">
+          <div className="flex items-center gap-1.5 mb-1.5 text-amber-300 font-pixel-title text-[14px] sm:text-[13px] font-bold">
             <PixelIcon name="zap" size={14} />
             <span>2. SINYAL LISTRIK</span>
           </div>
-          <p className="text-xs sm:text-[13px] leading-relaxed text-slate-100 font-sans font-medium">
+          <p className="text-[13px] sm:text-[16px] leading-relaxed text-slate-100 font-sans font-medium">
             Gerak relatif bandul dan magnet menginduksi arus listrik di koil kawat, direkam sebagai grafik seismogram (Gelombang P &amp; S).
           </p>
         </div>
 
-        <div className="bg-[#0f172a] border-2 border-rose-500/80 rounded-xl p-2.5 text-slate-200 text-xs shadow-md">
-          <div className="flex items-center gap-1.5 mb-1.5 text-rose-300 font-pixel-title text-[10.5px] sm:text-xs font-bold">
+        <div className="bg-[#0f172a] border-2 border-rose-500/80 rounded-xl p-2.5 text-slate-200 text-[13px] shadow-md">
+          <div className="flex items-center gap-1.5 mb-1.5 text-rose-300 font-pixel-title text-[14px] sm:text-[13px] font-bold">
             <PixelIcon name="globe" size={14} />
             <span>3. 20 LEMPENG BUMI</span>
           </div>
-          <p className="text-xs sm:text-[13px] leading-relaxed text-slate-100 font-sans font-medium">
+          <p className="text-[13px] sm:text-[16px] leading-relaxed text-slate-100 font-sans font-medium">
             Titik-titik gempa global memetakan sekitar 20 keping lempeng tektonik yang bergerak di atas arus konveksi mantel bumi.
           </p>
         </div>
@@ -3194,12 +3194,12 @@ export function TransformSanAndreasIllustration() {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-between bg-[#09090b] select-none p-1 sm:p-2 font-pixel">
       {/* Top Header */}
-      <div className="w-full flex items-center justify-between px-2 pt-2 pb-1.5 bg-slate-950/95 border-b border-amber-800/60 text-[10px] z-10 shadow-sm gap-2">
-        <span className="text-amber-300 font-pixel-title text-[9px] font-bold flex items-center gap-1.5">
+      <div className="w-full flex items-center justify-between px-2 pt-2 pb-1.5 bg-slate-950/95 border-b border-amber-800/60 text-[13.5px] z-10 shadow-sm gap-2">
+        <span className="text-amber-300 font-pixel-title text-[12.5px] font-bold flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
           BATAS TRANSFORM: SESAR GESER (3D CRUSTAL BLOCKS)
         </span>
-        <span className={`text-[8px] font-bold flex items-center gap-1 ${statusColor}`}>
+        <span className={`text-[12px] font-bold flex items-center gap-1 ${statusColor}`}>
           <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
           {statusText}
         </span>
@@ -3596,11 +3596,11 @@ function EarthquakePrepIllustration() {
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner */}
       <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800 shrink-0">
-        <span className="text-xs sm:text-sm font-pixel-title text-sky-400 font-bold flex items-center gap-1.5">
+        <span className="text-[13px] sm:text-[15px] font-pixel-title text-sky-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="shield" size={14} />
           TAS SIAGA BENCANA (SURVIVAL KIT 72 JAM)
         </span>
-        <span className="text-[10px] sm:text-xs text-slate-400 font-pixel">
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel">
           STANDAR BNPB &amp; BPBD
         </span>
       </div>
@@ -3612,7 +3612,7 @@ function EarthquakePrepIllustration() {
             retroAudio.playSelect?.();
             setActiveItem('air');
           }}
-          className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[9.5px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'air'
+          className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[13px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'air'
             ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold shadow-[0_2px_0_#0369a1]'
             : 'bg-slate-800/90 text-sky-300 border-slate-700 hover:border-sky-500 hover:text-white'}`}
         >
@@ -3624,7 +3624,7 @@ function EarthquakePrepIllustration() {
             retroAudio.playSelect?.();
             setActiveItem('p3k');
           }}
-          className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[9.5px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'p3k'
+          className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[13px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'p3k'
             ? 'bg-rose-500 text-slate-950 border-rose-300 font-bold shadow-[0_2px_0_#991b1b]'
             : 'bg-slate-800/90 text-rose-300 border-slate-700 hover:border-rose-500 hover:text-white'}`}
         >
@@ -3636,7 +3636,7 @@ function EarthquakePrepIllustration() {
             retroAudio.playSelect?.();
             setActiveItem('senter');
           }}
-          className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[9.5px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'senter'
+          className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[13px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'senter'
             ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold shadow-[0_2px_0_#92400e]'
             : 'bg-slate-800/90 text-amber-300 border-slate-700 hover:border-amber-400 hover:text-white'}`}
         >
@@ -3648,7 +3648,7 @@ function EarthquakePrepIllustration() {
             retroAudio.playSelect?.();
             setActiveItem('dokumen');
           }}
-          className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[9.5px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'dokumen'
+          className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[13px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'dokumen'
             ? 'bg-emerald-500 text-slate-950 border-emerald-300 font-bold shadow-[0_2px_0_#065f46]'
             : 'bg-slate-800/90 text-emerald-300 border-slate-700 hover:border-emerald-500 hover:text-white'}`}
         >
@@ -3950,7 +3950,7 @@ function EarthquakePrepIllustration() {
             {/* Panel Teks Deskripsi (Di Sebelah Kanan Grafis - Luas, Terbaca Jelas & Anti-Cutoff) */}
             <foreignObject x="122" y="30" width="186" height="138">
               <div className="w-full h-full flex flex-col justify-center overflow-y-auto pr-1 select-none">
-                <p className="text-[11px] sm:text-[11.5px] md:text-[12px] text-slate-100 leading-snug sm:leading-normal font-sans font-medium">
+                <p className="text-[14.5px] sm:text-[15px] md:text-[15px] text-slate-100 leading-snug sm:leading-normal font-sans font-medium">
                   {itemDetails[activeItem].desc}
                 </p>
               </div>
@@ -4463,7 +4463,7 @@ function EarthquakeActionIllustration() {
               retroAudio.playSelect?.();
               setActiveTab(card.id);
             }}
-            className={`px-2 py-2 sm:py-2.5 rounded-xl border-2 text-[10.5px] sm:text-xs md:text-sm font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 sm:gap-2 ${activeTab === card.id
+            className={`px-2 py-2 sm:py-2.5 rounded-xl border-2 text-[14px] sm:text-[13px] md:text-[15px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 sm:gap-2 ${activeTab === card.id
               ? 'bg-amber-400 text-slate-950 border-amber-200 font-bold shadow-[0_3px_0_#92400e]'
               : 'bg-slate-800/95 text-slate-300 border-slate-700 hover:border-amber-400 hover:text-white'
               }`}
@@ -4479,7 +4479,7 @@ function EarthquakeActionIllustration() {
         <div className="w-full h-full bg-white rounded-2xl border-3 sm:border-4 border-[#facc15] shadow-2xl p-3 sm:p-4 md:p-5 flex flex-col items-center justify-between text-center animate-fadeIn relative">
           {/* Header: Nomor Urut Badge & Judul Kartu Resmi Poster */}
           <div className="w-full flex items-center justify-center gap-2.5 mb-1 sm:mb-2 shrink-0">
-            <span className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-400 text-slate-950 font-pixel-title text-sm sm:text-base md:text-lg font-bold flex items-center justify-center border-2 border-amber-500 shadow-sm shrink-0">
+            <span className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-400 text-slate-950 font-pixel-title text-[15px] sm:text-base md:text-lg font-bold flex items-center justify-center border-2 border-amber-500 shadow-sm shrink-0">
               {currentCard.id}
             </span>
             <h3 className="font-extrabold text-[#0f172a] text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-wider uppercase font-sans">
@@ -4494,7 +4494,7 @@ function EarthquakeActionIllustration() {
 
           {/* Teks Penjelasan Edukasi Baku (Font Jauh Lebih Besar, Jelas & Berbobot) */}
           <div className="w-full bg-gradient-to-r from-amber-50 via-amber-100/90 to-amber-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 border-2 border-amber-400 shrink-0 shadow-sm">
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-[#0f172a] leading-relaxed font-sans font-bold text-center">
+            <p className="text-[15px] sm:text-base md:text-lg lg:text-xl xl:text-2xl text-[#0f172a] leading-relaxed font-sans font-bold text-center">
               {currentCard.desc}
             </p>
           </div>
@@ -4830,11 +4830,11 @@ function VolcanoStatusIllustration() {
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner Header */}
       <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800 shrink-0">
-        <span className="text-xs sm:text-sm font-pixel-title text-rose-400 font-bold flex items-center gap-1.5">
+        <span className="text-[13px] sm:text-[15px] font-pixel-title text-rose-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="volcano" size={14} />
           4 TINGKAT STATUS AKTIVITAS GUNUNG API PVMBG &amp; KRB
         </span>
-        <span className="text-[10px] sm:text-xs text-slate-400 font-pixel">
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel">
           STANDAR RESMI PVMBG / KESDM
         </span>
       </div>
@@ -4856,7 +4856,7 @@ function VolcanoStatusIllustration() {
               >
                 {/* Header Badge */}
                 <div
-                  className="w-full py-1.5 px-1.5 rounded-md text-slate-950 font-bold text-[9.5px] sm:text-[10.5px] font-pixel-title text-center mb-1"
+                  className="w-full py-1.5 px-1.5 rounded-md text-slate-950 font-bold text-[13px] sm:text-[14px] font-pixel-title text-center mb-1"
                   style={{ backgroundColor: l.color }}
                 >
                   LV.{l.lvl} {l.shortName}
@@ -4869,7 +4869,7 @@ function VolcanoStatusIllustration() {
 
                 {/* Keterangan Karakteristik Visual */}
                 <div className="w-full bg-slate-950/80 rounded-md p-1.5 border border-slate-800 text-center">
-                  <p className="text-[12.5px] sm:text-sm text-slate-100 leading-snug font-sans font-medium line-clamp-3">
+                  <p className="text-[15.5px] sm:text-[15px] text-slate-100 leading-snug font-sans font-medium line-clamp-3">
                     {l.visualFeature}
                   </p>
                 </div>
@@ -4898,7 +4898,7 @@ function VolcanoStatusIllustration() {
                 </div>
 
                 {/* Deskripsi Sains Resmi (Font Besar, Kontras Tinggi & Sangat Mudah Dibaca) */}
-                <p className="text-[15px] sm:text-[17px] md:text-[18px] text-slate-100 leading-relaxed mb-3.5 font-sans font-semibold">
+                <p className="text-[17px] sm:text-[19px] md:text-[20px] text-slate-100 leading-relaxed mb-3.5 font-sans font-semibold">
                   {currentLevelData.desc}
                 </p>
 
@@ -4906,11 +4906,11 @@ function VolcanoStatusIllustration() {
                 <div className="bg-slate-900/90 border border-slate-800 rounded-lg p-3 mb-3">
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <PixelIcon name="bulb" size={15} className="text-amber-400" />
-                    <span className="text-sm sm:text-[15px] font-bold text-amber-300 font-pixel-title">
+                    <span className="text-[15px] sm:text-[17px] font-bold text-amber-300 font-pixel-title">
                       KARAKTERISTIK VISUAL:
                     </span>
                   </div>
-                  <p className="text-[13.5px] sm:text-[15.5px] text-slate-100 leading-relaxed font-sans font-medium">
+                  <p className="text-[16px] sm:text-[17.5px] text-slate-100 leading-relaxed font-sans font-medium">
                     {currentLevelData.visualFeature}
                   </p>
                 </div>
@@ -4925,11 +4925,11 @@ function VolcanoStatusIllustration() {
                   <span style={{ color: currentLevelData.color }}>
                     <PixelIcon name="shield" size={17} />
                   </span>
-                  <span className="text-sm sm:text-base font-bold text-slate-100 font-sans">
+                  <span className="text-[15px] sm:text-base font-bold text-slate-100 font-sans">
                     ZONA BAHAYA:
                   </span>
                 </div>
-                <span className="text-sm sm:text-base font-bold font-sans" style={{ color: currentLevelData.color }}>
+                <span className="text-[15px] sm:text-base font-bold font-sans" style={{ color: currentLevelData.color }}>
                   {currentLevelData.radius}
                 </span>
               </div>
@@ -4947,7 +4947,7 @@ function VolcanoStatusIllustration() {
               retroAudio.playSelect();
               setActiveLevel(l.lvl);
             }}
-            className={`px-1.5 py-2.5 rounded-lg border-2 text-[10px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeLevel === l.lvl
+            className={`px-1.5 py-2.5 rounded-lg border-2 text-[13.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeLevel === l.lvl
               ? 'text-slate-950 font-bold scale-[1.02] shadow-sm'
               : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-slate-500'
               }`}
@@ -4964,7 +4964,7 @@ function VolcanoStatusIllustration() {
             retroAudio.playSelect();
             setActiveLevel('all');
           }}
-          className={`px-1.5 py-2.5 rounded-lg border-2 text-[10px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeLevel === 'all'
+          className={`px-1.5 py-2.5 rounded-lg border-2 text-[13.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeLevel === 'all'
             ? 'bg-sky-400 text-slate-950 border-sky-300 font-bold scale-[1.02]'
             : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-400'
             }`}
@@ -5153,7 +5153,7 @@ function VolcanoResponseIllustration() {
               <line x1="121" y1="105" x2="148" y2="115" stroke="#facc15" strokeWidth="2.5" />
               <text x="77" y="118" textAnchor="middle" fill="#0284c7" fontSize="10" fontWeight="bold">N95 FILTER</text>
               <foreignObject x="8" y="152" width="138" height="114">
-                <p className="text-[11px] sm:text-xs text-slate-200 leading-snug font-sans text-center">
+                <p className="text-[14.5px] sm:text-[13px] text-slate-200 leading-snug font-sans text-center">
                   Menyaring <strong className="text-sky-300 font-bold">&ge; 95%</strong> partikel kristal silika tajam &lt; 2.5 µm pencegah silikosis &amp; ISPA akut.
                 </p>
               </foreignObject>
@@ -5174,7 +5174,7 @@ function VolcanoResponseIllustration() {
               <circle cx="47" cy="94" r="6" fill="#ffffff" opacity="0.6" />
               <circle cx="107" cy="94" r="6" fill="#ffffff" opacity="0.6" />
               <foreignObject x="8" y="152" width="138" height="114">
-                <p className="text-[11px] sm:text-xs text-slate-200 leading-snug font-sans text-center">
+                <p className="text-[14.5px] sm:text-[13px] text-slate-200 leading-snug font-sans text-center">
                   Menutup rapat rongga mata. <strong className="text-rose-400 font-bold">Dilarang lensa kontak &amp; kucek mata</strong> karena abu adalah serpihan kaca!
                 </p>
               </foreignObject>
@@ -5191,7 +5191,7 @@ function VolcanoResponseIllustration() {
               <line x1="77" y1="64" x2="77" y2="124" stroke="#a7f3d0" strokeWidth="2.5" />
               <line x1="54" y1="104" x2="100" y2="104" stroke="#facc15" strokeWidth="2.5" />
               <foreignObject x="8" y="152" width="138" height="114">
-                <p className="text-[11px] sm:text-xs text-slate-200 leading-snug font-sans text-center">
+                <p className="text-[14.5px] sm:text-[13px] text-slate-200 leading-snug font-sans text-center">
                   Baju lengan panjang, celana panjang, topi &amp; sepatu tertutup pelindung iritasi sulfur &amp; luka panas.
                 </p>
               </foreignObject>
@@ -5215,7 +5215,7 @@ function VolcanoResponseIllustration() {
               className={`w-full h-full object-cover rounded-none ${isExpanded ? 'max-h-[75vh]' : ''}`}
             />
             {!isExpanded && (
-              <div className="absolute top-2.5 left-2.5 px-3 py-1.5 rounded-md bg-slate-950/90 backdrop-blur-sm border border-rose-500 text-rose-300 text-[11px] sm:text-xs font-pixel-title font-bold flex items-center gap-1.5 shadow-md">
+              <div className="absolute top-2.5 left-2.5 px-3 py-1.5 rounded-md bg-slate-950/90 backdrop-blur-sm border border-rose-500 text-rose-300 text-[14.5px] sm:text-[13px] font-pixel-title font-bold flex items-center gap-1.5 shadow-md">
                 <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
                 <span>● AWAN PANAS GUGURAN (WEDHUS GEMBEL)</span>
               </div>
@@ -5225,7 +5225,7 @@ function VolcanoResponseIllustration() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-rose-500/80 hover:border-rose-400 text-rose-300 hover:text-rose-200 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-rose-500/80 hover:border-rose-400 text-rose-300 hover:text-rose-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
               title="Buka sumber dokumentasi: Kompas.com"
             >
               <span>Sumber: Kompas.com ↗</span>
@@ -5242,7 +5242,7 @@ function VolcanoResponseIllustration() {
               className={`w-full h-full object-cover rounded-none ${isExpanded ? 'max-h-[75vh]' : ''}`}
             />
             {!isExpanded && (
-              <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-sky-400 text-sky-300 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-md">
+              <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-sky-400 text-sky-300 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-md">
                 <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping" />
                 <span>● ALIRAN LAHAR HUJAN DINGIN (ALUR SUNGAI)</span>
               </div>
@@ -5252,7 +5252,7 @@ function VolcanoResponseIllustration() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-sky-400/80 hover:border-sky-300 text-sky-300 hover:text-sky-200 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-sky-400/80 hover:border-sky-300 text-sky-300 hover:text-sky-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
               title="Buka sumber dokumentasi: Detikcom"
             >
               <span>Sumber: Detikcom ↗</span>
@@ -5269,7 +5269,7 @@ function VolcanoResponseIllustration() {
               className={`w-full h-full object-contain ${isExpanded ? 'max-h-[75vh]' : ''}`}
             />
             {!isExpanded && (
-              <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-amber-400 text-amber-300 text-[10px] font-pixel-title font-bold flex items-center gap-1.5 shadow-md">
+              <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-amber-400 text-amber-300 text-[13.5px] font-pixel-title font-bold flex items-center gap-1.5 shadow-md">
                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
                 <span>● PETA KRB MERAPI (III, II, I)</span>
               </div>
@@ -5279,7 +5279,7 @@ function VolcanoResponseIllustration() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-amber-400/80 hover:border-amber-300 text-amber-300 hover:text-amber-200 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-amber-400/80 hover:border-amber-300 text-amber-300 hover:text-amber-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
               title="Buka sumber rujukan peta: syawal88.wordpress.com"
             >
               <span>Sumber: syawal88.wordpress.com ↗</span>
@@ -5305,7 +5305,7 @@ function VolcanoResponseIllustration() {
           {renderVisualContent(activeTab, false)}
 
           {/* Badge Tombol Klik Perbesar di Sudut Kanan Bawah */}
-          <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-slate-700 group-hover:border-amber-400 group-hover:text-amber-300 text-slate-300 text-[9.5px] font-pixel-title font-bold flex items-center gap-1.5 shadow-md transition-all">
+          <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-slate-700 group-hover:border-amber-400 group-hover:text-amber-300 text-slate-300 text-[13px] font-pixel-title font-bold flex items-center gap-1.5 shadow-md transition-all">
             <PixelIcon name="search" size={11} />
             <span>KLIK UNTUK PERBESAR</span>
           </div>
@@ -5319,7 +5319,7 @@ function VolcanoResponseIllustration() {
               <span className={`text-base sm:text-lg md:text-xl ${currentTab.titleColor} font-bold font-pixel-title block leading-snug`}>
                 {currentTab.title}
               </span>
-              <span className="text-xs sm:text-sm text-slate-200 font-sans font-medium block mt-1">
+              <span className="text-[13px] sm:text-[15px] text-slate-200 font-sans font-medium block mt-1">
                 {currentTab.subtitle}
               </span>
             </div>
@@ -5328,10 +5328,10 @@ function VolcanoResponseIllustration() {
             <div className="space-y-2.5 text-slate-200">
               {currentTab.points.map((pt, idx) => (
                 <div key={idx} className="bg-slate-900/95 border border-slate-800 rounded-lg p-3 shadow-sm">
-                  <span className="font-bold font-pixel-title text-[15px] sm:text-[17px] block mb-1.5" style={{ color: currentTab.color }}>
+                  <span className="font-bold font-pixel-title text-[17px] sm:text-[19px] block mb-1.5" style={{ color: currentTab.color }}>
                     {pt.title}
                   </span>
-                  <p className="text-[14.5px] sm:text-[16.5px] leading-relaxed text-slate-100 font-medium font-sans">
+                  <p className="text-[17px] sm:text-[18px] leading-relaxed text-slate-100 font-medium font-sans">
                     {pt.desc}
                   </p>
                 </div>
@@ -5343,10 +5343,10 @@ function VolcanoResponseIllustration() {
               className="p-3 bg-slate-900/95 border-2 rounded-lg text-slate-100 mt-2.5 shadow-sm"
               style={{ borderColor: currentTab.color }}
             >
-              <span className="font-bold text-[15px] sm:text-[17px] block mb-1 font-pixel-title" style={{ color: currentTab.color }}>
+              <span className="font-bold text-[17px] sm:text-[19px] block mb-1 font-pixel-title" style={{ color: currentTab.color }}>
                 {currentTab.actionLabel}
               </span>
-              <p className="text-[14px] sm:text-[16px] leading-relaxed text-slate-100 font-medium font-sans">
+              <p className="text-[16.5px] sm:text-[18px] leading-relaxed text-slate-100 font-medium font-sans">
                 {currentTab.actionText}
               </p>
             </div>
@@ -5355,8 +5355,8 @@ function VolcanoResponseIllustration() {
             {(currentTab as any).sourceUrl && (
               <div className="p-2.5 bg-slate-900/95 border border-slate-800 rounded-lg text-slate-200 mt-2 shadow-sm flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 overflow-hidden">
-                  <span className="text-amber-400 font-pixel text-xs font-bold shrink-0">SUMBER:</span>
-                  <span className="text-xs text-slate-300 font-sans truncate font-medium">
+                  <span className="text-amber-400 font-pixel text-[13px] font-bold shrink-0">SUMBER:</span>
+                  <span className="text-[13px] text-slate-300 font-sans truncate font-medium">
                     {(currentTab as any).sourceText}
                   </span>
                 </div>
@@ -5364,11 +5364,11 @@ function VolcanoResponseIllustration() {
                   href={(currentTab as any).sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-2.5 py-1 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/80 text-amber-300 text-[11px] font-sans font-bold rounded flex items-center gap-1 shrink-0 transition-all cursor-pointer"
+                  className="px-2.5 py-1 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/80 text-amber-300 text-[14.5px] font-sans font-bold rounded flex items-center gap-1 shrink-0 transition-all cursor-pointer"
                   title={`Kunjungi rujukan sumber: ${(currentTab as any).sourceUrl}`}
                 >
                   <span>Buka Tautan</span>
-                  <span className="text-[10px]">↗</span>
+                  <span className="text-[13.5px]">↗</span>
                 </a>
               </div>
             )}
@@ -5383,7 +5383,7 @@ function VolcanoResponseIllustration() {
             retroAudio.playSelect();
             setActiveTab('apd');
           }}
-          className={`px-2.5 py-2.5 rounded-lg border-2 text-[11px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'apd'
+          className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'apd'
             ? 'bg-sky-500 text-slate-950 border-sky-200 font-bold shadow-md scale-[1.02]'
             : 'bg-slate-900 text-sky-300 border-slate-700 hover:border-sky-500'
             }`}
@@ -5395,7 +5395,7 @@ function VolcanoResponseIllustration() {
             retroAudio.playSelect();
             setActiveTab('awanpanas');
           }}
-          className={`px-2.5 py-2.5 rounded-lg border-2 text-[11px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'awanpanas'
+          className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'awanpanas'
             ? 'bg-rose-600 text-white border-rose-300 font-bold shadow-md scale-[1.02]'
             : 'bg-slate-900 text-rose-300 border-slate-700 hover:border-rose-500'
             }`}
@@ -5407,7 +5407,7 @@ function VolcanoResponseIllustration() {
             retroAudio.playSelect();
             setActiveTab('lahar');
           }}
-          className={`px-2.5 py-2.5 rounded-lg border-2 text-[11px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'lahar'
+          className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'lahar'
             ? 'bg-blue-600 text-white border-blue-300 font-bold shadow-md scale-[1.02]'
             : 'bg-slate-900 text-blue-300 border-slate-700 hover:border-blue-500'
             }`}
@@ -5419,7 +5419,7 @@ function VolcanoResponseIllustration() {
             retroAudio.playSelect();
             setActiveTab('krb');
           }}
-          className={`px-2.5 py-2.5 rounded-lg border-2 text-[11px] sm:text-xs font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'krb'
+          className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'krb'
             ? 'bg-amber-500 text-slate-950 border-amber-200 font-bold shadow-md scale-[1.02]'
             : 'bg-slate-900 text-amber-300 border-slate-700 hover:border-amber-500'
             }`}
@@ -5442,7 +5442,7 @@ function VolcanoResponseIllustration() {
             <div className="w-full flex items-center justify-between pb-3 mb-2 border-b-2 border-slate-800 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full animate-ping" style={{ backgroundColor: currentTab.color }} />
-                <h3 className="font-pixel-title text-xs sm:text-base md:text-lg text-amber-300 font-bold">
+                <h3 className="font-pixel-title text-[13px] sm:text-base md:text-lg text-amber-300 font-bold">
                   {currentTab.badge} — {currentTab.title}
                 </h3>
               </div>
@@ -5451,7 +5451,7 @@ function VolcanoResponseIllustration() {
                   retroAudio.playSelect();
                   setIsFullscreen(false);
                 }}
-                className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white font-pixel-title text-xs sm:text-sm rounded-lg border-2 border-rose-300 shadow cursor-pointer transition-colors active:translate-y-0.5"
+                className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white font-pixel-title text-[13px] sm:text-[15px] rounded-lg border-2 border-rose-300 shadow cursor-pointer transition-colors active:translate-y-0.5"
               >
                 ✕ TUTUP [ESC]
               </button>
@@ -5465,7 +5465,7 @@ function VolcanoResponseIllustration() {
             </div>
 
             {/* Footer Petunjuk & Sumber Rujukan */}
-            <div className="w-full pt-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-300 font-sans shrink-0 border-t border-slate-800/80 mt-1">
+            <div className="w-full pt-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[14.5px] text-slate-300 font-sans shrink-0 border-t border-slate-800/80 mt-1">
               <span className="text-slate-400">Klik tombol Tutup, tekan tombol [ESC], atau klik di luar kotak untuk kembali</span>
               {(currentTab as any).sourceUrl ? (
                 <a
@@ -5476,7 +5476,7 @@ function VolcanoResponseIllustration() {
                 >
                   <span className="font-pixel text-amber-400">Sumber Dokumentasi:</span>
                   <span>{(currentTab as any).sourceText}</span>
-                  <span className="text-[10px]">↗</span>
+                  <span className="text-[13.5px]">↗</span>
                 </a>
               ) : (
                 <span className="text-amber-400 font-pixel font-bold">RESQ-BOX KESIAPSIAGAAN MERAPI</span>
@@ -5528,11 +5528,11 @@ function EarthquakePostSafetyIllustration() {
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner */}
       <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
-        <span className="text-xs sm:text-sm font-pixel-title text-amber-400 font-bold flex items-center gap-1.5">
+        <span className="text-[13px] sm:text-[15px] font-pixel-title text-amber-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="shield" size={14} />
           SOP KESELAMATAN &amp; MEDIS PASCABENCANA
         </span>
-        <span className="text-[10px] sm:text-xs text-slate-400 font-pixel">
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel">
           STANDAR BNPB &amp; PMI
         </span>
       </div>
@@ -5655,16 +5655,16 @@ function EarthquakePostSafetyIllustration() {
             <div className="w-full h-full bg-[#111827]/95 border-2 border-slate-700/80 rounded-xl p-3 flex flex-col justify-start overflow-y-auto shadow-md">
               <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
                 <span
-                  className="px-2 py-0.5 rounded text-[9.5px] font-bold text-slate-950 uppercase tracking-wider shadow-sm"
+                  className="px-2 py-0.5 rounded text-[13px] font-bold text-slate-950 uppercase tracking-wider shadow-sm"
                   style={{ backgroundColor: tabDetails[activeTab].color }}
                 >
                   {tabDetails[activeTab].badge}
                 </span>
               </div>
-              <h3 className="text-xs sm:text-[12.5px] font-bold text-slate-100 leading-snug font-sans tracking-wide mb-2 shrink-0">
+              <h3 className="text-[13px] sm:text-[15.5px] font-bold text-slate-100 leading-snug font-sans tracking-wide mb-2 shrink-0">
                 {tabDetails[activeTab].title}
               </h3>
-              <p className="text-[11px] sm:text-[11.5px] text-slate-200 leading-relaxed font-sans font-medium">
+              <p className="text-[14.5px] sm:text-[15px] text-slate-200 leading-relaxed font-sans font-medium">
                 {tabDetails[activeTab].desc}
               </p>
             </div>
@@ -5676,7 +5676,7 @@ function EarthquakePostSafetyIllustration() {
       <div className="w-full grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1">
         <button
           onClick={() => setActiveTab('susulan')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'susulan'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'susulan'
             ? 'bg-orange-500 text-slate-950 border-orange-300 font-bold'
             : 'bg-slate-800 text-orange-300 border-slate-700 hover:border-orange-500'
             }`}
@@ -5685,7 +5685,7 @@ function EarthquakePostSafetyIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('utilitas')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'utilitas'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'utilitas'
             ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
             : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
             }`}
@@ -5694,7 +5694,7 @@ function EarthquakePostSafetyIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('p3k')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'p3k'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'p3k'
             ? 'bg-rose-500 text-slate-950 border-rose-300 font-bold'
             : 'bg-slate-800 text-rose-300 border-slate-700 hover:border-rose-500'
             }`}
@@ -5703,7 +5703,7 @@ function EarthquakePostSafetyIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('tandu')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'tandu'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'tandu'
             ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold'
             : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-500'
             }`}
@@ -5753,11 +5753,11 @@ function EarthquakePostCoordinationIllustration() {
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner */}
       <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
-        <span className="text-xs sm:text-sm font-pixel-title text-emerald-400 font-bold flex items-center gap-1.5">
+        <span className="text-[13px] sm:text-[15px] font-pixel-title text-emerald-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="shield" size={14} />
           MANAJEMEN TITIK KUMPUL &amp; INFORMASI RESMI
         </span>
-        <span className="text-[10px] sm:text-xs text-slate-400 font-pixel">
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel">
           STANDAR BNPB &amp; BMKG
         </span>
       </div>
@@ -5898,16 +5898,16 @@ function EarthquakePostCoordinationIllustration() {
             <div className="w-full h-full bg-[#111827]/95 border-2 border-slate-700/80 rounded-xl p-3 flex flex-col justify-start overflow-y-auto shadow-md">
               <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
                 <span
-                  className="px-2 py-0.5 rounded text-[9.5px] font-bold text-slate-950 uppercase tracking-wider shadow-sm"
+                  className="px-2 py-0.5 rounded text-[13px] font-bold text-slate-950 uppercase tracking-wider shadow-sm"
                   style={{ backgroundColor: tabDetails[activeTab].color }}
                 >
                   {tabDetails[activeTab].badge}
                 </span>
               </div>
-              <h3 className="text-xs sm:text-[12.5px] font-bold text-slate-100 leading-snug font-sans tracking-wide mb-2 shrink-0">
+              <h3 className="text-[13px] sm:text-[15.5px] font-bold text-slate-100 leading-snug font-sans tracking-wide mb-2 shrink-0">
                 {tabDetails[activeTab].title}
               </h3>
-              <p className="text-[11px] sm:text-[11.5px] text-slate-200 leading-relaxed font-sans font-medium">
+              <p className="text-[14.5px] sm:text-[15px] text-slate-200 leading-relaxed font-sans font-medium">
                 {tabDetails[activeTab].desc}
               </p>
             </div>
@@ -5919,7 +5919,7 @@ function EarthquakePostCoordinationIllustration() {
       <div className="w-full grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1">
         <button
           onClick={() => setActiveTab('lapangan')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'lapangan'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'lapangan'
             ? 'bg-emerald-500 text-slate-950 border-emerald-300 font-bold'
             : 'bg-slate-800 text-emerald-300 border-slate-700 hover:border-emerald-500'
             }`}
@@ -5928,7 +5928,7 @@ function EarthquakePostCoordinationIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('presensi')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'presensi'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'presensi'
             ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold'
             : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-500'
             }`}
@@ -5937,7 +5937,7 @@ function EarthquakePostCoordinationIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('bmkg')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'bmkg'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'bmkg'
             ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
             : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
             }`}
@@ -5946,7 +5946,7 @@ function EarthquakePostCoordinationIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('evakuasi')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'evakuasi'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'evakuasi'
             ? 'bg-pink-500 text-slate-950 border-pink-300 font-bold'
             : 'bg-slate-800 text-pink-300 border-slate-700 hover:border-pink-500'
             }`}
@@ -5989,11 +5989,11 @@ function VolcanoPostAshIllustration() {
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner */}
       <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
-        <span className="text-xs sm:text-sm font-pixel-title text-amber-400 font-bold flex items-center gap-1.5">
+        <span className="text-[13px] sm:text-[15px] font-pixel-title text-amber-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="shield" size={14} />
           PENANGANAN ABU VULKANIK &amp; PERLINDUNGAN ATAP
         </span>
-        <span className="text-[10px] sm:text-xs text-slate-400 font-pixel">
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel">
           STANDAR RESMI BNPB
         </span>
       </div>
@@ -6161,16 +6161,16 @@ function VolcanoPostAshIllustration() {
       <div className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl p-2.5 mb-2 shadow-inner">
         <div className="flex items-center gap-2 mb-1">
           <span
-            className="px-2 py-0.5 rounded text-[9px] font-pixel-title text-slate-950 font-bold"
+            className="px-2 py-0.5 rounded text-[12.5px] font-pixel-title text-slate-950 font-bold"
             style={{ backgroundColor: tabDetails[activeTab].color }}
           >
             {tabDetails[activeTab].badge}
           </span>
-          <h4 className="text-xs sm:text-sm font-pixel-title text-amber-300 font-bold">
+          <h4 className="text-[13px] sm:text-[15px] font-pixel-title text-amber-300 font-bold">
             {tabDetails[activeTab].title}
           </h4>
         </div>
-        <p className="font-sans text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+        <p className="font-sans text-[13px] sm:text-[15px] text-slate-200 leading-relaxed font-medium">
           {tabDetails[activeTab].desc}
         </p>
       </div>
@@ -6179,7 +6179,7 @@ function VolcanoPostAshIllustration() {
       <div className="w-full grid grid-cols-3 gap-2">
         <button
           onClick={() => setActiveTab('atap')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'atap'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'atap'
             ? 'bg-orange-500 text-slate-950 border-orange-300 font-bold'
             : 'bg-slate-800 text-orange-300 border-slate-700 hover:border-orange-500'
             }`}
@@ -6188,7 +6188,7 @@ function VolcanoPostAshIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('kendaraan')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'kendaraan'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'kendaraan'
             ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
             : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
             }`}
@@ -6197,7 +6197,7 @@ function VolcanoPostAshIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('apd')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'apd'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'apd'
             ? 'bg-emerald-500 text-slate-950 border-emerald-300 font-bold'
             : 'bg-slate-800 text-emerald-300 border-slate-700 hover:border-emerald-500'
             }`}
@@ -6239,11 +6239,11 @@ function VolcanoPostSanitationIllustration() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
-        <span className="text-xs sm:text-sm font-pixel-title text-sky-400 font-bold flex items-center gap-1.5">
+        <span className="text-[13px] sm:text-[15px] font-pixel-title text-sky-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="heart" size={14} />
           SANITASI AIR BERSIH &amp; KESEHATAN PASCABENCANA
         </span>
-        <span className="text-[10px] sm:text-xs text-slate-400 font-pixel">
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel">
           STANDAR MEDIS PMI &amp; BNPB
         </span>
       </div>
@@ -6391,16 +6391,16 @@ function VolcanoPostSanitationIllustration() {
       <div className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl p-2.5 mb-2 shadow-inner">
         <div className="flex items-center gap-2 mb-1">
           <span
-            className="px-2 py-0.5 rounded text-[9px] font-pixel-title text-slate-950 font-bold"
+            className="px-2 py-0.5 rounded text-[12.5px] font-pixel-title text-slate-950 font-bold"
             style={{ backgroundColor: tabDetails[activeTab].color }}
           >
             {tabDetails[activeTab].badge}
           </span>
-          <h4 className="text-xs sm:text-sm font-pixel-title text-amber-300 font-bold">
+          <h4 className="text-[13px] sm:text-[15px] font-pixel-title text-amber-300 font-bold">
             {tabDetails[activeTab].title}
           </h4>
         </div>
-        <p className="font-sans text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+        <p className="font-sans text-[13px] sm:text-[15px] text-slate-200 leading-relaxed font-medium">
           {tabDetails[activeTab].desc}
         </p>
       </div>
@@ -6408,7 +6408,7 @@ function VolcanoPostSanitationIllustration() {
       <div className="w-full grid grid-cols-3 gap-2">
         <button
           onClick={() => setActiveTab('air')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'air'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'air'
             ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold'
             : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-500'
             }`}
@@ -6417,7 +6417,7 @@ function VolcanoPostSanitationIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('silika')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'silika'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'silika'
             ? 'bg-rose-500 text-slate-950 border-rose-300 font-bold'
             : 'bg-slate-800 text-rose-300 border-slate-700 hover:border-rose-500'
             }`}
@@ -6426,7 +6426,7 @@ function VolcanoPostSanitationIllustration() {
         </button>
         <button
           onClick={() => setActiveTab('mata')}
-          className={`px-2 py-2 rounded-lg border-2 text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-all ${activeTab === 'mata'
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'mata'
             ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
             : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
             }`}
@@ -6472,11 +6472,11 @@ function VolcanoPostLaharIllustration() {
     <div className="w-full h-full flex flex-col items-center justify-between p-2 sm:p-2.5 font-sans">
       {/* Top Header Bar */}
       <div className="w-full flex items-center justify-between px-2 pb-2 border-b border-slate-700/80">
-        <span className="text-xs sm:text-sm font-black text-emerald-400 flex items-center gap-2 tracking-wide font-sans">
+        <span className="text-[13px] sm:text-[15px] font-black text-emerald-400 flex items-center gap-2 tracking-wide font-sans">
           <PixelIcon name="mountain" size={16} />
           BAHAYA SEKUNDER ERUPSI: BANJIR LAHAR DINGIN
         </span>
-        <span className="text-[10.5px] sm:text-xs text-amber-300/90 font-bold bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+        <span className="text-[14px] sm:text-[13px] text-amber-300/90 font-bold bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-500/30">
           MONITORING BNPB, PVMBG &amp; BALAI SABO PUPR
         </span>
       </div>
@@ -6952,12 +6952,12 @@ function VolcanoPostLaharIllustration() {
         <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5 pb-1 border-b border-slate-800">
           <div className="flex items-center gap-2">
             <span
-              className="px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black text-slate-950 tracking-wider uppercase"
+              className="px-2.5 py-0.5 rounded-full text-[13.5px] sm:text-[13px] font-black text-slate-950 tracking-wider uppercase"
               style={{ backgroundColor: tabDetails[activeTab].color }}
             >
               {tabDetails[activeTab].badge}
             </span>
-            <h4 className="text-xs sm:text-sm font-black text-amber-300 tracking-wide font-sans">
+            <h4 className="text-[13px] sm:text-[15px] font-black text-amber-300 tracking-wide font-sans">
               {tabDetails[activeTab].title}
             </h4>
           </div>
@@ -6966,7 +6966,7 @@ function VolcanoPostLaharIllustration() {
               href="https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-amber-300 hover:text-amber-200 text-[10px] font-sans font-bold flex items-center gap-1 transition-all"
+              className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-amber-300 hover:text-amber-200 text-[13.5px] font-sans font-bold flex items-center gap-1 transition-all"
               title="Kunjungi sumber dokumentasi Detikcom"
             >
               <span>Sumber: Detikcom</span>
@@ -6974,15 +6974,15 @@ function VolcanoPostLaharIllustration() {
             </a>
           )}
         </div>
-        <p className="font-sans text-xs sm:text-[13px] text-slate-200 leading-relaxed font-normal mb-2">
+        <p className="font-sans text-[13px] sm:text-[16px] text-slate-200 leading-relaxed font-normal mb-2">
           {tabDetails[activeTab].desc}
         </p>
         <div className="bg-slate-950/60 rounded-lg px-2.5 py-1.5 border-l-3 border-amber-400 flex items-start gap-2">
-          <span className="text-amber-400 font-bold text-xs shrink-0 mt-0.5 flex items-center gap-1">
+          <span className="text-amber-400 font-bold text-[13px] shrink-0 mt-0.5 flex items-center gap-1">
             <PixelIcon name="bulb" size={13} className="text-amber-400 shrink-0" />
             CATATAN AHLI:
           </span>
-          <span className="text-[11.5px] sm:text-xs text-amber-200/90 font-medium italic leading-relaxed">
+          <span className="text-[15px] sm:text-[13px] text-amber-200/90 font-medium italic leading-relaxed">
             {tabDetails[activeTab].keyTakeaway}
           </span>
         </div>
@@ -6992,7 +6992,7 @@ function VolcanoPostLaharIllustration() {
       <div className="w-full grid grid-cols-3 gap-2 sm:gap-2.5 pt-1">
         <button
           onClick={() => setActiveTab('lahar')}
-          className={`px-3 py-2.5 rounded-xl border-2 text-[11px] sm:text-xs font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'lahar'
+          className={`px-3 py-2.5 rounded-xl border-2 text-[14.5px] sm:text-[13px] font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'lahar'
             ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 border-emerald-300 font-black shadow-emerald-900/40 scale-[1.02]'
             : 'bg-slate-800/90 text-emerald-300 border-slate-700 hover:border-emerald-500/60 hover:bg-slate-800'
             }`}
@@ -7003,7 +7003,7 @@ function VolcanoPostLaharIllustration() {
 
         <button
           onClick={() => setActiveTab('sungai')}
-          className={`px-3 py-2.5 rounded-xl border-2 text-[11px] sm:text-xs font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'sungai'
+          className={`px-3 py-2.5 rounded-xl border-2 text-[14.5px] sm:text-[13px] font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'sungai'
             ? 'bg-gradient-to-r from-red-500 to-rose-500 text-slate-950 border-red-300 font-black shadow-red-900/40 scale-[1.02]'
             : 'bg-slate-800/90 text-red-300 border-slate-700 hover:border-red-500/60 hover:bg-slate-800'
             }`}
@@ -7014,7 +7014,7 @@ function VolcanoPostLaharIllustration() {
 
         <button
           onClick={() => setActiveTab('ews')}
-          className={`px-3 py-2.5 rounded-xl border-2 text-[11px] sm:text-xs font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'ews'
+          className={`px-3 py-2.5 rounded-xl border-2 text-[14.5px] sm:text-[13px] font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'ews'
             ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-slate-950 border-blue-300 font-black shadow-blue-900/40 scale-[1.02]'
             : 'bg-slate-800/90 text-blue-300 border-slate-700 hover:border-blue-500/60 hover:bg-slate-800'
             }`}

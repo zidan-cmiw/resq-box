@@ -109,7 +109,7 @@ const JourneyProgressTracker = forwardRef<
               left: `${((hoveredIndex + 0.5) / totalAreas) * 100}%`,
             }}
           >
-            <div className="bg-slate-950/95 text-amber-200 border-2 border-amber-400 px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-pixel whitespace-nowrap shadow-2xl flex items-center gap-1.5 backdrop-blur-md">
+            <div className="bg-slate-950/95 text-amber-200 border-2 border-amber-400 px-2.5 py-1 rounded-md text-[13.5px] sm:text-[14.5px] font-pixel whitespace-nowrap shadow-2xl flex items-center gap-1.5 backdrop-blur-md">
               <PixelIcon name={areas[hoveredIndex].iconName} size={13} />
               <span className="font-bold">{areas[hoveredIndex].name}</span>
               <span className="text-amber-400 font-extrabold">({areas[hoveredIndex].metricLabel})</span>
@@ -168,7 +168,7 @@ const JourneyProgressTracker = forwardRef<
 
                   {/* Label Teks di Bawah Node (Metric) */}
                   <span
-                    className={`absolute -bottom-5 sm:-bottom-5.5 left-1/2 -translate-x-1/2 text-[9px] sm:text-[10px] md:text-[11px] whitespace-nowrap font-pixel pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,1)] ${
+                    className={`absolute -bottom-5 sm:-bottom-5.5 left-1/2 -translate-x-1/2 text-[12.5px] sm:text-[13.5px] md:text-[14.5px] whitespace-nowrap font-pixel pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,1)] ${
                       isCurrent
                         ? 'text-yellow-300 font-extrabold tracking-wide drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]'
                         : isCompleted
@@ -191,7 +191,7 @@ const JourneyProgressTracker = forwardRef<
               {/* Badge Metrik / Posisi Teks Real-Time */}
               <span
                 ref={markerLabelRef}
-                className="mb-1 px-2 sm:px-2.5 py-0.5 rounded-md bg-slate-950/95 border-1.5 border-cyan-400/90 text-[9px] sm:text-[10px] md:text-[11px] font-bold text-cyan-200 font-pixel whitespace-nowrap shadow-lg drop-shadow-[0_2px_4px_rgba(0,0,0,1)]"
+                className="mb-1 px-2 sm:px-2.5 py-0.5 rounded-md bg-slate-950/95 border-1.5 border-cyan-400/90 text-[12.5px] sm:text-[13.5px] md:text-[14.5px] font-bold text-cyan-200 font-pixel whitespace-nowrap shadow-lg drop-shadow-[0_2px_4px_rgba(0,0,0,1)]"
               >
                 {currentArea?.shortName}
               </span>

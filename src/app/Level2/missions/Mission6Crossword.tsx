@@ -138,15 +138,15 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
       {/* Header Bar */}
       <div className="flex items-center justify-between bg-amber-100/90 border-2 border-amber-900/40 p-3 rounded-xl">
         <div className="flex items-center gap-2">
-          <span className="w-6 h-6 rounded-full bg-amber-900 text-amber-100 flex items-center justify-center font-pixel-title text-xs font-bold">
+          <span className="w-6 h-6 rounded-full bg-amber-900 text-amber-100 flex items-center justify-center font-pixel-title text-[13px] font-bold">
             6
           </span>
-          <span className="font-pixel-title text-xs md:text-sm font-bold text-amber-950">
+          <span className="font-pixel-title text-[13px] md:text-[15px] font-bold text-amber-950">
             MISI 6: TEKA-TEKI SILANG GEOLOGIS (COMMAND CENTER LOCK)
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 rounded bg-slate-900 text-amber-300 font-pixel-title text-[10px] font-bold border border-amber-500/40">
+          <span className="px-3 py-1 rounded bg-slate-900 text-amber-300 font-pixel-title text-[13.5px] font-bold border border-amber-500/40">
             TERPECAHKAN: {solvedCount} / {CLUES.length} KATA
           </span>
         </div>
@@ -154,11 +154,11 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
 
       {/* Narrative Card */}
       <div className="bg-amber-950/5 border-2 border-amber-900/30 rounded-2xl p-4">
-        <h3 className="text-xs md:text-sm font-bold text-amber-950 mb-1 flex items-center gap-2">
+        <h3 className="text-[13px] md:text-[15px] font-bold text-amber-950 mb-1 flex items-center gap-2">
           <PixelIcon name="key" size={18} />
           <span>Kunci Akses Command Center: Teka-Teki Silang Geologi & Bencana</span>
         </h3>
-        <p className="text-[11px] text-amber-900 leading-relaxed">
+        <p className="text-[14.5px] text-amber-900 leading-relaxed">
           Pintu Command Center kota terkunci oleh enkripsi istilah sains geologis. Isi kotak TTS di bawah ini
           berdasarkan materi pergeseran benua, lempeng tektonik, dan mitigasi untuk membuka gerbang final Level 3!
         </p>
@@ -170,7 +170,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
         <div className="lg:col-span-5 space-y-3">
           {/* MENDATAR (ACROSS) */}
           <div className="p-3.5 rounded-xl bg-slate-900 border-2 border-amber-900/40 text-slate-100">
-            <span className="font-pixel-title text-[10px] text-amber-400 font-bold block mb-2">
+            <span className="font-pixel-title text-[13.5px] text-amber-400 font-bold block mb-2">
               MENDATAR (ACROSS)
             </span>
             <div className="space-y-1.5">
@@ -186,7 +186,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                       retroAudio.playSelect();
                       setActiveClueId(c.id);
                     }}
-                    className={`w-full p-2 rounded-lg text-left text-xs transition-all cursor-pointer flex items-center justify-between ${
+                    className={`w-full p-2 rounded-lg text-left text-[13px] transition-all cursor-pointer flex items-center justify-between ${
                       isCurrent
                         ? 'bg-amber-700 text-white font-bold'
                         : isCorrect
@@ -202,7 +202,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                     {isCorrect ? (
                       <span className="text-emerald-400 font-bold">✓ TEPAT</span>
                     ) : (
-                      <span className="text-[10px] text-slate-400 opacity-80">
+                      <span className="text-[13.5px] text-slate-400 opacity-80">
                         {userInputs[c.id] || '......'}
                       </span>
                     )}
@@ -214,7 +214,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
 
           {/* MENURUN (DOWN) */}
           <div className="p-3.5 rounded-xl bg-slate-900 border-2 border-amber-900/40 text-slate-100">
-            <span className="font-pixel-title text-[10px] text-sky-400 font-bold block mb-2">
+            <span className="font-pixel-title text-[13.5px] text-sky-400 font-bold block mb-2">
               MENURUN (DOWN)
             </span>
             <div className="space-y-1.5">
@@ -230,7 +230,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                       retroAudio.playSelect();
                       setActiveClueId(c.id);
                     }}
-                    className={`w-full p-2 rounded-lg text-left text-xs transition-all cursor-pointer flex items-center justify-between ${
+                    className={`w-full p-2 rounded-lg text-left text-[13px] transition-all cursor-pointer flex items-center justify-between ${
                       isCurrent
                         ? 'bg-sky-700 text-white font-bold'
                         : isCorrect
@@ -246,7 +246,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                     {isCorrect ? (
                       <span className="text-emerald-400 font-bold">✓ TEPAT</span>
                     ) : (
-                      <span className="text-[10px] text-slate-400 opacity-80">
+                      <span className="text-[13.5px] text-slate-400 opacity-80">
                         {userInputs[c.id] || '......'}
                       </span>
                     )}
@@ -261,15 +261,15 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
         <div className="lg:col-span-7 flex flex-col justify-between bg-amber-50 border-2 border-amber-900/30 rounded-2xl p-5 shadow-inner">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-2.5 py-0.5 rounded bg-amber-900 text-white font-pixel-title text-[10px] font-bold">
+              <span className="px-2.5 py-0.5 rounded bg-amber-900 text-white font-pixel-title text-[13.5px] font-bold">
                 PETUNJUK SOAL #{activeClue.number} ({activeClue.direction === 'across' ? 'MENDATAR' : 'MENURUN'})
               </span>
-              <span className="text-xs text-amber-900 font-bold font-mono">
+              <span className="text-[13px] text-amber-900 font-bold font-mono">
                 [{activeClue.answer.length} HURUF]
               </span>
             </div>
 
-            <p className="text-xs md:text-sm text-amber-950 font-bold leading-relaxed mb-6">
+            <p className="text-[13px] md:text-[15px] text-amber-950 font-bold leading-relaxed mb-6">
               "{activeClue.clue}"
             </p>
 
@@ -300,9 +300,9 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                 maxLength={activeClue.answer.length}
                 onChange={(e) => handleInputChange(activeClue.id, e.target.value)}
                 placeholder={`KETIK ${activeClue.answer.length} HURUF JAWABAN...`}
-                className="w-full max-w-sm px-4 py-2.5 rounded-xl bg-white border-2 border-amber-900/60 font-pixel-title text-center text-xs tracking-widest text-amber-950 focus:outline-none focus:border-amber-600 shadow-inner"
+                className="w-full max-w-sm px-4 py-2.5 rounded-xl bg-white border-2 border-amber-900/60 font-pixel-title text-center text-[13px] tracking-widest text-amber-950 focus:outline-none focus:border-amber-600 shadow-inner"
               />
-              <span className="text-[10px] text-amber-800">
+              <span className="text-[13.5px] text-amber-800">
                 Tekan tombol keyboard untuk mengetik huruf kapital.
               </span>
             </div>
@@ -317,7 +317,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                 const prevIdx = (curIdx - 1 + CLUES.length) % CLUES.length;
                 setActiveClueId(CLUES[prevIdx].id);
               }}
-              className="px-3 py-1.5 rounded-lg bg-amber-200 hover:bg-amber-300 text-amber-950 text-[10px] font-pixel-title font-bold cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-amber-200 hover:bg-amber-300 text-amber-950 text-[13.5px] font-pixel-title font-bold cursor-pointer"
             >
               &lt; SOAL SEBELUMNYA
             </button>
@@ -329,7 +329,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                 const nextIdx = (curIdx + 1) % CLUES.length;
                 setActiveClueId(CLUES[nextIdx].id);
               }}
-              className="px-3 py-1.5 rounded-lg bg-amber-200 hover:bg-amber-300 text-amber-950 text-[10px] font-pixel-title font-bold cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-amber-200 hover:bg-amber-300 text-amber-950 text-[13.5px] font-pixel-title font-bold cursor-pointer"
             >
               SOAL BERIKUTNYA &gt;
             </button>
@@ -339,18 +339,18 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
 
       {/* Footer Submit */}
       <div className="flex items-center justify-between pt-2">
-        <span className="text-xs text-amber-900 font-bold">
+        <span className="text-[13px] text-amber-900 font-bold">
           Validasi Istilah Geologi: {solvedCount} dari {CLUES.length} Selesai
         </span>
 
         {isSolved || isAlreadyCompleted ? (
-          <span className="px-4 py-2 rounded-xl bg-emerald-100 border border-emerald-500 text-emerald-800 text-xs font-bold">
+          <span className="px-4 py-2 rounded-xl bg-emerald-100 border border-emerald-500 text-emerald-800 text-[13px] font-bold">
             ✓ COMMAND CENTER TERBUKA! (+10 RP)
           </span>
         ) : (
           <button
             onClick={handleValidateTTS}
-            className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-pixel-title font-bold border-2 border-amber-950 shadow-[0_4px_0_#78350f] cursor-pointer active:translate-y-0.5"
+            className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-[13px] font-pixel-title font-bold border-2 border-amber-950 shadow-[0_4px_0_#78350f] cursor-pointer active:translate-y-0.5"
           >
             VALIDASI JAWABAN TTS & BUKA COMMAND CENTER
           </button>

@@ -943,7 +943,7 @@ export default function TectonicGame() {
                 }
                 navigate('/');
               }}
-              className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-sans font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#231206] whitespace-nowrap"
+              className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-sans font-bold text-[13px] sm:text-[15px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#231206] whitespace-nowrap"
               title="Kembali ke Menu Utama"
             >
               <span className="text-amber-400 font-bold">&lt;</span>
@@ -991,7 +991,7 @@ export default function TectonicGame() {
                     }
                   }
                 }}
-                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-rose-950 hover:bg-rose-900 text-rose-200 border-2 border-rose-600/80 font-sans font-bold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#4c0519] whitespace-nowrap"
+                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-rose-950 hover:bg-rose-900 text-rose-200 border-2 border-rose-600/80 font-sans font-bold text-[13px] sm:text-[15px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#4c0519] whitespace-nowrap"
                 title="Ulangi Simulasi dari Awal"
               >
                 <span className="text-rose-400 font-bold">↺</span>
@@ -1024,7 +1024,7 @@ export default function TectonicGame() {
                     }
                   }
                 }}
-                className={`bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl text-amber-200 font-pixel text-xs sm:text-sm md:text-base font-bold shadow-[0_4px_0_#231206] flex items-center gap-2 whitespace-nowrap ${(currentAreaIndex === 1 && simPhase === 'idle') || (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle'))
+                className={`bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl text-amber-200 font-pixel text-[13px] sm:text-[15px] md:text-base font-bold shadow-[0_4px_0_#231206] flex items-center gap-2 whitespace-nowrap ${(currentAreaIndex === 1 && simPhase === 'idle') || (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle'))
                     ? 'cursor-pointer hover:border-amber-400 hover:scale-105 transition-all'
                     : ''
                   }`}
@@ -1046,7 +1046,7 @@ export default function TectonicGame() {
                   {activeArea.name}
                 </span>
                 {((currentAreaIndex === 1 && simPhase === 'idle') || (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle'))) && (
-                  <span className="text-[10px] sm:text-xs bg-rose-900/80 text-rose-200 px-2 py-0.5 rounded border border-rose-600 animate-pulse font-bold">
+                  <span className="text-[13.5px] sm:text-[13px] bg-rose-900/80 text-rose-200 px-2 py-0.5 rounded border border-rose-600 animate-pulse font-bold">
                     MULAI
                   </span>
                 )}
@@ -1060,7 +1060,7 @@ export default function TectonicGame() {
             <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
               <div className="items-center gap-1 px-1.5 sm:px-2 border-r border-amber-800/60 hidden 2xl:flex">
                 <PixelIcon name="broadcast" size={13} className="text-amber-400 shrink-0" />
-                <span className="font-sans text-[11px] sm:text-xs text-amber-300 font-bold uppercase tracking-wider">
+                <span className="font-sans text-[14.5px] sm:text-[13px] text-amber-300 font-bold uppercase tracking-wider">
                   SKENARIO GEMPA:
                 </span>
               </div>
@@ -1068,7 +1068,7 @@ export default function TectonicGame() {
               {/* Tombol Gempa Sedang */}
               <button
                 onClick={() => handleSelectScenario('moderate')}
-                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeScenario === 'moderate'
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-[13px] sm:text-[15px] font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeScenario === 'moderate'
                     ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 border-2 border-yellow-200 shadow-[0_3px_0_#78350f] scale-105'
                     : 'bg-slate-900/80 hover:bg-slate-800 text-amber-200/80 border border-amber-700/50 hover:text-amber-100'
                   }`}
@@ -1077,7 +1077,7 @@ export default function TectonicGame() {
                 <PixelIcon name="dot-yellow" size={11} className="shrink-0" />
                 <span className="hidden 2xl:inline">GEMPA </span><span>SEDANG</span>
                 {activeScenario === 'moderate' && (
-                  <span className="text-[9px] sm:text-[10px] bg-amber-900/90 text-amber-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
+                  <span className="text-[12.5px] sm:text-[13.5px] bg-amber-900/90 text-amber-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
                     AKTIF
                   </span>
                 )}
@@ -1086,7 +1086,7 @@ export default function TectonicGame() {
               {/* Tombol Gempa Besar */}
               <button
                 onClick={() => handleSelectScenario('severe')}
-                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeScenario === 'severe'
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-[13px] sm:text-[15px] font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeScenario === 'severe'
                     ? 'bg-gradient-to-r from-rose-600 to-rose-700 text-white border-2 border-rose-300 shadow-[0_3px_0_#881337] scale-105'
                     : 'bg-slate-900/80 hover:bg-slate-800 text-rose-200/80 border border-rose-700/50 hover:text-rose-100'
                   }`}
@@ -1095,7 +1095,7 @@ export default function TectonicGame() {
                 <PixelIcon name="dot-red" size={11} className="shrink-0" />
                 <span className="hidden 2xl:inline">GEMPA </span><span>BESAR</span>
                 {activeScenario === 'severe' && (
-                  <span className="text-[9px] sm:text-[10px] bg-rose-950/90 text-rose-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
+                  <span className="text-[12.5px] sm:text-[13.5px] bg-rose-950/90 text-rose-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
                     AKTIF
                   </span>
                 )}
@@ -1110,7 +1110,7 @@ export default function TectonicGame() {
             <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-orange-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
               <div className="items-center gap-1 px-1.5 sm:px-2 border-r border-orange-800/60 hidden 2xl:flex">
                 <PixelIcon name="broadcast" size={13} className="text-orange-400 shrink-0" />
-                <span className="font-sans text-[11px] sm:text-xs text-orange-300 font-bold uppercase tracking-wider">
+                <span className="font-sans text-[14.5px] sm:text-[13px] text-orange-300 font-bold uppercase tracking-wider">
                   SKENARIO ERUPSI:
                 </span>
               </div>
@@ -1118,7 +1118,7 @@ export default function TectonicGame() {
               {/* Tombol Ledakan Eksplosif */}
               <button
                 onClick={() => handleSelectVolcanoScenario('explosive')}
-                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeVolcanoScenario === 'explosive'
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-[13px] sm:text-[15px] font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeVolcanoScenario === 'explosive'
                     ? 'bg-gradient-to-r from-rose-600 to-rose-700 text-white border-2 border-rose-300 shadow-[0_3px_0_#881337] scale-105'
                     : 'bg-slate-900/80 hover:bg-slate-800 text-rose-200/80 border border-rose-700/50 hover:text-rose-100'
                   }`}
@@ -1127,7 +1127,7 @@ export default function TectonicGame() {
                 <PixelIcon name="dot-red" size={11} className="shrink-0" />
                 <span className="hidden 2xl:inline">LEDAKAN </span><span>EKSPLOSIF</span>
                 {activeVolcanoScenario === 'explosive' && (
-                  <span className="text-[9px] sm:text-[10px] bg-rose-950/90 text-rose-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
+                  <span className="text-[12.5px] sm:text-[13.5px] bg-rose-950/90 text-rose-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
                     AKTIF
                   </span>
                 )}
@@ -1136,7 +1136,7 @@ export default function TectonicGame() {
               {/* Tombol Ledakan Efusif */}
               <button
                 onClick={() => handleSelectVolcanoScenario('effusive')}
-                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-xs sm:text-sm font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeVolcanoScenario === 'effusive'
+                className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-[13px] sm:text-[15px] font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${activeVolcanoScenario === 'effusive'
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 border-2 border-yellow-200 shadow-[0_3px_0_#78350f] scale-105'
                     : 'bg-slate-900/80 hover:bg-slate-800 text-amber-200/80 border border-amber-700/50 hover:text-amber-100'
                   }`}
@@ -1145,7 +1145,7 @@ export default function TectonicGame() {
                 <PixelIcon name="dot-orange" size={11} className="shrink-0" />
                 <span className="hidden 2xl:inline">LEDAKAN </span><span>EFUSIF</span>
                 {activeVolcanoScenario === 'effusive' && (
-                  <span className="text-[9px] sm:text-[10px] bg-amber-900/90 text-amber-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
+                  <span className="text-[12.5px] sm:text-[13.5px] bg-amber-900/90 text-amber-100 px-1.5 py-0.5 rounded font-bold uppercase hidden sm:inline">
                     AKTIF
                   </span>
                 )}
@@ -1180,7 +1180,7 @@ export default function TectonicGame() {
       </div>
 
       {/* ── 3. DISCREET KEYBOARD CONTROLS GUIDE (Desktop Bottom Persis Level 1) ── */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[9px] font-pixel text-slate-300 pointer-events-none z-10 select-none">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[12.5px] font-pixel text-slate-300 pointer-events-none z-10 select-none">
         <span>← → Gerak</span>
         <span>↑ / [Spasi] Lompat</span>
         <span>[E] Interaksi</span>
@@ -1189,7 +1189,7 @@ export default function TectonicGame() {
       {/* ── 4. FLOATING INTERACTION HINT (BOTTOM CENTER PERSIS LEVEL 1) ── */}
       {nearInteractablePrompt && !isPaused && (
         <div className="absolute bottom-28 sm:bottom-32 left-1/2 -translate-x-1/2 pointer-events-auto z-30 select-none animate-bounce w-[min(94vw,860px)] px-2">
-          <div className="bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-sm sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug">
+          <div className="bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-[15px] sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug">
             <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
             <span className="uppercase tracking-wide font-black">{nearInteractablePrompt}</span>
           </div>
@@ -1260,11 +1260,11 @@ export default function TectonicGame() {
               onPointerUp={() => handleMobileBtnUp('jump')}
               onPointerLeave={() => handleMobileBtnUp('jump')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-blue-700 to-blue-900 active:from-blue-600 active:to-blue-800 border-2 border-blue-400 text-blue-100 font-pixel text-[11px] sm:text-xs flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#1e3a8a] active:translate-y-0.5 cursor-pointer select-none"
+              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-blue-700 to-blue-900 active:from-blue-600 active:to-blue-800 border-2 border-blue-400 text-blue-100 font-pixel text-[14.5px] sm:text-[13px] flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#1e3a8a] active:translate-y-0.5 cursor-pointer select-none"
               title="Lompat"
             >
-              <span className="text-sm font-bold leading-none">▲</span>
-              <span className="text-[9px] font-pixel-title mt-0.5 tracking-wider">LONCAT</span>
+              <span className="text-[15px] font-bold leading-none">▲</span>
+              <span className="text-[12.5px] font-pixel-title mt-0.5 tracking-wider">LONCAT</span>
             </button>
 
             {/* Tombol Interaksi [E] AKSI */}
@@ -1273,11 +1273,11 @@ export default function TectonicGame() {
               onPointerUp={() => handleMobileBtnUp('interact')}
               onPointerLeave={() => handleMobileBtnUp('interact')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 border-amber-400 text-amber-50 font-pixel text-[11px] sm:text-xs flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#78350f] active:translate-y-0.5 cursor-pointer select-none"
+              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 border-amber-400 text-amber-50 font-pixel text-[14.5px] sm:text-[13px] flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#78350f] active:translate-y-0.5 cursor-pointer select-none"
               title="Interaksi (E)"
             >
-              <span className="text-xs font-bold leading-none">[E]</span>
-              <span className="text-[9px] font-pixel-title mt-0.5 tracking-wider">AKSI</span>
+              <span className="text-[13px] font-bold leading-none">[E]</span>
+              <span className="text-[12.5px] font-pixel-title mt-0.5 tracking-wider">AKSI</span>
             </button>
           </div>
         </div>
@@ -1300,7 +1300,7 @@ export default function TectonicGame() {
                 retroAudio.playSelect();
                 setIsGateLockedModalOpen(false);
               }}
-              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-xs sm:text-sm md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
+              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
             >
               <span>SIAP, SELESAIKAN TANTANGAN PENELITI DULU</span>
             </button>
@@ -1329,8 +1329,8 @@ export default function TectonicGame() {
             </p>
 
             <div className="bg-rose-950/80 border-2 border-rose-700/80 rounded-2xl p-4 sm:p-5 mb-6 text-left">
-              <span className="font-bold text-rose-400 block mb-1.5 font-pixel-title text-xs sm:text-sm">[TIPS KESIAPSIAGAAN]</span>
-              <p className="font-sans text-sm sm:text-base md:text-lg text-rose-100 leading-relaxed font-medium">
+              <span className="font-bold text-rose-400 block mb-1.5 font-pixel-title text-[13px] sm:text-[15px]">[TIPS KESIAPSIAGAAN]</span>
+              <p className="font-sans text-[15px] sm:text-base md:text-lg text-rose-100 leading-relaxed font-medium">
                 {activeScenario === 'moderate'
                   ? 'Saat gempa bumi berkekuatan sedang, segera lindungi kepala menggunakan tas sekolah atau benda tebal lainnya dan jangan panik! Segera berbaris tertib mengikuti arahan guru menuju pintu keluar dan lapangan terbuka.'
                   : 'Saat gempa bumi besar mengguncang, jangan panik atau berdiri mematung! Segera terapkan protokol Drop, Cover, and Hold On di bawah meja kokoh dalam detik-detik pertama!'}
@@ -1348,7 +1348,7 @@ export default function TectonicGame() {
                 }
                 setSimPhase('teaching');
               }}
-              className="w-full py-4 sm:py-4.5 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white border-3 border-rose-400 shadow-[0_5px_0_#881337] text-xs sm:text-sm md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 font-bold"
+              className="w-full py-4 sm:py-4.5 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white border-3 border-rose-400 shadow-[0_5px_0_#881337] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 font-bold"
             >
               <span>[ULANG] ULANGI SKENARIO GEMPA {activeScenario === 'moderate' ? 'SEDANG' : 'BESAR'}</span>
             </button>
@@ -1360,7 +1360,7 @@ export default function TectonicGame() {
       {discoveryWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
           <div className="relative w-full max-w-md bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl p-5 sm:p-6 shadow-[0_12px_0_#1c0d02] text-[#451a03] font-pixel text-center">
-            <h3 className="text-sm sm:text-base font-pixel-title text-amber-950 font-bold mb-2.5">
+            <h3 className="text-[15px] sm:text-base font-pixel-title text-amber-950 font-bold mb-2.5">
               TEMUAN GEOLOGIS BELUM SELESAI!
             </h3>
 
@@ -1373,7 +1373,7 @@ export default function TectonicGame() {
                 retroAudio.playSelect();
                 setDiscoveryWarning(null);
               }}
-              className="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-xs font-pixel-title cursor-pointer active:translate-y-0.5"
+              className="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-[13px] font-pixel-title cursor-pointer active:translate-y-0.5"
             >
               SIAP, AMATI TEMUAN DULU
             </button>
@@ -1391,13 +1391,13 @@ export default function TectonicGame() {
             {/* Header */}
             <div className="flex items-center gap-1.5 border-b-2 border-[#78350f] pb-1.5 mb-2">
               <PixelIcon name="clipboard" size={14} className="text-[#b45309] shrink-0" />
-              <span className="font-pixel-title text-[9px] sm:text-[10px] text-[#b45309] tracking-widest uppercase font-bold">
+              <span className="font-pixel-title text-[12.5px] sm:text-[13.5px] text-[#b45309] tracking-widest uppercase font-bold">
                 CATATAN EKSPEDISI GEOLOGI
               </span>
             </div>
 
             {/* Content text */}
-            <p className="font-pixel text-[11px] sm:text-xs text-[#291305] leading-relaxed font-medium whitespace-pre-line">
+            <p className="font-pixel text-[14.5px] sm:text-[13px] text-[#291305] leading-relaxed font-medium whitespace-pre-line">
               {inWorldSign.text}
             </p>
 
@@ -1589,18 +1589,18 @@ export default function TectonicGame() {
               <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-slate-800">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full bg-red-500 animate-ping" />
-                  <span className="font-pixel-title text-xs sm:text-sm text-red-400">
+                  <span className="font-pixel-title text-[13px] sm:text-[15px] text-red-400">
                     TELEMETRI SEISMOGRAF POS PGA
                   </span>
                 </div>
-                <span className="px-2.5 py-0.5 rounded bg-red-950 text-red-300 font-pixel text-[10px] border border-red-800">
+                <span className="px-2.5 py-0.5 rounded bg-red-950 text-red-300 font-pixel text-[13.5px] border border-red-800">
                   KUIS AKSES KELUAR
                 </span>
               </div>
 
               {/* Visual Waveform Mini SVG */}
               <div className="w-full h-16 sm:h-20 bg-slate-950 rounded-xl border border-red-900/50 p-2 flex flex-col justify-center relative overflow-hidden">
-                <div className="absolute top-1 left-2 text-[9px] font-mono text-red-400/80">
+                <div className="absolute top-1 left-2 text-[12.5px] font-mono text-red-400/80">
                   TREMOR MENERUS SANGAT RAPAT (CONTINUOUS TREMOR)
                 </div>
                 <svg className="w-full h-10 stroke-red-500" viewBox="0 0 400 40" fill="none">
@@ -1611,7 +1611,7 @@ export default function TectonicGame() {
                 </svg>
               </div>
 
-              <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed font-pixel">
+              <p className="mt-2 text-[13px] sm:text-[15px] text-slate-300 leading-relaxed font-pixel">
                 <span className="text-amber-400 font-bold">SOAL:</span> Gelombang seismogram berfluktuasi <span className="text-red-400 font-bold">SANGAT RAPAT</span> tanpa jeda dan beramplitudo tinggi. Magma mendesak kuat ke permukaan. Status Merapi apakah ini? (4 Huruf)
               </p>
             </div>

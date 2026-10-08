@@ -32,7 +32,7 @@ export default function TectonicVictoryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-8 h-8 rounded-lg bg-[#b45309]/20 hover:bg-[#b45309]/40 text-[#78350f] border border-[#78350f] font-pixel text-xs flex items-center justify-center cursor-pointer transition-transform active:translate-y-0.5"
+            className="w-8 h-8 rounded-lg bg-[#b45309]/20 hover:bg-[#b45309]/40 text-[#78350f] border border-[#78350f] font-pixel text-[13px] flex items-center justify-center cursor-pointer transition-transform active:translate-y-0.5"
             title="Tutup Modal & Jelajahi Map"
           >
             <PixelIcon name="cross" size={13} />
@@ -45,7 +45,7 @@ export default function TectonicVictoryModal({
         </div>
 
         {/* Gate Unlocked Status Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 border border-emerald-500 text-emerald-800 text-[10px] font-pixel mb-2 shadow-sm font-bold">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 border border-emerald-500 text-emerald-800 text-[13.5px] font-pixel mb-2 shadow-sm font-bold">
           <PixelIcon name="star" size={14} className="text-emerald-600" />
           <span>★ 6 ZONA MITIGASI GEMPA & ERUPSI MERAPI TUNTAS 100%! ★</span>
         </div>
@@ -60,7 +60,7 @@ export default function TectonicVictoryModal({
           {/* Klaster 1: Mitigasi Gempa Bumi */}
           <div className="text-left mb-1.5 flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-sky-500 inline-block" />
-            <span className="font-pixel-title text-[9px] text-sky-950 font-bold uppercase tracking-wider">
+            <span className="font-pixel-title text-[12.5px] text-sky-950 font-bold uppercase tracking-wider">
               Klaster 1: Mitigasi Gempa Bumi
             </span>
           </div>
@@ -70,10 +70,10 @@ export default function TectonicVictoryModal({
               <div className="w-8 h-8 rounded-lg bg-sky-200 border border-sky-400 flex items-center justify-center shrink-0 mb-1">
                 <PixelIcon name="shield" size={18} className="text-sky-700" />
               </div>
-              <span className="text-[8.5px] font-pixel-title text-sky-950 font-bold block leading-tight">
+              <span className="text-[12.5px] font-pixel-title text-sky-950 font-bold block leading-tight">
                 PRABENCANA
               </span>
-              <span className="text-[7px] font-pixel text-sky-800 block mt-0.5">
+              <span className="text-[12px] font-pixel text-sky-800 block mt-0.5">
                 Tas Siaga 72 Jam
               </span>
             </div>
@@ -83,10 +83,10 @@ export default function TectonicVictoryModal({
               <div className="w-8 h-8 rounded-lg bg-amber-200 border border-amber-400 flex items-center justify-center shrink-0 mb-1">
                 <PixelIcon name="star" size={18} className="text-amber-700" />
               </div>
-              <span className="text-[8.5px] font-pixel-title text-amber-950 font-bold block leading-tight">
+              <span className="text-[12.5px] font-pixel-title text-amber-950 font-bold block leading-tight">
                 TANGGAP GEMPA
               </span>
-              <span className="text-[7px] font-pixel text-amber-800 block mt-0.5">
+              <span className="text-[12px] font-pixel text-amber-800 block mt-0.5">
                 Drop-Cover-Hold On
               </span>
             </div>
@@ -96,10 +96,10 @@ export default function TectonicVictoryModal({
               <div className="w-8 h-8 rounded-lg bg-emerald-200 border border-emerald-400 flex items-center justify-center shrink-0 mb-1">
                 <PixelIcon name="heart" size={18} className="text-emerald-700" />
               </div>
-              <span className="text-[8.5px] font-pixel-title text-emerald-950 font-bold block leading-tight">
+              <span className="text-[12.5px] font-pixel-title text-emerald-950 font-bold block leading-tight">
                 PASCABENCANA
               </span>
-              <span className="text-[7px] font-pixel text-emerald-800 block mt-0.5">
+              <span className="text-[12px] font-pixel text-emerald-800 block mt-0.5">
                 Titik Kumpul &amp; P3K
               </span>
             </div>
@@ -108,7 +108,7 @@ export default function TectonicVictoryModal({
           {/* Klaster 2: Mitigasi Erupsi Merapi */}
           <div className="text-left mb-1.5 flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" />
-            <span className="font-pixel-title text-[9px] text-rose-950 font-bold uppercase tracking-wider">
+            <span className="font-pixel-title text-[12.5px] text-rose-950 font-bold uppercase tracking-wider">
               Klaster 2: Mitigasi Erupsi Merapi
             </span>
           </div>
@@ -118,10 +118,10 @@ export default function TectonicVictoryModal({
               <div className="w-8 h-8 rounded-lg bg-rose-200 border border-rose-400 flex items-center justify-center shrink-0 mb-1">
                 <PixelIcon name="broadcast" size={18} className="text-rose-700" />
               </div>
-              <span className="text-[8.5px] font-pixel-title text-rose-950 font-bold block leading-tight">
+              <span className="text-[12.5px] font-pixel-title text-rose-950 font-bold block leading-tight">
                 PRABENCANA
               </span>
-              <span className="text-[7px] font-pixel text-rose-800 block mt-0.5">
+              <span className="text-[12px] font-pixel text-rose-800 block mt-0.5">
                 Status PVMBG &amp; KRB
               </span>
             </div>
@@ -131,10 +131,10 @@ export default function TectonicVictoryModal({
               <div className="w-8 h-8 rounded-lg bg-orange-200 border border-orange-400 flex items-center justify-center shrink-0 mb-1">
                 <PixelIcon name="flame" size={18} className="text-orange-700" />
               </div>
-              <span className="text-[8.5px] font-pixel-title text-orange-950 font-bold block leading-tight">
+              <span className="text-[12.5px] font-pixel-title text-orange-950 font-bold block leading-tight">
                 TANGGAP ERUPSI
               </span>
-              <span className="text-[7px] font-pixel text-orange-800 block mt-0.5">
+              <span className="text-[12px] font-pixel text-orange-800 block mt-0.5">
                 Evakuasi Dusun KRB III
               </span>
             </div>
@@ -144,16 +144,16 @@ export default function TectonicVictoryModal({
               <div className="w-8 h-8 rounded-lg bg-teal-200 border border-teal-400 flex items-center justify-center shrink-0 mb-1">
                 <PixelIcon name="trophy" size={18} className="text-teal-700" />
               </div>
-              <span className="text-[8.5px] font-pixel-title text-teal-950 font-bold block leading-tight">
+              <span className="text-[12.5px] font-pixel-title text-teal-950 font-bold block leading-tight">
                 PEMULIHAN AKHIR
               </span>
-              <span className="text-[7px] font-pixel text-teal-800 block mt-0.5">
+              <span className="text-[12px] font-pixel text-teal-800 block mt-0.5">
                 Barak &amp; Bahaya Lahar
               </span>
             </div>
           </div>
 
-          <div className="text-xs font-pixel text-cyan-800 bg-cyan-100 py-1.5 px-3.5 rounded-xl border border-cyan-400 inline-flex items-center gap-2 font-bold shadow-sm">
+          <div className="text-[13px] font-pixel text-cyan-800 bg-cyan-100 py-1.5 px-3.5 rounded-xl border border-cyan-400 inline-flex items-center gap-2 font-bold shadow-sm">
             <PixelIcon name="crystal" size={13} />
             <span>{Math.min(totalCrystals, collectedCrystals)}/{totalCrystals} Kristal Mitigasi</span>
             <span>•</span>
@@ -164,10 +164,10 @@ export default function TectonicVictoryModal({
 
         {/* Narrative Transition to Level 3 */}
         <div className="bg-gradient-to-r from-amber-900 to-rose-950 text-amber-100 p-3.5 sm:p-4 rounded-2xl border-3 border-[#451a03] max-w-xl mx-auto mb-4 shadow-md text-left">
-          <span className="font-pixel-title text-[9px] sm:text-[10px] text-amber-400 block mb-1 font-bold">
+          <span className="font-pixel-title text-[12.5px] sm:text-[13.5px] text-amber-400 block mb-1 font-bold">
             JEMBATAN MISI TARUNA RESQ:
           </span>
-          <p className="font-pixel text-xs leading-relaxed text-amber-100 italic">
+          <p className="font-pixel text-[13px] leading-relaxed text-amber-100 italic">
             &ldquo;Selamat Chief Disaster Analyst! Kamu telah menuntaskan seluruh kurikulum mitigasi bencana geologis secara paripurna: kesiapsiagaan gempa 72 jam, simulasi refleks Drop-Cover-Hold On, tanggap darurat erupsi Merapi di KRB III, tata tertib barak pengungsian, sanitasi air bersih, gotong royong pembersihan atap, hingga kewaspadaan bahaya sekunder lahar dingin. Kapsul evakuasi akhir RESQ-BOX telah mengorbitkan hasil penelitianmu ke pusat komando. Akses menuju Level 3 kini telah TERBUKA PENUH!&rdquo;
           </p>
         </div>
@@ -186,10 +186,10 @@ export default function TectonicVictoryModal({
               <PixelIcon name="globe" size={22} className="text-[#78350f]" />
             </div>
             <div>
-              <span className="text-[11px] font-pixel-title font-bold block text-[#451a03]">
+              <span className="text-[14.5px] font-pixel-title font-bold block text-[#451a03]">
                 MENU UTAMA
               </span>
-              <span className="text-[9px] font-pixel text-[#92400e] block">
+              <span className="text-[12.5px] font-pixel text-[#92400e] block">
                 Kembali ke Beranda Taruna
               </span>
             </div>
@@ -207,11 +207,11 @@ export default function TectonicVictoryModal({
               <PixelIcon name="alert" size={22} className="text-emerald-100" />
             </div>
             <div>
-              <span className="text-[11px] font-pixel-title font-bold block text-white flex items-center gap-1">
+              <span className="text-[14.5px] font-pixel-title font-bold block text-white flex items-center gap-1">
                 LANJUT KE LEVEL 3
                 <span className="text-amber-300">&gt;</span>
               </span>
-              <span className="text-[9px] font-pixel text-emerald-100 block">
+              <span className="text-[12.5px] font-pixel text-emerald-100 block">
                 Simulasi Mitigasi Bencana
               </span>
             </div>
@@ -225,7 +225,7 @@ export default function TectonicVictoryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="px-4 py-2 rounded-xl bg-[#d97706]/15 hover:bg-[#d97706]/25 text-[#92400e] border border-[#b45309] text-[10px] font-pixel cursor-pointer transition-colors inline-flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-[#d97706]/15 hover:bg-[#d97706]/25 text-[#92400e] border border-[#b45309] text-[13.5px] font-pixel cursor-pointer transition-colors inline-flex items-center gap-1.5"
           >
             <PixelIcon name="clipboard" size={14} />
             <span>JELAJAHI AREA (LIHAT GERBANG TERBUKA &amp; ZONA MITIGASI)</span>

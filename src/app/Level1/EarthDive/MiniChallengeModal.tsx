@@ -70,10 +70,10 @@ export default function MiniChallengeModal({
               <PixelIcon name="swords" size={20} className="text-[#92400e]" />
             </div>
             <div>
-              <span className="text-xs sm:text-sm text-[#b45309] font-pixel uppercase tracking-widest block font-bold">
+              <span className="text-[13px] sm:text-[15px] text-[#b45309] font-pixel uppercase tracking-widest block font-bold">
                 GERBANG EVALUASI STRATA • {strataName}
               </span>
-              <h2 className="text-sm sm:text-base md:text-xl text-[#451a03] font-pixel-title font-bold">
+              <h2 className="text-[15px] sm:text-base md:text-xl text-[#451a03] font-pixel-title font-bold">
                 Uji Pemahaman Geologi
               </h2>
             </div>
@@ -81,7 +81,7 @@ export default function MiniChallengeModal({
           
           <div className="flex items-center gap-2 bg-[#fde68a] px-3 py-1.5 rounded-xl border-2 border-[#b45309] shadow-xs">
             <PixelIcon name="crystal" size={16} />
-            <span className="text-xs sm:text-sm text-[#78350f] font-pixel-title font-bold">+1 Crystal</span>
+            <span className="text-[13px] sm:text-[15px] text-[#78350f] font-pixel-title font-bold">+1 Crystal</span>
           </div>
         </div>
 
@@ -116,16 +116,16 @@ export default function MiniChallengeModal({
                 className={`w-full text-left p-3.5 sm:p-4 rounded-xl border-2 sm:border-3 transition-all flex items-center justify-between cursor-pointer ${btnStyle}`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-[#451a03]/10 flex items-center justify-center font-pixel-title text-xs sm:text-sm font-bold shrink-0">
+                  <span className="w-8 h-8 rounded-xl bg-[#451a03]/10 flex items-center justify-center font-pixel-title text-[13px] sm:text-[15px] font-bold shrink-0">
                     {opt.id.toUpperCase()}
                   </span>
-                  <span className="font-sans text-sm sm:text-base md:text-lg font-medium leading-relaxed">{opt.text}</span>
+                  <span className="font-sans text-[15px] sm:text-base md:text-lg font-medium leading-relaxed">{opt.text}</span>
                 </div>
                 {isAnswered && opt.isCorrect && (
-                  <span className="text-emerald-700 font-pixel-title text-xs sm:text-sm font-bold shrink-0 ml-2">✓ BENAR</span>
+                  <span className="text-emerald-700 font-pixel-title text-[13px] sm:text-[15px] font-bold shrink-0 ml-2">✓ BENAR</span>
                 )}
                 {isAnswered && isSelected && !opt.isCorrect && (
-                  <span className="text-rose-700 font-pixel-title text-xs sm:text-sm font-bold shrink-0 ml-2">✕ SALAH</span>
+                  <span className="text-rose-700 font-pixel-title text-[13px] sm:text-[15px] font-bold shrink-0 ml-2">✕ SALAH</span>
                 )}
               </button>
             );
@@ -138,14 +138,14 @@ export default function MiniChallengeModal({
             <div className="w-12 h-12 rounded-xl bg-amber-500 border-2 border-amber-700 flex items-center justify-center shrink-0 shadow-inner">
               <PixelIcon name="fox" size={28} />
             </div>
-            <div className="font-sans text-sm sm:text-base">
+            <div className="font-sans text-[15px] sm:text-base">
               <div className="flex items-center gap-2 mb-1.5">
                 <PixelIcon name="bulb" size={15} className="text-amber-900" />
-                <span className="font-pixel-title text-xs sm:text-sm text-amber-900 font-bold">
+                <span className="font-pixel-title text-[13px] sm:text-[15px] text-amber-900 font-bold">
                   PETUNJUK DARI SIAGA
                 </span>
               </div>
-              <p className="text-amber-950 italic font-sans text-sm sm:text-base leading-relaxed font-medium">{challenge.siagaClue}</p>
+              <p className="text-amber-950 italic font-sans text-[15px] sm:text-base leading-relaxed font-medium">{challenge.siagaClue}</p>
             </div>
           </div>
         )}
@@ -153,11 +153,11 @@ export default function MiniChallengeModal({
         {/* ── SUCCESS EXPLANATION & REWARD BANNER ── */}
         {isAnswered && isCorrect && (
           <div className="p-4 sm:p-5 bg-emerald-100 border-3 border-emerald-500 rounded-2xl mb-4.5 animate-fadeIn">
-            <div className="flex items-center gap-2 font-pixel-title text-xs sm:text-sm text-emerald-900 font-bold mb-2">
+            <div className="flex items-center gap-2 font-pixel-title text-[13px] sm:text-[15px] text-emerald-900 font-bold mb-2">
               <PixelIcon name="celebration" size={16} />
               <span>JAWABAN TEPAT! • +1 GEOCRYSTAL &amp; BADGE [{badgeName}]</span>
             </div>
-            <p className="text-emerald-950 leading-relaxed font-sans text-sm sm:text-base font-medium">
+            <p className="text-emerald-950 leading-relaxed font-sans text-[15px] sm:text-base font-medium">
               {challenge.explanation}
             </p>
           </div>
@@ -172,14 +172,14 @@ export default function MiniChallengeModal({
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="px-5 py-2.5 rounded-xl bg-[#d97706]/20 hover:bg-[#d97706]/30 text-[#78350f] border-2 border-[#78350f] text-xs sm:text-sm font-pixel-title cursor-pointer font-bold"
+                className="px-5 py-2.5 rounded-xl bg-[#d97706]/20 hover:bg-[#d97706]/30 text-[#78350f] border-2 border-[#78350f] text-[13px] sm:text-[15px] font-pixel-title cursor-pointer font-bold"
               >
                 KEMBALI KE KAPSUL
               </button>
               <button
                 onClick={handleVerify}
                 disabled={!selectedOptId}
-                className={`px-6 sm:px-8 py-3 rounded-xl border-3 font-pixel-title text-xs sm:text-sm md:text-base flex items-center gap-2 shadow-[0_4px_0_#231206] transition-transform active:translate-y-0.5 ${
+                className={`px-6 sm:px-8 py-3 rounded-xl border-3 font-pixel-title text-[13px] sm:text-[15px] md:text-base flex items-center gap-2 shadow-[0_4px_0_#231206] transition-transform active:translate-y-0.5 ${
                   selectedOptId
                     ? 'bg-amber-600 hover:bg-amber-500 text-amber-50 border-[#451a03] cursor-pointer'
                     : 'bg-slate-300 text-slate-500 border-slate-400 cursor-not-allowed'
@@ -195,7 +195,7 @@ export default function MiniChallengeModal({
                 retroAudio.playUnlock();
                 onSuccess();
               }}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border-3 border-[#064e3b] shadow-[0_4px_0_#064e3b] text-xs sm:text-sm md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border-3 border-[#064e3b] shadow-[0_4px_0_#064e3b] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
             >
               <PixelIcon name="rocket" size={16} />
               <span>BUKA STRATA BERIKUTNYA &amp; MENYELAM LAGI</span>
@@ -208,13 +208,13 @@ export default function MiniChallengeModal({
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="px-5 py-2.5 rounded-xl bg-[#d97706]/20 text-[#78350f] border-2 border-[#78350f] text-xs sm:text-sm font-pixel-title cursor-pointer font-bold"
+                className="px-5 py-2.5 rounded-xl bg-[#d97706]/20 text-[#78350f] border-2 border-[#78350f] text-[13px] sm:text-[15px] font-pixel-title cursor-pointer font-bold"
               >
                 PELAJARI MATERI LAGI
               </button>
               <button
                 onClick={handleRetry}
-                className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-50 border-3 border-[#451a03] text-xs sm:text-sm md:text-base font-pixel-title cursor-pointer shadow-[0_3px_0_#231206] transition-transform active:translate-y-0.5 flex items-center gap-2"
+                className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-50 border-3 border-[#451a03] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer shadow-[0_3px_0_#231206] transition-transform active:translate-y-0.5 flex items-center gap-2"
               >
                 <PixelIcon name="refresh" size={14} />
                 <span>COBA LAGI</span>

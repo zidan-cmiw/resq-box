@@ -17,6 +17,7 @@
 
 import { createClient, SupabaseClient, type Session } from '@supabase/supabase-js';
 import type { CustomAvatarConfig } from '../store/teacherStore';
+import { reportError } from './monitoring';
 
 // ── TIPE PUBLIK (dipertahankan agar komponen lain tidak perlu diubah) ──────
 export interface UserAccount {
@@ -111,7 +112,21 @@ export function getLastCloudError(): string | null {
 function noteError(scope: string, detail: unknown): void {
   const msg = detail instanceof Error ? detail.message : String(detail);
   lastCloudError = `${scope}: ${msg}`;
-  console.error(`[RESQ-BOX][cloud] ${scope}:`, detail);
+  // Teruskan ke lapisan monitoring agar kegagalan di perangkat siswa
+  // bisa terlihat di luar console mereka sendiri.
+  reportCloudError(scope, detail);
+}
+
+/** Dipisah supaya monitoring bisa dimatikan tanpa menyentuh pemanggilnya. */
+function reportCloudError(scope: string, detail: unknown): void {
+  try {
+    reportError(detail instanceof Error ? detail : new Error(String(detail)), {
+      level: 'error',
+      scope: `cloud:${scope}`,
+    });
+  } catch {
+    /* observabilitas tidak boleh menjatuhkan aplikasi */
+  }
 }
 
 /** Bila kunci cloud belum diisi, aplikasi berjalan 100% lokal (mode luring). */

@@ -861,7 +861,7 @@ export function renderTectonicGameL2(
   ctx.scale(scale, scale);
 
   // ============================================================================
-  // 🎥 FISIKA GETARAN KAMERA GEMPA (CAMERA SHAKE)
+ // FISIKA GETARAN KAMERA GEMPA (CAMERA SHAKE)
   // Pengali di bawah ini mengontrol seberapa jauh layar bergeser (pixel) per tingkat intensity:
   // - waveX & waveY : Ayunan gelombang seismik mulus (bergoyang ke samping / atas-bawah)
   // - jitterX & jitterY : Sentakan tektonik cepat / getar acak

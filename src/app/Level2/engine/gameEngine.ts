@@ -13,11 +13,11 @@ import { DIALOGUE_TREES_L2, type DialogueTreeL2 } from '../dialogueDataL2';
 import { LEVEL2_AREAS } from '../level2Data';
 
 // ============================================================================
-// 🌋 PENGATURAN GETARAN GEMPA AREA 2 (RUANG KELAS)
+// PENGATURAN GETARAN GEMPA AREA 2 (RUANG KELAS)
 // Kamu bisa langsung ubah angka getaran di bawah ini sesuai selera kamu!
 // ============================================================================
 export const EARTHQUAKE_SHAKE_CONFIG = {
-  // 🟡 SKENARIO GEMPA SEDANG
+ // SKENARIO GEMPA SEDANG
   MODERATE: {
     // Kekuatan getaran (semakin besar angkanya, semakin kuat layar bergetar)
     intensity: 0.7,
@@ -29,7 +29,7 @@ export const EARTHQUAKE_SHAKE_CONFIG = {
     debrisInterval: 55,
   },
 
-  // 🔴 SKENARIO GEMPA BESAR
+ // SKENARIO GEMPA BESAR
   SEVERE: {
     // Kekuatan getaran saat dialog peringatan awal Bu Rahma
     alertIntensity: 2.0,

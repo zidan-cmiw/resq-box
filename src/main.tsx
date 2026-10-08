@@ -2,6 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { initGlobalErrorHandlers, initWebVitals } from './utils/monitoring'
+
+// ── Observabilitas ────────────────────────────────────────────────────────
+// Tanpa ini, kegagalan yang terjadi di HP siswa tidak pernah sampai ke kita.
+// Keduanya aman dipanggil walau monitoring belum dikonfigurasi (no-op).
+initGlobalErrorHandlers()
+initWebVitals()
 
 // ── Mobile Game Protection: Disable Long-Press Context Menu & Double-Tap Zoom ──
 if (typeof window !== 'undefined') {

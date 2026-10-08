@@ -238,7 +238,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               <h2 className="font-pixel-title text-base sm:text-xl text-amber-950 tracking-wider">
                 BENGKEL AVATAR RESQ-TEAM
               </h2>
-              <p className="text-xs sm:text-sm text-amber-900">
+              <p className="text-[13px] sm:text-[15px] text-amber-900">
                 Kustomisasi karakter penyelamatmu secara bebas dan simpan langsung ke profil akun!
               </p>
             </div>
@@ -248,7 +248,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 rounded-xl bg-amber-200 border-2 border-amber-950 flex items-center justify-center font-pixel-title text-sm text-amber-950 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer shadow-[0_2px_0_#78350f]"
+            className="w-9 h-9 rounded-xl bg-amber-200 border-2 border-amber-950 flex items-center justify-center font-pixel-title text-[15px] text-amber-950 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer shadow-[0_2px_0_#78350f]"
             title="Tutup Modal"
           >
             ✕
@@ -265,16 +265,16 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
             <div className="w-full flex flex-col items-center bg-amber-950/10 py-4 px-3 rounded-xl border-2 border-amber-950/30">
               <div className="relative group">
                 <PixelAvatarRenderer config={avatar} size={140} animate={false} />
-                <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-slate-950 text-[10px] font-bold px-2.5 py-0.5 rounded-full border-2 border-slate-950 shadow">
+                <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-slate-950 text-[13.5px] font-bold px-2.5 py-0.5 rounded-full border-2 border-slate-950 shadow">
                   ● LIVE
                 </div>
               </div>
 
               <div className="text-center mt-3">
-                <span className="text-[10px] text-amber-800 uppercase tracking-widest font-bold block">
+                <span className="text-[13.5px] text-amber-800 uppercase tracking-widest font-bold block">
                   PRATINJAU KARAKTER
                 </span>
-                <p className="text-xs sm:text-sm text-amber-950 font-bold">
+                <p className="text-[13px] sm:text-[15px] text-amber-950 font-bold">
                   {(avatar.outfit || 'vest-orange').replace('-', ' ').toUpperCase()}
                 </p>
               </div>
@@ -283,7 +283,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
             {/* Randomize button */}
             <button
               onClick={handleRandomize}
-              className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold border-3 border-amber-950 shadow-[0_4px_0_#78350f] flex items-center justify-center gap-2 text-xs sm:text-sm transition-transform active:translate-y-1 cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold border-3 border-amber-950 shadow-[0_4px_0_#78350f] flex items-center justify-center gap-2 text-[13px] sm:text-[15px] transition-transform active:translate-y-1 cursor-pointer"
             >
               <PixelIcon name="dice" size={18} />
               <span>ACAK AVATAR (RANDOM)</span>
@@ -291,7 +291,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
 
             {/* Quick Presets (NO EMOJIS, ACTUAL MINI PIXEL AVATARS) */}
             <div className="w-full pt-3 border-t-2 border-amber-950/20">
-              <span className="text-[11px] text-amber-900 font-bold flex items-center justify-center gap-1.5 mb-2 uppercase tracking-wider">
+              <span className="text-[14.5px] text-amber-900 font-bold flex items-center justify-center gap-1.5 mb-2 uppercase tracking-wider">
                 <PixelIcon name="lightning" size={13} />
                 <span>PRESET KARAKTER CEPAT:</span>
               </span>
@@ -304,10 +304,10 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                   >
                     <PixelAvatarRenderer config={preset.config} size={36} bordered={true} />
                     <div className="min-w-0 flex-1">
-                      <span className="text-[11px] text-amber-950 font-bold block leading-tight">
+                      <span className="text-[14.5px] text-amber-950 font-bold block leading-tight">
                         {preset.name}
                       </span>
-                      <span className="text-[9px] text-amber-800 block leading-tight">
+                      <span className="text-[12.5px] text-amber-800 block leading-tight">
                         {preset.subtitle}
                       </span>
                     </div>
@@ -338,7 +338,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                       retroAudio.playHover();
                       setActiveTab(tab.id as any);
                     }}
-                    className={`py-2 px-2 rounded-xl border-2 border-amber-950 text-xs sm:text-sm font-bold text-center cursor-pointer transition-all ${
+                    className={`py-2 px-2 rounded-xl border-2 border-amber-950 text-[13px] sm:text-[15px] font-bold text-center cursor-pointer transition-all ${
                       isActive
                         ? 'bg-amber-950 text-amber-300 shadow-[0_3px_0_#451a03] scale-102'
                         : 'bg-amber-200/90 text-amber-950 hover:bg-amber-300 shadow-[0_2px_0_#78350f]'
@@ -357,7 +357,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               {activeTab === 'hair' && (
                 <div className="space-y-5">
                   <div>
-                    <label className="text-xs sm:text-sm font-bold text-amber-950 block mb-2.5">
+                    <label className="text-[13px] sm:text-[15px] font-bold text-amber-950 block mb-2.5">
                       PILIH MODEL RAMBUT / PENUTUP KEPALA:
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -379,8 +379,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           >
                             <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                             <div className="min-w-0 flex-1">
-                              <span className="text-xs sm:text-sm block font-bold leading-tight">{h.label}</span>
-                              <span className="text-[10px] text-amber-800 block leading-tight">{h.desc}</span>
+                              <span className="text-[13px] sm:text-[15px] block font-bold leading-tight">{h.label}</span>
+                              <span className="text-[13.5px] text-amber-800 block leading-tight">{h.desc}</span>
                             </div>
                           </button>
                         );
@@ -389,7 +389,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                   </div>
 
                   <div className="pt-3 border-t-2 border-amber-950/20">
-                    <label className="text-xs sm:text-sm font-bold text-amber-950 block mb-2.5">
+                    <label className="text-[13px] sm:text-[15px] font-bold text-amber-950 block mb-2.5">
                       PILIH WARNA RAMBUT / HIJAB:
                     </label>
                     <div className="grid grid-cols-3 sm:grid-cols-3 gap-2">
@@ -412,7 +412,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                               className="w-6 h-6 rounded-lg border-2 border-amber-950 shrink-0 shadow-inner"
                               style={{ backgroundColor: c.color }}
                             />
-                            <span className="text-[11px] text-amber-950 font-bold truncate">
+                            <span className="text-[14.5px] text-amber-950 font-bold truncate">
                               {c.label}
                             </span>
                           </button>
@@ -426,7 +426,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               {/* 2. SKIN TONE TAB */}
               {activeTab === 'skin' && (
                 <div>
-                  <label className="text-xs sm:text-sm font-bold text-amber-950 block mb-3">
+                  <label className="text-[13px] sm:text-[15px] font-bold text-amber-950 block mb-3">
                     PILIH WARNA KULIT KARAKTER:
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -448,8 +448,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="text-left min-w-0 flex-1">
-                            <span className="text-xs sm:text-sm font-bold block leading-tight">{s.label}</span>
-                            <span className="text-[10px] text-amber-800 block leading-tight">
+                            <span className="text-[13px] sm:text-[15px] font-bold block leading-tight">{s.label}</span>
+                            <span className="text-[13.5px] text-amber-800 block leading-tight">
                               {s.desc}
                             </span>
                           </div>
@@ -463,7 +463,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               {/* 3. EYES & EXPRESSION TAB */}
               {activeTab === 'eyes' && (
                 <div>
-                  <label className="text-xs sm:text-sm font-bold text-amber-950 block mb-3">
+                  <label className="text-[13px] sm:text-[15px] font-bold text-amber-950 block mb-3">
                     PILIH EKSPRESI MATA & VISOR KACAMATA:
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -485,8 +485,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="min-w-0 flex-1">
-                            <span className="text-xs sm:text-sm font-bold block leading-tight mb-0.5">{e.label}</span>
-                            <span className="text-[10px] text-amber-800 block leading-tight">{e.desc}</span>
+                            <span className="text-[13px] sm:text-[15px] font-bold block leading-tight mb-0.5">{e.label}</span>
+                            <span className="text-[13.5px] text-amber-800 block leading-tight">{e.desc}</span>
                           </div>
                         </button>
                       );
@@ -498,7 +498,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               {/* 4. OUTFIT TAB */}
               {activeTab === 'outfit' && (
                 <div>
-                  <label className="text-xs sm:text-sm font-bold text-amber-950 block mb-3">
+                  <label className="text-[13px] sm:text-[15px] font-bold text-amber-950 block mb-3">
                     PILIH SERAGAM LAPANGAN / KOSTUM TIM SAR:
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -520,8 +520,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="min-w-0 flex-1">
-                            <span className="text-xs sm:text-sm font-bold block leading-tight">{o.label}</span>
-                            <span className="text-[10px] text-amber-800 block leading-tight">{o.desc}</span>
+                            <span className="text-[13px] sm:text-[15px] font-bold block leading-tight">{o.label}</span>
+                            <span className="text-[13.5px] text-amber-800 block leading-tight">{o.desc}</span>
                           </div>
                         </button>
                       );
@@ -533,7 +533,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               {/* 5. ACCESSORIES TAB */}
               {activeTab === 'accessory' && (
                 <div>
-                  <label className="text-xs sm:text-sm font-bold text-amber-950 block mb-3">
+                  <label className="text-[13px] sm:text-[15px] font-bold text-amber-950 block mb-3">
                     PILIH PERLENGKAPAN / AKSESORIS SIAGA BENCANA:
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -555,8 +555,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="min-w-0 flex-1">
-                            <span className="text-xs sm:text-sm font-bold block leading-tight mb-0.5">{a.label}</span>
-                            <span className="text-[10px] text-amber-800 block leading-tight">{a.desc}</span>
+                            <span className="text-[13px] sm:text-[15px] font-bold block leading-tight mb-0.5">{a.label}</span>
+                            <span className="text-[13.5px] text-amber-800 block leading-tight">{a.desc}</span>
                           </div>
                         </button>
                       );
@@ -568,7 +568,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               {/* 6. BACKGROUND THEME TAB */}
               {activeTab === 'bg' && (
                 <div>
-                  <label className="text-xs sm:text-sm font-bold text-amber-950 block mb-3">
+                  <label className="text-[13px] sm:text-[15px] font-bold text-amber-950 block mb-3">
                     PILIH TEMA WARNA LATAR LENCANA PROFIL:
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -590,8 +590,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="min-w-0 flex-1">
-                            <span className="text-xs sm:text-sm font-bold block leading-tight">{b.label}</span>
-                            <span className="text-[10px] text-amber-800 block leading-tight">{b.desc}</span>
+                            <span className="text-[13px] sm:text-[15px] font-bold block leading-tight">{b.label}</span>
+                            <span className="text-[13.5px] text-amber-800 block leading-tight">{b.desc}</span>
                           </div>
                         </button>
                       );
@@ -611,14 +611,14 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               retroAudio.playSelect();
               onClose();
             }}
-            className="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-200 hover:bg-slate-700 border-2 border-slate-950 font-bold text-xs sm:text-sm cursor-pointer shadow-[0_3px_0_#0f172a]"
+            className="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-200 hover:bg-slate-700 border-2 border-slate-950 font-bold text-[13px] sm:text-[15px] cursor-pointer shadow-[0_3px_0_#0f172a]"
           >
             BATAL
           </button>
 
           <button
             onClick={handleSave}
-            className="px-7 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-xs sm:text-sm border-3 border-amber-950 shadow-[0_4px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer flex items-center gap-2"
+            className="px-7 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-3 border-amber-950 shadow-[0_4px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer flex items-center gap-2"
           >
             <span>SIMPAN AVATAR SAYA</span>
             <PixelIcon name="check" size={16} />

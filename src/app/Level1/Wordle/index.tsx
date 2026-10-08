@@ -234,13 +234,13 @@ export default function Wordle({
           </div>
 
           <div className="space-y-2.5 w-full">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-xs sm:text-sm border-2 border-amber-950 shadow-md">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md">
               GERBANG TERBUKA!
             </span>
             <h3 className="font-pixel-title text-base sm:text-lg md:text-xl text-amber-950 pt-1 font-bold">
               EVALUASI SEISMIK TUNTAS
             </h3>
-            <p className="font-pixel text-sm sm:text-base text-amber-900 leading-relaxed font-medium">
+            <p className="font-pixel text-[15px] sm:text-base text-amber-900 leading-relaxed font-medium">
               Kamu berhasil memecahkan seluruh kode geologi strata ini! Jalur turun menuju lapisan berikutnya kini telah terbuka.
             </p>
           </div>
@@ -251,7 +251,7 @@ export default function Wordle({
               onSuccess?.();
               onClose?.();
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-sm sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center"
+            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center"
           >
             BUKA AKSES TURUN ▼
           </button>
@@ -270,13 +270,13 @@ export default function Wordle({
           </div>
 
           <div className="space-y-2.5 w-full">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-xs sm:text-sm border-2 border-amber-950 shadow-md">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md">
               MINI CHALLENGE SELESAI!
             </span>
             <h3 className="font-pixel-title text-base sm:text-lg md:text-xl text-amber-950 pt-1 font-bold">
               PEMAHAMAN GEOLOGI TERCATAT
             </h3>
-            <p className="font-pixel text-sm sm:text-base text-amber-900 leading-relaxed font-medium">
+            <p className="font-pixel text-[15px] sm:text-base text-amber-900 leading-relaxed font-medium">
               Kamu berhasil menjawab seluruh teka-teki geologi pada temuan ini! Pengetahuanmu tentang dinamika bumi semakin mendalam.
             </p>
           </div>
@@ -287,7 +287,7 @@ export default function Wordle({
               onSuccess?.();
               onClose();
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-sm sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center"
+            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center"
           >
             KEMBALI KE PENJELAJAHAN ➔
           </button>
@@ -308,7 +308,7 @@ export default function Wordle({
 
         {/* Victory Header */}
         <div className="space-y-2 w-full">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-xs sm:text-sm border-2 border-amber-950 shadow">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow">
             STAGE 1 CLEARED
           </span>
           <h3 className="font-pixel-title text-base sm:text-lg md:text-xl text-amber-950 pt-1 font-bold">
@@ -318,10 +318,10 @@ export default function Wordle({
 
         {/* Compact Result Card */}
         <div className="w-full p-4 sm:p-5 bg-white/95 rounded-2xl border-3 border-amber-950/30 shadow-sm space-y-3 text-center">
-          <p className="text-sm sm:text-base text-amber-950 font-pixel font-bold leading-relaxed">
+          <p className="text-[15px] sm:text-base text-amber-950 font-pixel font-bold leading-relaxed">
             Kamu telah menguasai <span className="text-amber-800 font-extrabold">Struktur Lapisan Bumi</span> &amp; <span className="text-amber-800 font-extrabold">Dinamika Lempeng Tektonik</span>!
           </p>
-          <div className="grid grid-cols-3 gap-2.5 pt-2 border-t-2 border-amber-950/20 text-xs sm:text-sm text-amber-950 font-bold">
+          <div className="grid grid-cols-3 gap-2.5 pt-2 border-t-2 border-amber-950/20 text-[13px] sm:text-[15px] text-amber-950 font-bold">
             <span className="bg-amber-100 py-2 px-2.5 rounded-xl border border-amber-950/30 truncate">
               Bab 1 &amp; 2
             </span>
@@ -341,7 +341,7 @@ export default function Wordle({
               retroAudio.playSelect();
               navigate('/level2');
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-sm sm:text-base border-3 border-amber-950 shadow-[0_5px_0_#064e3b] transition-transform active:translate-y-0.5 cursor-pointer text-center"
+            className="w-full py-4 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_5px_0_#064e3b] transition-transform active:translate-y-0.5 cursor-pointer text-center"
           >
             LANJUT KE LEVEL 2 ➔
           </button>
@@ -352,14 +352,14 @@ export default function Wordle({
                 retroAudio.playSelect();
                 navigate('/');
               }}
-              className="flex-1 py-3 px-4 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel font-bold text-xs sm:text-sm border-2 border-amber-950 shadow-[0_3px_0_#78350f] cursor-pointer"
+              className="flex-1 py-3 px-4 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel font-bold text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-[0_3px_0_#78350f] cursor-pointer"
             >
               MENU UTAMA
             </button>
 
             <button
               onClick={handleRestartAll}
-              className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-200 font-pixel font-bold text-xs sm:text-sm border-2 border-slate-950 shadow-[0_3px_0_#0f172a] cursor-pointer whitespace-nowrap"
+              className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-200 font-pixel font-bold text-[13px] sm:text-[15px] border-2 border-slate-950 shadow-[0_3px_0_#0f172a] cursor-pointer whitespace-nowrap"
               title="Mainkan Ulang Quest"
             >
               ULANG ↺
@@ -381,7 +381,7 @@ export default function Wordle({
       {/* ── Header: Quest Title & Progress Indicator ── */}
       <div className="w-full flex items-center justify-between pb-3 border-b-3 border-amber-950/20">
         <div className="flex items-center gap-2.5">
-          <span className="font-pixel-title text-sm sm:text-base md:text-lg text-amber-950 font-bold tracking-wide">
+          <span className="font-pixel-title text-[15px] sm:text-base md:text-lg text-amber-950 font-bold tracking-wide">
             {gateTitle || `KATA GEOLOGI (SOAL ${currentQIdx + 1} / ${questions.length})`}
           </span>
         </div>
@@ -389,7 +389,7 @@ export default function Wordle({
           {questions.map((_, idx) => (
             <span
               key={idx}
-              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg border-2 border-amber-950 flex items-center justify-center font-pixel-title text-xs sm:text-sm font-bold shadow-xs ${idx < currentQIdx
+              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg border-2 border-amber-950 flex items-center justify-center font-pixel-title text-[13px] sm:text-[15px] font-bold shadow-xs ${idx < currentQIdx
                 ? 'bg-emerald-500 text-white'
                 : idx === currentQIdx
                   ? 'bg-amber-400 text-amber-950 animate-pulse ring-2 ring-amber-500'
@@ -405,7 +405,7 @@ export default function Wordle({
                 retroAudio.playSelect();
                 onClose();
               }}
-              className="ml-2 w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-900/20 hover:bg-amber-900/30 text-amber-950 font-bold text-sm sm:text-base flex items-center justify-center cursor-pointer border-2 border-amber-950/30 active:translate-y-0.5 transition-transform"
+              className="ml-2 w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-900/20 hover:bg-amber-900/30 text-amber-950 font-bold text-[15px] sm:text-base flex items-center justify-center cursor-pointer border-2 border-amber-950/30 active:translate-y-0.5 transition-transform"
               title="Tutup"
             >
               ✕
@@ -416,10 +416,10 @@ export default function Wordle({
 
       {/* ── Clue Box ── */}
       <div className="w-full py-3 px-4 sm:py-3.5 sm:px-5 bg-amber-100/90 rounded-2xl border-3 border-amber-950/30 flex items-start sm:items-center gap-3 shadow-inner text-left">
-        <span className="px-2.5 py-1 rounded-md bg-amber-900 text-amber-200 text-[10px] sm:text-xs font-pixel-title font-bold uppercase shrink-0 mt-0.5 sm:mt-0 shadow-xs">
+        <span className="px-2.5 py-1 rounded-md bg-amber-900 text-amber-200 text-[13.5px] sm:text-[13px] font-pixel-title font-bold uppercase shrink-0 mt-0.5 sm:mt-0 shadow-xs">
           PETUNJUK
         </span>
-        <p className="text-sm sm:text-base md:text-lg text-amber-950 font-bold leading-relaxed">
+        <p className="text-[15px] sm:text-base md:text-lg text-amber-950 font-bold leading-relaxed">
           "{currentHint}"
         </p>
       </div>
@@ -457,7 +457,7 @@ export default function Wordle({
                       ? 'w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 text-lg sm:text-xl md:text-2xl'
                       : wordLength === 7
                         ? 'w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-base sm:text-lg md:text-xl'
-                        : 'w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 text-sm sm:text-base md:text-lg';
+                        : 'w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 text-[15px] sm:text-base md:text-lg';
 
                 return (
                   <div
@@ -475,7 +475,7 @@ export default function Wordle({
 
       {/* ── Toast Alert ── */}
       {toastMessage && (
-        <div className="px-4 py-2 rounded-xl bg-rose-600 text-white font-bold text-xs sm:text-sm border-2 border-rose-950 animate-bounce-slight shadow-lg">
+        <div className="px-4 py-2 rounded-xl bg-rose-600 text-white font-bold text-[13px] sm:text-[15px] border-2 border-rose-950 animate-bounce-slight shadow-lg">
           {toastMessage}
         </div>
       )}
@@ -484,16 +484,16 @@ export default function Wordle({
       {gameState === 'won' && (
         <div className="w-full py-3 px-4 sm:py-3.5 sm:px-5 bg-emerald-100 border-3 border-emerald-700 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow text-left">
           <div>
-            <span className="font-pixel-title text-sm sm:text-base text-emerald-900 block font-bold">
+            <span className="font-pixel-title text-[15px] sm:text-base text-emerald-900 block font-bold">
               BENAR! KATA: {targetWord}
             </span>
-            <span className="text-xs sm:text-sm text-emerald-800 font-bold">
+            <span className="text-[13px] sm:text-[15px] text-emerald-800 font-bold">
               Selesai dalam {guesses.length} percobaan!
             </span>
           </div>
           <button
             onClick={handleNextQuestion}
-            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-xs sm:text-sm border-3 border-emerald-950 shadow-[0_3px_0_#064e3b] cursor-pointer whitespace-nowrap active:translate-y-0.5"
+            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-3 border-emerald-950 shadow-[0_3px_0_#064e3b] cursor-pointer whitespace-nowrap active:translate-y-0.5"
           >
             {currentQIdx < questions.length - 1 ? 'SOAL BERIKUTNYA ➔' : 'SELESAI ✓'}
           </button>
@@ -503,16 +503,16 @@ export default function Wordle({
       {gameState === 'lost' && (
         <div className="w-full py-3 px-4 sm:py-3.5 sm:px-5 bg-rose-100 border-3 border-rose-700 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow text-left">
           <div>
-            <span className="font-pixel-title text-sm sm:text-base text-rose-900 block font-bold">
+            <span className="font-pixel-title text-[15px] sm:text-base text-rose-900 block font-bold">
               KESEMPATAN HABIS! KATA: {targetWord}
             </span>
-            <span className="text-xs sm:text-sm text-rose-800 font-bold">
+            <span className="text-[13px] sm:text-[15px] text-rose-800 font-bold">
               Coba pecahkan kembali kata ini!
             </span>
           </div>
           <button
             onClick={handleRetryCurrent}
-            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-pixel-title text-xs sm:text-sm border-3 border-rose-950 shadow-[0_3px_0_#881337] cursor-pointer whitespace-nowrap active:translate-y-0.5"
+            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-pixel-title text-[13px] sm:text-[15px] border-3 border-rose-950 shadow-[0_3px_0_#881337] cursor-pointer whitespace-nowrap active:translate-y-0.5"
           >
             COBA LAGI ↺
           </button>
@@ -541,8 +541,8 @@ export default function Wordle({
                   key={k}
                   onClick={() => onKeyPress(k)}
                   className={`py-2 sm:py-3 rounded-xl border-2 sm:border-3 font-pixel-title transition-transform active:translate-y-0.5 cursor-pointer ${isActionKey
-                    ? 'px-2.5 sm:px-4 text-[10px] sm:text-xs font-bold'
-                    : 'px-1 sm:px-2 flex-1 max-w-[42px] sm:max-w-[54px] text-xs sm:text-sm md:text-base font-bold'
+                    ? 'px-2.5 sm:px-4 text-[13.5px] sm:text-[13px] font-bold'
+                    : 'px-1 sm:px-2 flex-1 max-w-[42px] sm:max-w-[54px] text-[13px] sm:text-[15px] md:text-base font-bold'
                     } ${keyBg}`}
                 >
                   {k}

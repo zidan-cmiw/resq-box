@@ -239,7 +239,7 @@ export default function Login() {
                 setRole('student');
                 setErrorMsg('');
               }}
-              className={`py-2 px-3 rounded-lg text-xs font-pixel-title font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${role === 'student'
+              className={`py-2 px-3 rounded-lg text-[13px] font-pixel-title font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${role === 'student'
                 ? 'bg-amber-950 text-amber-200 shadow-[0_3px_0_#451a03] border-2 border-amber-950 translate-y-[-1px]'
                 : 'text-amber-950 hover:bg-amber-200/70 font-semibold'
                 }`}
@@ -256,7 +256,7 @@ export default function Login() {
                 setAuthMode('login');
                 setErrorMsg('');
               }}
-              className={`py-2 px-3 rounded-lg text-xs font-pixel-title font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${role === 'teacher'
+              className={`py-2 px-3 rounded-lg text-[13px] font-pixel-title font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${role === 'teacher'
                 ? 'bg-amber-950 text-amber-200 shadow-[0_3px_0_#451a03] border-2 border-amber-950 translate-y-[-1px]'
                 : 'text-amber-950 hover:bg-amber-200/70 font-semibold'
                 }`}
@@ -268,7 +268,7 @@ export default function Login() {
 
           {/* ── SUB-HEADER PER ROLE ── */}
           {role === 'student' ? (
-            <div id="tour-login-modes" className="flex items-center justify-center gap-3 text-xs">
+            <div id="tour-login-modes" className="flex items-center justify-center gap-3 text-[13px]">
               <button
                 type="button"
                 onClick={() => {
@@ -306,7 +306,7 @@ export default function Login() {
 
           {/* Error Notification Alert */}
           {errorMsg && (
-            <div className="p-2.5 rounded-lg bg-rose-100 border-2 border-rose-800 text-rose-950 text-[11px] font-bold flex items-center gap-2 shadow-sm animate-shake">
+            <div className="p-2.5 rounded-lg bg-rose-100 border-2 border-rose-800 text-rose-950 text-[14.5px] font-bold flex items-center gap-2 shadow-sm animate-shake">
               <PixelIcon name="alert" size={16} className="text-rose-900 flex-shrink-0" />
               <span>{errorMsg}</span>
             </div>
@@ -316,7 +316,7 @@ export default function Login() {
           {(authMode === 'login' || role === 'teacher') && (
             <form id="tour-login-inputs" onSubmit={handleLogin} className="space-y-3">
               <div>
-                <label className="block text-[10px] font-bold text-amber-950 mb-1 uppercase tracking-wide">
+                <label className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide">
                   Username {role === 'teacher' ? 'Guru' : 'Siswa'}
                 </label>
                 <div className="relative">
@@ -325,13 +325,13 @@ export default function Login() {
                     value={loginUsername}
                     onChange={(e) => setLoginUsername(e.target.value)}
                     placeholder={role === 'teacher' ? 'Misal: guru' : 'Username siswa...'}
-                    className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-xs font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+                    className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-amber-950 mb-1 uppercase tracking-wide">
+                <label className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide">
                   Password
                 </label>
                 <input
@@ -339,13 +339,13 @@ export default function Login() {
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
                   placeholder="Masukkan password..."
-                  className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-xs font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+                  className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
                 />
               </div>
 
               {role === 'student' && (
                 <div id="tour-login-quick-demo" className="p-2.5 bg-amber-950/10 rounded-xl border-2 border-amber-900/30 text-center space-y-1">
-                  <span className="text-[10px] font-bold text-amber-950 block uppercase font-pixel-title">
+                  <span className="text-[13.5px] font-bold text-amber-950 block uppercase font-pixel-title">
                     Akun Demo (Semua Level Terbuka):
                   </span>
                   <button
@@ -355,11 +355,11 @@ export default function Login() {
                       setLoginPassword('demo123');
                       retroAudio.playSelect();
                     }}
-                    className="font-pixel text-[11px] font-bold text-amber-950 bg-amber-50 hover:bg-amber-100/90 py-1 px-2 rounded border border-amber-900/40 w-full cursor-pointer flex items-center justify-between"
+                    className="font-pixel text-[14.5px] font-bold text-amber-950 bg-amber-50 hover:bg-amber-100/90 py-1 px-2 rounded border border-amber-900/40 w-full cursor-pointer flex items-center justify-between"
                     title="Klik untuk mengisi otomatis akun demo"
                   >
-                    <span>User: <strong className="text-emerald-700 font-pixel-title text-[10px]">demo</strong> • Pass: <strong className="text-emerald-700 font-pixel-title text-[10px]">demo123</strong></span>
-                    <span className="text-[8px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-pixel-title">[ISI]</span>
+                    <span>User: <strong className="text-emerald-700 font-pixel-title text-[13.5px]">demo</strong> • Pass: <strong className="text-emerald-700 font-pixel-title text-[13.5px]">demo123</strong></span>
+                    <span className="text-[12px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-pixel-title">[ISI]</span>
                   </button>
                 </div>
               )}
@@ -367,7 +367,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="pixel-btn-wood-plank !w-full !h-11 !text-xs cursor-pointer flex items-center justify-center gap-2 mt-2"
+                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2"
               >
                 <span>{loading ? 'MEMERIKSA...' : role === 'teacher' ? 'BUKA POSKO GURU' : 'MULAI PETUALANGAN'}</span>
               </button>
@@ -378,7 +378,7 @@ export default function Login() {
           {authMode === 'register' && role === 'student' && (
             <form onSubmit={handleRegisterStudent} className="space-y-2.5">
               <div>
-                <label className="block text-[10px] font-bold text-amber-950 mb-0.5 uppercase">
+                <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
                   Nama Lengkap Siswa
                 </label>
                 <input
@@ -386,13 +386,13 @@ export default function Login() {
                   value={regStdName}
                   onChange={(e) => setRegStdName(e.target.value)}
                   placeholder="Misal: Vincent Pratama"
-                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-xs font-pixel shadow-inner"
+                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[10px] font-bold text-amber-950 mb-0.5 uppercase">
+                  <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
                     No. Absen
                   </label>
                   <input
@@ -400,11 +400,11 @@ export default function Login() {
                     value={regStdAbsent}
                     onChange={(e) => setRegStdAbsent(e.target.value)}
                     placeholder="Misal: 08"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-xs font-pixel shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-amber-950 mb-0.5 uppercase">
+                  <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
                     Kode Kelas *
                   </label>
                   <input
@@ -412,7 +412,7 @@ export default function Login() {
                     value={regStdClassCode}
                     onChange={(e) => setRegStdClassCode(e.target.value)}
                     placeholder="Misal: 8B atau RESQ-8B"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-xs font-pixel shadow-inner font-bold"
+                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-bold"
                   />
                 </div>
               </div>
@@ -420,7 +420,7 @@ export default function Login() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[10px] font-bold text-amber-950 mb-0.5 uppercase">
+                  <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
                     Username
                   </label>
                   <input
@@ -428,11 +428,11 @@ export default function Login() {
                     value={regStdUsername}
                     onChange={(e) => setRegStdUsername(e.target.value)}
                     placeholder="vincent8b"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-xs font-pixel shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-amber-950 mb-0.5 uppercase">
+                  <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
                     Password
                   </label>
                   <input
@@ -440,7 +440,7 @@ export default function Login() {
                     value={regStdPassword}
                     onChange={(e) => setRegStdPassword(e.target.value)}
                     placeholder="******"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-xs font-pixel shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
                   />
                 </div>
               </div>
@@ -448,7 +448,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="pixel-btn-wood-plank !w-full !h-11 !text-xs cursor-pointer flex items-center justify-center gap-2 mt-2"
+                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2"
               >
                 <span>{loading ? 'MEMPROSES...' : 'DAFTAR & GABUNG KELAS'}</span>
               </button>

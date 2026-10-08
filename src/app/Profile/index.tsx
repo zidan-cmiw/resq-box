@@ -11,6 +11,7 @@ import { AvatarCustomizerModal } from '../../components/PixelAvatar/AvatarCustom
 import PixelIcon from '../../components/PixelIcon';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
+import { useDataSaver, setDataSaverMode, describeReason } from '../../utils/dataSaver';
 import {
   supabase,
 } from '../../utils/supabaseClient';
@@ -20,6 +21,7 @@ export default function Profile() {
   const student = useAuthStore((state) => state.student);
   const currentUser = useAuthStore((state) => state.currentUser);
   const unlockedLevel = useAuthStore((state) => state.unlockedLevel);
+  const dataSaver = useDataSaver();
   const updateProfile = useAuthStore((state) => state.updateProfile);
 
   const [name, setName] = useState(
@@ -280,7 +282,7 @@ export default function Profile() {
               <h1 className="font-pixel-title text-base md:text-lg font-bold text-amber-950">
                 PROFIL RESQ-TEAM
               </h1>
-              <p className="text-xs text-amber-900/80 font-pixel">
+              <p className="text-[13px] text-amber-900/80 font-pixel">
                 Identitas Siswa, Kustomisasi Avatar & Rekam Jejak Belajar
               </p>
             </div>
@@ -303,10 +305,10 @@ export default function Profile() {
           <div className="flex items-center gap-3">
             <PixelAvatarRenderer config={customAvatar} size={48} animate={false} />
             <div>
-              <span className="font-pixel-title text-xs text-amber-950 block">
+              <span className="font-pixel-title text-[13px] text-amber-950 block">
                 FOTO PROFIL PIXEL CUSTOM
               </span>
-              <p className="text-[11px] text-amber-900">
+              <p className="text-[14.5px] text-amber-900">
                 Ubah warna kulit, gaya rambut, seragam, mata, dan aksesorismu!
               </p>
             </div>
@@ -317,7 +319,7 @@ export default function Profile() {
               retroAudio.playSelect();
               setIsCustomizerOpen(true);
             }}
-            className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold border-2 border-amber-950 shadow-[0_3px_0_#78350f] text-xs flex items-center justify-center gap-2 transition-transform active:translate-y-0.5 cursor-pointer shrink-0"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold border-2 border-amber-950 shadow-[0_3px_0_#78350f] text-[13px] flex items-center justify-center gap-2 transition-transform active:translate-y-0.5 cursor-pointer shrink-0"
           >
             <PixelIcon name="palette" size={16} />
             <span>Buka Bengkel Avatar</span>
@@ -330,7 +332,7 @@ export default function Profile() {
           {/* Form Fields Grid */}
           <div id="tour-profile-fields" className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-xs font-bold text-amber-950 uppercase tracking-wider mb-1">
+              <label className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
                 Nama Lengkap Siswa:
               </label>
               <input
@@ -338,13 +340,13 @@ export default function Profile() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Masukkan nama lengkap"
-                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel font-bold text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel font-bold text-[15px] focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-amber-950 uppercase tracking-wider mb-1">
+              <label className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
                 Kelas:
               </label>
               <input
@@ -352,13 +354,13 @@ export default function Profile() {
                 value={className}
                 onChange={(e) => setClassName(e.target.value)}
                 placeholder="Contoh: Kelas VIII-A"
-                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel font-bold text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel font-bold text-[15px] focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-amber-950 uppercase tracking-wider mb-1">
+              <label className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
                 Nomor Absen:
               </label>
               <input
@@ -366,13 +368,13 @@ export default function Profile() {
                 value={absentNumber}
                 onChange={(e) => setAbsentNumber(e.target.value)}
                 placeholder="Contoh: 12"
-                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel font-bold text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel font-bold text-[15px] focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-amber-950 uppercase tracking-wider mb-1">
+              <label className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
                 Nama Sekolah:
               </label>
               <input
@@ -380,37 +382,83 @@ export default function Profile() {
                 value={schoolName}
                 onChange={(e) => setSchoolName(e.target.value)}
                 placeholder="Contoh: SMP Negeri 1"
-                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel font-bold text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel font-bold text-[15px] focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
                 required
               />
             </div>
+          </div>
+
+          {/* Mode Hemat Data — untuk sekolah dengan kuota/koneksi terbatas */}
+          <div className="p-3.5 bg-amber-900/10 rounded-xl border-2 border-amber-950/30 space-y-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <span className="text-[13px] font-bold text-amber-950 block">
+                  MODE HEMAT DATA
+                </span>
+                <span className="text-[13.5px] text-amber-900/80 leading-snug block">
+                  {describeReason(dataSaver.reason)}
+                </span>
+              </div>
+              <span
+                className={`px-2 py-0.5 rounded border text-[13.5px] font-pixel-title font-bold shrink-0 ${
+                  dataSaver.active
+                    ? 'bg-emerald-200 border-emerald-900/50 text-emerald-950'
+                    : 'bg-amber-200 border-amber-950/40 text-amber-950'
+                }`}
+              >
+                {dataSaver.active ? 'AKTIF' : 'MATI'}
+              </span>
+            </div>
+
+            <div className="flex gap-2">
+              {(['auto', 'on', 'off'] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setDataSaverMode(m)}
+                  className={`flex-1 py-2 rounded-lg border-2 text-[13.5px] font-pixel-title font-bold transition-all ${
+                    dataSaver.mode === m
+                      ? 'bg-amber-700 border-amber-950 text-amber-50'
+                      : 'bg-amber-50 border-amber-950/40 text-amber-950 hover:bg-amber-100'
+                  }`}
+                >
+                  {m === 'auto' ? 'OTOMATIS' : m === 'on' ? 'NYALAKAN' : 'MATIKAN'}
+                </button>
+              ))}
+            </div>
+
+            <p className="text-[13px] text-amber-900/75 leading-relaxed">
+              Materi pelajaran tetap lengkap. Yang diringankan hanya tampilan:
+              scene 3D gunung dan animasi berat tidak dimuat, sehingga lebih cepat
+              dan lebih hemat kuota.
+            </p>
           </div>
 
           {/* Ganti Password Akun Siswa */}
           <div id="tour-profile-password" className="p-3.5 bg-amber-900/10 rounded-xl border-2 border-amber-950/30 space-y-2.5">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-amber-950 block">
+                <span className="text-[13px] font-bold text-amber-950 block">
                   GANTI PASSWORD AKUN SISWA
                 </span>
-                <span className="text-[10px] text-amber-900/80">
+                <span className="text-[13.5px] text-amber-900/80">
                   Ubah password untuk login akunmu (kosongkan jika tidak ingin ganti password)
                 </span>
               </div>
-              <span className="px-2 py-0.5 rounded bg-amber-200 border border-amber-950/40 text-[10px] font-pixel-title font-bold text-amber-950">
+              <span className="px-2 py-0.5 rounded bg-amber-200 border border-amber-950/40 text-[13.5px] font-pixel-title font-bold text-amber-950">
                 @{student?.username || currentUser?.username || 'siswa'}
               </span>
             </div>
 
             {passwordError && (
-              <div className="p-2 rounded bg-rose-100 border border-rose-700 text-rose-900 text-[10px] font-bold">
+              <div className="p-2 rounded bg-rose-100 border border-rose-700 text-rose-900 text-[13.5px] font-bold">
                 {passwordError}
               </div>
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
               <div>
-                <label className="block text-[10px] font-bold text-amber-950 mb-0.5">
+                <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5">
                   PASSWORD BARU:
                 </label>
                 <input
@@ -418,11 +466,11 @@ export default function Profile() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Ketik password baru..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-xs shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-600"
+                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-[13px] shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-600"
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-amber-950 mb-0.5">
+                <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5">
                   ULANGI PASSWORD BARU:
                 </label>
                 <input
@@ -430,7 +478,7 @@ export default function Profile() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Ulangi password baru..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-xs shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-600"
+                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-[13px] shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-600"
                 />
               </div>
             </div>
@@ -439,18 +487,18 @@ export default function Profile() {
           {/* Tingkat Kesiapsiagaan / Level Progress Banner */}
           <div id="tour-profile-readiness" className="p-3 bg-amber-950 text-amber-100 rounded-xl border-2 border-amber-950 shadow-[0_3px_0_#231206]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-pixel-title text-amber-400">
+              <span className="text-[13px] font-pixel-title text-amber-400">
                 TINGKAT KESIAPSIAGAAN:
               </span>
-              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-pixel-title font-bold">
+              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[13.5px] font-pixel-title font-bold">
                 LEVEL {unlockedLevel} / 3
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
+            <div className="grid grid-cols-3 gap-2 text-center text-[13.5px]">
               <div className={`p-2 rounded border ${unlockedLevel >= 1 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900 border-slate-800 text-slate-600'}`}>
                 <div className="font-bold">STAGE 1</div>
                 <div className="truncate">Earth Explorer</div>
-                <div className="text-[9px] text-emerald-400 mt-0.5 flex items-center justify-center gap-1">
+                <div className="text-[12.5px] text-emerald-400 mt-0.5 flex items-center justify-center gap-1">
                   <PixelIcon name="check" size={10} />
                   <span>Terbuka</span>
                 </div>
@@ -458,7 +506,7 @@ export default function Profile() {
               <div className={`p-2 rounded border ${unlockedLevel >= 2 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
                 <div className="font-bold">STAGE 2</div>
                 <div className="truncate">Disaster Analyst</div>
-                <div className="text-[9px] mt-0.5 flex items-center justify-center gap-1">
+                <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1">
                   {unlockedLevel >= 2 ? (
                     <>
                       <PixelIcon name="check" size={10} />
@@ -475,7 +523,7 @@ export default function Profile() {
               <div className={`p-2 rounded border ${unlockedLevel >= 3 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
                 <div className="font-bold">STAGE 3</div>
                 <div className="truncate">Simulation Game</div>
-                <div className="text-[9px] mt-0.5 flex items-center justify-center gap-1">
+                <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1">
                   {unlockedLevel >= 3 ? (
                     <>
                       <PixelIcon name="check" size={10} />
@@ -496,7 +544,7 @@ export default function Profile() {
           <div id="tour-profile-actions" className="pt-2 flex flex-col gap-2">
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-pixel-title text-sm tracking-wider border-3 border-amber-950 shadow-[0_5px_0_#231206] transition-transform active:translate-y-1 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-pixel-title text-[15px] tracking-wider border-3 border-amber-950 shadow-[0_5px_0_#231206] transition-transform active:translate-y-1 cursor-pointer flex items-center justify-center gap-2"
             >
               <span>SIMPAN PROFIL</span>
               <PixelIcon name="check" size={16} />
@@ -508,7 +556,7 @@ export default function Profile() {
                 retroAudio.playSelect();
                 navigate('/');
               }}
-              className="w-full py-2.5 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel font-bold text-xs border-2 border-amber-950 shadow-[0_3px_0_#78350f] transition-transform active:translate-y-0.5 cursor-pointer text-center"
+              className="w-full py-2.5 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel font-bold text-[13px] border-2 border-amber-950 shadow-[0_3px_0_#78350f] transition-transform active:translate-y-0.5 cursor-pointer text-center"
             >
               KEMBALI KE MENU UTAMA
             </button>
@@ -529,7 +577,7 @@ export default function Profile() {
       {showSavedToast && (
         <div className="fixed bottom-6 z-50 bg-emerald-600 text-white font-pixel px-5 py-3 rounded-xl border-3 border-emerald-950 shadow-[0_5px_0_#064e3b] flex items-center gap-3 animate-fade-in">
           <PixelIcon name="check" size={20} />
-          <span className="text-sm font-bold">Profil Berhasil Disimpan!</span>
+          <span className="text-[15px] font-bold">Profil Berhasil Disimpan!</span>
         </div>
       )}
 

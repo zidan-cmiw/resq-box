@@ -318,11 +318,11 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
       },
       {
         id: 'l1_npcs',
-        title: 'Temui Rekan Tim & Modul Sains [🔍]',
+ title: 'Temui Rekan Tim & Modul Sains ',
         badge: 'EDUKASI SAINS',
         placement: 'center',
         content:
-          'Dekati rekan ekspedisimu (Zidane, Zahra, Ican, Lintang). Rekan yang memiliki lencana kaca pembesar [🔍] memegang materi sains penting. Bacalah modulnya karena menjadi kunci menjawab kuis gerbang!',
+ 'Dekati rekan ekspedisimu (Zidane, Zahra, Ican, Lintang). Rekan yang memiliki lencana kaca pembesar memegang materi sains penting. Bacalah modulnya karena menjadi kunci menjawab kuis gerbang!',
       },
       {
         id: 'l1_tracker',
@@ -371,7 +371,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'EVALUASI MITIGASI',
         placement: 'center',
         content:
-          'Pelajari materi buku saku BNPB bertanda [🔍] dan temui Bu Tyas di pos pengujian untuk menjawab Teka-Teki Silang Mitigasi. Menuntaskan seluruh 6 pos akan membuka Level 3!',
+ 'Pelajari materi buku saku BNPB bertanda dan temui Bu Tyas di pos pengujian untuk menjawab Teka-Teki Silang Mitigasi. Menuntaskan seluruh 6 pos akan membuka Level 3!',
         actionHint: 'Langkahkan kakimu, pelajari mitigasi, dan selamatkan warga!',
       },
     ],

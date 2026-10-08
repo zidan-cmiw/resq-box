@@ -47,31 +47,31 @@ class Level2ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
             <div className="w-14 h-14 mx-auto rounded-xl bg-rose-500/20 border-2 border-rose-500 flex items-center justify-center text-rose-400 animate-pulse">
               <PixelIcon name="warning" size={26} className="text-rose-400" />
             </div>
-            <h2 className="font-pixel-title text-sm sm:text-base text-rose-400 font-bold">
+            <h2 className="font-pixel-title text-[15px] sm:text-base text-rose-400 font-bold">
               GANGGUAN TRANSMISI GEOLOGIS
             </h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-[13px] text-slate-300 leading-relaxed">
               Terjadi anomali saat memuat ekspedisi Level 2. Sistem keamanan Siaga telah menstabilkan layar.
             </p>
-            <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700 text-left overflow-x-auto text-[10px] text-rose-300 font-mono">
+            <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700 text-left overflow-x-auto text-[13.5px] text-rose-300 font-mono">
               {this.state.error?.message || 'Unknown Error'}
             </div>
             <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
               <button
                 onClick={() => window.location.reload()}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-950 font-pixel-title text-xs font-bold shadow-md cursor-pointer active:translate-y-0.5"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-950 font-pixel-title text-[13px] font-bold shadow-md cursor-pointer active:translate-y-0.5"
               >
                 MUAT ULANG
               </button>
               <button
                 onClick={this.handleResetAndReload}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 font-pixel text-xs cursor-pointer active:translate-y-0.5"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 font-pixel text-[13px] cursor-pointer active:translate-y-0.5"
               >
                 RESET DATA
               </button>
               <button
                 onClick={() => (window.location.href = '/')}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-rose-900/80 hover:bg-rose-800 text-rose-200 border border-rose-700 font-pixel text-xs cursor-pointer active:translate-y-0.5"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-rose-900/80 hover:bg-rose-800 text-rose-200 border border-rose-700 font-pixel text-[13px] cursor-pointer active:translate-y-0.5"
               >
                 BERANDA
               </button>

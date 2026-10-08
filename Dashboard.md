@@ -24,7 +24,7 @@ tags:
 | Dokumen | Deskripsi & Isi Utama | Status / Versi |
 | :--- | :--- | :---: |
 | 📋 **[[PRD]]** | **Product Requirement Document**: Spesifikasi teknis komprehensif, arsitektur sistem, skema kurikulum SMP Kelas 8, dan 95 rekam milestone pengembangan. | `v3.33 (Aktif)` |
-| 📈 **[[progress_report]]** | **Laporan Progres Lengkap**: Dokumentasi teknis terperinci per fitur (Bab 104: Kurikulum 2 Pertemuan PjBL; Bab 105: Mawar Kompas Peta, Tutorial Resqy IPA, & Atribusi Gambar Resmi). | `v3.33 (Update)` |
+| 📈 **[[progress_report]]** | **Laporan Progres Lengkap**: Dokumentasi teknis terperinci per fitur — **Bab 110–117: audit menyeluruh, pengerasan keamanan (Supabase Auth + RLS ketat), kapasitas >1000 pemain, observabilitas produksi, dan pembesaran tipografi**; Bab 109: Sinkronisasi Blok Arduino ↔ Firmware ESP32. | `v4.0 (Update)` |
 | 🎨 **[[design]]** | **Design System & Visual Guidelines**: Pedoman warna pixel art, tipografi retro 8-bit, prinsip visual game, dan panduan antarmuka responsif. | `v2.0` |
 | 🧭 **[[walkthrough]]** | **Walkthrough & Panduan Pengujian**: Panduan verifikasi fitur, pengujian kurikulum 2 pertemuan, LKPD PjBL, 20 tugas mandiri, dan build produksi. | `v3.33 (Update)` |
 | 📚 **[[LKPD_PJBL_RESQ_BOX_5_KELOMPOK|LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md]]** | **Panduan Implementasi 2 Pertemuan & LKPD PjBL**: Skenario KBM sekolah mitra 2 pertemuan, 20 tugas mandiri individu Level 3 ringkas beserta kunci blok, dan 5 studi kasus kelompok PjBL. | `v1.0 (Resmi)` |
@@ -35,7 +35,55 @@ tags:
 
 ---
 
-## ⚡ Sorotan Pembaruan Terkini: Mawar Kompas Peta Merapi, Bahasa Ramah IPA Tutorial Resqy, Proteksi Sentuh Tablet/HP, & Atribusi Gambar Edukasi (Bab 105 & Milestone 95)
+## ⚡ Sorotan Pembaruan Terkini: Pengerasan Keamanan Backend, Kesiapan Kapasitas >1000 Pemain, Observabilitas Produksi, & Pembesaran Tipografi (Bab 110–117)
+
+> [!IMPORTANT]
+> **Perubahan arsitektur keamanan.** Backend RESQ-BOX bermigrasi dari skema lama (anon key + RPC tanpa otorisasi) ke **Supabase Auth + Row Level Security ketat**. Rincian lengkap: **[[progress_report#Bab 111: Pengerasan Keamanan Backend — Migrasi ke Supabase Auth, RLS Ketat per-Pemilik, Penutupan 11 RPC Berbahaya, dan Penghapusan Kredensial Plaintext|progress_report.md (Bab 111)]]**.
+
+### 1. Keamanan Data & Akun — Terverifikasi **11/11 AMAN**
+
+- **Isolasi data ditegakkan DATABASE, bukan browser.** 8 policy per-pemilik: user #1 **hanya** dapat melihat & mengubah barisnya sendiri; guru terbatas pada kelas yang dia ampu; admin lebih luas. Diverifikasi dengan uji perilaku nyata (`supabase/test_isolation.mjs`) — bukan sekadar pemeriksaan konfigurasi.
+- **11 RPC berbahaya dihapus.** Sebelumnya `SECURITY DEFINER` di-`GRANT` ke `anon` **tanpa cek otorisasi**, sehingga siapa pun pemegang anon key dapat menghapus seluruh kelas/siswa dan memalsukan nilai.
+- **Kebocoran hash password ditutup.** Akses ke `user_accounts` dicabut total; view `students` tidak lagi memuat kolom password aktif.
+- **Plaintext password dihapus.** Ganti password memakai `supabase.auth.updateUser()` (bcrypt di server); dashboard guru berhenti menampilkan password siswa.
+- **Pemalsuan nilai & level ditutup.** Nilai dihitung server (`official_level_score`); kolom `role`, `is_admin`, `classroom_code`, `unlocked_level` dikunci trigger.
+- **Batas laju** pada 8 aksi sensitif untuk mencegah brute-force dan banjir perintah.
+- **Bug kritis yang ditemukan lewat pengujian perilaku**: pengguna yang sudah login sempat **tidak bisa membaca datanya sendiri** (`HTTP 403 permission denied for function can_read_student`) karena hak eksekusi fungsi bantu RLS dicabut dari peran `authenticated` — padahal PostgreSQL mengevaluasi policy sebagai peran peminta. Diperbaiki di migrasi 07.
+
+### 2. Integritas Data Siswa
+
+- **Trigger profil diperbaiki**: sebelumnya **setiap** siswa baru punya `classroom_code = NULL` sehingga tidak pernah muncul di Posko Guru (rahasia ditulis Supabase *setelah* baris `auth.users` dibuat, sementara trigger `AFTER INSERT` sudah berjalan).
+- **Realtime diaktifkan** untuk `profiles` — siswa baru kini muncul otomatis di Posko Guru tanpa refresh.
+
+### 3. Kapasitas >1000 Pemain
+
+- **Unduhan dingin ~6,3 MiB → ~2,8 MiB**; kunjungan ulang **~0 byte** berkat `Cache-Control` immutable.
+- `public/` **10,23 MB → 4,69 MB**; latar WebP **−85%**; model 3D `terrain-688.stl.gz` **−69,5%** (3,17 MB → 966 KB).
+- Precache PWA **4.760 → 2.287 KiB** dengan precache selektif.
+- **Database berhenti tumbuh tanpa batas**: satu baris per (siswa, level), bukan `INSERT` murni per peristiwa.
+- **Model kapasitas berparameter** (`capacity/README.md`) dengan pengali ×10–×1000 + `loadtest.js` yang dapat dijalankan.
+
+### 4. Kesiapan Produksi
+
+- **Observabilitas**: pelaporan error ke Sentry + Web Vitals (LCP/CLS/INP/TTFB/FCP), **dengan penyuntingan data pribadi** (email/UUID/JWT/telepon/kredensial dibuang sebelum dikirim).
+- **Error boundary seluruh aplikasi** — sebelumnya hanya 2 tempat; kini kegagalan di rute mana pun menampilkan pemulihan, bukan layar putih.
+- **Mode Hemat Data** untuk sekolah berkuota terbatas — scene 3D tidak dimuat sama sekali.
+- **Halaman Kebijakan Privasi** publik (`/privacy`) berisi penanganan data anak.
+- **CI + 29 uji otomatis** (`typecheck`, `build`, `test`, `test:sql`) berjalan pada setiap push.
+- **Runbook operasional** (`docs/RUNBOOK.md`): 4 metrik wajib dipantau, prosedur tanggap insiden, prosedur uji restore backup.
+
+### 5. Keterbacaan
+
+- **1.731 penggantian tipografi di 57 berkas** — tidak ada lagi teks di bawah **12px** (sebelumnya ada 651 kemunculan, termasuk 12× **7px**).
+- **95 emoji bawaan sistem operasi dihapus**; simbol teks monokrom yang seragam (`✓ ★ ➔ ▶`) dipertahankan karena bukan emoji OS dan mengikuti warna font.
+
+### 6. Pekerjaan yang Masih Terbuka
+
+Lihat **[[progress_report#Bab 117: Ringkasan Capaian Sesi — Status Keamanan Terverifikasi, Kapasitas, dan Daftar Pekerjaan yang Masih Terbuka|progress_report.md (Bab 117)]]**. Ringkasnya: naik ke Supabase Pro (menghapus risiko proyek dijeda), mengisi `VITE_SENTRY_DSN`, memasang alarm 4 metrik, uji restore backup, verifikasi di peramban sungguhan, dan 382 label diagram SVG yang belum dapat dibesarkan tanpa menata ulang geometrinya.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Mawar Kompas Peta Merapi, Bahasa Ramah IPA Tutorial Resqy, Proteksi Sentuh Tablet/HP, & Atribusi Gambar Edukasi (Bab 105 & Milestone 95)
 
 > [!TIP]
 > Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 105: Penambahan Mawar Kompas Arah Mata Angin (Level 2), Penyederhanaan Narasi Tutorial Maskot Resqy Berbasis IPA SMP, Proteksi Input Sentuh Layar Mobile/Tablet, Perbaikan Stacking Toolbox Workspace, serta Atribusi Otentik Sumber Gambar Edukasi Merapi|progress_report.md (Bab 105)]]** dan **[[PRD#95|PRD.md (Milestone 95)]]**.

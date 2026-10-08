@@ -384,7 +384,7 @@ function drawNpcInteractionPrompt(ctx: CanvasRenderingContext2D, x: number, y: n
   ctx.restore();
 }
 
-// ── BADGE INDIKATOR MATERI EDUKASI NPC: KACA PEMBESAR [🔍] ──
+// ── BADGE INDIKATOR MATERI EDUKASI NPC: KACA PEMBESAR  ──
 export function drawNpcMaterialBadge(
   ctx: CanvasRenderingContext2D,
   x: number,

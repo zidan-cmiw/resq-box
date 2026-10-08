@@ -181,7 +181,7 @@ function EruptionSimulator() {
       <button
         onClick={startEruption}
         disabled={isActive}
-        className={`mt-3 w-full py-3 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
+        className={`mt-3 w-full py-3 rounded-xl font-bold text-[15px] transition-all duration-300 flex items-center justify-center gap-2 ${
           isActive
             ? 'bg-surface-variant text-on-surface-variant cursor-not-allowed'
             : 'bg-gradient-to-r from-red-600 to-orange-500 text-white hover:from-red-500 hover:to-orange-400 shadow-lg hover:shadow-xl'
@@ -217,13 +217,13 @@ export default function GunungMerapi() {
         </svg>
         <div className="relative z-10 text-center">
           <h3 className="text-2xl font-black text-white drop-shadow-md">Gunung Merapi</h3>
-          <p className="text-white/70 text-sm font-medium">Gunung Api Paling Aktif di Indonesia</p>
+          <p className="text-white/70 text-[15px] font-medium">Gunung Api Paling Aktif di Indonesia</p>
         </div>
       </div>
 
       {/* Interactive Volcano Anatomy */}
       <div>
-        <h4 className="text-sm font-bold text-on-surface mb-2 flex items-center gap-2">
+        <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-lg">science</span>
           Anatomi Gunung Api (Klik bagian untuk menjelajahi)
         </h4>
@@ -305,14 +305,14 @@ export default function GunungMerapi() {
                 <div className="flex justify-between items-start">
                   <h4 className="font-bold text-on-surface">{part.name}</h4>
                   <button onClick={() => setActivePart(null)} className="p-1 rounded-full hover:bg-surface-variant">
-                    <span className="material-symbols-outlined text-sm text-on-surface-variant">close</span>
+                    <span className="material-symbols-outlined text-[15px] text-on-surface-variant">close</span>
                   </button>
                 </div>
-                <p className="text-sm text-on-surface-variant mt-2 leading-relaxed">{part.desc}</p>
+                <p className="text-[15px] text-on-surface-variant mt-2 leading-relaxed">{part.desc}</p>
               </div>
             ) : (
               <div className="h-full flex items-center justify-center p-4 rounded-xl border border-dashed border-outline-variant/30 text-center">
-                <p className="text-xs text-on-surface-variant">Klik bagian gunung api pada diagram untuk melihat penjelasan.</p>
+                <p className="text-[13px] text-on-surface-variant">Klik bagian gunung api pada diagram untuk melihat penjelasan.</p>
               </div>
             )}
 
@@ -322,7 +322,7 @@ export default function GunungMerapi() {
                 <button
                   key={p.id}
                   onClick={() => setActivePart(activePart === p.id ? null : p.id)}
-                  className={`text-xs font-bold py-2 px-3 rounded-lg transition-all ${
+                  className={`text-[13px] font-bold py-2 px-3 rounded-lg transition-all ${
                     activePart === p.id ? 'bg-primary text-on-primary' : 'bg-surface-variant/40 text-on-surface-variant hover:bg-surface-variant/60'
                   }`}
                 >
@@ -336,7 +336,7 @@ export default function GunungMerapi() {
 
       {/* Eruption Simulator */}
       <div>
-        <h4 className="text-sm font-bold text-on-surface mb-2 flex items-center gap-2">
+        <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-lg">volcano</span>
           Simulasi Erupsi
         </h4>
@@ -345,7 +345,7 @@ export default function GunungMerapi() {
 
       {/* Danger Zone Map */}
       <div>
-        <h4 className="text-sm font-bold text-on-surface mb-2 flex items-center gap-2">
+        <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-lg">crisis_alert</span>
           Zona Bahaya Gunung Merapi
         </h4>
@@ -396,7 +396,7 @@ export default function GunungMerapi() {
               <button
                 key={z.id}
                 onClick={() => setActiveZone(activeZone === z.id ? null : z.id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-[11px] font-bold transition-all duration-300 border ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-[14.5px] font-bold transition-all duration-300 border ${
                   activeZone === z.id ? 'bg-white/10 border-white/30' : 'border-transparent hover:bg-white/5'
                 }`}
               >
@@ -409,7 +409,7 @@ export default function GunungMerapi() {
           {/* Zone detail */}
           {activeZone && (
             <div className="mt-3 p-3 rounded-xl bg-black/30 border border-white/10 animate-fade-in">
-              <p className="text-xs text-white/80 leading-relaxed">
+              <p className="text-[13px] text-white/80 leading-relaxed">
                 {DANGER_ZONES.find(z => z.id === activeZone)?.desc}
               </p>
             </div>
@@ -419,7 +419,7 @@ export default function GunungMerapi() {
 
       {/* Warning Signs Timeline */}
       <div>
-        <h4 className="text-sm font-bold text-on-surface mb-2 flex items-center gap-2">
+        <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-lg">timeline</span>
           Tanda-tanda Erupsi
         </h4>
@@ -440,9 +440,9 @@ export default function GunungMerapi() {
                   }`}
                   style={{ backgroundColor: i <= activeSign ? s.color : 'rgba(255,255,255,0.1)' }}
                 >
-                  <span className="material-symbols-outlined text-white text-sm">{s.icon}</span>
+                  <span className="material-symbols-outlined text-white text-[15px]">{s.icon}</span>
                 </button>
-                <span className={`text-[9px] mt-1.5 font-bold text-center leading-tight ${i === activeSign ? 'text-on-surface' : 'text-on-surface-variant'}`}>
+                <span className={`text-[12.5px] mt-1.5 font-bold text-center leading-tight ${i === activeSign ? 'text-on-surface' : 'text-on-surface-variant'}`}>
                   {s.title}
                 </span>
               </div>
@@ -453,10 +453,10 @@ export default function GunungMerapi() {
           <div key={activeSign} className="p-4 rounded-xl border animate-fade-in" style={{ borderColor: WARNING_SIGNS[activeSign].color + '40', backgroundColor: WARNING_SIGNS[activeSign].color + '10' }}>
             <div className="flex items-center gap-2 mb-2">
               <span className="material-symbols-outlined text-lg" style={{ color: WARNING_SIGNS[activeSign].color }}>{WARNING_SIGNS[activeSign].icon}</span>
-              <span className="font-bold text-on-surface text-sm">{WARNING_SIGNS[activeSign].title}</span>
-              <span className="ml-auto text-[10px] text-on-surface-variant font-bold">Fase {activeSign + 1}/{WARNING_SIGNS.length}</span>
+              <span className="font-bold text-on-surface text-[15px]">{WARNING_SIGNS[activeSign].title}</span>
+              <span className="ml-auto text-[13.5px] text-on-surface-variant font-bold">Fase {activeSign + 1}/{WARNING_SIGNS.length}</span>
             </div>
-            <p className="text-sm text-on-surface-variant leading-relaxed">{WARNING_SIGNS[activeSign].desc}</p>
+            <p className="text-[15px] text-on-surface-variant leading-relaxed">{WARNING_SIGNS[activeSign].desc}</p>
           </div>
         </div>
       </div>

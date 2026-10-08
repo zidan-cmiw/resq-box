@@ -141,32 +141,36 @@
   --text-title-sm--line-height: 20px;
   --text-title-sm--font-weight: 600;
 
-  --text-label-caps: 12px;
-  --text-label-caps--line-height: 16px;
+  /* ── Skala tipografi ──────────────────────────────────────────────────────
+     Dinaikkan agar dapat dibaca siswa di laptop sekolah & tablet.
+     Sebelumnya label terkecil 11–12px — terlalu kecil untuk materi pelajaran.
+     Aturan: TIDAK ADA teks di bawah 13px. */
+  --text-label-caps: 13px;
+  --text-label-caps--line-height: 18px;
   --text-label-caps--letter-spacing: 0.05em;
   --text-label-caps--font-weight: 700;
-  --text-label-lg: 14px;
-  --text-label-lg--line-height: 20px;
+  --text-label-lg: 15px;
+  --text-label-lg--line-height: 22px;
   --text-label-lg--font-weight: 600;
-  --text-label-md: 13px;
-  --text-label-md--line-height: 18px;
+  --text-label-md: 14px;
+  --text-label-md--line-height: 20px;
   --text-label-md--font-weight: 500;
-  --text-label-sm: 11px;
-  --text-label-sm--line-height: 16px;
+  --text-label-sm: 13px;
+  --text-label-sm--line-height: 18px;
   --text-label-sm--font-weight: 500;
 
   --text-body-base: 16px;
-  --text-body-base--line-height: 24px;
+  --text-body-base--line-height: 26px;
   --text-body-base--font-weight: 400;
-  --text-body-sm: 14px;
-  --text-body-sm--line-height: 20px;
+  --text-body-sm: 15px;
+  --text-body-sm--line-height: 23px;
   --text-body-sm--font-weight: 400;
 
-  --text-code-sm: 13px;
-  --text-code-sm--line-height: 20px;
+  --text-code-sm: 14px;
+  --text-code-sm--line-height: 22px;
   --text-code-sm--font-weight: 500;
-  --text-code: 14px;
-  --text-code--line-height: 22px;
+  --text-code: 15px;
+  --text-code--line-height: 24px;
   --text-code--font-weight: 400;
 }
 

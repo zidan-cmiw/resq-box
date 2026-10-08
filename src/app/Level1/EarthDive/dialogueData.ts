@@ -385,7 +385,7 @@ export const MASCOT_INTRO_DIALOGUE: DialogueTree = {
     explain_rule: {
       id: 'explain_rule',
       speakerId: 'resqy',
-      text: 'PENTING SEKALI: Di tiap area, kamu WAJIB berkomunikasi dan berdialog dengan para rekan untuk mempelajari materi geologi! Perhatikan tanda kaca pembesar [🔍] yang melayang di atas kepala mereka — itu tandanya mereka menyimpan materi penting yang harus kamu pelajari!',
+ text: 'PENTING SEKALI: Di tiap area, kamu WAJIB berkomunikasi dan berdialog dengan para rekan untuk mempelajari materi geologi! Perhatikan tanda kaca pembesar yang melayang di atas kepala mereka — itu tandanya mereka menyimpan materi penting yang harus kamu pelajari!',
       expression: 'serious',
       choices: [
         {
@@ -395,7 +395,7 @@ export const MASCOT_INTRO_DIALOGUE: DialogueTree = {
         },
         {
           id: 'c2',
-          text: 'Siap, aku akan temui semua rekan yang bertanda kaca pembesar [🔍]!',
+ text: 'Siap, aku akan temui semua rekan yang bertanda kaca pembesar!',
           nextNodeId: 'explain_controls',
         },
       ],
@@ -554,7 +554,7 @@ export const MASCOT_CRUST_INTRO_DIALOGUE: DialogueTree = {
     explain_team: {
       id: 'explain_team',
       speakerId: 'resqy',
-      text: 'Di sini ada Zidane dan Lintang yang memiliki materi penting bertanda kaca pembesar [🔍], Ican yang berjaga, dan Bu Tyas di pintu keluar!',
+ text: 'Di sini ada Zidane dan Lintang yang memiliki materi penting bertanda kaca pembesar, Ican yang berjaga, dan Bu Tyas di pintu keluar!',
       expression: 'normal',
       nextNodeId: 'mission_hint',
     },
@@ -586,7 +586,7 @@ export const MASCOT_CRUST_INTRO_DIALOGUE: DialogueTree = {
     ready_go: {
       id: 'ready_go',
       speakerId: 'resqy',
-      text: 'Ayo jalan ke kanan! Cari rekan bertanda kaca pembesar [🔍] dan kumpulkan kristal kuning di jalan ya! Kuk-kuuk!',
+ text: 'Ayo jalan ke kanan! Cari rekan bertanda kaca pembesar dan kumpulkan kristal kuning di jalan ya! Kuk-kuuk!',
       expression: 'happy',
     },
   },
@@ -608,7 +608,7 @@ export const MASCOT_CRUST_GUIDE_DIALOGUE: DialogueTree = {
     checklist: {
       id: 'checklist',
       speakerId: 'resqy',
-      text: '1. Bicara dengan Zidane di turunan jalan.\n2. Temui Zahra & Lintang yang bertanda kaca pembesar [🔍] untuk membaca materi.\n3. Lewati jalan retak dan sapa Ican.\n4. Temui Bu Tyas di pintu bawah untuk menjawab tantangan tebak kata Wordle!',
+ text: '1. Bicara dengan Zidane di turunan jalan.\n2. Temui Zahra & Lintang yang bertanda kaca pembesar untuk membaca materi.\n3. Lewati jalan retak dan sapa Ican.\n4. Temui Bu Tyas di pintu bawah untuk menjawab tantangan tebak kata Wordle!',
       expression: 'normal',
     },
   },
@@ -704,7 +704,7 @@ export const DR_GEA_DIALOGUE: DialogueTree = {
     hint_plates: {
       id: 'hint_plates',
       speakerId: 'player',
-      text: 'Dia memiliki materi bertanda kaca pembesar [🔍]. Pelajari baik-baik sebelum menghadap Bu Tyas, ya!',
+ text: 'Dia memiliki materi bertanda kaca pembesar. Pelajari baik-baik sebelum menghadap Bu Tyas, ya!',
       expression: 'serious',
     },
 
@@ -839,7 +839,7 @@ export const PROF_ANDINI_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'open_now',
-          text: 'Buka Materi Kerak Bumi [🔍]',
+ text: 'Buka Materi Kerak Bumi ',
           nextNodeId: 'open_discovery',
           discoveryIdToMark: 'crust_disc_compare',
         },
@@ -1049,7 +1049,7 @@ export const KOMANDAN_HENDRA_READY_DIALOGUE: DialogueTree = {
     standby_node: {
       id: 'standby_node',
       speakerId: 'komandan_hendra',
-      text: 'Sangat bijak, jangan terburu-buru. Kamu bisa membaca lagi materi dari Lintang yang bertanda kaca pembesar [🔍]. Jika sudah yakin, temui Ibu lagi ya.',
+ text: 'Sangat bijak, jangan terburu-buru. Kamu bisa membaca lagi materi dari Lintang yang bertanda kaca pembesar. Jika sudah yakin, temui Ibu lagi ya.',
       expression: 'normal',
     },
   },
@@ -1071,7 +1071,7 @@ export const KOMANDAN_HENDRA_LOCKED_DIALOGUE: DialogueTree = {
     explain_protocol: {
       id: 'explain_protocol',
       speakerId: 'komandan_hendra',
-      text: 'Kamu harus mempelajari materi tentang kerak bumi dari rekanmu yang memegang materi bertanda kaca pembesar [🔍] (Lintang). Silakan temui dia terlebih dahulu!',
+ text: 'Kamu harus mempelajari materi tentang kerak bumi dari rekanmu yang memegang materi bertanda kaca pembesar (Lintang). Silakan temui dia terlebih dahulu!',
       expression: 'thinking',
       choices: [
         {
@@ -1155,7 +1155,7 @@ export const MASCOT_MANTLE_INTRO_DIALOGUE: DialogueTree = {
     point_ahead: {
       id: 'point_ahead',
       speakerId: 'resqy',
-      text: 'Ayo kumpulkan kristal energi di jalan, lalu pelajari materi dari Zahra dan Lintang yang bertanda kaca pembesar [🔍] ya! Kuk-kuuk!',
+ text: 'Ayo kumpulkan kristal energi di jalan, lalu pelajari materi dari Zahra dan Lintang yang bertanda kaca pembesar ya! Kuk-kuuk!',
       expression: 'happy',
     },
   },
@@ -1263,7 +1263,7 @@ export const PROF_SARAH_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'open_now',
-          text: 'Buka Materi Arus Panas Mantel [🔍]',
+ text: 'Buka Materi Arus Panas Mantel ',
           nextNodeId: 'open_discovery',
           discoveryIdToMark: 'mantle_disc1',
         },
@@ -1362,7 +1362,7 @@ export const DR_DANANG_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'open_now',
-          text: 'Buka Materi Batuan Mantel [🔍]',
+ text: 'Buka Materi Batuan Mantel ',
           nextNodeId: 'open_discovery',
           discoveryIdToMark: 'mantle_disc2',
         },
@@ -1484,7 +1484,7 @@ export const KOMANDAN_SURYA_LOCKED_DIALOGUE: DialogueTree = {
     explain_locked: {
       id: 'explain_locked',
       speakerId: 'komandan_surya',
-      text: 'Kamu harus mempelajari dulu materi dari Zahra dan Lintang di bukit tadi yang bertanda kaca pembesar [🔍]. Temui mereka dan pelajari materinya ya!',
+ text: 'Kamu harus mempelajari dulu materi dari Zahra dan Lintang di bukit tadi yang bertanda kaca pembesar. Temui mereka dan pelajari materinya ya!',
       expression: 'thinking',
       choices: [
         {
@@ -1544,7 +1544,7 @@ export const KOMANDAN_SURYA_READY_DIALOGUE: DialogueTree = {
     standby_node: {
       id: 'standby_node',
       speakerId: 'komandan_surya',
-      text: 'Bagus, teliti itu penting. Kamu bisa membaca lagi materi dari Zahra dan Lintang yang bertanda kaca pembesar [🔍]. Jika sudah yakin, temui Ibu lagi ya!',
+ text: 'Bagus, teliti itu penting. Kamu bisa membaca lagi materi dari Zahra dan Lintang yang bertanda kaca pembesar. Jika sudah yakin, temui Ibu lagi ya!',
       expression: 'normal',
     },
   },
@@ -1608,7 +1608,7 @@ export const MASCOT_OUTER_CORE_INTRO_DIALOGUE: DialogueTree = {
     guide_forward: {
       id: 'guide_forward',
       speakerId: 'resqy',
-      text: 'Pelajari materi dari Zahra dan Lintang yang bertanda kaca pembesar [🔍] ya! Kuk-kuuk!',
+ text: 'Pelajari materi dari Zahra dan Lintang yang bertanda kaca pembesar ya! Kuk-kuuk!',
       expression: 'normal',
     },
   },
@@ -1631,7 +1631,7 @@ export const MASCOT_OUTER_CORE_GUIDE_DIALOGUE: DialogueTree = {
     point_three: {
       id: 'point_three',
       speakerId: 'resqy',
-      text: '3. Putaran cairan logam ini menciptakan medan magnet sebagai perisai bumi. Pahami materi bertanda [🔍] ini sebelum menghadapi evaluasi Bu Tyas ya!',
+ text: '3. Putaran cairan logam ini menciptakan medan magnet sebagai perisai bumi. Pahami materi bertanda ini sebelum menghadapi evaluasi Bu Tyas ya!',
       expression: 'thinking',
     },
   },
@@ -1679,7 +1679,7 @@ export const DR_FAJAR_DIALOGUE: DialogueTree = {
     explain_ahead: {
       id: 'explain_ahead',
       speakerId: 'dr_fajar',
-      text: 'Di teras depan ada Zahra yang meneliti lautan logam cair, dan Lintang yang menganalisis medan magnet bumi bertanda kaca pembesar [🔍]. Temui mereka ya.',
+ text: 'Di teras depan ada Zahra yang meneliti lautan logam cair, dan Lintang yang menganalisis medan magnet bumi bertanda kaca pembesar. Temui mereka ya.',
       expression: 'happy',
     },
   },
@@ -1727,7 +1727,7 @@ export const PROF_RATNA_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'open_now',
-          text: 'Buka Materi Lautan Logam Cair [🔍]',
+ text: 'Buka Materi Lautan Logam Cair ',
           nextNodeId: 'open_discovery',
           discoveryIdToMark: 'oc_disc1',
         },
@@ -1826,7 +1826,7 @@ export const DR_ARIS_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'open_now',
-          text: 'Buka Materi Medan Magnet Bumi [🔍]',
+ text: 'Buka Materi Medan Magnet Bumi ',
           nextNodeId: 'open_discovery',
           discoveryIdToMark: 'oc_disc2',
         },
@@ -1930,7 +1930,7 @@ export const KOMANDAN_TEGUH_LOCKED_DIALOGUE: DialogueTree = {
     explain_lock: {
       id: 'explain_lock',
       speakerId: 'komandan_teguh',
-      text: 'Kamu harus mempelajari materi dari Zahra dan Lintang di teras tadi yang bertanda kaca pembesar [🔍]. Temui mereka dan pelajari materinya ya!',
+ text: 'Kamu harus mempelajari materi dari Zahra dan Lintang di teras tadi yang bertanda kaca pembesar. Temui mereka dan pelajari materinya ya!',
       expression: 'thinking',
     },
   },
@@ -1977,7 +1977,7 @@ export const KOMANDAN_TEGUH_READY_DIALOGUE: DialogueTree = {
     standby_node: {
       id: 'standby_node',
       speakerId: 'komandan_teguh',
-      text: 'Sangat bijak. Silakan baca dan pelajari kembali materi dari Zahra dan Lintang yang bertanda kaca pembesar [🔍]. Kalau sudah siap, temui Ibu lagi ya!',
+ text: 'Sangat bijak. Silakan baca dan pelajari kembali materi dari Zahra dan Lintang yang bertanda kaca pembesar. Kalau sudah siap, temui Ibu lagi ya!',
       expression: 'normal',
     },
   },
@@ -2030,7 +2030,7 @@ export const MASCOT_INNER_CORE_INTRO_DIALOGUE: DialogueTree = {
     step2: {
       id: 'step2',
       speakerId: 'resqy',
-      text: 'Suhu di sini mencapai 6.000°C sepanas permukaan matahari! Ayo pelajari materi dari Zahra dan Lintang yang bertanda kaca pembesar [🔍], lalu bersiaplah dievaluasi Bu Tyas di Kapsul Akhir ya! Kuk-kuuk!',
+ text: 'Suhu di sini mencapai 6.000°C sepanas permukaan matahari! Ayo pelajari materi dari Zahra dan Lintang yang bertanda kaca pembesar, lalu bersiaplah dievaluasi Bu Tyas di Kapsul Akhir ya! Kuk-kuuk!',
       expression: 'happy',
     },
   },
@@ -2075,7 +2075,7 @@ export const DR_BAGUS_DIALOGUE: DialogueTree = {
     intro2: {
       id: 'intro2',
       speakerId: 'dr_bagus',
-      text: 'Di sini kita meneliti bola kristal besi padat bersuhu 6.000°C, dan di altar depan ada Zahra bertanda kaca pembesar [🔍]. Pelajari materinya sebelum Bu Tyas menguji ya.',
+ text: 'Di sini kita meneliti bola kristal besi padat bersuhu 6.000°C, dan di altar depan ada Zahra bertanda kaca pembesar. Pelajari materinya sebelum Bu Tyas menguji ya.',
       expression: 'normal',
       choices: [
         {
@@ -2146,7 +2146,7 @@ export const PROF_LESTARI_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'confirm_view',
-          text: 'Buka Catatan Bola Besi Padat [🔍]',
+ text: 'Buka Catatan Bola Besi Padat ',
           nextNodeId: 'show_discovery_node',
         },
       ],
@@ -2241,7 +2241,7 @@ export const DR_FARHAN_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'confirm_view',
-          text: 'Buka Data Pusat Gravitasi Nol [🔍]',
+ text: 'Buka Data Pusat Gravitasi Nol ',
           nextNodeId: 'show_discovery_node',
         },
       ],
@@ -2343,7 +2343,7 @@ export const KOMANDAN_BINTANG_LOCKED_DIALOGUE: DialogueTree = {
     explain_lock: {
       id: 'explain_lock',
       speakerId: 'komandan_bintang',
-      text: 'Kamu harus mempelajari materi dari Zahra dan Lintang di altar pusat bumi terlebih dahulu yang bertanda kaca pembesar [🔍]. Temui mereka dan pelajari materinya ya!',
+ text: 'Kamu harus mempelajari materi dari Zahra dan Lintang di altar pusat bumi terlebih dahulu yang bertanda kaca pembesar. Temui mereka dan pelajari materinya ya!',
       expression: 'thinking',
     },
   },
@@ -2390,7 +2390,7 @@ export const KOMANDAN_BINTANG_READY_DIALOGUE: DialogueTree = {
     standby_node: {
       id: 'standby_node',
       speakerId: 'komandan_bintang',
-      text: 'Sangat baik. Silakan baca dan pelajari kembali materi dari Zahra dan Lintang yang bertanda kaca pembesar [🔍]. Kalau sudah siap, temui Ibu lagi ya!',
+ text: 'Sangat baik. Silakan baca dan pelajari kembali materi dari Zahra dan Lintang yang bertanda kaca pembesar. Kalau sudah siap, temui Ibu lagi ya!',
       expression: 'normal',
     },
   },
@@ -2465,7 +2465,7 @@ export const MASCOT_DIVERGENT_GUIDE_DIALOGUE: DialogueTree = {
     start: {
       id: 'start',
       speakerId: 'resqy',
-      text: 'Kuk-kuuk! Tips Penjelajah: Hati-hati jangan sampai tergelincir ke celah lava di tengah! Gunakan lompatan pendorongmu untuk melompati jurang dengan aman. Pelajari materi bertanda kaca pembesar [🔍] sebelum melapor ke Bu Tyas ya!',
+ text: 'Kuk-kuuk! Tips Penjelajah: Hati-hati jangan sampai tergelincir ke celah lava di tengah! Gunakan lompatan pendorongmu untuk melompati jurang dengan aman. Pelajari materi bertanda kaca pembesar sebelum melapor ke Bu Tyas ya!',
       expression: 'happy',
     },
   },
@@ -2495,7 +2495,7 @@ export const DR_TAUFIK_DIALOGUE: DialogueTree = {
     guide_maya: {
       id: 'guide_maya',
       speakerId: 'dr_taufik',
-      text: 'Zahra dan Lintang di depan sedang meneliti bukti superbenua Pangea dan rantai pegunungan kembar bertanda kaca pembesar [🔍]. Temui mereka ya.',
+ text: 'Zahra dan Lintang di depan sedang meneliti bukti superbenua Pangea dan rantai pegunungan kembar bertanda kaca pembesar. Temui mereka ya.',
       expression: 'happy',
     },
   },
@@ -2541,7 +2541,7 @@ export const PROF_MAYA_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'confirm_view',
-          text: 'Buka Rekonstruksi Superbenua Pangea [🔍]',
+ text: 'Buka Rekonstruksi Superbenua Pangea ',
           nextNodeId: 'show_discovery_node',
         },
       ],
@@ -2636,7 +2636,7 @@ export const DR_CITRA_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'confirm_view',
-          text: 'Buka Simulator Dinamika Batas Divergen [🔍]',
+ text: 'Buka Simulator Dinamika Batas Divergen ',
           nextNodeId: 'show_discovery_node',
         },
       ],
@@ -2731,7 +2731,7 @@ export const PROF_ILHAM_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'confirm_view',
-          text: 'Buka Simulator Pemekaran Lempeng [🔍]',
+ text: 'Buka Simulator Pemekaran Lempeng ',
           nextNodeId: 'show_discovery_node',
         },
       ],
@@ -2803,7 +2803,7 @@ export const KOMANDAN_SATRIA_LOCKED_DIALOGUE: DialogueTree = {
     explain_lock: {
       id: 'explain_lock',
       speakerId: 'komandan_satria',
-      text: 'Kamu harus mempelajari seluruh materi dari Zahra dan Lintang yang bertanda kaca pembesar [🔍] sebelum Ibu izinkan melintas. Temui mereka dan pelajari materinya ya!',
+ text: 'Kamu harus mempelajari seluruh materi dari Zahra dan Lintang yang bertanda kaca pembesar sebelum Ibu izinkan melintas. Temui mereka dan pelajari materinya ya!',
       expression: 'thinking',
       choices: [
         {
@@ -2863,7 +2863,7 @@ export const KOMANDAN_SATRIA_READY_DIALOGUE: DialogueTree = {
     standby_node: {
       id: 'standby_node',
       speakerId: 'komandan_satria',
-      text: 'Sangat bijak. Silakan pelajari kembali materi bertanda kaca pembesar [🔍]. Kalau sudah siap, temui Ibu lagi ya!',
+ text: 'Sangat bijak. Silakan pelajari kembali materi bertanda kaca pembesar. Kalau sudah siap, temui Ibu lagi ya!',
       expression: 'normal',
     },
   },
@@ -2912,7 +2912,7 @@ export const MASCOT_CONVERGENT_INTRO_DIALOGUE: DialogueTree = {
     two_conditions: {
       id: 'two_conditions',
       speakerId: 'resqy',
-      text: 'Penting untuk diketahui! Batas konvergen memiliki 2 KONDISI UTAMA berdasarkan jenis lempeng yang bertabrakan. Kamu bisa bebas beralih dan mengamati keduanya lewat tombol di bilah atas:\n\n1️⃣ DARATAN (Tumbukan Benua - Benua)\n2️⃣ LAUTAN & PANTAI (Subduksi Samudra - Benua)',
+ text: 'Penting untuk diketahui! Batas konvergen memiliki 2 KONDISI UTAMA berdasarkan jenis lempeng yang bertabrakan. Kamu bisa bebas beralih dan mengamati keduanya lewat tombol di bilah atas:\n\n1 DARATAN (Tumbukan Benua - Benua)\n2 LAUTAN & PANTAI (Subduksi Samudra - Benua)',
       expression: 'thinking',
       choices: [
         {
@@ -2935,7 +2935,7 @@ export const MASCOT_CONVERGENT_INTRO_DIALOGUE: DialogueTree = {
     explain_land: {
       id: 'explain_land',
       speakerId: 'resqy',
-      text: '🏔️ Kondisi Daratan (Tumbukan Benua - Benua): Dua lempeng benua yang sama-sama tebal saling bertabrakan! Kerak benua tertekan hebat dan terlipat ke atas membentuk jajaran pegunungan lipatan raksasa (seperti Pegunungan Himalaya) tanpa adanya palung laut!',
+ text: ' Kondisi Daratan (Tumbukan Benua - Benua): Dua lempeng benua yang sama-sama tebal saling bertabrakan! Kerak benua tertekan hebat dan terlipat ke atas membentuk jajaran pegunungan lipatan raksasa (seperti Pegunungan Himalaya) tanpa adanya palung laut!',
       expression: 'happy',
       choices: [
         {
@@ -2953,7 +2953,7 @@ export const MASCOT_CONVERGENT_INTRO_DIALOGUE: DialogueTree = {
     explain_ocean: {
       id: 'explain_ocean',
       speakerId: 'resqy',
-      text: '🌊 Kondisi Lautan & Pantai (Subduksi Samudra - Benua): Lempeng samudra yang padat dan berat menunjam ke bawah lempeng benua (subduksi)! Membentuk Palung Laut Dalam di perairan dan jajaran busur gunung api di pesisir. Di kondisi ini kamu akan menaiki perahu riset!',
+ text: ' Kondisi Lautan & Pantai (Subduksi Samudra - Benua): Lempeng samudra yang padat dan berat menunjam ke bawah lempeng benua (subduksi)! Membentuk Palung Laut Dalam di perairan dan jajaran busur gunung api di pesisir. Di kondisi ini kamu akan menaiki perahu riset!',
       expression: 'thinking',
       choices: [
         {
@@ -2971,7 +2971,7 @@ export const MASCOT_CONVERGENT_INTRO_DIALOGUE: DialogueTree = {
     explain_nav: {
       id: 'explain_nav',
       speakerId: 'resqy',
-      text: 'Kuk-kuuk! Jika di mode Daratan, kamu berjalan kaki menjelajahi batuan terlipat. Jika di mode Lautan, kemudikan perahu ke kanan melintasi palung hingga merapat di dermaga pantai! Temui Zidane dan Zahra bertanda [🔍] sebelum menuju Bu Tyas di altar gerbang ya!',
+ text: 'Kuk-kuuk! Jika di mode Daratan, kamu berjalan kaki menjelajahi batuan terlipat. Jika di mode Lautan, kemudikan perahu ke kanan melintasi palung hingga merapat di dermaga pantai! Temui Zidane dan Zahra bertanda sebelum menuju Bu Tyas di altar gerbang ya!',
       expression: 'happy',
     },
   },
@@ -3008,7 +3008,7 @@ export const MASCOT_CONVERGENT_LAND_DIALOGUE: DialogueTree = {
     land_nav: {
       id: 'land_nav',
       speakerId: 'resqy',
-      text: 'Berjalanlah ke kanan melintasi batuan terlipat menuju lereng pegunungan. Temui Zidane dan Zahra bertanda [🔍] untuk mengumpulkan data geologis sebelum melapor ke Bu Tyas di altar gerbang! Jangan lupa coba juga tombol LAUTAN di atas ya! Kuk-kuuk!',
+ text: 'Berjalanlah ke kanan melintasi batuan terlipat menuju lereng pegunungan. Temui Zidane dan Zahra bertanda untuk mengumpulkan data geologis sebelum melapor ke Bu Tyas di altar gerbang! Jangan lupa coba juga tombol LAUTAN di atas ya! Kuk-kuuk!',
       expression: 'happy',
     },
   },
@@ -3045,7 +3045,7 @@ export const MASCOT_CONVERGENT_OCEAN_DIALOGUE: DialogueTree = {
     ocean_nav: {
       id: 'ocean_nav',
       speakerId: 'resqy',
-      text: 'Kemudikan perahu ke kanan melintasi palung hingga merapat di dermaga pantai, lalu temui Zidane dan Zahra bertanda [🔍] untuk meneliti data subduksi serta bentang alam! Kamu juga bisa kembali ke mode Daratan lewat tombol di atas! Kuk-kuuk!',
+ text: 'Kemudikan perahu ke kanan melintasi palung hingga merapat di dermaga pantai, lalu temui Zidane dan Zahra bertanda untuk meneliti data subduksi serta bentang alam! Kamu juga bisa kembali ke mode Daratan lewat tombol di atas! Kuk-kuuk!',
       expression: 'happy',
     },
   },
@@ -3067,7 +3067,7 @@ export const MASCOT_CONVERGENT_GUIDE_LAND_DIALOGUE: DialogueTree = {
     guide_2: {
       id: 'guide_2',
       speakerId: 'resqy',
-      text: 'Temui Zidane dan Zahra bertanda [🔍] di daratan untuk menelaah data kompresi lempeng serta bentang alam, lalu lapor ke Bu Tyas di altar batu. Kamu juga bisa mengamati kondisi Lautan & Palung lewat tombol di atas!',
+ text: 'Temui Zidane dan Zahra bertanda di daratan untuk menelaah data kompresi lempeng serta bentang alam, lalu lapor ke Bu Tyas di altar batu. Kamu juga bisa mengamati kondisi Lautan & Palung lewat tombol di atas!',
       expression: 'happy',
     },
   },
@@ -3089,7 +3089,7 @@ export const MASCOT_CONVERGENT_GUIDE_OCEAN_DIALOGUE: DialogueTree = {
     guide_2: {
       id: 'guide_2',
       speakerId: 'resqy',
-      text: 'Dari dermaga pantai, seberangi jembatan batu untuk menemui Zidane dan Zahra bertanda [🔍] guna menelaah data subduksi samudra, sebelum melapor ke Bu Tyas di ujung altar!',
+ text: 'Dari dermaga pantai, seberangi jembatan batu untuk menemui Zidane dan Zahra bertanda guna menelaah data subduksi samudra, sebelum melapor ke Bu Tyas di ujung altar!',
       expression: 'happy',
     },
   },
@@ -3338,7 +3338,7 @@ export const KOMANDAN_ARYA_LOCKED_DIALOGUE: DialogueTree = {
     locked_guidance: {
       id: 'locked_guidance',
       speakerId: 'komandan_arya',
-      text: 'Kamu harus menelaah data subduksi bersama Zidane di pesisir dan menguasai materi 3 bentang alam bersama Zahra di lereng gunung terlebih dahulu yang bertanda kaca pembesar [🔍]!',
+ text: 'Kamu harus menelaah data subduksi bersama Zidane di pesisir dan menguasai materi 3 bentang alam bersama Zahra di lereng gunung terlebih dahulu yang bertanda kaca pembesar!',
       expression: 'thinking',
     },
   },
@@ -3385,7 +3385,7 @@ export const KOMANDAN_ARYA_READY_DIALOGUE: DialogueTree = {
     standby_node: {
       id: 'standby_node',
       speakerId: 'komandan_arya',
-      text: 'Sangat baik. Silakan tinjau kembali data bertanda kaca pembesar [🔍]. Jika kamu sudah merasa yakin, temui Ibu lagi di altar ini!',
+ text: 'Sangat baik. Silakan tinjau kembali data bertanda kaca pembesar. Jika kamu sudah merasa yakin, temui Ibu lagi di altar ini!',
       expression: 'normal',
     },
   },
@@ -3441,7 +3441,7 @@ export const MASCOT_TRANSFORM_INTRO_DIALOGUE: DialogueTree = {
     explain_controls: {
       id: 'explain_controls',
       speakerId: 'resqy',
-      text: 'Gunakan tombol W, A, S, D atau tombol Panah untuk bergerak bebas ke 4 arah. Temui Zahra yang bertanda kaca pembesar [🔍], Ican, dan bersiaplah dievaluasi Bu Tyas di kapsul akhir! Kuk-kuuk!',
+ text: 'Gunakan tombol W, A, S, D atau tombol Panah untuk bergerak bebas ke 4 arah. Temui Zahra yang bertanda kaca pembesar, Ican, dan bersiaplah dievaluasi Bu Tyas di kapsul akhir! Kuk-kuuk!',
       expression: 'happy',
     },
   },
@@ -3463,7 +3463,7 @@ export const MASCOT_TRANSFORM_GUIDE_DIALOGUE: DialogueTree = {
     guide_steps: {
       id: 'guide_steps',
       speakerId: 'resqy',
-      text: 'Pelajari materi dan peta Sesar San Andreas dari Zahra yang bertanda [🔍] sebelum menghadapi evaluasi pamungkas bersama Bu Tyas ya!',
+ text: 'Pelajari materi dan peta Sesar San Andreas dari Zahra yang bertanda sebelum menghadapi evaluasi pamungkas bersama Bu Tyas ya!',
       expression: 'happy',
     },
   },
@@ -3528,7 +3528,7 @@ export const PROF_SARAH_TRANS_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'open_seismo_modal',
-          text: 'Ya, buka lembar observasi seismograf [🔍]',
+ text: 'Ya, buka lembar observasi seismograf ',
           nextNodeId: 'open_seismo_node',
         },
         {
@@ -3624,7 +3624,7 @@ export const DR_TAUFIK_TRANS_DIALOGUE: DialogueTree = {
       choices: [
         {
           id: 'open_fault_modal',
-          text: 'Ya, buka peta komprehensif Sesar San Andreas [🔍]',
+ text: 'Ya, buka peta komprehensif Sesar San Andreas ',
           nextNodeId: 'open_fault_node',
           discoveryIdToMark: 'trans_sanandreas',
         },
@@ -3709,7 +3709,7 @@ export const PETUGAS_RUDI_TRANS_DIALOGUE: DialogueTree = {
     safety_tip: {
       id: 'safety_tip',
       speakerId: 'lintang',
-      text: 'Pastikan kamu sudah mempelajari analisis patahan dari Zahra yang bertanda [🔍] sebelum menghadap Bu Tyas di ujung gerbang akhir!',
+ text: 'Pastikan kamu sudah mempelajari analisis patahan dari Zahra yang bertanda sebelum menghadap Bu Tyas di ujung gerbang akhir!',
       expression: 'happy',
     },
   },
@@ -3732,7 +3732,7 @@ export const KOMANDAN_GUNTUR_LOCKED_DIALOGUE: DialogueTree = {
     locked_guidance: {
       id: 'locked_guidance',
       speakerId: 'komandan_guntur',
-      text: 'Kamu harus menguasai data batas transform dan patahan mendatar San Andreas bersama Zahra yang bertanda kaca pembesar [🔍] terlebih dahulu!',
+ text: 'Kamu harus menguasai data batas transform dan patahan mendatar San Andreas bersama Zahra yang bertanda kaca pembesar terlebih dahulu!',
       expression: 'thinking',
       choices: [
         {
@@ -3926,7 +3926,7 @@ export const ICAN_SURFACE_DIALOGUE: DialogueTree = {
     node_2: {
       id: 'node_2',
       speakerId: 'ican',
-      text: 'Tapi santai, selama lu rajin ajak ngobrol rekan tim dan baca materi yang ada tanda kaca pembesarnya [🔍], lu bakal lolos tes Wordle dari Bu Tyas kok. Semangat deh!',
+ text: 'Tapi santai, selama lu rajin ajak ngobrol rekan tim dan baca materi yang ada tanda kaca pembesarnya, lu bakal lolos tes Wordle dari Bu Tyas kok. Semangat deh!',
       expression: 'happy',
     },
   },
@@ -3948,7 +3948,7 @@ export const BU_TYAS_SURFACE_DIALOGUE: DialogueTree = {
     node_2: {
       id: 'node_2',
       speakerId: 'bu_tyas',
-      text: 'Di tiap lapisan bumi, kalian WAJIB berdiskusi dengan rekan-rekan tim (Zidane, Zahra, Ican, dan Lintang) serta membaca materi edukasi yang mereka simpan (ditandai dengan kaca pembesar [🔍]).',
+ text: 'Di tiap lapisan bumi, kalian WAJIB berdiskusi dengan rekan-rekan tim (Zidane, Zahra, Ican, dan Lintang) serta membaca materi edukasi yang mereka simpan (ditandai dengan kaca pembesar ).',
       expression: 'thinking',
       nextNodeId: 'node_3',
     },

@@ -182,7 +182,7 @@ export default function LempengTektonik() {
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`py-2 px-2 rounded-xl border-2 border-amber-950 text-[10px] sm:text-xs font-bold text-center cursor-pointer transition-all shadow-[0_2px_0_#78350f] flex flex-col items-center gap-1 ${
+              className={`py-2 px-2 rounded-xl border-2 border-amber-950 text-[13.5px] sm:text-[13px] font-bold text-center cursor-pointer transition-all shadow-[0_2px_0_#78350f] flex flex-col items-center gap-1 ${
                 isActive
                   ? 'bg-amber-950 text-amber-300 shadow-[0_3px_0_#451a03]'
                   : 'bg-amber-200/90 text-amber-950 hover:bg-amber-300'
@@ -207,15 +207,15 @@ export default function LempengTektonik() {
                 <button
                   key={b.id}
                   onClick={() => handleBoundaryChange(b.id)}
-                  className={`p-2.5 rounded-xl border-2 border-amber-950 text-xs font-bold text-center cursor-pointer transition-all flex flex-col items-center gap-1 ${
+                  className={`p-2.5 rounded-xl border-2 border-amber-950 text-[13px] font-bold text-center cursor-pointer transition-all flex flex-col items-center gap-1 ${
                     isSel
                       ? 'bg-amber-400 text-amber-950 shadow-[0_3px_0_#78350f] ring-2 ring-amber-950'
                       : 'bg-white hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_#78350f]'
                   }`}
                 >
                   <PixelIcon name={b.iconName} size={22} />
-                  <span className="block text-[10px] text-amber-800 uppercase mt-0.5">{b.type}</span>
-                  <span className="block text-xs font-bold truncate">{b.shortName}</span>
+                  <span className="block text-[13.5px] text-amber-800 uppercase mt-0.5">{b.type}</span>
+                  <span className="block text-[13px] font-bold truncate">{b.shortName}</span>
                 </button>
               );
             })}
@@ -228,13 +228,13 @@ export default function LempengTektonik() {
               
               {/* HUD Header */}
               <div className="flex items-center justify-between w-full pb-2 border-b border-slate-800 mb-3">
-                <span className="text-[10px] font-pixel-title text-emerald-400 font-bold flex items-center gap-1.5">
+                <span className="text-[13.5px] font-pixel-title text-emerald-400 font-bold flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   SIMULATOR DINAMIKA TEKTONIK 2D
                 </span>
                 <button
                   onClick={handleSimulate}
-                  className={`px-3 py-1.5 rounded text-white text-[10px] font-bold border-2 cursor-pointer font-pixel-title active:translate-y-0.5 transition-all flex items-center gap-1.5 ${activeBoundary.btnColor}`}
+                  className={`px-3 py-1.5 rounded text-white text-[13.5px] font-bold border-2 cursor-pointer font-pixel-title active:translate-y-0.5 transition-all flex items-center gap-1.5 ${activeBoundary.btnColor}`}
                 >
                   <PixelIcon name={activeBoundary.iconName} size={14} />
                   <span>{activeBoundary.btnLabel}</span>
@@ -394,11 +394,11 @@ export default function LempengTektonik() {
                 <div className="flex items-center gap-2.5 mb-2 pb-2 border-b border-amber-900/30">
                   <PixelIcon name={activeBoundary.iconName} size={24} />
                   <div>
-                    <div className="font-pixel-title text-xs text-amber-300">{activeBoundary.name}</div>
-                    <div className="text-[10px] text-amber-500 uppercase">{activeBoundary.type}</div>
+                    <div className="font-pixel-title text-[13px] text-amber-300">{activeBoundary.name}</div>
+                    <div className="text-[13.5px] text-amber-500 uppercase">{activeBoundary.type}</div>
                   </div>
                 </div>
-                <p className="text-sm text-amber-200 leading-relaxed">{activeBoundary.movement}</p>
+                <p className="text-[15px] text-amber-200 leading-relaxed">{activeBoundary.movement}</p>
               </div>
 
               {/* Quick Info Cards */}
@@ -406,16 +406,16 @@ export default function LempengTektonik() {
                 <div className="p-2.5 bg-amber-50 rounded-xl border-2 border-amber-950/30 flex items-start gap-2.5">
                   <PixelIcon name="map" size={18} className="text-amber-800 mt-0.5" />
                   <div>
-                    <span className="text-[9px] text-amber-800 font-bold block uppercase">CONTOH DI ALAM:</span>
-                    <span className="text-xs text-amber-950 font-bold">{activeBoundary.example}</span>
+                    <span className="text-[12.5px] text-amber-800 font-bold block uppercase">CONTOH DI ALAM:</span>
+                    <span className="text-[13px] text-amber-950 font-bold">{activeBoundary.example}</span>
                   </div>
                 </div>
 
                 <div className="p-2.5 bg-rose-50 rounded-xl border-2 border-rose-900/30 flex items-start gap-2.5">
                   <PixelIcon name="alert" size={18} className="text-rose-700 mt-0.5" />
                   <div>
-                    <span className="text-[9px] text-rose-800 font-bold block uppercase">DAMPAK GEOLOGIS:</span>
-                    <span className="text-xs text-rose-950 font-bold">{activeBoundary.impact}</span>
+                    <span className="text-[12.5px] text-rose-800 font-bold block uppercase">DAMPAK GEOLOGIS:</span>
+                    <span className="text-[13px] text-rose-950 font-bold">{activeBoundary.impact}</span>
                   </div>
                 </div>
               </div>
@@ -423,7 +423,7 @@ export default function LempengTektonik() {
               {/* Action Trigger Hint */}
               <div className="flex items-center gap-2 justify-center bg-amber-100/60 p-2 rounded-xl border border-amber-950/20">
                 <PixelIcon name="cursor" size={14} />
-                <span className="text-[10px] text-amber-800 font-bold">
+                <span className="text-[13.5px] text-amber-800 font-bold">
                   Klik tombol "{activeBoundary.btnLabel}" di atas simulator untuk melihat pergerakan lempeng.
                 </span>
               </div>
@@ -440,11 +440,11 @@ export default function LempengTektonik() {
           <div className="bg-slate-950 p-4 rounded-2xl border-3 border-amber-950 shadow-[0_6px_0_#231206] relative">
             
             <div className="flex items-center justify-between pb-2 border-b border-slate-800 mb-3">
-              <span className="text-[10px] font-pixel-title text-emerald-400 font-bold flex items-center gap-1.5">
+              <span className="text-[13.5px] font-pixel-title text-emerald-400 font-bold flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 PETA INTERAKSI 3 LEMPENG INDONESIA
               </span>
-              <span className="text-[9px] text-slate-400 font-pixel-title font-bold">KLIK ZONA LEMPENG UNTUK DETAIL</span>
+              <span className="text-[12.5px] text-slate-400 font-pixel-title font-bold">KLIK ZONA LEMPENG UNTUK DETAIL</span>
             </div>
 
             <div className="w-full h-44 sm:h-56 relative">
@@ -547,10 +547,10 @@ export default function LempengTektonik() {
                   }`}
                 >
                   <PixelIcon name={p.iconName} size={20} />
-                  <span className="block text-[10px] font-pixel-title mt-0.5">{p.name}</span>
+                  <span className="block text-[13.5px] font-pixel-title mt-0.5">{p.name}</span>
                   <div className="flex items-center justify-center gap-1 mt-1">
                     <span className="w-2.5 h-2.5 rounded-full border border-amber-950" style={{ backgroundColor: p.color }} />
-                    <span className="text-[9px] font-bold text-amber-700">{p.speed}</span>
+                    <span className="text-[12.5px] font-bold text-amber-700">{p.speed}</span>
                   </div>
                 </button>
               );
@@ -563,18 +563,18 @@ export default function LempengTektonik() {
               <div className="flex items-center gap-2 mb-2 pb-2 border-b border-amber-900/30">
                 <span className="w-4 h-4 rounded-full border-2 border-amber-400" style={{ backgroundColor: activePlate.color }} />
                 <div>
-                  <div className="font-pixel-title text-xs text-amber-300">LEMPENG {activePlate.name.toUpperCase()}</div>
-                  <div className="text-[9px] text-amber-500 uppercase">Arah: {activePlate.direction} • Kecepatan: {activePlate.speed}</div>
+                  <div className="font-pixel-title text-[13px] text-amber-300">LEMPENG {activePlate.name.toUpperCase()}</div>
+                  <div className="text-[12.5px] text-amber-500 uppercase">Arah: {activePlate.direction} • Kecepatan: {activePlate.speed}</div>
                 </div>
               </div>
-              <p className="text-xs text-amber-200 leading-relaxed">{activePlate.impact}</p>
+              <p className="text-[13px] text-amber-200 leading-relaxed">{activePlate.impact}</p>
             </div>
           )}
 
           {!activePlate && (
             <div className="flex items-center gap-2 justify-center py-2 bg-amber-200/50 rounded-xl border border-amber-950/20">
               <PixelIcon name="cursor" size={14} />
-              <span className="text-[10px] text-amber-800 font-bold">
+              <span className="text-[13.5px] text-amber-800 font-bold">
                 Pilih salah satu lempeng di peta atau kartu di atas untuk membaca analisis geologinya.
               </span>
             </div>
@@ -590,11 +590,11 @@ export default function LempengTektonik() {
           <div className="bg-slate-950 p-4 rounded-2xl border-3 border-amber-950 shadow-[0_6px_0_#231206]">
             
             <div className="flex items-center justify-between pb-2 border-b border-slate-800 mb-3">
-              <span className="text-[10px] font-pixel-title text-emerald-400 font-bold flex items-center gap-1.5">
+              <span className="text-[13.5px] font-pixel-title text-emerald-400 font-bold flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-rose-500" />
                 RING OF FIRE — CINCIN API PASIFIK
               </span>
-              <span className="text-[9px] text-slate-400 font-pixel-title font-bold">KLIK / ARAHKAN KE TITIK MERAH</span>
+              <span className="text-[12.5px] text-slate-400 font-pixel-title font-bold">KLIK / ARAHKAN KE TITIK MERAH</span>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -646,7 +646,7 @@ export default function LempengTektonik() {
 
                 {/* Hovered Volcano Tooltip */}
                 {hoveredVolcano && (
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-amber-950 text-amber-200 rounded border-2 border-amber-500 text-[10px] font-pixel-title shadow-lg whitespace-nowrap z-10 flex items-center gap-1.5">
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-amber-950 text-amber-200 rounded border-2 border-amber-500 text-[13.5px] font-pixel-title shadow-lg whitespace-nowrap z-10 flex items-center gap-1.5">
                     <PixelIcon name="volcano" size={14} />
                     <span>{hoveredVolcano}</span>
                   </div>
@@ -659,26 +659,26 @@ export default function LempengTektonik() {
                   <div className="p-2.5 bg-slate-800 rounded-xl border-2 border-slate-700 text-center flex flex-col items-center">
                     <PixelIcon name="volcano" size={24} className="mb-1" />
                     <span className="text-amber-400 font-pixel-title text-base block">127+</span>
-                    <span className="text-[8px] text-slate-400 font-bold uppercase">Gunung Api Aktif RI</span>
+                    <span className="text-[12px] text-slate-400 font-bold uppercase">Gunung Api Aktif RI</span>
                   </div>
                   <div className="p-2.5 bg-slate-800 rounded-xl border-2 border-slate-700 text-center flex flex-col items-center">
                     <PixelIcon name="convergent" size={24} className="mb-1 text-rose-400" />
                     <span className="text-rose-400 font-pixel-title text-base block">452+</span>
-                    <span className="text-[8px] text-slate-400 font-bold uppercase">Gunung Api Cincin Api</span>
+                    <span className="text-[12px] text-slate-400 font-bold uppercase">Gunung Api Cincin Api</span>
                   </div>
                   <div className="p-2.5 bg-slate-800 rounded-xl border-2 border-slate-700 text-center flex flex-col items-center">
                     <PixelIcon name="ruler" size={24} className="mb-1" />
                     <span className="text-cyan-400 font-pixel-title text-base block">40.000</span>
-                    <span className="text-[8px] text-slate-400 font-bold uppercase">Km Panjang Sabuk</span>
+                    <span className="text-[12px] text-slate-400 font-bold uppercase">Km Panjang Sabuk</span>
                   </div>
                   <div className="p-2.5 bg-slate-800 rounded-xl border-2 border-slate-700 text-center flex flex-col items-center">
                     <PixelIcon name="ocean" size={24} className="mb-1" />
                     <span className="text-emerald-400 font-pixel-title text-base block">90%</span>
-                    <span className="text-[8px] text-slate-400 font-bold uppercase">Gempa Bumi Global</span>
+                    <span className="text-[12px] text-slate-400 font-bold uppercase">Gempa Bumi Global</span>
                   </div>
                 </div>
 
-                <div className="text-[10px] text-slate-400 text-center font-bold">
+                <div className="text-[13.5px] text-slate-400 text-center font-bold">
                   Arahkan kursor ke titik merah pada globe untuk melihat lokasi gunung api.
                 </div>
               </div>
@@ -690,10 +690,10 @@ export default function LempengTektonik() {
             <div className="flex items-start gap-2.5">
               <PixelIcon name="shield" size={22} className="mt-0.5" />
               <div>
-                <span className="font-pixel-title text-xs text-amber-400 block mb-1">
+                <span className="font-pixel-title text-[13px] text-amber-400 block mb-1">
                   KESIMPULAN EDUKASI KESIAPSIAGAAN:
                 </span>
-                <p className="text-xs text-amber-200 leading-relaxed">
+                <p className="text-[13px] text-amber-200 leading-relaxed">
                   Indonesia berada di jalur Cincin Api Pasifik dan pertemuan 3 lempeng besar dunia. Gempa bumi adalah fenomena alam yang tidak dapat dicegah, namun dampaknya dapat diminimalisir melalui pemahaman jalur evakuasi, konstruksi tahan gempa, dan kesiapsiagaan warga sejak dini.
                 </p>
               </div>

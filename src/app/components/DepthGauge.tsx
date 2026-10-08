@@ -22,7 +22,7 @@ export default function DepthGauge({ depth, temperature, label, className = '' }
     <div className={`flex gap-4 items-stretch ${className}`}>
       {/* Depth Bar */}
       <div className="flex flex-col items-center gap-1 w-14">
-        <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Kedalaman</span>
+        <span className="text-[13.5px] font-bold text-on-surface-variant uppercase tracking-wider">Kedalaman</span>
         <div className="relative flex-1 w-6 bg-surface-variant rounded-full overflow-hidden min-h-[120px]">
           <div
             className="absolute bottom-0 left-0 right-0 rounded-full transition-all duration-1000 ease-out"
@@ -38,13 +38,13 @@ export default function DepthGauge({ depth, temperature, label, className = '' }
           />
         </div>
         <div className="text-center">
-          <AnimatedCounter end={depth} suffix=" km" className="text-xs font-bold text-on-surface tabular-nums" />
+          <AnimatedCounter end={depth} suffix=" km" className="text-[13px] font-bold text-on-surface tabular-nums" />
         </div>
       </div>
 
       {/* Temperature Bar */}
       <div className="flex flex-col items-center gap-1 w-14">
-        <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Suhu</span>
+        <span className="text-[13.5px] font-bold text-on-surface-variant uppercase tracking-wider">Suhu</span>
         <div className="relative flex-1 w-6 bg-surface-variant rounded-full overflow-hidden min-h-[120px]">
           {/* Thermometer fill */}
           <div
@@ -61,14 +61,14 @@ export default function DepthGauge({ depth, temperature, label, className = '' }
           />
         </div>
         <div className="text-center">
-          <AnimatedCounter end={temperature} suffix="°C" className="text-xs font-bold tabular-nums" style={{ color: tempColor } as any} />
+          <AnimatedCounter end={temperature} suffix="°C" className="text-[13px] font-bold tabular-nums" style={{ color: tempColor } as any} />
         </div>
       </div>
 
       {/* Layer Label */}
       <div className="flex items-center">
         <div
-          className="px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface bg-surface-variant/60 transition-all duration-500 whitespace-nowrap"
+          className="px-3 py-1.5 rounded-lg text-[13px] font-bold text-on-surface bg-surface-variant/60 transition-all duration-500 whitespace-nowrap"
         >
           {label}
         </div>

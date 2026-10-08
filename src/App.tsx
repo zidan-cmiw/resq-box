@@ -1,8 +1,10 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AppLayout from './app/AppLayout';
 import Dashboard from './app/Dashboard';
 import { useAuthStore } from './store/teacherStore';
+import AppErrorBoundary from './components/AppErrorBoundary';
+import { setMonitoringContext } from './utils/monitoring';
 
 const Login = lazy(() => import('./app/Login'));
 const Workspace = lazy(() => import('./app/Workspace'));
@@ -13,10 +15,11 @@ const Credits = lazy(() => import('./app/Credits'));
 const Profile = lazy(() => import('./app/Profile'));
 const TeacherDashboard = lazy(() => import('./app/TeacherDashboard'));
 const NotFound = lazy(() => import('./app/NotFound'));
+const Privacy = lazy(() => import('./app/Privacy'));
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-[#050813] flex items-center justify-center font-pixel text-amber-300 text-xs">
+    <div className="min-h-screen bg-[#050813] flex items-center justify-center font-pixel text-amber-300 text-[13px]">
       MEMUAT...
     </div>
   );
@@ -50,12 +53,38 @@ function TeacherGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+/**
+ * Melaporkan rute aktif & peran pengguna ke lapisan monitoring, supaya laporan
+ * error bisa dikelompokkan ("error hanya di /level3, hanya pada siswa").
+ * Tidak mengirim id siswa — hanya peran dan rute.
+ */
+function MonitoringContextTracker() {
+  const location = useLocation();
+  const currentUser = useAuthStore((state) => state.currentUser);
+
+  useEffect(() => {
+    const role = currentUser?.role === 'teacher' ? 'teacher' : currentUser ? 'student' : 'guest';
+    setMonitoringContext({ route: location.pathname, role });
+  }, [location.pathname, currentUser]);
+
+  return null;
+}
+
 function App() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
+    // ErrorBoundary diletakkan DI LUAR BrowserRouter & Suspense supaya ia
+    // menangkap kegagalan apa pun — termasuk chunk rute yang gagal dimuat
+    // (mis. jaringan putus setelah deploy baru).
+    <AppErrorBoundary label="root">
+      <BrowserRouter>
+        <MonitoringContextTracker />
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+
+            {/* Halaman publik — boleh dibuka tanpa login, agar sekolah dan
+                orang tua dapat memeriksa penanganan data siswa. */}
+            <Route path="/privacy" element={<Privacy />} />
           
           {/* Protected Game Routes */}
           <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
@@ -103,9 +132,10 @@ function App() {
 
           {/* 404 Catch-All */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </AppErrorBoundary>
   );
 }
 

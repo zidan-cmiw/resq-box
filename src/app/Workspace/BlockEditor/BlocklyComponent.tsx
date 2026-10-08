@@ -222,7 +222,7 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
   return (
     <div className="flex flex-col h-full w-full bg-[#fefce8]">
       <div className="flex justify-between items-center px-3 py-2 border-b-2 border-[#b45309] bg-[#fef3c7] shadow-sm">
-        <h2 className="font-pixel text-xs sm:text-sm text-[#451a03] font-bold flex items-center gap-2">
+        <h2 className="font-pixel text-[13px] sm:text-[15px] text-[#451a03] font-bold flex items-center gap-2">
           <span className="material-symbols-outlined text-[#b45309]" style={{ fontSize: '18px' }}>widgets</span>
           Ruang Simulasi
         </h2>

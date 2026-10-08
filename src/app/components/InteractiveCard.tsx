@@ -31,7 +31,7 @@ export default function InteractiveCard({ front, back, frontClassName = '', back
           style={{ backfaceVisibility: 'hidden' }}
         >
           <div className="absolute top-3 right-3 opacity-50 group-hover:opacity-100 transition-opacity">
-            <span className="material-symbols-outlined text-sm">touch_app</span>
+            <span className="material-symbols-outlined text-[15px]">touch_app</span>
           </div>
           {front}
         </div>
@@ -41,7 +41,7 @@ export default function InteractiveCard({ front, back, frontClassName = '', back
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           <div className="absolute top-3 right-3 opacity-50 group-hover:opacity-100 transition-opacity">
-            <span className="material-symbols-outlined text-sm">undo</span>
+            <span className="material-symbols-outlined text-[15px]">undo</span>
           </div>
           {back}
         </div>

@@ -274,18 +274,18 @@ export default function VisualNovelDialogueL2({
       {showHistory && (
         <div className="absolute inset-4 md:inset-12 z-50 bg-slate-950/95 border border-slate-700 rounded-2xl p-4 sm:p-6 flex flex-col shadow-2xl">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
-            <h3 className="text-slate-200 text-xs sm:text-sm font-bold tracking-wider flex items-center gap-2">
+            <h3 className="text-slate-200 text-[13px] sm:text-[15px] font-bold tracking-wider flex items-center gap-2">
               <PixelIcon name="book" size={14} className="text-amber-400" /> RIWAYAT PERCAKAPAN
             </h3>
             <button
               type="button"
               onClick={() => setShowHistory(false)}
-              className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg transition-all shadow hover:scale-105 active:scale-95 flex items-center gap-1.5 cursor-pointer pointer-events-auto"
+              className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[13px] rounded-lg transition-all shadow hover:scale-105 active:scale-95 flex items-center gap-1.5 cursor-pointer pointer-events-auto"
             >
               <span>✕</span> KEMBALI
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto space-y-3 pr-2 text-xs leading-relaxed">
+          <div className="flex-1 overflow-y-auto space-y-3 pr-2 text-[13px] leading-relaxed">
             {historyLog.map((log, idx) => (
               <div key={idx} className="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
                 <span className="font-bold block mb-1" style={{ color: log.color }}>
@@ -296,13 +296,13 @@ export default function VisualNovelDialogueL2({
             ))}
           </div>
           <div className="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between">
-            <span className="text-[11px] text-slate-400">
+            <span className="text-[14.5px] text-slate-400">
               Tekan <kbd className="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-slate-300">ESC</kbd> untuk kembali
             </span>
             <button
               type="button"
               onClick={() => setShowHistory(false)}
-              className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-lg border border-slate-600 transition-colors cursor-pointer pointer-events-auto"
+              className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[13px] rounded-lg border border-slate-600 transition-colors cursor-pointer pointer-events-auto"
             >
               Tutup Riwayat
             </button>
@@ -340,7 +340,7 @@ export default function VisualNovelDialogueL2({
                 : 'opacity-60 scale-95 brightness-75'
               } ${!isNpcSpeaking && bounceActive ? 'animate-microBounce' : ''}`}
           >
-            <span className="text-[10px] text-slate-400 font-bold mb-0.5 tracking-wider drop-shadow hidden sm:inline">
+            <span className="text-[13.5px] text-slate-400 font-bold mb-0.5 tracking-wider drop-shadow hidden sm:inline">
               {playerName}
             </span>
             <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 flex items-end justify-center">
@@ -370,20 +370,20 @@ export default function VisualNovelDialogueL2({
               >
                 {speakerProfile.name}
               </span>
-              <span className="text-xs sm:text-sm text-slate-300 font-medium tracking-wide hidden sm:inline">
+              <span className="text-[13px] sm:text-[15px] text-slate-300 font-medium tracking-wide hidden sm:inline">
                 • {speakerProfile.title}
               </span>
             </div>
 
             {/* Indikator Lanjut / Spasi */}
-            <span className="text-xs sm:text-sm text-amber-300/90 font-mono tracking-wider hidden sm:inline">
+            <span className="text-[13px] sm:text-[15px] text-amber-300/90 font-mono tracking-wider hidden sm:inline">
               [Klik / SPASI untuk Lanjut ▶]
             </span>
           </div>
 
           {/* AREA TEKS PERCAKAPAN DENGAN TYPEWRITER EFFECT */}
           <div className="flex-1 my-1.5">
-            <p className="text-base sm:text-lg md:text-xl lg:text-[22px] text-slate-100 leading-relaxed sm:leading-relaxed md:leading-loose font-medium select-none tracking-normal">
+            <p className="text-base sm:text-lg md:text-xl lg:text-[24px] text-slate-100 leading-relaxed sm:leading-relaxed md:leading-loose font-medium select-none tracking-normal">
               &ldquo;{displayedText}&rdquo;
               {isTyping && (
                 <span className="inline-block w-2.5 h-4 ml-1 bg-amber-400 animate-ping align-middle" />
@@ -401,7 +401,7 @@ export default function VisualNovelDialogueL2({
                 <button
                   key={choice.id}
                   onClick={() => handleChoiceClick(choice)}
-                  className="flex-1 px-4 py-3 sm:py-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-500 font-pixel text-sm sm:text-base tracking-wide shadow-md transition-all active:translate-y-0.5 flex items-center justify-start gap-2.5 cursor-pointer group"
+                  className="flex-1 px-4 py-3 sm:py-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-500 font-pixel text-[15px] sm:text-base tracking-wide shadow-md transition-all active:translate-y-0.5 flex items-center justify-start gap-2.5 cursor-pointer group"
                 >
                   <span className="text-amber-400 font-mono font-bold shrink-0">[{idx + 1}]</span>
                   <span className="group-hover:translate-x-0.5 transition-transform text-left">
@@ -414,7 +414,7 @@ export default function VisualNovelDialogueL2({
 
           {/* ── TOOLBAR BAWAH (PERSIS LEVEL 1) ── */}
           <div
-            className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800/80 text-xs sm:text-sm text-slate-300"
+            className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800/80 text-[13px] sm:text-[15px] text-slate-300"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 sm:gap-4">

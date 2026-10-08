@@ -481,17 +481,17 @@ export default function Dashboard() {
           <PixelAvatarRenderer config={student?.custom_avatar} size={48} animate={false} />
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-pixel-title text-[9px] text-amber-400">
+              <span className="font-pixel-title text-[12.5px] text-amber-400">
                 {currentUser?.role === 'teacher' ? 'AKUN GURU' : 'PROFIL SISWA'}
               </span>
-              <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[9px] font-pixel-title font-bold">
+              <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[12.5px] font-pixel-title font-bold">
                 {currentUser?.role === 'teacher' ? 'POSKO' : `LV.${unlockedLevel}`}
               </span>
             </div>
             <h2 className="font-pixel text-base font-bold text-white tracking-wide truncate max-w-[150px] sm:max-w-[200px]">
               {currentUser?.role === 'teacher' ? (currentUser.name || 'Bapak Guru IPA') : studentDisplayName}
             </h2>
-            <p className="text-[11px] text-slate-400 font-pixel hidden sm:block">
+            <p className="text-[14.5px] text-slate-400 font-pixel hidden sm:block">
               {currentUser?.role === 'teacher' ? 'Guru IPA • Klik ke Posko Guru' : `${studentClass} • Klik untuk edit`}
             </p>
           </div>
@@ -507,7 +507,7 @@ export default function Dashboard() {
                 navigate('/teacher');
               }}
               onMouseEnter={() => retroAudio.playHover()}
-              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-pixel-title font-bold border-2 border-emerald-950 shadow-[0_2px_0_#064e3b] text-[10px] cursor-pointer flex items-center gap-1.5 transition-transform active:translate-y-0.5"
+              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-pixel-title font-bold border-2 border-emerald-950 shadow-[0_2px_0_#064e3b] text-[13.5px] cursor-pointer flex items-center gap-1.5 transition-transform active:translate-y-0.5"
               title="Buka Posko Monitoring Guru"
             >
               <PixelIcon name="clipboard" size={13} />
@@ -522,7 +522,7 @@ export default function Dashboard() {
               navigate('/login');
             }}
             onMouseEnter={() => retroAudio.playHover()}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border-2 border-slate-700 shadow-[0_2px_0_#0f172a] text-[10px] font-pixel cursor-pointer flex items-center gap-1.5 transition-transform active:translate-y-0.5"
+            className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border-2 border-slate-700 shadow-[0_2px_0_#0f172a] text-[13.5px] font-pixel cursor-pointer flex items-center gap-1.5 transition-transform active:translate-y-0.5"
             title="Ganti Akun / Masuk"
           >
             <PixelIcon name="user" size={13} />
@@ -572,7 +572,7 @@ export default function Dashboard() {
             RESQ-BOX
           </h1>
           <div className="inline-block mt-2 px-4 py-1.5 rounded-md bg-amber-950/90 border-2 border-amber-500 shadow-[0_4px_0_#231206]">
-            <p className="font-pixel text-xs md:text-sm text-amber-200 uppercase tracking-wider font-bold">
+            <p className="font-pixel text-[13px] md:text-[15px] text-amber-200 uppercase tracking-wider font-bold">
               Media Pembelajaran Lempeng Tektonik
             </p>
           </div>
@@ -715,7 +715,7 @@ export default function Dashboard() {
             className="flex items-center gap-2 bg-amber-900/90 hover:bg-amber-800/90 backdrop-blur-md px-4 py-2 rounded-lg border-2 border-amber-950 shadow-[0_3px_0_#231206] cursor-pointer transition-transform active:translate-y-0.5"
           >
             <span className="material-symbols-outlined text-amber-300 text-base">signpost</span>
-            <span className="font-pixel text-xs font-bold text-amber-200 flex items-center gap-1">
+            <span className="font-pixel text-[13px] font-bold text-amber-200 flex items-center gap-1">
               <span>PETUNJUK BELAJAR</span>
               <span className="font-bold">&gt;</span>
             </span>
@@ -747,7 +747,7 @@ export default function Dashboard() {
                   <h3 className="font-pixel-title text-base sm:text-lg md:text-xl lg:text-2xl font-black text-[#260c02] flex items-center gap-2">
                     <span>PANDUAN &amp; MISI PEMBELAJARAN</span>
                   </h3>
-                  <p className="text-xs sm:text-sm md:text-base text-[#381504] font-extrabold font-pixel mt-0.5">
+                  <p className="text-[13px] sm:text-[15px] md:text-base text-[#381504] font-extrabold font-pixel mt-0.5">
                     Kurikulum IPA SMP Kelas 8 • Gamifikasi Mitigasi Bencana RESQ-BOX
                   </p>
                 </div>
@@ -765,14 +765,14 @@ export default function Dashboard() {
             </div>
 
             {/* Tab Navigation */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 p-1.5 bg-amber-950/20 rounded-xl border border-amber-950/40 text-xs sm:text-sm md:text-base">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 p-1.5 bg-amber-950/20 rounded-xl border border-amber-950/40 text-[13px] sm:text-[15px] md:text-base">
               <button
                 type="button"
                 onClick={() => {
                   retroAudio.playHover();
                   setGuideTab('all');
                 }}
-                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-xs sm:text-sm md:text-base ${guideTab === 'all'
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-[13px] sm:text-[15px] md:text-base ${guideTab === 'all'
                   ? 'bg-amber-900 text-amber-100 shadow-[0_2px_0_#231206]'
                   : 'bg-amber-100/70 hover:bg-amber-100 text-amber-950 border border-amber-900/20'
                   }`}
@@ -787,7 +787,7 @@ export default function Dashboard() {
                   retroAudio.playHover();
                   setGuideTab('level1');
                 }}
-                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-xs sm:text-sm md:text-base ${guideTab === 'level1'
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-[13px] sm:text-[15px] md:text-base ${guideTab === 'level1'
                   ? 'bg-amber-900 text-amber-100 shadow-[0_2px_0_#231206]'
                   : 'bg-amber-100/70 hover:bg-amber-100 text-amber-950 border border-amber-900/20'
                   }`}
@@ -802,7 +802,7 @@ export default function Dashboard() {
                   retroAudio.playHover();
                   setGuideTab('level2');
                 }}
-                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-xs sm:text-sm md:text-base ${guideTab === 'level2'
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-[13px] sm:text-[15px] md:text-base ${guideTab === 'level2'
                   ? 'bg-amber-900 text-amber-100 shadow-[0_2px_0_#231206]'
                   : 'bg-amber-100/70 hover:bg-amber-100 text-amber-950 border border-amber-900/20'
                   }`}
@@ -817,7 +817,7 @@ export default function Dashboard() {
                   retroAudio.playHover();
                   setGuideTab('level3');
                 }}
-                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-xs sm:text-sm md:text-base ${guideTab === 'level3'
+                className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 px-3 rounded-lg font-pixel-title font-bold transition-all cursor-pointer text-[13px] sm:text-[15px] md:text-base ${guideTab === 'level3'
                   ? 'bg-amber-900 text-amber-100 shadow-[0_2px_0_#231206]'
                   : 'bg-amber-100/70 hover:bg-amber-100 text-amber-950 border border-amber-900/20'
                   }`}
@@ -837,21 +837,21 @@ export default function Dashboard() {
                   <div className="p-4 sm:p-5 rounded-2xl bg-amber-200/95 border-2 sm:border-3 border-amber-900/40 space-y-3 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 rounded-md bg-amber-900 text-amber-100 font-pixel-title text-xs sm:text-sm font-bold shadow-[0_1px_0_#231206]">
+                        <span className="px-3 py-1 rounded-md bg-amber-900 text-amber-100 font-pixel-title text-[13px] sm:text-[15px] font-bold shadow-[0_1px_0_#231206]">
                           TENTANG PLATFORM
                         </span>
-                        <h4 className="font-pixel-title font-black text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02]">
+                        <h4 className="font-pixel-title font-black text-[13px] sm:text-[15px] md:text-base lg:text-[19px] text-[#260c02]">
                           SELAMAT DATANG DI RESQ-BOX!
                         </h4>
                       </div>
-                      <span className="px-2.5 py-1 rounded-md bg-amber-800 text-amber-100 font-black text-xs sm:text-sm shadow-sm">
+                      <span className="px-2.5 py-1 rounded-md bg-amber-800 text-amber-100 font-black text-[13px] sm:text-[15px] shadow-sm">
                         MEDIA IPA SMP KELAS 8
                       </span>
                     </div>
-                    <p className="text-sm sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
+                    <p className="text-[15px] sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
                       Hai penjelajah muda! <strong className="font-black text-[#1a0800]">RESQ-BOX</strong> adalah platform web media pembelajaran interaktif IPA SMP Kelas 8 berbasis petualangan eksplorasi dan gamifikasi mitigasi bencana geologis.
                     </p>
-                    <div className="text-sm sm:text-base md:text-[17px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
+                    <div className="text-[15px] sm:text-base md:text-[19px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
                       <div className="font-black text-[#1a0800] uppercase tracking-wide">
                         Materi Utama yang Akan Kamu Pelajari di Sini:
                       </div>
@@ -873,29 +873,29 @@ export default function Dashboard() {
                   <div className="p-4 sm:p-5 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 space-y-3 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 rounded-md bg-amber-900 text-amber-100 font-pixel-title text-xs sm:text-sm font-bold shadow-[0_1px_0_#231206]">
+                        <span className="px-3 py-1 rounded-md bg-amber-900 text-amber-100 font-pixel-title text-[13px] sm:text-[15px] font-bold shadow-[0_1px_0_#231206]">
                           TAHAP 1
                         </span>
-                        <h4 className="font-pixel-title font-black text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02]">
+                        <h4 className="font-pixel-title font-black text-[13px] sm:text-[15px] md:text-base lg:text-[19px] text-[#260c02]">
                           EARTH EXPLORER (Struktur Bumi &amp; Dinamika Lempeng)
                         </h4>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="px-2.5 py-1 rounded-md bg-sky-200 text-sky-950 font-black text-xs sm:text-sm border border-sky-800/40">
+                        <span className="px-2.5 py-1 rounded-md bg-sky-200 text-sky-950 font-black text-[13px] sm:text-[15px] border border-sky-800/40">
                           8 Area Geologis
                         </span>
-                        <span className="px-2.5 py-1 rounded-md bg-emerald-600 text-white font-black text-xs sm:text-sm shadow-sm">
+                        <span className="px-2.5 py-1 rounded-md bg-emerald-600 text-white font-black text-[13px] sm:text-[15px] shadow-sm">
                           {unlockedLevel >= 2 ? '✓ TUNTAS' : 'AKTIF'}
                         </span>
                       </div>
                     </div>
-                    <p className="text-sm sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
+                    <p className="text-[15px] sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
                       Petualangan vertikal menembus interior bumi dari Permukaan (0 km), Kerak, Mantel, Inti Luar, Inti Dalam (6.371 km), hingga 3 batas lempeng tektonik: Divergen, Konvergen (subduksi laut), dan Transform (sesar San Andreas).
                     </p>
-                    <div className="text-sm sm:text-base md:text-[17px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
+                    <div className="text-[15px] sm:text-base md:text-[19px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
-                        <span className="font-bold text-[#200b01]">5 Karakter Ekspedisi &amp; Resqy, modul sains [🔍], kristal geotermal, kostum pelindung, dan avatar tracker 60 FPS.</span>
+ <span className="font-bold text-[#200b01]">5 Karakter Ekspedisi &amp; Resqy, modul sains, kristal geotermal, kostum pelindung, dan avatar tracker 60 FPS.</span>
                       </div>
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
@@ -908,34 +908,34 @@ export default function Dashboard() {
                   <div className="p-4 sm:p-5 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 space-y-3 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 rounded-md bg-orange-800 text-orange-100 font-pixel-title text-xs sm:text-sm font-bold shadow-[0_1px_0_#231206]">
+                        <span className="px-3 py-1 rounded-md bg-orange-800 text-orange-100 font-pixel-title text-[13px] sm:text-[15px] font-bold shadow-[0_1px_0_#231206]">
                           TAHAP 2
                         </span>
-                        <h4 className="font-pixel-title font-black text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02]">
+                        <h4 className="font-pixel-title font-black text-[13px] sm:text-[15px] md:text-base lg:text-[19px] text-[#260c02]">
                           DISASTER ANALYST (Karakteristik Bencana &amp; Mitigasi)
                         </h4>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="px-2.5 py-1 rounded-md bg-amber-200 text-amber-950 font-black text-xs sm:text-sm border border-amber-800/40">
+                        <span className="px-2.5 py-1 rounded-md bg-amber-200 text-amber-950 font-black text-[13px] sm:text-[15px] border border-amber-800/40">
                           6 Pos Mitigasi
                         </span>
-                        <span className={`px-2.5 py-1 rounded-md font-black text-xs sm:text-sm shadow-sm ${unlockedLevel >= 3
+                        <span className={`px-2.5 py-1 rounded-md font-black text-[13px] sm:text-[15px] shadow-sm ${unlockedLevel >= 3
                           ? 'bg-emerald-600 text-white'
                           : unlockedLevel >= 2
                             ? 'bg-amber-600 text-white'
                             : 'bg-stone-300 text-stone-700'
                           }`}>
-                          {unlockedLevel >= 3 ? '✓ TUNTAS' : unlockedLevel >= 2 ? 'AKTIF' : '🔒 TERKUNCI'}
+ {unlockedLevel >= 3 ? '✓ TUNTAS' : unlockedLevel >= 2 ? 'AKTIF' : ' TERKUNCI'}
                         </span>
                       </div>
                     </div>
-                    <p className="text-sm sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
+                    <p className="text-[15px] sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
                       Simulasi kesiapsiagaan 6 pos: Ruang Kelas (SOP 72 Jam &amp; Tas Siaga Bencana), Drill Gempa (Drop-Cover-Hold On), Lapangan Evakuasi (Titik Kumpul), Pos PGA Merapi (Seismograf &amp; Status PVMBG), Simulasi Erupsi (KRB I–III saat AWAS), dan Barak Pengungsian BNPB.
                     </p>
-                    <div className="text-sm sm:text-base md:text-[17px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
+                    <div className="text-[15px] sm:text-base md:text-[19px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
-                        <span className="font-bold text-[#200b01]">Visual Novel modul mitigasi BNPB [🔍], pemahaman zonasi KRB, dan rute keselamatan lereng gunung.</span>
+ <span className="font-bold text-[#200b01]">Visual Novel modul mitigasi BNPB, pemahaman zonasi KRB, dan rute keselamatan lereng gunung.</span>
                       </div>
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
@@ -948,27 +948,27 @@ export default function Dashboard() {
                   <div className="p-4 sm:p-5 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 space-y-3 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 rounded-md bg-purple-900 text-purple-100 font-pixel-title text-xs sm:text-sm font-bold shadow-[0_1px_0_#231206]">
+                        <span className="px-3 py-1 rounded-md bg-purple-900 text-purple-100 font-pixel-title text-[13px] sm:text-[15px] font-bold shadow-[0_1px_0_#231206]">
                           TAHAP 3
                         </span>
-                        <h4 className="font-pixel-title font-black text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02]">
+                        <h4 className="font-pixel-title font-black text-[13px] sm:text-[15px] md:text-base lg:text-[19px] text-[#260c02]">
                           SIMULATION GAME (Action Lab &amp; Digital Twin 3D)
                         </h4>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="px-2.5 py-1 rounded-md bg-purple-200 text-purple-950 font-black text-xs sm:text-sm border border-purple-800/40">
+                        <span className="px-2.5 py-1 rounded-md bg-purple-200 text-purple-950 font-black text-[13px] sm:text-[15px] border border-purple-800/40">
                           20 Misi Studi Kasus
                         </span>
-                        <span className={`px-2.5 py-1 rounded-md font-black text-xs sm:text-sm shadow-sm ${unlockedLevel >= 3 ? 'bg-amber-600 text-white' : 'bg-stone-300 text-stone-700'
+                        <span className={`px-2.5 py-1 rounded-md font-black text-[13px] sm:text-[15px] shadow-sm ${unlockedLevel >= 3 ? 'bg-amber-600 text-white' : 'bg-stone-300 text-stone-700'
                           }`}>
-                          {unlockedLevel >= 3 ? 'AKTIF' : '🔒 TERKUNCI'}
+ {unlockedLevel >= 3 ? 'AKTIF' : ' TERKUNCI'}
                         </span>
                       </div>
                     </div>
-                    <p className="text-sm sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
+                    <p className="text-[15px] sm:text-base md:text-lg leading-relaxed text-[#1a0800] font-extrabold">
                       Rakit logika sistem peringatan dini melalui <strong className="font-black text-[#1a0800]">Visual Block Coding Ramah Anak</strong> (Sensor ➔ Lampu 4 Warna ➔ Sirine EWS ➔ Tindakan Evakuasi) dan uji dampaknya pada maket <strong className="font-black text-[#1a0800]">Digital Twin 3D Merapi</strong> topografi STL asli.
                     </p>
-                    <div className="text-sm sm:text-base md:text-[17px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
+                    <div className="text-[15px] sm:text-base md:text-[19px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
                         <span className="font-bold text-[#200b01]">20 Misi Studi Kasus, Mode Bebas (Proyek Saya Sandbox), gempa 3-tingkat, erupsi eksplosif vs efusif, reaksi 75 AI warga, kontrol simulasi fleksibel, tombol Reset Kondisi, dan koneksi ESP32.</span>
@@ -986,21 +986,21 @@ export default function Dashboard() {
               {guideTab === 'level1' && (
                 <div className="space-y-4 animate-fade-in font-pixel">
                   <div className="p-4 sm:p-5 bg-amber-200/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl shadow-sm">
-                    <h4 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02] flex items-center gap-2 mb-2">
+                    <h4 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base lg:text-[19px] text-[#260c02] flex items-center gap-2 mb-2">
                       <PixelIcon name="divergent" size={18} />
                       <span>Fokus Materi: Struktur Interior Bumi &amp; Batas Lempeng Tektonik</span>
                     </h4>
-                    <p className="text-sm sm:text-base md:text-lg text-[#1a0800] font-extrabold leading-relaxed">
+                    <p className="text-[15px] sm:text-base md:text-lg text-[#1a0800] font-extrabold leading-relaxed">
                       Siswa mengeksplorasi karakteristik fisik, suhu, dan tekanan setiap lapisan bumi secara vertikal serta mengamati fenomena pergerakan lempeng yang memicu fenomena geologis.
                     </p>
                   </div>
 
                   <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-3 shadow-sm">
-                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                    <h5 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base text-[#260c02] flex items-center gap-2">
                       <PixelIcon name="map" size={16} />
                       <span>8 Checkpoint Area Geologis yang Dijelajahi:</span>
                     </h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm md:text-base leading-relaxed text-[#1a0800] font-bold">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[13px] sm:text-[15px] md:text-base leading-relaxed text-[#1a0800] font-bold">
                       <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
                         <strong className="font-black text-[#1a0800]">1. Permukaan Bumi (0 km):</strong> Basecamp ekspedisi, perkenalan tim, dan arahan Resqy.
                       </div>
@@ -1028,14 +1028,14 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-2.5 text-sm sm:text-base md:text-[17px] leading-relaxed text-[#1a0800] font-bold shadow-sm">
-                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-2.5 text-[15px] sm:text-base md:text-[19px] leading-relaxed text-[#1a0800] font-bold shadow-sm">
+                    <h5 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base text-[#260c02] flex items-center gap-2">
                       <PixelIcon name="star" size={16} />
                       <span>Panduan Bermain &amp; Evaluasi Gerbang:</span>
                     </h5>
                     <ul className="list-disc list-inside space-y-2 text-[#1a0800] font-bold">
                       <li>Gunakan tombol <strong className="font-black text-[#1a0800]">A/D</strong> atau <strong className="font-black text-[#1a0800]">Panah Kiri/Kanan</strong> untuk bergerak, <strong className="font-black text-[#1a0800]">Spasi</strong> untuk melompat, dan <strong className="font-black text-[#1a0800]">E</strong> untuk berinteraksi.</li>
-                      <li>Dekati rekan ekspedisi (Zidane, Zahra, Ican, Lintang) bertanda <strong className="font-black text-[#1a0800]">kaca pembesar [🔍]</strong> untuk membaca materi sains.</li>
+ <li>Dekati rekan ekspedisi (Zidane, Zahra, Ican, Lintang) bertanda<strong className="font-black text-[#1a0800]">kaca pembesar</strong>untuk membaca materi sains.</li>
                       <li>Setiap gerbang strata dijaga oleh <strong className="font-black text-[#1a0800]">Bu Tyas</strong> yang memberikan tantangan <strong className="font-black text-[#1a0800]">Wordle Tebak Kata</strong>. Seluruh kata kunci evaluasi diambil langsung dari materi rekan tim di area terkait!</li>
                     </ul>
                   </div>
@@ -1046,21 +1046,21 @@ export default function Dashboard() {
               {guideTab === 'level2' && (
                 <div className="space-y-4 animate-fade-in font-pixel">
                   <div className="p-4 sm:p-5 bg-orange-200/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl shadow-sm">
-                    <h4 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02] flex items-center gap-2 mb-2">
+                    <h4 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base lg:text-[19px] text-[#260c02] flex items-center gap-2 mb-2">
                       <PixelIcon name="earthquake" size={18} />
                       <span>Fokus Materi: Karakteristik Bahaya Gempa, Vulkanisme &amp; Kesiapsiagaan Bencana</span>
                     </h4>
-                    <p className="text-sm sm:text-base md:text-lg text-[#1a0800] font-extrabold leading-relaxed">
+                    <p className="text-[15px] sm:text-base md:text-lg text-[#1a0800] font-extrabold leading-relaxed">
                       Siswa mempraktikkan mitigasi pra-bencana, saat bencana, dan pasca-bencana secara kontekstual di kawasan rawan bencana lereng Gunung Merapi.
                     </p>
                   </div>
 
                   <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-3 shadow-sm">
-                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                    <h5 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base text-[#260c02] flex items-center gap-2">
                       <PixelIcon name="map" size={16} />
                       <span>6 Pos Mitigasi Kebencanaan Sekuensial:</span>
                     </h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm md:text-base leading-relaxed text-[#1a0800] font-bold">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[13px] sm:text-[15px] md:text-base leading-relaxed text-[#1a0800] font-bold">
                       <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
                         <strong className="font-black text-[#1a0800]">1. Ruang Kelas Teori:</strong> SOP Kesiapsiagaan Mandiri 72 Jam &amp; 10 barang wajib Tas Siaga Bencana (TSB).
                       </div>
@@ -1082,13 +1082,13 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-2.5 text-sm sm:text-base md:text-[17px] leading-relaxed text-[#1a0800] font-bold shadow-sm">
-                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-2.5 text-[15px] sm:text-base md:text-[19px] leading-relaxed text-[#1a0800] font-bold shadow-sm">
+                    <h5 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base text-[#260c02] flex items-center gap-2">
                       <PixelIcon name="star" size={16} />
                       <span>Panduan Bermain &amp; Evaluasi Gerbang:</span>
                     </h5>
                     <ul className="list-disc list-inside space-y-2 text-[#1a0800] font-bold">
-                      <li>Jelajahi setiap pos mitigasi dan pelajari modul panduan buku saku BNPB bertanda <strong className="font-black text-[#1a0800]">kaca pembesar [🔍]</strong>.</li>
+ <li>Jelajahi setiap pos mitigasi dan pelajari modul panduan buku saku BNPB bertanda<strong className="font-black text-[#1a0800]">kaca pembesar</strong>.</li>
                       <li>Di setiap pos, temui <strong className="font-black text-[#1a0800]">Bu Tyas</strong> untuk menyelesaikan kuis <strong className="font-black text-[#1a0800]">Teka-Teki Silang (TTS Crossword Mitigasi)</strong>.</li>
                       <li>Menuntaskan seluruh 6 pos mitigasi akan membuka kunci <strong className="font-black text-[#1a0800]">Level 3: Simulation Game</strong>!</li>
                     </ul>
@@ -1100,21 +1100,21 @@ export default function Dashboard() {
               {guideTab === 'level3' && (
                 <div className="space-y-4 animate-fade-in font-pixel">
                   <div className="p-4 sm:p-5 bg-purple-200/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl shadow-sm">
-                    <h4 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base lg:text-[17px] text-[#260c02] flex items-center gap-2 mb-2">
+                    <h4 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base lg:text-[19px] text-[#260c02] flex items-center gap-2 mb-2">
                       <PixelIcon name="volcano" size={18} />
                       <span>Fokus Materi: Logika Otomatisasi EWS &amp; Uji Respon Warga Digital Twin 3D</span>
                     </h4>
-                    <p className="text-sm sm:text-base md:text-lg text-[#1a0800] font-extrabold leading-relaxed">
+                    <p className="text-[15px] sm:text-base md:text-lg text-[#1a0800] font-extrabold leading-relaxed">
                       Siswa merakit logika sistem peringatan dini bencana menggunakan visual block coding ramah anak dan menguji efektivitas mitigasi pada maket digital 3D berwarga nyata.
                     </p>
                   </div>
 
                   <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-3 shadow-sm">
-                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                    <h5 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base text-[#260c02] flex items-center gap-2">
                       <PixelIcon name="map" size={16} />
                       <span>20 Misi Studi Kasus Terbagi dalam 4 Sektor:</span>
                     </h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm md:text-base leading-relaxed text-[#1a0800] font-bold">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[13px] sm:text-[15px] md:text-base leading-relaxed text-[#1a0800] font-bold">
                       <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
                         <strong className="font-black text-[#1a0800]">Sektor 1 (Misi 1–5):</strong> Pengenalan EWS &amp; Pembacaan Sensor Bencana (piezo seismik, suhu kawah, lampu EWS).
                       </div>
@@ -1130,8 +1130,8 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-2.5 text-sm sm:text-base md:text-[17px] leading-relaxed text-[#1a0800] font-bold shadow-sm">
-                    <h5 className="font-pixel-title font-bold text-xs sm:text-sm md:text-base text-[#260c02] flex items-center gap-2">
+                  <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-2.5 text-[15px] sm:text-base md:text-[19px] leading-relaxed text-[#1a0800] font-bold shadow-sm">
+                    <h5 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base text-[#260c02] flex items-center gap-2">
                       <PixelIcon name="star" size={16} />
                       <span>Alat Bantu &amp; Sinkronisasi Rapor:</span>
                     </h5>
@@ -1160,7 +1160,7 @@ export default function Dashboard() {
                     handleLevelClick(1, '/level1');
                   }
                 }}
-                className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
+                className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-[13px] sm:!text-[15px] md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
               >
                 <span>
                   {unlockedLevel >= 3
@@ -1180,7 +1180,7 @@ export default function Dashboard() {
                   setShowGuideModal(false);
                   handleLevelClick(1, '/level1');
                 }}
-                className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
+                className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-[13px] sm:!text-[15px] md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
               >
                 <span>MASUK KE TAHAP 1: EARTH EXPLORER</span>
                 <span className="font-bold">&gt;</span>
@@ -1195,7 +1195,7 @@ export default function Dashboard() {
                     setShowGuideModal(false);
                     handleLevelClick(2, '/level2');
                   }}
-                  className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
+                  className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-[13px] sm:!text-[15px] md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
                 >
                   <span>MASUK KE TAHAP 2: DISASTER ANALYST</span>
                   <span className="font-bold">&gt;</span>
@@ -1203,7 +1203,7 @@ export default function Dashboard() {
               ) : (
                 <button
                   onClick={() => retroAudio.playLocked()}
-                  className="pixel-btn-wood-plank locked !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base mt-3 flex items-center justify-center gap-2.5 cursor-not-allowed opacity-85 font-pixel-title font-bold"
+                  className="pixel-btn-wood-plank locked !w-full !h-14 sm:!h-16 !text-[13px] sm:!text-[15px] md:!text-base mt-3 flex items-center justify-center gap-2.5 cursor-not-allowed opacity-85 font-pixel-title font-bold"
                   title="Selesaikan Level 1 Terlebih Dahulu"
                 >
                   <PixelIcon name="lock" size={16} />
@@ -1220,7 +1220,7 @@ export default function Dashboard() {
                     setShowGuideModal(false);
                     handleLevelClick(3, '/level3');
                   }}
-                  className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
+                  className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-[13px] sm:!text-[15px] md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
                 >
                   <span>MASUK KE TAHAP 3: SIMULATION GAME</span>
                   <span className="font-bold">&gt;</span>
@@ -1228,7 +1228,7 @@ export default function Dashboard() {
               ) : (
                 <button
                   onClick={() => retroAudio.playLocked()}
-                  className="pixel-btn-wood-plank locked !w-full !h-14 sm:!h-16 !text-xs sm:!text-sm md:!text-base mt-3 flex items-center justify-center gap-2.5 cursor-not-allowed opacity-85 font-pixel-title font-bold"
+                  className="pixel-btn-wood-plank locked !w-full !h-14 sm:!h-16 !text-[13px] sm:!text-[15px] md:!text-base mt-3 flex items-center justify-center gap-2.5 cursor-not-allowed opacity-85 font-pixel-title font-bold"
                   title="Selesaikan Level 2 Terlebih Dahulu"
                 >
                   <PixelIcon name="lock" size={16} />

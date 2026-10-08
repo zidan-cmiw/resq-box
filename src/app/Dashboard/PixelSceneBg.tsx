@@ -300,12 +300,12 @@ export default function PixelSceneBg() {
 
       {/* ── Top HUD / Game Title Overlay ── */}
       <div className="absolute top-3 left-4 right-4 flex items-center justify-between pointer-events-none">
-        <div className="flex items-center gap-2 bg-amber-950/90 backdrop-blur-md px-3 py-1.5 rounded-lg border-2 border-amber-500/60 text-amber-300 font-pixel-title text-[10px] font-bold shadow-md pointer-events-auto">
+        <div className="flex items-center gap-2 bg-amber-950/90 backdrop-blur-md px-3 py-1.5 rounded-lg border-2 border-amber-500/60 text-amber-300 font-pixel-title text-[13.5px] font-bold shadow-md pointer-events-auto">
           <span className="inline-block w-2.5 h-2.5 bg-amber-400 rounded-xs animate-pulse" />
           <span>DIORAMA TEKTONIK & VULKANO</span>
         </div>
 
-        <div className="bg-amber-950/90 backdrop-blur-md px-3 py-1.5 rounded-lg border-2 border-amber-800/60 text-amber-200 font-pixel text-xs hidden sm:flex items-center gap-2">
+        <div className="bg-amber-950/90 backdrop-blur-md px-3 py-1.5 rounded-lg border-2 border-amber-800/60 text-amber-200 font-pixel text-[13px] hidden sm:flex items-center gap-2">
           <span>Klik titik</span>
           <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block animate-ping" />
           <span>untuk inspeksi struktur bumi</span>
@@ -317,10 +317,10 @@ export default function PixelSceneBg() {
         <div className="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-3 sm:w-96 bg-amber-950/95 backdrop-blur-md p-4 rounded-xl border-3 border-amber-500 shadow-[0_6px_0_#451a03] text-amber-100 z-30 animate-fade-in-up">
           <div className="flex items-start justify-between gap-2 mb-1.5">
             <div>
-              <span className="inline-block px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-pixel-title text-[9px] font-bold tracking-wider uppercase border border-amber-500/40 mb-1">
+              <span className="inline-block px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-pixel-title text-[12.5px] font-bold tracking-wider uppercase border border-amber-500/40 mb-1">
                 {activeZone.category}
               </span>
-              <h4 className="font-bold text-sm text-amber-100 flex items-center gap-2 font-pixel-title">
+              <h4 className="font-bold text-[15px] text-amber-100 flex items-center gap-2 font-pixel-title">
                 {activeZone.name}
               </h4>
             </div>
@@ -329,10 +329,10 @@ export default function PixelSceneBg() {
               className="p-1 text-slate-400 hover:text-white rounded bg-slate-800 hover:bg-slate-700 transition-colors"
               title="Tutup"
             >
-              <span className="material-symbols-outlined text-sm">close</span>
+              <span className="material-symbols-outlined text-[15px]">close</span>
             </button>
           </div>
-          <p className="text-xs text-slate-300 leading-relaxed">
+          <p className="text-[13px] text-slate-300 leading-relaxed">
             {activeZone.description}
           </p>
         </div>

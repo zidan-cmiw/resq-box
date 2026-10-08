@@ -308,12 +308,12 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
           type="button"
           onClick={handleManualStart}
           onMouseEnter={() => retroAudio.playHover()}
-          className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 bg-[#fef9c3] hover:bg-[#fef08a] text-[#451a03] border-2 sm:border-3 border-[#78350f] rounded-xl sm:rounded-2xl px-2.5 py-1.5 sm:px-3.5 sm:py-2 shadow-[0_3px_0_#451a03,0_8px_16px_rgba(0,0,0,0.4)] flex items-center gap-1.5 sm:gap-2.5 font-pixel-title text-[11px] sm:text-xs font-bold cursor-pointer transition-all hover:scale-105 active:scale-95 group"
+          className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 bg-[#fef9c3] hover:bg-[#fef08a] text-[#451a03] border-2 sm:border-3 border-[#78350f] rounded-xl sm:rounded-2xl px-2.5 py-1.5 sm:px-3.5 sm:py-2 shadow-[0_3px_0_#451a03,0_8px_16px_rgba(0,0,0,0.4)] flex items-center gap-1.5 sm:gap-2.5 font-pixel-title text-[14.5px] sm:text-[13px] font-bold cursor-pointer transition-all hover:scale-105 active:scale-95 group"
           title="Buka Panduan Resqy untuk halaman ini"
         >
           <ResqyMascot size={isMobile ? 22 : 24} className="group-hover:animate-bounce-subtle shrink-0" />
           <span className="hidden sm:inline">PANDUAN RESQY</span>
-          <span className="text-[9px] sm:text-[10px] bg-[#b45309] text-amber-50 px-1 sm:px-1.5 py-0.5 rounded font-pixel">?</span>
+          <span className="text-[12.5px] sm:text-[13.5px] bg-[#b45309] text-amber-50 px-1 sm:px-1.5 py-0.5 rounded font-pixel">?</span>
         </button>
       )}
 
@@ -374,7 +374,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
             >
               {/* Pulsing Corner Badge yang adaptif agar tidak terpotong tepi layar */}
               <div
-                className="absolute bg-[#b45309] text-amber-100 border border-[#78350f] px-2 py-0.5 rounded-md font-pixel-title text-[9px] font-bold shadow-md animate-pulse whitespace-nowrap"
+                className="absolute bg-[#b45309] text-amber-100 border border-[#78350f] px-2 py-0.5 rounded-md font-pixel-title text-[12.5px] font-bold shadow-md animate-pulse whitespace-nowrap"
                 style={{
                   left: highlightRect.left < 24 ? '4px' : '-8px',
                   top: highlightRect.top < 26 ? 'auto' : '-13px',
@@ -404,14 +404,14 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap mb-0.5">
-                      <span className="px-2 py-0.5 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-[9px] sm:text-xs font-bold tracking-wider shadow-sm">
+                      <span className="px-2 py-0.5 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-[12.5px] sm:text-[13px] font-bold tracking-wider shadow-sm">
                         {activeStep.badge || 'PANDUAN RESQY'}
                       </span>
-                      <span className="text-[10px] sm:text-xs text-[#78350f] font-pixel-title font-bold">
+                      <span className="text-[13.5px] sm:text-[13px] text-[#78350f] font-pixel-title font-bold">
                         ({currentStepIdx + 1}/{tour.steps.length})
                       </span>
                     </div>
-                    <h3 className="font-pixel-title text-xs sm:text-base md:text-lg lg:text-xl text-[#2e0e02] font-black leading-tight break-words">
+                    <h3 className="font-pixel-title text-[13px] sm:text-base md:text-lg lg:text-xl text-[#2e0e02] font-black leading-tight break-words">
                       {activeStep.title}
                     </h3>
                   </div>
@@ -420,7 +420,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                 <button
                   type="button"
                   onClick={handleSkip}
-                  className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-lg sm:rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel text-xs sm:text-sm flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0 transition-colors"
+                  className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-lg sm:rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel text-[13px] sm:text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0 transition-colors"
                   title="Lewati panduan ini"
                 >
                   ✕
@@ -429,16 +429,16 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
 
               {/* 2. Isi Narasi Utama & Petunjuk Aksi (Scrollable Internal) */}
               <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain pr-1 custom-scrollbar">
-                <p className="font-pixel text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed text-[#1a0800] font-extrabold tracking-normal whitespace-pre-line py-1">
+                <p className="font-pixel text-[13px] sm:text-[15px] md:text-base lg:text-lg leading-relaxed text-[#1a0800] font-extrabold tracking-normal whitespace-pre-line py-1">
                   {activeStep.content}
                 </p>
 
                 {activeStep.actionHint && (
                   <div className="mt-2 pt-2 sm:mt-2.5 sm:pt-2.5 border-t-2 border-[#b45309]/25 flex items-start gap-2 sm:gap-2.5">
-                    <span className="px-2 py-0.5 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[9px] sm:text-[11px] font-bold shrink-0 mt-0.5">
+                    <span className="px-2 py-0.5 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[12.5px] sm:text-[14.5px] font-bold shrink-0 mt-0.5">
                       PETUNJUK AKSI
                     </span>
-                    <p className="font-pixel text-xs sm:text-sm md:text-base leading-relaxed text-[#2e0e02] font-extrabold italic">
+                    <p className="font-pixel text-[13px] sm:text-[15px] md:text-base leading-relaxed text-[#2e0e02] font-extrabold italic">
                       {activeStep.actionHint}
                     </p>
                   </div>
@@ -453,7 +453,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                     <button
                       type="button"
                       onClick={handlePrev}
-                      className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-amber-200/90 hover:bg-amber-300 text-[#78350f] border-2 border-[#b45309] font-pixel-title text-xs sm:text-sm font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm whitespace-nowrap flex items-center justify-center gap-1 shrink-0"
+                      className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-amber-200/90 hover:bg-amber-300 text-[#78350f] border-2 border-[#b45309] font-pixel-title text-[13px] sm:text-[15px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm whitespace-nowrap flex items-center justify-center gap-1 shrink-0"
                     >
                       <span>&lt;</span>
                       <span>SEBELUMNYA</span>
@@ -465,7 +465,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="px-4 py-2 sm:px-6 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-2 sm:border-3 border-[#451a03] shadow-[0_3px_0_#231206] text-xs sm:text-sm md:text-base font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center justify-center gap-1.5 sm:gap-2 transition-all font-bold whitespace-nowrap shrink-0"
+                    className="px-4 py-2 sm:px-6 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-2 sm:border-3 border-[#451a03] shadow-[0_3px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center justify-center gap-1.5 sm:gap-2 transition-all font-bold whitespace-nowrap shrink-0"
                   >
                     <PixelIcon name="check" size={16} className="text-amber-200 shrink-0" />
                     <span>
@@ -498,7 +498,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                       />
                     ))}
                   </div>
-                  <span className="text-[10px] sm:text-xs text-[#78350f] font-pixel-title font-bold shrink-0 ml-1">
+                  <span className="text-[13.5px] sm:text-[13px] text-[#78350f] font-pixel-title font-bold shrink-0 ml-1">
                     ({currentStepIdx + 1}/{tour.steps.length})
                   </span>
                 </div>

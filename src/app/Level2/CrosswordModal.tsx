@@ -387,7 +387,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-sm sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
             title="Tutup"
           >
             <PixelIcon name="cross" size={16} />
@@ -395,7 +395,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
         </div>
 
         {/* Instructions */}
-        <div className="p-3.5 sm:p-4 rounded-xl bg-amber-100/90 border-2 border-[#b45309]/40 mb-4 text-sm sm:text-base md:text-[17px] text-[#291305] font-sans font-semibold leading-relaxed">
+        <div className="p-3.5 sm:p-4 rounded-xl bg-amber-100/90 border-2 border-[#b45309]/40 mb-4 text-[15px] sm:text-base md:text-[19px] text-[#291305] font-sans font-semibold leading-relaxed">
           Isi kotak teka-teki silang dengan istilah sains geologi &amp; kesiapsiagaan mitigasi bencana yang tepat! Klik petunjuk atau kotak untuk mulai mengetik.
         </div>
 
@@ -459,7 +459,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
                         }`}
                     >
                       {clueNumber && (
-                        <span className="absolute top-0.5 left-1 text-[9px] sm:text-[11px] text-amber-500 font-bold leading-none pointer-events-none">
+                        <span className="absolute top-0.5 left-1 text-[12.5px] sm:text-[14.5px] text-amber-500 font-bold leading-none pointer-events-none">
                           {clueNumber}
                         </span>
                       )}
@@ -473,7 +473,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
 
           {/* ── CLUES LIST (5 cols on desktop) ── */}
           <div className="lg:col-span-5 space-y-3">
-            <span className="text-xs sm:text-sm md:text-base font-pixel-title text-[#b45309] block uppercase tracking-wider font-bold">
+            <span className="text-[13px] sm:text-[15px] md:text-base font-pixel-title text-[#b45309] block uppercase tracking-wider font-bold">
               PETUNJUK KATA:
             </span>
             {clues.map((clue) => {
@@ -487,7 +487,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
                     : 'bg-[#fffbeb] hover:bg-[#fde68a] text-[#451a03] border-[#b45309]/40'
                     }`}
                 >
-                  <div className="flex items-center gap-2 mb-1.5 font-pixel-title text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 mb-1.5 font-pixel-title text-[13px] sm:text-[15px]">
                     <span
                       className={`px-2.5 py-0.5 rounded-md font-bold ${isActive ? 'bg-amber-800 text-amber-200' : 'bg-[#b45309]/20 text-[#b45309]'
                         }`}
@@ -496,7 +496,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
                     </span>
                     <span className="opacity-80 font-bold">({clue.answer.length} HURUF)</span>
                   </div>
-                  <p className={`text-sm sm:text-base md:text-[16px] leading-relaxed font-sans ${isActive ? 'text-white font-bold' : 'text-[#291305] font-semibold'}`}>
+                  <p className={`text-[15px] sm:text-base md:text-[18px] leading-relaxed font-sans ${isActive ? 'text-white font-bold' : 'text-[#291305] font-semibold'}`}>
                     {clue.clue}
                   </p>
                 </button>
@@ -507,20 +507,20 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
 
         {/* Validation Error Banner */}
         {validationError && (
-          <div className="mb-4 p-3.5 rounded-xl bg-rose-100 border-2 border-rose-500 text-rose-900 text-sm sm:text-base font-bold text-center">
+          <div className="mb-4 p-3.5 rounded-xl bg-rose-100 border-2 border-rose-500 text-rose-900 text-[15px] sm:text-base font-bold text-center">
             {validationError}
           </div>
         )}
 
         {/* Action Controls */}
         <div className="flex items-center justify-between pt-3 border-t-2 border-[#b45309]/30">
-          <div className="flex items-center gap-1.5 text-xs text-[#78350f]">
+          <div className="flex items-center gap-1.5 text-[13px] text-[#78350f]">
           </div>
 
           {!isCompleted ? (
             <button
               onClick={handleCheckSolution}
-              className="px-7 sm:px-9 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-sm sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2.5 font-bold"
+              className="px-7 sm:px-9 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2.5 font-bold"
             >
               <PixelIcon name="check" size={18} className="text-amber-200" />
               <span>CEK JAWABAN</span>
@@ -531,7 +531,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
                 retroAudio.playSelect();
                 onSuccess();
               }}
-              className="px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white border-3 border-emerald-950 shadow-[0_4px_0_#064e3b] text-sm sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2.5 animate-bounce font-bold"
+              className="px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white border-3 border-emerald-950 shadow-[0_4px_0_#064e3b] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2.5 animate-bounce font-bold"
             >
               <PixelIcon name="unlock" size={18} />
               <span>

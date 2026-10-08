@@ -129,7 +129,7 @@ export default function DisasterCityMap({
                       : 'bg-emerald-500'
               }`}
           />
-          <span className="font-pixel-title text-[10px] text-amber-300 tracking-wider">
+          <span className="font-pixel-title text-[13.5px] text-amber-300 tracking-wider">
             STATUS [MISI {activeMission}]:{' '}
             <span
               className={
@@ -159,7 +159,7 @@ export default function DisasterCityMap({
             retroAudio.playSelect();
             setShowSubsurface(!showSubsurface);
           }}
-          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-950/90 hover:bg-amber-900 border border-amber-600/60 text-amber-200 text-[10px] font-pixel-title shadow-md cursor-pointer transition-all active:translate-y-0.5"
+          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-950/90 hover:bg-amber-900 border border-amber-600/60 text-amber-200 text-[13.5px] font-pixel-title shadow-md cursor-pointer transition-all active:translate-y-0.5"
         >
           <PixelIcon name="layers" size={12} />
           <span>{showSubsurface ? 'TAMPILAN KOTA' : 'X-RAY SUB-SURFACE'}</span>
@@ -539,13 +539,13 @@ export default function DisasterCityMap({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-pixel-title text-[9px] font-bold border border-amber-500/30">
+                <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-pixel-title text-[12.5px] font-bold border border-amber-500/30">
                   {selectedHotspot.badge}
                 </span>
-                <h4 className="text-xs md:text-sm font-bold text-amber-100">{selectedHotspot.name}</h4>
+                <h4 className="text-[13px] md:text-[15px] font-bold text-amber-100">{selectedHotspot.name}</h4>
               </div>
-              <p className="text-[11px] text-slate-300 mt-1">{selectedHotspot.desc}</p>
-              <p className="text-[10px] text-amber-400/90 font-mono mt-0.5">
+              <p className="text-[14.5px] text-slate-300 mt-1">{selectedHotspot.desc}</p>
+              <p className="text-[13.5px] text-amber-400/90 font-mono mt-0.5">
                 <strong>Konteks Geologis:</strong> {selectedHotspot.geologyNote}
               </p>
             </div>
@@ -556,7 +556,7 @@ export default function DisasterCityMap({
               retroAudio.playSelect();
               setSelectedHotspot(null);
             }}
-            className="px-3 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-pixel-title text-[10px] shrink-0 border border-amber-950 shadow cursor-pointer self-end md:self-center"
+            className="px-3 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-pixel-title text-[13.5px] shrink-0 border border-amber-950 shadow cursor-pointer self-end md:self-center"
           >
             TUTUP INFO
           </button>

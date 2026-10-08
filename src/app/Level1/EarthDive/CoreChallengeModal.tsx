@@ -74,10 +74,10 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   <PixelIcon name="volcano" size={22} className="text-[#92400e]" />
                 </div>
                 <div>
-                  <span className="text-xs sm:text-sm text-rose-700 font-pixel uppercase tracking-widest block font-bold">
+                  <span className="text-[13px] sm:text-[15px] text-rose-700 font-pixel uppercase tracking-widest block font-bold">
                     PUNCAK EKSPEDISI • 6.371 KM PUSAT BUMI
                   </span>
-                  <h2 className="text-sm sm:text-base md:text-xl text-[#451a03] font-pixel-title font-bold">
+                  <h2 className="text-[15px] sm:text-base md:text-xl text-[#451a03] font-pixel-title font-bold">
                     {CORE_SYNTHESIS_DATA.title}
                   </h2>
                 </div>
@@ -87,7 +87,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-sm sm:text-base flex items-center justify-center cursor-pointer shadow-[0_2px_0_#451a03] shrink-0"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer shadow-[0_2px_0_#451a03] shrink-0"
                 title="Tutup"
               >
                 ✕
@@ -96,31 +96,31 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
 
             {/* ── CAUSALITY CHAIN DIAGRAM (2D PIXEL ART) ── */}
             <div className="w-full bg-[#1c1917] border-3 border-[#78350f] rounded-2xl p-3.5 sm:p-4 mb-4 overflow-hidden shadow-inner">
-              <span className="text-xs sm:text-sm text-amber-400 font-pixel-title block mb-2.5 text-center font-bold">
+              <span className="text-[13px] sm:text-[15px] text-amber-400 font-pixel-title block mb-2.5 text-center font-bold">
                 RANTAI KAUSALITAS INTERIOR BUMI ➔ BENCANA GEOLOGIS
               </span>
-              <div className="flex items-center justify-between gap-1.5 sm:gap-3 text-center text-[10px] sm:text-xs md:text-sm">
+              <div className="flex items-center justify-between gap-1.5 sm:gap-3 text-center text-[13.5px] sm:text-[13px] md:text-[15px]">
                 <div className="bg-amber-950/90 border-2 border-amber-500 p-2.5 sm:p-3 rounded-xl flex-1 text-amber-200">
                   <div className="flex justify-center mb-1.5">
                     <PixelIcon name="flame" size={20} />
                   </div>
                   <span className="font-pixel font-bold">Panas Inti Bumi</span>
                 </div>
-                <span className="text-amber-400 font-bold text-sm sm:text-base font-pixel-title">&gt;</span>
+                <span className="text-amber-400 font-bold text-[15px] sm:text-base font-pixel-title">&gt;</span>
                 <div className="bg-orange-950/90 border-2 border-orange-500 p-2.5 sm:p-3 rounded-xl flex-1 text-orange-200">
                   <div className="flex justify-center mb-1.5">
                     <PixelIcon name="refresh" size={20} />
                   </div>
                   <span className="font-pixel font-bold">Konveksi Mantel</span>
                 </div>
-                <span className="text-amber-400 font-bold text-sm sm:text-base font-pixel-title">&gt;</span>
+                <span className="text-amber-400 font-bold text-[15px] sm:text-base font-pixel-title">&gt;</span>
                 <div className="bg-rose-950/90 border-2 border-rose-500 p-2.5 sm:p-3 rounded-xl flex-1 text-rose-200">
                   <div className="flex justify-center mb-1.5">
                     <PixelIcon name="lightning" size={20} />
                   </div>
                   <span className="font-pixel font-bold">Pergeseran Lempeng</span>
                 </div>
-                <span className="text-amber-400 font-bold text-sm sm:text-base font-pixel-title">&gt;</span>
+                <span className="text-amber-400 font-bold text-[15px] sm:text-base font-pixel-title">&gt;</span>
                 <div className="bg-red-950/90 border-2 border-red-500 p-2.5 sm:p-3 rounded-xl flex-1 text-red-200">
                   <div className="flex justify-center mb-1.5">
                     <PixelIcon name="volcano" size={20} />
@@ -132,7 +132,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
 
             {/* Context Explanation */}
             <div className="bg-[#fffbeb] p-3.5 sm:p-4 rounded-2xl border-2 border-[#b45309]/60 mb-4 shadow-xs">
-              <p className="font-pixel text-xs sm:text-sm md:text-base text-[#78350f] leading-relaxed font-medium">
+              <p className="font-pixel text-[13px] sm:text-[15px] md:text-base text-[#78350f] leading-relaxed font-medium">
                 Kamu telah menembus 6.371 km dari permukaan bumi hingga inti terdalam! Pecahkan <strong>5 kata kunci kausalitas geologi</strong> gabungan dari seluruh lapisan interior bumi untuk menuntaskan ekspedisi Level 1:
               </p>
             </div>
@@ -155,7 +155,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="px-5 py-2.5 rounded-xl bg-[#d97706]/20 hover:bg-[#d97706]/30 text-[#78350f] border-2 border-[#78350f] text-xs sm:text-sm font-pixel-title cursor-pointer font-bold"
+                className="px-5 py-2.5 rounded-xl bg-[#d97706]/20 hover:bg-[#d97706]/30 text-[#78350f] border-2 border-[#78350f] text-[13px] sm:text-[15px] font-pixel-title cursor-pointer font-bold"
               >
                 KEMBALI KE KAPSUL
               </button>
@@ -172,7 +172,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309]/20 hover:bg-[#b45309]/40 text-[#78350f] border-2 border-[#78350f] font-pixel text-xs sm:text-sm flex items-center justify-center cursor-pointer"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309]/20 hover:bg-[#b45309]/40 text-[#78350f] border-2 border-[#78350f] font-pixel text-[13px] sm:text-[15px] flex items-center justify-center cursor-pointer"
                 title="Tutup Modal & Lihat Gerbang di Map"
               >
                 ✕
@@ -184,7 +184,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
               <PixelTrophy size={108} showSparkles={true} />
             </div>
 
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 border-2 border-emerald-500 text-emerald-800 text-xs sm:text-sm font-pixel mb-3 font-bold shadow-xs">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 border-2 border-emerald-500 text-emerald-800 text-[13px] sm:text-[15px] font-pixel mb-3 font-bold shadow-xs">
               <PixelIcon name="star" size={16} className="text-emerald-600" />
               <span>GERBANG SEISMIK INTI TELAH TERBUKA!</span>
             </div>
@@ -200,29 +200,29 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   <div className="flex justify-center mb-1">
                     <PixelIcon name="globe" size={22} />
                   </div>
-                  <span className="text-[10px] sm:text-xs font-pixel text-[#78350f] font-bold block">SURFACE SCOUT</span>
+                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-[#78350f] font-bold block">SURFACE SCOUT</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-[#fde68a] border-2 border-[#d97706] text-center">
                   <div className="flex justify-center mb-1">
                     <PixelIcon name="lightning" size={22} />
                   </div>
-                  <span className="text-[10px] sm:text-xs font-pixel text-[#78350f] font-bold block">TECTONIC TRACKER</span>
+                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-[#78350f] font-bold block">TECTONIC TRACKER</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-[#fde68a] border-2 border-[#d97706] text-center">
                   <div className="flex justify-center mb-1">
                     <PixelIcon name="flame" size={22} />
                   </div>
-                  <span className="text-[10px] sm:text-xs font-pixel text-[#78350f] font-bold block">MANTLE EXPLORER</span>
+                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-[#78350f] font-bold block">MANTLE EXPLORER</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-amber-300 border-2 border-amber-600 text-center shadow-sm">
                   <div className="flex justify-center mb-1">
                     <PixelIcon name="volcano" size={22} />
                   </div>
-                  <span className="text-[10px] sm:text-xs font-pixel text-amber-950 font-bold block">CORE SPECIALIST</span>
+                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-amber-950 font-bold block">CORE SPECIALIST</span>
                 </div>
               </div>
 
-              <div className="text-xs sm:text-sm font-pixel text-cyan-800 bg-cyan-100 py-2 px-4 rounded-xl border-2 border-cyan-400 inline-flex items-center gap-2.5 font-bold">
+              <div className="text-[13px] sm:text-[15px] font-pixel text-cyan-800 bg-cyan-100 py-2 px-4 rounded-xl border-2 border-cyan-400 inline-flex items-center gap-2.5 font-bold">
                 <PixelIcon name="crystal" size={15} />
                 <span>5/5 Geo-Crystals Terkumpul</span>
                 <span>•</span>
@@ -233,10 +233,10 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
 
             {/* Narrative Transition to Level 2 */}
             <div className="bg-gradient-to-r from-amber-900 to-rose-950 text-amber-100 p-4 sm:p-5 rounded-2xl border-3 border-[#451a03] max-w-2xl mx-auto mb-4 shadow-md text-left">
-              <span className="font-pixel-title text-xs text-amber-400 block mb-1.5 font-bold">
+              <span className="font-pixel-title text-[13px] text-amber-400 block mb-1.5 font-bold">
                 JEMBATAN MISI TARUNA RESQ:
               </span>
-              <p className="font-pixel text-xs sm:text-sm leading-relaxed text-amber-100 italic">
+              <p className="font-pixel text-[13px] sm:text-[15px] leading-relaxed text-amber-100 italic">
                 &ldquo;Kamu telah menembus 6.371 km, menyelesaikan semua pertanyaan geologi, dan membuka Gerbang Seismik Inti! Pilih kelanjutan misimu sekarang:&rdquo;
               </p>
             </div>
@@ -256,10 +256,10 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   <PixelIcon name="globe" size={26} className="text-[#78350f]" />
                 </div>
                 <div>
-                  <span className="text-xs sm:text-sm font-pixel-title font-bold block text-[#451a03]">
+                  <span className="text-[13px] sm:text-[15px] font-pixel-title font-bold block text-[#451a03]">
                     MENU UTAMA
                   </span>
-                  <span className="text-[10px] sm:text-xs font-pixel text-[#92400e] block">
+                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-[#92400e] block">
                     Kembali ke Beranda Taruna
                   </span>
                 </div>
@@ -277,11 +277,11 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   <PixelIcon name="volcano" size={26} className="text-emerald-100" />
                 </div>
                 <div>
-                  <span className="text-xs sm:text-sm font-pixel-title font-bold block text-white flex items-center gap-1.5">
+                  <span className="text-[13px] sm:text-[15px] font-pixel-title font-bold block text-white flex items-center gap-1.5">
                     LANJUT KE LEVEL 2
                     <span className="text-amber-300">&gt;</span>
                   </span>
-                  <span className="text-[10px] sm:text-xs font-pixel text-emerald-100 block">
+                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-emerald-100 block">
                     Tantangan Erupsi Merapi
                   </span>
                 </div>
@@ -296,7 +296,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="px-4 py-2 rounded-xl bg-[#d97706]/15 hover:bg-[#d97706]/25 text-[#92400e] border border-[#b45309] text-[10px] font-pixel cursor-pointer transition-colors inline-flex items-center gap-1.5"
+                className="px-4 py-2 rounded-xl bg-[#d97706]/15 hover:bg-[#d97706]/25 text-[#92400e] border border-[#b45309] text-[13.5px] font-pixel cursor-pointer transition-colors inline-flex items-center gap-1.5"
               >
                 <PixelIcon name="clipboard" size={14} />
                 <span>JELAJAHI RUANG INTI (LIHAT GERBANG TERBUKA &amp; KAPSUL)</span>

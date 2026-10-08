@@ -238,10 +238,10 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <span className={`text-xs sm:text-sm font-black uppercase tracking-wider px-3 py-1 rounded-full border ${suit.badgeBg}`}>
+                <span className={`text-[13px] sm:text-[15px] font-black uppercase tracking-wider px-3 py-1 rounded-full border ${suit.badgeBg}`}>
                   {suit.tierLabel}
                 </span>
-                <span className="text-xs sm:text-sm text-slate-300 font-mono tracking-tight font-semibold">{suit.codeName}</span>
+                <span className="text-[13px] sm:text-[15px] text-slate-300 font-mono tracking-tight font-semibold">{suit.codeName}</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black tracking-wide text-white drop-shadow-md mt-1">
                 {suit.name}
@@ -274,17 +274,17 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
               {suit.suitPreviewSvg}
             </div>
-            <div className="relative z-10 mt-4 font-mono font-black text-sm uppercase text-slate-100 tracking-wider">
+            <div className="relative z-10 mt-4 font-mono font-black text-[15px] uppercase text-slate-100 tracking-wider">
               {isEquipped ? 'STATUS: AKTIF' : hasPurchased ? 'SUDAH DIMILIKI' : 'SIAP DIBELI'}
             </div>
-            <div className="relative z-10 text-xs text-slate-300 mt-1 font-semibold">
+            <div className="relative z-10 text-[13px] text-slate-300 mt-1 font-semibold">
               Target: {suit.zoneTarget.split(' ')[0]} {suit.zoneTarget.split(' ')[1] || ''}
             </div>
           </div>
 
           {/* Fitur Sains & Spesifikasi */}
           <div className="sm:col-span-8 flex flex-col justify-between gap-3">
-            <div className="text-sm sm:text-base font-black text-slate-100 uppercase tracking-wider flex items-center gap-2">
+            <div className="text-[15px] sm:text-base font-black text-slate-100 uppercase tracking-wider flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: suit.accentColor }} />
               Spesifikasi Proteksi Geologis:
             </div>
@@ -293,8 +293,8 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
                 <div key={idx} className="p-3 sm:p-3.5 rounded-xl bg-slate-900/80 border border-white/15 flex items-start gap-3 shadow-sm">
                   <span className="text-base sm:text-lg shrink-0 mt-0.5" style={{ color: suit.accentColor }}>✦</span>
                   <div className="text-left">
-                    <span className="font-black text-sm sm:text-base text-white block leading-snug">{f.label}</span>
-                    <span className="text-xs sm:text-sm text-slate-200 font-medium leading-relaxed block mt-0.5">{f.desc}</span>
+                    <span className="font-black text-[15px] sm:text-base text-white block leading-snug">{f.label}</span>
+                    <span className="text-[13px] sm:text-[15px] text-slate-200 font-medium leading-relaxed block mt-0.5">{f.desc}</span>
                   </div>
                 </div>
               ))}
@@ -311,7 +311,7 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
                 <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5" />
               </svg>
               <div className="flex flex-col">
-                <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Saldo Kristal</span>
+                <span className="text-[13px] uppercase font-extrabold text-slate-400 tracking-wider">Saldo Kristal</span>
                 <span className="text-base sm:text-lg font-black text-cyan-300 font-mono leading-tight">
                   {playerCrystals} Kristal Energi
                 </span>
@@ -319,7 +319,7 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             </div>
             <div className="h-7 w-px bg-white/25 mx-1" />
             <div className="flex flex-col">
-              <span className="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Harga Baju</span>
+              <span className="text-[13px] uppercase font-extrabold text-slate-400 tracking-wider">Harga Baju</span>
               <span className="text-base sm:text-lg font-black text-amber-300 font-mono leading-tight">1 Kristal</span>
             </div>
           </div>
@@ -331,7 +331,7 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
                 retroAudio.playSelect();
                 onClose();
               }}
-              className="px-4 sm:px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-sm sm:text-base border border-white/20 transition-all shadow-md active:scale-95 cursor-pointer"
+              className="px-4 sm:px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-[15px] sm:text-base border border-white/20 transition-all shadow-md active:scale-95 cursor-pointer"
             >
               Nanti Saja
             </button>
@@ -339,30 +339,30 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             {isEquipped ? (
               <button
                 disabled
-                className="px-5 sm:px-6 py-3 rounded-xl bg-emerald-600/70 text-emerald-100 font-black text-sm sm:text-base border border-emerald-400/60 cursor-default flex items-center gap-2 shadow-lg"
+                className="px-5 sm:px-6 py-3 rounded-xl bg-emerald-600/70 text-emerald-100 font-black text-[15px] sm:text-base border border-emerald-400/60 cursor-default flex items-center gap-2 shadow-lg"
               >
                 <span>✓</span> SEDANG DIPAKAI (AKTIF)
               </button>
             ) : hasPurchased ? (
               <button
                 onClick={handleAction}
-                className="px-5 sm:px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-sm sm:text-base border border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
+                className="px-5 sm:px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-[15px] sm:text-base border border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 <span>⚡</span> KENAKAN SEKARANG
               </button>
             ) : canAfford ? (
               <button
                 onClick={handleAction}
-                className="px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-sm sm:text-base border border-yellow-300 shadow-[0_0_25px_rgba(245,158,11,0.6)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
+                className="px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-[15px] sm:text-base border border-yellow-300 shadow-[0_0_25px_rgba(245,158,11,0.6)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 BELI & LANGSUNG PAKAI (1 KRISTAL)
               </button>
             ) : (
               <button
                 disabled
-                className="px-5 sm:px-6 py-3 rounded-xl bg-red-950/70 text-red-200/90 font-bold text-xs sm:text-sm border border-red-500/40 cursor-not-allowed flex items-center gap-2"
+                className="px-5 sm:px-6 py-3 rounded-xl bg-red-950/70 text-red-200/90 font-bold text-[13px] sm:text-[15px] border border-red-500/40 cursor-not-allowed flex items-center gap-2"
               >
-                <span>🔒</span> KRISTAL KURANG (CARI DI AREA INI)
+  KRISTAL KURANG (CARI DI AREA INI)
               </button>
             )}
           </div>

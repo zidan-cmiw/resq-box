@@ -6017,8 +6017,8 @@ export default function Merapi3DScene() {
       {isLoading && (
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#060913]/90 backdrop-blur-md">
           <div className="w-14 h-14 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-3" />
-          <h3 className="text-sm font-bold text-white tracking-wide font-pixel">Memuat Digital Twin 3D Merapi</h3>
-          <p className="text-[11px] text-slate-400 mt-1">Mengoptimalkan geometri maket & topografi STL • {loadProgress}%</p>
+          <h3 className="text-[15px] font-bold text-white tracking-wide font-pixel">Memuat Digital Twin 3D Merapi</h3>
+          <p className="text-[14.5px] text-slate-400 mt-1">Mengoptimalkan geometri maket & topografi STL • {loadProgress}%</p>
         </div>
       )}
 
@@ -6026,7 +6026,7 @@ export default function Merapi3DScene() {
       <div className="absolute top-2.5 left-2.5 z-20 flex flex-col gap-1.5 pointer-events-none">
         <div className="flex items-center gap-2 flex-wrap">
           <span
-            className={`text-xs font-bold font-pixel px-3 py-1.5 rounded-xl border shadow-xl backdrop-blur-md transition-all ${volcanoStatus === 'AWAS'
+            className={`text-[13px] font-bold font-pixel px-3 py-1.5 rounded-xl border shadow-xl backdrop-blur-md transition-all ${volcanoStatus === 'AWAS'
               ? 'bg-red-950/90 text-red-200 border-red-500 animate-pulse'
               : volcanoStatus === 'SIAGA'
                 ? 'bg-orange-950/90 text-orange-200 border-orange-500'
@@ -6040,18 +6040,18 @@ export default function Merapi3DScene() {
 
           {/* Tipe Erupsi Jika Sedang Aktif */}
           {eruptionType !== 'NONE' && volcanoStatus !== 'NORMAL' && (
-            <span className="text-[10px] font-bold font-pixel px-2.5 py-1.5 rounded-xl border bg-amber-950/90 text-amber-200 border-amber-500 shadow-xl backdrop-blur-md animate-bounce">
-              {eruptionType === 'EKSPLOSIF' ? '💥 ERUPSI EKSPLOSIF' : '🌋 ERUPSI EFUSIF'}
+            <span className="text-[13.5px] font-bold font-pixel px-2.5 py-1.5 rounded-xl border bg-amber-950/90 text-amber-200 border-amber-500 shadow-xl backdrop-blur-md animate-bounce">
+ {eruptionType === 'EKSPLOSIF' ? ' ERUPSI EKSPLOSIF' : ' ERUPSI EFUSIF'}
             </span>
           )}
 
           {/* Peringatan Gempa Bumi Aktif */}
           {seismicLevel > 0 && (
             <div className="flex flex-col gap-1">
-              <span className="text-[10px] font-bold font-pixel px-2.5 py-1.5 rounded-xl border bg-red-950/90 text-red-200 border-red-500 shadow-xl backdrop-blur-md animate-pulse">
-                ⚠️ GEMPA {richterScale.toFixed(1)} SR [{seismicLevel === 3 ? 'KUAT' : seismicLevel === 2 ? 'SEDANG' : 'RINGAN'}]
+              <span className="text-[13.5px] font-bold font-pixel px-2.5 py-1.5 rounded-xl border bg-red-950/90 text-red-200 border-red-500 shadow-xl backdrop-blur-md animate-pulse">
+ ⚠ GEMPA {richterScale.toFixed(1)} SR [{seismicLevel === 3 ? 'KUAT' : seismicLevel === 2 ? 'SEDANG' : 'RINGAN'}]
               </span>
-              <span className="text-[9px] font-medium font-sans px-2 py-0.5 rounded-lg bg-black/70 text-slate-300 border border-slate-700/80 backdrop-blur-xs w-fit">
+              <span className="text-[12.5px] font-medium font-sans px-2 py-0.5 rounded-lg bg-black/70 text-slate-300 border border-slate-700/80 backdrop-blur-xs w-fit">
                 {seismicLevel === 1 && 'Status: Panic • NPC Menuju Lapangan (1.5x) • Bangunan Aman (HP 100%)'}
                 {seismicLevel === 2 && 'Status: Extreme Panic • Merunduk 3s & Lari (2x) • Dinding Retak (HP 60%) • Tiang Miring'}
                 {seismicLevel === 3 && 'Status: Kolaps Total • Warga Tiarap/Reruntuhan • Bangunan Runtuh Amblas • Tiang Roboh'}
@@ -6062,7 +6062,7 @@ export default function Merapi3DScene() {
 
         {/* Indikator Tahap Erupsi Riil (Timeline Eksplosif / Efusif) */}
         {eruptionStageText && volcanoStatus !== 'NORMAL' && (
-          <div className="flex items-center gap-1.5 bg-rose-950/90 border border-rose-500/80 rounded-xl px-2.5 py-1 text-[10px] font-bold font-pixel text-rose-200 shadow-xl backdrop-blur-md animate-pulse w-fit">
+          <div className="flex items-center gap-1.5 bg-rose-950/90 border border-rose-500/80 rounded-xl px-2.5 py-1 text-[13.5px] font-bold font-pixel text-rose-200 shadow-xl backdrop-blur-md animate-pulse w-fit">
             <span className="w-2 h-2 rounded-full bg-rose-400 animate-ping shrink-0" />
             <span>TAHAP: {eruptionStageText}</span>
           </div>
@@ -6070,7 +6070,7 @@ export default function Merapi3DScene() {
 
         {/* Banner Notifikasi Rute Evakuasi Aktif */}
         {selectedRoute !== 'Belum Ditentukan' && (
-          <div className="bg-emerald-950/90 border border-emerald-500/80 rounded-xl px-3 py-1 text-[10px] text-emerald-200 shadow-xl flex items-center gap-1.5 animate-bounce w-fit">
+          <div className="bg-emerald-950/90 border border-emerald-500/80 rounded-xl px-3 py-1 text-[13.5px] text-emerald-200 shadow-xl flex items-center gap-1.5 animate-bounce w-fit">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
             <span>Rute: <strong>{selectedRoute}</strong> → {activeShelter}</span>
           </div>
@@ -6081,7 +6081,7 @@ export default function Merapi3DScene() {
       <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 bg-[#0f172a]/90 backdrop-blur-md border border-slate-700/80 rounded-xl p-1 shadow-xl">
         <button
           onClick={() => setShowKrbZones(!showKrbZones)}
-          className={`px-2.5 py-1 text-[11px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${showKrbZones ? 'bg-amber-600 text-white border-amber-400 shadow-xs' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+          className={`px-2.5 py-1 text-[14.5px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${showKrbZones ? 'bg-amber-600 text-white border-amber-400 shadow-xs' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
             }`}
           title="Tampilkan / Sembunyikan Zonasi KRB I, II, III"
         >
@@ -6089,7 +6089,7 @@ export default function Merapi3DScene() {
         </button>
         <button
           onClick={resetCamera}
-          className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer flex items-center gap-1"
+          className="px-2.5 py-1 text-[14.5px] font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer flex items-center gap-1"
           title="Reset Sudut Pandang Kamera"
         >
           <span>Reset View</span>
@@ -6098,7 +6098,7 @@ export default function Merapi3DScene() {
         {/* Tombol Gedein Peta / Perbesar Tampilan */}
         <button
           onClick={toggleMapExpanded}
-          className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1 shadow-xs ${isMapExpanded
+          className={`px-2.5 py-1 text-[13.5px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1 shadow-xs ${isMapExpanded
             ? 'bg-amber-600 text-white border-amber-400'
             : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border-amber-600/60'
             }`}
@@ -6110,7 +6110,7 @@ export default function Merapi3DScene() {
         {/* Tombol Reset Dampak Lingkungan / Peta Pasca Bencana */}
         <button
           onClick={handleResetDisasterEnvironment}
-          className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1 shadow-xs ${hasDisasterImpact
+          className={`px-2.5 py-1 text-[13.5px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1 shadow-xs ${hasDisasterImpact
             ? 'bg-rose-600 hover:bg-rose-500 text-white border-rose-400 animate-pulse'
             : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700 hover:text-white'
             }`}

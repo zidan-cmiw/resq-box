@@ -53,7 +53,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-sm sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_#451a03] shrink-0 transition-colors"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_#451a03] shrink-0 transition-colors"
             title="Tutup"
           >
             ✕
@@ -68,11 +68,11 @@ export default function DiscoveryModal({
         {/* ── PENJELASAN MATERI (RINGKAS & MUDAH DIPAHAMI UNTUK SMP) ── */}
         <div className="bg-[#fef9c3] p-4 sm:p-6 md:p-7 rounded-2xl border-3 border-[#b45309]/60 shadow-md text-[#291305] space-y-3 sm:space-y-4">
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-1 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-xs sm:text-sm font-bold tracking-wider shadow-sm">
+            <span className="px-2.5 py-1 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
               MATERI PEMBELAJARAN
             </span>
           </div>
-          <p className="font-sans text-base sm:text-lg md:text-xl lg:text-[22px] leading-relaxed md:leading-loose text-[#291305] font-semibold tracking-wide">
+          <p className="font-sans text-base sm:text-lg md:text-xl lg:text-[24px] leading-relaxed md:leading-loose text-[#291305] font-semibold tracking-wide">
             {discovery.shortDesc}
           </p>
 
@@ -82,11 +82,11 @@ export default function DiscoveryModal({
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
-                  <span className="font-pixel-title text-sm sm:text-base md:text-lg font-bold text-[#78350f]">
+                  <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-[#78350f]">
                     {CONVERGENT_LANDFORMS_DATA[selectedLandform].title}
                   </span>
                 </div>
-                <span className="text-xs sm:text-sm font-pixel font-bold uppercase text-[#78350f] bg-amber-200/80 px-2.5 py-1 rounded-lg border border-[#b45309]/40">
+                <span className="text-[13px] sm:text-[15px] font-pixel font-bold uppercase text-[#78350f] bg-amber-200/80 px-2.5 py-1 rounded-lg border border-[#b45309]/40">
                   {CONVERGENT_LANDFORMS_DATA[selectedLandform].subtitle}
                 </span>
               </div>
@@ -100,7 +100,7 @@ export default function DiscoveryModal({
                     <div className="w-7 h-7 rounded-lg bg-[#b45309]/20 border border-[#b45309]/50 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
                       <PixelIcon name={pt.icon as any} size={15} className="text-[#92400e]" />
                     </div>
-                    <p className="font-sans text-sm sm:text-base md:text-[17px] leading-relaxed text-[#291305] font-semibold">
+                    <p className="font-sans text-[15px] sm:text-base md:text-[19px] leading-relaxed text-[#291305] font-semibold">
                       {pt.text}
                     </p>
                   </div>
@@ -114,7 +114,7 @@ export default function DiscoveryModal({
             <div className="mt-3 pt-3.5 border-t-2 border-[#b45309]/30 space-y-3">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
-                <span className="font-pixel-title text-sm sm:text-base md:text-lg font-bold text-[#78350f]">
+                <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-[#78350f]">
                   3 KARAKTERISTIK UTAMA BATAS TRANSFORM
                 </span>
               </div>
@@ -129,10 +129,10 @@ export default function DiscoveryModal({
                       <PixelIcon name={pt.icon as any} size={15} className="text-[#92400e]" />
                     </div>
                     <div className="space-y-1">
-                      <span className="font-pixel-title text-xs sm:text-sm font-bold text-[#78350f] block">
+                      <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f] block">
                         {pt.title}
                       </span>
-                      <p className="font-sans text-sm sm:text-base md:text-[17px] leading-relaxed text-[#291305] font-semibold">
+                      <p className="font-sans text-[15px] sm:text-base md:text-[19px] leading-relaxed text-[#291305] font-semibold">
                         {pt.text}
                       </p>
                     </div>
@@ -143,10 +143,10 @@ export default function DiscoveryModal({
           )}
           {discovery.fact && (
             <div className="pt-3 border-t-2 border-[#b45309]/25 flex items-start gap-2.5 sm:gap-3">
-              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[10px] sm:text-xs md:text-sm font-bold shrink-0 mt-0.5">
+              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[13.5px] sm:text-[13px] md:text-[15px] font-bold shrink-0 mt-0.5">
                 FAKTA KUNCI
               </span>
-              <p className="font-sans text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-[#451a03] font-medium italic">
+              <p className="font-sans text-[15px] sm:text-base md:text-lg lg:text-xl leading-relaxed text-[#451a03] font-medium italic">
                 {discovery.fact}
               </p>
             </div>
@@ -160,7 +160,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="px-8 py-3 sm:px-10 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-sm sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all"
+            className="px-8 py-3 sm:px-10 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all"
           >
             <PixelIcon name="check" size={18} className="text-amber-200" />
             <span>SAYA MENGERTI!</span>
@@ -205,7 +205,7 @@ function CrustComparisonIllustration() {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-between select-none">
       {/* Quick Interactive Selection Tabs at Top */}
-      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-xs sm:text-sm">
+      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-[13px] sm:text-[15px]">
         <button
           onClick={() => setActiveFeature(activeFeature === 'continental' ? null : 'continental')}
           className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
@@ -427,17 +427,17 @@ function CrustComparisonIllustration() {
         {activeFeature ? (
           <div className="flex items-center gap-2.5 w-full animate-fadeIn">
             <span
-              className="px-2.5 py-1 rounded text-xs sm:text-sm font-bold shrink-0 text-slate-900 shadow"
+              className="px-2.5 py-1 rounded text-[13px] sm:text-[15px] font-bold shrink-0 text-slate-900 shadow"
               style={{ backgroundColor: featureDetails[activeFeature].color }}
             >
               {featureDetails[activeFeature].title}
             </span>
-            <p className="text-sm sm:text-base text-amber-100 font-medium leading-relaxed">
+            <p className="text-[15px] sm:text-base text-amber-100 font-medium leading-relaxed">
               {featureDetails[activeFeature].desc}
             </p>
           </div>
         ) : (
-          <div className="flex items-center justify-center gap-2 w-full text-center text-xs sm:text-sm text-amber-200/90 font-medium">
+          <div className="flex items-center justify-center gap-2 w-full text-center text-[13px] sm:text-[15px] text-amber-200/90 font-medium">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping inline-block" />
             <span>Pilih tombol di atas atau ketuk panel untuk detail komparasi geologis!</span>
           </div>
@@ -479,7 +479,7 @@ function MantleConvectionIllustration() {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-between select-none">
       {/* Interactive Quick Select Filter Pills at Top */}
-      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-xs sm:text-sm">
+      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-[13px] sm:text-[15px]">
         <button
           onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
           className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
@@ -844,17 +844,17 @@ function MantleConvectionIllustration() {
         {activeFeature ? (
           <div className="flex items-center gap-2.5 w-full animate-fadeIn">
             <span
-              className="px-2.5 py-1 rounded text-xs sm:text-sm font-bold shrink-0 text-slate-900 shadow"
+              className="px-2.5 py-1 rounded text-[13px] sm:text-[15px] font-bold shrink-0 text-slate-900 shadow"
               style={{ backgroundColor: featureDetails[activeFeature].color }}
             >
               {featureDetails[activeFeature].title}
             </span>
-            <p className="text-sm sm:text-base text-amber-100 font-medium leading-relaxed">
+            <p className="text-[15px] sm:text-base text-amber-100 font-medium leading-relaxed">
               {featureDetails[activeFeature].desc}
             </p>
           </div>
         ) : (
-          <div className="flex items-center justify-center gap-2 w-full text-center text-xs sm:text-sm text-amber-200/90 font-medium">
+          <div className="flex items-center justify-center gap-2 w-full text-center text-[13px] sm:text-[15px] text-amber-200/90 font-medium">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping inline-block" />
             <span>Pilih tombol di atas atau ketuk bagian siklus konveksi untuk penjelasannya!</span>
           </div>
@@ -2540,11 +2540,11 @@ function PangeaIllustration() {
     <div className="relative w-full h-full flex flex-col items-center justify-between bg-[#93c5fd] select-none p-2 sm:p-3 overflow-hidden rounded-xl" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {/* Top Header Mode Toggle */}
       <div className="w-full flex items-center justify-between px-3.5 py-2 bg-slate-900/95 border border-amber-500/70 rounded-xl z-10 shadow-lg">
-        <span className="text-amber-300 font-bold text-sm sm:text-base flex items-center gap-2 tracking-wide">
+        <span className="text-amber-300 font-bold text-[15px] sm:text-base flex items-center gap-2 tracking-wide">
           <PixelIcon name="globe" size={18} className="text-amber-400" />
           <span>SUPERKONTINEN PANGEA (~250 JUTA TAHUN LALU)</span>
         </span>
-        <span className="hidden sm:inline-block text-[11px] text-slate-300 font-medium bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700">
+        <span className="hidden sm:inline-block text-[14.5px] text-slate-300 font-medium bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700">
           Teori Alfred Wegener (1912)
         </span>
       </div>
@@ -2810,17 +2810,17 @@ function PangeaIllustration() {
       <div className="w-full bg-[#0f172a] border-2 border-emerald-500/60 rounded-xl p-3 sm:p-3.5 text-slate-200 z-10 flex items-center justify-between gap-3 shadow-lg">
         {activePlateInfo ? (
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 animate-fadeIn w-full">
-            <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-bold text-xs sm:text-sm border border-emerald-500/50 whitespace-nowrap shadow-sm">
+            <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-bold text-[13px] sm:text-[15px] border border-emerald-500/50 whitespace-nowrap shadow-sm">
               {activePlateInfo.title}
             </span>
-            <span className="text-slate-100 font-medium text-xs sm:text-sm leading-relaxed">
+            <span className="text-slate-100 font-medium text-[13px] sm:text-[15px] leading-relaxed">
               {activePlateInfo.desc}
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2.5 text-slate-200 font-semibold text-xs sm:text-sm">
+          <div className="flex items-center gap-2.5 text-slate-200 font-semibold text-[13px] sm:text-[15px]">
             <PixelIcon name="bulb" size={18} className="text-amber-400 shrink-0" />
-            <span className="text-amber-400 font-bold text-xs sm:text-sm">PETUNJUK:</span>
+            <span className="text-amber-400 font-bold text-[13px] sm:text-[15px]">PETUNJUK:</span>
             <span>Arahkan kursor atau sentuh tiap benua di atas untuk mempelajari kepingan Pangea!</span>
           </div>
         )}
@@ -2961,13 +2961,13 @@ function DivergentAnimIllustration({
     <div className="w-full h-full relative flex flex-col items-center justify-between p-2 sm:p-3 overflow-hidden" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       {/* Top Bar Controls */}
       <div className="w-full flex items-center justify-between px-3.5 py-2 bg-slate-900/95 border border-orange-500/70 rounded-xl z-10 shadow-lg">
-        <span className="text-xs sm:text-sm font-bold text-orange-400 flex items-center gap-2">
+        <span className="text-[13px] sm:text-[15px] font-bold text-orange-400 flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping" />
           <span>SIMULATOR GEOLOGI: PEMEKARAN DASAR SAMUDRA &amp; PEMATANG TENGAH</span>
         </span>
         <button
           onClick={handleToggle}
-          className="px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl text-white text-xs sm:text-sm font-bold border-2 cursor-pointer active:translate-y-0.5 transition-all flex items-center gap-2 shadow-md bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 border-orange-400/80 shadow-[0_3px_0_#7c2d12]"
+          className="px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl text-white text-[13px] sm:text-[15px] font-bold border-2 cursor-pointer active:translate-y-0.5 transition-all flex items-center gap-2 shadow-md bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 border-orange-400/80 shadow-[0_3px_0_#7c2d12]"
         >
           <PixelIcon name="zap" size={15} />
           <span>{isDiverged ? '↺ GABUNGKAN KEMBALI DARATAN' : '▶ SIMULASI PEMISAHAN'}</span>
@@ -3235,7 +3235,7 @@ function DivergentAnimIllustration({
       </div>
 
       {/* Scientific Legend & Process Overview (Keterangan Rapi di Luar Gambar) */}
-      <div className="w-full bg-[#0f172a]/95 border-2 border-orange-500/70 rounded-xl p-2.5 sm:p-3 text-slate-200 text-xs sm:text-sm z-10 flex flex-wrap items-center justify-between gap-2 shadow-lg">
+      <div className="w-full bg-[#0f172a]/95 border-2 border-orange-500/70 rounded-xl p-2.5 sm:p-3 text-slate-200 text-[13px] sm:text-[15px] z-10 flex flex-wrap items-center justify-between gap-2 shadow-lg">
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-orange-500 shrink-0" />
           <span className="font-bold text-orange-300">Pematang Tengah Samudra (Mid-Ocean Ridge):</span>
@@ -3304,7 +3304,7 @@ function ConvergentLandformsIllustration({
   return (
     <div className="w-full h-full relative flex flex-col justify-between select-none">
       <div className="w-full pt-2.5 px-2 sm:px-3 pb-2 flex items-center justify-between border-b border-slate-800 bg-slate-950/95 z-20 shrink-0 gap-1 overflow-x-auto">
-        <span className="text-xs sm:text-sm font-pixel-title text-amber-400 font-bold shrink-0 flex items-center gap-1.5">
+        <span className="text-[13px] sm:text-[15px] font-pixel-title text-amber-400 font-bold shrink-0 flex items-center gap-1.5">
           <PixelIcon name="layers" size={14} className="text-amber-400" />
           <span className="hidden sm:inline">PILIH BENTANG ALAM:</span>
           <span className="sm:hidden">BENTANG ALAM:</span>
@@ -3312,7 +3312,7 @@ function ConvergentLandformsIllustration({
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={() => handleSelect('trench')}
-            className={`px-3 py-1.5 rounded-lg text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'trench'
+            className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'trench'
               ? 'bg-cyan-600 text-white border-cyan-300 shadow-[0_2px_0_#083344]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
               }`}
@@ -3321,7 +3321,7 @@ function ConvergentLandformsIllustration({
           </button>
           <button
             onClick={() => handleSelect('mountains')}
-            className={`px-3 py-1.5 rounded-lg text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'mountains'
+            className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'mountains'
               ? 'bg-amber-600 text-white border-amber-300 shadow-[0_2px_0_#451a03]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
               }`}
@@ -3330,7 +3330,7 @@ function ConvergentLandformsIllustration({
           </button>
           <button
             onClick={() => handleSelect('volcano')}
-            className={`px-3 py-1.5 rounded-lg text-[9.5px] sm:text-[11px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'volcano'
+            className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'volcano'
               ? 'bg-rose-600 text-white border-rose-300 shadow-[0_2px_0_#4c0519]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
               }`}

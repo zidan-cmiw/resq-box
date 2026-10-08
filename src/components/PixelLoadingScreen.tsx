@@ -181,19 +181,19 @@ export default function PixelLoadingScreen({
         <div className="space-y-1.5">
           <div className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-950 text-amber-300 border-2 border-amber-500 shadow-[0_2px_0_#451a03]">
             <PixelIcon name="compass" size={14} className="text-emerald-400 animate-spin" />
-            <span className="font-pixel-title text-xs tracking-wider uppercase">{title}</span>
+            <span className="font-pixel-title text-[13px] tracking-wider uppercase">{title}</span>
           </div>
-          <p className="text-xs text-amber-950 font-bold leading-relaxed px-2">{subtitle}</p>
+          <p className="text-[13px] text-amber-950 font-bold leading-relaxed px-2">{subtitle}</p>
         </div>
 
         {/* ── 2D SEGMENTED CHUNKY PIXEL PROGRESS BAR ── */}
         <div className="space-y-2 pt-1">
-          <div className="flex justify-between items-center text-[11px] font-pixel-title font-bold text-amber-950 px-1">
+          <div className="flex justify-between items-center text-[14.5px] font-pixel-title font-bold text-amber-950 px-1">
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping inline-block" />
               STATUS TRANSMISI
             </span>
-            <span className="font-pixel-title text-xs text-emerald-900 font-black tracking-wider">
+            <span className="font-pixel-title text-[13px] text-emerald-900 font-black tracking-wider">
               {progress}%
             </span>
           </div>
@@ -216,7 +216,7 @@ export default function PixelLoadingScreen({
         </div>
 
         {/* ── DYNAMIC STATUS LOG CONTAINER ── */}
-        <div className="p-3 bg-amber-100/95 rounded-2xl border-2 border-amber-950/30 text-[11px] font-bold text-amber-950 flex items-center justify-center gap-2 min-h-[44px] shadow-inner">
+        <div className="p-3 bg-amber-100/95 rounded-2xl border-2 border-amber-950/30 text-[14.5px] font-bold text-amber-950 flex items-center justify-center gap-2 min-h-[44px] shadow-inner">
           <PixelIcon name={EXPEDITION_TIPS[tipIndex].icon} size={16} className="shrink-0 animate-bounce" />
           <span className="transition-all duration-300 leading-snug">{EXPEDITION_TIPS[tipIndex].text}</span>
         </div>

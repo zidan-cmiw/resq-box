@@ -16,11 +16,11 @@ class CanvasErrorBoundary extends Component<{ children: ReactNode }, { hasError:
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex items-center justify-center h-full text-[#78350f] text-xs flex-col gap-2 font-pixel p-4 bg-amber-50">
+        <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel p-4 bg-amber-50">
           <span>TERJADI KENDALA PADA TAMPILAN PETA DIORAMA.</span>
           <button
             onClick={() => this.setState({ hasError: false })}
-            className="px-3 py-1 bg-amber-600 text-white rounded font-sans text-xs font-bold hover:bg-amber-700 mt-2"
+            className="px-3 py-1 bg-amber-600 text-white rounded font-sans text-[13px] font-bold hover:bg-amber-700 mt-2"
           >
             Muat Ulang Peta
           </button>
@@ -560,7 +560,7 @@ export default function Workspace() {
               retroAudio.playSelect();
               navigate('/level3');
             }}
-            className="pixel-btn-wood-compact text-xs sm:text-sm py-2 px-3 text-amber-100 hover:text-white flex items-center gap-1.5 shrink-0 shadow-sm"
+            className="pixel-btn-wood-compact text-[13px] sm:text-[15px] py-2 px-3 text-amber-100 hover:text-white flex items-center gap-1.5 shrink-0 shadow-sm"
             title="Kembali ke Peta Level 3"
           >
             <span className="hidden sm:inline">PETA LEVEL 3</span>
@@ -572,12 +572,12 @@ export default function Workspace() {
                 retroAudio.playSelect();
                 setShowMissionPanel(!showMissionPanel);
               }}
-              className={`pixel-btn-wood-compact text-xs sm:text-sm py-2 px-2.5 flex items-center gap-1 shrink-0 shadow-sm ${
+              className={`pixel-btn-wood-compact text-[13px] sm:text-[15px] py-2 px-2.5 flex items-center gap-1 shrink-0 shadow-sm ${
                 showMissionPanel ? '!bg-[#78350f] text-amber-200 ring-2 ring-amber-400' : 'text-amber-100'
               }`}
               title="Tampilkan / Sembunyikan Panduan Misi"
             >
-              <span className="material-symbols-outlined text-sm">assignment</span>
+              <span className="material-symbols-outlined text-[15px]">assignment</span>
               <span className="hidden sm:inline">MISI</span>
             </button>
           )}
@@ -588,16 +588,16 @@ export default function Workspace() {
           <div className="bg-[#fffbeb] border-2 border-[#b45309] px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-extrabold text-[#451a03] font-sans tracking-wide leading-tight">
+                <h1 className="text-[15px] sm:text-base font-extrabold text-[#451a03] font-sans tracking-wide leading-tight">
                   {activeMission ? activeMission.title : 'Ruang Simulasi Sandbox'}
                 </h1>
                 {activeMission && (
-                  <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-[#b45309] text-white font-pixel uppercase shadow-sm">
+                  <span className="px-2 py-0.5 rounded text-[14.5px] font-bold bg-[#b45309] text-white font-pixel uppercase shadow-sm">
                     {activeMission.category === 'proyek' ? `Kasus ${activeMission.level}` : `Level ${activeMission.level}`}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-[#78350f]/90 hidden sm:block font-sans truncate max-w-xs md:max-w-md font-medium">
+              <p className="text-[13px] text-[#78350f]/90 hidden sm:block font-sans truncate max-w-xs md:max-w-md font-medium">
                 {activeMission ? activeMission.scenario : 'Rancang dan uji logika sistem mitigasi'}
               </p>
             </div>
@@ -612,7 +612,7 @@ export default function Workspace() {
                 retroAudio.playSelect();
                 wsStatus === 'connected' ? disconnectMaket() : setShowWsModal(!showWsModal);
               }}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[11px] font-bold transition-all shadow-sm ${wsStatus === 'connected'
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[14.5px] font-bold transition-all shadow-sm ${wsStatus === 'connected'
                 ? 'bg-[#f0fdf4] text-[#15803d] border-[#16a34a]'
                 : wsStatus === 'connecting'
                   ? 'bg-[#fef3c7] text-[#b45309] border-[#d97706] animate-pulse'
@@ -628,8 +628,8 @@ export default function Workspace() {
             {/* IP Input Modal (SS 3 Warm Parchment) */}
             {showWsModal && wsStatus !== 'connected' && (
               <div className="absolute top-full right-0 mt-2 w-72 bg-[#fffbeb] border-2 border-[#b45309] rounded-xl shadow-2xl p-3.5 z-50 font-sans text-[#1c1917]">
-                <h4 className="font-bold text-xs text-[#78350f] mb-1 font-pixel">Alamat IP Diorama (WiFi)</h4>
-                <p className="text-[10px] text-[#451a03] mb-2 leading-relaxed font-medium">
+                <h4 className="font-bold text-[13px] text-[#78350f] mb-1 font-pixel">Alamat IP Diorama (WiFi)</h4>
+                <p className="text-[13.5px] text-[#451a03] mb-2 leading-relaxed font-medium">
                   Hubungkan ke WiFi <b>DIORAMA_ESP32</b> (Pass: 12345678). IP default: <b>192.168.4.1</b> (Port 81).
                 </p>
                 <div className="flex flex-col gap-2">
@@ -638,14 +638,14 @@ export default function Workspace() {
                       type="text"
                       value={wsIp}
                       onChange={(e) => setWsIp(e.target.value)}
-                      className="flex-1 bg-[#fefce8] px-2.5 py-1.5 border border-[#b45309] rounded-lg text-[#451a03] text-xs outline-none focus:ring-1 focus:ring-[#d97706] font-mono font-bold"
+                      className="flex-1 bg-[#fefce8] px-2.5 py-1.5 border border-[#b45309] rounded-lg text-[#451a03] text-[13px] outline-none focus:ring-1 focus:ring-[#d97706] font-mono font-bold"
                       placeholder="192.168.4.1"
                       disabled={wsStatus === 'connecting'}
                     />
                     <button
                       type="button"
                       onClick={() => setWsIp('192.168.4.1')}
-                      className="px-2 py-1.5 text-[10px] bg-[#fef3c7] hover:bg-[#fde68a] text-[#78350f] border border-[#b45309] rounded-lg font-bold font-pixel shrink-0"
+                      className="px-2 py-1.5 text-[13.5px] bg-[#fef3c7] hover:bg-[#fde68a] text-[#78350f] border border-[#b45309] rounded-lg font-bold font-pixel shrink-0"
                       title="Set IP ke 192.168.4.1 (Access Point Diorama)"
                     >
                       AP 4.1
@@ -654,14 +654,14 @@ export default function Workspace() {
                   <div className="flex justify-end gap-2 pt-1 font-pixel">
                     <button
                       onClick={() => setShowWsModal(false)}
-                      className="text-[11px] text-[#78716c] hover:text-[#1c1917] px-2 py-1 font-bold"
+                      className="text-[14.5px] text-[#78716c] hover:text-[#1c1917] px-2 py-1 font-bold"
                     >
                       Batal
                     </button>
                     <button
                       onClick={connectMaket}
                       disabled={wsStatus === 'connecting'}
-                      className="bg-[#c2410c] hover:bg-[#ea580c] text-white text-[11px] py-1 px-3 rounded-lg font-bold shadow-md border border-[#7c2d12]"
+                      className="bg-[#c2410c] hover:bg-[#ea580c] text-white text-[14.5px] py-1 px-3 rounded-lg font-bold shadow-md border border-[#7c2d12]"
                     >
                       Koneksikan
                     </button>
@@ -677,7 +677,7 @@ export default function Workspace() {
               retroAudio.playSelect();
               connectSerialPort();
             }}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[11px] font-bold transition-all shadow-sm ${serialStatus === 'connected'
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[14.5px] font-bold transition-all shadow-sm ${serialStatus === 'connected'
               ? 'bg-[#eff6ff] text-[#1d4ed8] border-[#3b82f6]'
               : serialStatus === 'connecting'
                 ? 'bg-[#fef3c7] text-[#b45309] border-[#d97706] animate-pulse'
@@ -696,7 +696,7 @@ export default function Workspace() {
               retroAudio.playSelect();
               toggleSimulation();
             }}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-md transition-all border-2 cursor-pointer ${isRunning
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-[13px] shadow-md transition-all border-2 cursor-pointer ${isRunning
               ? 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white border-red-800'
               : 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white border-emerald-800'
               }`}
@@ -734,7 +734,7 @@ export default function Workspace() {
           {/* TOP: Evacuation Game View (Kiri: Kanvas 3D Merapi, Kanan: Telemetri Digital Twin Sesuai SS 3 & SS 2) */}
           <section className={`${isMapExpanded ? 'h-[72vh]' : 'h-[44vh]'} w-full shrink-0 border-b-4 border-[#78350f] shadow-md relative z-10 bg-[#060913] transition-all duration-300 flex overflow-hidden`}>
             {/* Mobile Tab Switcher for Top Section */}
-            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[10px] font-pixel">
+            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[13.5px] font-pixel">
               <button
                 onClick={() => setTopTabMobile('canvas')}
                 className={`px-2 py-0.5 rounded font-bold transition-all ${
@@ -757,7 +757,7 @@ export default function Workspace() {
             <div id="tour-ws-canvas" className={`flex-1 h-full relative overflow-hidden ${topTabMobile === 'telemetry' ? 'hidden md:block' : 'block'}`}>
               <CanvasErrorBoundary>
                 <Suspense fallback={
-                  <div className="flex items-center justify-center h-full text-[#78350f] text-xs flex-col gap-2 font-pixel">
+                  <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel">
                     <span>MEMUAT PETA DIORAMA 3D MITIGASI BENCANA...</span>
                   </div>
                 }>
@@ -775,7 +775,7 @@ export default function Workspace() {
           {/* BOTTOM: Blockly Workspace & Right Activity Console */}
           <section className="flex-1 flex overflow-hidden relative isolate bg-[#fefce8] z-0">
             {/* Mobile Tab Switcher for Bottom Section */}
-            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[10px] font-pixel">
+            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[13.5px] font-pixel">
               <button
                 onClick={() => setBottomTabMobile('editor')}
                 className={`px-2 py-0.5 rounded font-bold transition-all ${

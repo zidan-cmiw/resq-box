@@ -5029,6 +5029,361 @@ Pengguna meminta implementasi menyeluruh logika block coding, efek visual kamera
 
 > **Catatan Tim**: Seluruh riwayat dan perubahan ini telah disinkronkan ke dalam berkas dokumentasi utama ([`README.md`](./README.md), [`PRD.md`](./PRD.md), [`design.md`](./design.md), [`walkthrough.md`](./walkthrough.md), [`Dashboard.md`](./Dashboard.md), dan [`progress_report.md`](./progress_report.md)).
 
+---
 
+### Bab 110: Audit Menyeluruh Proyek (1.200+ Berkas), Pemetaan Fitur Lintas Level, dan Inventarisasi 13 Temuan Kritis Keamanan–Dokumentasi
 
+#### 1. Latar Belakang & Aspirasi Pengguna
+1. **Permintaan Review Menyeluruh**: Pengguna meminta pembacaan lima dokumen inti (`Dashboard.md`, `progress_report.md`, `PRD.md`, `agent.md`, `Readme.md`) lalu review **seluruh** berkas proyek — dari fitur terbesar sampai terkecil.
+2. **Kebutuhan Validasi Nyata, Bukan Klaim Dokumen**: Pengguna ingin tahu kondisi sebenarnya kode terhadap klaim dokumentasi, karena beberapa dokumen sudah tertinggal dari arsitektur terkini.
 
+#### 2. Solusi & Rincian Implementasi
+1. **Pembacaan Dokumen Inti**:
+   - `Dashboard.md` (111 KB, MOC Obsidian), `PRD.md` (1.359 baris), `progress_report.md` (5.034 baris, 259 heading), `Readme.md`, `agent.md`, `update.md`, `design.md` (834 baris).
+2. **Pemetaan Skala Proyek Terukur**:
+   - 123 berkas sumber / **91.016 baris** kode; dokumen `.md` ±1,5 MB; aset publik 10,23 MB; backend Laravel 36 berkas (di luar `vendor/` 14.732 berkas).
+   - Berkas terbesar: `Level2/engine/renderer.ts` (10.975 baris), `Level2/DiscoveryModal.tsx` (7.038), `EvacuationGame/Merapi3DScene.tsx` (6.056).
+3. **Audit Paralel Lima Sub-Sistem**: Level 1 (EarthDive), Level 2 (Disaster Analyst), Level 3 + Blockly + Digital Twin, Auth & Data Layer, serta Infrastruktur + Hardware + Higienis. Setiap temuan diverifikasi ulang secara manual sebelum dilaporkan.
+4. **Verifikasi Build & Runtime**: `tsc -b` → 0 error; `vite build` → sukses 2,58 detik, PWA 33 entri precache (4.761,97 KiB).
+5. **13 Temuan Terverifikasi** (S1–S9 keamanan + 3 kelompok drift dokumentasi + masalah arsitektur):
+   - **S1** 11 RPC `SECURITY DEFINER` di-`GRANT` ke `anon` tanpa cek otorisasi → siapa pun pemegang anon key bisa menghapus seluruh kelas/siswa dan memalsukan nilai.
+   - **S2** RLS `USING (true)` membocorkan hash bcrypt (`user_accounts`) dan kolom password plaintext (`students`).
+   - **S3** Bug cast UUID: `submitLevelProgress` mengirim `id: 'sub-…'` tetapi RPC melakukan `(p_data->>'id')::UUID` → **seluruh nilai gagal tersimpan**, senyap karena dibungkus `catch {}` di 9 tempat.
+   - **S4** Ganti password siswa menulis plaintext ke `user_accounts`/`students`, melewati `crypt()`, ditolak RLS.
+   - **S5** Ikon PWA (`pwa-192x192.png`, `pwa-512x512.png`) dirujuk manifest tetapi **tidak ada** di repo → install PWA rusak. `PWABadge.tsx` juga tidak pernah di-mount padahal `registerType: 'prompt'`.
+   - **S6** SSID di UI (`DIORAMA_RESQBOX`) berbeda dari yang dipancarkan firmware (`DIORAMA_ESP32`).
+   - **S7** Jalur sensor digital twin mati: web mem-parse `SENSOR:` tetapi tidak satu pun firmware memancarkannya.
+   - **S8** Standar "Zero OS Emoji" tidak terpenuhi: 90 emoji astral di `src`.
+   - **S9** Bypass penilaian: kostum gratis (tidak memotong kristal), gate kostum bisa dilewati, gerbang Level 3 terbuka di 85 poin.
+6. **Drift Dokumentasi vs Kode** (paling mencolok): Readme menyebut Level 2 = 3 zona tektonik (asli: **6 area mitigasi**), 9 kristal (asli: **21**), 3 lencana (asli: **6**), 22 misi (asli: **20**) dan `LAPORAN_PROYEK.md` tidak ada.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. Build hijau (TypeScript + Vite + PWA) sebelum dan sesudah audit.
+2. `pglast` (parser PostgreSQL asli, `libpg_query`) dipasang untuk memvalidasi SQL — menjadi alat verifikasi tetap sejak bab ini.
+
+---
+
+### Bab 111: Pengerasan Keamanan Backend — Migrasi ke Supabase Auth, RLS Ketat per-Pemilik, Penutupan 11 RPC Berbahaya, dan Penghapusan Kredensial Plaintext
+
+#### 1. Latar Belakang & Aspirasi Pengguna
+1. **Permintaan Pengerasan Menyeluruh**: Pengguna meminta backend diamankan dari segala sisi — relasi database, keamanan akun, dan aturan eksplisit: *"user #1 hanya bisa lihat miliknya sendiri, user lain tidak bisa (kecuali admin)"*.
+2. **Kesiapan Skala**: Simulasi 1000 pemain dengan formula `estimasi × 10–1000`, dan permintaan agar aplikasi **tidak terpaku pada satu angka estimasi**.
+3. **Keputusan Arsitektur Pengguna**: Memilih **Supabase Auth + JWT claims + RLS ketat**; belum memiliki service role key; target kapasitas >1000 pemain bersamaan.
+
+#### 2. Solusi & Rincian Implementasi
+
+**2.1 Arsitektur Keamanan Baru**
+```
+Browser (anon key + JWT milik sendiri)
+  ├─ Supabase Auth → auth.users (password bcrypt, dikelola server)
+  │                    │ trigger
+  │                    ▼
+  │                 profiles (identitas + peran + kelas + level)
+  └─ PostgREST/RPC → RLS memfilter setiap baris berdasarkan auth.uid()
+```
+
+**2.2 Migrasi 01 — Skema Aman + RLS Ketat**
+- Tabel inti baru: `profiles` (FK ke `auth.users`), `classrooms` (PK `code`), `level_submissions` (FK `student_id` → `profiles`).
+- **8 policy per-pemilik**: `profiles_select_owner` (`can_read_student(id)`), `profiles_update_owner` (`id = auth.uid()`), `classrooms_select_member` (`is_class_member(code) OR is_admin()`), `submissions_insert_own` (`student_id = auth.uid()`), dan lainnya.
+- **Fungsi bantu otorisasi** (`SECURITY DEFINER`): `jwt_role()`, `is_teacher()`, `is_admin()`, `is_class_member()`, `can_read_student()`.
+- **Trigger `guard_profile_privileges`**: mengunci kolom `role`, `is_admin`, `classroom_code`, `username`, `unlocked_level` dari perubahan klien — siswa tidak bisa menaikkan level atau mengangkat diri jadi admin.
+- **Trigger `handle_new_auth_user`**: membuat baris profil otomatis saat akun Auth baru muncul; peran **hanya** dibaca dari `app_metadata` (tidak dapat dipalsukan klien).
+- **Custom Access Token Hook**: menitipkan `role` & `classroom_code` ke JWT agar policy tidak perlu membaca tabel setiap kali.
+- **View `students`** dengan `security_invoker = true` sebagai pengganti kompatibilitas tabel lama, kolom `password` selalu `NULL`.
+- **Penutupan tabel lama**: `REVOKE ALL ON public.user_accounts FROM anon, authenticated` — hash bcrypt tidak lagi dapat dibaca.
+
+**2.3 Migrasi 02 — RPC Aman + Penutupan Lubang Otorisasi**
+- **11 RPC lama dihapus** (`verify_login`, `register_student_account`, `register_teacher_account`, `create_student_by_teacher`, `rpc_upsert_student`, `rpc_insert_submission`, `rpc_create_classroom`, `rpc_update_classroom_name`, `rpc_delete_classroom`, `rpc_delete_student`, `rpc_update_teacher_profile`).
+- **RPC baru ber-otorisasi**: `get_my_profile()`, `update_my_profile(jsonb)`, `get_my_progress()`, `submit_level_result(int,int,jsonb,bool,int)`, `list_my_classrooms()`, `create_my_classroom()`, `rename_my_classroom()`, `delete_my_classroom()`, `delete_my_student(uuid)`, `list_class_students()`, `list_class_submissions()`, `update_my_teacher_profile()`.
+- **Batas laju** lewat tabel `rate_limits` + `check_rate_limit()` — 8 bucket: `username_available`, `class_code_info`, `legacy_check`, `update_profile`, `submit_result`, `create_classroom`, `delete_classroom`, `delete_student`.
+- **Nilai dihitung server**: `official_level_score(level, missions)` menjadi satu-satunya sumber kebenaran; skor akhir = `GREATEST(nilai_resmi, skor_klien)` sehingga klien tidak bisa melebihi capaian yang dilaporkannya.
+- **`unlocked_level` naik hanya bila nilai resmi 100.**
+- Hanya **3 fungsi publik** yang boleh dipanggil `anon`: `username_available`, `class_code_info`, `legacy_account_exists`.
+
+**2.4 Migrasi 03 — Kontrol Peran Saat Signup**
+- Trigger signup diperketat: pendaftaran mandiri **hanya bisa menjadi `student`**; kode kelas divalidasi terhadap tabel `classrooms`.
+- `teacher_create_student()` — satu-satunya jalur guru membuat akun siswa, dengan verifikasi kepemilikan kelas.
+- Fungsi admin (`admin_promote_to_admin`, `admin_set_unlocked_level`, `admin_purge_legacy_password_hashes`) **tidak diberikan** ke `anon`/`authenticated`.
+- Kelas awal `RESQ-8A` & `RESQ-8B` di-seed.
+
+**2.5 Klien Ditulis Ulang ([`src/utils/supabaseClient.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/supabaseClient.ts))**
+- Login lewat `supabase.auth.signInWithPassword` dengan email sintetis `<username>@resqbox.local`.
+- `noteError()` menggantikan pola `catch {}` — **24 titik error kini dilaporkan**, tidak lagi senyap.
+- `getLocalUsers()`/`saveLocalUsers()` menjadi no-op beralasan: klien tidak lagi menyimpan kredensial.
+- Koalesensi tulis: progres digabung per level dalam jendela 5 detik, dikuras saat tab disembunyikan/ditutup (`flushPendingProgress()`).
+
+**2.6 Perbaikan Klien Terkait**
+- [`src/app/Profile/index.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Profile/index.tsx): ganti password memakai `supabase.auth.updateUser()` (bcrypt di server), bukan tulis plaintext.
+- [`src/app/TeacherDashboard/index.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/TeacherDashboard/index.tsx): berhenti menampilkan password siswa.
+- [`src/store/teacherStore.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/store/teacherStore.ts): `unlockLevel()` diberi penjaga `if (newLevel === state.unlockedLevel) return state;` untuk menghapus *write amplification*.
+- [`src/engine/codeSanitizer.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/engine/codeSanitizer.ts) tetap menjadi lapisan kedua; eksekusi blok memakai `AsyncFunction` dengan `api` terbatas.
+
+**2.7 Berkas Pendukung Baru**
+- `supabase/README.md` — runbook pemasangan, penjelasan service key, checklist keamanan.
+- `supabase/verify_security.sql` — pemeriksaan otomatis (akhirnya menjadi satu tabel hasil, 11–13 baris).
+- `supabase/test_isolation.mjs` — uji perilaku: membuat 2 akun lalu **mencoba menyerang** (saling membaca data, mengangkat diri jadi admin).
+- `supabase/validate_sql.py` + `validate_plpgsql_vars.py` — validasi sintaks & variabel PL/pgSQL.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. `pglast`: 147 pernyataan SQL lolos parse.
+2. `tsc -b` → 0 error; `vite build` → sukses.
+3. Setelah migrasi dijalankan di Supabase: **11/11 pemeriksaan `verify_security.sql` berstatus `AMAN`** — termasuk `P1 policy longgar = 0` dan `P4 user_accounts = false` (hash password tidak terbaca anon).
+
+---
+
+### Bab 112: Debugging Rantai Migrasi Database (7 Iterasi) — Benturan Skema v2, Urutan DROP/ROLLBACK, Variabel PL/pgSQL, dan Bug Hak Eksekusi Fungsi Bantu RLS
+
+#### 1. Latar Belakang & Aspirasi Pengguna
+1. **Migrasi Berhenti di Tengah**: Pengguna menjalankan migrasi dan mendapat tujuh error berurutan yang harus dilacak satu per satu — setiap perbaikan membuka masalah berikutnya.
+
+#### 2. Solusi & Rincian Implementasi
+
+**2.1 Error 1 — `42883: function public.can_read_student(character varying) does not exist`**
+- **Akar masalah**: view `students` lama (dari tabel v2 yang kolom `id`-nya `VARCHAR`) tidak terlepas. Blok pembersihan saya melepas **tabel lebih dulu** dengan `CASCADE` — dan `DROP TABLE ... CASCADE` ikut menghapus view, sehingga pemeriksaan view sesudahnya bernilai `false` dan view lama tidak pernah terlepas eksplisit. `CREATE OR REPLACE VIEW` lalu memakai ulang definisi lama.
+- **Perbaikan**: urutan dibalik — **view dilepas sebelum tabel**, memakai iterasi `pg_class` (bukan `information_schema` yang tidak menangkap semua bentuk), ditambah `DROP VIEW` sebagai sabuk pengaman, dan `id::UUID` eksplisit.
+
+**2.2 Error 2 — `42P01: relation "public.profiles" does not exist`**
+- **Temuan penting**: SQL Editor Supabase menjalankan satu script dalam **satu transaksi**. Jadi error di langkah terakhir **me-rollback seluruh script** — tabel yang tampak "sudah dibuat" sebenarnya tidak ada.
+- **Pelajaran**: asumsi saya sebelumnya ("errornya di akhir, jadi tabelnya sudah jadi") salah. Diagnosa dikoreksi.
+
+**2.3 Error 3 — `42601: loop variable of FOREACH must be a known variable`**
+- **Akar masalah**: `FOREACH sig IN ARRAY sigs` tetapi `sig` tidak dideklarasikan (saya mendeklarasikan `r RECORD` yang tidak terpakai).
+- **Perbaikan**: deklarasi diperbaiki. **Catatan penting**: `pglast` **tidak dapat menangkap kelas bug ini** karena ia memvalidasi sintaks, bukan resolusi variabel PL/pgSQL. Karena itu dibuat `supabase/validate_plpgsql_vars.py`.
+
+**2.4 Error 4 — Migrasi Tidak Idempoten**
+- `CREATE POLICY` gagal bila policy sudah ada — mengulang migrasi 01 akan error. Ditambahkan `DROP POLICY IF EXISTS` eksplisit sebelum setiap `CREATE POLICY`.
+
+**2.5 Error 5 — `REVOKE` di Dalam Loop Tidak Bekerja**
+- Blok `EXECUTE format('REVOKE ALL ON FUNCTION %s FROM PUBLIC', sig)` di dalam `FOREACH` **diam-diam tidak berpengaruh**; 20 fungsi tetap terbuka via peran `PUBLIC`. Sebaliknya `REVOKE` eksplisit bekerja.
+- **Perbaikan**: `REVOKE ALL ON ALL FUNCTIONS IN SCHEMA public` (jaring pengaman yang menangkap semua fungsi, termasuk yang baru) lalu `GRANT` ulang hanya untuk yang seharusnya. Diperkuat lagi di Bab 117.
+
+**2.6 Migrasi 04 — Penutupan Hak Fungsi + Bersih Tabel Arsip**
+- **Temuan**: 3 policy longgar (`anon_select_*`) ternyata **ikut berpindah** ke tabel arsip `*_v2_legacy` saat `ALTER TABLE ... RENAME`. Karena `students_v2_legacy` masih memuat password plaintext, tabel arsip **harus dihapus**, bukan sekadar ditutup.
+
+**2.7 Migrasi 05 — Aktifkan Realtime untuk Tabel Baru**
+- **Gejala**: siswa baru tidak muncul di Posko Guru walau halaman di-refresh.
+- **Akar masalah**: skema lama mendaftarkan `students` ke publikasi `supabase_realtime`, tetapi di skema baru `students` adalah **VIEW** — dan Realtime tidak dapat memantau view (tidak punya primary key, tidak menerima event WAL). Penggantinya `profiles` **tidak pernah didaftarkan**.
+- **Perbaikan**: `profiles`, `level_submissions`, `classrooms` didaftarkan; `students` dan `user_accounts` dilepas dari publikasi.
+
+**2.8 Migrasi 06 — Perbaiki Trigger Profil (Kelas Selalu NULL)**
+- **Gejala**: **setiap** siswa yang mendaftar punya `classroom_code = NULL` sehingga tidak pernah muncul di Posko Guru.
+- **Bukti dari metadata**: `zidan@` → `app_kelas=(kosong)`, `meta_kelas=RESQ-8A`. Kode kelas **dikirim** aplikasi, tetapi trigger membacanya dari `app_metadata` yang memang tidak diisi.
+- **Akar masalah**: Supabase menulis `raw_user_meta_data` **setelah** baris `auth.users` dibuat, jadi trigger `AFTER INSERT` sudah berjalan dengan metadata masih kosong.
+- **Error antara**: `42703: column "user_metadata" of relation "users" does not exist` — `auth.users` hanya punya `raw_app_meta_data` dan `raw_user_meta_data`. Perbaikan: rujukan dihapus, dan daftar kolom pada `AFTER UPDATE OF ...` kini **diperiksa lewat `information_schema`** agar tidak bergantung asumsi.
+- **Perbaikan akhir**: trigger dijalankan pada **INSERT dan UPDATE**, membaca dua sumber, **hanya mengisi kolom yang kosong**, dengan penjaga anti-boros (berhenti lebih awal bila profil sudah lengkap, karena Supabase memperbarui `updated_at` setiap login).
+
+**2.9 Migrasi 07 — Bug Paling Serius: Pengguna Login Tidak Bisa Membaca Datanya Sendiri**
+- **Ditemukan oleh `test_isolation.mjs`**, bukan oleh verifikasi SQL: `GET /rest/v1/profiles` → **HTTP 403** `permission denied for function can_read_student`.
+- **Akar masalah**: migrasi 04 mencabut hak eksekusi fungsi bantu dari `authenticated`. **Asumsi saya salah**: PostgreSQL mengevaluasi ekspresi policy `USING (...)` sebagai **PERAN YANG MEMINTA** (`authenticated`), bukan sebagai pemilik tabel. Jadi fungsi yang dipanggil di dalam policy **wajib** boleh dieksekusi peran tersebut.
+- **Dampak**: Posko Guru kosong, halaman Profil gagal memuat — data benar, hanya tidak terbaca.
+- **Perbaikan**: `GRANT EXECUTE` untuk `can_read_student`, `is_class_member`, `is_teacher`, `is_admin`, `jwt_role`, `official_level_score` kepada `authenticated`; `anon` tetap ditolak. Keamanan tidak melemah karena kelima fungsi memakai `auth.uid()` di dalamnya.
+- **Pencegahan**: `verify_security.sql` ditambah **P4b** (fungsi bantu boleh dipakai `authenticated`, target 6) dan **P4c** (tertutup untuk `anon`, target 0).
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. `supabase/test_isolation.mjs` → **9/10 lolos** sebelum perbaikan (menemukan bug 403), diekspektasikan **10/10** setelah migrasi 07.
+2. `verify_security.sql` → 11 baris, semua `AMAN` sebelum bug 403 ditemukan; kini 13 baris.
+3. Seluruh 13 berkas SQL lolos `pglast`; checker variabel PL/pgSQL bersih.
+4. **Pelajaran metodologis**: verifikasi konfigurasi (query SQL) **tidak cukup** — harus ada uji perilaku. Tiga bug (Realtime, trigger profil, hak fungsi RLS) hanya tertangkap oleh pengujian terhadap database hidup.
+
+---
+
+### Bab 113: Audit Kapasitas Berparameter (>1000 Pemain), Optimasi Aset 10,23 MB → 4,69 MB, dan Kompresi Model 3D
+
+#### 1. Latar Belakang & Aspirasi Pengguna
+1. **Skala Tanpa Terpaku Estimasi**: *"Estimasi player real dikali 10-1000. Aplikasi harus siap nampung 10×10 sampai 10×1000 orang."*
+2. **Kesiapan Operasional**: Pengguna meminta simulasi 1000 pemain dan rencana scaling, bukan satu angka mati.
+
+#### 2. Solusi & Rincian Implementasi
+
+**2.1 Model Kapasitas Berparameter** ([`capacity/README.md`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/capacity/README.md), [`capacity/assets.md`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/capacity/assets.md), [`capacity/loadtest.js`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/capacity/loadtest.js))
+- Rumus: `U_req = E × M` (M ∈ [10, 1000]); `λ = U_req × C × R / 60`; `λ_peak = λ × P`; `ΔStorage = Sess_mo × D_writes × b_row × k_index`.
+- Tabel skenario E = 10 … 1.000 dengan pengali ×10 / ×100 / ×1000.
+- `loadtest.js`: uji beban Node.js tanpa dependensi baru, aman secara default (butuh `RESQ_ALLOW_HIGH_VU=1` untuk >100 VU), mendukung `RESQ_DRY_RUN=1`.
+- **Tiga titik jebol teridentifikasi**: (1) **egress aset** — bukan API; (2) ukuran database; (3) koneksi Realtime.
+
+**2.2 Optimasi Aset**
+| Tindakan | Hasil |
+|---|---|
+Hapus `public/frames/` (13 berkas, **0 rujukan kode**) | −3,53 MB |
+Hapus `peta_lapisan_bumi.jpg`, `radar_bumi_lengkap*` (0 rujukan) | −1,59 MB |
+Konversi 2 latar ke WebP (kualitas 82, method 6) | 1,46 MB → **224 KB (−85%)** |
+Hapus duplikat byte-identik (`images.jpeg`, `images (1).jpg`) | −111 KB |
+`logo.png` (ternyata **JPEG** 1024×1024, 368 KB) → `logo.jpg` + favicon 64px + ikon PWA | −368 KB, favicon −99% |
+**Total: `public/` 10,23 MB → 4,69 MB** |
+
+- **Ikon PWA yang hilang dibuat** dari `logo.png`: `pwa-192x192.png` (29.207 B), `pwa-512x512.png` (171.391 B), `apple-touch-icon.png`, `favicon.png`.
+- **Kompresi model 3D**: `terrain-688.stl` (3.165.784 B) dipra-kompresi menjadi `terrain-688.stl.gz` (**966.231 B, −69,5%**); [`src/app/EvacuationGame/Merapi3DScene.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/EvacuationGame/Merapi3DScene.tsx) memuat `.gz` lebih dulu lalu mendekompresi dengan `DecompressionStream`, **jatuh kembali** ke `.stl` mentah bila tidak didukung. Progres unduhan tetap dilaporkan dari `content-length`.
+
+**2.3 Precache Selektif**
+- `globIgnores` untuk `blockly`, `Workspace`, `EvacuationCanvas`, `Level2`, `Level3` + `runtimeCaching` pengganti → modul berat di-cache saat **pertama dipakai**, bukan diunduh semua di awal.
+- `webp` ditambahkan ke `globPatterns` — sebelumnya latar WebP **tidak ter-precache sama sekali**, sehingga janji luring PRD tidak terpenuhi.
+- **Precache: 4.760 KiB → 2.287 KiB (−52%)**.
+
+**2.4 Cache-Control di Vercel** ([`vercel.json`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/vercel.json))
+- `/assets/*` → `immutable` 1 tahun (berkas ber-hash); ikon 7 hari; gambar & `.stl(.gz)` 30 hari; `sw.js`/`index.html` → `must-revalidate`.
+- **Error antara**: `Invalid request: headers[0] should NOT have additional property 'comment'` — skema Vercel hanya mengizinkan `source`, `headers`, `has`, `missing`. Penjelasan dipindahkan ke `capacity/assets.md` §3.1.
+
+**2.5 Database Berhenti Tumbuh Tanpa Batas**
+- `rpc_insert_submission` lama adalah `INSERT` murni tanpa `ON CONFLICT`, dipanggil ±46× per pemain per sesi, tidak pernah di-`UPDATE`. Skema baru menyimpan **satu baris per (siswa, level)**.
+- 7 indeks skala: `idx_profiles_classroom`, `idx_submissions_student_level`, `idx_submissions_classroom_level`, `idx_submissions_completed`, `idx_classrooms_teacher`, `idx_profiles_role`, `idx_profiles_classroom_lower`.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. Unduhan dingin: **~6,3 MiB → ~2,8 MiB**; kunjungan ulang (aset ber-`Cache-Control`) **~0**.
+2. Unduhan Level 3 (STL): **3,17 MB → 966 KB**.
+3. Precache final: **32 entri / 2.315,66 KiB**; tanpa entri duplikat.
+4. `loadtest.js` diuji `--check`, `--help`, `RESQ_DRY_RUN=1`, semua jalur penjaga, dan self-test offline — **belum dijalankan terhadap layanan hidup**.
+
+---
+
+### Bab 114: Kesiapan Produksi — Observabilitas, Pelaporan Error dengan Penyuntingan Data Pribadi, Mode Hemat Data, Kebijakan Privasi, CI, dan 29 Uji Otomatis
+
+#### 1. Latar Belakang & Aspirasi Pengguna
+1. **Perubahan Kerangka**: Pengguna menegaskan ini **bukan sekadar untuk lomba** — outputnya media pembelajaran yang akan dipakai anak SMP di seluruh Indonesia. Karena itu web harus *"bener-bener aman"*, tidak ngelag, dan nyaman dipakai banyak orang.
+2. **Pertanyaan VPS vs PaaS** dan permintaan daftar kekurangan menyeluruh.
+
+#### 2. Solusi & Rincian Implementasi
+
+**2.1 Rekomendasi Deploy**
+- **PaaS, bukan VPS**: frontend adalah berkas statis dan database/auth/realtime ditangani Supabase — tidak ada beban server yang perlu dirawat. VPS hanya menambah pekerjaan (update OS, Nginx, SSL, deployment, uptime) tanpa manfaat.
+- **Tetap Vercel** untuk sekarang; **Cloudflare Pages + R2** bila egress menjadi masalah (egress R2 gratis).
+- **Risiko konkret Supabase Free**: proyek **dijeda setelah 1 minggu tanpa aktivitas** — untuk pemakaian sekolah berkala, aplikasi akan mati tanpa sebab yang jelas. Rekomendasi: naik ke Pro.
+
+**2.2 Lapisan Observabilitas** ([`src/utils/monitoring.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/monitoring.ts))
+- **Tanpa paket baru**: mengirim ke **Sentry** lewat Store Endpoint (DSN saja yang diisi) atau endpoint HTTP sendiri. Bila keduanya kosong → no-op, aplikasi tetap normal.
+- **Web Vitals** (LCP, CLS, INP, TTFB, FCP) dengan `PerformanceObserver`, disampling `VITE_MONITORING_SAMPLE` (default 10%).
+- Deduplikasi error, `keepalive` agar laporan terakhir tidak hilang saat tab ditutup, konteks rute & peran, informasi perangkat (`deviceMemory`, `hardwareConcurrency`, `effectiveType`, `saveData`) — berguna untuk melacak perangkat kelas bawah.
+
+**2.3 Penyuntingan Data Pribadi** ([`src/utils/redact.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/redact.ts))
+- Dibuang sebelum dikirim: **email, UUID, JWT, nomor telepon Indonesia, dan kunci berisi kredensial** (password/token/secret/apikey/otp/pin).
+- Dipisah ke modul tanpa ketergantungan agar dapat diuji otomatis.
+
+**2.4 Error Boundary Seluruh Aplikasi** ([`src/components/AppErrorBoundary.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/components/AppErrorBoundary.tsx))
+- Sebelumnya hanya Level 2 & Workspace; jika Level 1 atau Dashboard error, **seluruh aplikasi menjadi layar putih**.
+- Kini dipasang di **luar** `BrowserRouter` & `Suspense` sehingga menangkap juga kegagalan memuat chunk rute.
+- Membedakan error **yang bisa dipulihkan** (`ChunkLoadError`, jaringan) dari gangguan teknis, dengan pesan berbeda dan tombol Muat Ulang / Coba Lagi / Menu Utama.
+
+**2.5 Mode Hemat Data** ([`src/utils/dataSaver.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/dataSaver.ts))
+- Tiga mode: `auto` (mengikuti `connection.saveData` dan `effectiveType` 2G/3G), `on`, `off`. Sakelar di halaman Profil.
+- Saat aktif, **scene 3D tidak dimuat sama sekali** — bukan hanya disembunyikan ([`EvacuationCanvas.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/EvacuationGame/EvacuationCanvas.tsx)). Materi pelajaran tetap lengkap.
+- Mengikuti perubahan jaringan (`connection` change, `online`).
+
+**2.6 Kebijakan Privasi** ([`src/app/Privacy/index.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Privacy/index.tsx))
+- Rute **publik** `/privacy` (di luar blok terproteksi) — dapat dibuka tanpa login agar sekolah dan orang tua dapat memeriksa.
+- 8 bagian: data yang disimpan, tujuannya, siapa yang dapat mengakses, masa simpan, hak siswa/orang tua/sekolah, keamanan, **bagian khusus data anak**, dan kontak.
+
+**2.7 CI + 29 Uji Otomatis**
+- [`.github/workflows/ci.yml`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/.github/workflows/ci.yml): typecheck, build, uji unit, validasi SQL — **memblokir**; ESLint **tidak memblokir** (masih ada ±260 temuan lama).
+- [`src/utils/__tests__/redact.test.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/__tests__/redact.test.ts) — **19 uji** memastikan data pribadi benar-benar hilang.
+- [`src/utils/__tests__/dataSaver.test.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/__tests__/dataSaver.test.ts) — **10 uji** pemilihan mode.
+- `package.json`: `name` `temp_app` → `resq-box`, `engines.node >= 20`, script `typecheck`/`test`/`test:sql`/`test:isolation`.
+- **Perbaikan penting**: `package-lock.json` masih bernama `temp_app` — `npm ci` di CI akan gagal. Disinkronkan.
+
+**2.8 Runbook Operasional** ([`docs/RUNBOOK.md`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/docs/RUNBOOK.md))
+- 4 metrik wajib dipantau dengan ambang peringatan/kritis: egress, ukuran DB, koneksi Realtime, p95 latensi RPC.
+- Prosedur tanggap insiden: aplikasi tidak bisa dibuka, layar putih, kunci bocor, akun disalahgunakan, spam pendaftaran, nilai tidak muncul.
+- Prosedur backup + **uji restore** (backup yang belum diuji restore bukan backup).
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. **29/29 uji lolos** di mesin pengguna (Node v24.13.0, npm 11.6.2).
+2. `npm run typecheck`, `test`, `test:sql`, `build` — keempatnya berfungsi di mesin pengguna; `pglast` dipasang ke Python pengguna.
+3. `test_isolation.mjs` dijalankan terhadap Supabase hidup → menemukan bug 403 (Bab 112, migrasi 07).
+
+---
+
+### Bab 115: Pembesaran Seluruh Tipografi (1.731 Penggantian) dan Penghapusan 95 Emoji Bawaan Sistem Operasi
+
+#### 1. Latar Belakang & Aspirasi Pengguna
+1. **Keluhan Keterbacaan**: *"Font yang kecil-kecil itu kamu gedein ya… contohnya yang di privacy tulisannya kecil banget, sama yang di Posko Guru saat mau lihat detail & rapor. Digedein semuanya, bukan cuma di situ."*
+2. **Standar Zero OS Emoji**: *"Semua emote yang ada di web ini kamu hapus, kecuali yang style-nya pixel."*
+
+#### 2. Solusi & Rincian Implementasi
+
+**2.1 Pemetaan Tipografi** ([`scripts/scale_fonts.py`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/scripts/scale_fonts.py))
+- Ditemukan **651 kemunculan `text-[Npx]` dengan N < 12px**, termasuk 12× **7px** dan 13× **7.5px**.
+- Pemetaan menjaga urutan (hierarki visual tidak rusak), minimum akhir **12px**:
+  `7/7.5/8px → 12px` · `8.5/9px → 12.5px` · `9.5px → 13px` · `10px → 13.5px` · `11px → 14.5px` · `12px → 15px` · `17px → 19px` · `22px → 24px`.
+- **Celah yang ditemukan**: 73 elemen memakai pola `text-[10px] sm:text-xs` — di layar besar Tailwind **menimpanya menjadi 12px** (lebih kecil). Karena itu `text-xs → 13px` dan `text-sm → 15px` juga dinaikkan.
+- **Total: 1.731 penggantian di 57 berkas.** Token tipografi di [`src/index.css`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/index.css) dinaikkan seiring (`--text-label-sm` 11px → 13px, dst) beserta `line-height` agar tidak tumpang tindih.
+
+**2.2 Kebijakan Emoji** ([`scripts/remove_emoji.py`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/scripts/remove_emoji.py))
+- **Dihapus — emoji berwarna** (tampil berbeda antar platform): 🔍 🔒 🌋 📟 💥 ⚡ 🏔 🌊 🟡 🔴 🎥 🚨 🚀 🗑 🏆 (**95 kemunculan**).
+- **Dihapus — pemaksa tampilan emoji**: U+FE0F dan U+20E3, sehingga `⚠️` kembali menjadi `⚠` monokrom.
+- **Dipertahankan — simbol teks monokrom**: `➔ ★ ✓ ✕ ▶ ◀ ⚠ ⯇ ➜ ✦ ✗ ⏸ ⏹ ⏳`. Karakter ini **bukan emoji OS**: warnanya mengikuti `color` font (cocok gaya pixel), seragam di semua platform, dan berfungsi sebagai penanda navigasi.
+- **Kesalahan yang ditemukan & diperbaiki saat mengerjakan**: pembersih spasi awal merusak **indentasi kode** dan mengubah `? 'A' : 'B'` menjadi `?'A': 'B'`. Perapian dibatasi hanya pada **teks yang terlihat pengguna** (isi string & teks JSX), baris diperiksa satu per satu.
+- **Bug ikon**: di `ConsoleOutput.tsx`, ikon `system: '🚀'` menjadi string kosong setelah dihapus — diganti `●` (U+25CF) dan perataan tabel objeknya dipulihkan.
+
+**2.3 Temuan: 382 Label Diagram SVG Belum Dibesarkan**
+- Diagram ilmiah memakai elemen **SVG `<text>` dengan atribut `fontSize`** (bukan kelas Tailwind): 60 di antaranya **5–7px** (tidak terbaca), 177 di **8–9.5px**, 145 di 10px ke atas. Terbanyak di `DiscoveryModal.tsx` Level 2 (163) dan Level 1 (148).
+- **Belum diubah** karena teks SVG berada pada **koordinat x/y tetap** di dalam `viewBox`; memperbesar font tanpa mengubah geometri akan membuat label **tumpang tindih atau keluar kotak**.
+- **Dua opsi yang disiapkan**: (A) skalakan seluruh `viewBox` SVG sehingga diagram dan label membesar proporsional; (B) tambahkan tombol zoom per diagram.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. **Teks HTML < 12px: 0** (dari 651).
+2. **Emoji berwarna: 0** (dari 90).
+3. `tsc -b` → 0 error; **29/29 uji lolos**; seluruh berkas SQL lolos; `vite build` → sukses 2,10 detik, precache 32 entri / 2.315,66 KiB.
+4. CSS hasil build terverifikasi memuat kelas baru (`text-\[13\.5px\]{font-size:13.5px}`).
+5. **Belum diverifikasi di peramban** — 7 kandidat risiko teks terpotong (`h-[Npx]` + `overflow-hidden`) sudah diidentifikasi untuk pemeriksaan manual.
+
+---
+
+### Bab 116: Revisi Dokumen Tech Stack & Rencana Deploy — Koreksi 8 Klaim Usang dan Penambahan Peringatan D1 Tanpa Row Level Security
+
+#### 1. Latar Belakang & Aspirasi Pengguna
+1. **Audit Dokumen yang Diminta**: Pengguna meminta audit `tech stack rill + deploy.docx` dan menyatakan rencana deploy-nya masih sementara di Vercel.
+2. **Instruksi**: *"Coba kamu perbaiki yang ini"* — memperbaiki seluruh temuan pada dokumen tersebut.
+
+#### 2. Solusi & Rincian Implementasi
+1. **Koreksi Tabel 1 — Tech Stack** (8 dari 19 baris tidak akurat):
+   - "6 store" → **4 store** yang benar-benar dipakai (`teacherStore`, `runtimeStore`, `missionStore`, `workspaceStore`); `authStore` dan `simulatorStore` **tidak diimpor apa pun**.
+   - Diagram Editor `@xyflow/react` → ditandai **MATI** (hanya diimpor `simulatorStore.ts`, paket ±234 KB nganggur).
+   - Buku Digital `page-flip`/`react-pageflip` → ditandai **MATI**.
+   - Ikon "zero emoji" → ditulis sebagai **target yang belum terpenuhi** disertai angka sebenarnya.
+   - "Supabase (pgcrypto RPC + Realtime)" → diperbarui menjadi **Supabase Auth + RLS ketat**.
+   - "STL 3,1 MB + 12 JPG/PNG" → **15 berkas / 4,69 MB**, STL diunduh **966 KB** (gzip).
+   - Game engine + `pathfinder A*` → ditandai **tidak terpakai** (yang berjalan `Merapi3DScene`).
+   - Ditambahkan kolom **Status** (AKTIF / MATI) dan catatan sensor firmware belum mengirim `SENSOR:`.
+2. **Bagian baru 3 — Peringatan D1 tanpa RLS**: kelima policy yang menegakkan isolasi data dicantumkan, disertai penjelasan bahwa pindah ke D1 berarti menulis ulang otorisasi di **setiap endpoint** — satu yang lupa akan mengekspos seluruh data kelas. Disebutkan pula yang hilang: `pgcrypto`/`crypt()`, FK & CHECK constraint kompleks, transaksi, dan `auth.uid()`.
+3. **Bagian baru 4 — Urutan migrasi bertahap** (5 fase dengan tingkat risiko): R2 aset → Worker + Static Assets → Durable Object → **porting otorisasi (risiko TINGGI)** → D1 + auth sendiri.
+4. **Bagian baru 5 — Tabel perbaikan dokumen** agar jejak koreksi terlihat.
+5. **Bug XML yang ditemukan & diperbaiki saat pengerjaan**: lebar kolom tabel tidak berlaku karena (a) nilai **EMU** ditulis ke atribut yang mengharapkan **twips** (`tblW = 5303520 dxa` setara 116 inci → tidak valid dan diabaikan), dan (b) urutan elemen `tblLayout`/`tblW` salah — diletakkan setelah `tblLook`, padahal skema OOXML mengharapkan sebelumnya. Elemen yang salah urutan **diabaikan tanpa peringatan**. Diperbaiki dengan konversi EMU→twips (÷635) dan penyisipan sesuai urutan schema.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. Pemeriksa struktural DOCX → `verdict: pass`; 4 tabel, 179 paragraf.
+2. Geometri: setiap tabel **5,80 inci** di area cetak **6,27 inci**; `tcW` cocok dengan `tblGrid`.
+3. Verifikasi PDF: **0 fragmen teks melewati margin** (terjauh 411pt dari batas 523pt) — lebih rapi dari dokumen asli (462pt).
+4. Dokumen ditulis ke berkas **baru** `tech stack rill + deploy (revisi 2026-10).docx`; dokumen asli tidak ditimpa.
+
+---
+
+### Bab 117: Ringkasan Capaian Sesi — Status Keamanan Terverifikasi, Kapasitas, dan Daftar Pekerjaan yang Masih Terbuka
+
+#### 1. Status Keamanan Terverifikasi (dari Database Pengguna)
+`verify_security.sql` → seluruh baris `AMAN`:
+| Pemeriksaan | Nilai | Arti |
+|---|---|---|
+P1 policy longgar | **0** | tidak ada policy `USING (true)` |
+P2 tabel aktif tanpa RLS | **0** | semua tabel tunduk RLS + FORCE |
+P3 fungsi proyek untuk anon | **3** | hanya `username_available`, `class_code_info`, `legacy_account_exists` |
+P4 `user_accounts` untuk anon | **false** | hash password tidak dapat dibaca |
+P5 view `students` | 0 | tidak ada kolom password aktif |
+P6 trigger pengunci | 2 | `trg_profiles_guard`, `trg_profiles_touch` |
+P7 RPC lama | 0 | 11 RPC berbahaya sudah hilang |
+P8 `SECURITY DEFINER` tanpa `search_path` | 0 | semua terkunci |
+P9 tabel batas laju | true | anti brute-force aktif |
+P10 indeks skala | 6 | siap skala besar |
+
+#### 2. Pekerjaan yang Masih Terbuka
+1. **Supabase Pro** — menghapus risiko "proyek dijeda 1 minggu", memberi backup harian, egress 250 GB.
+2. **Isi `VITE_SENTRY_DSN`** — lapisan monitoring sudah aktif tetapi belum mengirim ke mana pun.
+3. **Alarm 4 metrik** (egress, ukuran DB, Realtime, p95 latensi).
+4. **Uji restore backup** di proyek terpisah.
+5. **Turnstile atau tutup pendaftaran mandiri** — saat ini siapa pun yang tahu kode kelas dapat mendaftar.
+6. **Ganti kontak placeholder** di halaman Kebijakan Privasi.
+7. **382 label diagram SVG** — lihat Bab 115 §2.3.
+8. **Perbaikan mutu bertahap**: aktifkan `strict: true` + 262 temuan ESLint, hapus 27 berkas mati, selesaikan cerita hardware (18 blok tidak terjangkau, blok pembaca sensor), pecah berkas 10.000+ baris.
+
+#### 3. Catatan Metodologis Penting
+1. **Verifikasi konfigurasi ≠ verifikasi perilaku.** Tiga bug paling serius (publikasi Realtime, trigger profil NULL, hak eksekusi fungsi bantu RLS) **tidak tertangkap** oleh pemeriksaan SQL statis — hanya ditemukan oleh `test_isolation.mjs` terhadap database hidup.
+2. **Validasi sintaks tidak menangkap kesalahan semantik.** `pglast` meloloskan `FOREACH sig` tanpa deklarasi variabel; karena itu dibuat `validate_plpgsql_vars.py` untuk memeriksa resolusi variabel PL/pgSQL.
+3. **`DROP ... CASCADE` punya efek samping tak terlihat.** Urutan pembersihan objek database harus eksplisit, tidak mengandalkan efek samping.
+4. **Asumsi tentang perilaku internal platform harus diverifikasi.** Dua bug berasal dari asumsi keliru tentang Supabase (`user_metadata` sebagai kolom, dan urutan penulisan metadata saat signup).

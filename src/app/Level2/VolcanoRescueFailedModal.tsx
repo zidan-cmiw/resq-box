@@ -59,10 +59,10 @@ export const VolcanoRescueFailedModal: React.FC<VolcanoRescueFailedModalProps> =
 
         {/* Kotak Edukasi Tips Evakuasi Cepat */}
         <div className="bg-[#fef9c3] border-2 border-[#b45309] rounded-2xl p-4 sm:p-5 mb-6 text-left shadow-[0_4px_0_#78350f]">
-          <div className="inline-block bg-[#78350f] text-[#fef3c7] font-pixel-title text-xs sm:text-sm px-3 py-1 rounded-md font-bold mb-2 tracking-wider">
+          <div className="inline-block bg-[#78350f] text-[#fef3c7] font-pixel-title text-[13px] sm:text-[15px] px-3 py-1 rounded-md font-bold mb-2 tracking-wider">
             [TIPS KESIAPSIAGAAN AWAS MERAPI]
           </div>
-          <p className="font-sans text-sm sm:text-base md:text-lg text-[#78350f] leading-relaxed font-bold">
+          <p className="font-sans text-[15px] sm:text-base md:text-lg text-[#78350f] leading-relaxed font-bold">
             Saat sirine EWS Status Awas berbunyi, awan panas dapat meluncur turun lereng dengan sangat cepat! Segera dekati 3 warga dusun (Mbah Tejo, Bu Siti, dan Dani), tekan <span className="text-[#991b1b] font-extrabold">[E] / TAP</span> untuk menolong mereka agar ikut berbaris ke mobil evakuasi BPBD sebelum waktu 15 detik habis!
           </p>
         </div>
@@ -70,7 +70,7 @@ export const VolcanoRescueFailedModal: React.FC<VolcanoRescueFailedModalProps> =
         {/* Tombol Ulangi Evakuasi */}
         <button
           onClick={handleRetryClick}
-          className="w-full py-4 sm:py-4.5 rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-[#ffffff] border-3 border-[#7f1d1d] shadow-[0_5px_0_#450a0a] text-xs sm:text-sm md:text-base font-pixel-title flex items-center justify-center gap-3 cursor-pointer transition-transform active:translate-y-1 font-bold"
+          className="w-full py-4 sm:py-4.5 rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-[#ffffff] border-3 border-[#7f1d1d] shadow-[0_5px_0_#450a0a] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-3 cursor-pointer transition-transform active:translate-y-1 font-bold"
         >
           <PixelIcon name="refresh" size={22} />
           <span>[ ↺ ] ULANGI EVAKUASI WARGA (15 DETIK)</span>

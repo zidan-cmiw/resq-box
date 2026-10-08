@@ -568,7 +568,7 @@ export default function PixelEarthExploded({
           <div className="grid grid-cols-3 gap-1.5 w-full">
             <button
               onClick={() => onSelectLayer('kerak-benua')}
-              className={`py-1.5 px-2 rounded-lg border-2 text-[10px] sm:text-xs font-sans font-bold cursor-pointer transition-all text-center ${isLitosferActive
+              className={`py-1.5 px-2 rounded-lg border-2 text-[13.5px] sm:text-[13px] font-sans font-bold cursor-pointer transition-all text-center ${isLitosferActive
                 ? 'bg-amber-400 text-amber-950 border-amber-950 shadow-[0_2px_0_#78350f]'
                 : 'bg-amber-100 text-amber-900 border-amber-950/40 hover:bg-amber-200'
                 }`}
@@ -577,7 +577,7 @@ export default function PixelEarthExploded({
             </button>
             <button
               onClick={() => onSelectLayer('mantel-atas')}
-              className={`py-1.5 px-2 rounded-lg border-2 text-[10px] sm:text-xs font-sans font-bold cursor-pointer transition-all text-center ${isAstenosferActive
+              className={`py-1.5 px-2 rounded-lg border-2 text-[13.5px] sm:text-[13px] font-sans font-bold cursor-pointer transition-all text-center ${isAstenosferActive
                 ? 'bg-orange-500 text-white border-amber-950 shadow-[0_2px_0_#451a03]'
                 : 'bg-amber-100 text-amber-900 border-amber-950/40 hover:bg-amber-200'
                 }`}
@@ -586,7 +586,7 @@ export default function PixelEarthExploded({
             </button>
             <button
               onClick={() => onSelectLayer('inti-luar')}
-              className={`py-1.5 px-2 rounded-lg border-2 text-[10px] sm:text-xs font-sans font-bold cursor-pointer transition-all text-center ${isBarisferActive
+              className={`py-1.5 px-2 rounded-lg border-2 text-[13.5px] sm:text-[13px] font-sans font-bold cursor-pointer transition-all text-center ${isBarisferActive
                 ? 'bg-yellow-400 text-amber-950 border-amber-950 shadow-[0_2px_0_#78350f]'
                 : 'bg-amber-100 text-amber-900 border-amber-950/40 hover:bg-amber-200'
                 }`}
@@ -601,14 +601,14 @@ export default function PixelEarthExploded({
             <div className="flex items-center justify-between border-b border-amber-950/20 pb-1.5 flex-wrap gap-1">
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse" />
-                <span className="text-[8px] font-pixel-title text-amber-900 uppercase">
+                <span className="text-[12px] font-pixel-title text-amber-900 uppercase">
                   LAPISAN INDUK:{' '}
                   <strong className="text-amber-950">
                     {isLitosferActive ? '1. LITOSFER' : isAstenosferActive ? '2. ASTENOSFER' : '3. BARISFER'}
                   </strong>
                 </span>
               </div>
-              <span className="text-[7.5px] text-amber-700 font-pixel">
+              <span className="text-[12px] text-amber-700 font-pixel">
                 {isLitosferActive
                   ? '(Kerak Kaku Luar)'
                   : isAstenosferActive
@@ -619,7 +619,7 @@ export default function PixelEarthExploded({
 
             {/* Tombol Sub-Area */}
             <div className="flex items-center justify-between gap-2 flex-wrap pt-0.5">
-              <span className="text-[7.5px] font-pixel-title text-amber-800 uppercase shrink-0">
+              <span className="text-[12px] font-pixel-title text-amber-800 uppercase shrink-0">
                 PILIH SUB-BAGIAN:
               </span>
 
@@ -628,7 +628,7 @@ export default function PixelEarthExploded({
                 <div className="flex gap-1.5">
                   <button
                     onClick={() => onSelectLayer('kerak-benua')}
-                    className={`px-2.5 py-1 rounded border text-[8.5px] font-pixel-title cursor-pointer transition-all ${isBenuaActive
+                    className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isBenuaActive
                       ? 'bg-emerald-600 text-white border-emerald-950 shadow-[0_2px_0_#064e3b]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
                       }`}
@@ -637,7 +637,7 @@ export default function PixelEarthExploded({
                   </button>
                   <button
                     onClick={() => onSelectLayer('kerak-samudra')}
-                    className={`px-2.5 py-1 rounded border text-[8.5px] font-pixel-title cursor-pointer transition-all ${isSamudraActive
+                    className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isSamudraActive
                       ? 'bg-sky-600 text-white border-sky-950 shadow-[0_2px_0_#082f49]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
                       }`}
@@ -652,7 +652,7 @@ export default function PixelEarthExploded({
                 <div className="flex gap-1.5">
                   <button
                     onClick={() => onSelectLayer('mantel-atas')}
-                    className={`px-2.5 py-1 rounded border text-[8.5px] font-pixel-title cursor-pointer transition-all ${isMantelAtasActive
+                    className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isMantelAtasActive
                       ? 'bg-orange-600 text-white border-orange-950 shadow-[0_2px_0_#451a03]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
                       }`}
@@ -661,7 +661,7 @@ export default function PixelEarthExploded({
                   </button>
                   <button
                     onClick={() => onSelectLayer('mantel-bawah')}
-                    className={`px-2.5 py-1 rounded border text-[8.5px] font-pixel-title cursor-pointer transition-all ${isMantelBawahActive
+                    className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isMantelBawahActive
                       ? 'bg-red-700 text-white border-red-950 shadow-[0_2px_0_#451a03]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
                       }`}
@@ -676,7 +676,7 @@ export default function PixelEarthExploded({
                 <div className="flex gap-1.5">
                   <button
                     onClick={() => onSelectLayer('inti-luar')}
-                    className={`px-2.5 py-1 rounded border text-[8.5px] font-pixel-title cursor-pointer transition-all ${isIntiLuarActive
+                    className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isIntiLuarActive
                       ? 'bg-amber-500 text-amber-950 border-amber-950 shadow-[0_2px_0_#451a03]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
                       }`}
@@ -685,7 +685,7 @@ export default function PixelEarthExploded({
                   </button>
                   <button
                     onClick={() => onSelectLayer('inti-dalam')}
-                    className={`px-2.5 py-1 rounded border text-[8.5px] font-pixel-title cursor-pointer transition-all ${isIntiDalamActive
+                    className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isIntiDalamActive
                       ? 'bg-yellow-400 text-amber-950 border-amber-950 shadow-[0_2px_0_#451a03]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
                       }`}
@@ -702,7 +702,7 @@ export default function PixelEarthExploded({
       {/* Mode Switch Toggle Button */}
       <button
         onClick={onToggleExplode}
-        className={`mt-2 px-3.5 py-1.5 rounded-lg border-2 text-[8.5px] font-pixel-title cursor-pointer transition-all shadow-[0_2px_0_#231206] active:translate-y-0.5 ${isExploded
+        className={`mt-2 px-3.5 py-1.5 rounded-lg border-2 text-[12.5px] font-pixel-title cursor-pointer transition-all shadow-[0_2px_0_#231206] active:translate-y-0.5 ${isExploded
           ? 'bg-amber-200 hover:bg-amber-300 text-amber-950 border-amber-950'
           : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-emerald-950'
           }`}

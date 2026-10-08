@@ -66,10 +66,10 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
       {/* Step Indicator */}
       <div className="flex items-center justify-between bg-amber-100/90 border-2 border-amber-900/40 p-3 rounded-xl">
         <div className="flex items-center gap-2">
-          <span className="w-6 h-6 rounded-full bg-amber-900 text-amber-100 flex items-center justify-center font-pixel-title text-xs font-bold">
+          <span className="w-6 h-6 rounded-full bg-amber-900 text-amber-100 flex items-center justify-center font-pixel-title text-[13px] font-bold">
             1
           </span>
-          <span className="font-pixel-title text-xs md:text-sm font-bold text-amber-950">
+          <span className="font-pixel-title text-[13px] md:text-[15px] font-bold text-amber-950">
             MISI 1: AKAR GEOLOGIS ANCAMAN BUMI
           </span>
         </div>
@@ -81,7 +81,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                 retroAudio.playSelect();
                 setPhase(idx);
               }}
-              className={`px-2.5 py-1 rounded-md text-[10px] font-pixel-title font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-md text-[13.5px] font-pixel-title font-bold transition-all ${
                 phase === idx
                   ? 'bg-amber-900 text-white shadow'
                   : 'bg-amber-200/80 text-amber-900 hover:bg-amber-300'
@@ -97,11 +97,11 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
       {phase === 0 && (
         <div className="space-y-4 animate-fade-in">
           <div className="bg-amber-950/5 border-2 border-amber-900/30 rounded-2xl p-5">
-            <h3 className="text-sm md:text-base font-bold text-amber-950 flex items-center gap-2 mb-2">
+            <h3 className="text-[15px] md:text-base font-bold text-amber-950 flex items-center gap-2 mb-2">
               <PixelIcon name="globe" size={18} />
               <span>Apersepsi: Teka-Teki Kepingan Benua (Pangea)</span>
             </h3>
-            <p className="text-xs text-amber-900 leading-relaxed">
+            <p className="text-[13px] text-amber-900 leading-relaxed">
               Pernahkah kamu memperhatikan bahwa garis pantai benua di bumi tampak seperti potongan puzzle?
               Pada tahun 1912, seorang ahli meteorologi bernama <strong>Alfred Wegener</strong> mengemukakan
               bahwa seluruh benua dulunya merupakan satu daratan raksasa yang disebut <strong>Pangea</strong>,
@@ -112,13 +112,13 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
           {/* Interactive Continental Puzzle Board */}
           <div className="relative bg-slate-900 border-2 border-amber-900/40 rounded-2xl p-6 flex flex-col items-center justify-center min-h-[260px] text-center overflow-hidden">
             <div className="absolute top-3 left-4 text-left">
-              <span className="text-[10px] text-amber-400 font-pixel-title font-bold block">
+              <span className="text-[13.5px] text-amber-400 font-pixel-title font-bold block">
                 BUKTI ILMIAH WEGENER:
               </span>
-              <span className="text-[9px] text-slate-300 block">
+              <span className="text-[12.5px] text-slate-300 block">
                 • Rangkaian pegunungan Appalachian & Kaledonia identik (usia & jenis batuan sama)
               </span>
-              <span className="text-[9px] text-slate-300 block">
+              <span className="text-[12.5px] text-slate-300 block">
                 • Fosil tumbuhan purba <em>Glossopteris</em> ditemukan di Amerika Selatan & Afrika
               </span>
             </div>
@@ -131,9 +131,9 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                   pangeaMerged ? 'translate-x-6 rotate-3' : '-translate-x-12 -rotate-6'
                 }`}
               >
-                <span className="text-[10px] font-bold">AMERIKA</span>
-                <span className="text-[9px] text-emerald-200">SELATAN</span>
-                <span className="text-[8px] mt-1 text-emerald-300">Fosil Mesosaurus</span>
+                <span className="text-[13.5px] font-bold">AMERIKA</span>
+                <span className="text-[12.5px] text-emerald-200">SELATAN</span>
+                <span className="text-[12px] mt-1 text-emerald-300">Fosil Mesosaurus</span>
               </div>
 
               {/* Africa piece */}
@@ -142,15 +142,15 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                   pangeaMerged ? '-translate-x-6 -rotate-2' : 'translate-x-12 rotate-6'
                 }`}
               >
-                <span className="text-[10px] font-bold">BENUA</span>
-                <span className="text-[9px] text-amber-200">AFRIKA</span>
-                <span className="text-[8px] mt-1 text-amber-300">Fosil Mesosaurus</span>
+                <span className="text-[13.5px] font-bold">BENUA</span>
+                <span className="text-[12.5px] text-amber-200">AFRIKA</span>
+                <span className="text-[12px] mt-1 text-amber-300">Fosil Mesosaurus</span>
               </div>
             </div>
 
             <button
               onClick={handleMergePangea}
-              className={`px-5 py-2 rounded-xl text-xs font-pixel-title font-bold border-2 transition-all cursor-pointer shadow-lg active:translate-y-0.5 ${
+              className={`px-5 py-2 rounded-xl text-[13px] font-pixel-title font-bold border-2 transition-all cursor-pointer shadow-lg active:translate-y-0.5 ${
                 pangeaMerged
                   ? 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-950 shadow-[0_4px_0_#064e3b]'
                   : 'bg-amber-500 hover:bg-amber-400 text-slate-950 border-amber-950 shadow-[0_4px_0_#78350f]'
@@ -166,7 +166,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                 retroAudio.playSelect();
                 setPhase(1);
               }}
-              className="px-4 py-2 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 text-xs font-pixel-title font-bold border-2 border-amber-950 shadow cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 text-[13px] font-pixel-title font-bold border-2 border-amber-950 shadow cursor-pointer flex items-center gap-1.5"
             >
               <span>LANJUT: SIMULATOR BATAS LEMPENG</span>
               <span>&gt;</span>
@@ -180,10 +180,10 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
         <div className="space-y-4 animate-fade-in">
           {/* Theory card */}
           <div className="bg-amber-950/5 border-2 border-amber-900/30 rounded-2xl p-4">
-            <h3 className="text-xs md:text-sm font-bold text-amber-950 mb-1">
+            <h3 className="text-[13px] md:text-[15px] font-bold text-amber-950 mb-1">
               Teori Lempeng Tektonik & Arus Konveksi Mantel
             </h3>
-            <p className="text-[11px] text-amber-900 leading-relaxed">
+            <p className="text-[14.5px] text-amber-900 leading-relaxed">
               Kerak bumi terpecah menjadi sekitar <strong>20 segmen lempeng tektonik</strong>. Lempeng ini
               terdiri dari <strong>Lempeng Benua</strong> (tebal ~100 km) dan <strong>Lempeng Samudera</strong>{' '}
               (tebal 5–15 km, namun lebih padat & berat). Lempeng bergerak lambat sepanjang waktu karena didorong
@@ -210,8 +210,8 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                     : 'bg-amber-100 text-amber-950 border-amber-900/30 hover:bg-amber-200'
                 }`}
               >
-                <span className="font-pixel-title text-[11px] block font-bold">{tab.title}</span>
-                <span className="text-[9px] opacity-80 block">{tab.sub}</span>
+                <span className="font-pixel-title text-[14.5px] block font-bold">{tab.title}</span>
+                <span className="text-[12.5px] opacity-80 block">{tab.sub}</span>
               </button>
             ))}
           </div>
@@ -324,14 +324,14 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
             </div>
 
             {/* Geological Explanation Box */}
-            <div className="mt-3 p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 flex items-start justify-between gap-4">
+            <div className="mt-3 p-3 rounded-xl bg-slate-900 border border-slate-800 text-[14.5px] text-slate-300 flex items-start justify-between gap-4">
               <div>
                 <span className="font-bold text-amber-300 block mb-0.5">
                   {activeBoundary === 'divergen' && 'PUNGGUNG TENGAH SAMUDRA (MID-OCEAN RIDGE):'}
                   {activeBoundary === 'konvergen' && 'SUBDUKSI & VULKANISME (PEMICU UTAMA MERAPI):'}
                   {activeBoundary === 'transform' && 'SESAR PATAHAN GESER (PEMICU GEMPA DANGKAL):'}
                 </span>
-                <p className="text-[10px] text-slate-300">
+                <p className="text-[13.5px] text-slate-300">
                   {activeBoundary === 'divergen' &&
                     'Dua lempeng saling menjauh. Magma cair dari mantel bumi naik ke atas membentuk batuan beku basaltik dan kerak baru. Sering menimbulkan retakan dan gempa dangkal.'}
                   {activeBoundary === 'konvergen' &&
@@ -343,7 +343,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
 
               <button
                 onClick={handleTriggerSeismic}
-                className="px-3 py-2 rounded-lg bg-rose-700 hover:bg-rose-600 text-white font-pixel-title text-[10px] shrink-0 border border-rose-950 shadow cursor-pointer active:translate-y-0.5"
+                className="px-3 py-2 rounded-lg bg-rose-700 hover:bg-rose-600 text-white font-pixel-title text-[13.5px] shrink-0 border border-rose-950 shadow cursor-pointer active:translate-y-0.5"
               >
                 PICU GETARAN
               </button>
@@ -354,10 +354,10 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
                 <div>
-                  <span className="font-pixel-title text-[10px] text-emerald-400 font-bold block">
+                  <span className="font-pixel-title text-[13.5px] text-emerald-400 font-bold block">
                     SEISMOGRAF DIGITAL: BMKG MONITORING
                   </span>
-                  <span className="text-[9px] text-emerald-600">
+                  <span className="text-[12.5px] text-emerald-600">
                     Mengubah getaran mekanik bumi menjadi sinyal listrik & seismogram
                   </span>
                 </div>
@@ -379,7 +379,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                   />
                 </svg>
                 {seismicActive && (
-                  <span className="absolute right-2 text-[8px] text-rose-400 font-bold font-pixel-title">
+                  <span className="absolute right-2 text-[12px] text-rose-400 font-bold font-pixel-title">
                     GELOMBANG P & S TERDETEKSI!
                   </span>
                 )}
@@ -393,7 +393,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                 retroAudio.playSelect();
                 setPhase(0);
               }}
-              className="px-4 py-2 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 text-xs font-pixel-title font-bold border border-amber-900/30 cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 text-[13px] font-pixel-title font-bold border border-amber-900/30 cursor-pointer"
             >
               &lt; KEMBALI KE PANGEA
             </button>
@@ -402,7 +402,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                 retroAudio.playSelect();
                 setPhase(2);
               }}
-              className="px-4 py-2 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 text-xs font-pixel-title font-bold border-2 border-amber-950 shadow cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 text-[13px] font-pixel-title font-bold border-2 border-amber-950 shadow cursor-pointer flex items-center gap-1.5"
             >
               <span>LANJUT KE UJI ANALIS</span>
               <span>&gt;</span>
@@ -415,20 +415,20 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
       {phase === 2 && (
         <div className="space-y-4 animate-fade-in">
           <div className="bg-amber-950/5 border-2 border-amber-900/30 rounded-2xl p-4">
-            <h3 className="text-xs md:text-sm font-bold text-amber-950 mb-1">
+            <h3 className="text-[13px] md:text-[15px] font-bold text-amber-950 mb-1">
               Uji Validasi Analis Geologis Kebencanaan
             </h3>
-            <p className="text-[11px] text-amber-900">
+            <p className="text-[14.5px] text-amber-900">
               Jawab 3 pertanyaan berikut untuk memvalidasi pemahamanmu tentang akar geologis di Disaster City.
             </p>
           </div>
 
           {/* Question 1 */}
           <div className="bg-white/80 border border-amber-900/20 p-4 rounded-xl space-y-2">
-            <span className="text-xs font-bold text-amber-950 block">
+            <span className="text-[13px] font-bold text-amber-950 block">
               1. Batas lempeng apa yang menyebabkan lempeng samudera menyelinap ke bawah lempeng benua (subduksi) dan memicu lahirnya Gunung Api Merapi?
             </span>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[13px]">
               {[
                 { id: 'divergen', label: 'A. Batas Divergen (Saling Menjauh)' },
                 { id: 'konvergen', label: 'B. Batas Konvergen (Subduksi & Peleburan)' },
@@ -451,10 +451,10 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
 
           {/* Question 2 */}
           <div className="bg-white/80 border border-amber-900/20 p-4 rounded-xl space-y-2">
-            <span className="text-xs font-bold text-amber-950 block">
+            <span className="text-[13px] font-bold text-amber-950 block">
               2. Alat pendeteksi yang bekerja dengan cara mengubah getaran mekanik bumi menjadi sinyal listrik disebut...?
             </span>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[13px]">
               {[
                 { id: 'barometer', label: 'A. Barometer' },
                 { id: 'seismograf', label: 'B. Seismograf' },
@@ -477,10 +477,10 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
 
           {/* Question 3 */}
           <div className="bg-white/80 border border-amber-900/20 p-4 rounded-xl space-y-2">
-            <span className="text-xs font-bold text-amber-950 block">
+            <span className="text-[13px] font-bold text-amber-950 block">
               3. Apa tenaga pendorong utama yang membuat 20 lempeng tektonik terus bergerak di atas mantel bumi?
             </span>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[13px]">
               {[
                 { id: 'angin', label: 'A. Hembusan angin atmosfer' },
                 { id: 'konveksi', label: 'B. Arus konveksi panas di mantel bumi' },
@@ -508,14 +508,14 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                 retroAudio.playSelect();
                 setPhase(1);
               }}
-              className="px-4 py-2 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 text-xs font-pixel-title font-bold border border-amber-900/30 cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 text-[13px] font-pixel-title font-bold border border-amber-900/30 cursor-pointer"
             >
               &lt; KEMBALI
             </button>
 
             {showResult || isAlreadyCompleted ? (
               <div className="flex items-center gap-3">
-                <span className="px-3 py-1.5 rounded-lg bg-emerald-100 border border-emerald-500 text-emerald-800 text-xs font-bold">
+                <span className="px-3 py-1.5 rounded-lg bg-emerald-100 border border-emerald-500 text-emerald-800 text-[13px] font-bold">
                   ✓ MISI 1 SELESAI (+20 RP)
                 </span>
               </div>
@@ -523,7 +523,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
               <button
                 onClick={handleEvaluateQuiz}
                 disabled={!answers[1] || !answers[2] || !answers[3]}
-                className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-pixel-title font-bold border-2 border-amber-950 shadow-[0_4px_0_#78350f] cursor-pointer active:translate-y-0.5"
+                className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-[13px] font-pixel-title font-bold border-2 border-amber-950 shadow-[0_4px_0_#78350f] cursor-pointer active:translate-y-0.5"
               >
                 SUBMIT JAWABAN MISI 1
               </button>
