@@ -1340,3 +1340,20 @@ Bagian ini merekam seluruh instruksi, evaluasi, dan keputusan teknis yang telah 
          - *Kelompok 5 (Puncak & Seluruh Lereng)*: Letusan eksplosif awan panas ➔ `resq_evak_luar_map`.
       3. **20 Misi Mandiri Individu**: Disajikan ringkas dan to-the-point per Job (1 s.d. 20) lengkap dengan kunci jawaban blok Blockly.
       4. **Verifikasi Build**: `npx tsc -b` bersih 0 error, `npm run build` sukses 100% dalam 3.16 detik (32 precache entries valid).
+95. **Integrasi Mawar Kompas Arah Mata Angin Peta Merapi, Eliminasi Jargon Teknis Tutorial Maskot Resqy, Proteksi Gestur Layar Sentuh Mobile/Tablet, Perbaikan Stacking Menu Toolbox Workspace, serta Atribusi Resmi Sumber Gambar Edukasi**:
+    - **Arahan & Aspirasi Pengguna**:
+      1. Tambahkan mawar kompas / penunjuk arah mata angin di pojok peta Merapi Level 2 dengan arah Utara menghadap ke atas, dan perbesar label arah (U, S, B, T / N, S, W, E) agar terlihat jelas dan proporsional.
+      2. Perbaiki narasi teks tutorial Resqy di `tutorialConfig.ts` agar tidak lagi memakai istilah teknis komputasi rumit (ESP32, koding, mikrokontroler, dsb.); ganti dengan bahasa sains IPA SMP Kelas 8 yang mudah dipahami anak.
+      3. Perbaiki masalah menu block coding di Workspace agar flyout/toolbox Blockly tidak tembus atau bertabrakan dengan elemen/panel lain.
+      4. Hilangkan popup menu/callout saat menekan lama (long-press) pada kontrol analog atau layar di perangkat mobile/tablet, serta matikan efek double-tap zoom yang mengganggu kenyamanan bermain di HP/tablet.
+      5. Cantumkan tautan sumber rujukan otentik untuk gambar-gambar materi edukasi vulkanik:
+         - Awan Panas Guguran (Wedhus Gembel) (`images (1).jpeg`, `images (1).jpg`, `wedhus_gembel.jpg`): `https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif` (Kompas.com)
+         - Peta KRB Merapi (`1.webp`): `https://syawal88.wordpress.com/2010/11/17/dapatkah-gunung-mati-menjadi-gunung-aktif/` (syawal88.wordpress.com)
+         - Banjir Lahar Hujan Dingin (`images.jpeg`, `lahar_dingin.jpg`): `https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang` (Detikcom)
+    - **Hasil Implementasi & Verifikasi**:
+      1. **Mawar Kompas Arah Mata Angin Presisi**: Dihadirkan pada kanvas visual peta Merapi dengan tipografi tebal, penunjuk arah jarum Utara merah kontras menghadap ke atas, dan label cardinal yang jelas.
+      2. **Penyelarasan Bahasa IPA SMP**: Seluruh teks panduan di `tutorialConfig.ts` disempurnakan menjadi narasi sains kontekstual ramah anak SMP (alat simulasi kebencanaan, diorama cerdas, sensor digital).
+      3. **Isolasi Stacking & Z-Index Workspace**: Memperbaiki z-index flyout Blockly dan panel workspace sehingga tidak tembus saat panel berdampingan dibuka.
+      4. **Proteksi Sentuh Mobile/Tablet**: Menambahkan proteksi `touch-action: manipulation`, `user-select: none`, `-webkit-touch-callout: none` pada kontrol analog virtual dan seluruh container game untuk menonaktifkan context menu popup dan double-tap zoom.
+      5. **Atribusi Sumber Gambar Interaktif**: Menyematkan badge klikable `📷 Sumber: ... ↗` langsung pada pojok visual gambar, panel kanan informasi sains, modal Lightbox fullscreen, serta diagram penampang aliran lahar `VolcanoPostLaharIllustration`.
+      6. **Verifikasi Build**: `npx tsc -b` sukses 0 error, `npm run build` sukses 100% dalam 4.40 detik (32 entri precache valid).

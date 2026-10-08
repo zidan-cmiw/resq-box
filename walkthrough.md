@@ -3363,6 +3363,67 @@ Status: **100% SUKSES (0 error)**.
 - [x] **TypeScript Clean**: `npx tsc -b` sukses 0 error.
 - [x] **Production Build Clean**: `npm run build` sukses 100% dalam 3.16s (exit code 0, 32 PWA precache valid).
 
+---
+
+### I. Skenario Pengujian Bab 36: Verifikasi Mawar Kompas Peta Merapi, Non-Teknis Tutorial IPA Resqy, Responsivitas Mobile/Tablet Touch, Stacking Menu Toolbox Blockly, & Atribusi Sumber Gambar Edukasi
+
+#### 1. Uji Orientasi & Visual Mawar Kompas Peta Merapi (Level 2)
+- **Tindakan**:
+  - Buka game rute `/level2` (Peta Simulasi Bencana Merapi).
+  - Amati ornamen mawar kompas (compass rose) di kanvas visual peta.
+- **Hasil**:
+  - Jarum mata angin merah menghadap ke atas menunjukkan arah **Utara (U / N)**.
+  - Tipografi label arah mata angin (U, S, B, T / N, S, W, E) tampak tajam, tebal, dan proporsional.
+  - Tidak menghalangi jalur evakuasi warga maupun elemen interaktif lainnya di peta.
+
+#### 2. Uji Bahasa Ramah Sains Tutorial Maskot Resqy (`tutorialConfig.ts`)
+- **Tindakan**:
+  - Panggil tutorial Resqy melalui tombol mengambang `[🦉 Panduan Resqy]` di halaman Login, Beranda, Level 1, Level 2, dan Workspace.
+  - Periksa kalimat dan narasi panduan yang disampaikan maskot Resqy.
+- **Hasil**:
+  - Seluruh jargon teknis rumit (seperti ESP32, mikroprosesor, syntax koding) telah diganti menjadi istilah IPA kontekstual (alat peraga mitigasi bencana, maket diorama cerdas, sensor digital).
+  - Teks komunikatif, mudah dicerna oleh anak SMP Kelas 8, dan memotivasi eksplorasi sains kebencanaan.
+
+#### 3. Uji Responsivitas & Proteksi Layar Sentuh Mobile / Tablet
+- **Tindakan**:
+  - Buka aplikasi di smartphone atau tablet (atau via Chrome DevTools Mobile Emulation).
+  - Tekan lama (long-press) kontrol analog virtual dan tombol kontrol game.
+  - Lakukan double-tap cepat pada layar kanvas permainan.
+- **Hasil**:
+  - **Zero Callout Popup**: Tidak muncul menu konteks browser bawaan (copy/select/popup context menu dinonaktifkan via `-webkit-touch-callout: none` dan `user-select: none`).
+  - **Zero Double-Tap Zoom**: Layar tidak tiba-tiba membesar/zoom saat diketuk dua kali berurutan (`touch-action: manipulation`). Kontrol analog responsif dan mulus.
+
+#### 4. Uji Stacking Order & Z-Index Toolbox Workspace
+- **Tindakan**:
+  - Buka rute `/workspace` (Action Lab).
+  - Buka flyout kategori blok Blockly dan buka panel samping (Telemetry / Mission / Sensor).
+- **Hasil**:
+  - Menu toolbox Blockly tertata pada stacking order yang benar tanpa menembus atau tertimpa komponen lain saat dibuka.
+  - Area kanvas koding tetap interaktif dan nyaman digeser.
+
+#### 5. Uji Atribusi Sumber Gambar Edukasi Merapi (`DiscoveryModal.tsx`)
+- **Tindakan**:
+  - Buka Temuan 2 di Area 4 Pos PGA Merapi dan periksa materi gambar:
+    1. Awan Panas Guguran (Wedhus Gembel)
+    2. Peta Kawasan Rawan Bencana (KRB) Merapi
+    3. Aliran Banjir Lahar Hujan Dingin
+  - Klik badge sumber `📷 Sumber: ... ↗` di pojok kiri bawah visual gambar, panel informasi kanan, dan modal Lightbox Fullscreen.
+- **Hasil**:
+  - Gambar Awan Panas terhubung ke [Kompas.com](https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif).
+  - Gambar Peta KRB terhubung ke [syawal88.wordpress.com](https://syawal88.wordpress.com/2010/11/17/dapatkah-gunung-mati-menjadi-gunung-aktif/).
+  - Gambar Banjir Lahar Dingin terhubung ke [Detikcom](https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang).
+  - Semua link membuka tab baru secara aman (`target="_blank" rel="noopener noreferrer"`).
+  - Fallback gambar `onError` berfungsi mulus jika file cadangan dimuat.
+
+#### 6. Matriks Checklist Verifikasi Bab 36
+- [x] **Merapi Compass Rose**: Jarum Utara menghadap ke atas, label mata angin besar dan jelas.
+- [x] **IPA SMP Non-Technical Tutorial**: Jargon komputer digantikan konsep edukasi sains IPA.
+- [x] **Mobile Touch Protection**: Zero long-press context menu dan zero double-tap zoom pada analog/layar.
+- [x] **Toolbox Stacking Fix**: Menu flyout Blockly rapi tanpa tembus panel.
+- [x] **Authentic Image Attribution**: Badge sumber klikable ke Kompas.com, Detikcom, dan syawal88.
+- [x] **TypeScript Clean**: `npx tsc -b` sukses 0 error.
+- [x] **Production Build Clean**: `npm run build` sukses 100% dalam 4.40s (exit code 0, 32 PWA precache valid).
+
 
 
 

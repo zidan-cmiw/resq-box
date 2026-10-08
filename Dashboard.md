@@ -23,10 +23,10 @@ tags:
 
 | Dokumen | Deskripsi & Isi Utama | Status / Versi |
 | :--- | :--- | :---: |
-| 📋 **[[PRD]]** | **Product Requirement Document**: Spesifikasi teknis komprehensif, arsitektur sistem, skema kurikulum SMP Kelas 8, dan 94 rekam milestone pengembangan. | `v3.32 (Aktif)` |
-| 📈 **[[progress_report]]** | **Laporan Progres Lengkap**: Dokumentasi teknis terperinci per fitur (Bab 103: Sistem Panduan Maskot Resqy; Bab 104: Kurikulum 2 Pertemuan & LKPD PjBL 5 Kelompok). | `v3.32 (Update)` |
+| 📋 **[[PRD]]** | **Product Requirement Document**: Spesifikasi teknis komprehensif, arsitektur sistem, skema kurikulum SMP Kelas 8, dan 95 rekam milestone pengembangan. | `v3.33 (Aktif)` |
+| 📈 **[[progress_report]]** | **Laporan Progres Lengkap**: Dokumentasi teknis terperinci per fitur (Bab 104: Kurikulum 2 Pertemuan PjBL; Bab 105: Mawar Kompas Peta, Tutorial Resqy IPA, & Atribusi Gambar Resmi). | `v3.33 (Update)` |
 | 🎨 **[[design]]** | **Design System & Visual Guidelines**: Pedoman warna pixel art, tipografi retro 8-bit, prinsip visual game, dan panduan antarmuka responsif. | `v2.0` |
-| 🧭 **[[walkthrough]]** | **Walkthrough & Panduan Pengujian**: Panduan verifikasi fitur, pengujian kurikulum 2 pertemuan, LKPD PjBL, 20 tugas mandiri, dan build produksi. | `v3.32 (Update)` |
+| 🧭 **[[walkthrough]]** | **Walkthrough & Panduan Pengujian**: Panduan verifikasi fitur, pengujian kurikulum 2 pertemuan, LKPD PjBL, 20 tugas mandiri, dan build produksi. | `v3.33 (Update)` |
 | 📚 **[[LKPD_PJBL_RESQ_BOX_5_KELOMPOK|LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md]]** | **Panduan Implementasi 2 Pertemuan & LKPD PjBL**: Skenario KBM sekolah mitra 2 pertemuan, 20 tugas mandiri individu Level 3 ringkas beserta kunci blok, dan 5 studi kasus kelompok PjBL. | `v1.0 (Resmi)` |
 | 📖 **[[Readme]]** | **Dokumentasi Umum Repositori**: Gambaran umum proyek, arsitektur teknologi, lisensi, dan profil anggota tim pengembang LIDM 2026. | `v2.5` |
 | 🤖 **[[agent]]** | **Pedoman Agentic AI Coding**: Konteks arsitektur, boundary pengerjaan, dan panduan bagi asisten pengembang AI. | `v1.0` |
@@ -35,7 +35,30 @@ tags:
 
 ---
 
-## ⚡ Sorotan Pembaruan Terkini: Kurikulum Implementasi 2 Pertemuan Mitra, LKPD PjBL 5 Kelompok, & 20 Tugas Mandiri Level 3 (Bab 104 & Milestone 94)
+## ⚡ Sorotan Pembaruan Terkini: Mawar Kompas Peta Merapi, Bahasa Ramah IPA Tutorial Resqy, Proteksi Sentuh Tablet/HP, & Atribusi Gambar Edukasi (Bab 105 & Milestone 95)
+
+> [!TIP]
+> Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 105: Penambahan Mawar Kompas Arah Mata Angin (Level 2), Penyederhanaan Narasi Tutorial Maskot Resqy Berbasis IPA SMP, Proteksi Input Sentuh Layar Mobile/Tablet, Perbaikan Stacking Toolbox Workspace, serta Atribusi Otentik Sumber Gambar Edukasi Merapi|progress_report.md (Bab 105)]]** dan **[[PRD#95|PRD.md (Milestone 95)]]**.
+
+1. **🧭 Mawar Kompas Arah Mata Angin Peta Merapi (Level 2)**:
+   - Menambahkan ornamen kompas mawar retro dengan arah jarum Utara (U/N) mengarah ke atas pada kanvas peta erupsi Merapi, dengan tipografi jelas dan proporsional.
+2. **🦉 Penyederhanaan Narasi Tutorial Resqy Ramah Siswa SMP**:
+   - Menghapus seluruh istilah komputasi teknis (ESP32, koding, mikrokontroler) dari `tutorialConfig.ts` dan menggantinya dengan konsep sains IPA SMP Kelas 8 (alat peraga mitigasi kebencanaan, diorama cerdas, sensor kebencanaan).
+3. **📱 Proteksi Layar Sentuh Mobile & Tablet**:
+   - Menghilangkan popup callout / context menu saat menekan lama (long-press) analog virtual dan tombol kontrol lainnya.
+   - Menonaktifkan efek double-tap zoom di browser ponsel/tablet (`touch-action: manipulation`).
+4. **🧱 Perbaikan Stacking Order & Z-Index Toolbox Workspace**:
+   - Memastikan menu flyout block coding Blockly tertata rapi tanpa tembus atau bertabrakan dengan panel lain saat dibuka.
+5. **📷 Atribusi Resmi Sumber Gambar Edukasi Merapi**:
+   - Menautkan sumber otentik pada gambar materi erupsi:
+     - *Wedhus Gembel*: [Kompas.com](https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif).
+     - *Peta KRB Merapi*: [syawal88.wordpress.com](https://syawal88.wordpress.com/2010/11/17/dapatkah-gunung-mati-menjadi-gunung-aktif/).
+     - *Banjir Lahar Dingin*: [Detikcom](https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang).
+   - Dilengkapi badge sumber klikable langsung pada container gambar, panel teks materi, dan modal Lightbox fullscreen.
+
+---
+
+## ⚡ Sorotan Sebelumnya: Kurikulum Implementasi 2 Pertemuan Mitra, LKPD PjBL 5 Kelompok, & 20 Tugas Mandiri Level 3 (Bab 104 & Milestone 94)
 
 > [!TIP]
 > Rincian lengkap pembaruan dapat dibaca di **[[progress_report#Bab 104: Penyusunan Panduan Implementasi 2 Pertemuan KBM Sekolah Mitra, Integrasi LKPD PjBL 5 Kelompok Merapi & Gempa Bumi, Rekapitulasi Ringkas 20 Tugas Mandiri Individu Level 3, serta Peningkatan Readability Modal UI|progress_report.md (Bab 104)]]** dan **[[LKPD_PJBL_RESQ_BOX_5_KELOMPOK|LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md]]**.

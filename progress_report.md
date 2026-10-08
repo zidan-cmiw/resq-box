@@ -4831,6 +4831,49 @@ Pengguna meminta implementasi menyeluruh logika block coding, efek visual kamera
 
 ---
 
+### Bab 105: Penambahan Mawar Kompas Arah Mata Angin (Level 2), Penyederhanaan Narasi Tutorial Maskot Resqy Berbasis IPA SMP, Proteksi Input Sentuh Layar Mobile/Tablet, Perbaikan Stacking Toolbox Workspace, serta Atribusi Otentik Sumber Gambar Edukasi Merapi
+
+#### 1. Latar Belakang & Aspirasi Pengguna
+1. Menambahkan petunjuk arah mata angin / mawar kompas (compass rose) di pojok peta Merapi (Level 2) dengan arah Utara tegak lurus menghadap ke atas, serta memperbesar label arah mata angin (U, S, B, T / N, S, W, E) agar mudah dibaca dan membantu orientasi spasial siswa.
+2. Memperbaiki diksi dan narasi tutorial maskot Resqy di `tutorialConfig.ts` agar bersih dari istilah teknis komputasi (ESP32, koding, mikrokontroler), menggantinya dengan konsep sains IPA SMP Kelas 8 (alat peraga mitigasi, maket cerdas, sensor kebencanaan).
+3. Memperbaiki masalah z-index dan stacking order pada menu toolbox/flyout block coding di Workspace agar tidak tembus pandang atau menabrak panel lain saat dibuka.
+4. Mencegah popup context menu browser saat menekan lama (long-press) kontrol analog di tablet/HP, serta menonaktifkan efek double-tap zoom (`touch-action: manipulation`) untuk kenyamanan bermain di perangkat mobile.
+5. Menambahkan atribusi sumber rujukan otentik untuk materi gambar Gunung Merapi:
+   - Awan Panas Guguran (Wedhus Gembel): Kompas.com
+   - Peta Kawasan Rawan Bencana (KRB): syawal88.wordpress.com
+   - Banjir Lahar Dingin: Detikcom
+   Dilengkapi badge sumber klikable langsung pada container gambar, panel teks informasi, dan modal Lightbox fullscreen.
+
+#### 2. Rincian Teknis & Implementasi:
+##### A. Mawar Kompas Arah Mata Angin Peta Merapi (Level 2)
+- Mengintegrasikan mawar kompas visual 2D retro dengan jarum Utara berwarna merah kontras mengarah ke atas.
+- Tipografi huruf arah mata angin diperbesar dengan kontras tajam agar langsung terbaca tanpa mengganggu navigasi karakter di peta.
+
+##### B. Reformulasi Narasi Tutorial Maskot Resqy Ramah Siswa SMP (`tutorialConfig.ts`)
+- Menyelaraskan seluruh dialog panduan maskot Resqy di 9 rute aplikasi dengan Capaian Pembelajaran IPA SMP Kelas 8.
+- Mengubah referensi mikrokontroler/koding menjadi "Alat Peraga Edukasi Mitigasi Kebencanaan", "Diorama Maket Cerdas Merapi", dan "Simulasi Logika Mitigasi".
+
+##### C. Proteksi Gestur Layar Sentuh Mobile / Tablet
+- Menambahkan aturan CSS `-webkit-touch-callout: none` dan `user-select: none` pada elemen kontrol permainan dan analog virtual untuk mencegah munculnya callout selection/copy menu saat long-press.
+- Menerapkan `touch-action: manipulation` pada viewport dan kanvas game untuk memblokir gestur double-tap zoom yang tidak diinginkan.
+
+##### D. Penataan Z-Index & Stacking Menu Toolbox Blockly
+- Memperbaiki struktur stacking context flyout Blockly di `BlocklyComponent.tsx` dan `Workspace/index.tsx` sehingga menu blok tampil di lapisan z-index yang tepat dan tidak tertimpa atau menembus panel instrumen.
+
+##### E. Atribusi Resmi Gambar Edukasi Vulkanik (`DiscoveryModal.tsx`)
+- Menghubungkan visual materi ke tautan jurnal/portal berita resmi:
+  - Wedhus Gembel: `https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif`
+  - Peta KRB: `https://syawal88.wordpress.com/2010/11/17/dapatkah-gunung-mati-menjadi-gunung-aktif/`
+  - Banjir Lahar Dingin: `https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang`
+- Menampilkan badge klikable `📷 Sumber: ... ↗` langsung pada pojok kiri bawah foto, kotak rujukan panel kanan, footer modal Lightbox, dan ilustrasi aliran lahar `VolcanoPostLaharIllustration`.
+- Fallback multi-format `onError` menjaga gambar selalu tampil utuh jika salah satu file cadangan digunakan.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. **TypeScript Verification (`npx tsc -b`)**: 100% lulus tanpa kesalahan kompilasi (exit code 0).
+2. **Production Bundle Build (`npm run build`)**: Sukses 100% dalam 4.40 detik (exit code 0, 32 entri precache PWA valid, 4755.44 KiB).
+
+---
+
 > **Catatan Tim**: Seluruh riwayat dan perubahan ini telah disinkronkan ke dalam berkas dokumentasi utama ([`README.md`](./README.md), [`PRD.md`](./PRD.md), [`design.md`](./design.md), [`walkthrough.md`](./walkthrough.md), [`Dashboard.md`](./Dashboard.md), dan [`progress_report.md`](./progress_report.md)).
 
 
