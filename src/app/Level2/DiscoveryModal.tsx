@@ -5231,7 +5231,7 @@ function VolcanoResponseIllustration() {
               className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-rose-500/80 hover:border-rose-400 text-rose-300 hover:text-rose-200 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
               title="Buka sumber dokumentasi: Kompas.com"
             >
-              <span>📷 Sumber: Kompas.com ↗</span>
+              <span>Sumber: Kompas.com ↗</span>
             </a>
           </div>
         );
@@ -5265,7 +5265,7 @@ function VolcanoResponseIllustration() {
               className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-sky-400/80 hover:border-sky-300 text-sky-300 hover:text-sky-200 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
               title="Buka sumber dokumentasi: Detikcom"
             >
-              <span>📷 Sumber: Detikcom ↗</span>
+              <span>Sumber: Detikcom ↗</span>
             </a>
           </div>
         );
@@ -5292,7 +5292,7 @@ function VolcanoResponseIllustration() {
               className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-amber-400/80 hover:border-amber-300 text-amber-300 hover:text-amber-200 text-[10px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
               title="Buka sumber rujukan peta: syawal88.wordpress.com"
             >
-              <span>📷 Sumber: syawal88.wordpress.com ↗</span>
+              <span>Sumber: syawal88.wordpress.com ↗</span>
             </a>
           </div>
         );

@@ -99,32 +99,32 @@ const JourneyProgressTracker = forwardRef<
 
     return (
       <div
-        className={`pointer-events-none select-none font-pixel w-[min(94vw,560px)] mx-auto relative ${className}`}
+        className={`pointer-events-none select-none font-pixel w-[min(96vw,780px)] mx-auto relative ${className}`}
       >
         {/* Tooltip Hover Info (Mengambang saat kursor diarahkan ke node checkpoint) */}
         {hoveredIndex !== null && areas[hoveredIndex] && (
           <div
-            className="absolute -top-7 z-30 pointer-events-none -translate-x-1/2 transition-all duration-75"
+            className="absolute -top-10 sm:-top-11 z-30 pointer-events-none -translate-x-1/2 transition-all duration-75"
             style={{
               left: `${((hoveredIndex + 0.5) / totalAreas) * 100}%`,
             }}
           >
-            <div className="bg-slate-950/95 text-amber-200 border border-amber-400/80 px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-pixel whitespace-nowrap shadow-lg flex items-center gap-1">
-              <PixelIcon name={areas[hoveredIndex].iconName} size={10} />
-              <span>{areas[hoveredIndex].name}</span>
-              <span className="text-amber-400">({areas[hoveredIndex].metricLabel})</span>
+            <div className="bg-slate-950/95 text-amber-200 border-2 border-amber-400 px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-pixel whitespace-nowrap shadow-2xl flex items-center gap-1.5 backdrop-blur-md">
+              <PixelIcon name={areas[hoveredIndex].iconName} size={13} />
+              <span className="font-bold">{areas[hoveredIndex].name}</span>
+              <span className="text-amber-400 font-extrabold">({areas[hoveredIndex].metricLabel})</span>
             </div>
           </div>
         )}
 
         {/* ── TRACK BAR CONTAINER DENGAN AVATAR MARKER & CHECKPOINT NODES ── */}
-        <div className="relative pt-6 sm:pt-7 pb-4 px-2 sm:px-3">
+        <div className="relative pt-11 sm:pt-13 pb-5 sm:pb-6 px-3 sm:px-4">
           {/* 1. Track Bar Kapsul */}
-          <div className="relative h-2.5 sm:h-3 rounded-full bg-slate-950/85 border border-slate-700/80 shadow-[0_2px_8px_rgba(0,0,0,0.8),inset_0_1px_3px_rgba(0,0,0,0.9)]">
+          <div className="relative h-4 sm:h-5 rounded-full bg-slate-950/90 border-2 border-slate-700 shadow-[0_4px_12px_rgba(0,0,0,0.85),inset_0_2px_4px_rgba(0,0,0,0.9)]">
             {/* Dynamic Progress Fill Bar */}
             <div
               ref={fillBarRef}
-              className="absolute left-0 top-0 bottom-0 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.6)]"
+              className="absolute left-0 top-0 bottom-0 rounded-full shadow-[0_0_12px_rgba(34,197,94,0.7)]"
               style={{
                 width: `${fallbackPct}%`,
                 background:
@@ -148,32 +148,32 @@ const JourneyProgressTracker = forwardRef<
                 >
                   {/* Lingkaran Pin Checkpoint */}
                   <div
-                    className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center transition-all ${
+                    className={`w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all ${
                       isCompleted
-                        ? 'bg-emerald-600 border-2 border-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.9)] text-emerald-100 scale-95'
+                        ? 'bg-emerald-600 border-2.5 border-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.95)] text-emerald-100 scale-100'
                         : isCurrent
-                          ? 'bg-gradient-to-b from-amber-400 to-amber-600 border-2 border-yellow-200 shadow-[0_0_12px_rgba(251,191,36,0.95)] text-slate-950 scale-110 animate-pulse'
-                          : 'bg-slate-900/90 border border-slate-600/80 text-slate-400 opacity-75 hover:opacity-100 hover:scale-105'
+                          ? 'bg-gradient-to-b from-amber-400 to-amber-600 border-2.5 border-yellow-200 shadow-[0_0_16px_rgba(251,191,36,1)] text-slate-950 scale-115 animate-pulse'
+                          : 'bg-slate-900/95 border-2 border-slate-600/90 text-slate-300 opacity-80 hover:opacity-100 hover:scale-105'
                     }`}
                     title={`${area.name} (${area.metricLabel})`}
                   >
                     {isCompleted ? (
-                      <PixelIcon name="check" size={10} className="text-white drop-shadow-sm" />
+                      <PixelIcon name="check" size={13} className="text-white drop-shadow-sm" />
                     ) : isCurrent ? (
-                      <PixelIcon name={area.iconName} size={11} className="text-slate-950" />
+                      <PixelIcon name={area.iconName} size={15} className="text-slate-950" />
                     ) : (
-                      <PixelIcon name={area.iconName} size={9} className="text-slate-400" />
+                      <PixelIcon name={area.iconName} size={12} className="text-slate-300" />
                     )}
                   </div>
 
                   {/* Label Teks di Bawah Node (Metric) */}
                   <span
-                    className={`absolute -bottom-3.5 sm:-bottom-4 left-1/2 -translate-x-1/2 text-[7px] sm:text-[8px] whitespace-nowrap font-pixel pointer-events-none drop-shadow-[0_1px_2px_rgba(0,0,0,1)] ${
+                    className={`absolute -bottom-5 sm:-bottom-5.5 left-1/2 -translate-x-1/2 text-[9px] sm:text-[10px] md:text-[11px] whitespace-nowrap font-pixel pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,1)] ${
                       isCurrent
-                        ? 'text-yellow-300 font-bold'
+                        ? 'text-yellow-300 font-extrabold tracking-wide drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]'
                         : isCompleted
-                          ? 'text-emerald-300'
-                          : 'text-slate-400'
+                          ? 'text-emerald-300 font-bold'
+                          : 'text-slate-300 font-medium'
                     }`}
                   >
                     {area.metricLabel}
@@ -185,13 +185,13 @@ const JourneyProgressTracker = forwardRef<
             {/* 3. Real-Time Moving Character Marker (Avatar Siswa + Pointer Panah ke Bar) */}
             <div
               ref={markerRef}
-              className="absolute bottom-full mb-0.5 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none transition-none"
+              className="absolute bottom-full mb-1 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none transition-none"
               style={{ left: `${fallbackPct}%` }}
             >
               {/* Badge Metrik / Posisi Teks Real-Time */}
               <span
                 ref={markerLabelRef}
-                className="mb-0.5 px-1 sm:px-1.5 py-0.2 rounded bg-slate-950/95 border border-cyan-400/90 text-[7px] sm:text-[8px] text-cyan-200 font-pixel whitespace-nowrap shadow-md drop-shadow-[0_1px_2px_rgba(0,0,0,1)]"
+                className="mb-1 px-2 sm:px-2.5 py-0.5 rounded-md bg-slate-950/95 border-1.5 border-cyan-400/90 text-[9px] sm:text-[10px] md:text-[11px] font-bold text-cyan-200 font-pixel whitespace-nowrap shadow-lg drop-shadow-[0_2px_4px_rgba(0,0,0,1)]"
               >
                 {currentArea?.shortName}
               </span>
@@ -199,17 +199,17 @@ const JourneyProgressTracker = forwardRef<
               {/* Lingkaran Avatar Mini Siswa */}
               <div
                 ref={markerAvatarRef}
-                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-cyan-300 bg-slate-950 shadow-[0_0_10px_rgba(56,189,248,0.9)] overflow-hidden flex items-center justify-center shrink-0 transition-transform duration-75"
+                className="w-8 h-8 sm:w-9.5 sm:h-9.5 rounded-full border-2.5 border-cyan-300 bg-slate-950 shadow-[0_0_14px_rgba(56,189,248,1)] overflow-hidden flex items-center justify-center shrink-0 transition-transform duration-75"
               >
                 <PixelAvatarRenderer
                   config={avatarConfig}
-                  size={20}
+                  size={30}
                   bordered={false}
                 />
               </div>
 
               {/* Downward Triangle Pointer (▼) Menunjuk Tepat ke Track Bar */}
-              <div className="w-0 h-0 border-l-[3.5px] sm:border-l-[4px] border-l-transparent border-r-[3.5px] sm:border-r-[4px] border-r-transparent border-t-[5px] sm:border-t-[6px] border-t-cyan-300 drop-shadow-[0_0_4px_rgba(56,189,248,0.8)] -mt-0.5" />
+              <div className="w-0 h-0 border-l-[5px] sm:border-l-[6px] border-l-transparent border-r-[5px] sm:border-r-[6px] border-r-transparent border-t-[7px] sm:border-t-[8px] border-t-cyan-300 drop-shadow-[0_0_6px_rgba(56,189,248,0.9)] -mt-0.5" />
             </div>
           </div>
         </div>

@@ -1611,7 +1611,7 @@ export default function EarthDiveGame() {
       )}
 
       {/* ── 5.8 REAL-TIME JOURNEY PROGRESS TRACKER (Level 1: 8 Area Geologis) ── */}
-      <div className="absolute bottom-7 sm:bottom-8 lg:bottom-6 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+      <div className="absolute bottom-9 sm:bottom-10 lg:bottom-9 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
         <JourneyProgressTracker
           ref={journeyTrackerRef}
           totalAreas={8}
