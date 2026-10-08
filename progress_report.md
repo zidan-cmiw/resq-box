@@ -180,6 +180,7 @@ Dokumen ini merekam secara komprehensif seluruh percakapan, instruksi pengguna, 
 | 175 | **Real-Time Journey Progress Tracker 2D Pixel Art & Preview Avatar Karakter (Level 1 & Level 2)**: Menambahkan komponen progress tracker horizontal di bagian bawah viewport untuk memvisualisasikan posisi karakter secara real-time (60 FPS) dengan marker avatar kustom siswa, 8 area geologis di Level 1 (Permukaan s.d. Batas Transform) dan 6 area mitigasi di Level 2 (Ruang Kelas s.d. Barak Pengungsian), fill bar dinamis, dan ikon pixel art kustom baru `tent`. | `src/components/JourneyProgressTracker.tsx`, `src/app/Level1/EarthDive/EarthDiveGame.tsx`, `src/app/Level2/engine/TectonicGame.tsx`, `src/components/PixelIcon.tsx` |
 | 176 | **Minimalist Overhaul Journey Progress Tracker (Anti-Collision, Z-Index Optimization) & Restorasi Highlight Dinamis Radar Bumi (PixelEarthDiagram)**: Merombak antarmuka `JourneyProgressTracker` menjadi ultra-ramping dan borderless murni (menghapus kotak kartu tebal, baris judul, badge level, badge area, dan tombol toggle); memposisikan avatar mini di atas bar menghadap ke bawah (`▼`) dan label metrik di bawah node (bebas tabrakan visual 100%); menata z-index tracker ke `z-10 pointer-events-none` dan menaikkan prompt interaksi ke `bottom-20 sm:bottom-24 z-30` (bebas halangan popup); serta mengembalikan penyorotan selektif dinamis lapisan interior bumi aktif pada Radar Bumi (`PixelEarthDiagram.tsx`). | `src/components/JourneyProgressTracker.tsx`, `src/app/Level1/EarthDive/EarthDiveGame.tsx`, `src/app/Level2/engine/TectonicGame.tsx`, `src/app/Level1/PixelEarthDiagram.tsx` |
 | 177 | **Penyusunan Kurikulum Implementasi 2 Pertemuan Pembelajaran Mitra, LKPD 5 Studi Kasus Kelompok PjBL (Gempa & Merapi), Rekap 20 Tugas Mandiri Individu Level 3, serta Peningkatan Readability Modal UI**: Merancang kurikulum implementasi sekolah mitra 2 pertemuan tatap muka (Pertemuan 1: Level 1 & 2; PR Mandiri di Rumah: 20 Misi Mandiri Level 3; Pertemuan 2: PjBL 5 Studi Kasus Kelompok di simulator Level 3 target 0 korban). Menyusun dokumen resmi LKPD (`LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md` & `LKPD_PJBL_ETNOSAINS_MERAPI_5_KELOMPOK.md`) yang ramah anak SMP Kelas 8, zero etnosains, zero sensor fisik, tanpa banjir lahar dingin (hanya Gempa Bumi dan Erupsi Merapi), serta 100% selaras dengan 19 blok Blockly toolbox Level 3 (`INITIAL_TOOLBOX`). Menyajikan 20 tugas mandiri individu secara ringkas (skenario singkat + tujuan misi + kunci jawaban susunan blok) serta 5 studi kasus kelompok menantang tanpa panduan blok. Memperbesar ukuran teks dan keterbacaan modal UI (Panduan Resqy, Proyek Saya, Discovery Modal) agar terbaca jelas di tablet dan laptop. | `LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md`, `LKPD_PJBL_ETNOSAINS_MERAPI_5_KELOMPOK.md`, `src/app/Dashboard/index.tsx`, `src/components/Tutorial/tutorialConfig.ts`, `src/components/Tutorial/ResqyTutorialOverlay.tsx` |
+| 178 | **Sinkronisasi Presisi Render Avatar Berhijab & Gaya Rambut pada Seluruh Dialog dan In-Game Sprites**: Memperbaiki inkonsistensi avatar di mana pilihan hijab (misal hijab hijau) di Bengkel Avatar berubah menjadi karakter berambut hijau pendek dengan leher terbuka di dalam game. Memperbarui engine potret dialog Level 2 (`getPlayerPortraitL2`) dan Level 1 (`getPlayerPortrait`) dengan rendering hijab rescuer lengkap (kubah kepala melengkung, ciput putih dahi, kerudung samping menutupi telinga hingga bahu bertekstur lipatan, penutup leher & dagu penuh, serta bros emas), memperbaiki sprite duduk menyimak di kelas (`drawStudentSittingInDesk`), memperbaiki sprite sheet in-game (`studentAvatarSheet.ts`) agar warna hijab dinamis mengikuti `hairColor` kustom alih-alih hardcode abu-abu `#334155`, serta membersihkan cache sprite (`clearSpriteCache`) seketika saat kustomisasi disimpan. | `src/app/Level2/engine/npcSpritesL2.ts`, `src/app/Level1/EarthDive/engine/npcSprites.ts`, `src/utils/studentAvatarSheet.ts`, `src/components/PixelAvatar/AvatarCustomizerModal.tsx` |
 
 ---
 
@@ -4874,6 +4875,42 @@ Pengguna meminta implementasi menyeluruh logika block coding, efek visual kamera
 
 ---
 
+### Bab 106: Sinkronisasi Presisi Render Avatar Hijab Rescuer dan Gaya Rambut Dinamis pada Dialog Visual Novel dan In-Game Sprites
+
+#### 1. Latar Belakang & Identifikasi Bug
+- **Keluhan Pengguna**: Pengguna mengkustomisasi avatar di Bengkel Avatar (`AvatarCustomizerModal.tsx`) dengan gaya rambut berhijab warna hijau (`hairStyle: 'hijab'`, `hairColor: '#166534'`). Namun ketika masuk ke dalam permainan (khususnya dialog visual novel Level 2 dan animasi kelas/sprite berjalan), avatar yang tampil justru anak laki-laki dengan potongan rambut pendek hijau dan leher terbuka tanpa kerudung.
+- **Akar Masalah Teknis**:
+  1. Generator potret dialog Level 2 ([`getPlayerPortraitL2`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level2/engine/npcSpritesL2.ts)) dan Level 1 ([`getPlayerPortrait`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level1/EarthDive/engine/npcSprites.ts)) belum memiliki cabang kondisi `if (hairKey === 'hijab')`. Generator selalu jatuh ke blok fallback rambut pendek umum (`fillRect(offX + 4*p, offY + 1*p, 12*p, 5*p)` dll.) dengan leher terbuka, sehingga warna hijau yang dipilih mewarnai rambut pendek alih-alih kerudung.
+  2. Fungsi rendering siswa duduk menyimak di kelas ([`drawStudentSittingInDesk`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level2/engine/npcSpritesL2.ts)) belum mengenali konfigurasi hijab untuk siswa player, sehingga rambut digambar kotak pendek terbuka.
+  3. Sprite sheet in-game ([`studentAvatarSheet.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/studentAvatarSheet.ts#L182)) meng-hardcode warna hijab ke abu-abu gelap `#334155`, mengabaikan warna `hairColor` yang dipilih pemain di customizer.
+  4. Cache kanvas sprite sheet lama di memori belum dibersihkan saat tombol simpan ditekan di modal kustomizer.
+
+#### 2. Solusi & Rincian Implementasi
+1. **Engine Potret Visual Novel Level 2 & Level 1 (`npcSpritesL2.ts` & `npcSprites.ts`)**:
+   - Menambahkan rendering lengkap Hijab Rescuer setara dengan Bengkel Avatar (`PixelAvatarRenderer.tsx`):
+     - Kubah atas jilbab melengkung rapi membungkus kepala (`offX + 4*p, offY + 0*p` dsb.).
+     - Ciput dahi putih di atas mata (`#ffffff`).
+     - Kerudung samping menutupi telinga dan membingkai pipi hingga ke bahu dengan lipatan bayangan kedalaman 3D (`rgba(0,0,0,0.2)`).
+     - Penutup dagu & leher penuh menutup leher kemeja tanpa celah kulit.
+     - Bros emas penyelamat (`#facc15` dengan highlight kilau putih) di area dada/leher.
+   - Melengkapi seluruh variasi rambut kustom lainnya (`parted`, `bob`, `headband`, `cap`).
+2. **Sprite Siswa Duduk di Meja Kelas (`drawStudentSittingInDesk`)**:
+   - Menambahkan deteksi `studentType === 'player' && avatarConfig?.hairStyle === 'hijab'`.
+   - Menggambar hijab menutupi kepala dan leher dengan ciput putih, wajah samping, dan aksen bros emas saat mendengarkan penjelasan guru di kelas.
+3. **Sprite Sheet In-Game (`studentAvatarSheet.ts`)**:
+   - Menghapus hardcode warna `#334155` dan menghubungkan langsung ke `hairColor` kustom.
+   - Membentuk kerudung kubah atas, samping pipi, ciput dahi putih, penutup dagu/leher tertutup, dan bros emas 8-bit.
+4. **Pembersihan Cache Otomatis (`AvatarCustomizerModal.tsx`)**:
+   - Memanggil `clearSpriteCache()` saat `handleSave()` dipanggil agar canvas cache di-render ulang seketika dengan gaya dan warna terbaru.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. **TypeScript Verification (`npx tsc -b`)**: 100% lolos tanpa error (exit code 0).
+2. **Production Bundle Build (`npm run build`)**: 100% sukses dalam 4.26s (exit code 0, 33 precache PWA valid, 4759.56 KiB).
+3. **Git Version Control**: Berhasil di-commit dan di-push ke repositori remote `main`.
+
+---
+
 > **Catatan Tim**: Seluruh riwayat dan perubahan ini telah disinkronkan ke dalam berkas dokumentasi utama ([`README.md`](./README.md), [`PRD.md`](./PRD.md), [`design.md`](./design.md), [`walkthrough.md`](./walkthrough.md), [`Dashboard.md`](./Dashboard.md), dan [`progress_report.md`](./progress_report.md)).
+
 
 

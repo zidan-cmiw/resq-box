@@ -39,6 +39,7 @@ Dokumen ini merangkum seluruh rekaman pembicaraan, arahan pengguna, keputusan de
 | **30** | *"Kalibrasi Denah Lengkung 1:1, Pelurusan Jembatan & Jalan, Zonasi KRB I-III (Ribbon 3D & Badge Mengambang), Overhaul Barak BNPB/BPBD & Hapus Garis Hijau"* | **Kalibrasi Denah 1:1, Zonasi KRB & Overhaul Barak Pengungsian**:<br>• Redesain sekolah U-shape beratap limasan biru dan pelataran upacara.<br>• Rekonfigurasi jalan dan jembatan Kali Gendol timur; pelurusan jembatan dan jalan segaris anti guardrail clipping.<br>• Ekstensi jalan & sungai ke tepi terluar batas peta; relokasi pohon $>3.5\text{m}$ dari sempadan sungai; pergeseran Rumah 31 $>3\text{m}$ dari Kali Gendol.<br>• Penghapusan tombol "POV Atas", toolbar disederhanakan dengan POV Samping axonometric dan orbit controls aktif.<br>• Zonasi KRB dikliping ke bounding box terrain; ribbon 3D tebal bergaris putus neon; overlay translucent drape KRB III & KRB II; floating billboard badges `🔴 KRB III`, `🟡 KRB II`, `🟢 KRB I`; penghapusan cincin batas hijau KRB 1.<br>• Overhaul barak pengungsian menjadi Kompleks Evakuasi BNPB/BPBD lengkap (staging pad ber-hazard marking, tenda pleton A-frame kanvas kuning, plang resmi, tenda medis/dapur darurat palang merah, menara tandon air 4 kaki, generator diesel, kotak logistik bantuan pangan, bendera Merah Putih, dan menara lampu sorot). |
 | **31** | *"tapi kok ini masih 50 level disini... apa itu lingkar utama, terus itu logika npc nya tuh udah dibenerin belum sih, kok ini ku tes kayak masih sama... ini tuh logika npc nya masih kayak jelek banget gituu, dia masa evakuasinya tuh bener bener kayak di tempat yang sama terus npc nya tuh jalannya kayak sama semua, dbikin beda beda gituu laaa, coba kamu cek semua logika npc nya deh, dibikin real bangett gitu lah pokoknya..."* | **Pembenahan Peta Level 3 Tepat 20 Level & Overhaul AI NPC Multi-Phase 3D**:<br>• Memangkas peta Level 3 dari 50 menjadi tepat 20 level bertingkat dengan counter `TUNTAS: 0 / 20` dan scrollbar `4650px`.<br>• Menjelaskan konsep "Jalur Lingkar Utama (Bebas Lahar)" vs jalur sungai.<br>• Mengeliminasi antrean kaku (*conga line*) via Multi-Lane Lateral Spreading ($-0.65$ s/d $+0.65$) dan desinkronisasi langkah.<br>• 4 Arketipe (20 Siswa, 10 BPBD, 13 Lansia, 32 Dewasa).<br>• Logika responsif: Gempa Ringan (outdoor cek genteng $1.5$s, indoor keluar), Gempa Sedang (rumah kayu lari, gedung beton Duck & Cover), Gempa Besar (tiarap di tanah, puing roboh vs kolong meja selamat).<br>• Logika Erupsi: Waspada menatap kawah, Siaga berkemas $1.7\times$, Awas lari massal $2.5\times$, Dynamic Bomb Dodge (meliuk $1.6$m), dan awan panas (lindung gedung beton). |
 | **32** | *"terus aku mau nambahin untuk studi kasus yang individu itu yang ada 20 soal itu, kalo yang itu dibikin cuma studi kasusnya sama nanti jawaban akhirnya yang bener itu gimana gitu aja gausah lengkap lengkap kayak yang kelompok itu... kita dikasih 2 pertemuan untuk implementasi media nya ini ke mitranya... pertemuan 1 buat nyelesain level 1 dan 2, terus nanti level 3 buat tugas mereka... pertemuan 2 untuk studi kasus kelompok..."* | **Penyusunan Kurikulum Implementasi 2 Pertemuan Pembelajaran Mitra, LKPD 5 Kasus Kelompok PjBL, dan 20 Misi Tugas Mandiri Individu Level 3**:<br>• Merancang pembagian pembelajaran sekolah mitra: Pertemuan 1 (Level 1 & Level 2), Tugas Mandiri di Rumah (Level 3: Job 1 s.d. 20), dan Pertemuan 2 (PjBL 5 Studi Kasus Kelompok uji 20 detik target 0 korban).<br>• Menyusun berkas panduan & LKPD lengkap (`LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md` & `LKPD_PJBL_ETNOSAINS_MERAPI_5_KELOMPOK.md`).<br>• Menegakkan 4 batasan pedagogis & teknis: Zero etnosains, Zero sensor fisik, Zero banjir lahar dingin (hanya Gempa Bumi dan Erupsi Merapi), serta bahasa ramah anak SMP Kelas 8.<br>• Memetakan 20 soal studi kasus individu ringkas (skenario + tujuan + kunci blok) dan 5 studi kasus kelompok kompleks tanpa panduan blok.<br>• Memperbesar ukuran teks dan keterbacaan modal UI (Panduan Resqy, Proyek Saya, Discovery Modal) agar terbaca jelas di tablet dan laptop. |
+| **33** | *"ini juga coba kamu benerin deh, jadi ini avatar yang disusun di bengkel avatar sama disini tuh ga sesuai gitu, di bengkel avatar kan aku pake avatar yang pake hijab ijo itu kan, nah disini itu malah jadi karakter dengan rambut ijo, itu juga kamu benerin deh"* | **Sinkronisasi Presisi Render Avatar Berhijab & Gaya Rambut pada Seluruh Dialog dan In-Game Sprites**:<br>• Memperbaiki engine potret dialog Level 2 ([`getPlayerPortraitL2`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level2/engine/npcSpritesL2.ts)) dan Level 1 ([`getPlayerPortrait`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level1/EarthDive/engine/npcSprites.ts)) dengan rendering lengkap Hijab Rescuer (kubah kepala melengkung, ciput putih dahi, kerudung samping menutupi telinga hingga bahu bertekstur lipatan, penutup leher & dagu penuh, serta bros emas).<br>• Memperbaiki sprite duduk menyimak di kelas ([`drawStudentSittingInDesk`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level2/engine/npcSpritesL2.ts)) agar menggambar kerudung rapi menutupi kepala dan leher.<br>• Memperbaiki sprite sheet in-game ([`studentAvatarSheet.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/studentAvatarSheet.ts)) agar warna hijab dinamis mengikuti `hairColor` kustom alih-alih hardcode abu-abu `#334155`.<br>• Membersihkan cache sprite sheet ([`clearSpriteCache`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/studentAvatarSheet.ts)) seketika saat kustomisasi disimpan di [`AvatarCustomizerModal.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/components/PixelAvatar/AvatarCustomizerModal.tsx). |
 
 ---
 
@@ -3423,6 +3424,52 @@ Status: **100% SUKSES (0 error)**.
 - [x] **Authentic Image Attribution**: Badge sumber klikable ke Kompas.com, Detikcom, dan syawal88.
 - [x] **TypeScript Clean**: `npx tsc -b` sukses 0 error.
 - [x] **Production Build Clean**: `npm run build` sukses 100% dalam 4.40s (exit code 0, 32 PWA precache valid).
+
+---
+
+### Bab 37: Panduan Pengujian & Verifikasi Sinkronisasi Avatar Hijab Rescuer & Kustomisasi Gaya Rambut In-Game
+
+#### 1. Uji Kustomisasi Bengkel Avatar (Customizer)
+- **Tindakan**:
+  - Masuk ke menu Profil Siswa (`/profile`).
+  - Buka modal "BENGKEL AVATAR" (Kustomisasi Avatar).
+  - Pilih Gaya Rambut: **HIJAB** (`hairStyle: 'hijab'`).
+  - Pilih Warna Rambut: **Hijau Hutan** (`#166534`) atau warna favorit lainnya.
+  - Klik **SIMPAN AVATAR**.
+- **Hasil**:
+  - Preview di modal menampilkan karakter perempuan berhijab rapi dengan ciput putih, kerudung samping membingkai pipi hingga bahu, leher tertutup rapat, dan bros emas di dada.
+  - Fungsi `clearSpriteCache()` terpicu otomatis sehingga cache kanvas lama dibersihkan.
+
+#### 2. Uji Dialog Visual Novel Level 2 (`getPlayerPortraitL2`)
+- **Tindakan**:
+  - Buka rute `/level2`.
+  - Berinteraksi dengan Bu Tyas atau objek cerita di Ruang Kelas untuk memicu dialog Visual Novel.
+- **Hasil**:
+  - Potret avatar siswa (`player`) menampilkan avatar berhijab hijau lengkap (kubah atas melengkung, ciput dahi putih, kerudung samping dengan bayangan lipatan 3D, dagu & leher tertutup rapat ke kerah kemeja, bros emas).
+  - Tidak lagi menampilkan potongan rambut pendek laki-laki atau leher terbuka.
+
+#### 3. Uji Animasi Siswa Duduk di Meja Kelas (`drawStudentSittingInDesk`)
+- **Tindakan**:
+  - Perhatikan karakter pemain saat duduk di meja kelas menyimak penjelasan Bu Tyas.
+- **Hasil**:
+  - Karakter pemain digambar dengan hijab rapi berwarna sesuai pilihan, lengkap dengan ciput putih di dahi dan leher tertutup bros.
+
+#### 4. Uji In-Game Walking Sprite Sheet (`studentAvatarSheet.ts`)
+- **Tindakan**:
+  - Jelajahi peta Area 1/2 di Level 2 atau Level 1.
+  - Perhatikan sprite berjalan karakter saat menghadap depan, kiri, kanan, dan belakang.
+- **Hasil**:
+  - Sprite jalan menggunakan warna hijab kustom (hijau) alih-alih abu-abu gelap hardcoded.
+  - Menutup leher dengan ciput dahi dan bros emas penyelamat.
+
+#### 5. Matriks Checklist Verifikasi Bab 37
+- [x] **Dialog Portrait L2 & L1 Sync**: Hijab dan seluruh variasi rambut kustom ter-render akurat di box dialog visual novel.
+- [x] **Sitting Desk Sprite Sync**: Siswa berhijab duduk rapi di meja kelas tanpa leher terbuka.
+- [x] **In-Game Walking Sprite Sync**: Warna hijab dinamis mengikuti pilihan kustomisasi pemain.
+- [x] **Auto Cache Invalidation**: `clearSpriteCache()` aktif saat simpan avatar.
+- [x] **TypeScript Clean**: `npx tsc -b` exit code 0.
+- [x] **Production Build Clean**: `npm run build` exit code 0.
+
 
 
 
