@@ -291,7 +291,7 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             <div className="space-y-2.5">
               {suit.features.map((f, idx) => (
                 <div key={idx} className="p-3 sm:p-3.5 rounded-xl bg-slate-900/80 border border-white/15 flex items-start gap-3 shadow-sm">
-                  <span className="text-base sm:text-lg shrink-0 mt-0.5" style={{ color: suit.accentColor }}>✦</span>
+                  <span className="text-base sm:text-lg shrink-0 mt-0.5 font-medium" style={{ color: suit.accentColor }}>✦</span>
                   <div className="text-left">
                     <span className="font-black text-[15px] sm:text-base text-white block leading-snug">{f.label}</span>
                     <span className="text-[13px] sm:text-[15px] text-slate-200 font-medium leading-relaxed block mt-0.5">{f.desc}</span>

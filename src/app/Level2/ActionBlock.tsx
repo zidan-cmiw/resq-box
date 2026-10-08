@@ -99,7 +99,7 @@ export function DropSlot({ slotIndex, placedAction, isSubmitted, isCorrectSlot, 
           {/* Correct/Wrong icon after submit */}
           {isSubmitted && (
             <span
-              className={`material-symbols-outlined text-xl ${isCorrectSlot ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}
+              className={`material-symbols-outlined text-xl ${isCorrectSlot ? 'text-[#16A34A]' : 'text-[#DC2626]'} font-medium`}
             >
               {isCorrectSlot ? 'check_circle' : 'cancel'}
             </span>

@@ -951,7 +951,7 @@ export default function TectonicGame() {
             </button>
 
             {/* Sound Toggle */}
-            <button
+            <button aria-label="Nyalakan atau matikan suara"
               onClick={handleToggleSound}
               className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl border flex items-center justify-center cursor-pointer transition-all ${soundOn
                 ? 'bg-amber-500 text-slate-950 border-amber-300 shadow-[0_2px_0_#78350f]'
@@ -963,7 +963,7 @@ export default function TectonicGame() {
             </button>
 
             {/* Fullscreen Toggle */}
-            <button
+            <button aria-label="Masuk atau keluar dari layar penuh"
               onClick={handleToggleFullscreen}
               className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center cursor-pointer transition-all active:translate-y-0.5"
               title="Layar Penuh"
@@ -1180,7 +1180,7 @@ export default function TectonicGame() {
       </div>
 
       {/* ── 3. DISCREET KEYBOARD CONTROLS GUIDE (Desktop Bottom Persis Level 1) ── */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[12.5px] font-pixel text-slate-300 pointer-events-none z-10 select-none">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[12.5px] font-pixel text-slate-300 pointer-events-none z-10 select-none font-semibold">
         <span>← → Gerak</span>
         <span>↑ / [Spasi] Lompat</span>
         <span>[E] Interaksi</span>
@@ -1260,11 +1260,11 @@ export default function TectonicGame() {
               onPointerUp={() => handleMobileBtnUp('jump')}
               onPointerLeave={() => handleMobileBtnUp('jump')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-blue-700 to-blue-900 active:from-blue-600 active:to-blue-800 border-2 border-blue-400 text-blue-100 font-pixel text-[14.5px] sm:text-[13px] flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#1e3a8a] active:translate-y-0.5 cursor-pointer select-none"
+              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-blue-700 to-blue-900 active:from-blue-600 active:to-blue-800 border-2 border-blue-400 text-blue-100 font-pixel text-[14.5px] sm:text-[13px] flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#1e3a8a] active:translate-y-0.5 cursor-pointer select-none font-semibold"
               title="Lompat"
             >
               <span className="text-[15px] font-bold leading-none">▲</span>
-              <span className="text-[12.5px] font-pixel-title mt-0.5 tracking-wider">LONCAT</span>
+              <span className="text-[12.5px] font-pixel-title mt-0.5 tracking-wider font-semibold">LONCAT</span>
             </button>
 
             {/* Tombol Interaksi [E] AKSI */}
@@ -1273,11 +1273,11 @@ export default function TectonicGame() {
               onPointerUp={() => handleMobileBtnUp('interact')}
               onPointerLeave={() => handleMobileBtnUp('interact')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 border-amber-400 text-amber-50 font-pixel text-[14.5px] sm:text-[13px] flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#78350f] active:translate-y-0.5 cursor-pointer select-none"
+              className="touch-control w-14 h-12 sm:w-16 sm:h-13 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 border-amber-400 text-amber-50 font-pixel text-[14.5px] sm:text-[13px] flex flex-col items-center justify-center touch-none shadow-[0_3px_0_#78350f] active:translate-y-0.5 cursor-pointer select-none font-semibold"
               title="Interaksi (E)"
             >
               <span className="text-[13px] font-bold leading-none">[E]</span>
-              <span className="text-[12.5px] font-pixel-title mt-0.5 tracking-wider">AKSI</span>
+              <span className="text-[12.5px] font-pixel-title mt-0.5 tracking-wider font-semibold">AKSI</span>
             </button>
           </div>
         </div>
@@ -1300,7 +1300,7 @@ export default function TectonicGame() {
                 retroAudio.playSelect();
                 setIsGateLockedModalOpen(false);
               }}
-              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
+              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 font-medium"
             >
               <span>SIAP, SELESAIKAN TANTANGAN PENELITI DULU</span>
             </button>
@@ -1373,7 +1373,7 @@ export default function TectonicGame() {
                 retroAudio.playSelect();
                 setDiscoveryWarning(null);
               }}
-              className="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-[13px] font-pixel-title cursor-pointer active:translate-y-0.5"
+              className="w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-[13px] font-pixel-title cursor-pointer active:translate-y-0.5 font-semibold"
             >
               SIAP, AMATI TEMUAN DULU
             </button>
@@ -1397,7 +1397,7 @@ export default function TectonicGame() {
             </div>
 
             {/* Content text */}
-            <p className="font-pixel text-[14.5px] sm:text-[13px] text-[#291305] leading-relaxed font-medium whitespace-pre-line">
+            <p className="font-pixel text-[14.5px] sm:text-[13px] text-[#291305] leading-relaxed font-semibold whitespace-pre-line">
               {inWorldSign.text}
             </p>
 
@@ -1589,11 +1589,11 @@ export default function TectonicGame() {
               <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-slate-800">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full bg-red-500 animate-ping" />
-                  <span className="font-pixel-title text-[13px] sm:text-[15px] text-red-400">
+                  <span className="font-pixel-title text-[13px] sm:text-[15px] text-red-400 font-semibold">
                     TELEMETRI SEISMOGRAF POS PGA
                   </span>
                 </div>
-                <span className="px-2.5 py-0.5 rounded bg-red-950 text-red-300 font-pixel text-[13.5px] border border-red-800">
+                <span className="px-2.5 py-0.5 rounded bg-red-950 text-red-300 font-pixel text-[13.5px] border border-red-800 font-semibold">
                   KUIS AKSES KELUAR
                 </span>
               </div>
@@ -1611,7 +1611,7 @@ export default function TectonicGame() {
                 </svg>
               </div>
 
-              <p className="mt-2 text-[13px] sm:text-[15px] text-slate-300 leading-relaxed font-pixel">
+              <p className="mt-2 text-[13px] sm:text-[15px] text-slate-300 leading-relaxed font-pixel font-semibold">
                 <span className="text-amber-400 font-bold">SOAL:</span> Gelombang seismogram berfluktuasi <span className="text-red-400 font-bold">SANGAT RAPAT</span> tanpa jeda dan beramplitudo tinggi. Magma mendesak kuat ke permukaan. Status Merapi apakah ini? (4 Huruf)
               </p>
             </div>

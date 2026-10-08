@@ -155,7 +155,7 @@ export default function Mission2Before({ onComplete, isAlreadyCompleted = false 
               <PixelIcon name="backpack" size={18} />
               <span>Packing Tas Siaga Bencana (Emergency Go-Bag)</span>
             </h3>
-            <p className="text-[14.5px] text-amber-900">
+            <p className="text-[14.5px] text-amber-900 font-semibold">
               Pilih 8 perlengkapan yang benar-benar vital untuk bertahan hidup mandiri selama 72 jam pertama pasca bencana gempa dan erupsi. Hindari barang berat yang membebani evakuasi!
             </p>
           </div>
@@ -195,7 +195,7 @@ export default function Mission2Before({ onComplete, isAlreadyCompleted = false 
                 bagChecked
                   ? 'bg-emerald-100 border-emerald-500 text-emerald-900'
                   : 'bg-rose-100 border-rose-500 text-rose-900'
-              }`}
+              } font-semibold`}
             >
               {bagFeedback}
             </div>
@@ -236,7 +236,7 @@ export default function Mission2Before({ onComplete, isAlreadyCompleted = false 
             <h3 className="text-[13px] md:text-[15px] font-bold text-amber-950 mb-1">
               Menyusun Urutan Strategis Mitigasi Pra-Bencana
             </h3>
-            <p className="text-[14.5px] text-amber-900">
+            <p className="text-[14.5px] text-amber-900 font-semibold">
               Tempatkan kartu strategi berikut ke dalam urutan timeline yang paling logis dan efektif sebelum bencana tiba di Disaster City.
             </p>
           </div>
@@ -258,7 +258,7 @@ export default function Mission2Before({ onComplete, isAlreadyCompleted = false 
                     {slot.label}
                   </span>
                   {assignedId ? (
-                    <div className="p-3 rounded-lg bg-amber-900 text-amber-100 border border-amber-950 w-full shadow text-[13px]">
+                    <div className="p-3 rounded-lg bg-amber-900 text-amber-100 border border-amber-950 w-full shadow text-[13px] font-semibold">
                       <span className="font-bold block">
                         {assignedId === 'prep' && 'Penguatan Bangunan & Tas Siaga'}
                         {assignedId === 'warning' && 'Sensor Seismograf & Sirine EWS'}
@@ -273,13 +273,13 @@ export default function Mission2Before({ onComplete, isAlreadyCompleted = false 
                             return copy;
                           });
                         }}
-                        className="text-[12.5px] text-amber-300 underline mt-1 cursor-pointer block"
+                        className="text-[12.5px] text-amber-300 underline mt-1 cursor-pointer block font-semibold"
                       >
                         [Lepas Kartu]
                       </button>
                     </div>
                   ) : (
-                    <span className="text-[13.5px] text-amber-800/60 italic">
+                    <span className="text-[13.5px] text-amber-800/60 italic font-semibold">
                       [Klik tombol aksi di bawah untuk memasukkan kartu]
                     </span>
                   )}
@@ -321,7 +321,7 @@ export default function Mission2Before({ onComplete, isAlreadyCompleted = false 
                   >
                     <div>
                       <span className="font-bold text-[13px] text-amber-200 block mb-1">{card.title}</span>
-                      <p className="text-[13.5px] text-slate-300 mb-3">{card.desc}</p>
+                      <p className="text-[13.5px] text-slate-300 mb-3 font-semibold">{card.desc}</p>
                     </div>
                     {!isAssigned && (
                       <div className="flex gap-1.5 pt-1 border-t border-slate-700">

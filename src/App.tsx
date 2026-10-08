@@ -19,7 +19,7 @@ const Privacy = lazy(() => import('./app/Privacy'));
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-[#050813] flex items-center justify-center font-pixel text-amber-300 text-[13px]">
+    <div className="min-h-screen bg-[#050813] flex items-center justify-center font-pixel text-amber-300 text-[13px] font-semibold">
       MEMUAT...
     </div>
   );

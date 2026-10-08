@@ -98,7 +98,7 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
             MISI 4: AFTER DISASTER (TANGGAP DARURAT & PEMULIHAN)
           </span>
         </div>
-        <span className="px-3 py-1 rounded bg-slate-800 text-amber-300 font-pixel-title text-[13.5px]">
+        <span className="px-3 py-1 rounded bg-slate-800 text-amber-300 font-pixel-title text-[13.5px] font-semibold">
           SOP EVAKUASI PASCA BENCANA
         </span>
       </div>
@@ -109,7 +109,7 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
           <PixelIcon name="clipboard" size={18} />
           <span>Guncangan Utama Telah Mereda: Apa yang Harus Dilakukan?</span>
         </h3>
-        <p className="text-[14.5px] text-amber-900 leading-relaxed">
+        <p className="text-[14.5px] text-amber-900 leading-relaxed font-semibold">
           Setelah gempa utama atau luncuran awan panas mereda, ancaman belum sepenuhnya selesai! Terdapat bahaya
           gempa susulan (<em>aftershocks</em>), jalanan tertimbun reruntuhan genteng, dan kebocoran instalasi.
           Susunlah <strong>4 Prioritas Tanggap Darurat</strong> berikut dari yang paling mendesak (Prioritas 1)
@@ -136,10 +136,10 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
                 {stepData ? (
                   <div className="p-3 rounded-lg bg-amber-900 text-amber-100 border border-amber-950 shadow">
                     <span className="font-bold text-[13px] block mb-1">{stepData.title}</span>
-                    <p className="text-[13.5px] text-amber-200/90 leading-tight">{stepData.desc}</p>
+                    <p className="text-[13.5px] text-amber-200/90 leading-tight font-semibold">{stepData.desc}</p>
                   </div>
                 ) : (
-                  <span className="text-[13.5px] text-amber-800/60 italic block text-center py-6">
+                  <span className="text-[13.5px] text-amber-800/60 italic block text-center py-6 font-semibold">
                     [Belum Terisi]
                   </span>
                 )}
@@ -148,7 +148,7 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
               {stepData && (
                 <button
                   onClick={() => handleSelectStep(stepData.id)}
-                  className="text-[12.5px] text-rose-700 underline mt-2 self-center cursor-pointer"
+                  className="text-[12.5px] text-rose-700 underline mt-2 self-center cursor-pointer font-semibold"
                 >
                   Batal Pilih
                 </button>
@@ -192,7 +192,7 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
                       </span>
                     )}
                   </div>
-                  <p className="text-[13.5px] text-slate-300">{step.desc}</p>
+                  <p className="text-[13.5px] text-slate-300 font-semibold">{step.desc}</p>
                 </div>
               </button>
             );
@@ -207,7 +207,7 @@ export default function Mission4After({ onComplete, isAlreadyCompleted = false }
             isSuccess
               ? 'bg-emerald-100 border-emerald-500 text-emerald-950'
               : 'bg-rose-100 border-rose-500 text-rose-950'
-          }`}
+          } font-semibold`}
         >
           {feedback}
         </div>

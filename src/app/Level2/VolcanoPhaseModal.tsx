@@ -196,11 +196,11 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
         <div className="flex justify-center pt-1.5 border-t-2 border-[#b45309]/30">
           <button
             onClick={handleProceed}
-            className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center justify-center gap-2.5 transition-all"
+            className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center justify-center gap-2.5 transition-all font-medium"
           >
             <PixelIcon name="check" size={18} className="text-amber-200" />
             <span>{data.buttonText}</span>
-            <span className="text-lg">➔</span>
+            <span className="text-lg font-medium">➔</span>
           </button>
         </div>
       </div>

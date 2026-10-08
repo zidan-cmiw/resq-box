@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, type KeyboardEvent, type ReactNode } from 'react';
 
 interface InteractiveCardProps {
-  front: React.ReactNode;
-  back: React.ReactNode;
+  front: ReactNode;
+  back: ReactNode;
   frontClassName?: string;
   backClassName?: string;
   className?: string;
@@ -11,11 +11,26 @@ interface InteractiveCardProps {
 export default function InteractiveCard({ front, back, frontClassName = '', backClassName = '', className = '' }: InteractiveCardProps) {
   const [flipped, setFlipped] = useState(false);
 
+  // Kartu ini berfungsi sebagai tombol, jadi harus bisa dijangkau dan
+  // diaktifkan lewat keyboard (Tab + Enter/Spasi) — bukan hanya klik mouse.
+  const toggle = () => setFlipped(f => !f);
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggle();
+    }
+  };
+
   return (
     <div
-      className={`group cursor-pointer ${className}`}
+      role="button"
+      tabIndex={0}
+      aria-pressed={flipped}
+      aria-label={flipped ? 'Balikkan kembali kartu ke sisi depan' : 'Balikkan kartu untuk melihat penjelasan'}
+      className={`group cursor-pointer focus:outline-none focus-visible:ring-4 focus-visible:ring-amber-400 rounded-2xl ${className}`}
       style={{ perspective: '1000px' }}
-      onClick={() => setFlipped(f => !f)}
+      onClick={toggle}
+      onKeyDown={handleKeyDown}
     >
       <div
         className="relative w-full h-full transition-transform duration-600 ease-in-out"
@@ -31,7 +46,7 @@ export default function InteractiveCard({ front, back, frontClassName = '', back
           style={{ backfaceVisibility: 'hidden' }}
         >
           <div className="absolute top-3 right-3 opacity-50 group-hover:opacity-100 transition-opacity">
-            <span className="material-symbols-outlined text-[15px]">touch_app</span>
+            <span className="material-symbols-outlined text-[15px] font-semibold">touch_app</span>
           </div>
           {front}
         </div>
@@ -41,7 +56,7 @@ export default function InteractiveCard({ front, back, frontClassName = '', back
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           <div className="absolute top-3 right-3 opacity-50 group-hover:opacity-100 transition-opacity">
-            <span className="material-symbols-outlined text-[15px]">undo</span>
+            <span className="material-symbols-outlined text-[15px] font-semibold">undo</span>
           </div>
           {back}
         </div>

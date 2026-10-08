@@ -139,7 +139,7 @@ export default function PuzzleBoard({ scenario, onBack }: PuzzleBoardProps) {
             </button>
             <div className="flex-1">
               <div className="flex items-center gap-sm mb-xs">
-                <span className="material-symbols-outlined text-3xl text-on-surface">
+                <span className="material-symbols-outlined text-3xl text-on-surface font-medium">
                   {scenario.icon}
                 </span>
                 <div>
@@ -162,7 +162,7 @@ export default function PuzzleBoard({ scenario, onBack }: PuzzleBoardProps) {
             ${isPerfect ? 'bg-[#DCFCE7]' : score >= scenario.correctOrder.length / 2 ? 'bg-[#FEF3C7]' : 'bg-[#FEE2E2]'}`}
           >
             <div className="flex items-center gap-sm">
-              <span className="material-symbols-outlined text-2xl">
+              <span className="material-symbols-outlined text-2xl font-medium">
                 {isPerfect ? 'emoji_events' : score >= scenario.correctOrder.length / 2 ? 'thumb_up' : 'sentiment_dissatisfied'}
               </span>
               <div>

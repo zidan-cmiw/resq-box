@@ -19,7 +19,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
 
   if (!mission) {
     return (
-      <aside aria-label="Panduan Misi" className="w-80 max-w-[85vw] bg-[#16120e] border-r-2 border-amber-950 flex items-center justify-center text-amber-200/60 p-4 font-pixel text-[13px]">
+      <aside aria-label="Panduan Misi" className="w-80 max-w-[85vw] bg-[#16120e] border-r-2 border-amber-950 flex items-center justify-center text-amber-200/60 p-4 font-pixel text-[13px] font-semibold">
         <p>Misi tidak ditemukan.</p>
       </aside>
     );
@@ -167,7 +167,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
               : 'bg-[#fff1f2] border-[#e11d48] text-[#be123c]'
               }`}
           >
-            <span className="text-lg shrink-0 mt-0.5">
+            <span className="text-lg shrink-0 mt-0.5 font-medium">
  {isPassed ? '' : '⚠'}
             </span>
             <div className="flex-1">

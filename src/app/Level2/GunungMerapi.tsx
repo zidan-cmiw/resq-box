@@ -187,7 +187,7 @@ function EruptionSimulator() {
             : 'bg-gradient-to-r from-red-600 to-orange-500 text-white hover:from-red-500 hover:to-orange-400 shadow-lg hover:shadow-xl'
         }`}
       >
-        <span className="material-symbols-outlined text-lg">volcano</span>
+        <span className="material-symbols-outlined text-lg font-medium">volcano</span>
         {isActive ? `Erupsi berlangsung... (Fase ${phase + 1}/5)` : 'Simulasikan Erupsi!'}
       </button>
     </div>
@@ -224,7 +224,7 @@ export default function GunungMerapi() {
       {/* Interactive Volcano Anatomy */}
       <div>
         <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-lg">science</span>
+          <span className="material-symbols-outlined text-primary text-lg font-medium">science</span>
           Anatomi Gunung Api (Klik bagian untuk menjelajahi)
         </h4>
         <div className="flex flex-col sm:flex-row gap-4">
@@ -305,14 +305,14 @@ export default function GunungMerapi() {
                 <div className="flex justify-between items-start">
                   <h4 className="font-bold text-on-surface">{part.name}</h4>
                   <button onClick={() => setActivePart(null)} className="p-1 rounded-full hover:bg-surface-variant">
-                    <span className="material-symbols-outlined text-[15px] text-on-surface-variant">close</span>
+                    <span className="material-symbols-outlined text-[15px] text-on-surface-variant font-semibold">close</span>
                   </button>
                 </div>
-                <p className="text-[15px] text-on-surface-variant mt-2 leading-relaxed">{part.desc}</p>
+                <p className="text-[15px] text-on-surface-variant mt-2 leading-relaxed font-semibold">{part.desc}</p>
               </div>
             ) : (
               <div className="h-full flex items-center justify-center p-4 rounded-xl border border-dashed border-outline-variant/30 text-center">
-                <p className="text-[13px] text-on-surface-variant">Klik bagian gunung api pada diagram untuk melihat penjelasan.</p>
+                <p className="text-[13px] text-on-surface-variant font-semibold">Klik bagian gunung api pada diagram untuk melihat penjelasan.</p>
               </div>
             )}
 
@@ -337,7 +337,7 @@ export default function GunungMerapi() {
       {/* Eruption Simulator */}
       <div>
         <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-lg">volcano</span>
+          <span className="material-symbols-outlined text-primary text-lg font-medium">volcano</span>
           Simulasi Erupsi
         </h4>
         <EruptionSimulator />
@@ -346,7 +346,7 @@ export default function GunungMerapi() {
       {/* Danger Zone Map */}
       <div>
         <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-lg">crisis_alert</span>
+          <span className="material-symbols-outlined text-primary text-lg font-medium">crisis_alert</span>
           Zona Bahaya Gunung Merapi
         </h4>
         <div className="rounded-2xl bg-gradient-to-b from-stone-900 to-stone-800 border border-outline-variant/20 p-4">
@@ -409,7 +409,7 @@ export default function GunungMerapi() {
           {/* Zone detail */}
           {activeZone && (
             <div className="mt-3 p-3 rounded-xl bg-black/30 border border-white/10 animate-fade-in">
-              <p className="text-[13px] text-white/80 leading-relaxed">
+              <p className="text-[13px] text-white/80 leading-relaxed font-semibold">
                 {DANGER_ZONES.find(z => z.id === activeZone)?.desc}
               </p>
             </div>
@@ -420,7 +420,7 @@ export default function GunungMerapi() {
       {/* Warning Signs Timeline */}
       <div>
         <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-lg">timeline</span>
+          <span className="material-symbols-outlined text-primary text-lg font-medium">timeline</span>
           Tanda-tanda Erupsi
         </h4>
         <div className="relative">
@@ -440,7 +440,7 @@ export default function GunungMerapi() {
                   }`}
                   style={{ backgroundColor: i <= activeSign ? s.color : 'rgba(255,255,255,0.1)' }}
                 >
-                  <span className="material-symbols-outlined text-white text-[15px]">{s.icon}</span>
+                  <span className="material-symbols-outlined text-white text-[15px] font-semibold">{s.icon}</span>
                 </button>
                 <span className={`text-[12.5px] mt-1.5 font-bold text-center leading-tight ${i === activeSign ? 'text-on-surface' : 'text-on-surface-variant'}`}>
                   {s.title}
@@ -452,11 +452,11 @@ export default function GunungMerapi() {
           {/* Detail card */}
           <div key={activeSign} className="p-4 rounded-xl border animate-fade-in" style={{ borderColor: WARNING_SIGNS[activeSign].color + '40', backgroundColor: WARNING_SIGNS[activeSign].color + '10' }}>
             <div className="flex items-center gap-2 mb-2">
-              <span className="material-symbols-outlined text-lg" style={{ color: WARNING_SIGNS[activeSign].color }}>{WARNING_SIGNS[activeSign].icon}</span>
+              <span className="material-symbols-outlined text-lg font-medium" style={{ color: WARNING_SIGNS[activeSign].color }}>{WARNING_SIGNS[activeSign].icon}</span>
               <span className="font-bold text-on-surface text-[15px]">{WARNING_SIGNS[activeSign].title}</span>
               <span className="ml-auto text-[13.5px] text-on-surface-variant font-bold">Fase {activeSign + 1}/{WARNING_SIGNS.length}</span>
             </div>
-            <p className="text-[15px] text-on-surface-variant leading-relaxed">{WARNING_SIGNS[activeSign].desc}</p>
+            <p className="text-[15px] text-on-surface-variant leading-relaxed font-semibold">{WARNING_SIGNS[activeSign].desc}</p>
           </div>
         </div>
       </div>

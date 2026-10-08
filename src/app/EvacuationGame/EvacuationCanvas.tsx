@@ -32,18 +32,18 @@ export default function EvacuationCanvas() {
           <h2 className="font-pixel-title text-[15px] font-black mb-2">
             MODE HEMAT DATA AKTIF
           </h2>
-          <p className="font-pixel text-[14.5px] leading-relaxed mb-3">
+          <p className="font-pixel text-[14.5px] leading-relaxed mb-3 font-semibold">
             Tampilan peta 3D tidak dimuat agar hemat kuota dan lebih cepat di
             perangkat ini. Simulasi evakuasi tetap berjalan — warga digital
             merespons aksi mitigasimu seperti biasa.
           </p>
-          <p className="font-pixel text-[13.5px] leading-relaxed opacity-80 mb-4">
+          <p className="font-pixel text-[13.5px] leading-relaxed opacity-80 mb-4 font-semibold">
             Ingin melihat peta 3D? Matikan mode hemat data di halaman Profil,
             lalu buka kembali halaman ini.
           </p>
           <a
             href="/profile"
-            className="pixel-btn-wood-plank inline-block px-4 py-2.5 text-[13.5px]"
+            className="pixel-btn-wood-plank inline-block px-4 py-2.5 text-[13.5px] font-semibold"
           >
             BUKA PENGATURAN PROFIL
           </a>

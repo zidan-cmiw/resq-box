@@ -282,7 +282,7 @@ export default function Profile() {
               <h1 className="font-pixel-title text-base md:text-lg font-bold text-amber-950">
                 PROFIL RESQ-TEAM
               </h1>
-              <p className="text-[13px] text-amber-900/80 font-pixel">
+              <p className="text-[13px] text-amber-900/80 font-pixel font-semibold">
                 Identitas Siswa, Kustomisasi Avatar & Rekam Jejak Belajar
               </p>
             </div>
@@ -305,10 +305,10 @@ export default function Profile() {
           <div className="flex items-center gap-3">
             <PixelAvatarRenderer config={customAvatar} size={48} animate={false} />
             <div>
-              <span className="font-pixel-title text-[13px] text-amber-950 block">
+              <span className="font-pixel-title text-[13px] text-amber-950 block font-semibold">
                 FOTO PROFIL PIXEL CUSTOM
               </span>
-              <p className="text-[14.5px] text-amber-900">
+              <p className="text-[14.5px] text-amber-900 font-semibold">
                 Ubah warna kulit, gaya rambut, seragam, mata, dan aksesorismu!
               </p>
             </div>
@@ -395,7 +395,7 @@ export default function Profile() {
                 <span className="text-[13px] font-bold text-amber-950 block">
                   MODE HEMAT DATA
                 </span>
-                <span className="text-[13.5px] text-amber-900/80 leading-snug block">
+                <span className="text-[13.5px] text-amber-900/80 leading-snug block font-semibold">
                   {describeReason(dataSaver.reason)}
                 </span>
               </div>
@@ -427,7 +427,7 @@ export default function Profile() {
               ))}
             </div>
 
-            <p className="text-[13px] text-amber-900/75 leading-relaxed">
+            <p className="text-[13px] text-amber-900/75 leading-relaxed font-semibold">
               Materi pelajaran tetap lengkap. Yang diringankan hanya tampilan:
               scene 3D gunung dan animasi berat tidak dimuat, sehingga lebih cepat
               dan lebih hemat kuota.
@@ -441,7 +441,7 @@ export default function Profile() {
                 <span className="text-[13px] font-bold text-amber-950 block">
                   GANTI PASSWORD AKUN SISWA
                 </span>
-                <span className="text-[13.5px] text-amber-900/80">
+                <span className="text-[13.5px] text-amber-900/80 font-semibold">
                   Ubah password untuk login akunmu (kosongkan jika tidak ingin ganti password)
                 </span>
               </div>
@@ -466,7 +466,7 @@ export default function Profile() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Ketik password baru..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-[13px] shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-600"
+                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-[13px] shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-600 font-semibold"
                 />
               </div>
               <div>
@@ -478,7 +478,7 @@ export default function Profile() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Ulangi password baru..."
-                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-[13px] shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-600"
+                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-[13px] shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-600 font-semibold"
                 />
               </div>
             </div>
@@ -487,18 +487,18 @@ export default function Profile() {
           {/* Tingkat Kesiapsiagaan / Level Progress Banner */}
           <div id="tour-profile-readiness" className="p-3 bg-amber-950 text-amber-100 rounded-xl border-2 border-amber-950 shadow-[0_3px_0_#231206]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[13px] font-pixel-title text-amber-400">
+              <span className="text-[13px] font-pixel-title text-amber-400 font-semibold">
                 TINGKAT KESIAPSIAGAAN:
               </span>
               <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[13.5px] font-pixel-title font-bold">
                 LEVEL {unlockedLevel} / 3
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-center text-[13.5px]">
+            <div className="grid grid-cols-3 gap-2 text-center text-[13.5px] font-semibold">
               <div className={`p-2 rounded border ${unlockedLevel >= 1 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900 border-slate-800 text-slate-600'}`}>
                 <div className="font-bold">STAGE 1</div>
                 <div className="truncate">Earth Explorer</div>
-                <div className="text-[12.5px] text-emerald-400 mt-0.5 flex items-center justify-center gap-1">
+                <div className="text-[12.5px] text-emerald-400 mt-0.5 flex items-center justify-center gap-1 font-semibold">
                   <PixelIcon name="check" size={10} />
                   <span>Terbuka</span>
                 </div>
@@ -506,7 +506,7 @@ export default function Profile() {
               <div className={`p-2 rounded border ${unlockedLevel >= 2 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
                 <div className="font-bold">STAGE 2</div>
                 <div className="truncate">Disaster Analyst</div>
-                <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1">
+                <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1 font-semibold">
                   {unlockedLevel >= 2 ? (
                     <>
                       <PixelIcon name="check" size={10} />
@@ -523,7 +523,7 @@ export default function Profile() {
               <div className={`p-2 rounded border ${unlockedLevel >= 3 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
                 <div className="font-bold">STAGE 3</div>
                 <div className="truncate">Simulation Game</div>
-                <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1">
+                <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1 font-semibold">
                   {unlockedLevel >= 3 ? (
                     <>
                       <PixelIcon name="check" size={10} />
@@ -544,7 +544,7 @@ export default function Profile() {
           <div id="tour-profile-actions" className="pt-2 flex flex-col gap-2">
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-pixel-title text-[15px] tracking-wider border-3 border-amber-950 shadow-[0_5px_0_#231206] transition-transform active:translate-y-1 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-pixel-title text-[15px] tracking-wider border-3 border-amber-950 shadow-[0_5px_0_#231206] transition-transform active:translate-y-1 cursor-pointer flex items-center justify-center gap-2 font-semibold"
             >
               <span>SIMPAN PROFIL</span>
               <PixelIcon name="check" size={16} />

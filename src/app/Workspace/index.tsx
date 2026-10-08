@@ -16,7 +16,7 @@ class CanvasErrorBoundary extends Component<{ children: ReactNode }, { hasError:
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel p-4 bg-amber-50">
+        <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel p-4 bg-amber-50 font-semibold">
           <span>TERJADI KENDALA PADA TAMPILAN PETA DIORAMA.</span>
           <button
             onClick={() => this.setState({ hasError: false })}
@@ -560,7 +560,7 @@ export default function Workspace() {
               retroAudio.playSelect();
               navigate('/level3');
             }}
-            className="pixel-btn-wood-compact text-[13px] sm:text-[15px] py-2 px-3 text-amber-100 hover:text-white flex items-center gap-1.5 shrink-0 shadow-sm"
+            className="pixel-btn-wood-compact text-[13px] sm:text-[15px] py-2 px-3 text-amber-100 hover:text-white flex items-center gap-1.5 shrink-0 shadow-sm font-semibold"
             title="Kembali ke Peta Level 3"
           >
             <span className="hidden sm:inline">PETA LEVEL 3</span>
@@ -574,10 +574,10 @@ export default function Workspace() {
               }}
               className={`pixel-btn-wood-compact text-[13px] sm:text-[15px] py-2 px-2.5 flex items-center gap-1 shrink-0 shadow-sm ${
                 showMissionPanel ? '!bg-[#78350f] text-amber-200 ring-2 ring-amber-400' : 'text-amber-100'
-              }`}
+              } font-semibold`}
               title="Tampilkan / Sembunyikan Panduan Misi"
             >
-              <span className="material-symbols-outlined text-[15px]">assignment</span>
+              <span className="material-symbols-outlined text-[15px] font-semibold">assignment</span>
               <span className="hidden sm:inline">MISI</span>
             </button>
           )}
@@ -597,7 +597,7 @@ export default function Workspace() {
                   </span>
                 )}
               </div>
-              <p className="text-[13px] text-[#78350f]/90 hidden sm:block font-sans truncate max-w-xs md:max-w-md font-medium">
+              <p className="text-[13px] text-[#78350f]/90 hidden sm:block font-sans truncate max-w-xs md:max-w-md font-semibold">
                 {activeMission ? activeMission.scenario : 'Rancang dan uji logika sistem mitigasi'}
               </p>
             </div>
@@ -629,7 +629,7 @@ export default function Workspace() {
             {showWsModal && wsStatus !== 'connected' && (
               <div className="absolute top-full right-0 mt-2 w-72 bg-[#fffbeb] border-2 border-[#b45309] rounded-xl shadow-2xl p-3.5 z-50 font-sans text-[#1c1917]">
                 <h4 className="font-bold text-[13px] text-[#78350f] mb-1 font-pixel">Alamat IP Diorama (WiFi)</h4>
-                <p className="text-[13.5px] text-[#451a03] mb-2 leading-relaxed font-medium">
+                <p className="text-[13.5px] text-[#451a03] mb-2 leading-relaxed font-semibold">
                   Hubungkan ke WiFi <b>DIORAMA_ESP32</b> (Pass: 12345678). IP default: <b>192.168.4.1</b> (Port 81).
                 </p>
                 <div className="flex flex-col gap-2">
@@ -734,7 +734,7 @@ export default function Workspace() {
           {/* TOP: Evacuation Game View (Kiri: Kanvas 3D Merapi, Kanan: Telemetri Digital Twin Sesuai SS 3 & SS 2) */}
           <section className={`${isMapExpanded ? 'h-[72vh]' : 'h-[44vh]'} w-full shrink-0 border-b-4 border-[#78350f] shadow-md relative z-10 bg-[#060913] transition-all duration-300 flex overflow-hidden`}>
             {/* Mobile Tab Switcher for Top Section */}
-            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[13.5px] font-pixel">
+            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[13.5px] font-pixel font-semibold">
               <button
                 onClick={() => setTopTabMobile('canvas')}
                 className={`px-2 py-0.5 rounded font-bold transition-all ${
@@ -757,7 +757,7 @@ export default function Workspace() {
             <div id="tour-ws-canvas" className={`flex-1 h-full relative overflow-hidden ${topTabMobile === 'telemetry' ? 'hidden md:block' : 'block'}`}>
               <CanvasErrorBoundary>
                 <Suspense fallback={
-                  <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel">
+                  <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel font-semibold">
                     <span>MEMUAT PETA DIORAMA 3D MITIGASI BENCANA...</span>
                   </div>
                 }>
@@ -775,7 +775,7 @@ export default function Workspace() {
           {/* BOTTOM: Blockly Workspace & Right Activity Console */}
           <section className="flex-1 flex overflow-hidden relative isolate bg-[#fefce8] z-0">
             {/* Mobile Tab Switcher for Bottom Section */}
-            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[13.5px] font-pixel">
+            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[13.5px] font-pixel font-semibold">
               <button
                 onClick={() => setBottomTabMobile('editor')}
                 className={`px-2 py-0.5 rounded font-bold transition-all ${

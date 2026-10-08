@@ -127,7 +127,7 @@ export default function Mission5BuildPlan({ onComplete, isAlreadyCompleted = fal
             MISI 5: BUILD YOUR MITIGATION PLAN (TATA RUANG KESELAMATAN KOTA)
           </span>
         </div>
-        <span className="px-3 py-1 rounded bg-slate-800 text-amber-300 font-pixel-title text-[13.5px]">
+        <span className="px-3 py-1 rounded bg-slate-800 text-amber-300 font-pixel-title text-[13.5px] font-semibold">
           SIMULASI EVAKUASI WARGA (NPC)
         </span>
       </div>
@@ -138,7 +138,7 @@ export default function Mission5BuildPlan({ onComplete, isAlreadyCompleted = fal
           <PixelIcon name="map" size={18} />
           <span>Rancang Tata Letak Fasilitas Mitigasi Bencana</span>
         </h3>
-        <p className="text-[14.5px] text-amber-900 leading-relaxed">
+        <p className="text-[14.5px] text-amber-900 leading-relaxed font-semibold">
           Sebagai Chief Disaster Analyst, rancang posisi 4 fasilitas keselamatan di titik strategis Disaster City.
           Setelah selesai, jalankan <strong>TEST PLAN</strong> untuk mensimulasikan rute evakuasi 40 warga menuju Titik Kumpul Aman!
         </p>
@@ -154,7 +154,7 @@ export default function Mission5BuildPlan({ onComplete, isAlreadyCompleted = fal
             >
               <div>
                 <span className="text-[13px] font-bold text-amber-950 block mb-1">{slot.name}</span>
-                <p className="text-[13.5px] text-amber-800 mb-3 italic">Tugas: {slot.recommendedRole}</p>
+                <p className="text-[13.5px] text-amber-800 mb-3 italic font-semibold">Tugas: {slot.recommendedRole}</p>
 
                 {/* Assigned item badge */}
                 <div className="p-2.5 rounded-lg bg-white border border-amber-900/20 mb-3">
@@ -205,20 +205,20 @@ export default function Mission5BuildPlan({ onComplete, isAlreadyCompleted = fal
 
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
-              <span className="text-[13.5px] text-slate-400 block">Total Warga Terancam</span>
+              <span className="text-[13.5px] text-slate-400 block font-semibold">Total Warga Terancam</span>
               <span className="text-base font-bold text-slate-100">{simResult.totalResidents} Warga</span>
             </div>
             <div className="p-2.5 rounded-lg bg-emerald-950 border border-emerald-500/40">
-              <span className="text-[13.5px] text-emerald-400 block">Berhasil Mencapai Safe Zone</span>
+              <span className="text-[13.5px] text-emerald-400 block font-semibold">Berhasil Mencapai Safe Zone</span>
               <span className="text-base font-bold text-emerald-300">✓ {simResult.safeCount} Warga</span>
             </div>
             <div className="p-2.5 rounded-lg bg-amber-950 border border-amber-500/40">
-              <span className="text-[13.5px] text-amber-400 block">Mengalami Keterlambatan</span>
+              <span className="text-[13.5px] text-amber-400 block font-semibold">Mengalami Keterlambatan</span>
               <span className="text-base font-bold text-amber-300">{simResult.delayedCount} Warga</span>
             </div>
           </div>
 
-          <p className="text-[14.5px] text-slate-300">
+          <p className="text-[14.5px] text-slate-300 font-semibold">
             {simResult.scorePercent >= 80
               ? 'Luar biasa! Penempatan fasilitas mitigasi sangat strategis. Sebagian besar warga berhasil menyelamatkan diri sebelum bahaya melanda.'
               : 'Tata letak fasilitas masih menyisakan titik rawan. Evaluasi kembali penempatan sirine EWS di dekat lereng dan pos medis di dekat jalur utama!'}
@@ -233,19 +233,19 @@ export default function Mission5BuildPlan({ onComplete, isAlreadyCompleted = fal
         </span>
 
         <div className="flex items-center gap-3">
-          <button
+          <button aria-label="Uji rencana mitigasi"
             onClick={handleTestPlan}
             disabled={!allAssigned || isSimulating}
             className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-[13px] font-pixel-title font-bold border-2 border-amber-950 shadow-[0_4px_0_#78350f] cursor-pointer flex items-center gap-2 active:translate-y-0.5"
           >
             {isSimulating ? (
               <>
-                <span className="material-symbols-outlined text-[15px] animate-spin">sync</span>
+                <span className="material-symbols-outlined text-[15px] animate-spin font-semibold">sync</span>
                 <span>MENJALANKAN SIMULASI NPC...</span>
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-[15px]">play_arrow</span>
+                <span className="material-symbols-outlined text-[15px] font-semibold">play_arrow</span>
                 <span>TEST PLAN (SIMULASIKAN EVAKUASI)</span>
               </>
             )}

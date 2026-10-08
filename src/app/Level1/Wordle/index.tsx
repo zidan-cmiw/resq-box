@@ -234,7 +234,7 @@ export default function Wordle({
           </div>
 
           <div className="space-y-2.5 w-full">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md font-semibold">
               GERBANG TERBUKA!
             </span>
             <h3 className="font-pixel-title text-base sm:text-lg md:text-xl text-amber-950 pt-1 font-bold">
@@ -251,7 +251,7 @@ export default function Wordle({
               onSuccess?.();
               onClose?.();
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center"
+            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center font-medium"
           >
             BUKA AKSES TURUN ▼
           </button>
@@ -270,7 +270,7 @@ export default function Wordle({
           </div>
 
           <div className="space-y-2.5 w-full">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md font-semibold">
               MINI CHALLENGE SELESAI!
             </span>
             <h3 className="font-pixel-title text-base sm:text-lg md:text-xl text-amber-950 pt-1 font-bold">
@@ -287,7 +287,7 @@ export default function Wordle({
               onSuccess?.();
               onClose();
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center"
+            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center font-medium"
           >
             KEMBALI KE PENJELAJAHAN ➔
           </button>
@@ -308,7 +308,7 @@ export default function Wordle({
 
         {/* Victory Header */}
         <div className="space-y-2 w-full">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow font-semibold">
             STAGE 1 CLEARED
           </span>
           <h3 className="font-pixel-title text-base sm:text-lg md:text-xl text-amber-950 pt-1 font-bold">
@@ -341,7 +341,7 @@ export default function Wordle({
               retroAudio.playSelect();
               navigate('/level2');
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_5px_0_#064e3b] transition-transform active:translate-y-0.5 cursor-pointer text-center"
+            className="w-full py-4 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_5px_0_#064e3b] transition-transform active:translate-y-0.5 cursor-pointer text-center font-medium"
           >
             LANJUT KE LEVEL 2 ➔
           </button>
@@ -493,7 +493,7 @@ export default function Wordle({
           </div>
           <button
             onClick={handleNextQuestion}
-            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-3 border-emerald-950 shadow-[0_3px_0_#064e3b] cursor-pointer whitespace-nowrap active:translate-y-0.5"
+            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-3 border-emerald-950 shadow-[0_3px_0_#064e3b] cursor-pointer whitespace-nowrap active:translate-y-0.5 font-semibold"
           >
             {currentQIdx < questions.length - 1 ? 'SOAL BERIKUTNYA ➔' : 'SELESAI ✓'}
           </button>
@@ -512,7 +512,7 @@ export default function Wordle({
           </div>
           <button
             onClick={handleRetryCurrent}
-            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-pixel-title text-[13px] sm:text-[15px] border-3 border-rose-950 shadow-[0_3px_0_#881337] cursor-pointer whitespace-nowrap active:translate-y-0.5"
+            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-pixel-title text-[13px] sm:text-[15px] border-3 border-rose-950 shadow-[0_3px_0_#881337] cursor-pointer whitespace-nowrap active:translate-y-0.5 font-semibold"
           >
             COBA LAGI ↺
           </button>

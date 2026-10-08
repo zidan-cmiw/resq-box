@@ -176,7 +176,7 @@ export default function SensorPanel() {
           <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-ping" />
           <div>
             <div className="font-pixel text-[13px] font-bold text-[#451a03]">Telemetri Digital Twin</div>
-            <div className="text-[13.5px] text-[#78350f] font-medium">Monitoring Real-time Merapi & EWS</div>
+            <div className="text-[13.5px] text-[#78350f] font-semibold">Monitoring Real-time Merapi & EWS</div>
           </div>
         </div>
         <div className="text-[13.5px] font-mono font-bold px-2 py-0.5 rounded bg-[#fde68a] text-[#78350f] border border-[#d97706]">
@@ -198,8 +198,8 @@ export default function SensorPanel() {
             <canvas ref={canvasRef} width={280} height={60} className="w-full h-[60px] block" />
           </div>
 
-          <div className="flex justify-between items-center bg-[#fdf2e9] px-2 py-1 rounded-md border border-[#ea580c]/30 text-[13px]">
-            <span className="text-[14.5px] text-[#78350f] font-medium">Skala Richter (ML):</span>
+          <div className="flex justify-between items-center bg-[#fdf2e9] px-2 py-1 rounded-md border border-[#ea580c]/30 text-[13px] font-semibold">
+            <span className="text-[14.5px] text-[#78350f] font-semibold">Skala Richter (ML):</span>
             <span className="font-mono font-bold text-[15px] text-[#9a3412]">
               {richterScale.toFixed(1)} SR
             </span>
@@ -217,7 +217,7 @@ export default function SensorPanel() {
 
           {/* Suhu Gauge Bar */}
           <div className="mb-2">
-            <div className="flex justify-between text-[14.5px] font-medium mb-1">
+            <div className="flex justify-between text-[14.5px] font-semibold mb-1">
               <span className="text-[#78350f]">Suhu Termal Kawah:</span>
               <span className="font-mono font-bold text-red-600">{volcanoTemp.toFixed(1)}°C</span>
             </div>
@@ -239,7 +239,7 @@ export default function SensorPanel() {
 
           {/* Tipe Erupsi */}
           {eruptionType !== 'NONE' && (
-            <div className="flex items-center justify-between bg-amber-50 p-1.5 rounded border border-amber-300 text-[13.5px]">
+            <div className="flex items-center justify-between bg-amber-50 p-1.5 rounded border border-amber-300 text-[13.5px] font-semibold">
               <span className="font-bold text-amber-900">Tipe Letusan Aktif:</span>
               <span className="font-mono font-bold px-1.5 py-0.5 bg-amber-200 text-amber-950 rounded">
                 {eruptionType === 'EKSPLOSIF' ? 'EKSPLOSIF (Kolom Abu)' : 'EFUSIF (Lava Pijar)'}
@@ -251,7 +251,7 @@ export default function SensorPanel() {
         {/* 3. AKTIVITAS HARDWARE & AKTUATOR */}
         <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30">
           <div className="text-[13px] font-bold text-[#451a03] font-pixel mb-1.5">Status Aktuator Diorama</div>
-          <div className="grid grid-cols-2 gap-2 text-center text-[13.5px]">
+          <div className="grid grid-cols-2 gap-2 text-center text-[13.5px] font-semibold">
             {/* Lampu Status Terang Benderang */}
             <div className="p-2 rounded-xl bg-[#fffbeb] border-2 border-stone-300/80 flex flex-col items-center justify-between gap-1 shadow-xs">
               <span className="text-[12.5px] text-[#78350f] font-bold">Lampu Status</span>
@@ -304,7 +304,7 @@ export default function SensorPanel() {
         {/* 4. PENENTUAN JALUR EVAKUASI & POSKO */}
         <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30">
           <div className="text-[13px] font-bold text-[#451a03] font-pixel mb-1.5">Manajemen Evakuasi Warga</div>
-          <div className="space-y-1.5 text-[13.5px]">
+          <div className="space-y-1.5 text-[13.5px] font-semibold">
             <div className="flex justify-between items-center p-1.5 rounded bg-[#fffbeb] border border-stone-200">
               <span className="font-medium text-[#78350f]">Rute Evakuasi:</span>
               <span className={`font-bold px-1.5 py-0.5 rounded ${
@@ -322,7 +322,7 @@ export default function SensorPanel() {
 
         {/* 5. MONITOR LAYAR INFORMASI PUBLIK */}
         <div className="bg-[#0b132b] p-2 rounded-xl border border-[#1c2541] shadow-inner font-mono text-[13.5px] text-[#48cae4]">
-          <div className="text-[12.5px] text-[#64dfdf] mb-1 flex items-center justify-between border-b border-[#1c2541] pb-0.5">
+          <div className="text-[12.5px] text-[#64dfdf] mb-1 flex items-center justify-between border-b border-[#1c2541] pb-0.5 font-semibold">
             <span>Layar Informasi Publik</span>
             <span>Siaga Digital</span>
           </div>

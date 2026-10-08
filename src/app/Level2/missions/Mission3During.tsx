@@ -152,7 +152,7 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
       {/* ── Emergency Siren Bar ── */}
       <div className="flex items-center justify-between bg-rose-600 text-white p-3 rounded-xl border-2 border-rose-950 shadow-[0_4px_0_#4c0519] animate-pulse">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-2xl animate-spin">e911_emergency</span>
+          <span className="material-symbols-outlined text-2xl animate-spin font-medium">e911_emergency</span>
           <span className="font-pixel-title text-[13px] md:text-[15px] font-bold tracking-wider">
             SITUASI DARURAT: SKENARIO {currentScenarioIdx + 1} / {CRISIS_SCENARIOS.length}
           </span>
@@ -184,7 +184,7 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
         </div>
 
         {/* Narrative Box */}
-        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-[13px] text-slate-200 leading-relaxed mb-5">
+        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-[13px] text-slate-200 leading-relaxed mb-5 font-semibold">
           {scenario.situation}
         </div>
 
@@ -237,7 +237,7 @@ export default function Mission3During({ onComplete, isAlreadyCompleted = false 
                 {decisionFeedback.isCorrect ? '★ KEPUTUSAN EFEKTIF TERCAPAI!' : 'KONSEKUENSI KEPUTUSAN BERISIKO:'}
               </span>
             </div>
-            <p className="text-[13px] leading-relaxed">{decisionFeedback.text}</p>
+            <p className="text-[13px] leading-relaxed font-semibold">{decisionFeedback.text}</p>
           </div>
         )}
       </div>

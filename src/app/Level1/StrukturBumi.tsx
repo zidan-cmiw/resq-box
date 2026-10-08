@@ -276,7 +276,7 @@ export default function StrukturBumi() {
         <button
           onClick={handleTurnPrev}
           disabled={currentPage === 0}
-          className="px-4 py-2 bg-amber-200 hover:bg-amber-300 disabled:opacity-30 disabled:cursor-not-allowed text-amber-950 border-2 border-amber-950 rounded-xl font-pixel-title text-[13px] cursor-pointer shadow-[0_3px_0_#78350f] active:translate-y-0.5 transition-all flex items-center gap-1.5"
+          className="px-4 py-2 bg-amber-200 hover:bg-amber-300 disabled:opacity-30 disabled:cursor-not-allowed text-amber-950 border-2 border-amber-950 rounded-xl font-pixel-title text-[13px] cursor-pointer shadow-[0_3px_0_#78350f] active:translate-y-0.5 transition-all flex items-center gap-1.5 font-semibold"
           title="Halaman Sebelumnya"
         >
           <span>◀ PREV</span>
@@ -330,10 +330,10 @@ export default function StrukturBumi() {
                 </div>
 
                 <div className="space-y-20">
-                  <div className="font-pixel-title text-amber-300 text-[13px] sm:text-[15px] tracking-wider drop-shadow-[0_2px_0_#1a0a01]">
+                  <div className="font-pixel-title text-amber-300 text-[13px] sm:text-[15px] tracking-wider drop-shadow-[0_2px_0_#1a0a01] font-semibold">
                     PETUALANGAN GEOLOGIS
                   </div>
-                  <h1 className="font-pixel-title text-amber-100 text-base sm:text-lg leading-snug drop-shadow-[0_3px_0_#1a0a01]">
+                  <h1 className="font-pixel-title text-amber-100 text-base sm:text-lg leading-snug drop-shadow-[0_3px_0_#1a0a01] font-medium">
                     STRUKTUR BUMI
                   </h1>
                   <div className="inline-block px-3.5 py-1 bg-amber-500 text-amber-950 font-pixel-title text-[13.5px] sm:text-[14.5px] rounded border-2 border-amber-950 shadow-[0_2px_0_#451a03] font-bold">
@@ -364,15 +364,15 @@ export default function StrukturBumi() {
               <div>
                 <div className="flex items-center gap-1.5 pb-2 border-b border-amber-950/20">
                   <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse" />
-                  <span className="text-[12px] font-pixel-title text-amber-800 uppercase tracking-wider">
+                  <span className="text-[12px] font-pixel-title text-amber-800 uppercase tracking-wider font-semibold">
                     JURNAL EKSPEDISI • RESQ-BOX
                   </span>
                 </div>
 
-                <h2 className="font-pixel-title text-[13px] sm:text-[15px] text-amber-950 leading-snug mt-2.5">
+                <h2 className="font-pixel-title text-[13px] sm:text-[15px] text-amber-950 leading-snug mt-2.5 font-semibold">
                   CATATAN PERJALANAN GEOLOGIS TARUNA
                 </h2>
-                <p className="text-[14px] text-amber-900 mt-1 leading-relaxed font-pixel">
+                <p className="text-[14px] text-amber-900 mt-1 leading-relaxed font-pixel font-semibold">
                   Selamat datang di modul geologis RESQ-BOX. Di dalam jurnal ini, kita akan menembus lapisan-lapisan interior bumi untuk memahami fenomena gempa, pergerakan lempeng, dan kesiapsiagaan bencana.
                 </p>
               </div>
@@ -384,14 +384,14 @@ export default function StrukturBumi() {
                     01
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-[12.5px] font-pixel-title text-amber-950 block truncate">
+                    <span className="text-[12.5px] font-pixel-title text-amber-950 block truncate font-semibold">
                       STRUKTUR LAPISAN BUMI
                     </span>
-                    <span className="text-[12px] text-amber-700 font-pixel block">
+                    <span className="text-[12px] text-amber-700 font-pixel block font-semibold">
                       Litosfer, Astenosfer, & Barisfer
                     </span>
                   </div>
-                  <span className="text-[12px] bg-amber-950 text-amber-300 font-pixel-title px-1.5 py-0.5 rounded">
+                  <span className="text-[12px] bg-amber-950 text-amber-300 font-pixel-title px-1.5 py-0.5 rounded font-semibold">
                     AKTIF
                   </span>
                 </div>
@@ -401,10 +401,10 @@ export default function StrukturBumi() {
                     02
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-[12.5px] font-pixel-title text-amber-800 block truncate">
+                    <span className="text-[12.5px] font-pixel-title text-amber-800 block truncate font-semibold">
                       DINAMIKA LEMPENG TEKTONIK
                     </span>
-                    <span className="text-[12px] text-amber-600 font-pixel block">
+                    <span className="text-[12px] text-amber-600 font-pixel block font-semibold">
                       Konvergen, Divergen, & Transform
                     </span>
                   </div>
@@ -416,10 +416,10 @@ export default function StrukturBumi() {
                     03
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-[12.5px] font-pixel-title text-amber-800 block truncate">
+                    <span className="text-[12.5px] font-pixel-title text-amber-800 block truncate font-semibold">
                       QUEST KATA GEOLOGI
                     </span>
-                    <span className="text-[12px] text-amber-600 font-pixel block">
+                    <span className="text-[12px] text-amber-600 font-pixel block font-semibold">
                       Evaluasi Pemahaman Istilah IPA
                     </span>
                   </div>
@@ -427,7 +427,7 @@ export default function StrukturBumi() {
                 </div>
               </div>
 
-              <div className="text-left text-[12px] font-pixel-title text-amber-800/60 pt-1">
+              <div className="text-left text-[12px] font-pixel-title text-amber-800/60 pt-1 font-semibold">
                 <span>◤ HALAMAN 1</span>
               </div>
             </div>
@@ -441,7 +441,7 @@ export default function StrukturBumi() {
                 <div className="flex items-center justify-between pb-1.5 border-b border-amber-950/20">
                   <div className="flex items-center gap-1.5">
                     <PixelIcon name="bulb" size={14} className="text-amber-800" />
-                    <span className="text-[12px] font-pixel-title text-amber-800 uppercase tracking-wider">
+                    <span className="text-[12px] font-pixel-title text-amber-800 uppercase tracking-wider font-semibold">
                       PERTANYAAN PEMANTIK
                     </span>
                   </div>
@@ -470,10 +470,10 @@ export default function StrukturBumi() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <span className="text-[12px] font-pixel-title text-amber-800 uppercase block mb-1">
+                    <span className="text-[12px] font-pixel-title text-amber-800 uppercase block mb-1 font-semibold">
                       PERTANYAAN PEMANTIK
                     </span>
-                    <h2 className="font-pixel-title text-[13px] sm:text-[15px] text-amber-950 leading-snug">
+                    <h2 className="font-pixel-title text-[13px] sm:text-[15px] text-amber-950 leading-snug font-semibold">
                       "Tahukah kamu bagaimana struktur lapisan bumi secara geologis dikategorikan?"
                     </h2>
                   </div>
@@ -485,7 +485,7 @@ export default function StrukturBumi() {
                 {pemantikStep === 'initial' && (
                   <div className="space-y-3 pt-2">
                     <div className="p-3 bg-amber-50 rounded-xl border border-amber-950/20 text-center">
-                      <p className="font-pixel text-[14.5px] text-amber-900 leading-relaxed mb-3">
+                      <p className="font-pixel text-[14.5px] text-amber-900 leading-relaxed mb-3 font-semibold">
                         Pilih salah satu untuk memulai penjelajahan geologismu:
                       </p>
                       <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
@@ -523,13 +523,13 @@ export default function StrukturBumi() {
                       <div className="inline-block px-2.5 py-0.5 bg-orange-400 text-orange-950 font-pixel-title text-[12px] rounded border border-amber-950 uppercase font-bold">
                         EKSPLORASI BERSAMA
                       </div>
-                      <h3 className="font-pixel-title text-[13px] text-amber-950">
+                      <h3 className="font-pixel-title text-[13px] text-amber-950 font-semibold">
                         "Ayo, kita cari tahu!"
                       </h3>
-                      <p className="font-pixel text-[14.5px] text-amber-900 leading-relaxed max-w-[280px] mx-auto">
+                      <p className="font-pixel text-[14.5px] text-amber-900 leading-relaxed max-w-[280px] mx-auto font-semibold">
                         Bumi kita tersusun dari lapisan Litosfer, Astenosfer, hingga Barisfer di intinya. Sudah siap membedahnya?
                       </p>
-                      <div className="font-pixel-title text-[14.5px] text-amber-950 pt-1">
+                      <div className="font-pixel-title text-[14.5px] text-amber-950 pt-1 font-semibold">
                         Sudah siap?
                       </div>
                     </div>
@@ -548,7 +548,7 @@ export default function StrukturBumi() {
                     <div className="text-center">
                       <button
                         onClick={() => setPemantikStep('initial')}
-                        className="text-[12px] font-pixel-title text-amber-800/80 hover:text-amber-950 underline cursor-pointer"
+                        className="text-[12px] font-pixel-title text-amber-800/80 hover:text-amber-950 underline cursor-pointer font-semibold"
                       >
                         ↺ Pilih Opsi Lain
                       </button>
@@ -561,11 +561,11 @@ export default function StrukturBumi() {
                   <div className="space-y-2.5 pt-1">
                     <div className="p-2.5 bg-amber-100/90 rounded-xl border-2 border-amber-950 shadow-[0_2px_0_#78350f] space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-[12px] font-pixel-title text-amber-800 uppercase">
+                        <span className="text-[12px] font-pixel-title text-amber-800 uppercase font-semibold">
                           TEBAK SUSUNAN BUMI
                         </span>
                       </div>
-                      <p className="font-pixel text-[14px] text-amber-950 leading-snug">
+                      <p className="font-pixel text-[14px] text-amber-950 leading-snug font-semibold">
                         Lapisan batuan padat terluar tempat benua & samudra berada disebut...
                       </p>
                     </div>
@@ -578,7 +578,7 @@ export default function StrukturBumi() {
                           setTebakWrong(false);
                           setPemantikStep('tebak_berhasil');
                         }}
-                        className="w-full p-2 bg-amber-50 hover:bg-amber-200 text-amber-950 rounded-lg border-2 border-amber-950 text-left flex items-center gap-2 font-pixel-title text-[12.5px] shadow-[0_1.5px_0_#78350f] active:translate-y-0.5 transition-all cursor-pointer"
+                        className="w-full p-2 bg-amber-50 hover:bg-amber-200 text-amber-950 rounded-lg border-2 border-amber-950 text-left flex items-center gap-2 font-pixel-title text-[12.5px] shadow-[0_1.5px_0_#78350f] active:translate-y-0.5 transition-all cursor-pointer font-semibold"
                       >
                         <span className="w-5 h-5 rounded bg-amber-400 flex items-center justify-center text-amber-950 text-[12px] font-bold border border-amber-950 shrink-0">
                           A
@@ -592,7 +592,7 @@ export default function StrukturBumi() {
                           retroAudio.playHover();
                           setTebakWrong(true);
                         }}
-                        className="w-full p-2 bg-amber-50 hover:bg-amber-200 text-amber-950 rounded-lg border border-amber-950/40 text-left flex items-center gap-2 font-pixel-title text-[12.5px] active:translate-y-0.5 transition-all cursor-pointer"
+                        className="w-full p-2 bg-amber-50 hover:bg-amber-200 text-amber-950 rounded-lg border border-amber-950/40 text-left flex items-center gap-2 font-pixel-title text-[12.5px] active:translate-y-0.5 transition-all cursor-pointer font-semibold"
                       >
                         <span className="w-5 h-5 rounded bg-amber-200 flex items-center justify-center text-amber-800 text-[12px] font-bold border border-amber-950/40 shrink-0">
                           B
@@ -605,7 +605,7 @@ export default function StrukturBumi() {
                           retroAudio.playHover();
                           setTebakWrong(true);
                         }}
-                        className="w-full p-2 bg-amber-50 hover:bg-amber-200 text-amber-950 rounded-lg border border-amber-950/40 text-left flex items-center gap-2 font-pixel-title text-[12.5px] active:translate-y-0.5 transition-all cursor-pointer"
+                        className="w-full p-2 bg-amber-50 hover:bg-amber-200 text-amber-950 rounded-lg border border-amber-950/40 text-left flex items-center gap-2 font-pixel-title text-[12.5px] active:translate-y-0.5 transition-all cursor-pointer font-semibold"
                       >
                         <span className="w-5 h-5 rounded bg-amber-200 flex items-center justify-center text-amber-800 text-[12px] font-bold border border-amber-950/40 shrink-0">
                           C
@@ -615,7 +615,7 @@ export default function StrukturBumi() {
                     </div>
 
                     {tebakWrong && (
-                      <div className="p-1.5 bg-rose-100 rounded-lg border border-rose-950/40 text-rose-900 font-pixel text-[12.5px] text-center">
+                      <div className="p-1.5 bg-rose-100 rounded-lg border border-rose-950/40 text-rose-900 font-pixel text-[12.5px] text-center font-semibold">
                         Ups, belum tepat! Petunjuk: Lapisan batuan kaku terluar. Coba lagi!
                       </div>
                     )}
@@ -623,7 +623,7 @@ export default function StrukturBumi() {
                     <div className="text-center pt-0.5">
                       <button
                         onClick={() => setPemantikStep('initial')}
-                        className="text-[12px] font-pixel-title text-amber-800/80 hover:text-amber-950 underline cursor-pointer"
+                        className="text-[12px] font-pixel-title text-amber-800/80 hover:text-amber-950 underline cursor-pointer font-semibold"
                       >
                         ↺ Kembali ke Pilihan
                       </button>
@@ -638,16 +638,16 @@ export default function StrukturBumi() {
                       <div className="inline-block px-2 py-0.5 bg-emerald-400 text-emerald-950 font-pixel-title text-[12px] rounded border border-emerald-950 uppercase font-bold">
                         ✓ Berhasil!
                       </div>
-                      <h3 className="font-pixel-title text-[13px] text-emerald-950">
+                      <h3 className="font-pixel-title text-[13px] text-emerald-950 font-semibold">
                         "Kamu hebat!"
                       </h3>
-                      <p className="font-pixel text-[14px] text-emerald-900 leading-relaxed max-w-[280px] mx-auto">
+                      <p className="font-pixel text-[14px] text-emerald-900 leading-relaxed max-w-[280px] mx-auto font-semibold">
                         Tebakanmu tepat! Litosfer adalah lapisan batuan padat terluar bumi.
                       </p>
                       <p className="font-pixel text-[14px] text-amber-950 leading-relaxed font-bold pt-0.5">
                         Ayo dalami lagi bersamaku, kita bedah interior bumi lebih jauh!
                       </p>
-                      <div className="font-pixel-title text-[14.5px] text-amber-950 pt-1">
+                      <div className="font-pixel-title text-[14.5px] text-amber-950 pt-1 font-semibold">
                         Sudah siap?
                       </div>
                     </div>
@@ -669,7 +669,7 @@ export default function StrukturBumi() {
                           setPemantikStep('initial');
                           setTebakWrong(false);
                         }}
-                        className="text-[12px] font-pixel-title text-amber-800/80 hover:text-amber-950 underline cursor-pointer"
+                        className="text-[12px] font-pixel-title text-amber-800/80 hover:text-amber-950 underline cursor-pointer font-semibold"
                       >
                         ↺ Ulangi Tantangan
                       </button>
@@ -679,7 +679,7 @@ export default function StrukturBumi() {
               </div>
 
               {/* Footer Navigasi Halaman */}
-              <div className="pt-2 border-t border-amber-950/20 flex justify-between items-center text-[12px] font-pixel-title text-amber-800/60">
+              <div className="pt-2 border-t border-amber-950/20 flex justify-between items-center text-[12px] font-pixel-title text-amber-800/60 font-semibold">
                 <span>◢ HALAMAN 2</span>
                 <span>GUNAKAN TOMBOL DI ATAS</span>
               </div>
@@ -758,7 +758,7 @@ export default function StrukturBumi() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-[12px] text-slate-400 py-1 border-t border-slate-800">
+              <div className="flex items-center justify-between text-[12px] text-slate-400 py-1 border-t border-slate-800 font-semibold">
                 <span>◤ HALAMAN 3</span>
                 <span>KLIK PADA LAPISAN BUMI UNTUK MEMILIH MATERI</span>
               </div>
@@ -772,12 +772,12 @@ export default function StrukturBumi() {
             <div className="pixel-book-scroll h-full flex flex-col justify-between p-3.5 sm:p-4 text-amber-950 select-none space-y-2">
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-pixel-title text-amber-800 uppercase tracking-wider">
+                  <span className="text-[12px] font-pixel-title text-amber-800 uppercase tracking-wider font-semibold">
                     {!isExploded ? 'BOLA BUMI UTUH' : currentDetail.category}
                   </span>
                 </div>
 
-                <h2 className="font-pixel-title text-[13px] sm:text-[15px] text-amber-950 mt-1">
+                <h2 className="font-pixel-title text-[13px] sm:text-[15px] text-amber-950 mt-1 font-semibold">
                   {!isExploded ? 'Planet Bumi (Globe)' : currentDetail.name}
                 </h2>
                 <span className="text-[12px] text-amber-800 font-pixel font-bold block mb-1">
@@ -785,7 +785,7 @@ export default function StrukturBumi() {
                 </span>
 
                 {/* Summary dengan Typewriter */}
-                <div className="text-[14.5px] sm:text-[15px] leading-relaxed text-amber-950 bg-amber-50/95 p-2 rounded-lg border-2 border-amber-950/20 shadow-inner min-h-[58px]">
+                <div className="text-[14.5px] sm:text-[15px] leading-relaxed text-amber-950 bg-amber-50/95 p-2 rounded-lg border-2 border-amber-950/20 shadow-inner min-h-[58px] font-semibold">
                   <PixelTypewriter
                     key={isExploded ? selectedLayerId : 'globe'}
                     text={
@@ -798,7 +798,7 @@ export default function StrukturBumi() {
                 </div>
 
                 {/* Catatan Hierarki */}
-                <div className="mt-1 p-1.5 bg-amber-200/70 rounded-lg border border-amber-950/20 text-[12.5px] text-amber-950 leading-snug">
+                <div className="mt-1 p-1.5 bg-amber-200/70 rounded-lg border border-amber-950/20 text-[12.5px] text-amber-950 leading-snug font-semibold">
                   <strong className="text-amber-900 font-bold">Catatan Geologi: </strong>
                   {!isExploded
                     ? 'Bumi memiliki jari-jari rata-rata sekitar 6.371 km yang tersusun atas 3 kesatuan geologis: Litosfer, Astenosfer, dan Barisfer.'
@@ -813,19 +813,19 @@ export default function StrukturBumi() {
               {/* 3 Metrics Cards */}
               <div className="grid grid-cols-3 gap-1.5">
                 <div className="p-1.5 bg-amber-200/80 rounded-lg border-2 border-amber-950/40 text-center shadow-[0_2px_0_#78350f]">
-                  <span className="text-[12px] font-pixel-title text-amber-800 block uppercase">KEDALAMAN</span>
+                  <span className="text-[12px] font-pixel-title text-amber-800 block uppercase font-semibold">KEDALAMAN</span>
                   <span className="text-[12px] font-bold text-amber-950 block mt-0.5 font-pixel-title">
                     {!isExploded ? '0 km' : currentDetail.depth}
                   </span>
                 </div>
                 <div className="p-1.5 bg-rose-200/80 rounded-lg border-2 border-rose-950/40 text-center shadow-[0_2px_0_#881337]">
-                  <span className="text-[12px] font-pixel-title text-rose-800 block uppercase">SUHU</span>
+                  <span className="text-[12px] font-pixel-title text-rose-800 block uppercase font-semibold">SUHU</span>
                   <span className="text-[12px] font-bold text-rose-900 block mt-0.5 font-pixel-title">
                     {!isExploded ? '0°C' : currentDetail.temp}
                   </span>
                 </div>
                 <div className="p-1.5 bg-cyan-200/80 rounded-lg border-2 border-cyan-950/40 text-center shadow-[0_2px_0_#164e63]">
-                  <span className="text-[12px] font-pixel-title text-cyan-800 block uppercase">
+                  <span className="text-[12px] font-pixel-title text-cyan-800 block uppercase font-semibold">
                     {!isExploded ? 'DIAMETER' : 'TEBAL'}
                   </span>
                   <span className="text-[12px] font-bold text-cyan-950 block mt-0.5 font-pixel-title">
@@ -836,7 +836,7 @@ export default function StrukturBumi() {
 
               {/* Material Pill */}
               <div className="px-2 py-1 bg-amber-200/70 rounded-lg border-2 border-amber-950/30 flex items-center gap-1.5">
-                <span className="text-[12px] font-pixel-title text-amber-800 uppercase shrink-0">MATERIAL:</span>
+                <span className="text-[12px] font-pixel-title text-amber-800 uppercase shrink-0 font-semibold">MATERIAL:</span>
                 <span className="text-[12.5px] font-bold text-amber-950 truncate">
                   {!isExploded ? 'Kerak Silikat, Mantel Batuan, & Inti Logam' : currentDetail.composition}
                 </span>
@@ -856,10 +856,10 @@ export default function StrukturBumi() {
                     <PixelIcon name={chestOpen ? 'chest-open' : 'chest-closed'} size={18} />
                   </button>
                   <div className="flex-1">
-                    <span className="text-[12px] font-pixel-title text-amber-400 block">
+                    <span className="text-[12px] font-pixel-title text-amber-400 block font-semibold">
                       FAKTA GEOLOGI {chestOpen ? 'TERBUKA' : '(KLIK PETI)'}
                     </span>
-                    <div className="text-[12.5px] text-amber-200 mt-0.5 leading-snug font-pixel min-h-[24px]">
+                    <div className="text-[12.5px] text-amber-200 mt-0.5 leading-snug font-pixel min-h-[24px] font-semibold">
                       {chestOpen ? (
                         <PixelTypewriter
                           key={`fact-${selectedLayerId}-${isExploded}`}
@@ -882,12 +882,12 @@ export default function StrukturBumi() {
               <div className="flex justify-between items-center pt-1 border-t border-amber-950/20">
                 <button
                   onClick={handleTurnPrev}
-                  className="px-2 py-1 bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel-title text-[12px] rounded border border-amber-950/40 cursor-pointer flex items-center gap-1 active:translate-y-0.5"
+                  className="px-2 py-1 bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel-title text-[12px] rounded border border-amber-950/40 cursor-pointer flex items-center gap-1 active:translate-y-0.5 font-semibold"
                 >
                   <span>◀ KEMBALI KE PEMANTIK</span>
                 </button>
 
-                <span className="text-[12px] font-pixel-title text-amber-800/60">
+                <span className="text-[12px] font-pixel-title text-amber-800/60 font-semibold">
                   ◢ HALAMAN 4
                 </span>
               </div>
@@ -901,7 +901,7 @@ export default function StrukturBumi() {
             <div className="h-full flex flex-col justify-between p-6 select-none text-amber-100 relative">
               <div className="flex justify-between items-center">
                 <div className="w-3 h-3 bg-amber-400 border border-amber-950" />
-                <span className="text-[12px] font-pixel-title text-amber-400">RESQ-BOX TARUNA</span>
+                <span className="text-[12px] font-pixel-title text-amber-400 font-semibold">RESQ-BOX TARUNA</span>
                 <div className="w-3 h-3 bg-amber-400 border border-amber-950" />
               </div>
 
@@ -909,15 +909,15 @@ export default function StrukturBumi() {
                 <div className="w-14 h-14 rounded-full border-3 border-amber-400 bg-amber-950/90 flex items-center justify-center">
                   <PixelIcon name="compass" size={28} className="text-amber-400" />
                 </div>
-                <div className="font-pixel-title text-[13px] text-amber-300">
+                <div className="font-pixel-title text-[13px] text-amber-300 font-semibold">
                   MODUL GEOLOGI SELESAI
                 </div>
-                <p className="text-[13.5px] text-amber-200/80 max-w-[220px]">
+                <p className="text-[13.5px] text-amber-200/80 max-w-[220px] font-semibold">
                   Kamu telah mempelajari Struktur Lapisan Bumi. Lanjutkan ekspedisi ke Dinamika Lempeng Tektonik!
                 </p>
               </div>
 
-              <div className="text-center text-[12px] text-amber-400/60 border-t border-amber-500/30 pt-2 font-pixel">
+              <div className="text-center text-[12px] text-amber-400/60 border-t border-amber-500/30 pt-2 font-pixel font-semibold">
                 RESQ-BOX • DIVISI IPDP LIDM 2026
               </div>
             </div>

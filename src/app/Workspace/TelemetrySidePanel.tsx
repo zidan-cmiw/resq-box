@@ -192,7 +192,7 @@ export default function TelemetrySidePanel() {
             <canvas ref={canvasRef} width={260} height={52} className="w-full h-[52px] block" />
           </div>
 
-          <div className="flex justify-between items-center bg-[#fdf2e9] px-2.5 py-1 rounded border border-[#ea580c]/30 text-[13px]">
+          <div className="flex justify-between items-center bg-[#fdf2e9] px-2.5 py-1 rounded border border-[#ea580c]/30 text-[13px] font-semibold">
             <span className="text-[13px] text-[#78350f] font-semibold">Skala Richter (ML):</span>
             <span className="font-mono font-bold text-[13px] sm:text-[15px] text-[#9a3412]">
               {richterScale.toFixed(1)} SR
@@ -233,7 +233,7 @@ export default function TelemetrySidePanel() {
 
           {/* Tipe Erupsi */}
           {eruptionType !== 'NONE' && (
-            <div className="flex items-center justify-between bg-amber-50 px-2 py-1.5 rounded border border-amber-300 text-[14px]">
+            <div className="flex items-center justify-between bg-amber-50 px-2 py-1.5 rounded border border-amber-300 text-[14px] font-semibold">
               <span className="font-bold text-amber-900">Tipe Letusan Aktif:</span>
               <span className="font-mono font-bold px-2 py-0.5 bg-amber-200 text-amber-950 rounded">
                 {eruptionType === 'EKSPLOSIF' ? 'EKSPLOSIF (Kolom Abu)' : 'EFUSIF (Lava Pijar)'}
@@ -298,7 +298,7 @@ export default function TelemetrySidePanel() {
         {/* 4. PENENTUAN JALUR EVAKUASI & POSKO */}
         <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
           <div className="text-[13px] font-bold text-[#451a03] font-pixel mb-1.5">Manajemen Evakuasi Warga</div>
-          <div className="space-y-1.5 text-[13px]">
+          <div className="space-y-1.5 text-[13px] font-semibold">
             <div className="flex justify-between items-center px-2 py-1 rounded bg-[#fffbeb] border border-stone-200">
               <span className="font-semibold text-[#78350f] text-[14px]">Rute Evakuasi:</span>
               <span className={`font-bold px-2 py-0.5 rounded text-[14px] truncate max-w-[145px] ${
@@ -316,7 +316,7 @@ export default function TelemetrySidePanel() {
 
         {/* 5. MONITOR LAYAR INFORMASI PUBLIK */}
         <div className="bg-[#0b132b] p-2 rounded-xl border border-[#1c2541] shadow-inner font-mono text-[13.5px] text-[#48cae4]">
-          <div className="text-[12.5px] text-[#64dfdf] mb-1 flex items-center justify-between border-b border-[#1c2541] pb-1">
+          <div className="text-[12.5px] text-[#64dfdf] mb-1 flex items-center justify-between border-b border-[#1c2541] pb-1 font-semibold">
             <span className="font-bold">Layar Informasi Publik</span>
             <span>Siaga Digital</span>
           </div>

@@ -328,7 +328,7 @@ export default function Level3() {
         </button>
 
         {/* Sound toggle */}
-        <button
+        <button aria-label="Nyalakan atau matikan suara"
           onClick={handleSoundToggle}
           className="p-2.5 rounded-xl bg-[#24160c]/90 hover:bg-[#3d2412] text-amber-300 border-2 border-amber-900/80 shadow-2xl transition-colors cursor-pointer"
           title={soundOn ? 'Matikan Suara' : 'Nyalakan Suara'}
@@ -337,7 +337,7 @@ export default function Level3() {
         </button>
 
         {/* Fullscreen toggle */}
-        <button
+        <button aria-label="Masuk atau keluar dari layar penuh"
           onClick={handleFullscreenToggle}
           className="p-2.5 rounded-xl bg-[#24160c]/90 hover:bg-[#3d2412] text-amber-300 border-2 border-amber-900/80 shadow-2xl transition-colors cursor-pointer"
           title={isFullscreen ? 'Keluar Layar Penuh' : 'Layar Penuh'}
@@ -997,7 +997,16 @@ export default function Level3() {
 
                 {/* ── CLEAR & READABLE LEVEL TITLE PLAQUE (Plus Jakarta Sans) ── */}
                 <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Buka materi ${node.sectorTitle}`}
                   onClick={() => handleNodeClick(node)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleNodeClick(node);
+                    }
+                  }}
                   className={`absolute pointer-events-auto cursor-pointer transition-all duration-200 hover:scale-105 ${node.labelPos === 'top' ? '-top-14' : 'top-20'
                     }`}
                 >
@@ -1170,7 +1179,7 @@ export default function Level3() {
                 Ulangi Misi Ini?
               </h3>
             </div>
-            <p className="text-[15px] text-[#291305] leading-relaxed">
+            <p className="text-[15px] text-[#291305] leading-relaxed font-semibold">
               Kamu sudah menuntaskan misi ini. Jika kamu memilih ulangi, draft blok kode lama akan dibersihkan agar kamu bisa berlatih kembali dari awal.
             </p>
             <div className="flex gap-3 pt-2">
@@ -1205,7 +1214,7 @@ export default function Level3() {
                   <h2 className="text-lg sm:text-xl font-bold text-[#451a03]">
                     Panduan Praktik Kelompok (LKPD)
                   </h2>
-                  <p className="text-[13px] sm:text-[15px] text-[#78350f]">
+                  <p className="text-[13px] sm:text-[15px] text-[#78350f] font-semibold">
                     Pedoman Praktik Digital Twin & Diorama Fisik Smart Education Board
                   </p>
                 </div>
@@ -1224,7 +1233,7 @@ export default function Level3() {
                 <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#b45309] text-white font-black text-[15px] shrink-0 shadow-sm">
                   1
                 </span>
-                <div className="text-[15px] text-[#291305] leading-relaxed">
+                <div className="text-[15px] text-[#291305] leading-relaxed font-semibold">
                   <strong className="text-[#451a03] block mb-1 text-base font-bold">Pelajari Skenario & Masalah Bencana</strong>
                   Peserta didik dalam kelompok membaca situasi bencana di LKPD dan merancang urutan logika respon keselamatan darurat bersama tim.
                 </div>
@@ -1234,7 +1243,7 @@ export default function Level3() {
                 <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#b45309] text-white font-black text-[15px] shrink-0 shadow-sm">
                   2
                 </span>
-                <div className="text-[15px] text-[#291305] leading-relaxed">
+                <div className="text-[15px] text-[#291305] leading-relaxed font-semibold">
                   <strong className="text-[#451a03] block mb-1 text-base font-bold">Susun Blok Logika & Uji Digital Twin</strong>
                   Rangkai blok aksi-reaksi mitigasi di Action Lab. Amati respon simulator <strong>Digital Twin</strong> (pergerakan warga evakuasi) saat logika dijalankan.
                 </div>
@@ -1244,7 +1253,7 @@ export default function Level3() {
                 <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#b45309] text-white font-black text-[15px] shrink-0 shadow-sm">
                   3
                 </span>
-                <div className="text-[15px] text-[#291305] leading-relaxed">
+                <div className="text-[15px] text-[#291305] leading-relaxed font-semibold">
                   <strong className="text-[#451a03] block mb-1 text-base font-bold">Uji Diorama Fisik & Refleksi Mitigasi</strong>
                   Hubungkan ke <strong>diorama fisik</strong> via WiFi atau USB untuk menyalakan sirine dan lampu fisik, lalu diskusikan efektivitas keselamatan warga.
                 </div>

@@ -99,7 +99,7 @@ export default class AppErrorBoundary extends Component<Props, State> {
             {recoverable ? 'KONEKSI TERPUTUS SEBENTAR' : 'ADA GANGGUAN TEKNIS'}
           </h1>
 
-          <p className="font-pixel text-[14.5px] sm:text-[15px] leading-relaxed mb-4 opacity-90">
+          <p className="font-pixel text-[14.5px] sm:text-[15px] leading-relaxed mb-4 opacity-90 font-semibold">
             {recoverable
               ? 'Aplikasi gagal memuat sebagian materi. Ini biasanya karena koneksi internet terputus atau ada pembaruan versi. Coba muat ulang halaman.'
               : 'Aplikasi mengalami gangguan. Progres belajarmu tetap tersimpan, jadi kamu tidak akan kehilangan nilai atau posisi.'}
@@ -107,10 +107,10 @@ export default class AppErrorBoundary extends Component<Props, State> {
 
           {/* Detail teknis: ditampilkan agar guru bisa melaporkan, tapi ringkas. */}
           <details className="mb-4 text-left">
-            <summary className="font-pixel text-[13.5px] cursor-pointer opacity-80 hover:opacity-100">
+            <summary className="font-pixel text-[13.5px] cursor-pointer opacity-80 hover:opacity-100 font-semibold">
               Lihat detail teknis
             </summary>
-            <pre className="mt-2 p-2 bg-[#fef3c7] rounded border-2 border-[#451a03]/30 text-[12.5px] leading-snug whitespace-pre-wrap break-words max-h-32 overflow-y-auto">
+            <pre className="mt-2 p-2 bg-[#fef3c7] rounded border-2 border-[#451a03]/30 text-[12.5px] leading-snug whitespace-pre-wrap break-words max-h-32 overflow-y-auto font-semibold">
               {error.message || 'Tanpa pesan'}
             </pre>
           </details>
@@ -119,7 +119,7 @@ export default class AppErrorBoundary extends Component<Props, State> {
             <button
               type="button"
               onClick={this.handleReload}
-              className="pixel-btn-wood-plank w-full py-2.5 text-[14.5px]"
+              className="pixel-btn-wood-plank w-full py-2.5 text-[14.5px] font-semibold"
             >
               MUAT ULANG HALAMAN
             </button>
@@ -127,7 +127,7 @@ export default class AppErrorBoundary extends Component<Props, State> {
               <button
                 type="button"
                 onClick={this.handleRetry}
-                className="pixel-btn-wood-plank w-full py-2.5 text-[14.5px]"
+                className="pixel-btn-wood-plank w-full py-2.5 text-[14.5px] font-semibold"
               >
                 COBA LAGI
               </button>
@@ -135,13 +135,13 @@ export default class AppErrorBoundary extends Component<Props, State> {
             <button
               type="button"
               onClick={this.handleHome}
-              className="pixel-btn-wood-plank w-full py-2.5 text-[14.5px]"
+              className="pixel-btn-wood-plank w-full py-2.5 text-[14.5px] font-semibold"
             >
               KEMBALI KE MENU UTAMA
             </button>
           </div>
 
-          <p className="mt-4 font-pixel text-[12.5px] opacity-70 leading-relaxed">
+          <p className="mt-4 font-pixel text-[12.5px] opacity-70 leading-relaxed font-semibold">
             Bila masalah ini berulang, laporkan kepada gurumu dengan menyebutkan
             tulisan pada bagian &ldquo;detail teknis&rdquo; di atas.
           </p>

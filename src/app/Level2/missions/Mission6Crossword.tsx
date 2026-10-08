@@ -158,7 +158,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
           <PixelIcon name="key" size={18} />
           <span>Kunci Akses Command Center: Teka-Teki Silang Geologi & Bencana</span>
         </h3>
-        <p className="text-[14.5px] text-amber-900 leading-relaxed">
+        <p className="text-[14.5px] text-amber-900 leading-relaxed font-semibold">
           Pintu Command Center kota terkunci oleh enkripsi istilah sains geologis. Isi kotak TTS di bawah ini
           berdasarkan materi pergeseran benua, lempeng tektonik, dan mitigasi untuk membuka gerbang final Level 3!
         </p>
@@ -202,7 +202,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                     {isCorrect ? (
                       <span className="text-emerald-400 font-bold">✓ TEPAT</span>
                     ) : (
-                      <span className="text-[13.5px] text-slate-400 opacity-80">
+                      <span className="text-[13.5px] text-slate-400 opacity-80 font-semibold">
                         {userInputs[c.id] || '......'}
                       </span>
                     )}
@@ -246,7 +246,7 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                     {isCorrect ? (
                       <span className="text-emerald-400 font-bold">✓ TEPAT</span>
                     ) : (
-                      <span className="text-[13.5px] text-slate-400 opacity-80">
+                      <span className="text-[13.5px] text-slate-400 opacity-80 font-semibold">
                         {userInputs[c.id] || '......'}
                       </span>
                     )}
@@ -300,9 +300,9 @@ export default function Mission6Crossword({ onComplete, isAlreadyCompleted = fal
                 maxLength={activeClue.answer.length}
                 onChange={(e) => handleInputChange(activeClue.id, e.target.value)}
                 placeholder={`KETIK ${activeClue.answer.length} HURUF JAWABAN...`}
-                className="w-full max-w-sm px-4 py-2.5 rounded-xl bg-white border-2 border-amber-900/60 font-pixel-title text-center text-[13px] tracking-widest text-amber-950 focus:outline-none focus:border-amber-600 shadow-inner"
+                className="w-full max-w-sm px-4 py-2.5 rounded-xl bg-white border-2 border-amber-900/60 font-pixel-title text-center text-[13px] tracking-widest text-amber-950 focus:outline-none focus:border-amber-600 shadow-inner font-semibold"
               />
-              <span className="text-[13.5px] text-amber-800">
+              <span className="text-[13.5px] text-amber-800 font-semibold">
                 Tekan tombol keyboard untuk mengetik huruf kapital.
               </span>
             </div>

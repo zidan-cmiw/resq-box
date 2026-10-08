@@ -268,7 +268,7 @@ export default function Login() {
 
           {/* ── SUB-HEADER PER ROLE ── */}
           {role === 'student' ? (
-            <div id="tour-login-modes" className="flex items-center justify-center gap-3 text-[13px]">
+            <div id="tour-login-modes" className="flex items-center justify-center gap-3 text-[13px] font-semibold">
               <button
                 type="button"
                 onClick={() => {
@@ -316,30 +316,42 @@ export default function Login() {
           {(authMode === 'login' || role === 'teacher') && (
             <form id="tour-login-inputs" onSubmit={handleLogin} className="space-y-3">
               <div>
-                <label className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide">
+                <label
+                  htmlFor="login-username"
+                  className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide"
+                >
                   Username {role === 'teacher' ? 'Guru' : 'Siswa'}
                 </label>
                 <div className="relative">
                   <input
+                    id="login-username"
+                    name="username"
                     type="text"
+                    autoComplete="username"
                     value={loginUsername}
                     onChange={(e) => setLoginUsername(e.target.value)}
                     placeholder={role === 'teacher' ? 'Misal: guru' : 'Username siswa...'}
-                    className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+                    className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner font-semibold"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide">
+                <label
+                  htmlFor="login-password"
+                  className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide"
+                >
                   Password
                 </label>
                 <input
+                  id="login-password"
+                  name="password"
                   type="password"
+                  autoComplete="current-password"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
                   placeholder="Masukkan password..."
-                  className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+                  className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner font-semibold"
                 />
               </div>
 
@@ -358,8 +370,8 @@ export default function Login() {
                     className="font-pixel text-[14.5px] font-bold text-amber-950 bg-amber-50 hover:bg-amber-100/90 py-1 px-2 rounded border border-amber-900/40 w-full cursor-pointer flex items-center justify-between"
                     title="Klik untuk mengisi otomatis akun demo"
                   >
-                    <span>User: <strong className="text-emerald-700 font-pixel-title text-[13.5px]">demo</strong> • Pass: <strong className="text-emerald-700 font-pixel-title text-[13.5px]">demo123</strong></span>
-                    <span className="text-[12px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-pixel-title">[ISI]</span>
+                    <span>User: <strong className="text-emerald-700 font-pixel-title text-[13.5px] font-semibold">demo</strong> • Pass: <strong className="text-emerald-700 font-pixel-title text-[13.5px] font-semibold">demo123</strong></span>
+                    <span className="text-[12px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-pixel-title font-semibold">[ISI]</span>
                   </button>
                 </div>
               )}
@@ -367,7 +379,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2"
+                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2 font-semibold"
               >
                 <span>{loading ? 'MEMERIKSA...' : role === 'teacher' ? 'BUKA POSKO GURU' : 'MULAI PETUALANGAN'}</span>
               </button>
@@ -378,69 +390,107 @@ export default function Login() {
           {authMode === 'register' && role === 'student' && (
             <form onSubmit={handleRegisterStudent} className="space-y-2.5">
               <div>
-                <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
+                <label
+                  htmlFor="reg-name"
+                  className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
+                >
                   Nama Lengkap Siswa
                 </label>
                 <input
+                  id="reg-name"
+                  name="name"
                   type="text"
+                  autoComplete="name"
+                  required
                   value={regStdName}
                   onChange={(e) => setRegStdName(e.target.value)}
                   placeholder="Misal: Vincent Pratama"
-                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
+                  <label
+                    htmlFor="reg-absent"
+                    className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
+                  >
                     No. Absen
                   </label>
                   <input
+                    id="reg-absent"
+                    name="absent_number"
                     type="text"
+                    inputMode="numeric"
                     value={regStdAbsent}
                     onChange={(e) => setRegStdAbsent(e.target.value)}
                     placeholder="Misal: 08"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                   />
                 </div>
                 <div>
-                  <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
+                  <label
+                    htmlFor="reg-class-code"
+                    className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
+                  >
                     Kode Kelas *
                   </label>
                   <input
+                    id="reg-class-code"
+                    name="classroom_code"
                     type="text"
+                    required
+                    aria-required="true"
+                    aria-describedby="reg-class-code-hint"
                     value={regStdClassCode}
                     onChange={(e) => setRegStdClassCode(e.target.value)}
                     placeholder="Misal: 8B atau RESQ-8B"
                     className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-bold"
                   />
+                  <p id="reg-class-code-hint" className="sr-only">
+                    Wajib diisi. Mintakan kode kelas kepada gurumu bila belum tahu.
+                  </p>
                 </div>
               </div>
 
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
+                  <label
+                    htmlFor="reg-username"
+                    className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
+                  >
                     Username
                   </label>
                   <input
+                    id="reg-username"
+                    name="username"
                     type="text"
+                    autoComplete="username"
+                    required
                     value={regStdUsername}
                     onChange={(e) => setRegStdUsername(e.target.value)}
                     placeholder="vincent8b"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                   />
                 </div>
                 <div>
-                  <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase">
+                  <label
+                    htmlFor="reg-password"
+                    className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
+                  >
                     Password
                   </label>
                   <input
+                    id="reg-password"
+                    name="password"
                     type="password"
+                    autoComplete="new-password"
+                    required
                     value={regStdPassword}
                     onChange={(e) => setRegStdPassword(e.target.value)}
                     placeholder="******"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                   />
                 </div>
               </div>
@@ -448,7 +498,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2"
+                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2 font-semibold"
               >
                 <span>{loading ? 'MEMPROSES...' : 'DAFTAR & GABUNG KELAS'}</span>
               </button>

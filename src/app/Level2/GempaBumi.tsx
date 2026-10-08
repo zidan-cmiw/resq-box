@@ -136,7 +136,7 @@ function EarthquakeTypeComparison() {
             type === 'tektonik' ? 'bg-orange-500 text-white shadow-md' : 'text-on-surface-variant hover:text-on-surface'
           }`}
         >
-          <span className="material-symbols-outlined text-[15px] align-middle mr-1">broken_image</span>
+          <span className="material-symbols-outlined text-[15px] align-middle mr-1 font-semibold">broken_image</span>
           Gempa Tektonik
         </button>
         <button
@@ -145,7 +145,7 @@ function EarthquakeTypeComparison() {
             type === 'vulkanik' ? 'bg-rose-500 text-white shadow-md' : 'text-on-surface-variant hover:text-on-surface'
           }`}
         >
-          <span className="material-symbols-outlined text-[15px] align-middle mr-1">volcano</span>
+          <span className="material-symbols-outlined text-[15px] align-middle mr-1 font-semibold">volcano</span>
           Gempa Vulkanik
         </button>
       </div>
@@ -292,8 +292,8 @@ function RichterSlider() {
           </div>
         </div>
         <div className="text-right">
-          <p className="text-[13px] text-on-surface-variant leading-relaxed max-w-48">{level.desc}</p>
-          <p className="text-[13px] text-on-surface-variant mt-1">Kerusakan: <strong>{level.damage}</strong></p>
+          <p className="text-[13px] text-on-surface-variant leading-relaxed max-w-48 font-semibold">{level.desc}</p>
+          <p className="text-[13px] text-on-surface-variant mt-1 font-semibold">Kerusakan: <strong>{level.damage}</strong></p>
         </div>
       </div>
 
@@ -358,7 +358,7 @@ function RichterSlider() {
       </div>
 
       {/* Historical reference */}
-      <div className="mt-3 p-3 rounded-xl bg-primary/8 border border-primary/15 text-[13px] text-on-surface">
+      <div className="mt-3 p-3 rounded-xl bg-primary/8 border border-primary/15 text-[13px] text-on-surface font-semibold">
         <span className="font-bold text-primary">Referensi:</span> Gempa {nearestHistorical.place} ({nearestHistorical.year}) — {nearestHistorical.mag} SR
       </div>
     </div>
@@ -371,11 +371,11 @@ export default function GempaBumi() {
       {/* Intro */}
       <div className="flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/15">
         <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-red-500 text-2xl">sensors</span>
+          <span className="material-symbols-outlined text-red-500 text-2xl font-medium">sensors</span>
         </div>
         <div>
           <h3 className="text-lg font-bold text-on-surface">Apa itu Gempa Bumi?</h3>
-          <p className="text-[15px] text-on-surface-variant leading-relaxed">
+          <p className="text-[15px] text-on-surface-variant leading-relaxed font-semibold">
             Getaran permukaan bumi akibat pelepasan energi dari dalam secara tiba-tiba, sering kali dari pergerakan lempeng tektonik.
           </p>
         </div>
@@ -384,7 +384,7 @@ export default function GempaBumi() {
       {/* Seismic Visualizer */}
       <div>
         <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-lg">radar</span>
+          <span className="material-symbols-outlined text-primary text-lg font-medium">radar</span>
           Visualisasi Gelombang Seismik
         </h4>
         <SeismicVisualizer />
@@ -393,7 +393,7 @@ export default function GempaBumi() {
       {/* Earthquake Type Comparison */}
       <div>
         <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-lg">compare</span>
+          <span className="material-symbols-outlined text-primary text-lg font-medium">compare</span>
           Jenis Gempa
         </h4>
         <EarthquakeTypeComparison />
@@ -402,7 +402,7 @@ export default function GempaBumi() {
       {/* Richter Scale */}
       <div>
         <h4 className="text-[15px] font-bold text-on-surface mb-2 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-lg">speed</span>
+          <span className="material-symbols-outlined text-primary text-lg font-medium">speed</span>
           Skala Richter — Geser untuk Merasakan!
         </h4>
         <RichterSlider />
@@ -411,7 +411,7 @@ export default function GempaBumi() {
       {/* Safety Flip Cards */}
       <div>
         <h4 className="text-[15px] font-bold text-on-surface mb-3 flex items-center gap-2">
-          <span className="material-symbols-outlined text-primary text-lg">health_and_safety</span>
+          <span className="material-symbols-outlined text-primary text-lg font-medium">health_and_safety</span>
           Apa yang Harus Dilakukan? (Klik untuk balik)
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -421,15 +421,15 @@ export default function GempaBumi() {
             backClassName="bg-gradient-to-br from-blue-600/20 to-blue-500/10 border border-blue-500/30"
             front={
               <div className="flex flex-col items-center gap-2">
-                <span className="material-symbols-outlined text-3xl text-blue-400">home</span>
+                <span className="material-symbols-outlined text-3xl text-blue-400 font-medium">home</span>
                 <span className="text-[15px] font-bold text-on-surface">Di Dalam Ruangan</span>
-                <span className="text-[13.5px] text-on-surface-variant">Klik untuk tips</span>
+                <span className="text-[13.5px] text-on-surface-variant font-semibold">Klik untuk tips</span>
               </div>
             }
             back={
               <div className="flex flex-col items-center gap-1.5">
                 <span className="text-[13px] font-bold text-blue-400 mb-1">DROP • COVER • HOLD</span>
-                <p className="text-[14.5px] text-on-surface leading-relaxed text-center">
+                <p className="text-[14.5px] text-on-surface leading-relaxed text-center font-semibold">
                   Merunduk, berlindung di bawah meja kokoh, dan pegang kuat-kuat. Jauhi jendela kaca.
                 </p>
               </div>
@@ -441,15 +441,15 @@ export default function GempaBumi() {
             backClassName="bg-gradient-to-br from-green-600/20 to-green-500/10 border border-green-500/30"
             front={
               <div className="flex flex-col items-center gap-2">
-                <span className="material-symbols-outlined text-3xl text-green-400">park</span>
+                <span className="material-symbols-outlined text-3xl text-green-400 font-medium">park</span>
                 <span className="text-[15px] font-bold text-on-surface">Di Luar Ruangan</span>
-                <span className="text-[13.5px] text-on-surface-variant">Klik untuk tips</span>
+                <span className="text-[13.5px] text-on-surface-variant font-semibold">Klik untuk tips</span>
               </div>
             }
             back={
               <div className="flex flex-col items-center gap-1.5">
                 <span className="text-[13px] font-bold text-green-400 mb-1">JAUHI BANGUNAN</span>
-                <p className="text-[14.5px] text-on-surface leading-relaxed text-center">
+                <p className="text-[14.5px] text-on-surface leading-relaxed text-center font-semibold">
                   Pergi ke area terbuka. Jauhi bangunan, tiang listrik, pohon besar, dan papan reklame.
                 </p>
               </div>
@@ -461,15 +461,15 @@ export default function GempaBumi() {
             backClassName="bg-gradient-to-br from-amber-600/20 to-amber-500/10 border border-amber-500/30"
             front={
               <div className="flex flex-col items-center gap-2">
-                <span className="material-symbols-outlined text-3xl text-amber-400">directions_car</span>
+                <span className="material-symbols-outlined text-3xl text-amber-400 font-medium">directions_car</span>
                 <span className="text-[15px] font-bold text-on-surface">Di Kendaraan</span>
-                <span className="text-[13.5px] text-on-surface-variant">Klik untuk tips</span>
+                <span className="text-[13.5px] text-on-surface-variant font-semibold">Klik untuk tips</span>
               </div>
             }
             back={
               <div className="flex flex-col items-center gap-1.5">
                 <span className="text-[13px] font-bold text-amber-400 mb-1">BERHENTI AMAN</span>
-                <p className="text-[14.5px] text-on-surface leading-relaxed text-center">
+                <p className="text-[14.5px] text-on-surface leading-relaxed text-center font-semibold">
                   Tepi jalan yang aman. Jangan berhenti di bawah jembatan, flyover, atau dekat bangunan tinggi.
                 </p>
               </div>

@@ -129,7 +129,7 @@ export default function DisasterCityMap({
                       : 'bg-emerald-500'
               }`}
           />
-          <span className="font-pixel-title text-[13.5px] text-amber-300 tracking-wider">
+          <span className="font-pixel-title text-[13.5px] text-amber-300 tracking-wider font-semibold">
             STATUS [MISI {activeMission}]:{' '}
             <span
               className={
@@ -159,7 +159,7 @@ export default function DisasterCityMap({
             retroAudio.playSelect();
             setShowSubsurface(!showSubsurface);
           }}
-          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-950/90 hover:bg-amber-900 border border-amber-600/60 text-amber-200 text-[13.5px] font-pixel-title shadow-md cursor-pointer transition-all active:translate-y-0.5"
+          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-950/90 hover:bg-amber-900 border border-amber-600/60 text-amber-200 text-[13.5px] font-pixel-title shadow-md cursor-pointer transition-all active:translate-y-0.5 font-semibold"
         >
           <PixelIcon name="layers" size={12} />
           <span>{showSubsurface ? 'TAMPILAN KOTA' : 'X-RAY SUB-SURFACE'}</span>
@@ -544,7 +544,7 @@ export default function DisasterCityMap({
                 </span>
                 <h4 className="text-[13px] md:text-[15px] font-bold text-amber-100">{selectedHotspot.name}</h4>
               </div>
-              <p className="text-[14.5px] text-slate-300 mt-1">{selectedHotspot.desc}</p>
+              <p className="text-[14.5px] text-slate-300 mt-1 font-semibold">{selectedHotspot.desc}</p>
               <p className="text-[13.5px] text-amber-400/90 font-mono mt-0.5">
                 <strong>Konteks Geologis:</strong> {selectedHotspot.geologyNote}
               </p>
@@ -556,7 +556,7 @@ export default function DisasterCityMap({
               retroAudio.playSelect();
               setSelectedHotspot(null);
             }}
-            className="px-3 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-pixel-title text-[13.5px] shrink-0 border border-amber-950 shadow cursor-pointer self-end md:self-center"
+            className="px-3 py-1.5 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-pixel-title text-[13.5px] shrink-0 border border-amber-950 shadow cursor-pointer self-end md:self-center font-semibold"
           >
             TUTUP INFO
           </button>

@@ -22,7 +22,7 @@ export default function ConsoleOutput() {
     <div className="h-full flex flex-col bg-[#fffbeb] text-[#1c1917] font-mono text-[13px] select-text">
       {/* Panel sub-header (SS 3 Warm Parchment) */}
       <div className="h-9 shrink-0 flex items-center px-3 gap-2 border-b-2 border-[#b45309] bg-[#fef3c7]">
- <span className="text-[#b45309] text-[15px]"></span>
+ <span className="text-[#b45309] text-[15px] font-semibold"></span>
         <span className="font-pixel text-[13px] text-[#78350f] font-bold flex-1">
           LOG AKTIVITAS
           {consoleLogs.length > 0 && (
@@ -47,9 +47,9 @@ export default function ConsoleOutput() {
 
         {/* Clear button */}
         {consoleLogs.length > 0 && (
-          <button
+          <button aria-label="Bersihkan catatan konsol"
             onClick={clearLogs}
-            className="p-1 hover:bg-[#fde68a] rounded transition-colors text-[#78350f] ml-1 text-[15px]"
+            className="p-1 hover:bg-[#fde68a] rounded transition-colors text-[#78350f] ml-1 text-[15px] font-semibold"
             title="Bersihkan log"
           >
           </button>
@@ -60,7 +60,7 @@ export default function ConsoleOutput() {
       <div className="flex-1 overflow-y-auto p-2.5 flex flex-col gap-1.5 bg-[#fffbeb]">
         {consoleLogs.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-2 text-[#78350f]/60 select-none py-8">
- <span className="text-3xl opacity-60"></span>
+ <span className="text-3xl opacity-60 font-medium"></span>
             <span className="text-[13px] sm:text-[15px] text-center font-sans text-[#78350f] font-medium leading-relaxed">
               Klik tombol <strong className="text-[#15803d] font-mono font-bold">[MULAI]</strong> di atas<br />
               untuk menjalankan simulasi logika
@@ -72,15 +72,15 @@ export default function ConsoleOutput() {
             return (
               <div
                 key={log.id}
-                className={`flex items-start gap-2 px-2.5 py-1.5 rounded-lg ${style.bg} text-[13px] sm:text-[16px] shadow-sm`}
+                className={`flex items-start gap-2 px-2.5 py-1.5 rounded-lg ${style.bg} text-[13px] sm:text-[16px] shadow-sm font-medium`}
               >
-                <span className="shrink-0 mt-0.5 text-[15px] select-none">
+                <span className="shrink-0 mt-0.5 text-[15px] select-none font-semibold">
                   {style.icon}
                 </span>
                 <span className={`flex-1 leading-relaxed ${style.color}`}>
                   {log.text}
                 </span>
-                <span className="text-[13.5px] text-[#78716c] shrink-0 mt-0.5 select-none font-sans font-medium">
+                <span className="text-[13.5px] text-[#78716c] shrink-0 mt-0.5 select-none font-sans font-semibold">
                   {log.timestamp}
                 </span>
               </div>

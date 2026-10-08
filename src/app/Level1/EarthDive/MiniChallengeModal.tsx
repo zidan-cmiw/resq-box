@@ -138,7 +138,7 @@ export default function MiniChallengeModal({
             <div className="w-12 h-12 rounded-xl bg-amber-500 border-2 border-amber-700 flex items-center justify-center shrink-0 shadow-inner">
               <PixelIcon name="fox" size={28} />
             </div>
-            <div className="font-sans text-[15px] sm:text-base">
+            <div className="font-sans text-[15px] sm:text-base font-medium">
               <div className="flex items-center gap-2 mb-1.5">
                 <PixelIcon name="bulb" size={15} className="text-amber-900" />
                 <span className="font-pixel-title text-[13px] sm:text-[15px] text-amber-900 font-bold">
@@ -183,7 +183,7 @@ export default function MiniChallengeModal({
                   selectedOptId
                     ? 'bg-amber-600 hover:bg-amber-500 text-amber-50 border-[#451a03] cursor-pointer'
                     : 'bg-slate-300 text-slate-500 border-slate-400 cursor-not-allowed'
-                }`}
+                } font-medium`}
               >
                 <span>VERIFIKASI JAWABAN</span>
                 <span className="font-bold">&gt;</span>
@@ -195,7 +195,7 @@ export default function MiniChallengeModal({
                 retroAudio.playUnlock();
                 onSuccess();
               }}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border-3 border-[#064e3b] shadow-[0_4px_0_#064e3b] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border-3 border-[#064e3b] shadow-[0_4px_0_#064e3b] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 font-medium"
             >
               <PixelIcon name="rocket" size={16} />
               <span>BUKA STRATA BERIKUTNYA &amp; MENYELAM LAGI</span>
@@ -214,7 +214,7 @@ export default function MiniChallengeModal({
               </button>
               <button
                 onClick={handleRetry}
-                className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-50 border-3 border-[#451a03] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer shadow-[0_3px_0_#231206] transition-transform active:translate-y-0.5 flex items-center gap-2"
+                className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-50 border-3 border-[#451a03] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer shadow-[0_3px_0_#231206] transition-transform active:translate-y-0.5 flex items-center gap-2 font-medium"
               >
                 <PixelIcon name="refresh" size={14} />
                 <span>COBA LAGI</span>

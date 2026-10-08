@@ -181,7 +181,7 @@ export default function PixelLoadingScreen({
         <div className="space-y-1.5">
           <div className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-950 text-amber-300 border-2 border-amber-500 shadow-[0_2px_0_#451a03]">
             <PixelIcon name="compass" size={14} className="text-emerald-400 animate-spin" />
-            <span className="font-pixel-title text-[13px] tracking-wider uppercase">{title}</span>
+            <span className="font-pixel-title text-[13px] tracking-wider uppercase font-semibold">{title}</span>
           </div>
           <p className="text-[13px] text-amber-950 font-bold leading-relaxed px-2">{subtitle}</p>
         </div>

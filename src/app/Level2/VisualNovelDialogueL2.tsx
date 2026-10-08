@@ -285,7 +285,7 @@ export default function VisualNovelDialogueL2({
               <span>✕</span> KEMBALI
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto space-y-3 pr-2 text-[13px] leading-relaxed">
+          <div className="flex-1 overflow-y-auto space-y-3 pr-2 text-[13px] leading-relaxed font-semibold">
             {historyLog.map((log, idx) => (
               <div key={idx} className="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
                 <span className="font-bold block mb-1" style={{ color: log.color }}>
@@ -296,7 +296,7 @@ export default function VisualNovelDialogueL2({
             ))}
           </div>
           <div className="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between">
-            <span className="text-[14.5px] text-slate-400">
+            <span className="text-[14.5px] text-slate-400 font-semibold">
               Tekan <kbd className="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-slate-300">ESC</kbd> untuk kembali
             </span>
             <button
@@ -401,7 +401,7 @@ export default function VisualNovelDialogueL2({
                 <button
                   key={choice.id}
                   onClick={() => handleChoiceClick(choice)}
-                  className="flex-1 px-4 py-3 sm:py-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-500 font-pixel text-[15px] sm:text-base tracking-wide shadow-md transition-all active:translate-y-0.5 flex items-center justify-start gap-2.5 cursor-pointer group"
+                  className="flex-1 px-4 py-3 sm:py-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700/80 hover:border-slate-500 font-pixel text-[15px] sm:text-base tracking-wide shadow-md transition-all active:translate-y-0.5 flex items-center justify-start gap-2.5 cursor-pointer group font-medium"
                 >
                   <span className="text-amber-400 font-mono font-bold shrink-0">[{idx + 1}]</span>
                   <span className="group-hover:translate-x-0.5 transition-transform text-left">
@@ -414,7 +414,7 @@ export default function VisualNovelDialogueL2({
 
           {/* ── TOOLBAR BAWAH (PERSIS LEVEL 1) ── */}
           <div
-            className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800/80 text-[13px] sm:text-[15px] text-slate-300"
+            className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800/80 text-[13px] sm:text-[15px] text-slate-300 font-semibold"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 sm:gap-4">

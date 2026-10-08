@@ -66,7 +66,7 @@ export default function MiniChallengeModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0 font-semibold"
           >
             <PixelIcon name="cross" size={14} />
           </button>
@@ -120,7 +120,7 @@ export default function MiniChallengeModal({
               isCorrect
                 ? 'bg-emerald-50 border-emerald-500 text-emerald-950'
                 : 'bg-rose-50 border-rose-500 text-rose-950'
-            }`}
+            } font-medium`}
           >
             <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold flex items-center gap-2 mb-2">
               <PixelIcon name={isCorrect ? 'unlock' : 'alert'} size={16} />

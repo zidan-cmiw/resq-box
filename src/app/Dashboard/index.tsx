@@ -481,7 +481,7 @@ export default function Dashboard() {
           <PixelAvatarRenderer config={student?.custom_avatar} size={48} animate={false} />
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-pixel-title text-[12.5px] text-amber-400">
+              <span className="font-pixel-title text-[12.5px] text-amber-400 font-semibold">
                 {currentUser?.role === 'teacher' ? 'AKUN GURU' : 'PROFIL SISWA'}
               </span>
               <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[12.5px] font-pixel-title font-bold">
@@ -491,7 +491,7 @@ export default function Dashboard() {
             <h2 className="font-pixel text-base font-bold text-white tracking-wide truncate max-w-[150px] sm:max-w-[200px]">
               {currentUser?.role === 'teacher' ? (currentUser.name || 'Bapak Guru IPA') : studentDisplayName}
             </h2>
-            <p className="text-[14.5px] text-slate-400 font-pixel hidden sm:block">
+            <p className="text-[14.5px] text-slate-400 font-pixel hidden sm:block font-semibold">
               {currentUser?.role === 'teacher' ? 'Guru IPA • Klik ke Posko Guru' : `${studentClass} • Klik untuk edit`}
             </p>
           </div>
@@ -522,7 +522,7 @@ export default function Dashboard() {
               navigate('/login');
             }}
             onMouseEnter={() => retroAudio.playHover()}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border-2 border-slate-700 shadow-[0_2px_0_#0f172a] text-[13.5px] font-pixel cursor-pointer flex items-center gap-1.5 transition-transform active:translate-y-0.5"
+            className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border-2 border-slate-700 shadow-[0_2px_0_#0f172a] text-[13.5px] font-pixel cursor-pointer flex items-center gap-1.5 transition-transform active:translate-y-0.5 font-semibold"
             title="Ganti Akun / Masuk"
           >
             <PixelIcon name="user" size={13} />
@@ -530,7 +530,7 @@ export default function Dashboard() {
           </button>
 
           {/* Sound toggle button */}
-          <button
+          <button aria-label="Nyalakan atau matikan suara"
             onClick={handleSoundToggle}
             onMouseEnter={() => retroAudio.playHover()}
             className={`w-10 h-10 rounded-lg border-2 border-slate-950 flex items-center justify-center font-bold transition-all cursor-pointer ${soundOn
@@ -539,13 +539,13 @@ export default function Dashboard() {
               }`}
             title="Suara Efek 8-Bit (ON/OFF)"
           >
-            <span className="material-symbols-outlined text-lg">
+            <span className="material-symbols-outlined text-lg font-medium">
               {soundOn ? 'volume_up' : 'volume_off'}
             </span>
           </button>
 
           {/* Fullscreen toggle button */}
-          <button
+          <button aria-label="Masuk atau keluar dari layar penuh"
             onClick={handleFullscreenToggle}
             onMouseEnter={() => retroAudio.playHover()}
             className={`w-10 h-10 rounded-lg border-2 border-slate-950 flex items-center justify-center font-bold transition-all cursor-pointer ${isFullscreen
@@ -554,7 +554,7 @@ export default function Dashboard() {
               }`}
             title="Layar Penuh (Fullscreen)"
           >
-            <span className="material-symbols-outlined text-lg">
+            <span className="material-symbols-outlined text-lg font-medium">
               {isFullscreen ? 'fullscreen_exit' : 'fullscreen'}
             </span>
           </button>
@@ -632,7 +632,7 @@ export default function Dashboard() {
               className="pixel-btn-wood-plank locked flex items-center justify-center gap-2 cursor-not-allowed"
               title="Selesaikan Level 1 Terlebih Dahulu"
             >
-              <span className="material-symbols-outlined text-base">lock</span>
+              <span className="material-symbols-outlined text-base font-medium">lock</span>
               <span>LEVEL 2. DISASTER ANALYST</span>
             </button>
           )}
@@ -657,7 +657,7 @@ export default function Dashboard() {
               className="pixel-btn-wood-plank locked flex items-center justify-center gap-2 cursor-not-allowed"
               title="Selesaikan Level 2 Terlebih Dahulu"
             >
-              <span className="material-symbols-outlined text-base">lock</span>
+              <span className="material-symbols-outlined text-base font-medium">lock</span>
               <span>LEVEL 3. SIMULATION GAME</span>
             </button>
           )}
@@ -714,7 +714,7 @@ export default function Dashboard() {
             onMouseEnter={() => retroAudio.playHover()}
             className="flex items-center gap-2 bg-amber-900/90 hover:bg-amber-800/90 backdrop-blur-md px-4 py-2 rounded-lg border-2 border-amber-950 shadow-[0_3px_0_#231206] cursor-pointer transition-transform active:translate-y-0.5"
           >
-            <span className="material-symbols-outlined text-amber-300 text-base">signpost</span>
+            <span className="material-symbols-outlined text-amber-300 text-base font-medium">signpost</span>
             <span className="font-pixel text-[13px] font-bold text-amber-200 flex items-center gap-1">
               <span>PETUNJUK BELAJAR</span>
               <span className="font-bold">&gt;</span>
@@ -765,7 +765,7 @@ export default function Dashboard() {
             </div>
 
             {/* Tab Navigation */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 p-1.5 bg-amber-950/20 rounded-xl border border-amber-950/40 text-[13px] sm:text-[15px] md:text-base">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 p-1.5 bg-amber-950/20 rounded-xl border border-amber-950/40 text-[13px] sm:text-[15px] md:text-base font-medium">
               <button
                 type="button"
                 onClick={() => {

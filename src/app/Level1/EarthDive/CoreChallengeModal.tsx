@@ -87,7 +87,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer shadow-[0_2px_0_#451a03] shrink-0"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer shadow-[0_2px_0_#451a03] shrink-0 font-medium"
                 title="Tutup"
               >
                 ✕
@@ -99,7 +99,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
               <span className="text-[13px] sm:text-[15px] text-amber-400 font-pixel-title block mb-2.5 text-center font-bold">
                 RANTAI KAUSALITAS INTERIOR BUMI ➔ BENCANA GEOLOGIS
               </span>
-              <div className="flex items-center justify-between gap-1.5 sm:gap-3 text-center text-[13.5px] sm:text-[13px] md:text-[15px]">
+              <div className="flex items-center justify-between gap-1.5 sm:gap-3 text-center text-[13.5px] sm:text-[13px] md:text-[15px] font-semibold">
                 <div className="bg-amber-950/90 border-2 border-amber-500 p-2.5 sm:p-3 rounded-xl flex-1 text-amber-200">
                   <div className="flex justify-center mb-1.5">
                     <PixelIcon name="flame" size={20} />
@@ -172,7 +172,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309]/20 hover:bg-[#b45309]/40 text-[#78350f] border-2 border-[#78350f] font-pixel text-[13px] sm:text-[15px] flex items-center justify-center cursor-pointer"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#b45309]/20 hover:bg-[#b45309]/40 text-[#78350f] border-2 border-[#78350f] font-pixel text-[13px] sm:text-[15px] flex items-center justify-center cursor-pointer font-semibold"
                 title="Tutup Modal & Lihat Gerbang di Map"
               >
                 ✕
@@ -236,7 +236,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
               <span className="font-pixel-title text-[13px] text-amber-400 block mb-1.5 font-bold">
                 JEMBATAN MISI TARUNA RESQ:
               </span>
-              <p className="font-pixel text-[13px] sm:text-[15px] leading-relaxed text-amber-100 italic">
+              <p className="font-pixel text-[13px] sm:text-[15px] leading-relaxed text-amber-100 italic font-semibold">
                 &ldquo;Kamu telah menembus 6.371 km, menyelesaikan semua pertanyaan geologi, dan membuka Gerbang Seismik Inti! Pilih kelanjutan misimu sekarang:&rdquo;
               </p>
             </div>
@@ -259,7 +259,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   <span className="text-[13px] sm:text-[15px] font-pixel-title font-bold block text-[#451a03]">
                     MENU UTAMA
                   </span>
-                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-[#92400e] block">
+                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-[#92400e] block font-semibold">
                     Kembali ke Beranda Taruna
                   </span>
                 </div>
@@ -281,7 +281,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                     LANJUT KE LEVEL 2
                     <span className="text-amber-300">&gt;</span>
                   </span>
-                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-emerald-100 block">
+                  <span className="text-[13.5px] sm:text-[13px] font-pixel text-emerald-100 block font-semibold">
                     Tantangan Erupsi Merapi
                   </span>
                 </div>
@@ -296,7 +296,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="px-4 py-2 rounded-xl bg-[#d97706]/15 hover:bg-[#d97706]/25 text-[#92400e] border border-[#b45309] text-[13.5px] font-pixel cursor-pointer transition-colors inline-flex items-center gap-1.5"
+                className="px-4 py-2 rounded-xl bg-[#d97706]/15 hover:bg-[#d97706]/25 text-[#92400e] border border-[#b45309] text-[13.5px] font-pixel cursor-pointer transition-colors inline-flex items-center gap-1.5 font-semibold"
               >
                 <PixelIcon name="clipboard" size={14} />
                 <span>JELAJAHI RUANG INTI (LIHAT GERBANG TERBUKA &amp; KAPSUL)</span>

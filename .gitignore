@@ -25,3 +25,6 @@ dev-dist
 *.sw?
 .env
 .env.example
+# Python
+__pycache__/
+*.pyc

@@ -615,7 +615,7 @@ export default function TeacherDashboard() {
               retroAudio.playSelect();
               navigate('/');
             }}
-            className="px-3.5 py-2 rounded-xl bg-amber-800 hover:bg-amber-700 text-amber-100 border-2 border-amber-950 shadow-[0_3px_0_#231206] text-[13px] font-pixel-title cursor-pointer transition-transform active:translate-y-0.5 flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-xl bg-amber-800 hover:bg-amber-700 text-amber-100 border-2 border-amber-950 shadow-[0_3px_0_#231206] text-[13px] font-pixel-title cursor-pointer transition-transform active:translate-y-0.5 flex items-center gap-1.5 font-semibold"
           >
             <span>&lt;</span>
             <span>MENU UTAMA</span>
@@ -671,7 +671,7 @@ export default function TeacherDashboard() {
                 }`}
             >
               <span>{cls.name}</span>
-              <span className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 text-[12.5px] font-pixel-title">
+              <span className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 text-[12.5px] font-pixel-title font-semibold">
                 {cls.code}
               </span>
             </button>
@@ -743,10 +743,10 @@ export default function TeacherDashboard() {
             <span className="text-[13.5px] font-pixel-title font-bold text-amber-900 uppercase block">
               TOTAL SISWA TERDAFTAR
             </span>
-            <div className="font-pixel-title text-2xl text-amber-950 my-1">
-              {totalStudents} <span className="text-[13px] text-amber-800 font-pixel">Siswa</span>
+            <div className="font-pixel-title text-2xl text-amber-950 my-1 font-medium">
+              {totalStudents} <span className="text-[13px] text-amber-800 font-pixel font-semibold">Siswa</span>
             </div>
-            <span className="text-[13.5px] font-pixel-title text-emerald-800 block">
+            <span className="text-[13.5px] font-pixel-title text-emerald-800 block font-semibold">
               Kelas: {activeClassObj.name}
             </span>
           </div>
@@ -756,7 +756,7 @@ export default function TeacherDashboard() {
             <span className="text-[13.5px] font-pixel-title font-bold text-amber-900 uppercase block">
               PROGRES KETUNTASAN KELAS
             </span>
-            <div className="font-pixel-title text-2xl text-emerald-800 my-1 flex items-baseline gap-2">
+            <div className="font-pixel-title text-2xl text-emerald-800 my-1 flex items-baseline gap-2 font-medium">
               <span>{totalClassProgress}%</span>
               <span className="text-[13px] text-amber-900 font-pixel font-bold">
                 ({tuntasLv3Count}/{totalStudents || 1} Tuntas Lv.3)
@@ -775,8 +775,8 @@ export default function TeacherDashboard() {
             <span className="text-[13.5px] font-pixel-title font-bold text-amber-900 uppercase block">
               RATA-RATA SKOR KELAS
             </span>
-            <div className="font-pixel-title text-2xl text-amber-950 my-1">
-              {avgOverallScore} <span className="text-[13px] text-amber-800 font-pixel">/ 100 Poin</span>
+            <div className="font-pixel-title text-2xl text-amber-950 my-1 font-medium">
+              {avgOverallScore} <span className="text-[13px] text-amber-800 font-pixel font-semibold">/ 100 Poin</span>
             </div>
           </div>
         </div>
@@ -792,7 +792,7 @@ export default function TeacherDashboard() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari nama siswa, no. absen, username..."
-                className="w-full sm:max-w-xs px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-[13px] focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
+                className="w-full sm:max-w-xs px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 font-pixel text-[13px] focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner font-semibold"
               />
             </div>
 
@@ -821,9 +821,9 @@ export default function TeacherDashboard() {
 
           {/* Table Container with 3-Level Evaluation Columns */}
           <div className="w-full overflow-x-auto rounded-xl border-2 border-amber-950/30 bg-white shadow-inner">
-            <table className="w-full text-left border-collapse text-[13px]">
+            <table className="w-full text-left border-collapse text-[13px] font-semibold">
               <thead>
-                <tr className="bg-amber-200/90 border-b-2 border-amber-950/30 text-amber-950 font-pixel-title text-[12.5px] uppercase tracking-wider">
+                <tr className="bg-amber-200/90 border-b-2 border-amber-950/30 text-amber-950 font-pixel-title text-[12.5px] uppercase tracking-wider font-semibold">
                   <th className="p-2.5 text-center w-12 whitespace-nowrap">ABS</th>
                   <th className="p-2.5 whitespace-nowrap min-w-[180px]">SISWA &amp; AVATAR</th>
                   <th className="p-2.5 whitespace-nowrap min-w-[120px]">USERNAME AKUN</th>
@@ -847,7 +847,7 @@ export default function TeacherDashboard() {
               <tbody className="divide-y divide-amber-950/10 font-pixel font-bold text-amber-950">
                 {filteredStudents.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="p-8 text-center text-amber-900/70 font-pixel text-[13px] italic">
+                    <td colSpan={8} className="p-8 text-center text-amber-900/70 font-pixel text-[13px] italic font-semibold">
                       Belum ada siswa yang sesuai kriteria di kelas ini. Klik [EDIT KELAS] untuk menambahkan akun murid.
                     </td>
                   </tr>
@@ -890,7 +890,7 @@ export default function TeacherDashboard() {
                     return (
                       <tr key={s.id} className="hover:bg-amber-50/90 transition-colors">
                         {/* 1. Absen */}
-                        <td className="p-2.5 text-center font-pixel-title text-[13.5px] text-amber-950 whitespace-nowrap">
+                        <td className="p-2.5 text-center font-pixel-title text-[13.5px] text-amber-950 whitespace-nowrap font-semibold">
                           #{s.absent_number}
                         </td>
 
@@ -900,13 +900,13 @@ export default function TeacherDashboard() {
                             <PixelAvatarRenderer config={s.avatar_config} size={32} animate={false} />
                             <div>
                               <span className="font-bold text-amber-950 block text-[13px] font-pixel">{s.name}</span>
-                              <span className="text-[13.5px] text-amber-800/80 font-pixel-title">ID: {s.id.slice(0, 8)}</span>
+                              <span className="text-[13.5px] text-amber-800/80 font-pixel-title font-semibold">ID: {s.id.slice(0, 8)}</span>
                             </div>
                           </div>
                         </td>
 
                         {/* 3. Username */}
-                        <td className="p-2.5 font-pixel text-[13px] text-amber-950 whitespace-nowrap">
+                        <td className="p-2.5 font-pixel text-[13px] text-amber-950 whitespace-nowrap font-semibold">
                           {s.username || '-'}
                         </td>
 
@@ -959,11 +959,11 @@ export default function TeacherDashboard() {
                               [ PROGRES ]
                             </span>
                           ) : (
-                            <span className="px-2.5 py-1 rounded-md bg-slate-200 text-slate-600 text-[12.5px] font-pixel-title border border-slate-400 inline-block whitespace-nowrap">
+                            <span className="px-2.5 py-1 rounded-md bg-slate-200 text-slate-600 text-[12.5px] font-pixel-title border border-slate-400 inline-block whitespace-nowrap font-semibold">
                               TERKUNCI
                             </span>
                           )}
-                          <span className="text-[12.5px] font-pixel block text-amber-900 mt-1 whitespace-nowrap">
+                          <span className="text-[12.5px] font-pixel block text-amber-900 mt-1 whitespace-nowrap font-semibold">
                             {isLv2Done ? `${score2} Poin` : (score2 > 0 ? `${score2} Poin` : (isLv2InProgress ? 'Belum mulai' : '—'))}
                           </span>
                         </td>
@@ -983,11 +983,11 @@ export default function TeacherDashboard() {
                               AKTIF
                             </span>
                           ) : (
-                            <span className="px-2.5 py-1 rounded-md bg-slate-200 text-slate-600 text-[12.5px] font-pixel-title border border-slate-400 inline-block whitespace-nowrap">
+                            <span className="px-2.5 py-1 rounded-md bg-slate-200 text-slate-600 text-[12.5px] font-pixel-title border border-slate-400 inline-block whitespace-nowrap font-semibold">
                               TERKUNCI
                             </span>
                           )}
-                          <span className="text-[12.5px] font-pixel block text-amber-900 mt-1 whitespace-nowrap">
+                          <span className="text-[12.5px] font-pixel block text-amber-900 mt-1 whitespace-nowrap font-semibold">
                             {isLv3Done
                               ? `${score3} Poin`
                               : isLv3InProgress
@@ -1044,7 +1044,7 @@ export default function TeacherDashboard() {
                   <PixelIcon name="gear" size={16} />
                   <span>KELOLA & EDIT KELAS</span>
                 </h3>
-                <p className="text-[14.5px] text-amber-900 font-pixel">
+                <p className="text-[14.5px] text-amber-900 font-pixel font-semibold">
                   Kode Kelas: <strong className="font-pixel-title text-amber-950">{selectedClassCode}</strong>
                 </p>
               </div>
@@ -1113,12 +1113,12 @@ export default function TeacherDashboard() {
                     value={editClassName}
                     onChange={(e) => setEditClassName(e.target.value)}
                     placeholder="Misal: Kelas VIII-A (IPA Unggulan)"
-                    className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                    className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2"
+                  className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 font-semibold"
                 >
                   <span>SIMPAN PERUBAHAN NAMA KELAS</span>
                   <span>&gt;</span>
@@ -1148,7 +1148,7 @@ export default function TeacherDashboard() {
                     value={newStdName}
                     onChange={(e) => setNewStdName(e.target.value)}
                     placeholder="Misal: Rizky Ramadhan"
-                    className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                    className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2.5">
@@ -1161,7 +1161,7 @@ export default function TeacherDashboard() {
                       value={newStdAbsent}
                       onChange={(e) => setNewStdAbsent(e.target.value)}
                       placeholder="15"
-                      className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                      className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                     />
                   </div>
                   <div>
@@ -1173,7 +1173,7 @@ export default function TeacherDashboard() {
                       value={newStdUsername}
                       onChange={(e) => setNewStdUsername(e.target.value)}
                       placeholder="rizky15"
-                      className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                      className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                     />
                   </div>
                 </div>
@@ -1186,12 +1186,12 @@ export default function TeacherDashboard() {
                     value={newStdPassword}
                     onChange={(e) => setNewStdPassword(e.target.value)}
                     placeholder="12345"
-                    className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                    className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2"
+                  className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 font-semibold"
                 >
                   <span>+ SIMPAN AKUN SISWA KE KELAS</span>
                   <span>&gt;</span>
@@ -1202,7 +1202,7 @@ export default function TeacherDashboard() {
             {/* Tab Content 3: Zona Bahaya / Hapus Kelas */}
             {manageTab === 'danger' && (
               <div className="space-y-3 pt-1">
-                <div className="p-3.5 bg-rose-100 rounded-xl border-2 border-rose-800 text-[13px] text-rose-950 space-y-2">
+                <div className="p-3.5 bg-rose-100 rounded-xl border-2 border-rose-800 text-[13px] text-rose-950 space-y-2 font-semibold">
                   <div className="flex items-center gap-2 font-pixel-title text-rose-900 font-bold">
                     <PixelIcon name="warning" size={16} />
                     <span>PERINGATAN ZONA BAHAYA</span>
@@ -1251,13 +1251,13 @@ export default function TeacherDashboard() {
                   value={newClassName}
                   onChange={(e) => setNewClassName(e.target.value)}
                   placeholder="Misal: Kelas VIII-B (IPA)"
-                  className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner"
+                  className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                 />
               </div>
 
               <button
                 type="submit"
-                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2"
+                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 font-semibold"
               >
                 <span>BUAT KELAS & KODE BARU</span>
                 <span>&gt;</span>
@@ -1294,12 +1294,12 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Info Akun Login Siswa */}
-            <div className="p-3 bg-amber-100 rounded-xl border border-amber-950/30 space-y-1 text-[13px]">
+            <div className="p-3 bg-amber-100 rounded-xl border border-amber-950/30 space-y-1 text-[13px] font-semibold">
               <span className="text-[13.5px] font-pixel-title font-bold text-amber-950 uppercase block">AKUN LOGIN SISWA:</span>
               <div className="flex items-center justify-between font-pixel">
                 <span>Username: <strong className="font-pixel-title text-amber-950">{selectedStudentForDetail.username || '-'}</strong></span>
               </div>
-              <p className="text-[13.5px] font-pixel text-amber-900/80 leading-snug">
+              <p className="text-[13.5px] font-pixel text-amber-900/80 leading-snug font-semibold">
                 Password tidak disimpan di sistem (hanya tersimpan terenkripsi di server autentikasi).
                 Bila siswa lupa password, minta siswa menggantinya sendiri lewat halaman Profil.
               </p>
@@ -1321,7 +1321,7 @@ export default function TeacherDashboard() {
                 const badgesList = sub1?.details?.badges || (isLv1Done ? ['Surface Scout', 'Tectonic Tracker', 'Mantle Explorer', 'Core Specialist'] : []);
 
                 return (
-                  <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-2 text-[13px]">
+                  <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-2 text-[13px] font-semibold">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-amber-950 font-pixel">Level 1: Penjelajahan Lapisan Bumi (Earth Dive)</span>
                       <span className={`px-2 py-0.5 rounded font-pixel-title text-[12.5px] font-bold ${
@@ -1334,7 +1334,7 @@ export default function TeacherDashboard() {
                         {isLv1Done ? 'TUNTAS' : sub1 && sub1.score > 0 ? 'SEDANG DIKERJAKAN' : 'BELUM MULAI'}
                       </span>
                     </div>
-                    <div className="text-[14.5px] text-amber-900 font-pixel space-y-1">
+                    <div className="text-[14.5px] text-amber-900 font-pixel space-y-1 font-semibold">
                       <div>Capaian Lapisan: <strong className="text-amber-950">{currentLayer}</strong></div>
                       <div>Skor Evaluasi: <strong className="text-amber-950">{score} / 100 Poin</strong> (20 Poin / Lapisan Tuntas)</div>
                       <div>Kata Kunci Geologi: <strong className="text-amber-950">{wordsText}</strong></div>
@@ -1361,14 +1361,14 @@ export default function TeacherDashboard() {
                 const isLv2InProgress = !isLv2Done && (score > 0 || Boolean(sub2?.details?.current_mission) || selectedStudentForDetail.unlocked_level >= 2);
 
                 return (
-                  <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-1 text-[13px]">
+                  <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-1 text-[13px] font-semibold">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-amber-950 font-pixel">Level 2: Ekspedisi Batas Lempeng Tektonik (Tectonic Explorer)</span>
                       <span className={`px-2 py-0.5 rounded font-pixel-title text-[12.5px] font-bold ${isLv2Done ? 'bg-emerald-100 text-emerald-800' : isLv2InProgress ? 'bg-sky-100 text-sky-800' : 'bg-slate-100 text-slate-600'}`}>
                         {isLv2Done ? 'TUNTAS' : isLv2InProgress ? 'SEDANG DIKERJAKAN' : 'TERKUNCI'}
                       </span>
                     </div>
-                    <div className="text-[14.5px] text-amber-900 font-pixel space-y-0.5">
+                    <div className="text-[14.5px] text-amber-900 font-pixel space-y-0.5 font-semibold">
                       <div>Skor Tektonik: <strong>{isLv2Done || score > 0 ? `${score} / 100 Poin` : '—'}</strong></div>
                       {sub2?.details?.stage_label && (
                         <div>Capaian Misi: <strong>{sub2.details.stage_label}</strong></div>
@@ -1400,7 +1400,7 @@ export default function TeacherDashboard() {
                 const isLv3Active = selectedStudentForDetail.unlocked_level >= 3 || selectedStudentForDetail.username === 'demo';
 
                 return (
-                  <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-2 text-[13px]">
+                  <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-2 text-[13px] font-semibold">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-amber-950 font-pixel">Level 3: Simulation Game (Digital Twin Lab)</span>
                       <span
@@ -1418,16 +1418,16 @@ export default function TeacherDashboard() {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-[14.5px] font-pixel text-amber-900">
+                    <div className="grid grid-cols-2 gap-2 text-[14.5px] font-pixel text-amber-900 font-semibold">
                       <div>
-                        <span className="text-amber-950/60 block text-[12.5px] uppercase">Nilai Simulasi:</span>
-                        <strong className="text-amber-950 font-pixel-title text-[13.5px]">
+                        <span className="text-amber-950/60 block text-[12.5px] uppercase font-semibold">Nilai Simulasi:</span>
+                        <strong className="text-amber-950 font-pixel-title text-[13.5px] font-semibold">
                           {score3} / 100 Poin
                         </strong>
                       </div>
                       <div>
-                        <span className="text-amber-950/60 block text-[12.5px] uppercase">Misi Selesai:</span>
-                        <strong className="text-amber-950 font-pixel-title text-[13.5px]">
+                        <span className="text-amber-950/60 block text-[12.5px] uppercase font-semibold">Misi Selesai:</span>
+                        <strong className="text-amber-950 font-pixel-title text-[13.5px] font-semibold">
                           {completedMissionsCount} / 20 Misi
                         </strong>
                       </div>
@@ -1441,7 +1441,7 @@ export default function TeacherDashboard() {
                     </div>
 
                     {sub3?.details?.stage_label && (
-                      <p className="text-[13.5px] text-amber-800 font-pixel italic">
+                      <p className="text-[13.5px] text-amber-800 font-pixel italic font-semibold">
                         {sub3.details.stage_label}
                       </p>
                     )}
@@ -1485,7 +1485,7 @@ export default function TeacherDashboard() {
                 KONFIRMASI HAPUS SISWA
               </h3>
             </div>
-            <p className="text-[13px] text-amber-950 font-pixel">
+            <p className="text-[13px] text-amber-950 font-pixel font-semibold">
               Apakah Anda yakin ingin menghapus akun siswa <strong>"{studentToDelete.name}"</strong>? Data nilai dan progres siswa akan dihapus dari kelas ini.
             </p>
             <div className="flex items-center justify-end gap-2 pt-2">
@@ -1560,23 +1560,23 @@ export default function TeacherDashboard() {
               className="space-y-3"
             >
               <div>
-                <label className="block text-[14.5px] font-pixel-title text-amber-900 mb-1.5">NAMA LENGKAP GURU</label>
+                <label className="block text-[14.5px] font-pixel-title text-amber-900 mb-1.5 font-semibold">NAMA LENGKAP GURU</label>
                 <input
                   type="text"
                   value={editTeacherName}
                   onChange={(e) => setEditTeacherName(e.target.value)}
                   placeholder="Contoh: Bapak Hendra, S.Pd"
-                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-950/40 bg-amber-50 text-amber-950 font-pixel text-[15px] focus:outline-none focus:border-amber-700"
+                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-950/40 bg-amber-50 text-amber-950 font-pixel text-[15px] focus:outline-none focus:border-amber-700 font-semibold"
                 />
               </div>
               <div>
-                <label className="block text-[14.5px] font-pixel-title text-amber-900 mb-1.5">NAMA SEKOLAH</label>
+                <label className="block text-[14.5px] font-pixel-title text-amber-900 mb-1.5 font-semibold">NAMA SEKOLAH</label>
                 <input
                   type="text"
                   value={editTeacherSchool}
                   onChange={(e) => setEditTeacherSchool(e.target.value)}
                   placeholder="Contoh: SMP Negeri 1 Magelang"
-                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-950/40 bg-amber-50 text-amber-950 font-pixel text-[15px] focus:outline-none focus:border-amber-700"
+                  className="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-950/40 bg-amber-50 text-amber-950 font-pixel text-[15px] focus:outline-none focus:border-amber-700 font-semibold"
                 />
               </div>
 

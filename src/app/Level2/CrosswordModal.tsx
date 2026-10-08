@@ -387,7 +387,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0 font-medium"
             title="Tutup"
           >
             <PixelIcon name="cross" size={16} />
@@ -487,7 +487,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
                     : 'bg-[#fffbeb] hover:bg-[#fde68a] text-[#451a03] border-[#b45309]/40'
                     }`}
                 >
-                  <div className="flex items-center gap-2 mb-1.5 font-pixel-title text-[13px] sm:text-[15px]">
+                  <div className="flex items-center gap-2 mb-1.5 font-pixel-title text-[13px] sm:text-[15px] font-semibold">
                     <span
                       className={`px-2.5 py-0.5 rounded-md font-bold ${isActive ? 'bg-amber-800 text-amber-200' : 'bg-[#b45309]/20 text-[#b45309]'
                         }`}
@@ -514,7 +514,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
 
         {/* Action Controls */}
         <div className="flex items-center justify-between pt-3 border-t-2 border-[#b45309]/30">
-          <div className="flex items-center gap-1.5 text-[13px] text-[#78350f]">
+          <div className="flex items-center gap-1.5 text-[13px] text-[#78350f] font-semibold">
           </div>
 
           {!isCompleted ? (

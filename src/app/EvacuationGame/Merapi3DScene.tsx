@@ -6018,7 +6018,7 @@ export default function Merapi3DScene() {
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#060913]/90 backdrop-blur-md">
           <div className="w-14 h-14 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-3" />
           <h3 className="text-[15px] font-bold text-white tracking-wide font-pixel">Memuat Digital Twin 3D Merapi</h3>
-          <p className="text-[14.5px] text-slate-400 mt-1">Mengoptimalkan geometri maket & topografi STL • {loadProgress}%</p>
+          <p className="text-[14.5px] text-slate-400 mt-1 font-semibold">Mengoptimalkan geometri maket & topografi STL • {loadProgress}%</p>
         </div>
       )}
 
@@ -6051,7 +6051,7 @@ export default function Merapi3DScene() {
               <span className="text-[13.5px] font-bold font-pixel px-2.5 py-1.5 rounded-xl border bg-red-950/90 text-red-200 border-red-500 shadow-xl backdrop-blur-md animate-pulse">
  ⚠ GEMPA {richterScale.toFixed(1)} SR [{seismicLevel === 3 ? 'KUAT' : seismicLevel === 2 ? 'SEDANG' : 'RINGAN'}]
               </span>
-              <span className="text-[12.5px] font-medium font-sans px-2 py-0.5 rounded-lg bg-black/70 text-slate-300 border border-slate-700/80 backdrop-blur-xs w-fit">
+              <span className="text-[12.5px] font-semibold font-sans px-2 py-0.5 rounded-lg bg-black/70 text-slate-300 border border-slate-700/80 backdrop-blur-xs w-fit">
                 {seismicLevel === 1 && 'Status: Panic • NPC Menuju Lapangan (1.5x) • Bangunan Aman (HP 100%)'}
                 {seismicLevel === 2 && 'Status: Extreme Panic • Merunduk 3s & Lari (2x) • Dinding Retak (HP 60%) • Tiang Miring'}
                 {seismicLevel === 3 && 'Status: Kolaps Total • Warga Tiarap/Reruntuhan • Bangunan Runtuh Amblas • Tiang Roboh'}
@@ -6070,7 +6070,7 @@ export default function Merapi3DScene() {
 
         {/* Banner Notifikasi Rute Evakuasi Aktif */}
         {selectedRoute !== 'Belum Ditentukan' && (
-          <div className="bg-emerald-950/90 border border-emerald-500/80 rounded-xl px-3 py-1 text-[13.5px] text-emerald-200 shadow-xl flex items-center gap-1.5 animate-bounce w-fit">
+          <div className="bg-emerald-950/90 border border-emerald-500/80 rounded-xl px-3 py-1 text-[13.5px] text-emerald-200 shadow-xl flex items-center gap-1.5 animate-bounce w-fit font-semibold">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
             <span>Rute: <strong>{selectedRoute}</strong> → {activeShelter}</span>
           </div>

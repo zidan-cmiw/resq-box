@@ -108,7 +108,7 @@ export default function PrivacyPage() {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="pixel-btn-wood-plank px-3 py-2 text-[13.5px] shrink-0"
+              className="pixel-btn-wood-plank px-3 py-2 text-[13.5px] shrink-0 font-semibold"
               aria-label="Kembali ke halaman sebelumnya"
             >
               &larr; KEMBALI
@@ -124,13 +124,13 @@ export default function PrivacyPage() {
                 <PixelIcon name="shield" size={26} />
               </span>
               <div>
-                <p className="font-pixel text-[14.5px] sm:text-[15px] leading-relaxed">
+                <p className="font-pixel text-[14.5px] sm:text-[15px] leading-relaxed font-semibold">
                   RESQ-BOX adalah media pembelajaran IPA untuk SMP. Kami hanya
                   menyimpan data yang benar-benar diperlukan untuk mencatat hasil
                   belajar, dan kami tidak memakainya untuk iklan atau
                   memperdagangkannya.
                 </p>
-                <p className="font-pixel text-[12.5px] mt-2 opacity-75">
+                <p className="font-pixel text-[12.5px] mt-2 opacity-75 font-semibold">
                   Terakhir diperbarui: {TERAKHIR_DIPERBARUI}
                 </p>
               </div>
@@ -144,10 +144,10 @@ export default function PrivacyPage() {
                 <ul className="space-y-2">
                   {section.isi.map((par, i) => (
                     <li key={i} className="flex gap-2">
-                      <span className="shrink-0 font-pixel text-[13.5px] opacity-60 select-none">
+                      <span className="shrink-0 font-pixel text-[13.5px] opacity-60 select-none font-semibold">
                         &bull;
                       </span>
-                      <span className="font-pixel text-[14px] sm:text-[15px] leading-relaxed">
+                      <span className="font-pixel text-[14px] sm:text-[15px] leading-relaxed font-semibold">
                         {par}
                       </span>
                     </li>
@@ -157,7 +157,7 @@ export default function PrivacyPage() {
             ))}
 
             <div className="mt-6 pt-4 border-t-2 border-[#451a03]/25">
-              <p className="font-pixel text-[13px] leading-relaxed opacity-80">
+              <p className="font-pixel text-[13px] leading-relaxed opacity-80 font-semibold">
                 Halaman ini disediakan agar sekolah dan orang tua dapat memeriksa
                 sendiri bagaimana data siswa ditangani. Bila ada bagian yang perlu
                 dijelaskan lebih lanjut, silakan hubungi kami melalui kontak di
@@ -170,7 +170,7 @@ export default function PrivacyPage() {
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="pixel-btn-wood-plank px-5 py-2.5 text-[14.5px]"
+              className="pixel-btn-wood-plank px-5 py-2.5 text-[14.5px] font-semibold"
             >
               KEMBALI KE MENU UTAMA
             </button>

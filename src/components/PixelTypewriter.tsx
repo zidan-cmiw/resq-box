@@ -42,8 +42,8 @@ export default function PixelTypewriter({
     return () => clearInterval(interval);
   }, [text, speed, onComplete]);
 
-  const handleSkip = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  /** Munculkan seluruh teks seketika. Dipakai oleh klik maupun keyboard. */
+  const skipTyping = () => {
     if (isTyping) {
       setDisplayedText(text);
       setIsTyping(false);
@@ -51,9 +51,23 @@ export default function PixelTypewriter({
     }
   };
 
+  const handleSkip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    skipTyping();
+  };
+
   return (
     <span
+      role={isTyping ? 'button' : undefined}
+      tabIndex={isTyping ? 0 : undefined}
+      aria-label={isTyping ? 'Tampilkan seluruh teks sekarang' : undefined}
       onClick={handleSkip}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          skipTyping();
+        }
+      }}
       className={`inline ${className}`}
       title={isTyping ? 'Klik untuk memunculkan teks langsung' : undefined}
     >

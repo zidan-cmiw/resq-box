@@ -313,7 +313,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
         >
           <ResqyMascot size={isMobile ? 22 : 24} className="group-hover:animate-bounce-subtle shrink-0" />
           <span className="hidden sm:inline">PANDUAN RESQY</span>
-          <span className="text-[12.5px] sm:text-[13.5px] bg-[#b45309] text-amber-50 px-1 sm:px-1.5 py-0.5 rounded font-pixel">?</span>
+          <span className="text-[12.5px] sm:text-[13.5px] bg-[#b45309] text-amber-50 px-1 sm:px-1.5 py-0.5 rounded font-pixel font-semibold">?</span>
         </button>
       )}
 
@@ -420,7 +420,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                 <button
                   type="button"
                   onClick={handleSkip}
-                  className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-lg sm:rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel text-[13px] sm:text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0 transition-colors"
+                  className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-lg sm:rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel text-[13px] sm:text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0 transition-colors font-semibold"
                   title="Lewati panduan ini"
                 >
                   ✕
@@ -462,7 +462,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                     <div className="w-1" />
                   )}
 
-                  <button
+                  <button aria-label="Lanjut ke langkah berikutnya"
                     type="button"
                     onClick={handleNext}
                     className="px-4 py-2 sm:px-6 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-2 sm:border-3 border-[#451a03] shadow-[0_3px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center justify-center gap-1.5 sm:gap-2 transition-all font-bold whitespace-nowrap shrink-0"

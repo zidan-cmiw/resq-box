@@ -109,7 +109,7 @@ const JourneyProgressTracker = forwardRef<
               left: `${((hoveredIndex + 0.5) / totalAreas) * 100}%`,
             }}
           >
-            <div className="bg-slate-950/95 text-amber-200 border-2 border-amber-400 px-2.5 py-1 rounded-md text-[13.5px] sm:text-[14.5px] font-pixel whitespace-nowrap shadow-2xl flex items-center gap-1.5 backdrop-blur-md">
+            <div className="bg-slate-950/95 text-amber-200 border-2 border-amber-400 px-2.5 py-1 rounded-md text-[13.5px] sm:text-[14.5px] font-pixel whitespace-nowrap shadow-2xl flex items-center gap-1.5 backdrop-blur-md font-semibold">
               <PixelIcon name={areas[hoveredIndex].iconName} size={13} />
               <span className="font-bold">{areas[hoveredIndex].name}</span>
               <span className="text-amber-400 font-extrabold">({areas[hoveredIndex].metricLabel})</span>
@@ -173,7 +173,7 @@ const JourneyProgressTracker = forwardRef<
                         ? 'text-yellow-300 font-extrabold tracking-wide drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]'
                         : isCompleted
                           ? 'text-emerald-300 font-bold'
-                          : 'text-slate-300 font-medium'
+                          : 'text-slate-300 font-semibold'
                     }`}
                   >
                     {area.metricLabel}

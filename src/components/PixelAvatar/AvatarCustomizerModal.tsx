@@ -235,10 +235,10 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               <PixelAvatarRenderer config={avatar} size={32} bordered={false} />
             </div>
             <div>
-              <h2 className="font-pixel-title text-base sm:text-xl text-amber-950 tracking-wider">
+              <h2 className="font-pixel-title text-base sm:text-xl text-amber-950 tracking-wider font-medium">
                 BENGKEL AVATAR RESQ-TEAM
               </h2>
-              <p className="text-[13px] sm:text-[15px] text-amber-900">
+              <p className="text-[13px] sm:text-[15px] text-amber-900 font-semibold">
                 Kustomisasi karakter penyelamatmu secara bebas dan simpan langsung ke profil akun!
               </p>
             </div>
@@ -248,7 +248,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 rounded-xl bg-amber-200 border-2 border-amber-950 flex items-center justify-center font-pixel-title text-[15px] text-amber-950 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer shadow-[0_2px_0_#78350f]"
+            className="w-9 h-9 rounded-xl bg-amber-200 border-2 border-amber-950 flex items-center justify-center font-pixel-title text-[15px] text-amber-950 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer shadow-[0_2px_0_#78350f] font-semibold"
             title="Tutup Modal"
           >
             ✕
@@ -307,7 +307,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                       <span className="text-[14.5px] text-amber-950 font-bold block leading-tight">
                         {preset.name}
                       </span>
-                      <span className="text-[12.5px] text-amber-800 block leading-tight">
+                      <span className="text-[12.5px] text-amber-800 block leading-tight font-semibold">
                         {preset.subtitle}
                       </span>
                     </div>
@@ -380,7 +380,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                             <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                             <div className="min-w-0 flex-1">
                               <span className="text-[13px] sm:text-[15px] block font-bold leading-tight">{h.label}</span>
-                              <span className="text-[13.5px] text-amber-800 block leading-tight">{h.desc}</span>
+                              <span className="text-[13.5px] text-amber-800 block leading-tight font-semibold">{h.desc}</span>
                             </div>
                           </button>
                         );
@@ -449,7 +449,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="text-left min-w-0 flex-1">
                             <span className="text-[13px] sm:text-[15px] font-bold block leading-tight">{s.label}</span>
-                            <span className="text-[13.5px] text-amber-800 block leading-tight">
+                            <span className="text-[13.5px] text-amber-800 block leading-tight font-semibold">
                               {s.desc}
                             </span>
                           </div>
@@ -486,7 +486,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="min-w-0 flex-1">
                             <span className="text-[13px] sm:text-[15px] font-bold block leading-tight mb-0.5">{e.label}</span>
-                            <span className="text-[13.5px] text-amber-800 block leading-tight">{e.desc}</span>
+                            <span className="text-[13.5px] text-amber-800 block leading-tight font-semibold">{e.desc}</span>
                           </div>
                         </button>
                       );
@@ -521,7 +521,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="min-w-0 flex-1">
                             <span className="text-[13px] sm:text-[15px] font-bold block leading-tight">{o.label}</span>
-                            <span className="text-[13.5px] text-amber-800 block leading-tight">{o.desc}</span>
+                            <span className="text-[13.5px] text-amber-800 block leading-tight font-semibold">{o.desc}</span>
                           </div>
                         </button>
                       );
@@ -556,7 +556,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="min-w-0 flex-1">
                             <span className="text-[13px] sm:text-[15px] font-bold block leading-tight mb-0.5">{a.label}</span>
-                            <span className="text-[13.5px] text-amber-800 block leading-tight">{a.desc}</span>
+                            <span className="text-[13.5px] text-amber-800 block leading-tight font-semibold">{a.desc}</span>
                           </div>
                         </button>
                       );
@@ -591,7 +591,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
                           <div className="min-w-0 flex-1">
                             <span className="text-[13px] sm:text-[15px] font-bold block leading-tight">{b.label}</span>
-                            <span className="text-[13.5px] text-amber-800 block leading-tight">{b.desc}</span>
+                            <span className="text-[13.5px] text-amber-800 block leading-tight font-semibold">{b.desc}</span>
                           </div>
                         </button>
                       );
@@ -618,7 +618,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
 
           <button
             onClick={handleSave}
-            className="px-7 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-3 border-amber-950 shadow-[0_4px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer flex items-center gap-2"
+            className="px-7 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-3 border-amber-950 shadow-[0_4px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer flex items-center gap-2 font-semibold"
           >
             <span>SIMPAN AVATAR SAYA</span>
             <PixelIcon name="check" size={16} />

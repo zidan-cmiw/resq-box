@@ -134,7 +134,7 @@ export default function FinalQuestModal({ onClose, resiliencePoints }: FinalQues
                 <span className="font-pixel-title text-[13.5px] text-amber-200 font-bold leading-tight block mb-1">
                   {b.title}
                 </span>
-                <span className="font-sans text-[13.5px] text-slate-300 leading-snug block font-medium">{b.desc}</span>
+                <span className="font-sans text-[13.5px] text-slate-300 leading-snug block font-semibold">{b.desc}</span>
               </div>
             ))}
           </div>

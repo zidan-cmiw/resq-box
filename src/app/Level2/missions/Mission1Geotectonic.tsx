@@ -101,7 +101,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
               <PixelIcon name="globe" size={18} />
               <span>Apersepsi: Teka-Teki Kepingan Benua (Pangea)</span>
             </h3>
-            <p className="text-[13px] text-amber-900 leading-relaxed">
+            <p className="text-[13px] text-amber-900 leading-relaxed font-semibold">
               Pernahkah kamu memperhatikan bahwa garis pantai benua di bumi tampak seperti potongan puzzle?
               Pada tahun 1912, seorang ahli meteorologi bernama <strong>Alfred Wegener</strong> mengemukakan
               bahwa seluruh benua dulunya merupakan satu daratan raksasa yang disebut <strong>Pangea</strong>,
@@ -115,10 +115,10 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
               <span className="text-[13.5px] text-amber-400 font-pixel-title font-bold block">
                 BUKTI ILMIAH WEGENER:
               </span>
-              <span className="text-[12.5px] text-slate-300 block">
+              <span className="text-[12.5px] text-slate-300 block font-semibold">
                 • Rangkaian pegunungan Appalachian & Kaledonia identik (usia & jenis batuan sama)
               </span>
-              <span className="text-[12.5px] text-slate-300 block">
+              <span className="text-[12.5px] text-slate-300 block font-semibold">
                 • Fosil tumbuhan purba <em>Glossopteris</em> ditemukan di Amerika Selatan & Afrika
               </span>
             </div>
@@ -132,8 +132,8 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                 }`}
               >
                 <span className="text-[13.5px] font-bold">AMERIKA</span>
-                <span className="text-[12.5px] text-emerald-200">SELATAN</span>
-                <span className="text-[12px] mt-1 text-emerald-300">Fosil Mesosaurus</span>
+                <span className="text-[12.5px] text-emerald-200 font-semibold">SELATAN</span>
+                <span className="text-[12px] mt-1 text-emerald-300 font-semibold">Fosil Mesosaurus</span>
               </div>
 
               {/* Africa piece */}
@@ -143,8 +143,8 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                 }`}
               >
                 <span className="text-[13.5px] font-bold">BENUA</span>
-                <span className="text-[12.5px] text-amber-200">AFRIKA</span>
-                <span className="text-[12px] mt-1 text-amber-300">Fosil Mesosaurus</span>
+                <span className="text-[12.5px] text-amber-200 font-semibold">AFRIKA</span>
+                <span className="text-[12px] mt-1 text-amber-300 font-semibold">Fosil Mesosaurus</span>
               </div>
             </div>
 
@@ -183,7 +183,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
             <h3 className="text-[13px] md:text-[15px] font-bold text-amber-950 mb-1">
               Teori Lempeng Tektonik & Arus Konveksi Mantel
             </h3>
-            <p className="text-[14.5px] text-amber-900 leading-relaxed">
+            <p className="text-[14.5px] text-amber-900 leading-relaxed font-semibold">
               Kerak bumi terpecah menjadi sekitar <strong>20 segmen lempeng tektonik</strong>. Lempeng ini
               terdiri dari <strong>Lempeng Benua</strong> (tebal ~100 km) dan <strong>Lempeng Samudera</strong>{' '}
               (tebal 5–15 km, namun lebih padat & berat). Lempeng bergerak lambat sepanjang waktu karena didorong
@@ -211,7 +211,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                 }`}
               >
                 <span className="font-pixel-title text-[14.5px] block font-bold">{tab.title}</span>
-                <span className="text-[12.5px] opacity-80 block">{tab.sub}</span>
+                <span className="text-[12.5px] opacity-80 block font-semibold">{tab.sub}</span>
               </button>
             ))}
           </div>
@@ -324,14 +324,14 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
             </div>
 
             {/* Geological Explanation Box */}
-            <div className="mt-3 p-3 rounded-xl bg-slate-900 border border-slate-800 text-[14.5px] text-slate-300 flex items-start justify-between gap-4">
+            <div className="mt-3 p-3 rounded-xl bg-slate-900 border border-slate-800 text-[14.5px] text-slate-300 flex items-start justify-between gap-4 font-semibold">
               <div>
                 <span className="font-bold text-amber-300 block mb-0.5">
                   {activeBoundary === 'divergen' && 'PUNGGUNG TENGAH SAMUDRA (MID-OCEAN RIDGE):'}
                   {activeBoundary === 'konvergen' && 'SUBDUKSI & VULKANISME (PEMICU UTAMA MERAPI):'}
                   {activeBoundary === 'transform' && 'SESAR PATAHAN GESER (PEMICU GEMPA DANGKAL):'}
                 </span>
-                <p className="text-[13.5px] text-slate-300">
+                <p className="text-[13.5px] text-slate-300 font-semibold">
                   {activeBoundary === 'divergen' &&
                     'Dua lempeng saling menjauh. Magma cair dari mantel bumi naik ke atas membentuk batuan beku basaltik dan kerak baru. Sering menimbulkan retakan dan gempa dangkal.'}
                   {activeBoundary === 'konvergen' &&
@@ -343,7 +343,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
 
               <button
                 onClick={handleTriggerSeismic}
-                className="px-3 py-2 rounded-lg bg-rose-700 hover:bg-rose-600 text-white font-pixel-title text-[13.5px] shrink-0 border border-rose-950 shadow cursor-pointer active:translate-y-0.5"
+                className="px-3 py-2 rounded-lg bg-rose-700 hover:bg-rose-600 text-white font-pixel-title text-[13.5px] shrink-0 border border-rose-950 shadow cursor-pointer active:translate-y-0.5 font-semibold"
               >
                 PICU GETARAN
               </button>
@@ -357,7 +357,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
                   <span className="font-pixel-title text-[13.5px] text-emerald-400 font-bold block">
                     SEISMOGRAF DIGITAL: BMKG MONITORING
                   </span>
-                  <span className="text-[12.5px] text-emerald-600">
+                  <span className="text-[12.5px] text-emerald-600 font-semibold">
                     Mengubah getaran mekanik bumi menjadi sinyal listrik & seismogram
                   </span>
                 </div>
@@ -418,7 +418,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
             <h3 className="text-[13px] md:text-[15px] font-bold text-amber-950 mb-1">
               Uji Validasi Analis Geologis Kebencanaan
             </h3>
-            <p className="text-[14.5px] text-amber-900">
+            <p className="text-[14.5px] text-amber-900 font-semibold">
               Jawab 3 pertanyaan berikut untuk memvalidasi pemahamanmu tentang akar geologis di Disaster City.
             </p>
           </div>
@@ -428,7 +428,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
             <span className="text-[13px] font-bold text-amber-950 block">
               1. Batas lempeng apa yang menyebabkan lempeng samudera menyelinap ke bawah lempeng benua (subduksi) dan memicu lahirnya Gunung Api Merapi?
             </span>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[13px]">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[13px] font-semibold">
               {[
                 { id: 'divergen', label: 'A. Batas Divergen (Saling Menjauh)' },
                 { id: 'konvergen', label: 'B. Batas Konvergen (Subduksi & Peleburan)' },
@@ -454,7 +454,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
             <span className="text-[13px] font-bold text-amber-950 block">
               2. Alat pendeteksi yang bekerja dengan cara mengubah getaran mekanik bumi menjadi sinyal listrik disebut...?
             </span>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[13px]">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[13px] font-semibold">
               {[
                 { id: 'barometer', label: 'A. Barometer' },
                 { id: 'seismograf', label: 'B. Seismograf' },
@@ -480,7 +480,7 @@ export default function Mission1Geotectonic({ onComplete, isAlreadyCompleted = f
             <span className="text-[13px] font-bold text-amber-950 block">
               3. Apa tenaga pendorong utama yang membuat 20 lempeng tektonik terus bergerak di atas mantel bumi?
             </span>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[13px]">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[13px] font-semibold">
               {[
                 { id: 'angin', label: 'A. Hembusan angin atmosfer' },
                 { id: 'konveksi', label: 'B. Arus konveksi panas di mantel bumi' },

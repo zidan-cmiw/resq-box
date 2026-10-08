@@ -50,7 +50,7 @@ class Level2ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
             <h2 className="font-pixel-title text-[15px] sm:text-base text-rose-400 font-bold">
               GANGGUAN TRANSMISI GEOLOGIS
             </h2>
-            <p className="text-[13px] text-slate-300 leading-relaxed">
+            <p className="text-[13px] text-slate-300 leading-relaxed font-semibold">
               Terjadi anomali saat memuat ekspedisi Level 2. Sistem keamanan Siaga telah menstabilkan layar.
             </p>
             <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700 text-left overflow-x-auto text-[13.5px] text-rose-300 font-mono">
@@ -65,13 +65,13 @@ class Level2ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
               </button>
               <button
                 onClick={this.handleResetAndReload}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 font-pixel text-[13px] cursor-pointer active:translate-y-0.5"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 font-pixel text-[13px] cursor-pointer active:translate-y-0.5 font-semibold"
               >
                 RESET DATA
               </button>
               <button
                 onClick={() => (window.location.href = '/')}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-rose-900/80 hover:bg-rose-800 text-rose-200 border border-rose-700 font-pixel text-[13px] cursor-pointer active:translate-y-0.5"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-rose-900/80 hover:bg-rose-800 text-rose-200 border border-rose-700 font-pixel text-[13px] cursor-pointer active:translate-y-0.5 font-semibold"
               >
                 BERANDA
               </button>
