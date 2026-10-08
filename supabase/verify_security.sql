@@ -75,6 +75,31 @@ UNION ALL SELECT 5, 'P4 user_accounts tertutup untuk anon',
        THEN 'AMAN' ELSE 'CEK LAGI' END,
   'anon bisa SELECT = ' || has_table_privilege('anon', 'public.user_accounts', 'SELECT')::text
 
+-- P4b. KRITIS: fungsi bantu RLS harus boleh dieksekusi `authenticated`.
+-- PostgreSQL mengevaluasi `USING (...)` pada policy sebagai peran PEMINTA,
+-- jadi mencabut hak ini membuat SEMUA policy gagal dan pengguna yang sudah
+-- login tidak bisa membaca datanya sendiri (HTTP 403).
+UNION ALL SELECT 5.1, 'P4b fungsi bantu RLS boleh dipakai authenticated (target 6)',
+  count(*)::text,
+  CASE WHEN count(*) = 6 THEN 'AMAN' ELSE 'CEK LAGI' END,
+  COALESCE(string_agg(p.proname, ', ' ORDER BY p.proname), 'TIDAK ADA — semua policy akan gagal')
+FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+WHERE n.nspname = 'public'
+  AND p.proname IN ('can_read_student', 'is_class_member', 'is_teacher', 'is_admin',
+                    'jwt_role', 'official_level_score')
+  AND has_function_privilege('authenticated', p.oid, 'EXECUTE')
+
+-- P4c. Tapi fungsi bantu itu TIDAK boleh bisa dipanggil anon.
+UNION ALL SELECT 5.2, 'P4c fungsi bantu RLS tertutup untuk anon (target 0)',
+  count(*)::text,
+  CASE WHEN count(*) = 0 THEN 'AMAN' ELSE 'CEK LAGI' END,
+  COALESCE(string_agg(p.proname, ', '), 'tidak ada — benar')
+FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+WHERE n.nspname = 'public'
+  AND p.proname IN ('can_read_student', 'is_class_member', 'is_teacher', 'is_admin',
+                    'jwt_role', 'official_level_score')
+  AND has_function_privilege('anon', p.oid, 'EXECUTE')
+
 UNION ALL SELECT 6, 'P5 view students tanpa password aktif',
   count(*)::text, CASE WHEN count(*) = 0 THEN 'AMAN' ELSE 'CEK LAGI' END,
   'kolom password NOT NULL pada view students'

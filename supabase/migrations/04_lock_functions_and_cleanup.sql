@@ -79,15 +79,33 @@ GRANT EXECUTE ON FUNCTION public.teacher_create_student(TEXT, TEXT, TEXT, TEXT, 
 GRANT EXECUTE ON FUNCTION public.custom_access_token_hook(JSONB) TO supabase_auth_admin;
 REVOKE ALL ON FUNCTION public.custom_access_token_hook(JSONB) FROM PUBLIC, anon, authenticated;
 
--- B5. Fungsi internal (trigger & helper RLS) — tidak boleh dipanggil siapa pun
---     dari luar. Policy RLS tetap bisa memakainya karena policy dievaluasi
---     sebagai pemilik tabel, bukan sebagai pemanggil.
-REVOKE ALL ON FUNCTION public.jwt_role()                              FROM PUBLIC, anon, authenticated;
-REVOKE ALL ON FUNCTION public.is_teacher()                            FROM PUBLIC, anon, authenticated;
-REVOKE ALL ON FUNCTION public.is_admin()                              FROM PUBLIC, anon, authenticated;
-REVOKE ALL ON FUNCTION public.is_class_member(TEXT)                   FROM PUBLIC, anon, authenticated;
-REVOKE ALL ON FUNCTION public.can_read_student(UUID)                  FROM PUBLIC, anon, authenticated;
-REVOKE ALL ON FUNCTION public.official_level_score(INT, INT)          FROM PUBLIC, anon, authenticated;
+-- B5. Fungsi bantu RLS (dipakai di dalam ekspresi policy).
+--
+-- PENTING — pelajaran dari bug nyata:
+--   PostgreSQL mengevaluasi `USING (...)` pada policy sebagai PERAN YANG
+--   MEMINTA (yaitu `authenticated`), BUKAN sebagai pemilik tabel. Jadi fungsi
+--   yang dipanggil di dalam policy WAJIB boleh dieksekusi oleh peran itu.
+--   Mencabutnya dari `authenticated` membuat SELURUH policy gagal dengan
+--   "permission denied for function can_read_student" — pengguna yang sudah
+--   login tidak bisa membaca datanya sendiri.
+--
+--   Karena itu: `authenticated` BOLEH, `anon` dan PUBLIC TIDAK.
+--   Ini tetap aman karena kelima fungsi memakai auth.uid() di dalamnya.
+REVOKE ALL ON FUNCTION public.jwt_role()                              FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.is_teacher()                            FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.is_admin()                              FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.is_class_member(TEXT)                   FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.can_read_student(UUID)                  FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.official_level_score(INT, INT)          FROM PUBLIC, anon;
+
+GRANT EXECUTE ON FUNCTION public.jwt_role()                          TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_teacher()                        TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_admin()                          TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_class_member(TEXT)               TO authenticated;
+GRANT EXECUTE ON FUNCTION public.can_read_student(UUID)              TO authenticated;
+GRANT EXECUTE ON FUNCTION public.official_level_score(INT, INT)      TO authenticated;
+
+-- Fungsi internal yang TIDAK dipakai di policy — tetap tertutup sepenuhnya.
 REVOKE ALL ON FUNCTION public.check_rate_limit(TEXT, TEXT, INT, INT)  FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.prune_rate_limits()                     FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.touch_updated_at()                      FROM PUBLIC, anon, authenticated;

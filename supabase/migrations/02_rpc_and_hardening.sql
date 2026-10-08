@@ -743,25 +743,48 @@ BEGIN
   END LOOP;
 END $$;
 
--- Fungsi bantu otorisasi tidak perlu dipanggil dari luar; policy RLS tetap bisa
--- memakainya karena policy dievaluasi sebagai pemilik tabel.
+-- Fungsi bantu otorisasi: `anon` TIDAK boleh, tetapi `authenticated` HARUS boleh.
+--
+-- PENTING (pelajaran dari bug nyata):
+--   PostgreSQL mengevaluasi ekspresi policy `USING (...)` sebagai PERAN YANG
+--   MEMINTA — yaitu `authenticated` — bukan sebagai pemilik tabel. Jadi fungsi
+--   yang dipanggil di dalam policy WAJIB boleh dieksekusi oleh peran tersebut.
+--   Mencabutnya dari `authenticated` membuat SELURUH policy gagal dengan
+--   "permission denied for function can_read_student", sehingga pengguna yang
+--   sudah login tidak bisa membaca datanya sendiri.
+--
+--   Ini tetap aman: kelima fungsi memakai auth.uid() di dalamnya, jadi
+--   memanggilnya hanya mengembalikan boolean tentang DIRI SENDIRI.
 DO $$
 DECLARE
-  sigs TEXT[] := ARRAY[
+  -- Fungsi bantu RLS — boleh dipanggil `authenticated`, TIDAK boleh `anon`.
+  sigs_auth TEXT[] := ARRAY[
     'public.is_teacher()',
     'public.is_admin()',
     'public.is_class_member(text)',
     'public.can_read_student(uuid)',
     'public.official_level_score(integer,integer)',
-    'public.jwt_role()',
+    'public.jwt_role()'
+  ];
+  -- Fungsi internal — tertutup untuk semua peran klien.
+  sigs_internal TEXT[] := ARRAY[
     'public.check_rate_limit(text,text,integer,integer)',
     'public.prune_rate_limits()'
   ];
   sig TEXT;
 BEGIN
-  FOREACH sig IN ARRAY sigs LOOP
+  FOREACH sig IN ARRAY sigs_auth LOOP
     BEGIN
-      EXECUTE format('REVOKE ALL ON FUNCTION %s FROM anon, authenticated', sig);
+      EXECUTE format('REVOKE ALL ON FUNCTION %s FROM PUBLIC, anon', sig);
+      EXECUTE format('GRANT EXECUTE ON FUNCTION %s TO authenticated', sig);
+    EXCEPTION WHEN undefined_function THEN
+      RAISE NOTICE 'Fungsi % belum ada — dilewati.', sig;
+    END;
+  END LOOP;
+
+  FOREACH sig IN ARRAY sigs_internal LOOP
+    BEGIN
+      EXECUTE format('REVOKE ALL ON FUNCTION %s FROM PUBLIC, anon, authenticated', sig);
     EXCEPTION WHEN undefined_function THEN
       RAISE NOTICE 'Fungsi % belum ada — dilewati.', sig;
     END;
