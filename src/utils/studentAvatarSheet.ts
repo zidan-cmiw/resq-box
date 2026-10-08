@@ -179,11 +179,23 @@ export function getPlayerSheet(
           ctx.fillRect(x + 4, 4 + yOffset, 3, 7);
           ctx.fillRect(x + 17, 4 + yOffset, 3, 7);
         } else if (hairKey === 'hijab') {
-          ctx.fillStyle = '#334155';
-          ctx.fillRect(x + 4, 0 + yOffset, 16, 13);
+          // ── HIJAB RESCUER (Menggunakan hairColor kustom dari Bengkel Avatar) ──
+          ctx.fillStyle = hairColor;
+          // Kubah atas kepala & samping
+          ctx.fillRect(x + 4, -1 + yOffset, 16, 14);
           ctx.fillRect(x + 5, 12 + yOffset, 14, 3);
+          // Wajah siswa yang terlihat di tengah
           ctx.fillStyle = skin.base;
-          ctx.fillRect(x + 8, 3 + yOffset, 8, 8);
+          ctx.fillRect(x + 7, 3 + yOffset, 10, 8);
+          // Ciput putih di dahi
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x + 7, 3 + yOffset, 10, 1);
+          // Dagu & penutup leher menutup penuh
+          ctx.fillStyle = hairColor;
+          ctx.fillRect(x + 6, 11 + yOffset, 12, 3);
+          // Bros emas rescuer
+          ctx.fillStyle = '#facc15';
+          ctx.fillRect(x + 11, 12 + yOffset, 2, 2);
         } else if (hairKey === 'headband') {
           ctx.fillRect(x + 5, 0 + yOffset, 14, 4);
           ctx.fillRect(x + 7, -1 + yOffset, 4, 2);

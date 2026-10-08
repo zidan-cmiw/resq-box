@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DEFAULT_CUSTOM_AVATAR, type CustomAvatarConfig } from '../../store/teacherStore';
 import { PixelAvatarRenderer } from './PixelAvatarRenderer';
 import { retroAudio } from '../../utils/retroAudio';
+import { clearSpriteCache } from '../../utils/studentAvatarSheet';
 import PixelIcon from '../PixelIcon';
 
 interface AvatarCustomizerModalProps {
@@ -216,6 +217,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
 
   const handleSave = () => {
     retroAudio.playSelect();
+    clearSpriteCache();
     onSave(avatar);
     onClose();
   };

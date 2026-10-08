@@ -4249,20 +4249,79 @@ export function getPlayerPortrait(avatarConfig?: CustomAvatarConfig, zoneId?: st
     ctx.fillStyle = '#7c2d12';
     ctx.fillRect(offX + 8 * p, offY + 11 * p, 4 * p, 1 * p);
 
-    // Rambut Sesuai Kustomisasi Siswa
+    // Rambut / Hijab Sesuai Kustomisasi Siswa
     ctx.fillStyle = hairColor;
-    if (hairKey === 'spiky') {
-      ctx.fillRect(offX + 4 * p, offY + 2 * p, 12 * p, 5 * p);
-      ctx.fillRect(offX + 5 * p, offY + 0 * p, 3 * p, 2 * p);
-      ctx.fillRect(offX + 9 * p, offY - 1 * p, 3 * p, 3 * p);
-      ctx.fillRect(offX + 13 * p, offY + 0 * p, 3 * p, 2 * p);
-      ctx.fillRect(offX + 3 * p, offY + 5 * p, 2 * p, 5 * p);
-      ctx.fillRect(offX + 15 * p, offY + 5 * p, 2 * p, 5 * p);
+
+    if (hairKey === 'hijab') {
+      // ── HIJAB RESCUER (Sesuai Bengkel Avatar) ──
+      ctx.fillRect(offX + 4 * p, offY + 0 * p, 12 * p, 6 * p);
+      ctx.fillRect(offX + 5 * p, offY - 2 * p, 10 * p, 3 * p);
+      ctx.fillRect(offX + 6 * p, offY - 3 * p, 8 * p, 2 * p);
+
+      // Ciput putih
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(offX + 6 * p, offY + 4 * p, 8 * p, 1 * p);
+
+      // Sisi samping
+      ctx.fillStyle = hairColor;
+      ctx.fillRect(offX + 3 * p, offY + 2 * p, 3 * p, 12 * p);
+      ctx.fillRect(offX + 14 * p, offY + 2 * p, 3 * p, 12 * p);
+
+      // Lipatan bayangan
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.fillRect(offX + 5 * p, offY + 4 * p, 1 * p, 9 * p);
+      ctx.fillRect(offX + 14 * p, offY + 4 * p, 1 * p, 9 * p);
+
+      // Penutup dagu & leher
+      ctx.fillStyle = hairColor;
+      ctx.fillRect(offX + 5 * p, offY + 12 * p, 10 * p, 4 * p);
+      ctx.fillRect(offX + 6 * p, offY + 15 * p, 8 * p, 3 * p);
+
+      // Bros emas
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(offX + 9 * p, offY + 14 * p, 2 * p, 2 * p);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(offX + 9 * p, offY + 14 * p, 1 * p, 1 * p);
     } else {
-      ctx.fillRect(offX + 4 * p, offY + 3 * p, 12 * p, 5 * p);
-      ctx.fillRect(offX + 4 * p, offY + 1 * p, 10 * p, 3 * p);
-      ctx.fillRect(offX + 3 * p, offY + 5 * p, 2 * p, 6 * p);
-      ctx.fillRect(offX + 15 * p, offY + 5 * p, 2 * p, 6 * p);
+      ctx.fillRect(offX + 4 * p, offY + 1 * p, 12 * p, 5 * p);
+      ctx.fillRect(offX + 3 * p, offY + 3 * p, 2 * p, 5 * p);
+      ctx.fillRect(offX + 15 * p, offY + 3 * p, 2 * p, 5 * p);
+
+      if (hairKey === 'spiky') {
+        ctx.fillRect(offX + 4 * p, offY - 2 * p, 3 * p, 3 * p);
+        ctx.fillRect(offX + 8 * p, offY - 3 * p, 3 * p, 4 * p);
+        ctx.fillRect(offX + 12 * p, offY - 2 * p, 3 * p, 3 * p);
+      } else if (hairKey === 'parted') {
+        ctx.fillRect(offX + 5 * p, offY + 4 * p, 4 * p, 2 * p);
+        ctx.fillRect(offX + 10 * p, offY + 3 * p, 5 * p, 2 * p);
+      } else if (hairKey === 'curly') {
+        ctx.fillRect(offX + 2 * p, offY + 0 * p, 4 * p, 4 * p);
+        ctx.fillRect(offX + 6 * p, offY - 1 * p, 4 * p, 4 * p);
+        ctx.fillRect(offX + 10 * p, offY - 1 * p, 4 * p, 4 * p);
+        ctx.fillRect(offX + 14 * p, offY + 0 * p, 4 * p, 4 * p);
+      } else if (hairKey === 'ponytail') {
+        ctx.fillRect(offX + 16 * p, offY + 1 * p, 4 * p, 5 * p);
+        ctx.fillRect(offX + 17 * p, offY + 5 * p, 3 * p, 6 * p);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(offX + 16 * p, offY + 2 * p, 2 * p, 2 * p);
+      } else if (hairKey === 'bob') {
+        ctx.fillRect(offX + 3 * p, offY + 4 * p, 3 * p, 8 * p);
+        ctx.fillRect(offX + 14 * p, offY + 4 * p, 3 * p, 8 * p);
+      } else if (hairKey === 'headband') {
+        ctx.fillRect(offX + 4 * p, offY - 2 * p, 3 * p, 3 * p);
+        ctx.fillRect(offX + 8 * p, offY - 3 * p, 3 * p, 4 * p);
+        ctx.fillRect(offX + 12 * p, offY - 2 * p, 3 * p, 3 * p);
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(offX + 4 * p, offY + 3 * p, 12 * p, 2 * p);
+        ctx.fillStyle = '#facc15';
+        ctx.fillRect(offX + 9 * p, offY + 3 * p, 2 * p, 2 * p);
+      } else if (hairKey === 'cap') {
+        ctx.fillStyle = '#1e3a8a';
+        ctx.fillRect(offX + 4 * p, offY - 1 * p, 12 * p, 5 * p);
+        ctx.fillRect(offX + 9 * p, offY + 3 * p, 7 * p, 2 * p);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(offX + 7 * p, offY + 0 * p, 3 * p, 2 * p);
+      }
     }
 
     // ── OVERLAY KOSTUM BERDASARKAN ZONA (JIKA ADA) ──

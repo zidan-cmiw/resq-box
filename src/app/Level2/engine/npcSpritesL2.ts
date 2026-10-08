@@ -2193,24 +2193,83 @@ export function getPlayerPortraitL2(avatarConfig?: CustomAvatarConfig): HTMLCanv
     ctx.fillStyle = '#b45309';
     ctx.fillRect(offX + 8 * p, offY + 11 * p, 4 * p, 1 * p);
 
-    // 3. Rambut Siswa Sesuai Kustomisasi Pemain
+    // 3. Rambut / Hijab Siswa Sesuai Kustomisasi Pemain (Bengkel Avatar)
     ctx.fillStyle = hairColor;
-    ctx.fillRect(offX + 4 * p, offY + 1 * p, 12 * p, 5 * p);
-    ctx.fillRect(offX + 3 * p, offY + 3 * p, 2 * p, 5 * p);
-    ctx.fillRect(offX + 15 * p, offY + 3 * p, 2 * p, 5 * p);
 
-    if (hairKey === 'spiky') {
-      ctx.fillRect(offX + 4 * p, offY - 2 * p, 3 * p, 3 * p);
-      ctx.fillRect(offX + 8 * p, offY - 3 * p, 3 * p, 4 * p);
-      ctx.fillRect(offX + 12 * p, offY - 2 * p, 3 * p, 3 * p);
-    } else if (hairKey === 'curly') {
-      ctx.fillRect(offX + 2 * p, offY + 0 * p, 4 * p, 4 * p);
-      ctx.fillRect(offX + 6 * p, offY - 1 * p, 4 * p, 4 * p);
-      ctx.fillRect(offX + 10 * p, offY - 1 * p, 4 * p, 4 * p);
-      ctx.fillRect(offX + 14 * p, offY + 0 * p, 4 * p, 4 * p);
-    } else if (hairKey === 'ponytail') {
-      ctx.fillRect(offX + 16 * p, offY + 1 * p, 4 * p, 5 * p);
-      ctx.fillRect(offX + 17 * p, offY + 5 * p, 3 * p, 6 * p);
+    if (hairKey === 'hijab') {
+      // ── HIJAB RESCUER (Sesuai Presisi Bengkel Avatar: Kubah Kepala, Samping, Dagu & Leher Tertutup) ──
+      // Kubah atas jilbab melengkung rapi
+      ctx.fillRect(offX + 4 * p, offY + 0 * p, 12 * p, 6 * p);
+      ctx.fillRect(offX + 5 * p, offY - 2 * p, 10 * p, 3 * p);
+      ctx.fillRect(offX + 6 * p, offY - 3 * p, 8 * p, 2 * p);
+
+      // Ciput putih di dahi (di atas alis/mata)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(offX + 6 * p, offY + 4 * p, 8 * p, 1 * p);
+
+      // Kerudung samping (menutup telinga & membingkai pipi hingga ke bahu)
+      ctx.fillStyle = hairColor;
+      ctx.fillRect(offX + 3 * p, offY + 2 * p, 3 * p, 12 * p);
+      ctx.fillRect(offX + 14 * p, offY + 2 * p, 3 * p, 12 * p);
+
+      // Lipatan bayangan kerudung samping (depth/volume 3D)
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.fillRect(offX + 5 * p, offY + 4 * p, 1 * p, 9 * p);
+      ctx.fillRect(offX + 14 * p, offY + 4 * p, 1 * p, 9 * p);
+
+      // Penutup dagu & leher (menutup leher sepenuhnya dari bawah mulut ke kerah kemeja)
+      ctx.fillStyle = hairColor;
+      ctx.fillRect(offX + 5 * p, offY + 12 * p, 10 * p, 4 * p);
+      ctx.fillRect(offX + 6 * p, offY + 15 * p, 8 * p, 3 * p);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      ctx.fillRect(offX + 6 * p, offY + 12 * p, 8 * p, 1 * p);
+
+      // Bros Emas Penyelamat (Gold Brooch di dada/leher)
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(offX + 9 * p, offY + 14 * p, 2 * p, 2 * p);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(offX + 9 * p, offY + 14 * p, 1 * p, 1 * p);
+    } else {
+      // Rambut Dasar Umum
+      ctx.fillRect(offX + 4 * p, offY + 1 * p, 12 * p, 5 * p);
+      ctx.fillRect(offX + 3 * p, offY + 3 * p, 2 * p, 5 * p);
+      ctx.fillRect(offX + 15 * p, offY + 3 * p, 2 * p, 5 * p);
+
+      if (hairKey === 'spiky') {
+        ctx.fillRect(offX + 4 * p, offY - 2 * p, 3 * p, 3 * p);
+        ctx.fillRect(offX + 8 * p, offY - 3 * p, 3 * p, 4 * p);
+        ctx.fillRect(offX + 12 * p, offY - 2 * p, 3 * p, 3 * p);
+      } else if (hairKey === 'parted') {
+        ctx.fillRect(offX + 5 * p, offY + 4 * p, 4 * p, 2 * p);
+        ctx.fillRect(offX + 10 * p, offY + 3 * p, 5 * p, 2 * p);
+      } else if (hairKey === 'curly') {
+        ctx.fillRect(offX + 2 * p, offY + 0 * p, 4 * p, 4 * p);
+        ctx.fillRect(offX + 6 * p, offY - 1 * p, 4 * p, 4 * p);
+        ctx.fillRect(offX + 10 * p, offY - 1 * p, 4 * p, 4 * p);
+        ctx.fillRect(offX + 14 * p, offY + 0 * p, 4 * p, 4 * p);
+      } else if (hairKey === 'ponytail') {
+        ctx.fillRect(offX + 16 * p, offY + 1 * p, 4 * p, 5 * p);
+        ctx.fillRect(offX + 17 * p, offY + 5 * p, 3 * p, 6 * p);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(offX + 16 * p, offY + 2 * p, 2 * p, 2 * p);
+      } else if (hairKey === 'bob') {
+        ctx.fillRect(offX + 3 * p, offY + 4 * p, 3 * p, 8 * p);
+        ctx.fillRect(offX + 14 * p, offY + 4 * p, 3 * p, 8 * p);
+      } else if (hairKey === 'headband') {
+        ctx.fillRect(offX + 4 * p, offY - 2 * p, 3 * p, 3 * p);
+        ctx.fillRect(offX + 8 * p, offY - 3 * p, 3 * p, 4 * p);
+        ctx.fillRect(offX + 12 * p, offY - 2 * p, 3 * p, 3 * p);
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(offX + 4 * p, offY + 3 * p, 12 * p, 2 * p);
+        ctx.fillStyle = '#facc15';
+        ctx.fillRect(offX + 9 * p, offY + 3 * p, 2 * p, 2 * p);
+      } else if (hairKey === 'cap') {
+        ctx.fillStyle = '#1e3a8a';
+        ctx.fillRect(offX + 4 * p, offY - 1 * p, 12 * p, 5 * p);
+        ctx.fillRect(offX + 9 * p, offY + 3 * p, 7 * p, 2 * p);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(offX + 7 * p, offY + 0 * p, 3 * p, 2 * p);
+      }
     }
   });
 }
@@ -2281,14 +2340,29 @@ export function drawStudentSittingInDesk(
   ctx.fillStyle = '#0f172a';
   ctx.fillRect(-3, -40 + bob, 2, 2);
 
-  // 6. Rambut Siswa
+  // 6. Rambut / Hijab Siswa
   ctx.fillStyle = hair;
-  ctx.fillRect(-5, -48 + bob, 10, 6);
-  ctx.fillRect(3, -46 + bob, 2, 6);
-  if (studentType === 'siti') {
-    ctx.fillRect(4, -46 + bob, 4, 5); // Kuncir rambut belakang
-    ctx.fillStyle = '#c084fc';
-    ctx.fillRect(4, -47 + bob, 2, 2);
+  if (studentType === 'player' && avatarConfig?.hairStyle === 'hijab') {
+    // Hijab rapi menutupi kepala dan leher saat duduk menyimak
+    ctx.fillRect(-6, -49 + bob, 12, 13);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-4, -43 + bob, 6, 1); // Ciput putih
+    ctx.fillStyle = skin;
+    ctx.fillRect(-4, -42 + bob, 6, 4); // Wajah samping
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(-3, -40 + bob, 2, 2); // Mata
+    ctx.fillStyle = hair;
+    ctx.fillRect(-5, -38 + bob, 8, 3); // Dagu & leher tertutup hijab
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(-2, -37 + bob, 1.5, 1.5); // Bros emas
+  } else {
+    ctx.fillRect(-5, -48 + bob, 10, 6);
+    ctx.fillRect(3, -46 + bob, 2, 6);
+    if (studentType === 'siti') {
+      ctx.fillRect(4, -46 + bob, 4, 5); // Kuncir rambut belakang
+      ctx.fillStyle = '#c084fc';
+      ctx.fillRect(4, -47 + bob, 2, 2);
+    }
   }
 
   ctx.restore();
