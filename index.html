@@ -12,16 +12,24 @@
     <meta name="description" content="Platform media pembelajaran IPA interaktif & simulasi mitigasi bencana untuk SMP Kelas 8" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <!--
-      Hanya DUA keluarga font yang dimuat:
-        • Plus Jakarta Sans (400–800) — satu-satunya font UI. Sebelumnya
-          aplikasi memakai 4 keluarga font bercampur, dan Press Start 2P
-          (hanya punya SATU bobot) dipakai 492x untuk tombol/badge/label
-          sehingga teks kecil sulit dibaca dan tidak bisa ditebalkan.
-        • JetBrains Mono — untuk kode Arduino, PIN, dan angka teknis.
-      "Press Start 2P", "Pixelify Sans", dan "Inter" sudah tidak dipakai
-      sehingga tidak lagi diunduh — menghemat dua permintaan font.
+      TIGA keluarga font, masing-masing punya peran (jangan disatukan):
+
+      • Plus Jakarta Sans (400–800) — TEKS ISI: dialog, paragraf, label form,
+        tooltip, papan skor. Di sinilah perbaikan keterbacaan diterapkan:
+        sebelumnya ada 651 teks berukuran 7–11px yang tidak terbaca.
+
+      • Press Start 2P — PLAKAT & JUDUL bergaya pixel (tombol dashboard,
+        badge status, judul level, logo). Dipakai lewat kelas font-pixel-title
+        dan aturan .pixel-btn*. Ini bagian dari identitas visual project,
+        bukan masalah keterbacaan.
+
+      • Pixelify Sans + JetBrains Mono — label di dalam diagram SVG ilmiah
+        dan teks berkode (kode Arduino, PIN, angka teknis).
+
+      Catatan: Press Start 2P hanya punya SATU bobot, sehingga font-bold dan
+      font-black tidak berpengaruh padanya.
     -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Press+Start+2P&family=Pixelify+Sans:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
     <title>RESQ-BOX</title>
   </head>
   <body>

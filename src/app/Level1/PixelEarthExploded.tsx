@@ -154,7 +154,7 @@ export default function PixelEarthExploded({
                 y="4"
                 textAnchor="middle"
                 fill="#451a03"
-                fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+                fontFamily="'Plus Jakarta Sans', sans-serif"
                 fontSize="11"
                 fontWeight="900"
                 pointerEvents="none"
@@ -465,7 +465,7 @@ export default function PixelEarthExploded({
                 className="cursor-pointer hover:brightness-125"
               >
                 <path d="M 0 -8 L 6 -8 L 6 10 L 0 10" fill="none" stroke={isLitosferActive ? '#f59e0b' : '#94a3b8'} strokeWidth="1.5" />
-                <text x="10" y="3" fill={isLitosferActive ? '#facc15' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontSize="8" fontWeight="bold">
+                <text x="10" y="3" fill={isLitosferActive ? '#facc15' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="8" fontWeight="bold">
                   LITOSFER
                 </text>
               </g>
@@ -480,7 +480,7 @@ export default function PixelEarthExploded({
                 className="cursor-pointer hover:brightness-125"
               >
                 <path d="M 0 -36 L 6 -36 L 6 36 L 0 36" fill="none" stroke={isAstenosferActive ? '#f97316' : '#94a3b8'} strokeWidth="1.5" />
-                <text x="10" y="4" fill={isAstenosferActive ? '#f97316' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontSize="8" fontWeight="bold">
+                <text x="10" y="4" fill={isAstenosferActive ? '#f97316' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="8" fontWeight="bold">
                   ASTENOSFER
                 </text>
               </g>
@@ -495,7 +495,7 @@ export default function PixelEarthExploded({
                 className="cursor-pointer hover:brightness-125"
               >
                 <path d="M 0 -32 L 6 -32 L 6 32 L 0 32" fill="none" stroke={isBarisferActive ? '#eab308' : '#94a3b8'} strokeWidth="1.5" />
-                <text x="10" y="4" fill={isBarisferActive ? '#fde047' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontSize="8" fontWeight="bold">
+                <text x="10" y="4" fill={isBarisferActive ? '#fde047' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="8" fontWeight="bold">
                   BARISFER
                 </text>
               </g>
@@ -508,7 +508,7 @@ export default function PixelEarthExploded({
                   y="81"
                   textAnchor="middle"
                   fill="#ffffff"
-                  fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+                  fontFamily="'Plus Jakarta Sans', sans-serif"
                   fontSize="7.5"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
@@ -520,7 +520,7 @@ export default function PixelEarthExploded({
                   y="91"
                   textAnchor="middle"
                   fill="#fef08a"
-                  fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+                  fontFamily="'Plus Jakarta Sans', sans-serif"
                   fontSize="6.5"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
@@ -534,7 +534,7 @@ export default function PixelEarthExploded({
                   y="141"
                   textAnchor="middle"
                   fill="#ffffff"
-                  fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+                  fontFamily="'Plus Jakarta Sans', sans-serif"
                   fontSize="7.5"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
@@ -548,7 +548,7 @@ export default function PixelEarthExploded({
                   y="190"
                   textAnchor="middle"
                   fill="#ffffff"
-                  fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+                  fontFamily="'Plus Jakarta Sans', sans-serif"
                   fontSize="7"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}

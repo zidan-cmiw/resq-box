@@ -30,7 +30,7 @@ export default function NotFound() {
       {/* 404 Number */}
       <div
         className="relative z-10 mb-4"
-        style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}
+        style={{ fontFamily: "'Press Start 2P', monospace" }}
       >
         <h1
           className="text-7xl sm:text-8xl font-bold"
@@ -47,13 +47,13 @@ export default function NotFound() {
       {/* Message */}
       <p
         className="relative z-10 text-amber-200 text-[13px] sm:text-[15px] mb-2 font-semibold"
-        style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", lineHeight: '1.8' }}
+        style={{ fontFamily: "'Press Start 2P', monospace", lineHeight: '1.8' }}
       >
         HALAMAN TIDAK DITEMUKAN
       </p>
       <p
         className="relative z-10 text-amber-200/60 text-[13.5px] sm:text-[13px] mb-8 font-semibold"
-        style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", lineHeight: '1.6' }}
+        style={{ fontFamily: "'Press Start 2P', monospace", lineHeight: '1.6' }}
       >
         Sepertinya kamu tersesat di dalam gua vulkanik!
       </p>
@@ -62,7 +62,7 @@ export default function NotFound() {
       <button
         onClick={() => navigate('/')}
         className="relative z-10 pixel-btn-wood-plank px-6 py-3 text-[13px] font-semibold"
-        style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}
+        style={{ fontFamily: "'Press Start 2P', monospace" }}
       >
         ◀ KEMBALI KE BERANDA
       </button>

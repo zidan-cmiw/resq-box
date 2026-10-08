@@ -429,12 +429,12 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                   
                   {/* Label Batuan Dasar di Kiri (Tidak Bertumpuk dengan Garis Gelombang) */}
                   <rect x="35" y="278" width="220" height="28" rx="6" fill="#0f172a" stroke="#475569" strokeWidth="1" />
-                  <text x="145" y="296" fill="#cbd5e1" fontSize="10.5" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="145" y="296" fill="#cbd5e1" fontSize="10.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     BATUAN DASAR LERENG MERAPI
                   </text>
 
                   {/* Garis Getaran Seismik Tanah di Kanan (Lapang & Terbaca Sempurna) */}
-                  <text x="280" y="288" fill="#f59e0b" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="280" y="288" fill="#f59e0b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">
                     GETARAN SEISMIK TANAH:
                   </text>
                   <path
@@ -458,7 +458,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
 
                   {/* ── [CALLOUT PIN ②: PEGAS SUSPENSI] (Posisi Lapang Atas) ── */}
                   <rect x="185" y="16" width="150" height="26" rx="6" fill="#334155" stroke="#cbd5e1" strokeWidth="1.5" />
-                  <text x="260" y="33" fill="#ffffff" fontSize="10.5" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="260" y="33" fill="#ffffff" fontSize="10.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     ② PEGAS SUSPENSI
                   </text>
                   <line x1="260" y1="42" x2="260" y2="73" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="3 2" />
@@ -473,7 +473,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
 
                   {/* ── [CALLOUT PIN ①: BANDUL INERSIA] (Posisi Lapang di Kiri) ── */}
                   <rect x="25" y="152" width="165" height="26" rx="6" fill="#ca8a04" stroke="#fef08a" strokeWidth="1.5" />
-                  <text x="107.5" y="169" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="107.5" y="169" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     ① BANDUL INERSIA (DIAM)
                   </text>
                   <line x1="190" y1="165" x2="228" y2="165" stroke="#facc15" strokeWidth="2" strokeDasharray="3 2" />
@@ -481,7 +481,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                   {/* Beban Inersia / Bandul Berat (Kuning Emas Bersinar) */}
                   <circle cx="260" cy="165" r="30" fill="#eab308" stroke="#fef08a" strokeWidth="3" />
                   <circle cx="260" cy="165" r="22" fill="#ca8a04" />
-                  <text x="260" y="169" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="260" y="169" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     INERSIA
                   </text>
 
@@ -491,7 +491,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
 
                   {/* ── [CALLOUT PIN ④: PENA STYLUS PENCATAT] (Posisi Lapang Bawah) ── */}
                   <rect x="275" y="196" width="160" height="26" rx="6" fill="#dc2626" stroke="#fca5a5" strokeWidth="1.5" />
-                  <text x="355" y="213" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="355" y="213" fill="#ffffff" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     ④ PENA STYLUS PENCATAT
                   </text>
                   <line x1="410" y1="196" x2="432" y2="173" stroke="#f87171" strokeWidth="1.5" strokeDasharray="3 2" />
@@ -503,7 +503,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
 
                   {/* ── [CALLOUT PIN ③: DRUM SILINDER] (Posisi Lapang Atas Drum) ── */}
                   <rect x="475" y="16" width="200" height="26" rx="6" fill="#0284c7" stroke="#bae6fd" strokeWidth="1.5" />
-                  <text x="575" y="33" fill="#ffffff" fontSize="10.5" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="575" y="33" fill="#ffffff" fontSize="10.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     ③ DRUM KERTAS (BERPUTAR)
                   </text>
                   <line x1="575" y1="42" x2="575" y2="60" stroke="#38bdf8" strokeWidth="1.5" strokeDasharray="3 2" />
@@ -537,7 +537,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                   {/* Indikator Arah Putaran Drum (Tanpa Teks Menumpuk) */}
                   <path d="M 660 78 A 14 14 0 0 1 672 96" fill="none" stroke="#0284c7" strokeWidth="2.2" />
                   <polygon points="675,98 668,93 674,88" fill="#0284c7" />
-                  <text x="655" y="76" fill="#0369a1" fontSize="9" fontWeight="bold" textAnchor="end" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="655" y="76" fill="#0369a1" fontSize="9" fontWeight="bold" textAnchor="end" fontFamily="sans-serif">
                     Arah Putar
                   </text>
                 </svg>

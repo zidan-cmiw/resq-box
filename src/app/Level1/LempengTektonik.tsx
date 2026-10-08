@@ -260,7 +260,7 @@ export default function LempengTektonik() {
                       <rect x="15" y="55" width="165" height="7" fill="#38bdf8" />
                       {/* Ocean water */}
                       <rect x="15" y="35" width="170" height="20" fill="#0369a1" opacity="0.4" />
-                      <text x="45" y="30" fill="#38bdf8" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">SAMUDRA &gt;</text>
+                      <text x="45" y="30" fill="#38bdf8" fontSize="10" fontWeight="bold" fontFamily="'Press Start 2P'">SAMUDRA &gt;</text>
                     </g>
 
                     {/* Continental Plate (Overriding) */}
@@ -272,7 +272,7 @@ export default function LempengTektonik() {
                     >
                       <polygon points="200,48 385,48 385,115 240,115 215,80" fill="#15803d" />
                       <rect x="200" y="48" width="185" height="7" fill="#4ade80" />
-                      <text x="250" y="80" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">&lt; BENUA</text>
+                      <text x="250" y="80" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Press Start 2P'">&lt; BENUA</text>
                     </g>
 
                     {/* Volcano on continent */}
@@ -287,7 +287,7 @@ export default function LempengTektonik() {
                     )}
 
                     {/* Subduction Zone marker */}
-                    <text x="120" y="170" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
+                    <text x="120" y="170" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">
                       ZONA PENUNJAMAN (SUBDUKSI)
                     </text>
                   </svg>
@@ -311,7 +311,7 @@ export default function LempengTektonik() {
                     >
                       <rect x="15" y="55" width="160" height="35" fill="#0284c7" />
                       <rect x="15" y="55" width="160" height="7" fill="#38bdf8" />
-                      <text x="35" y="48" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">&lt; LEMPENG A</text>
+                      <text x="35" y="48" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'">&lt; LEMPENG A</text>
                     </g>
 
                     {/* Right Plate */}
@@ -323,7 +323,7 @@ export default function LempengTektonik() {
                     >
                       <rect x="225" y="55" width="160" height="35" fill="#0284c7" />
                       <rect x="225" y="55" width="160" height="7" fill="#38bdf8" />
-                      <text x="245" y="48" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">LEMPENG B &gt;</text>
+                      <text x="245" y="48" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'">LEMPENG B &gt;</text>
                     </g>
 
                     {/* Central Rift — Magma Upwelling */}
@@ -333,7 +333,7 @@ export default function LempengTektonik() {
                     {/* Ocean water */}
                     <rect x="0" y="28" width="400" height="27" fill="#0369a1" opacity="0.35" />
 
-                    <text x="200" y="170" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
+                    <text x="200" y="170" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">
                       PEMATANG TENGAH SAMUDRA
                     </text>
                   </svg>
@@ -356,7 +356,7 @@ export default function LempengTektonik() {
                     >
                       <rect x="25" y="35" width="350" height="42" fill="#15803d" />
                       <rect x="25" y="35" width="350" height="7" fill="#86efac" />
-                      <text x="45" y="60" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                      <text x="45" y="60" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'">
                         LEMPENG UTARA &gt;&gt; GESER KANAN
                       </text>
                     </g>
@@ -373,12 +373,12 @@ export default function LempengTektonik() {
                     >
                       <rect x="25" y="87" width="350" height="42" fill="#a16207" />
                       <rect x="25" y="87" width="350" height="7" fill="#fde047" />
-                      <text x="45" y="112" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                      <text x="45" y="112" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'">
                         LEMPENG SELATAN &lt;&lt; GESER KIRI
                       </text>
                     </g>
 
-                    <text x="200" y="165" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
+                    <text x="200" y="165" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">
                       ZONA SESAR GESER MENDATAR
                     </text>
                   </svg>
@@ -463,7 +463,7 @@ export default function LempengTektonik() {
                   onClick={() => handlePlateClick('eurasia')}
                   rx="4"
                 />
-                <text x="150" y="55" fill="#4ade80" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">EURASIA</text>
+                <text x="150" y="55" fill="#4ade80" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">EURASIA</text>
 
                 {/* ── Indo-Australia Plate Zone ── */}
                 <rect
@@ -476,7 +476,7 @@ export default function LempengTektonik() {
                   onClick={() => handlePlateClick('indo-australia')}
                   rx="4"
                 />
-                <text x="170" y="160" fill="#fb923c" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">INDO-AUSTRALIA</text>
+                <text x="170" y="160" fill="#fb923c" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">INDO-AUSTRALIA</text>
                 <polygon points="170,148 175,140 180,148" fill="#fb923c" />
                 <polygon points="140,148 145,140 150,148" fill="#fb923c" />
 
@@ -491,7 +491,7 @@ export default function LempengTektonik() {
                   onClick={() => handlePlateClick('pasifik')}
                   rx="4"
                 />
-                <text x="335" y="70" fill="#38bdf8" fontSize="8" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">PASIFIK</text>
+                <text x="335" y="70" fill="#38bdf8" fontSize="8" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">PASIFIK</text>
                 <polygon points="305,95 298,90 305,85" fill="#38bdf8" />
 
                 {/* ── Indonesia Islands (Pixel Blocks) ── */}
@@ -524,10 +524,10 @@ export default function LempengTektonik() {
                 <line x1="90" y1="125" x2="200" y2="120" stroke="#ef4444" strokeWidth="2" opacity="0.6" />
 
                 {/* Island codes */}
-                <text x="105" y="105" fill="#86efac" fontSize="7" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">SUM</text>
-                <text x="137" y="115" fill="#86efac" fontSize="7" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">JAW</text>
-                <text x="157" y="95" fill="#86efac" fontSize="7" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">KAL</text>
-                <text x="285" y="100" fill="#86efac" fontSize="7" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">PAP</text>
+                <text x="105" y="105" fill="#86efac" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">SUM</text>
+                <text x="137" y="115" fill="#86efac" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">JAW</text>
+                <text x="157" y="95" fill="#86efac" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">KAL</text>
+                <text x="285" y="100" fill="#86efac" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">PAP</text>
               </svg>
             </div>
           </div>

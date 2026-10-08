@@ -4096,7 +4096,7 @@ export function drawPlateVectorArrow(
   // Label badge (drawn unrotated for clean readability)
   if (label) {
     ctx.save();
-    ctx.font = 'bold 10px "Plus Jakarta Sans", system-ui, sans-serif';
+    ctx.font = 'bold 8.5px "Pixelify Sans", sans-serif';
     const textW = ctx.measureText(label).width;
     const badgeW = textW + 12;
     const badgeH = 16;

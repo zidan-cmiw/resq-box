@@ -544,7 +544,7 @@ function renderIllustration(
 
           {/* Banner Judul */}
           <rect x="30" y="6" width="540" height="26" rx="5" fill="#0c4a6e" stroke="#38bdf8" strokeWidth="1.5" />
-          <text x="300" y="23" textAnchor="middle" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="300" y="23" textAnchor="middle" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="sans-serif">
             REKONSTRUKSI PANGEA: PENYATUAN AMERIKA UTARA, EROPA, &amp; AFRIKA
           </text>
 
@@ -559,10 +559,10 @@ function renderIllustration(
             strokeWidth="2"
           />
           {/* Label Amerika Utara */}
-          <text x="130" y="140" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="130" y="140" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="sans-serif">
             AMERIKA UTARA
           </text>
-          <text x="130" y="153" fill="#bbf7d0" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="130" y="153" fill="#bbf7d0" fontSize="8" fontFamily="sans-serif">
             (Pesisir Timur / Pangea)
           </text>
 
@@ -575,10 +575,10 @@ function renderIllustration(
             stroke="#14532d"
             strokeWidth="2"
           />
-          <text x="360" y="85" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="360" y="85" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="sans-serif">
             EROPA
           </text>
-          <text x="360" y="98" fill="#bbf7d0" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="360" y="98" fill="#bbf7d0" fontSize="8" fontFamily="sans-serif">
             (Inggris, Skotlandia, &amp; Skandinavia)
           </text>
 
@@ -591,10 +591,10 @@ function renderIllustration(
             stroke="#78350f"
             strokeWidth="2"
           />
-          <text x="310" y="210" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="310" y="210" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="sans-serif">
             AFRIKA
           </text>
-          <text x="310" y="223" fill="#fed7aa" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="310" y="223" fill="#fed7aa" fontSize="8" fontFamily="sans-serif">
             (Pesisir Barat Laut Afrika)
           </text>
 
@@ -626,27 +626,27 @@ function renderIllustration(
 
           {/* Kotak Callout 1: Appalachian */}
           <rect x="10" y="235" width="215" height="42" rx="5" fill="#0f172a" stroke="#facc15" strokeWidth="1.5" />
-          <text x="117" y="252" textAnchor="middle" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="117" y="252" textAnchor="middle" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
             PEG. APPALACHIAN (AMERIKA)
           </text>
-          <text x="117" y="267" textAnchor="middle" fill="#e2e8f0" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="117" y="267" textAnchor="middle" fill="#e2e8f0" fontSize="8" fontFamily="sans-serif">
             Batuan Paleozoikum &amp; Umur Sama
           </text>
           <line x1="160" y1="235" x2="185" y2="215" stroke="#facc15" strokeWidth="1.5" />
 
           {/* Kotak Callout 2: Caledonian */}
           <rect x="350" y="115" width="235" height="42" rx="5" fill="#0f172a" stroke="#facc15" strokeWidth="1.5" />
-          <text x="467" y="132" textAnchor="middle" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="467" y="132" textAnchor="middle" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
             PEG. CALEDONIAN (EROPA/UK)
           </text>
-          <text x="467" y="147" textAnchor="middle" fill="#e2e8f0" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="467" y="147" textAnchor="middle" fill="#e2e8f0" fontSize="8" fontFamily="sans-serif">
             Struktur Lipatan Identik Sempurna
           </text>
           <line x1="390" y1="115" x2="330" y2="85" stroke="#facc15" strokeWidth="1.5" />
 
           {/* Footer Callout */}
           <rect x="30" y="284" width="540" height="26" rx="5" fill="#18181b" stroke="#38bdf8" strokeWidth="1.5" />
-          <text x="300" y="301" textAnchor="middle" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+          <text x="300" y="301" textAnchor="middle" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
             FAKTA: JIKA BENUA DISATUKAN, KEDUA RANTAI MEMBENTUK SATU SABUK UTUH!
           </text>
         </svg>
@@ -3528,7 +3528,7 @@ export function TransformSanAndreasIllustration() {
               y={36}
               fill="#0f172a"
               fontSize="12"
-              fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+              fontFamily="'Segoe UI', Inter, sans-serif"
               fontWeight="bold"
               textAnchor="middle"
             >
@@ -3749,7 +3749,7 @@ function EarthquakePrepIllustration() {
             {/* Frame Wadah Peralatan */}
             <rect x="0" y="0" width="315" height="175" rx="10" fill="#0f172a" stroke={itemDetails[activeItem].color} strokeWidth="2.5" />
             <rect x="0" y="0" width="315" height="28" rx="10" fill="#1e293b" />
-            <text x="14" y="19" fill={itemDetails[activeItem].color} fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+            <text x="14" y="19" fill={itemDetails[activeItem].color} fontSize="11" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">
               {itemDetails[activeItem].title}
             </text>
 
@@ -6588,17 +6588,17 @@ function VolcanoPostLaharIllustration() {
                 {/* Badge Keterangan Foto di Bawah */}
                 <g transform="translate(8, 146)">
                   <rect x="0" y="0" width="198" height="52" rx="6" fill="#0f172a" fillOpacity="0.94" stroke="#34d399" strokeWidth="1.2" />
-                  <text x="99" y="13" fill="#a7f3d0" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="99" y="13" fill="#a7f3d0" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     BANJIR LAHAR DINGIN MERAPI
                   </text>
-                  <text x="99" y="24" fill="#f1f5f9" fontSize="6.8" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="99" y="24" fill="#f1f5f9" fontSize="6.8" textAnchor="middle" fontFamily="sans-serif">
                     Aliran Debris Lumpur &amp; Batu Andesit
                   </text>
-                  <text x="99" y="33" fill="#38bdf8" fontSize="6.2" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="99" y="33" fill="#38bdf8" fontSize="6.2" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     Kecepatan Arus: 40 — 60 km/jam
                   </text>
                   <a href="https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang" target="_blank" rel="noopener noreferrer">
-                    <text x="99" y="44" fill="#fbbf24" fontSize="6" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textDecoration="underline" cursor="pointer">
+                    <text x="99" y="44" fill="#fbbf24" fontSize="6" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif" textDecoration="underline" cursor="pointer">
                       Sumber: Detikcom ↗
                     </text>
                   </a>
@@ -6611,7 +6611,7 @@ function VolcanoPostLaharIllustration() {
                 <rect x="0" y="0" width="294" height="205" rx="10" fill="#0f172a" fillOpacity="0.94" stroke="#059669" strokeWidth="1.8" />
                 <rect x="1" y="1" width="292" height="32" rx="9" fill="#064e3b" />
 
-                <text x="147" y="21" fill="#ecfdf5" fontSize="10.5" fontWeight="900" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                <text x="147" y="21" fill="#ecfdf5" fontSize="10.5" fontWeight="900" textAnchor="middle" fontFamily="sans-serif">
                   UNSUR &amp; PROSES TERJADINYA LAHAR
                 </text>
 
@@ -6627,10 +6627,10 @@ function VolcanoPostLaharIllustration() {
                     <rect x="6" y="9" width="1.5" height="4" fill="#38bdf8" />
                     <rect x="10" y="8" width="1.5" height="4" fill="#38bdf8" />
                   </g>
-                  <text x="36" y="16" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="16" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
                     1. Hujan Ekstrem di Hulu (&gt;50 mm/jam)
                   </text>
-                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
                     Memicu likuifaksi &amp; menggerus timbunan material di lereng.
                   </text>
                 </g>
@@ -6646,10 +6646,10 @@ function VolcanoPostLaharIllustration() {
                     <rect x="6" y="0" width="2" height="2" fill="#f97316" />
                     <rect x="6" y="4" width="2" height="5" fill="#ea580c" />
                   </g>
-                  <text x="36" y="16" fill="#fde047" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="16" fill="#fde047" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
                     2. Endapan Pasir, Kerikil &amp; Tefra Kawah
                   </text>
-                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
                     Jutaan m³ material sisa erupsi mencair jadi bubur kental.
                   </text>
                 </g>
@@ -6666,10 +6666,10 @@ function VolcanoPostLaharIllustration() {
                     <rect x="4" y="3" width="3" height="2" fill="#cbd5e1" />
                     <rect x="8" y="7" width="3" height="3" fill="#1e293b" />
                   </g>
-                  <text x="36" y="16" fill="#fca5a5" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="16" fill="#fca5a5" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
                     3. Batu Andesit Raksasa Terbawa Arus
                   </text>
-                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
                     Daya dorong hidrolik tinggi menyeret batu sebesar mobil!
                   </text>
                 </g>
@@ -6677,10 +6677,10 @@ function VolcanoPostLaharIllustration() {
                 {/* Stat Chip Bottom */}
                 <g transform="translate(10, 164)">
                   <rect x="0" y="0" width="274" height="32" rx="6" fill="#042f2e" stroke="#10b981" strokeWidth="1.2" />
-                  <text x="137" y="14" fill="#a7f3d0" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="137" y="14" fill="#a7f3d0" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     DENSITAS SLURRY: 1,8 — 2,2 TON/M³
                   </text>
-                  <text x="137" y="25" fill="#ffffff" fontSize="7.5" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="137" y="25" fill="#ffffff" fontSize="7.5" textAnchor="middle" fontFamily="sans-serif">
                     Mampu meruntuhkan jembatan beton &amp; menyapu bibir sungai!
                   </text>
                 </g>
@@ -6712,7 +6712,7 @@ function VolcanoPostLaharIllustration() {
               <polygon points="210,95 210,105 220,100" fill="#22c55e" />
               <line x1="210" y1="90" x2="210" y2="105" stroke="#ffffff" strokeWidth="1.5" />
               <rect x="190" y="80" width="44" height="14" rx="3" fill="#0f172a" stroke="#22c55e" strokeWidth="1" />
-              <text x="212" y="90" fill="#4ade80" fontSize="7" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+              <text x="212" y="90" fill="#4ade80" fontSize="7" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                 BUKIT AMAN
               </text>
 
@@ -6728,10 +6728,10 @@ function VolcanoPostLaharIllustration() {
 
               {/* Garis Batas Bahaya Merah (Zona Merah < 500m) */}
               <rect x="20" y="42" width="140" height="24" rx="4" fill="#0f172a" stroke="#dc2626" strokeWidth="1.5" />
-              <text x="90" y="53" fill="#f87171" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+              <text x="90" y="53" fill="#f87171" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                 ZONA MERAH: SEMPADAN SUNGAI
               </text>
-              <text x="90" y="62" fill="#fecaca" fontSize="7" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+              <text x="90" y="62" fill="#fecaca" fontSize="7" textAnchor="middle" fontFamily="sans-serif">
                 Radius Bahaya: &lt; 300 - 500 Meter
               </text>
 
@@ -6744,7 +6744,7 @@ function VolcanoPostLaharIllustration() {
                 <rect x="0" y="0" width="294" height="205" rx="10" fill="#0f172a" fillOpacity="0.94" stroke="#dc2626" strokeWidth="1.8" />
                 <rect x="1" y="1" width="292" height="32" rx="9" fill="#7f1d1d" />
 
-                <text x="147" y="21" fill="#fee2e2" fontSize="10.5" fontWeight="900" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                <text x="147" y="21" fill="#fee2e2" fontSize="10.5" fontWeight="900" textAnchor="middle" fontFamily="sans-serif">
                   ATURAN KESELAMATAN BANTARAN SUNGAI
                 </text>
 
@@ -6757,10 +6757,10 @@ function VolcanoPostLaharIllustration() {
                     <circle cx="8" cy="8" r="7" fill="none" stroke="#fee2e2" strokeWidth="2.2" />
                     <line x1="3" y1="3" x2="13" y2="13" stroke="#fee2e2" strokeWidth="2.2" />
                   </g>
-                  <text x="42" y="17" fill="#f87171" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="42" y="17" fill="#f87171" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
                     Dilarang Menonton di Jembatan!
                   </text>
-                  <text x="42" y="30" fill="#cbd5e1" fontSize="7.8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="42" y="30" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
                     Batu raksasa dapat merubuhkan tiang jembatan seketika tanpa tanda awal.
                   </text>
                 </g>
@@ -6775,10 +6775,10 @@ function VolcanoPostLaharIllustration() {
                     <rect x="7" y="5" width="2" height="4" fill="#0f172a" />
                     <rect x="7" y="10.5" width="2" height="2" fill="#0f172a" />
                   </g>
-                  <text x="42" y="17" fill="#fca5a5" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="42" y="17" fill="#fca5a5" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
                     Dilarang Beraktivitas di Dasar Sungai
                   </text>
-                  <text x="42" y="30" fill="#cbd5e1" fontSize="7.8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="42" y="30" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
                     Tinggalkan tambang pasir seketika saat langit hulu puncak mendung pekat!
                   </text>
                 </g>
@@ -6797,10 +6797,10 @@ function VolcanoPostLaharIllustration() {
                     <rect x="8" y="10" width="3" height="2" fill="#6ee7b7" />
                     <rect x="3" y="8" width="3" height="2" fill="#10b981" />
                   </g>
-                  <text x="42" y="21" fill="#34d399" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="42" y="21" fill="#34d399" fontSize="9.5" fontWeight="bold" fontFamily="sans-serif">
                     EVAKUASI TEGAK LURUS KE ATAS!
                   </text>
-                  <text x="42" y="35" fill="#ecfdf5" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="42" y="35" fill="#ecfdf5" fontSize="8" fontFamily="sans-serif">
                     Jangan lari searah aliran sungai! Naiklah ke dataran tinggi atau bukit terdekat minimal radius 500 meter dari sempadan.
                   </text>
                 </g>
@@ -6816,23 +6816,23 @@ function VolcanoPostLaharIllustration() {
               {/* Sisi Kiri: Diagram Jaringan Sensor Telemetri & Tower Sirine */}
               {/* Stasiun 1: Sensor Hujan Telemetri di Puncak (ARR) */}
               <rect x="20" y="25" width="60" height="42" rx="5" fill="#0f172a" stroke="#0284c7" strokeWidth="1.5" />
-              <text x="50" y="37" fill="#38bdf8" fontSize="7" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+              <text x="50" y="37" fill="#38bdf8" fontSize="7" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                 STASIUN HUJAN
               </text>
               <rect x="42" y="42" width="16" height="12" fill="#0369a1" />
               <polygon points="40,42 60,42 50,47" fill="#38bdf8" />
-              <text x="50" y="62" fill="#fde047" fontSize="6.5" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+              <text x="50" y="62" fill="#fde047" fontSize="6.5" textAnchor="middle" fontFamily="sans-serif">
                 &gt;50 mm/jam
               </text>
 
               {/* Stasiun 2: Seismometer Getaran Lahar di Hulu Jurang */}
               <rect x="20" y="80" width="60" height="42" rx="5" fill="#0f172a" stroke="#d97706" strokeWidth="1.5" />
-              <text x="50" y="92" fill="#facc15" fontSize="7" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+              <text x="50" y="92" fill="#facc15" fontSize="7" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                 SENSOR GETARAN
               </text>
               {/* Gelombang Seismik Lahar (10-30 Hz) */}
               <path d="M 28 106 L 34 100 L 40 112 L 46 98 L 52 110 L 58 102 L 64 106 L 72 106" stroke="#fbbf24" strokeWidth="1.5" fill="none" />
-              <text x="50" y="117" fill="#fef08a" fontSize="6.5" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+              <text x="50" y="117" fill="#fef08a" fontSize="6.5" textAnchor="middle" fontFamily="sans-serif">
                 Tremor Aliran Batu
               </text>
 
@@ -6879,7 +6879,7 @@ function VolcanoPostLaharIllustration() {
 
               {/* Badge Status EWS */}
               <rect x="122" y="176" width="80" height="16" rx="4" fill="#0f172a" stroke="#22c55e" strokeWidth="1.2" />
-              <text x="162" y="188" fill="#4ade80" fontSize="7.5" fontWeight="black" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+              <text x="162" y="188" fill="#4ade80" fontSize="7.5" fontWeight="black" textAnchor="middle" fontFamily="sans-serif">
                 SIRINE AKTIF: &gt;110 dB
               </text>
 
@@ -6888,7 +6888,7 @@ function VolcanoPostLaharIllustration() {
                 <rect x="0" y="0" width="294" height="205" rx="10" fill="#0f172a" fillOpacity="0.94" stroke="#2563eb" strokeWidth="1.8" />
                 <rect x="1" y="1" width="292" height="32" rx="9" fill="#1e3a8a" />
 
-                <text x="147" y="21" fill="#dbeafe" fontSize="10.5" fontWeight="900" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                <text x="147" y="21" fill="#dbeafe" fontSize="10.5" fontWeight="900" textAnchor="middle" fontFamily="sans-serif">
                   JARINGAN TELEMETRI EWS PVMBG &amp; BNPB
                 </text>
 
@@ -6897,10 +6897,10 @@ function VolcanoPostLaharIllustration() {
                   <rect x="0" y="0" width="274" height="36" rx="6" fill="#1e293b" stroke="#3b82f6" strokeWidth="1" />
                   <rect x="6" y="6" width="24" height="24" rx="4" fill="#0284c7" />
                   <text x="18" y="22" fill="#ffffff" fontSize="12" textAnchor="middle">1</text>
-                  <text x="36" y="16" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="16" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
                     Deteksi Intensitas Hujan Hulu (ARR)
                   </text>
-                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
                     Mencatat ambang batas curah hujan kritis &gt;50 mm/jam di puncak.
                   </text>
                 </g>
@@ -6910,10 +6910,10 @@ function VolcanoPostLaharIllustration() {
                   <rect x="0" y="0" width="274" height="36" rx="6" fill="#1e293b" stroke="#3b82f6" strokeWidth="1" />
                   <rect x="6" y="6" width="24" height="24" rx="4" fill="#0284c7" />
                   <text x="18" y="22" fill="#ffffff" fontSize="12" textAnchor="middle">2</text>
-                  <text x="36" y="16" fill="#60a5fa" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="16" fill="#60a5fa" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
                     Sensor Seismik Akustik Aliran Lahar
                   </text>
-                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
                     Mendeteksi getaran frekuensi rendah tubrukan batu andesit di dasar sungai.
                   </text>
                 </g>
@@ -6923,10 +6923,10 @@ function VolcanoPostLaharIllustration() {
                   <rect x="0" y="0" width="274" height="36" rx="6" fill="#1e293b" stroke="#3b82f6" strokeWidth="1" />
                   <rect x="6" y="6" width="24" height="24" rx="4" fill="#0284c7" />
                   <text x="18" y="22" fill="#ffffff" fontSize="12" textAnchor="middle">3</text>
-                  <text x="36" y="16" fill="#93c5fd" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="16" fill="#93c5fd" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
                     Peringatan Sirine Otomatis ke Desa
                   </text>
-                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
                     Menara sirine bertenaga surya berbunyi lantang untuk evakuasi cepat.
                   </text>
                 </g>
@@ -6934,10 +6934,10 @@ function VolcanoPostLaharIllustration() {
                 {/* Golden Time Box */}
                 <g transform="translate(10, 164)">
                   <rect x="0" y="0" width="274" height="32" rx="6" fill="#172554" stroke="#3b82f6" strokeWidth="1.2" />
-                  <text x="137" y="14" fill="#93c5fd" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="137" y="14" fill="#93c5fd" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                     GOLDEN TIME EVAKUASI: 10 — 20 MENIT
                   </text>
-                  <text x="137" y="25" fill="#ffffff" fontSize="7.5" textAnchor="middle" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
+                  <text x="137" y="25" fill="#ffffff" fontSize="7.5" textAnchor="middle" fontFamily="sans-serif">
                     Waktu krusial warga untuk lari menjauh sebelum lahar menerjang jembatan.
                   </text>
                 </g>
