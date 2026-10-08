@@ -11,7 +11,17 @@
     <meta name="theme-color" content="#0f172a" />
     <meta name="description" content="Platform media pembelajaran IPA interaktif & simulasi mitigasi bencana untuk SMP Kelas 8" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Pixelify+Sans:wght@400;600;700&family=Press+Start+2P&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <!--
+      Hanya DUA keluarga font yang dimuat:
+        • Plus Jakarta Sans (400–800) — satu-satunya font UI. Sebelumnya
+          aplikasi memakai 4 keluarga font bercampur, dan Press Start 2P
+          (hanya punya SATU bobot) dipakai 492x untuk tombol/badge/label
+          sehingga teks kecil sulit dibaca dan tidak bisa ditebalkan.
+        • JetBrains Mono — untuk kode Arduino, PIN, dan angka teknis.
+      "Press Start 2P", "Pixelify Sans", dan "Inter" sudah tidak dipakai
+      sehingga tidak lagi diunduh — menghemat dua permintaan font.
+    -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
     <title>RESQ-BOX</title>
   </head>
   <body>

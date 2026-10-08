@@ -68,7 +68,7 @@ export const ResqTheme = Blockly.Theme.defineTheme('resqbox', {
     cursorColour: '#1b1b1d',
   },
   fontStyle: {
-    family: 'Inter, sans-serif',
+    family: "'Plus Jakarta Sans', system-ui, sans-serif",
     weight: '600',
     size: 14,
   },

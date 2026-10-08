@@ -154,7 +154,7 @@ export default function PixelEarthExploded({
                 y="4"
                 textAnchor="middle"
                 fill="#451a03"
-                fontFamily="'Plus Jakarta Sans', sans-serif"
+                fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
                 fontSize="11"
                 fontWeight="900"
                 pointerEvents="none"
@@ -465,7 +465,7 @@ export default function PixelEarthExploded({
                 className="cursor-pointer hover:brightness-125"
               >
                 <path d="M 0 -8 L 6 -8 L 6 10 L 0 10" fill="none" stroke={isLitosferActive ? '#f59e0b' : '#94a3b8'} strokeWidth="1.5" />
-                <text x="10" y="3" fill={isLitosferActive ? '#facc15' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="8" fontWeight="bold">
+                <text x="10" y="3" fill={isLitosferActive ? '#facc15' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontSize="8" fontWeight="bold">
                   LITOSFER
                 </text>
               </g>
@@ -480,7 +480,7 @@ export default function PixelEarthExploded({
                 className="cursor-pointer hover:brightness-125"
               >
                 <path d="M 0 -36 L 6 -36 L 6 36 L 0 36" fill="none" stroke={isAstenosferActive ? '#f97316' : '#94a3b8'} strokeWidth="1.5" />
-                <text x="10" y="4" fill={isAstenosferActive ? '#f97316' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="8" fontWeight="bold">
+                <text x="10" y="4" fill={isAstenosferActive ? '#f97316' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontSize="8" fontWeight="bold">
                   ASTENOSFER
                 </text>
               </g>
@@ -495,7 +495,7 @@ export default function PixelEarthExploded({
                 className="cursor-pointer hover:brightness-125"
               >
                 <path d="M 0 -32 L 6 -32 L 6 32 L 0 32" fill="none" stroke={isBarisferActive ? '#eab308' : '#94a3b8'} strokeWidth="1.5" />
-                <text x="10" y="4" fill={isBarisferActive ? '#fde047' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="8" fontWeight="bold">
+                <text x="10" y="4" fill={isBarisferActive ? '#fde047' : '#cbd5e1'} fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontSize="8" fontWeight="bold">
                   BARISFER
                 </text>
               </g>
@@ -508,7 +508,7 @@ export default function PixelEarthExploded({
                   y="81"
                   textAnchor="middle"
                   fill="#ffffff"
-                  fontFamily="'Plus Jakarta Sans', sans-serif"
+                  fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
                   fontSize="7.5"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
@@ -520,7 +520,7 @@ export default function PixelEarthExploded({
                   y="91"
                   textAnchor="middle"
                   fill="#fef08a"
-                  fontFamily="'Plus Jakarta Sans', sans-serif"
+                  fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
                   fontSize="6.5"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
@@ -534,7 +534,7 @@ export default function PixelEarthExploded({
                   y="141"
                   textAnchor="middle"
                   fill="#ffffff"
-                  fontFamily="'Plus Jakarta Sans', sans-serif"
+                  fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
                   fontSize="7.5"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
@@ -548,7 +548,7 @@ export default function PixelEarthExploded({
                   y="190"
                   textAnchor="middle"
                   fill="#ffffff"
-                  fontFamily="'Plus Jakarta Sans', sans-serif"
+                  fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
                   fontSize="7"
                   fontWeight="bold"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.95))' }}
@@ -601,14 +601,14 @@ export default function PixelEarthExploded({
             <div className="flex items-center justify-between border-b border-amber-950/20 pb-1.5 flex-wrap gap-1">
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse" />
-                <span className="text-[12px] font-pixel-title text-amber-900 uppercase">
+                <span className="text-[12px] font-pixel-title text-amber-900 uppercase font-semibold">
                   LAPISAN INDUK:{' '}
                   <strong className="text-amber-950">
                     {isLitosferActive ? '1. LITOSFER' : isAstenosferActive ? '2. ASTENOSFER' : '3. BARISFER'}
                   </strong>
                 </span>
               </div>
-              <span className="text-[12px] text-amber-700 font-pixel">
+              <span className="text-[12px] text-amber-700 font-pixel font-semibold">
                 {isLitosferActive
                   ? '(Kerak Kaku Luar)'
                   : isAstenosferActive
@@ -619,7 +619,7 @@ export default function PixelEarthExploded({
 
             {/* Tombol Sub-Area */}
             <div className="flex items-center justify-between gap-2 flex-wrap pt-0.5">
-              <span className="text-[12px] font-pixel-title text-amber-800 uppercase shrink-0">
+              <span className="text-[12px] font-pixel-title text-amber-800 uppercase shrink-0 font-semibold">
                 PILIH SUB-BAGIAN:
               </span>
 
@@ -631,7 +631,7 @@ export default function PixelEarthExploded({
                     className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isBenuaActive
                       ? 'bg-emerald-600 text-white border-emerald-950 shadow-[0_2px_0_#064e3b]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
-                      }`}
+                      } font-semibold`}
                   >
                     Area Benua
                   </button>
@@ -640,7 +640,7 @@ export default function PixelEarthExploded({
                     className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isSamudraActive
                       ? 'bg-sky-600 text-white border-sky-950 shadow-[0_2px_0_#082f49]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
-                      }`}
+                      } font-semibold`}
                   >
                     Area Samudra
                   </button>
@@ -655,7 +655,7 @@ export default function PixelEarthExploded({
                     className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isMantelAtasActive
                       ? 'bg-orange-600 text-white border-orange-950 shadow-[0_2px_0_#451a03]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
-                      }`}
+                      } font-semibold`}
                   >
                     Mantel Atas
                   </button>
@@ -664,7 +664,7 @@ export default function PixelEarthExploded({
                     className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isMantelBawahActive
                       ? 'bg-red-700 text-white border-red-950 shadow-[0_2px_0_#451a03]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
-                      }`}
+                      } font-semibold`}
                   >
                     Mesosfer
                   </button>
@@ -679,7 +679,7 @@ export default function PixelEarthExploded({
                     className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isIntiLuarActive
                       ? 'bg-amber-500 text-amber-950 border-amber-950 shadow-[0_2px_0_#451a03]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
-                      }`}
+                      } font-semibold`}
                   >
                     Inti Luar
                   </button>
@@ -688,7 +688,7 @@ export default function PixelEarthExploded({
                     className={`px-2.5 py-1 rounded border text-[12.5px] font-pixel-title cursor-pointer transition-all ${isIntiDalamActive
                       ? 'bg-yellow-400 text-amber-950 border-amber-950 shadow-[0_2px_0_#451a03]'
                       : 'bg-amber-100 text-amber-900 border-amber-950/30 hover:bg-amber-200'
-                      }`}
+                      } font-semibold`}
                   >
                     Inti Dalam
                   </button>
@@ -705,7 +705,7 @@ export default function PixelEarthExploded({
         className={`mt-2 px-3.5 py-1.5 rounded-lg border-2 text-[12.5px] font-pixel-title cursor-pointer transition-all shadow-[0_2px_0_#231206] active:translate-y-0.5 ${isExploded
           ? 'bg-amber-200 hover:bg-amber-300 text-amber-950 border-amber-950'
           : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-emerald-950'
-          }`}
+          } font-semibold`}
       >
         {isExploded ? '◀ KEMBALIKAN KE BOLA BUMI UTUH' : 'BEDAH IRISAN BUMI 3D ▶'}
       </button>

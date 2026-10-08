@@ -305,7 +305,7 @@ export default function PixelSceneBg() {
           <span>DIORAMA TEKTONIK & VULKANO</span>
         </div>
 
-        <div className="bg-amber-950/90 backdrop-blur-md px-3 py-1.5 rounded-lg border-2 border-amber-800/60 text-amber-200 font-pixel text-[13px] hidden sm:flex items-center gap-2">
+        <div className="bg-amber-950/90 backdrop-blur-md px-3 py-1.5 rounded-lg border-2 border-amber-800/60 text-amber-200 font-pixel text-[13px] hidden sm:flex items-center gap-2 font-semibold">
           <span>Klik titik</span>
           <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block animate-ping" />
           <span>untuk inspeksi struktur bumi</span>
@@ -329,10 +329,10 @@ export default function PixelSceneBg() {
               className="p-1 text-slate-400 hover:text-white rounded bg-slate-800 hover:bg-slate-700 transition-colors"
               title="Tutup"
             >
-              <span className="material-symbols-outlined text-[15px]">close</span>
+              <span className="material-symbols-outlined text-[15px] font-semibold">close</span>
             </button>
           </div>
-          <p className="text-[13px] text-slate-300 leading-relaxed">
+          <p className="text-[13px] text-slate-300 leading-relaxed font-semibold">
             {activeZone.description}
           </p>
         </div>

@@ -214,7 +214,7 @@ export default function LempengTektonik() {
                   }`}
                 >
                   <PixelIcon name={b.iconName} size={22} />
-                  <span className="block text-[13.5px] text-amber-800 uppercase mt-0.5">{b.type}</span>
+                  <span className="block text-[13.5px] text-amber-800 uppercase mt-0.5 font-semibold">{b.type}</span>
                   <span className="block text-[13px] font-bold truncate">{b.shortName}</span>
                 </button>
               );
@@ -232,7 +232,7 @@ export default function LempengTektonik() {
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   SIMULATOR DINAMIKA TEKTONIK 2D
                 </span>
-                <button
+                <button aria-label="Jalankan simulasi lempeng tektonik"
                   onClick={handleSimulate}
                   className={`px-3 py-1.5 rounded text-white text-[13.5px] font-bold border-2 cursor-pointer font-pixel-title active:translate-y-0.5 transition-all flex items-center gap-1.5 ${activeBoundary.btnColor}`}
                 >
@@ -260,7 +260,7 @@ export default function LempengTektonik() {
                       <rect x="15" y="55" width="165" height="7" fill="#38bdf8" />
                       {/* Ocean water */}
                       <rect x="15" y="35" width="170" height="20" fill="#0369a1" opacity="0.4" />
-                      <text x="45" y="30" fill="#38bdf8" fontSize="10" fontWeight="bold" fontFamily="'Press Start 2P'">SAMUDRA &gt;</text>
+                      <text x="45" y="30" fill="#38bdf8" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">SAMUDRA &gt;</text>
                     </g>
 
                     {/* Continental Plate (Overriding) */}
@@ -272,7 +272,7 @@ export default function LempengTektonik() {
                     >
                       <polygon points="200,48 385,48 385,115 240,115 215,80" fill="#15803d" />
                       <rect x="200" y="48" width="185" height="7" fill="#4ade80" />
-                      <text x="250" y="80" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Press Start 2P'">&lt; BENUA</text>
+                      <text x="250" y="80" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">&lt; BENUA</text>
                     </g>
 
                     {/* Volcano on continent */}
@@ -287,7 +287,7 @@ export default function LempengTektonik() {
                     )}
 
                     {/* Subduction Zone marker */}
-                    <text x="120" y="170" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">
+                    <text x="120" y="170" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
                       ZONA PENUNJAMAN (SUBDUKSI)
                     </text>
                   </svg>
@@ -311,7 +311,7 @@ export default function LempengTektonik() {
                     >
                       <rect x="15" y="55" width="160" height="35" fill="#0284c7" />
                       <rect x="15" y="55" width="160" height="7" fill="#38bdf8" />
-                      <text x="35" y="48" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'">&lt; LEMPENG A</text>
+                      <text x="35" y="48" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">&lt; LEMPENG A</text>
                     </g>
 
                     {/* Right Plate */}
@@ -323,7 +323,7 @@ export default function LempengTektonik() {
                     >
                       <rect x="225" y="55" width="160" height="35" fill="#0284c7" />
                       <rect x="225" y="55" width="160" height="7" fill="#38bdf8" />
-                      <text x="245" y="48" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'">LEMPENG B &gt;</text>
+                      <text x="245" y="48" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">LEMPENG B &gt;</text>
                     </g>
 
                     {/* Central Rift — Magma Upwelling */}
@@ -333,7 +333,7 @@ export default function LempengTektonik() {
                     {/* Ocean water */}
                     <rect x="0" y="28" width="400" height="27" fill="#0369a1" opacity="0.35" />
 
-                    <text x="200" y="170" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">
+                    <text x="200" y="170" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
                       PEMATANG TENGAH SAMUDRA
                     </text>
                   </svg>
@@ -356,7 +356,7 @@ export default function LempengTektonik() {
                     >
                       <rect x="25" y="35" width="350" height="42" fill="#15803d" />
                       <rect x="25" y="35" width="350" height="7" fill="#86efac" />
-                      <text x="45" y="60" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'">
+                      <text x="45" y="60" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
                         LEMPENG UTARA &gt;&gt; GESER KANAN
                       </text>
                     </g>
@@ -373,12 +373,12 @@ export default function LempengTektonik() {
                     >
                       <rect x="25" y="87" width="350" height="42" fill="#a16207" />
                       <rect x="25" y="87" width="350" height="7" fill="#fde047" />
-                      <text x="45" y="112" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'">
+                      <text x="45" y="112" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
                         LEMPENG SELATAN &lt;&lt; GESER KIRI
                       </text>
                     </g>
 
-                    <text x="200" y="165" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">
+                    <text x="200" y="165" fill="#facc15" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
                       ZONA SESAR GESER MENDATAR
                     </text>
                   </svg>
@@ -394,11 +394,11 @@ export default function LempengTektonik() {
                 <div className="flex items-center gap-2.5 mb-2 pb-2 border-b border-amber-900/30">
                   <PixelIcon name={activeBoundary.iconName} size={24} />
                   <div>
-                    <div className="font-pixel-title text-[13px] text-amber-300">{activeBoundary.name}</div>
-                    <div className="text-[13.5px] text-amber-500 uppercase">{activeBoundary.type}</div>
+                    <div className="font-pixel-title text-[13px] text-amber-300 font-semibold">{activeBoundary.name}</div>
+                    <div className="text-[13.5px] text-amber-500 uppercase font-semibold">{activeBoundary.type}</div>
                   </div>
                 </div>
-                <p className="text-[15px] text-amber-200 leading-relaxed">{activeBoundary.movement}</p>
+                <p className="text-[15px] text-amber-200 leading-relaxed font-semibold">{activeBoundary.movement}</p>
               </div>
 
               {/* Quick Info Cards */}
@@ -463,7 +463,7 @@ export default function LempengTektonik() {
                   onClick={() => handlePlateClick('eurasia')}
                   rx="4"
                 />
-                <text x="150" y="55" fill="#4ade80" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">EURASIA</text>
+                <text x="150" y="55" fill="#4ade80" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">EURASIA</text>
 
                 {/* ── Indo-Australia Plate Zone ── */}
                 <rect
@@ -476,7 +476,7 @@ export default function LempengTektonik() {
                   onClick={() => handlePlateClick('indo-australia')}
                   rx="4"
                 />
-                <text x="170" y="160" fill="#fb923c" fontSize="9" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">INDO-AUSTRALIA</text>
+                <text x="170" y="160" fill="#fb923c" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">INDO-AUSTRALIA</text>
                 <polygon points="170,148 175,140 180,148" fill="#fb923c" />
                 <polygon points="140,148 145,140 150,148" fill="#fb923c" />
 
@@ -491,7 +491,7 @@ export default function LempengTektonik() {
                   onClick={() => handlePlateClick('pasifik')}
                   rx="4"
                 />
-                <text x="335" y="70" fill="#38bdf8" fontSize="8" fontWeight="bold" fontFamily="'Press Start 2P'" textAnchor="middle">PASIFIK</text>
+                <text x="335" y="70" fill="#38bdf8" fontSize="8" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">PASIFIK</text>
                 <polygon points="305,95 298,90 305,85" fill="#38bdf8" />
 
                 {/* ── Indonesia Islands (Pixel Blocks) ── */}
@@ -524,10 +524,10 @@ export default function LempengTektonik() {
                 <line x1="90" y1="125" x2="200" y2="120" stroke="#ef4444" strokeWidth="2" opacity="0.6" />
 
                 {/* Island codes */}
-                <text x="105" y="105" fill="#86efac" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">SUM</text>
-                <text x="137" y="115" fill="#86efac" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">JAW</text>
-                <text x="157" y="95" fill="#86efac" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">KAL</text>
-                <text x="285" y="100" fill="#86efac" fontSize="7" fontFamily="'Press Start 2P'" textAnchor="middle">PAP</text>
+                <text x="105" y="105" fill="#86efac" fontSize="7" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">SUM</text>
+                <text x="137" y="115" fill="#86efac" fontSize="7" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">JAW</text>
+                <text x="157" y="95" fill="#86efac" fontSize="7" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">KAL</text>
+                <text x="285" y="100" fill="#86efac" fontSize="7" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">PAP</text>
               </svg>
             </div>
           </div>
@@ -547,7 +547,7 @@ export default function LempengTektonik() {
                   }`}
                 >
                   <PixelIcon name={p.iconName} size={20} />
-                  <span className="block text-[13.5px] font-pixel-title mt-0.5">{p.name}</span>
+                  <span className="block text-[13.5px] font-pixel-title mt-0.5 font-semibold">{p.name}</span>
                   <div className="flex items-center justify-center gap-1 mt-1">
                     <span className="w-2.5 h-2.5 rounded-full border border-amber-950" style={{ backgroundColor: p.color }} />
                     <span className="text-[12.5px] font-bold text-amber-700">{p.speed}</span>
@@ -563,11 +563,11 @@ export default function LempengTektonik() {
               <div className="flex items-center gap-2 mb-2 pb-2 border-b border-amber-900/30">
                 <span className="w-4 h-4 rounded-full border-2 border-amber-400" style={{ backgroundColor: activePlate.color }} />
                 <div>
-                  <div className="font-pixel-title text-[13px] text-amber-300">LEMPENG {activePlate.name.toUpperCase()}</div>
-                  <div className="text-[12.5px] text-amber-500 uppercase">Arah: {activePlate.direction} • Kecepatan: {activePlate.speed}</div>
+                  <div className="font-pixel-title text-[13px] text-amber-300 font-semibold">LEMPENG {activePlate.name.toUpperCase()}</div>
+                  <div className="text-[12.5px] text-amber-500 uppercase font-semibold">Arah: {activePlate.direction} • Kecepatan: {activePlate.speed}</div>
                 </div>
               </div>
-              <p className="text-[13px] text-amber-200 leading-relaxed">{activePlate.impact}</p>
+              <p className="text-[13px] text-amber-200 leading-relaxed font-semibold">{activePlate.impact}</p>
             </div>
           )}
 
@@ -646,7 +646,7 @@ export default function LempengTektonik() {
 
                 {/* Hovered Volcano Tooltip */}
                 {hoveredVolcano && (
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-amber-950 text-amber-200 rounded border-2 border-amber-500 text-[13.5px] font-pixel-title shadow-lg whitespace-nowrap z-10 flex items-center gap-1.5">
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-amber-950 text-amber-200 rounded border-2 border-amber-500 text-[13.5px] font-pixel-title shadow-lg whitespace-nowrap z-10 flex items-center gap-1.5 font-semibold">
                     <PixelIcon name="volcano" size={14} />
                     <span>{hoveredVolcano}</span>
                   </div>
@@ -658,22 +658,22 @@ export default function LempengTektonik() {
                 <div className="grid grid-cols-2 gap-2">
                   <div className="p-2.5 bg-slate-800 rounded-xl border-2 border-slate-700 text-center flex flex-col items-center">
                     <PixelIcon name="volcano" size={24} className="mb-1" />
-                    <span className="text-amber-400 font-pixel-title text-base block">127+</span>
+                    <span className="text-amber-400 font-pixel-title text-base block font-medium">127+</span>
                     <span className="text-[12px] text-slate-400 font-bold uppercase">Gunung Api Aktif RI</span>
                   </div>
                   <div className="p-2.5 bg-slate-800 rounded-xl border-2 border-slate-700 text-center flex flex-col items-center">
                     <PixelIcon name="convergent" size={24} className="mb-1 text-rose-400" />
-                    <span className="text-rose-400 font-pixel-title text-base block">452+</span>
+                    <span className="text-rose-400 font-pixel-title text-base block font-medium">452+</span>
                     <span className="text-[12px] text-slate-400 font-bold uppercase">Gunung Api Cincin Api</span>
                   </div>
                   <div className="p-2.5 bg-slate-800 rounded-xl border-2 border-slate-700 text-center flex flex-col items-center">
                     <PixelIcon name="ruler" size={24} className="mb-1" />
-                    <span className="text-cyan-400 font-pixel-title text-base block">40.000</span>
+                    <span className="text-cyan-400 font-pixel-title text-base block font-medium">40.000</span>
                     <span className="text-[12px] text-slate-400 font-bold uppercase">Km Panjang Sabuk</span>
                   </div>
                   <div className="p-2.5 bg-slate-800 rounded-xl border-2 border-slate-700 text-center flex flex-col items-center">
                     <PixelIcon name="ocean" size={24} className="mb-1" />
-                    <span className="text-emerald-400 font-pixel-title text-base block">90%</span>
+                    <span className="text-emerald-400 font-pixel-title text-base block font-medium">90%</span>
                     <span className="text-[12px] text-slate-400 font-bold uppercase">Gempa Bumi Global</span>
                   </div>
                 </div>
@@ -690,10 +690,10 @@ export default function LempengTektonik() {
             <div className="flex items-start gap-2.5">
               <PixelIcon name="shield" size={22} className="mt-0.5" />
               <div>
-                <span className="font-pixel-title text-[13px] text-amber-400 block mb-1">
+                <span className="font-pixel-title text-[13px] text-amber-400 block mb-1 font-semibold">
                   KESIMPULAN EDUKASI KESIAPSIAGAAN:
                 </span>
-                <p className="text-[13px] text-amber-200 leading-relaxed">
+                <p className="text-[13px] text-amber-200 leading-relaxed font-semibold">
                   Indonesia berada di jalur Cincin Api Pasifik dan pertemuan 3 lempeng besar dunia. Gempa bumi adalah fenomena alam yang tidak dapat dicegah, namun dampaknya dapat diminimalisir melalui pemahaman jalur evakuasi, konstruksi tahan gempa, dan kesiapsiagaan warga sejak dini.
                 </p>
               </div>

@@ -263,7 +263,7 @@ export default function Credits() {
               <h1 className="font-pixel-title text-base md:text-lg font-bold text-amber-950">
                 TIM PENGEMBANG RESQ-BOX
               </h1>
-              <p className="text-[13px] text-amber-900/80 font-pixel">
+              <p className="text-[13px] text-amber-900/80 font-pixel font-semibold">
                 LIDM 2026 • Divisi Inovasi Pembelajaran Digital Pendidikan (IPDP)
               </p>
             </div>
@@ -289,7 +289,7 @@ export default function Credits() {
               className="p-3.5 rounded-xl bg-amber-100/85 border-2 border-amber-900/40 shadow-[0_3px_0_#78350f] flex items-start gap-3"
             >
               <div className={`w-11 h-11 rounded-lg bg-gradient-to-b ${member.avatarBg} border border-amber-950 flex items-center justify-center text-slate-950 shadow-sm shrink-0 mt-0.5`}>
-                <span className="material-symbols-outlined text-xl">
+                <span className="material-symbols-outlined text-xl font-medium">
                   {member.icon}
                 </span>
               </div>
@@ -300,7 +300,7 @@ export default function Credits() {
                 <p className="text-[14.5px] font-bold text-amber-900 mt-0.5">
                   {member.role}
                 </p>
-                <span className="inline-block mt-1 px-2 py-0.5 rounded bg-amber-900/10 text-amber-950 border border-amber-900/20 text-[13.5px] font-pixel">
+                <span className="inline-block mt-1 px-2 py-0.5 rounded bg-amber-900/10 text-amber-950 border border-amber-900/20 text-[13.5px] font-pixel font-semibold">
                   {member.division}
                 </span>
               </div>
@@ -322,7 +322,7 @@ export default function Credits() {
             <h3 className="font-pixel font-bold text-[15px] text-white">
               Rizki Arumning Tyas
             </h3>
-            <p className="text-[13px] text-amber-200 mt-0.5 leading-relaxed font-pixel">
+            <p className="text-[13px] text-amber-200 mt-0.5 leading-relaxed font-pixel font-semibold">
               Dosen Pendamping Inovasi Pembelajaran Digital Mitigasi Bencana • Universitas Negeri Yogyakarta
             </p>
           </div>
@@ -334,7 +334,7 @@ export default function Credits() {
             retroAudio.playSelect();
             navigate('/');
           }}
-          className="pixel-btn-wood-plank !w-full !h-12 !text-[13px] !bg-amber-800 !text-white cursor-pointer"
+          className="pixel-btn-wood-plank !w-full !h-12 !text-[13px] !bg-amber-800 !text-white cursor-pointer font-semibold"
         >
           ⯇ KEMBALI KE MENU UTAMA
         </button>

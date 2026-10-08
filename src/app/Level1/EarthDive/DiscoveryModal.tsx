@@ -53,7 +53,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_#451a03] shrink-0 transition-colors"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_#451a03] shrink-0 transition-colors font-medium"
             title="Tutup"
           >
             ✕
@@ -160,7 +160,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="px-8 py-3 sm:px-10 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all"
+            className="px-8 py-3 sm:px-10 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all font-medium"
           >
             <PixelIcon name="check" size={18} className="text-amber-200" />
             <span>SAYA MENGERTI!</span>
@@ -205,7 +205,7 @@ function CrustComparisonIllustration() {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-between select-none">
       {/* Quick Interactive Selection Tabs at Top */}
-      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-[13px] sm:text-[15px]">
+      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-[13px] sm:text-[15px] font-semibold">
         <button
           onClick={() => setActiveFeature(activeFeature === 'continental' ? null : 'continental')}
           className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
@@ -342,14 +342,14 @@ function CrustComparisonIllustration() {
               <polygon points="18,195 14,187 22,187" fill="#facc15" />
               {/* Badge Ramping Bersih */}
               <rect x="24" y="130" width="104" height="22" rx="4" fill="#0f172a" fillOpacity="0.9" stroke="#facc15" strokeWidth="1.2" />
-              <text x="76" y="145" fill="#fef08a" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+              <text x="76" y="145" fill="#fef08a" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
                 Tebal: ~100 km
               </text>
             </g>
 
             {/* Label Identitas Panel Kiri */}
             <rect x="12" y="8" width="168" height="22" rx="5" fill="#1e293b" fillOpacity="0.92" stroke="#f59e0b" strokeWidth="1.5" />
-            <text x="96" y="23" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            <text x="96" y="23" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               1. KERAK BENUA (DARATAN)
             </text>
           </g>
@@ -402,21 +402,21 @@ function CrustComparisonIllustration() {
               <polygon points="520,195 516,190 524,190" fill="#38bdf8" />
               {/* Badge Ramping Bersih */}
               <rect x="408" y="174" width="106" height="22" rx="4" fill="#082f49" fillOpacity="0.9" stroke="#38bdf8" strokeWidth="1.2" />
-              <text x="461" y="189" fill="#7dd3fc" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+              <text x="461" y="189" fill="#7dd3fc" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
                 Tebal: 5–15 km
               </text>
             </g>
 
             {/* Label Identitas Panel Kanan */}
             <rect x="284" y="8" width="176" height="22" rx="5" fill="#082f49" fillOpacity="0.92" stroke="#38bdf8" strokeWidth="1.5" />
-            <text x="372" y="23" fill="#7dd3fc" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            <text x="372" y="23" fill="#7dd3fc" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               2. KERAK SAMUDRA (DASAR LAUT)
             </text>
           </g>
 
           {/* Label Batas Moho & Mantel Bawah yang Melintang Halus */}
           <rect x="180" y="218" width="180" height="18" rx="4" fill="#0c0a09" fillOpacity="0.88" stroke="#f97316" strokeWidth="1" />
-          <text x="270" y="231" fill="#fed7aa" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+          <text x="270" y="231" fill="#fed7aa" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             ASTENOSFER (MANTEL BUMI)
           </text>
         </svg>
@@ -479,7 +479,7 @@ function MantleConvectionIllustration() {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-between select-none">
       {/* Interactive Quick Select Filter Pills at Top */}
-      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-[13px] sm:text-[15px]">
+      <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-[13px] sm:text-[15px] font-semibold">
         <button
           onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
           className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
@@ -593,7 +593,7 @@ function MantleConvectionIllustration() {
           <g>
             <line x1="120" y1="8" x2="60" y2="8" stroke="#fbbf24" strokeWidth="2.5" />
             <polygon points="50,8 62,3 62,13" fill="#fbbf24" />
-            <text x="135" y="11" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">
+            <text x="135" y="11" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
               GERAK KE KIRI
             </text>
           </g>
@@ -602,7 +602,7 @@ function MantleConvectionIllustration() {
           <g>
             <line x1="420" y1="8" x2="480" y2="8" stroke="#fbbf24" strokeWidth="2.5" />
             <polygon points="490,8 478,3 478,13" fill="#fbbf24" />
-            <text x="405" y="11" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="end">
+            <text x="405" y="11" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="end">
               GERAK KE KANAN
             </text>
           </g>
@@ -614,7 +614,7 @@ function MantleConvectionIllustration() {
           >
             <rect x="15" y="16" width="180" height="22" rx="3" fill="#78350f" stroke="#92400e" strokeWidth="1" />
             <rect x="15" y="16" width="180" height="4" rx="2" fill="#15803d" />
-            <text x="105" y="31" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            <text x="105" y="31" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               LEMPENG BENUA A
             </text>
           </g>
@@ -628,7 +628,7 @@ function MantleConvectionIllustration() {
             <line x1="202" y1="16" x2="338" y2="16" stroke="#38bdf8" strokeWidth="1.5" />
             {/* Lempeng samudra tipis membentang di celah */}
             <rect x="202" y="23" width="136" height="15" fill="#1e293b" />
-            <text x="270" y="34" fill="#7dd3fc" fontSize="8" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            <text x="270" y="34" fill="#7dd3fc" fontSize="8" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               LEMPENG SAMUDRA
             </text>
           </g>
@@ -640,7 +640,7 @@ function MantleConvectionIllustration() {
           >
             <rect x="345" y="16" width="180" height="22" rx="3" fill="#78350f" stroke="#92400e" strokeWidth="1" />
             <rect x="345" y="16" width="180" height="4" rx="2" fill="#15803d" />
-            <text x="435" y="31" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            <text x="435" y="31" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               LEMPENG BENUA B
             </text>
           </g>
@@ -832,7 +832,7 @@ function MantleConvectionIllustration() {
             <rect x="0" y="215" width="540" height="25" fill="#ea580c" />
             <rect x="0" y="225" width="540" height="15" fill="#fef08a" />
             <line x1="0" y1="215" x2="540" y2="215" stroke="#ffffff" strokeWidth="2" />
-            <text x="270" y="235" fill="#450a0a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            <text x="270" y="235" fill="#450a0a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               SUMBER PANAS: INTI BUMI (SUHU 3.700°C – 5.000°C)
             </text>
           </g>
@@ -962,7 +962,7 @@ function renderIllustration(
             <circle cx="0" cy="0" r="32" fill="none" stroke="#ea580c" strokeWidth="8" opacity="0.8" />
             <polygon points="-32,-6 -40,10 -24,10" fill="#ef4444" />
             <polygon points="32,6 40,-10 24,-10" fill="#38bdf8" />
-            <text x="-28" y="4" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">KONVEKSI</text>
+            <text x="-28" y="4" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">KONVEKSI</text>
           </g>
 
           {/* Convection Roll Right */}
@@ -970,7 +970,7 @@ function renderIllustration(
             <circle cx="0" cy="0" r="30" fill="none" stroke="#ea580c" strokeWidth="8" opacity="0.8" />
             <polygon points="30,-6 38,10 22,10" fill="#ef4444" />
             <polygon points="-30,6 -38,-10 -22,-10" fill="#38bdf8" />
-            <text x="-28" y="4" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">KONVEKSI</text>
+            <text x="-28" y="4" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">KONVEKSI</text>
           </g>
 
           {/* ── DEHYDRATION MELTING & RISING MAGMA DIAPIRS ── */}
@@ -991,31 +991,31 @@ function renderIllustration(
           {/* Deep Sea Trench Label */}
           <g transform="translate(85, 34)">
             <rect x="0" y="0" width="165" height="20" fill="#082f49" rx="4" stroke="#38bdf8" strokeWidth="1.5" />
-            <text x="10" y="14" fill="#38bdf8" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">PALUNG LAUT DALAM</text>
+            <text x="10" y="14" fill="#38bdf8" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">PALUNG LAUT DALAM</text>
           </g>
 
           {/* Volcanic Arc Label */}
           <g transform="translate(315, 20)">
             <rect x="0" y="0" width="180" height="20" fill="#450a0a" rx="4" stroke="#f97316" strokeWidth="1.5" />
-            <text x="10" y="14" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">BUSUR GUNUNG BERAPI</text>
+            <text x="10" y="14" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">BUSUR GUNUNG BERAPI</text>
           </g>
 
           {/* Subducting Plate Label */}
           <g transform="translate(15, 110)">
             <rect x="0" y="0" width="165" height="20" fill="#0f172a" rx="4" stroke="#64748b" strokeWidth="1.5" />
-            <text x="10" y="14" fill="#cbd5e1" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">LEMPENG MENUNJAM</text>
+            <text x="10" y="14" fill="#cbd5e1" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">LEMPENG MENUNJAM</text>
           </g>
 
           {/* Wadati-Benioff earthquakes label */}
           <g transform="translate(225, 82)">
             <rect x="0" y="0" width="180" height="18" fill="#7f1d1d" rx="3" stroke="#ef4444" strokeWidth="1.5" />
-            <text x="8" y="13" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">FOKUS GEMPA SUBDUKSI</text>
+            <text x="8" y="13" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">FOKUS GEMPA SUBDUKSI</text>
           </g>
 
           {/* Bottom Asthenosphere Label */}
           <g transform="translate(120, 218)">
             <rect x="0" y="0" width="260" height="18" fill="#1c1917" rx="4" stroke="#fb923c" strokeWidth="1" opacity="0.95" />
-            <text x="12" y="13" fill="#fb923c" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">ARUS KONVEKSI (540°C–1.600°C)</text>
+            <text x="12" y="13" fill="#fb923c" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">ARUS KONVEKSI (540°C–1.600°C)</text>
           </g>
         </svg>
       );
@@ -1103,7 +1103,7 @@ function renderIllustration(
               <polygon points="188,89 146,89 146,84 103,95 146,95" fill="#f87171" opacity="0.65" />
             </g>
 
-            <text x="60" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Pixelify Sans', sans-serif" fontWeight="bold">Plate</text>
+            <text x="60" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontWeight="bold">Plate</text>
           </g>
 
           {/* ── BALOK KANAN (LEMPENG 2 - BERGERAK KE KANAN MENJAUH DENGAN ANIMASI LOOP) ── */}
@@ -1129,11 +1129,11 @@ function renderIllustration(
               <polygon points="322,89 364,89 364,84 407,95 364,95" fill="#f87171" opacity="0.65" />
             </g>
 
-            <text x="430" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Pixelify Sans', sans-serif" fontWeight="bold">Plate</text>
+            <text x="430" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontWeight="bold">Plate</text>
           </g>
 
           {/* ── LABEL TEKS RESMI SESUAI DIAGRAM ── */}
-          <text x="210" y="165" fill="#fed7aa" fontSize="9" fontFamily="'Pixelify Sans', sans-serif" fontWeight="bold">Asthenosphere</text>
+          <text x="210" y="165" fill="#fed7aa" fontSize="9" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontWeight="bold">Asthenosphere</text>
 
         </svg>
       );
@@ -1200,7 +1200,7 @@ function renderIllustration(
               <polygon points="398,89 356,89 356,84 313,95 356,95" fill="#f87171" opacity="0.65" />
             </g>
 
-            <text x="430" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Pixelify Sans', sans-serif" fontWeight="bold">Plate</text>
+            <text x="430" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontWeight="bold">Plate</text>
           </g>
 
           {/* ── LEMPENG MENUNJAM KIRI (SUBDUCTING SLAB SAMUDRA - Z-INDEX LEBIH TINGGI DI ATAS KANAN) ── */}
@@ -1229,7 +1229,7 @@ function renderIllustration(
               <polygon points="112,89 154,89 154,84 197,95 154,95" fill="#f87171" opacity="0.65" />
             </g>
 
-            <text x="60" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Pixelify Sans', sans-serif" fontWeight="bold">Plate</text>
+            <text x="60" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontWeight="bold">Plate</text>
           </g>
 
           {/* Pijar Peleburan Magma di Mantel (Melting Zone) */}
@@ -1239,7 +1239,7 @@ function renderIllustration(
           </g>
 
           {/* ── LABEL TEKS RESMI SESUAI DIAGRAM ── */}
-          <text x="210" y="172" fill="#fed7aa" fontSize="9" fontFamily="'Pixelify Sans', sans-serif" fontWeight="bold">Asthenosphere</text>
+          <text x="210" y="172" fill="#fed7aa" fontSize="9" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontWeight="bold">Asthenosphere</text>
         </svg>
       );
 
@@ -1303,7 +1303,7 @@ function renderIllustration(
               <polygon points="132,101 125,124 138,124" fill="#f87171" opacity="0.65" />
             </g>
 
-            <text x="60" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Pixelify Sans', sans-serif" fontWeight="bold">Plate</text>
+            <text x="60" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontWeight="bold">Plate</text>
           </g>
 
           {/* ── BALOK KANAN (BERGESER MUNDUR/KE ATAS DI SEPANJANG BIDANG SESAR - TANPA ARTIFAK BELAKANG) ── */}
@@ -1333,11 +1333,11 @@ function renderIllustration(
               <polygon points="388,89 395,66 382,66" fill="#f87171" opacity="0.65" />
             </g>
 
-            <text x="430" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Pixelify Sans', sans-serif" fontWeight="bold">Plate</text>
+            <text x="430" y="127" fill="#f1f5f9" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontWeight="bold">Plate</text>
           </g>
 
           {/* ── LABEL TEKS RESMI SESUAI DIAGRAM ── */}
-          <text x="210" y="172" fill="#fed7aa" fontSize="9" fontFamily="'Pixelify Sans', sans-serif" fontWeight="bold">Asthenosphere</text>
+          <text x="210" y="172" fill="#fed7aa" fontSize="9" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" fontWeight="bold">Asthenosphere</text>
 
         </svg>
       );
@@ -1423,7 +1423,7 @@ function renderIllustration(
 
               {/* Label Formula Kimia di Kubus */}
               <rect x="15" y="62" width="110" height="26" rx="4" fill="#1c0a02" stroke="#facc15" strokeWidth="2" />
-              <text x="70" y="80" fill="#fef08a" fontSize="9.5" fontFamily="'Press Start 2P'" textAnchor="middle">(Mg,Fe)SiO3</text>
+              <text x="70" y="80" fill="#fef08a" fontSize="9.5" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">(Mg,Fe)SiO3</text>
             </g>
           </g>
 
@@ -1472,7 +1472,7 @@ function renderIllustration(
           {/* Top Discontinuity Line (660 km Boundary) */}
           <rect x="0" y="0" width="500" height="24" fill="#78350f" />
           <line x1="0" y1="24" x2="500" y2="24" stroke="#f59e0b" strokeWidth="2" />
-          <text x="15" y="16" fill="#fef08a" fontSize="8" fontFamily="'Press Start 2P'">BATAS MANTEL ATAS (660 KM DISKONTINUITAS)</text>
+          <text x="15" y="16" fill="#fef08a" fontSize="8" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">BATAS MANTEL ATAS (660 KM DISKONTINUITAS)</text>
 
           {/* High-Pressure Mineral Matrix (Peridotit / Bridgmanit & Perovscite) */}
           {Array.from({ length: 5 }).map((_, r) => (
@@ -1515,25 +1515,25 @@ function renderIllustration(
           {/* ── LABELS WITH RETRO PIXEL BACKINGS ── */}
           <g transform="translate(15, 56)">
             <rect x="0" y="0" width="195" height="20" fill="#450a0a" rx="4" stroke="#f59e0b" strokeWidth="1.5" />
-            <text x="8" y="14" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">TEBAL: 2.900 KM (TERTEBAL!)</text>
+            <text x="8" y="14" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">TEBAL: 2.900 KM (TERTEBAL!)</text>
           </g>
 
           <g transform="translate(15, 84)">
-            <text x="0" y="0" fill="#fed7aa" fontSize="10.5" fontWeight="500" fontFamily="sans-serif">Batuan padat mengalir kental (arus konveksi lambat)</text>
+            <text x="0" y="0" fill="#fed7aa" fontSize="10.5" fontWeight="500" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">Batuan padat mengalir kental (arus konveksi lambat)</text>
           </g>
 
           <g transform="translate(305, 42)">
             <rect x="0" y="0" width="185" height="20" fill="#7c2d12" rx="4" stroke="#fbbf24" strokeWidth="1.5" />
-            <text x="8" y="14" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">MANTLE PLUME (HOTSPOT)</text>
+            <text x="8" y="14" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">MANTLE PLUME (HOTSPOT)</text>
           </g>
           <g transform="translate(305, 70)">
-            <text x="0" y="0" fill="#fed7aa" fontSize="10" fontWeight="500" fontFamily="sans-serif">Pipa panas dari batas inti bumi</text>
+            <text x="0" y="0" fill="#fed7aa" fontSize="10" fontWeight="500" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">Pipa panas dari batas inti bumi</text>
           </g>
 
           {/* CMB Bottom Label */}
           <g transform="translate(100, 226)">
             <rect x="-10" y="-13" width="320" height="18" fill="#fef08a" rx="3" />
-            <text x="150" y="0" fill="#1c1917" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">BATAS INTI-MANTEL (D&apos;&apos;) • ~3.700°C / 136 GPa</text>
+            <text x="150" y="0" fill="#1c1917" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">BATAS INTI-MANTEL (D&apos;&apos;) • ~3.700°C / 136 GPa</text>
           </g>
         </svg>
       );
@@ -1625,7 +1625,7 @@ function renderIllustration(
             {/* Bingkai Panel Termal */}
             <rect x="0" y="0" width="205" height="220" rx="4" fill="#180603" stroke="#f97316" strokeWidth="1.5" />
             <rect x="0" y="0" width="205" height="24" rx="4" fill="#450a0a" />
-            <text x="102" y="16" fill="#fef08a" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">SKALA TITIK LELEH</text>
+            <text x="102" y="16" fill="#fef08a" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">SKALA TITIK LELEH</text>
 
             {/* Kolom Termometer Digital Retro */}
             <rect x="18" y="32" width="14" height="170" rx="4" fill="#080201" stroke="#451a03" strokeWidth="1" />
@@ -1635,32 +1635,32 @@ function renderIllustration(
             {/* Garis Penanda 1: Titik Leleh Nikel (Ni) -> 1.455°C */}
             <line x1="12" y1="148" x2="38" y2="148" stroke="#38bdf8" strokeWidth="2" />
             <rect x="42" y="137" width="154" height="23" rx="3" fill="#0c1d33" stroke="#38bdf8" strokeWidth="1" />
-            <text x="47" y="148" fill="#7dd3fc" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">LELEH NIKEL (Ni)</text>
-            <text x="47" y="157" fill="#bae6fd" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">1.455°C (TITIK LELEH)</text>
+            <text x="47" y="148" fill="#7dd3fc" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">LELEH NIKEL (Ni)</text>
+            <text x="47" y="157" fill="#bae6fd" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">1.455°C (TITIK LELEH)</text>
 
             {/* Garis Penanda 2: Titik Leleh Besi (Fe) -> 1.538°C */}
             <line x1="12" y1="116" x2="38" y2="116" stroke="#fbbf24" strokeWidth="2" />
             <rect x="42" y="105" width="154" height="23" rx="3" fill="#2e1403" stroke="#fbbf24" strokeWidth="1" />
-            <text x="47" y="116" fill="#fde047" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">LELEH BESI (Fe)</text>
-            <text x="47" y="125" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">1.538°C (TITIK LELEH)</text>
+            <text x="47" y="116" fill="#fde047" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">LELEH BESI (Fe)</text>
+            <text x="47" y="125" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">1.538°C (TITIK LELEH)</text>
 
             {/* Garis Penanda 3: SUHU INTI LUAR -> ~5.000°C */}
             <line x1="12" y1="42" x2="38" y2="42" stroke="#ef4444" strokeWidth="3" />
             <rect x="42" y="31" width="154" height="28" rx="4" fill="#450a0a" stroke="#ef4444" strokeWidth="1.5" className="anim-heat-glow" />
-            <text x="47" y="44" fill="#fca5a5" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">INTI LUAR: ~5.000°C</text>
-            <text x="47" y="56" fill="#ffffff" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">(MELELEH JADI CAIRAN!)</text>
+            <text x="47" y="44" fill="#fca5a5" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">INTI LUAR: ~5.000°C</text>
+            <text x="47" y="56" fill="#ffffff" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">(MELELEH JADI CAIRAN!)</text>
 
             {/* Indikator Panah Lampaui Titik Leleh */}
             <path d="M 120,64 L 120,100" stroke="#f87171" strokeWidth="2" />
             <polygon points="120,62 116,68 124,68" fill="#ef4444" />
-            <text x="120" y="84" fill="#fca5a5" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">JAUH MELAMPAUI</text>
-            <text x="120" y="94" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">TITIK LEBUR LOGAM</text>
+            <text x="120" y="84" fill="#fca5a5" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">JAUH MELAMPAUI</text>
+            <text x="120" y="94" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">TITIK LEBUR LOGAM</text>
 
             {/* Rangkuman Kesimpulan Bawah */}
             <rect x="8" y="172" width="189" height="40" rx="4" fill="#080201" stroke="#f97316" strokeWidth="1" />
-            <text x="102" y="185" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">BUKAN BATUAN PADAT!</text>
-            <text x="102" y="197" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">LOGAM BESI &amp; NIKEL CAIR</text>
-            <text x="102" y="207" fill="#fca5a5" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">MELELEH SECARA TOTAL</text>
+            <text x="102" y="185" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">BUKAN BATUAN PADAT!</text>
+            <text x="102" y="197" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">LOGAM BESI &amp; NIKEL CAIR</text>
+            <text x="102" y="207" fill="#fca5a5" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">MELELEH SECARA TOTAL</text>
           </g>
 
           {/* ══════════════════════════════════════════════════════════════════════════
@@ -1785,12 +1785,12 @@ function renderIllustration(
 
               {/* 7. Badge Keterangan Bawah Panel Kanan (Berada di Dasar, Terpisah Bersih) */}
               <rect x="18" y="190" width="260" height="24" rx="4" fill="#080201" stroke="#f59e0b" strokeWidth="1.5" />
-              <text x="148" y="206" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">GEODYNAMO: PUSARAN BESI-NIKEL 5.000°C</text>
+              <text x="148" y="206" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">GEODYNAMO: PUSARAN BESI-NIKEL 5.000°C</text>
             </g>
 
             {/* Header Kotak Kanan (Digambar di atas agar garis batasnya selalu tajam) */}
             <rect x="0" y="0" width="296" height="24" rx="4" fill="#78350f" stroke="#f59e0b" strokeWidth="1.5" />
-            <text x="148" y="16" fill="#fef08a" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">LAUTAN LOGAM CAIR 5.000°C</text>
+            <text x="148" y="16" fill="#fef08a" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">LAUTAN LOGAM CAIR 5.000°C</text>
           </g>
         </svg>
       );
@@ -1849,14 +1849,14 @@ function renderIllustration(
           {/* ── DUA BADGE HEADER TERPISAH BERSIH (TIDAK BERTABRAKAN / MENYAMBUNG) ── */}
           {/* Label 1: Angin Matahari (Kiri) */}
           <rect x="12" y="10" width="165" height="24" rx="4" fill="#451a03" stroke="#fbbf24" strokeWidth="1.5" />
-          <text x="94" y="26" fill="#fbbf24" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+          <text x="94" y="26" fill="#fbbf24" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             ANGIN SURYA MEMATIKAN
           </text>
 
           {/* Label 2: Perisai Magnetosfer (Kanan - Berjarak Nyata 33px) */}
           <g transform="translate(210, 10)">
             <rect x="0" y="0" width="175" height="24" rx="4" fill="#082f49" stroke="#38bdf8" strokeWidth="1.5" />
-            <text x="87" y="16" fill="#38bdf8" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+            <text x="87" y="16" fill="#38bdf8" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               PERISAI MAGNETOSFER
             </text>
           </g>
@@ -1889,7 +1889,7 @@ function renderIllustration(
 
           {/* INTI DALAM PADAT KRISTALIN DI PUSAT */}
           <circle cx="330" cy="120" r="26" fill="#fef08a" stroke="#ffffff" strokeWidth="2" />
-          <text x="330" y="124" fill="#78350f" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
+          <text x="330" y="124" fill="#78350f" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             INTI
           </text>
 
@@ -1937,7 +1937,7 @@ function renderIllustration(
 
             {/* Label Batas Diskontinuitas Lehmann */}
             <rect x="150" y="5" width="240" height="24" rx="4" fill="#450a0a" stroke="#f97316" strokeWidth="1.5" />
-            <text x="270" y="21" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">DISKONTINUITAS LEHMANN</text>
+            <text x="270" y="21" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" letterSpacing="0.5" textAnchor="middle">DISKONTINUITAS LEHMANN</text>
 
             {/* ── BOLA BESI PADAT DI PUSAT (SOLID Fe-Ni INNER CORE) ── */}
             {/* Cincin Radiasi Cahaya Panas 6.000°C (Sepanas Matahari) */}
@@ -2009,26 +2009,26 @@ function renderIllustration(
             <g transform="translate(8, 74)">
               <rect x="0" y="0" width="142" height="88" rx="6" fill="#450a0a" stroke="#ef4444" strokeWidth="2" />
               <rect x="4" y="4" width="134" height="20" rx="3" fill="#7f1d1d" />
-              <text x="71" y="18" fill="#fca5a5" fontSize="10" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">TEKANAN EKSTREM</text>
-              <text x="71" y="42" fill="#ffffff" fontSize="14" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">&gt;3,6 JUTA ATM</text>
-              <text x="71" y="60" fill="#fef08a" fontSize="10" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">(360 GIGAPASCAL)</text>
-              <text x="71" y="78" fill="#fed7aa" fontSize="9.5" fontWeight="600" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">Kunci Atom Tetap Padat</text>
+              <text x="71" y="18" fill="#fca5a5" fontSize="10" fontWeight="800" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" letterSpacing="0.5" textAnchor="middle">TEKANAN EKSTREM</text>
+              <text x="71" y="42" fill="#ffffff" fontSize="14" fontWeight="800" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">&gt;3,6 JUTA ATM</text>
+              <text x="71" y="60" fill="#fef08a" fontSize="10" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">(360 GIGAPASCAL)</text>
+              <text x="71" y="78" fill="#fed7aa" fontSize="9.5" fontWeight="600" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">Kunci Atom Tetap Padat</text>
             </g>
 
             {/* Panel Kanan: Suhu Ekstrem */}
             <g transform="translate(390, 74)">
               <rect x="0" y="0" width="142" height="88" rx="6" fill="#78350f" stroke="#fbbf24" strokeWidth="2" />
               <rect x="4" y="4" width="134" height="20" rx="3" fill="#92400e" />
-              <text x="71" y="18" fill="#fef08a" fontSize="10" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">SUHU EKSTREM</text>
-              <text x="71" y="42" fill="#ffffff" fontSize="14" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">~6.000°C</text>
-              <text x="71" y="60" fill="#fed7aa" fontSize="10" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">(5.500°C – 6.000°C)</text>
-              <text x="71" y="78" fill="#fde047" fontSize="9.5" fontWeight="600" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">Sepanas Matahari!</text>
+              <text x="71" y="18" fill="#fef08a" fontSize="10" fontWeight="800" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" letterSpacing="0.5" textAnchor="middle">SUHU EKSTREM</text>
+              <text x="71" y="42" fill="#ffffff" fontSize="14" fontWeight="800" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">~6.000°C</text>
+              <text x="71" y="60" fill="#fed7aa" fontSize="10" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">(5.500°C – 6.000°C)</text>
+              <text x="71" y="78" fill="#fde047" fontSize="9.5" fontWeight="600" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">Sepanas Matahari!</text>
             </g>
 
             {/* Banner Bawah: Dimensi Inti Dalam */}
             <g transform="translate(70, 208)">
               <rect x="0" y="0" width="400" height="26" rx="4" fill="#0c0a09" stroke="#f59e0b" strokeWidth="1.5" />
-              <text x="200" y="18" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">
+              <text x="200" y="18" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" letterSpacing="0.5" textAnchor="middle">
                 BOLA BESI PADAT: DIAMETER 1.200 - 1.250 KM (750 MIL)
               </text>
             </g>
@@ -2059,37 +2059,37 @@ function renderIllustration(
 
               {/* Judul Panel Kiri */}
               <rect x="18" y="14" width="164" height="20" rx="3" fill="#451a03" stroke="#f59e0b" strokeWidth="1" />
-              <text x="100" y="28" fill="#fef08a" fontSize="10" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">PENAMPANG KEDALAMAN</text>
+              <text x="100" y="28" fill="#fef08a" fontSize="10" fontWeight="800" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" letterSpacing="0.5" textAnchor="middle">PENAMPANG KEDALAMAN</text>
 
               {/* Batang Strata Kedalaman */}
               {/* 1. Kerak Bumi (0 - 100 km) */}
               <rect x="22" y="38" width="50" height="14" fill="#15803d" />
               <rect x="74" y="38" width="110" height="14" fill="#1e293b" />
-              <text x="78" y="49" fill="#86efac" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">0-100 KM KERAK</text>
+              <text x="78" y="49" fill="#86efac" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">0-100 KM KERAK</text>
 
               {/* 2. Mantel Bumi (100 - 2.900 km) */}
               <rect x="22" y="54" width="50" height="38" fill="#b45309" />
               <rect x="74" y="54" width="110" height="38" fill="#261005" />
-              <text x="78" y="68" fill="#fed7aa" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">2.900 KM</text>
-              <text x="78" y="82" fill="#f97316" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">MANTEL PADAT</text>
+              <text x="78" y="68" fill="#fed7aa" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">2.900 KM</text>
+              <text x="78" y="82" fill="#f97316" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">MANTEL PADAT</text>
 
               {/* 3. Inti Luar (2.900 - 5.150 km) */}
               <rect x="22" y="94" width="50" height="36" fill="#ea580c" />
               <rect x="74" y="94" width="110" height="36" fill="#3a0d04" />
-              <text x="78" y="108" fill="#fed7aa" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">5.150 KM</text>
-              <text x="78" y="122" fill="#fde047" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">INTI LUAR CAIR</text>
+              <text x="78" y="108" fill="#fed7aa" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">5.150 KM</text>
+              <text x="78" y="122" fill="#fde047" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">INTI LUAR CAIR</text>
 
               {/* 4. Inti Dalam (5.150 - 6.371 km) */}
               <rect x="22" y="132" width="50" height="42" fill="#fef08a" />
               <rect x="74" y="132" width="110" height="42" fill="#451a03" />
-              <text x="78" y="146" fill="#fef08a" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">6.371 KM</text>
-              <text x="78" y="159" fill="#ffffff" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif">INTI DALAM</text>
-              <text x="78" y="170" fill="#fbbf24" fontSize="8" fontWeight="600" fontFamily="'Plus Jakarta Sans', sans-serif">BOLA PADAT</text>
+              <text x="78" y="146" fill="#fef08a" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">6.371 KM</text>
+              <text x="78" y="159" fill="#ffffff" fontSize="9" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">INTI DALAM</text>
+              <text x="78" y="170" fill="#fbbf24" fontSize="8" fontWeight="600" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">BOLA PADAT</text>
 
               {/* Garis Penanda Titik Pusat Mutlak */}
               <rect x="18" y="180" width="164" height="44" rx="3" fill="#2e1065" stroke="#a855f7" strokeWidth="1" />
-              <text x="100" y="198" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">PUSAT BUMI</text>
-              <text x="100" y="214" fill="#e9d5ff" fontSize="9.5" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">6.371 KILOMETER</text>
+              <text x="100" y="198" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" letterSpacing="0.5" textAnchor="middle">PUSAT BUMI</text>
+              <text x="100" y="214" fill="#e9d5ff" fontSize="9.5" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">6.371 KILOMETER</text>
             </g>
 
             {/* ══════════════════════════════════════════════════════════════════════════
@@ -2103,10 +2103,10 @@ function renderIllustration(
 
               {/* Label Poros Sumbu Rotasi */}
               <rect x="290" y="14" width="150" height="18" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
-              <text x="365" y="26" fill="#7dd3fc" fontSize="9.5" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">▲ KUTUB UTARA</text>
+              <text x="365" y="26" fill="#7dd3fc" fontSize="9.5" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">▲ KUTUB UTARA</text>
 
               <rect x="290" y="210" width="150" height="18" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
-              <text x="365" y="222" fill="#7dd3fc" fontSize="9.5" fontWeight="700" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">▼ KUTUB SELATAN</text>
+              <text x="365" y="222" fill="#7dd3fc" fontSize="9.5" fontWeight="700" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">▼ KUTUB SELATAN</text>
 
               {/* Pendaran Cahaya Altar Kristal di Pusat */}
               <circle cx="364" cy="118" r="76" fill="#b45309" opacity="0.2" />
@@ -2132,25 +2132,25 @@ function renderIllustration(
                 <polygon points="0,0 -4,10 4,10" fill="#38bdf8" />
                 <polygon points="0,76 -4,66 4,66" fill="#38bdf8" />
                 <rect x="8" y="24" width="85" height="32" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
-                <text x="50" y="37" fill="#38bdf8" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">GELOMBANG</text>
-                <text x="50" y="49" fill="#ffffff" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">P-WAVE CEPAT</text>
+                <text x="50" y="37" fill="#38bdf8" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">GELOMBANG</text>
+                <text x="50" y="49" fill="#ffffff" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">P-WAVE CEPAT</text>
               </g>
 
               {/* ── RETRO PIXEL BADGES PENJELASAN ── */}
               {/* Badge Gravitasi Netto Nol */}
               <g transform="translate(420, 58)">
                 <rect x="0" y="0" width="105" height="56" rx="4" fill="#1e1b4b" stroke="#818cf8" strokeWidth="1.5" />
-                <text x="52" y="15" fill="#a5b4fc" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">GRAVITASI NETTO</text>
-                <text x="52" y="32" fill="#ffffff" fontSize="12" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">NETTO = 0</text>
-                <text x="52" y="47" fill="#c7d2fe" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">Tarikan Seimbang</text>
+                <text x="52" y="15" fill="#a5b4fc" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">GRAVITASI NETTO</text>
+                <text x="52" y="32" fill="#ffffff" fontSize="12" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">NETTO = 0</text>
+                <text x="52" y="47" fill="#c7d2fe" fontSize="8" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">Tarikan Seimbang</text>
               </g>
 
               {/* Badge Anisotropi Kristal */}
               <g transform="translate(420, 124)">
                 <rect x="0" y="0" width="105" height="56" rx="4" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
-                <text x="52" y="15" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">ANISOTROPI</text>
-                <text x="52" y="30" fill="#ffffff" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">KRISTAL BESI</text>
-                <text x="52" y="47" fill="#fed7aa" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">Poros Rotasi Kutub</text>
+                <text x="52" y="15" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">ANISOTROPI</text>
+                <text x="52" y="30" fill="#ffffff" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">KRISTAL BESI</text>
+                <text x="52" y="47" fill="#fed7aa" fontSize="8" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">Poros Rotasi Kutub</text>
               </g>
             </g>
           </g>
@@ -2207,16 +2207,16 @@ function renderIllustration(
 
             {/* Judul Panel Kiri */}
             <rect x="18" y="12" width="239" height="22" rx="4" fill="#1e3a8a" stroke="#60a5fa" strokeWidth="1" />
-            <text x="137" y="27" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+            <text x="137" y="27" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               300 JUTA TAHUN LALU: PANGEA
             </text>
 
             {/* Keterangan Bawah Panel Kiri */}
             <rect x="18" y="190" width="239" height="38" rx="4" fill="#0f172a" stroke="#3b82f6" strokeWidth="1.5" />
-            <text x="137" y="205" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+            <text x="137" y="205" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               SATU KESATUAN DARATAN
             </text>
-            <text x="137" y="220" fill="#7dd3fc" fontSize="9" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+            <text x="137" y="220" fill="#7dd3fc" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               Dikelilingi Samudra Panthalassa
             </text>
           </g>
@@ -2235,7 +2235,7 @@ function renderIllustration(
             <g className="anim-drift-left">
               <polygon points="310,75 345,70 340,110 325,115 315,100" fill="#15803d" stroke="#22c55e" strokeWidth="1.5" />
               <polygon points="325,120 348,125 340,165 320,155" fill="#166534" stroke="#22c55e" strokeWidth="1.5" />
-              <text x="330" y="96" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">AMERIKA</text>
+              <text x="330" y="96" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">AMERIKA</text>
               {/* Panah Gerak Menjauh ke Kiri */}
               <polygon points="305,118 290,118 298,111 298,125" fill="#ef4444" />
             </g>
@@ -2248,24 +2248,24 @@ function renderIllustration(
             <g className="anim-drift-right">
               <polygon points="395,65 470,60 480,95 440,105 390,95" fill="#15803d" stroke="#22c55e" strokeWidth="1.5" />
               <polygon points="395,108 435,105 445,150 415,165 390,135" fill="#166534" stroke="#22c55e" strokeWidth="1.5" />
-              <text x="430" y="80" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">EURASIA</text>
-              <text x="418" y="130" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">AFRIKA</text>
+              <text x="430" y="80" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">EURASIA</text>
+              <text x="418" y="130" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">AFRIKA</text>
               {/* Panah Gerak Menjauh ke Kanan */}
               <polygon points="460,118 475,118 467,111 467,125" fill="#ef4444" />
             </g>
 
             {/* Judul Panel Kanan */}
             <rect x="283" y="12" width="239" height="22" rx="4" fill="#7c2d12" stroke="#f97316" strokeWidth="1" />
-            <text x="402" y="27" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+            <text x="402" y="27" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               SEKARANG: 7 BENUA TERPISAH
             </text>
 
             {/* Keterangan Bawah Panel Kanan */}
             <rect x="283" y="190" width="239" height="38" rx="4" fill="#0f172a" stroke="#f97316" strokeWidth="1.5" />
-            <text x="402" y="205" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+            <text x="402" y="205" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               LEMPENG BERGERAK MENJAUH
             </text>
-            <text x="402" y="220" fill="#fed7aa" fontSize="9" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+            <text x="402" y="220" fill="#fed7aa" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               Membentuk Samudra Baru (Atlantik)
             </text>
           </g>
@@ -2325,7 +2325,7 @@ function renderIllustration(
 
             {/* Panah Merah Tarikan ke Kiri (Menjauh) */}
             <polygon points="120,105 70,105 70,98 45,112 70,126 70,119 120,119" fill="#ef4444" stroke="#991b1b" strokeWidth="1" />
-            <text x="95" y="65" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+            <text x="95" y="65" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               TEBING BARAT
             </text>
           </g>
@@ -2349,7 +2349,7 @@ function renderIllustration(
 
             {/* Panah Merah Tarikan ke Kanan (Menjauh) */}
             <polygon points="420,105 470,105 470,98 495,112 470,126 470,119 420,119" fill="#ef4444" stroke="#991b1b" strokeWidth="1" />
-            <text x="445" y="65" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+            <text x="445" y="65" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               TEBING TIMUR
             </text>
           </g>
@@ -2357,25 +2357,25 @@ function renderIllustration(
           {/* ── RETRO PIXEL BADGES LENGKAP ── */}
           {/* Header Atas */}
           <rect x="70" y="8" width="400" height="24" rx="4" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
-          <text x="270" y="24" fill="#fef08a" fontSize="11" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+          <text x="270" y="24" fill="#fef08a" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             EAST AFRICAN RIFT: LEMBAH RETAKAN
           </text>
 
           {/* Badge Lembah Ambles */}
           <rect x="175" y="98" width="190" height="30" rx="4" fill="#09090b" stroke="#f97316" strokeWidth="1.5" />
-          <text x="270" y="112" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+          <text x="270" y="112" fill="#fef08a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             ▼ LEMBAH AMBLES (GRABEN)
           </text>
-          <text x="270" y="124" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+          <text x="270" y="124" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             Calon Samudra Baru Masa Depan
           </text>
 
           {/* Banner Bawah */}
           <rect x="30" y="194" width="480" height="34" rx="4" fill="#0c0a09" stroke="#ea580c" strokeWidth="1.5" />
-          <text x="270" y="209" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+          <text x="270" y="209" fill="#ffffff" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             KERAK DITARIK SALING MENJAUH ➔ TANAH AMBLES
           </text>
-          <text x="270" y="222" fill="#fde047" fontSize="9" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+          <text x="270" y="222" fill="#fde047" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             Diapit oleh pegunungan kembar di kedua sisinya
           </text>
         </svg>
@@ -2438,7 +2438,7 @@ function renderIllustration(
 
             {/* Panah Pemekaran ke Kiri */}
             <polygon points="170,142 120,142 120,136 95,148 120,160 120,154 170,154" fill="#38bdf8" stroke="#0284c7" strokeWidth="1" />
-            <text x="135" y="105" fill="#7dd3fc" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+            <text x="135" y="105" fill="#7dd3fc" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               KERAK SAMUDRA KIRI
             </text>
           </g>
@@ -2454,7 +2454,7 @@ function renderIllustration(
 
             {/* Panah Pemekaran ke Kanan */}
             <polygon points="370,142 420,142 420,136 445,148 420,160 420,154 370,154" fill="#38bdf8" stroke="#0284c7" strokeWidth="1" />
-            <text x="405" y="105" fill="#7dd3fc" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+            <text x="405" y="105" fill="#7dd3fc" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
               KERAK SAMUDRA KANAN
             </text>
           </g>
@@ -2462,25 +2462,25 @@ function renderIllustration(
           {/* ── RETRO PIXEL BADGES PENJELASAN ── */}
           {/* Header Atas */}
           <rect x="60" y="8" width="420" height="24" rx="4" fill="#082f49" stroke="#38bdf8" strokeWidth="1.5" />
-          <text x="270" y="24" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+          <text x="270" y="24" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             SEAFLOOR SPREADING: PEMEKARAN DASAR LAUT
           </text>
 
           {/* Label Tengah Ridge Axis */}
           <rect x="185" y="62" width="170" height="28" rx="4" fill="#1c0402" stroke="#ea580c" strokeWidth="1.5" />
-          <text x="270" y="75" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+          <text x="270" y="75" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             MAGMA NAIK MEMBEKU
           </text>
-          <text x="270" y="86" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+          <text x="270" y="86" fill="#fed7aa" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             Menjadi Batuan Basal Baru
           </text>
 
           {/* Banner Bawah */}
           <rect x="30" y="194" width="480" height="34" rx="4" fill="#0c0a09" stroke="#38bdf8" strokeWidth="1.5" />
-          <text x="270" y="209" fill="#7dd3fc" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+          <text x="270" y="209" fill="#7dd3fc" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             LANTAI LAUTAN TERUS MELEBAR SETIAP TAHUN
           </text>
-          <text x="270" y="222" fill="#fef08a" fontSize="9" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+          <text x="270" y="222" fill="#fef08a" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             Membentuk Punggung Tengah Samudra (Mid-Ocean Ridge)
           </text>
         </svg>
@@ -2544,7 +2544,7 @@ function PangeaIllustration() {
           <PixelIcon name="globe" size={18} className="text-amber-400" />
           <span>SUPERKONTINEN PANGEA (~250 JUTA TAHUN LALU)</span>
         </span>
-        <span className="hidden sm:inline-block text-[14.5px] text-slate-300 font-medium bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700">
+        <span className="hidden sm:inline-block text-[14.5px] text-slate-300 font-semibold bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700">
           Teori Alfred Wegener (1912)
         </span>
       </div>
@@ -2965,7 +2965,7 @@ function DivergentAnimIllustration({
           <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping" />
           <span>SIMULATOR GEOLOGI: PEMEKARAN DASAR SAMUDRA &amp; PEMATANG TENGAH</span>
         </span>
-        <button
+        <button aria-label="Tampilkan atau sembunyikan penjelasan"
           onClick={handleToggle}
           className="px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl text-white text-[13px] sm:text-[15px] font-bold border-2 cursor-pointer active:translate-y-0.5 transition-all flex items-center gap-2 shadow-md bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 border-orange-400/80 shadow-[0_3px_0_#7c2d12]"
         >
@@ -3235,7 +3235,7 @@ function DivergentAnimIllustration({
       </div>
 
       {/* Scientific Legend & Process Overview (Keterangan Rapi di Luar Gambar) */}
-      <div className="w-full bg-[#0f172a]/95 border-2 border-orange-500/70 rounded-xl p-2.5 sm:p-3 text-slate-200 text-[13px] sm:text-[15px] z-10 flex flex-wrap items-center justify-between gap-2 shadow-lg">
+      <div className="w-full bg-[#0f172a]/95 border-2 border-orange-500/70 rounded-xl p-2.5 sm:p-3 text-slate-200 text-[13px] sm:text-[15px] z-10 flex flex-wrap items-center justify-between gap-2 shadow-lg font-semibold">
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-orange-500 shrink-0" />
           <span className="font-bold text-orange-300">Pematang Tengah Samudra (Mid-Ocean Ridge):</span>
@@ -3315,7 +3315,7 @@ function ConvergentLandformsIllustration({
             className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'trench'
               ? 'bg-cyan-600 text-white border-cyan-300 shadow-[0_2px_0_#083344]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
-              }`}
+              } font-semibold`}
           >
             [1. PALUNG LAUT]
           </button>
@@ -3324,7 +3324,7 @@ function ConvergentLandformsIllustration({
             className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'mountains'
               ? 'bg-amber-600 text-white border-amber-300 shadow-[0_2px_0_#451a03]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
-              }`}
+              } font-semibold`}
           >
             [2. PEGUNUNGAN]
           </button>
@@ -3333,7 +3333,7 @@ function ConvergentLandformsIllustration({
             className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'volcano'
               ? 'bg-rose-600 text-white border-rose-300 shadow-[0_2px_0_#4c0519]'
               : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
-              }`}
+              } font-semibold`}
           >
             [3. GUNUNG BERAPI]
           </button>
@@ -3440,8 +3440,8 @@ function TrenchIllustration() {
       />
       <path d="M 60,65 L 105,72 L 135,115 L 165,155 L 190,210" fill="none" stroke="#57534e" strokeWidth="1" />
       <path d="M 95,95 L 125,105 L 140,145 L 175,195" fill="none" stroke="#1c1917" strokeWidth="1.5" />
-      <text x="65" y="70" fill="#a8a29e" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">LANDASAN BENUA</text>
-      <text x="105" y="115" fill="#78716c" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">LERENG BENUA</text>
+      <text x="65" y="70" fill="#a8a29e" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">LANDASAN BENUA</text>
+      <text x="105" y="115" fill="#78716c" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">LERENG BENUA</text>
 
       <polygon
         points="370,110 330,125 295,160 265,210 245,246 560,246 560,110"
@@ -3582,10 +3582,10 @@ function TrenchIllustration() {
             stroke="#38bdf8"
             strokeWidth="1.5"
           />
-          <text x="390" y="52" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+          <text x="390" y="52" fill="#fef08a" fontSize="10.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             ▲ MT. EVEREST (8.848 m)
           </text>
-          <text x="390" y="65" fill="#7dd3fc" fontSize="8.5" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">
+          <text x="390" y="65" fill="#7dd3fc" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
             Puncak Tertinggi Bumi Tenggelam &gt;2.000 m di Palung!
           </text>
           <polygon points="386,72 394,72 390,78" fill="#38bdf8" />
@@ -3596,19 +3596,19 @@ function TrenchIllustration() {
       <g>
         <line x1="32" y1="38" x2="32" y2="246" stroke="#94a3b8" strokeWidth="1" />
         <line x1="28" y1="38" x2="36" y2="38" stroke="#94a3b8" strokeWidth="1" />
-        <text x="26" y="41" fill="#bae6fd" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">0 m</text>
+        <text x="26" y="41" fill="#bae6fd" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">0 m</text>
         <line x1="28" y1="65" x2="36" y2="65" stroke="#94a3b8" strokeWidth="1" />
-        <text x="26" y="68" fill="#7dd3fc" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">200 m</text>
+        <text x="26" y="68" fill="#7dd3fc" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">200 m</text>
         <line x1="28" y1="105" x2="36" y2="105" stroke="#94a3b8" strokeWidth="1" />
-        <text x="26" y="108" fill="#93c5fd" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">1.000 m</text>
+        <text x="26" y="108" fill="#93c5fd" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">1.000 m</text>
         <line x1="28" y1="165" x2="36" y2="165" stroke="#94a3b8" strokeWidth="1" />
-        <text x="26" y="168" fill="#cbd5e1" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">4.000 m</text>
+        <text x="26" y="168" fill="#cbd5e1" fontSize="8" textAnchor="end" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">4.000 m</text>
         <line x1="28" y1="246" x2="36" y2="246" stroke="#facc15" strokeWidth="1.5" />
-        <text x="26" y="248" fill="#facc15" fontSize="8.5" textAnchor="end" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">11.000 m</text>
+        <text x="26" y="248" fill="#facc15" fontSize="8.5" textAnchor="end" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">11.000 m</text>
       </g>
 
       <rect x="155" y="232" width="150" height="15" rx="3" fill="#020617" stroke="#38bdf8" strokeWidth="1.2" />
-      <text x="230" y="243" fill="#38bdf8" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+      <text x="230" y="243" fill="#38bdf8" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
         CHALLENGER DEEP: 11.034 m
       </text>
     </svg>
@@ -3688,19 +3688,19 @@ function FoldedMountainsIllustration() {
       {/* Panah Kompresi */}
       <g>
         <rect x="15" y="165" width="72" height="20" rx="3" fill="#ea580c" stroke="#fef08a" strokeWidth="1.5" />
-        <text x="24" y="179" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">TEKANAN</text>
+        <text x="24" y="179" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">TEKANAN</text>
         <polygon points="87,162 101,175 87,188" fill="#facc15" stroke="#78350f" strokeWidth="1" />
       </g>
       <g>
         <rect x="473" y="165" width="72" height="20" rx="3" fill="#ea580c" stroke="#fef08a" strokeWidth="1.5" />
-        <text x="482" y="179" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">TEKANAN</text>
+        <text x="482" y="179" fill="#ffffff" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">TEKANAN</text>
         <polygon points="473,162 459,175 473,188" fill="#facc15" stroke="#78350f" strokeWidth="1" />
       </g>
 
       {/* Label Antiklin & Sinklin */}
       <g>
         <rect x="200" y="68" width="160" height="22" rx="4" fill="#451a03" stroke="#f59e0b" strokeWidth="1.5" />
-        <text x="280" y="83" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+        <text x="280" y="83" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
           PUNCAK LIPATAN (ANTIKLIN)
         </text>
         <line x1="280" y1="90" x2="280" y2="105" stroke="#f59e0b" strokeWidth="1.5" />
@@ -3708,7 +3708,7 @@ function FoldedMountainsIllustration() {
       </g>
       <g>
         <rect x="130" y="195" width="160" height="22" rx="4" fill="#0f172a" stroke="#38bdf8" strokeWidth="1.5" />
-        <text x="210" y="210" fill="#7dd3fc" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+        <text x="210" y="210" fill="#7dd3fc" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
           LEMBAH LIPATAN (SINKLIN)
         </text>
         <line x1="200" y1="195" x2="200" y2="155" stroke="#38bdf8" strokeWidth="1.5" />
@@ -3767,7 +3767,7 @@ function VolcanoIllustration() {
       <rect x="0" y="112" width="560" height="6" fill="#15803d" />
       <rect x="0" y="118" width="560" height="132" fill="#1e293b" />
       <rect x="0" y="175" width="560" height="75" fill="url(#mantelGrad)" />
-      <text x="15" y="240" fill="#fed7aa" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">
+      <text x="15" y="240" fill="#fed7aa" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
         ASTENOSFER MANTEL PANAS (SUHU &gt; 1.200°C)
       </text>
 
@@ -3778,7 +3778,7 @@ function VolcanoIllustration() {
         stroke="#14532d"
         strokeWidth="1.5"
       />
-      <text x="15" y="134" fill="#86efac" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">
+      <text x="15" y="134" fill="#86efac" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">
         LEMPENG SAMUDRA (MENUNJAM)
       </text>
 
@@ -3786,7 +3786,7 @@ function VolcanoIllustration() {
       <g>
         <circle cx="190" cy="210" r="14" fill="#ea580c" opacity="0.6" />
         <circle cx="190" cy="210" r="7" fill="#fef08a" />
-        <text x="210" y="215" fill="#fef08a" fontSize="9" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif">PELEBURAN SLAB</text>
+        <text x="210" y="215" fill="#fef08a" fontSize="9" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif">PELEBURAN SLAB</text>
         <path d="M 205,200 Q 240,195 270,185" fill="none" stroke="#f97316" strokeWidth="2" />
       </g>
 
@@ -3794,7 +3794,7 @@ function VolcanoIllustration() {
       <g>
         <ellipse cx="330" cy="175" rx="55" ry="26" fill="url(#dapurMagmaGrad)" stroke="#ef4444" strokeWidth="2" />
         <ellipse cx="330" cy="175" rx="28" ry="12" fill="#fef08a" />
-        <text x="330" y="178" fill="#450a0a" fontSize="10" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+        <text x="330" y="178" fill="#450a0a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
           DAPUR MAGMA (KANTUNG PIJAR)
         </text>
       </g>
@@ -3806,7 +3806,7 @@ function VolcanoIllustration() {
       {/* Label */}
       <g>
         <rect x="230" y="82" width="200" height="20" rx="4" fill="#450a0a" stroke="#f87171" strokeWidth="1.5" />
-        <text x="330" y="96" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">
+        <text x="330" y="96" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', system-ui, sans-serif" textAnchor="middle">
           BUSUR STRATOVOLCANO AKTIF
         </text>
       </g>
