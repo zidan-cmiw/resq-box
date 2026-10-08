@@ -1,0 +1,95 @@
+# ──────────────────────────────────────────────────────────────────────────
+# CI RESQ-BOX — memeriksa setiap push & pull request ke `main`.
+#
+# MENGAPA INI ADA
+#   Sebelumnya deploy dilakukan manual: build di laptop, lalu push. Tidak ada
+#   yang memastikan kode yang sampai ke siswa benar-benar bisa di-build. Satu
+#   commit yang lupa diuji bisa langsung membuat aplikasi putih di kelas.
+#   Alur ini menjalankan pemeriksaan yang sama setiap kali.
+#
+# YANG DIPERIKSA
+#   1. TypeScript     — `tsc -b` (memblokir)
+#   2. Build produksi — `vite build` (memblokir)
+#   3. Uji unit       — redact (privasi) & dataSaver (memblokir)
+#   4. Validasi SQL   — sintaks PostgreSQL + variabel PL/pgSQL (memblokir)
+#   5. ESLint         — hanya pelaporan, TIDAK memblokir
+#      (masih ada ~260 temuan lama; jadikan memblokir setelah dibersihkan)
+# ──────────────────────────────────────────────────────────────────────────
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Bisa dijalankan manual dari tab Actions
+  workflow_dispatch:
+
+# Batalkan proses lama bila ada push baru ke branch yang sama.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  periksa:
+    name: Periksa kode
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Ambil kode
+        uses: actions/checkout@v4
+
+      - name: Pasang Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Pasang dependensi
+        run: npm ci --no-audit --no-fund
+
+      # ── 1. TypeScript ────────────────────────────────────────────────────
+      - name: TypeScript (tsc -b)
+        run: npm run typecheck
+
+      # ── 2. Build produksi ────────────────────────────────────────────────
+      - name: Build produksi
+        run: npx vite build
+        env:
+          # Kunci contoh: build tidak boleh bergantung pada kredensial asli,
+          # dan TIDAK BOLEH menyentuh database produksi.
+          VITE_SUPABASE_URL: https://contoh.supabase.co
+          VITE_SUPABASE_ANON_KEY: contoh-anon-key-untuk-build-ci-saja-000000
+
+      # ── 3. Uji unit ──────────────────────────────────────────────────────
+      - name: Uji unit (privasi & mode hemat data)
+        run: npm run test
+
+      # ── 4. Validasi SQL ──────────────────────────────────────────────────
+      - name: Pasang Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Pasang pglast (parser PostgreSQL asli)
+        run: pip install --quiet pglast
+
+      - name: Validasi sintaks & variabel SQL
+        run: npm run test:sql
+
+      # ── 5. ESLint (pelaporan saja) ───────────────────────────────────────
+      - name: ESLint (tidak memblokir)
+        run: npm run lint
+        continue-on-error: true
+
+      # Simpan hasil build sebagai artefak agar bisa diperiksa manual bila gagal.
+      - name: Simpan artefak build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+          if-no-files-found: warn
