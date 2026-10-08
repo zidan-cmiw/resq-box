@@ -50,6 +50,38 @@ const LAVA_STREAM_BOYONG = [
   new THREE.Vector3(-48.0, 0, 52.0),
 ];
 
+// 3 Jalur Aliran Awan Panas Tambahan (Sesuai Coretan Pengguna: Lereng Barat, Punggung Tengah, & Lereng Timur)
+const LAVA_STREAM_KRASAK_WEST = [
+  new THREE.Vector3(-25.28, 0, -47.0),
+  new THREE.Vector3(-34.0, 0, -38.0),
+  new THREE.Vector3(-42.0, 0, -24.0),
+  new THREE.Vector3(-48.0, 0, -8.0),
+  new THREE.Vector3(-53.0, 0, 8.0),
+  new THREE.Vector3(-56.0, 0, 24.0),
+  new THREE.Vector3(-58.0, 0, 40.0),
+];
+
+const LAVA_STREAM_RIDGE_MID = [
+  new THREE.Vector3(-25.28, 0, -47.0),
+  new THREE.Vector3(-26.5, 0, -34.0),
+  new THREE.Vector3(-27.0, 0, -20.0),
+  new THREE.Vector3(-25.5, 0, -6.0),
+  new THREE.Vector3(-22.0, 0, 8.0),
+  new THREE.Vector3(-19.5, 0, 22.0),
+  new THREE.Vector3(-18.0, 0, 36.0),
+];
+
+const LAVA_STREAM_WORO_EAST = [
+  new THREE.Vector3(-25.28, 0, -47.0),
+  new THREE.Vector3(-14.0, 0, -40.0),
+  new THREE.Vector3(-2.0, 0, -28.0),
+  new THREE.Vector3(10.0, 0, -14.0),
+  new THREE.Vector3(22.0, 0, 0.0),
+  new THREE.Vector3(32.0, 0, 16.0),
+  new THREE.Vector3(40.0, 0, 32.0),
+  new THREE.Vector3(48.0, 0, 48.0),
+];
+
 // ── ALIRAN LELEHAN LAVA PIJAR KAWAH MERAPI (ERUPSI EFUSIF) ──────────
 // Aliran lava efusif meluap dari bibir kawah, menuruni lereng atas KRB III,
 // dan berhenti di lereng atas (area lingkaran merah screenshot 2, Z antara -39 s.d. -16),
@@ -2368,7 +2400,7 @@ export default function Merapi3DScene() {
       }
       if (smokePointsRef.current) {
         const mat = smokePointsRef.current.material as THREE.PointsMaterial;
-        mat.color.setHex(0xf1f5f9);
+        mat.color.setHex(0x64748b);
         mat.size = 3.5;
         mat.opacity = 0.45;
       }
@@ -2536,7 +2568,7 @@ export default function Merapi3DScene() {
 
       smokeGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
       const smokeMat = new THREE.PointsMaterial({
-        color: 0xe2e8f0,
+        color: 0x64748b, // Abu-abu vulkanik otentik
         size: 4.5,
         transparent: true,
         opacity: 0.65,
@@ -3043,10 +3075,10 @@ export default function Merapi3DScene() {
 
       const ashPillarGeom = new THREE.DodecahedronGeometry(2.4, 1);
       const ashMat = new THREE.MeshStandardMaterial({
-        color: 0xf1f5f9, // Senada 100% dengan awan panas (putih kelabu cerah kontras tinggi)
-        emissive: 0x475569, // Pendaran lembut volume kabut abu senada awan panas
-        emissiveIntensity: 0.22,
-        roughness: 0.82,
+        color: 0x5a6578, // Abu-abu vulkanik otentik (bukan putih)
+        emissive: 0x1e293b, // Pendaran lembut volume kabut abu pekat
+        emissiveIntensity: 0.16,
+        roughness: 0.88,
         metalness: 0.02,
         transparent: true,
         opacity: 0.98,
@@ -3214,8 +3246,8 @@ export default function Merapi3DScene() {
       const lightsGroup = new THREE.Group();
       pyroclasticLightsGroupRef.current = lightsGroup;
 
-      // 3 Lampu Frontal Pijar Termal untuk Garis Depan Awan Panas di 3 Lembah
-      for (let v = 0; v < 3; v++) {
+      // 6 Lampu Frontal Pijar Termal untuk Garis Depan Awan Panas di 6 Jalur Lereng
+      for (let v = 0; v < 6; v++) {
         const pLight = new THREE.PointLight(0xff3b00, 0, 45);
         lightsGroup.add(pLight);
         valleySurgeLights.push(pLight);
@@ -3225,18 +3257,18 @@ export default function Merapi3DScene() {
       // Geometri Gumpalan Awan (Dodecahedron detail 1, radius 1.85 unit)
       const billowGeom = new THREE.DodecahedronGeometry(1.85, 1);
 
-      // 210 Gumpalan Awan (70 per lembah) bertingkat 3-Tier di alur sungai
-      for (let v = 0; v < 3; v++) {
-        for (let i = 0; i < 70; i++) {
-          const tier: 'base' | 'body' | 'crest' = i < 16 ? 'base' : i < 48 ? 'body' : 'crest';
+      // 300 Gumpalan Awan Panas (50 per jalur x 6 jalur lereng: Gendol, Kuning, Boyong, Krasak Barat, Punggung Tengah, Woro Timur)
+      for (let v = 0; v < 6; v++) {
+        for (let i = 0; i < 50; i++) {
+          const tier: 'base' | 'body' | 'crest' = i < 12 ? 'base' : i < 34 ? 'body' : 'crest';
           const isBase = tier === 'base';
 
-          // Material unik per-puff agar opacity & disipasi dapat dikontrol presisi per gumpalan
+          // Material unik per-puff berwarna ABU-ABU VULKANIK pekat otentik (bukan putih)
           const pMat = new THREE.MeshStandardMaterial({
-            color: isBase ? 0x9a3412 : 0xf1f5f9,
-            emissive: isBase ? 0xff3b00 : 0x475569,
-            emissiveIntensity: isBase ? 2.8 : 0.18,
-            roughness: 0.86,
+            color: isBase ? 0x475569 : 0x5a6578, // Abu-abu vulkanik pekat
+            emissive: isBase ? 0x9a3412 : 0x1e293b, // Bara termal redup di dasar lereng atas, abu gelap di atas
+            emissiveIntensity: isBase ? 2.2 : 0.14,
+            roughness: 0.88,
             metalness: 0.02,
             transparent: true,
             opacity: 0.95,
@@ -3247,7 +3279,7 @@ export default function Merapi3DScene() {
           group.add(pMesh);
 
           // Posisi nominal 0.0 s.d 1.0 sepanjang alur sungai dengan sebaran merata dan jitter
-          const norm = i / 69;
+          const norm = i / 49;
           const jitter = (Math.random() - 0.5) * 0.035;
           const streamPosNorm = Math.max(0.01, Math.min(0.99, norm + jitter));
 
@@ -3284,7 +3316,7 @@ export default function Merapi3DScene() {
               (Math.random() - 0.5) * 1.6
             ),
             puffSeed: Math.random() * 10.0,
-            initialEmissiveIntensity: isBase ? 2.8 : 0.18,
+            initialEmissiveIntensity: isBase ? 2.2 : 0.14,
           });
         }
       }
@@ -4823,7 +4855,7 @@ export default function Merapi3DScene() {
             // Asap kawah pekat mengepul dari puncak (senada dengan warna awan panas)
             if (smokePointsRef.current) {
               const mat = smokePointsRef.current.material as THREE.PointsMaterial;
-              mat.color.setHex(0xf1f5f9);
+              mat.color.setHex(0x52525b); // Abu-abu vulkanik pekat
               mat.size = 7.0;
               mat.opacity = 0.95;
             }
@@ -5018,7 +5050,14 @@ export default function Merapi3DScene() {
 
             if (pyroclasticGroupRef.current) {
               pyroclasticGroupRef.current.visible = true;
-              const valleyStreams = [LAVA_STREAM_GENDOL, LAVA_STREAM_KUNING, LAVA_STREAM_BOYONG];
+              const valleyStreams = [
+                LAVA_STREAM_GENDOL,
+                LAVA_STREAM_KUNING,
+                LAVA_STREAM_BOYONG,
+                LAVA_STREAM_KRASAK_WEST,
+                LAVA_STREAM_RIDGE_MID,
+                LAVA_STREAM_WORO_EAST,
+              ];
 
               // Kecepatan tinggi meluncur menuruni lereng (3.8 detik mencapai jangkauan terjauh)
               const surgeProg = Math.min(1.0, (eTime - 6.2) / 3.8);
@@ -5105,9 +5144,9 @@ export default function Merapi3DScene() {
                 puff.mesh.visible = finalOpacity > 0.02 && (surgeProg > 0.05) && (distFromCrater <= maxPyroRadius + 10);
               });
 
-              // Lampu termal frontal di garis depan masing-masing lembah
-              if (valleySurgeLights.length >= 3) {
-                for (let v = 0; v < 3; v++) {
+              // Lampu termal frontal di garis depan masing-masing 6 jalur lembah
+              if (valleySurgeLights.length >= 6) {
+                for (let v = 0; v < 6; v++) {
                   const stream = valleyStreams[v];
                   const pProg = Math.min(0.68, surgeProg * 0.82);
                   const sIdx = Math.min(stream.length - 2, Math.floor(pProg * (stream.length - 1)));
@@ -5857,7 +5896,7 @@ export default function Merapi3DScene() {
     if (!smokePointsRef.current) return;
     const mat = smokePointsRef.current.material as THREE.PointsMaterial;
     if (volcanoStatus === 'AWAS') {
-      mat.color.setHex(eruptionType === 'EFUSIF' ? 0x94a3b8 : 0xf1f5f9); // Senada awan panas untuk eksplosif
+      mat.color.setHex(eruptionType === 'EFUSIF' ? 0x94a3b8 : 0x52525b); // Abu-abu vulkanik pekat untuk erupsi meletus
       mat.size = eruptionType === 'EFUSIF' ? 4.5 : 8.0;
       mat.opacity = 0.9;
     } else if (volcanoStatus === 'SIAGA') {
@@ -5865,11 +5904,11 @@ export default function Merapi3DScene() {
       mat.size = 5.0;
       mat.opacity = 0.7;
     } else if (volcanoStatus === 'WASPADA') {
-      mat.color.setHex(0xd97706);
+      mat.color.setHex(0x78716c);
       mat.size = 4.0;
       mat.opacity = 0.6;
     } else {
-      mat.color.setHex(0xe2e8f0);
+      mat.color.setHex(0x94a3b8); // Abu-abu lembut alami saat normal
       mat.size = 3.0;
       mat.opacity = 0.5;
     }

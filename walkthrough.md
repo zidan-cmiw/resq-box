@@ -41,6 +41,7 @@ Dokumen ini merangkum seluruh rekaman pembicaraan, arahan pengguna, keputusan de
 | **32** | *"terus aku mau nambahin untuk studi kasus yang individu itu yang ada 20 soal itu, kalo yang itu dibikin cuma studi kasusnya sama nanti jawaban akhirnya yang bener itu gimana gitu aja gausah lengkap lengkap kayak yang kelompok itu... kita dikasih 2 pertemuan untuk implementasi media nya ini ke mitranya... pertemuan 1 buat nyelesain level 1 dan 2, terus nanti level 3 buat tugas mereka... pertemuan 2 untuk studi kasus kelompok..."* | **Penyusunan Kurikulum Implementasi 2 Pertemuan Pembelajaran Mitra, LKPD 5 Kasus Kelompok PjBL, dan 20 Misi Tugas Mandiri Individu Level 3**:<br>• Merancang pembagian pembelajaran sekolah mitra: Pertemuan 1 (Level 1 & Level 2), Tugas Mandiri di Rumah (Level 3: Job 1 s.d. 20), dan Pertemuan 2 (PjBL 5 Studi Kasus Kelompok uji 20 detik target 0 korban).<br>• Menyusun berkas panduan & LKPD lengkap (`LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md` & `LKPD_PJBL_ETNOSAINS_MERAPI_5_KELOMPOK.md`).<br>• Menegakkan 4 batasan pedagogis & teknis: Zero etnosains, Zero sensor fisik, Zero banjir lahar dingin (hanya Gempa Bumi dan Erupsi Merapi), serta bahasa ramah anak SMP Kelas 8.<br>• Memetakan 20 soal studi kasus individu ringkas (skenario + tujuan + kunci blok) dan 5 studi kasus kelompok kompleks tanpa panduan blok.<br>• Memperbesar ukuran teks dan keterbacaan modal UI (Panduan Resqy, Proyek Saya, Discovery Modal) agar terbaca jelas di tablet dan laptop. |
 | **33** | *"ini juga coba kamu benerin deh, jadi ini avatar yang disusun di bengkel avatar sama disini tuh ga sesuai gitu, di bengkel avatar kan aku pake avatar yang pake hijab ijo itu kan, nah disini itu malah jadi karakter dengan rambut ijo, itu juga kamu benerin deh"* | **Sinkronisasi Presisi Render Avatar Berhijab & Gaya Rambut pada Seluruh Dialog dan In-Game Sprites**:<br>• Memperbaiki engine potret dialog Level 2 ([`getPlayerPortraitL2`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level2/engine/npcSpritesL2.ts)) dan Level 1 ([`getPlayerPortrait`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level1/EarthDive/engine/npcSprites.ts)) dengan rendering lengkap Hijab Rescuer (kubah kepala melengkung, ciput putih dahi, kerudung samping menutupi telinga hingga bahu bertekstur lipatan, penutup leher & dagu penuh, serta bros emas).<br>• Memperbaiki sprite duduk menyimak di kelas ([`drawStudentSittingInDesk`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level2/engine/npcSpritesL2.ts)) agar menggambar kerudung rapi menutupi kepala dan leher.<br>• Memperbaiki sprite sheet in-game ([`studentAvatarSheet.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/studentAvatarSheet.ts)) agar warna hijab dinamis mengikuti `hairColor` kustom alih-alih hardcode abu-abu `#334155`.<br>• Membersihkan cache sprite sheet ([`clearSpriteCache`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/studentAvatarSheet.ts)) seketika saat kustomisasi disimpan di [`AvatarCustomizerModal.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/components/PixelAvatar/AvatarCustomizerModal.tsx). |
 | **34** | *"ini awan panasnya coba kamu bikin lebih banyak dan coba dibuat pas mereka makin jauh tuh makin kayak ngilang gitu awan panasnya"* | **Overhaul Simulasi Awan Panas 3D Wedhus Gembel Merapi (Perbanyakan Gumpalan & Sistem Disipasi Menghilang Seiring Jarak)**:<br>• Memperbanyak gumpalan awan panas dari 66 menjadi 210 puff (70 puff per lembah di Kali Gendol, Kali Kuning, Kali Boyong) bertingkat 3-tier (`base`, `body`, `crest`).<br>• Menggunakan material independen per-puff dengan `depthWrite: false` untuk blending transparan volumetrik lembut bebas batas poligon kaku.<br>• Menerapkan disipasi bertingkat seiring jarak lereng: pekat penuh di kawah atas (opacity ~0.95), menipis di lereng tengah (opacity ~0.70), dan meluruh cepat ke 0.0 (menghilang total) saat mendekati permukiman/jalan desa bawah.<br>• Menambahkan disipasi seiring waktu pasca-surge saat erupsi beralih ke aliran lava merayap & hujan abu. |
+| **35** | *"itu tambahin awan panasnya lagi yang ku merah merahin itu, terus asapnya dibikin warna abu aja, asap yang dari gunung meletusnya sama yang awan panasnya"* | **Ekspansi 6 Sektor Aliran Awan Panas & Standarisasi Warna Abu Vulkanik Kelabu Otentik**:<br>• Menambahkan 3 sektor aliran awan panas baru sesuai tanda coretan merah pengguna: Lereng Barat Luar / Kali Krasak, Punggung Lereng Tengah, dan Lereng Timur Luar / Kali Woro (total 300 puff melintasi 6 alur lereng).<br>• Mengubah warna seluruh asap letusan kawah (kolom Plinian, runtuhan kolom, partikel asap kawah `smokeMat`) dan awan panas wedhus gembel `pMat` dari putih cerah menjadi warna **ABU-ABU VULKANIK OTENTIK** (`0x5a6578`, `0x64748b`, `0x52525b`). |
 
 ---
 
@@ -3503,6 +3504,39 @@ Status: **100% SUKSES (0 error)**.
 - [x] **Post-Surge Temporal Decay**: Awan tidak membeku di atas desa saat tahap lava & hujan abu dimulai.
 - [x] **TypeScript Clean**: `npx tsc -b` exit code 0.
 - [x] **Production Build Clean**: `npm run build` exit code 0.
+
+---
+
+### Bab 39: Panduan Pengujian & Verifikasi Ekspansi 6 Sektor Awan Panas & Warna Abu Vulkanik Otentik
+
+#### 1. Uji Cakupan 6 Sektor Lereng Awan Panas (300 Gumpalan)
+- **Tindakan**:
+  - Buka simulator 3D Merapi di `/workspace` (Action Lab) atau Level 3.
+  - Set status simulasi ke **AWAS** dengan tipe **ERUPSI EKSPLOSIF**.
+  - Amati sebaran awan panas pada detik 6.2 ke atas di seluruh sektor lereng.
+- **Hasil**:
+  - **Sektor Barat Luar (Kali Krasak)**: Awan panas mengalir menuruni sisi barat jalan desa (area coretan merah kiri).
+  - **Sektor Punggung Tengah**: Awan panas menyelimuti punggungan bukit di antara alur Kali Boyong dan Kali Kuning (area coretan merah tengah).
+  - **Sektor Timur Luar (Kali Woro)**: Awan panas mengalir menuruni lereng timur luas di sebelah timur Kali Gendol (area coretan merah kanan).
+  - Bersama 3 alur utama sebelumnya, total 6 sektor lereng diselimuti secara merata oleh 300 gumpalan awan panas.
+
+#### 2. Uji Standarisasi Warna Abu-Abu Vulkanik Otentik
+- **Tindakan**:
+  - Amati warna asap yang membumbung dari kawah puncak gunung Merapi saat meletus (Kolom Plinian dan runtuhan kolom abu).
+  - Amati warna partikel kepulan asap kawah (`smokeMat`).
+  - Amati warna gumpalan awan panas wedhus gembel (`pMat`).
+- **Hasil**:
+  - Seluruh asap dan awan panas tampil dalam **warna abu-abu vulkanik otentik pekat** (`0x5a6578` / `0x64748b` / `0x52525b`).
+  - Tidak ada lagi awan atau asap putih kapas yang tampak aneh atau kontras palsu.
+  - Efek bara pijar kemerahan tetap terlihat di bagian dasar lereng kawah atas saat awan baru meluncur.
+
+#### 3. Matriks Checklist Verifikasi Bab 39
+- [x] **6 Flank Sectors Covered**: Awan panas mengalir di lereng barat, tengah, dan timur sesuai tanda pengguna.
+- [x] **Authentic Volcanic Ash Gray**: Kolom letusan, asap kawah, dan wedhus gembel 100% berwarna abu-abu vulkanik pekat.
+- [x] **Preserved Distance Dispersal**: Awan panas tetap memudar dan hilang total di ujung bawah sebelum memasuki desa.
+- [x] **TypeScript Clean**: `npx tsc -b` exit code 0.
+- [x] **Production Build Clean**: `npm run build` exit code 0.
+
 
 
 

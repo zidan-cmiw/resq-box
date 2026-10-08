@@ -182,6 +182,7 @@ Dokumen ini merekam secara komprehensif seluruh percakapan, instruksi pengguna, 
 | 177 | **Penyusunan Kurikulum Implementasi 2 Pertemuan Pembelajaran Mitra, LKPD 5 Studi Kasus Kelompok PjBL (Gempa & Merapi), Rekap 20 Tugas Mandiri Individu Level 3, serta Peningkatan Readability Modal UI**: Merancang kurikulum implementasi sekolah mitra 2 pertemuan tatap muka (Pertemuan 1: Level 1 & 2; PR Mandiri di Rumah: 20 Misi Mandiri Level 3; Pertemuan 2: PjBL 5 Studi Kasus Kelompok di simulator Level 3 target 0 korban). Menyusun dokumen resmi LKPD (`LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md` & `LKPD_PJBL_ETNOSAINS_MERAPI_5_KELOMPOK.md`) yang ramah anak SMP Kelas 8, zero etnosains, zero sensor fisik, tanpa banjir lahar dingin (hanya Gempa Bumi dan Erupsi Merapi), serta 100% selaras dengan 19 blok Blockly toolbox Level 3 (`INITIAL_TOOLBOX`). Menyajikan 20 tugas mandiri individu secara ringkas (skenario singkat + tujuan misi + kunci jawaban susunan blok) serta 5 studi kasus kelompok menantang tanpa panduan blok. Memperbesar ukuran teks dan keterbacaan modal UI (Panduan Resqy, Proyek Saya, Discovery Modal) agar terbaca jelas di tablet dan laptop. | `LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md`, `LKPD_PJBL_ETNOSAINS_MERAPI_5_KELOMPOK.md`, `src/app/Dashboard/index.tsx`, `src/components/Tutorial/tutorialConfig.ts`, `src/components/Tutorial/ResqyTutorialOverlay.tsx` |
 | 178 | **Sinkronisasi Presisi Render Avatar Berhijab & Gaya Rambut pada Seluruh Dialog dan In-Game Sprites**: Memperbaiki inkonsistensi avatar di mana pilihan hijab (misal hijab hijau) di Bengkel Avatar berubah menjadi karakter berambut hijau pendek dengan leher terbuka di dalam game. Memperbarui engine potret dialog Level 2 (`getPlayerPortraitL2`) dan Level 1 (`getPlayerPortrait`) dengan rendering hijab rescuer lengkap (kubah kepala melengkung, ciput putih dahi, kerudung samping menutupi telinga hingga bahu bertekstur lipatan, penutup leher & dagu penuh, serta bros emas), memperbaiki sprite duduk menyimak di kelas (`drawStudentSittingInDesk`), memperbaiki sprite sheet in-game (`studentAvatarSheet.ts`) agar warna hijab dinamis mengikuti `hairColor` kustom alih-alih hardcode abu-abu `#334155`, serta membersihkan cache sprite (`clearSpriteCache`) seketika saat kustomisasi disimpan. | `src/app/Level2/engine/npcSpritesL2.ts`, `src/app/Level1/EarthDive/engine/npcSprites.ts`, `src/utils/studentAvatarSheet.ts`, `src/components/PixelAvatar/AvatarCustomizerModal.tsx` |
 | 179 | **Penyempurnaan Simulasi Awan Panas Wedhus Gembel (Jumlah 3x Lipat Melimpah & Disipasi Menghilang Seiring Jarak)**: Merombak simulasi awan panas 3D di `Merapi3DScene.tsx`. Memperbanyak gumpalan awan dari 66 menjadi 210 puff (70 per lembah: Kali Gendol, Kali Kuning, Kali Boyong) bertingkat 3-tier (`base`, `body`, `crest`), mendistribusikannya merata di sepanjang alur lembah dari kawah hingga lereng bawah, serta mengimplementasikan disipasi bertingkat ("makin jauh makin ngilang"): pekat penuh di lereng kawah atas (opacity ~0.95), menipis lembut di lereng tengah (opacity ~0.70), dan meluruh tajam hingga 0.0 (menghilang total) saat mendekati pemukiman warga/jalan desa bawah tanpa tumpukan gumpalan statis. | `src/app/EvacuationGame/Merapi3DScene.tsx` |
+| 180 | **Ekspansi Awan Panas di 6 Sektor Lereng Merapi & Standarisasi Warna Abu Vulkanik Kelabu Otentik**: Menambahkan 3 sektor aliran awan panas baru sesuai instruksi coretan pengguna: Lereng Barat Luar / Kali Krasak (`LAVA_STREAM_KRASAK_WEST`), Punggung Lereng Tengah (`LAVA_STREAM_RIDGE_MID`), dan Lereng Timur Luar / Kali Woro (`LAVA_STREAM_WORO_EAST`) dengan total 300 gumpalan (50 puff per jalur x 6 alur lereng). Mengubah seluruh warna asap letusan kawah (kolom Plinian, runtuhan kolom, partikel asap kawah `smokeMat`) dan awan panas wedhus gembel `pMat` dari putih cerah menjadi warna **ABU-ABU VULKANIK OTENTIK** (`0x5a6578`, `0x64748b`, `0x52525b`) yang realistis dan pekat. | `src/app/EvacuationGame/Merapi3DScene.tsx` |
 
 ---
 
@@ -4940,6 +4941,34 @@ Pengguna meminta implementasi menyeluruh logika block coding, efek visual kamera
 #### 3. Hasil Pengujian & Verifikasi Build
 1. **TypeScript Verification (`npx tsc -b`)**: 100% lolos tanpa error (exit code 0).
 2. **Production Bundle Build (`npm run build`)**: 100% sukses dalam 3.33s (exit code 0, 33 precache PWA valid, 4759.87 KiB).
+
+---
+
+### Bab 108: Ekspansi 6 Sektor Aliran Awan Panas Wedhus Gembel Merapi & Standarisasi Warna Abu Vulkanik Kelabu Otentik
+
+#### 1. Latar Belakang & Aspirasi Pengguna
+- **Instruksi Pengguna**: Pengguna menandai 3 sektor lereng Merapi dengan coretan merah:
+  1. Sektor kiri (Lereng Barat di sebelah barat Kali Boyong / jalan barat).
+  2. Sektor tengah (Punggungan lereng antara Kali Kuning dan Kali Boyong).
+  3. Sektor kanan (Lereng Timur luas di sebelah timur Kali Gendol).
+- Serta meminta agar warna seluruh asap (asap letusan gunung meletus dan awan panasnya) diubah menjadi **warna abu-abu** vulkanik murni, bukan putih.
+
+#### 2. Solusi & Rincian Implementasi
+1. **Penambahan 3 Sektor Lereng Aliran Awan Panas Baru**:
+   - `LAVA_STREAM_KRASAK_WEST`: Meliputi lereng barat daya (Kali Krasak) dari kawah menuruni sisi barat jalan desa.
+   - `LAVA_STREAM_RIDGE_MID`: Meliputi punggungan bukit tengah di antara alur Kali Kuning dan Kali Boyong.
+   - `LAVA_STREAM_WORO_EAST`: Meliputi lereng timur luas (Kali Woro) di sebelah kanan alur Kali Gendol.
+   - Menggabungkan ke dalam 6 alur lereng (`valleyStreams`), dengan kapasitas 50 puff per jalur (total 300 gumpalan awan panas masif).
+2. **Standarisasi Warna Abu-Abu Vulkanik Otentik**:
+   - **Awan Panas Wedhus Gembel (`pMat`)**: Diubah menjadi `color: 0x5a6578` (abu-abu andesit pekat), `emissive: 0x1e293b` (pendaran abu gelap), dan `emissiveIntensity: 0.14`.
+   - **Kolom Letusan Plinian & Runtuhan Kolom (`ashMat`)**: Diubah dari `0xf1f5f9` menjadi `color: 0x5a6578`, `emissive: 0x1e293b`, dan `roughness: 0.88`.
+   - **Partikel Asap Kawah (`smokeMat`)**: Diubah dari putih cerah menjadi abu-abu vulkanik `0x52525b` saat AWAS/letusan dan `0x64748b` saat Siaga/Normal.
+3. **Preservasi Logika Disipasi**:
+   - Seluruh 6 jalur awan panas tetap mematuhi hukum pendinginan dan dispersi partikel: awan sangat tebal di lereng atas kawah, menipis di lereng tengah, dan menghilang total (`opacity -> 0`) saat mendekati kawasan permukiman bawah.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. **TypeScript Verification (`npx tsc -b`)**: 100% lulus tanpa kesalahan kompilasi (exit code 0).
+2. **Production Bundle Build (`npm run build`)**: 100% sukses dalam 3.05 detik (exit code 0, 33 precache PWA valid, 4760.24 KiB).
 
 ---
 
