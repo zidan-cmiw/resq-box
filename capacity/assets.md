@@ -376,71 +376,42 @@ sendiri dengan membandingkan jumlah entri dan total byte di `dist/sw.js` sebelum
 
 ## 3. Perubahan konfigurasi konkret
 
-### 3.1 Cache-Control di Vercel
+### 3.1 Cache-Control di Vercel — ✅ SUDAH DITERAPKAN
 
-Terverifikasi: `vercel.json` (9 baris) **hanya** berisi `rewrites` — **tidak ada**
-aturan `headers` sama sekali. Jadi tidak ada `Cache-Control` yang dikonfigurasi
-proyek ini. `[PERLU VERIFIKASI]`: header efektif yang diberikan Vercel untuk berkas
-statis (halaman [Cache-Control headers](https://vercel.com/docs/caching/cache-control-headers)
-tidak merender isinya saat saya akses). Verifikasi dengan:
+**Status:** `vercel.json` kini berisi **6 aturan header** (tervalidasi terhadap skema
+Vercel). Berikut isinya beserta alasan tiap aturan:
+
+| `source` | `Cache-Control` | Alasan |
+|---|---|---|
+| `/assets/(.*)` | `public, max-age=31536000, immutable` | Berkas hasil build Vite **ber-hash** — isinya berubah setiap build, jadi nama berkasnya juga berubah. Ini yang mengubah kunjungan ulang dari ~5,8 MB menjadi ~0 |
+| `/(favicon\|apple-touch-icon\|pwa-*\|icons).*` | `public, max-age=604800` | Ikon jarang berubah; 7 hari cukup |
+| `/(.*)\.(webp\|jpg\|jpeg\|png)` | `public, max-age=2592000` | Gambar latar & materi stabil; 30 hari |
+| `/(.*)\.stl(\.gz)?` | `public, max-age=2592000` | Model 3D. Aplikasi memakai `terrain-688.stl.gz` (~966 KB); berkas `.stl` mentah hanya cadangan |
+| `/(sw\.js\|registerSW\.js\|workbox-*\.js\|manifest\.webmanifest)` | `public, max-age=0, must-revalidate` | **Penting:** service worker tidak boleh di-cache lama, kalau tidak pembaruan aplikasi tidak akan sampai ke siswa |
+| `/index.html` | `public, max-age=0, must-revalidate` | Rilis baru harus langsung terpakai |
+
+> ⚠️ **Catatan skema Vercel:** objek di dalam array `headers` **hanya boleh** punya
+> `source`, `headers`, `has`, `missing`. Properti tambahan seperti `"comment"` akan
+> ditolak dengan `Invalid request: headers[0] should NOT have additional property`.
+> Karena itu penjelasan aturan dipindahkan ke tabel di atas, bukan ke dalam JSON.
+
+**Cara memverifikasi header yang benar-benar terkirim:**
 
 ```bash
 curl -sI https://<domain>/assets/<hash>.js   | findstr -i cache-control
-curl -sI https://<domain>/terrain-688.stl    | findstr -i "cache-control content-encoding"
-curl -sI https://<domain>/bg-rainforest.jpg  | findstr -i cache-control
+curl -sI https://<domain>/terrain-688.stl.gz | findstr -i "cache-control content-encoding"
+curl -sI https://<domain>/bg-rainforest.webp | findstr -i cache-control
+curl -sI https://<domain>/sw.js              | findstr -i cache-control
 ```
 
-`vercel.json` yang diusulkan (gabungan dengan `rewrites` yang sudah ada):
+Yang diharapkan: `immutable` untuk `/assets/*`, dan `max-age=0, must-revalidate`
+untuk `sw.js` serta `index.html`.
 
-```json
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-  "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "source": "/terrain-688.stl",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
-        { "key": "Content-Type", "value": "model/stl" }
-      ]
-    },
-    {
-      "source": "/1.webp",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "source": "/index.html",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
-    },
-    {
-      "source": "/sw.js",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
-    },
-    {
-      "source": "/manifest.webmanifest",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
-    }
-  ]
-}
-```
-
-Catatan penting soal `terrain-688.stl`:
-
-- Nama berkas **tidak ber-hash**, jadi `immutable` berarti berkas pengganti tidak akan
-  pernah terambil sampai nama berubah. Itu **aman** karena workbox memberi `revision`
-  pada setiap entri precache — service worker akan mengambil ulang saat isinya berubah.
-  Kalau STL **tidak** di-precache, pakai `public, max-age=604800, stale-while-revalidate=86400`
-  (7 hari) supaya penggantian masih bisa masuk.
-- `Content-Type: model/stl` membantu server/CDN memutuskan kompresi. Binary STL sering
-  tidak dikenali dan karena itu **tidak** dikompresi — inilah kenapa 3.02 MB terkirim mentah.
+> Catatan: `Content-Type: model/stl` **tidak** lagi ditambahkan untuk STL. Karena
+> aplikasi kini mengambil versi `.gz` lewat `fetch()` + `DecompressionStream`
+> (bukan lewat loader tiga.js yang bergantung pada MIME), header itu tidak lagi
+> diperlukan — dan `Content-Type` untuk `.gz` justru harus tetap
+> `application/gzip` agar `fetch` memperlakukannya sebagai data biner.
 
 **Alternatif Netlify** (`public/_headers`, tanpa perlu `netlify.toml`):
 
