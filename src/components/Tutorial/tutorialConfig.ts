@@ -139,7 +139,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'STRATEGI BELAJAR',
         placement: 'center',
         content:
-          'Petualangan belajarmu dirancang dalam 3 Tahap Berjenjang:\n\n• Tahap 1 (Earth Explorer): Menjelajahi 8 area geologis interior bumi & memecahkan tebak kata Wordle Sains bersama Bu Tyas, M.Pd.\n• Tahap 2 (Disaster Analyst): Menuntaskan 6 pos mitigasi lereng Merapi & menjawab kuis Teka-Teki Silang (TTS Mitigasi).\n• Tahap 3 (Simulation Game): Menyelesaikan 20 misi simulasi penyelamatan bencana di lab mitigasi & mengamati dampaknya pada model 3D lereng Merapi.\n\nSemua skor dan progres belajarmu akan otomatis tersimpan ke Rapor Posko Gurumu!',
+          'Petualangan belajarmu dirancang dalam 3 Tahap Berjenjang:\n\n• Tahap 1 (Earth Explorer): Menjelajahi 8 area geologis interior bumi & memecahkan tebak kata Wordle Sains bersama Bu Tyas\n• Tahap 2 (Disaster Analyst): Menuntaskan 6 pos mitigasi lereng Merapi & menjawab kuis Teka-Teki Silang (TTS Mitigasi).\n• Tahap 3 (Simulation Game): Menyelesaikan 20 misi simulasi penyelamatan bencana di lab mitigasi & mengamati dampaknya pada model 3D lereng Merapi.\n\nSemua skor dan progres belajarmu akan otomatis tersimpan ke Rapor Posko Gurumu!',
       },
       {
         id: 'dash_level1',
@@ -148,7 +148,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         targetSelector: '#tour-dash-level1',
         placement: 'right',
         content:
-          'Tombol ini membuka Level 1: Earth Explorer! Kamu akan meluncur menembus kerak, mantel, hingga inti dalam bumi melintasi 8 area geologis dan memecahkan Wordle Sains bersama Bu Tyas, M.Pd.',
+          'Tombol ini membuka Level 1: Earth Explorer! Kamu akan meluncur menembus kerak, mantel, hingga inti dalam bumi melintasi 8 area geologis dan memecahkan Wordle Sains bersama Bu Tyas',
       },
       {
         id: 'dash_level2',
@@ -338,7 +338,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'EVALUASI STRATA',
         placement: 'center',
         content:
-          'Di setiap ujung lapisan, temui Bu Tyas, M.Pd. dan selesaikan tantangan tebak kata Wordle Sains! Semua kata kunci diambil dari materi rekan timmu. Tuntaskan 8 area untuk membuka Level 2!',
+          'Di setiap ujung lapisan, temui Bu Tyas dan selesaikan tantangan tebak kata Wordle Sains! Semua kata kunci diambil dari materi rekan timmu. Tuntaskan 8 area untuk membuka Level 2!',
         actionHint: 'Selamat menjelajah, kumpulkan kristal geotermal dan tembus inti bumi!',
       },
     ],
@@ -371,7 +371,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'EVALUASI MITIGASI',
         placement: 'center',
         content:
-          'Pelajari materi buku saku BNPB bertanda [🔍] dan temui Bu Tyas, M.Pd. di pos pengujian untuk menjawab Teka-Teki Silang Mitigasi. Menuntaskan seluruh 6 pos akan membuka Level 3!',
+          'Pelajari materi buku saku BNPB bertanda [🔍] dan temui Bu Tyas di pos pengujian untuk menjawab Teka-Teki Silang Mitigasi. Menuntaskan seluruh 6 pos akan membuka Level 3!',
         actionHint: 'Langkahkan kakimu, pelajari mitigasi, dan selamatkan warga!',
       },
     ],

@@ -899,7 +899,7 @@ export default function Dashboard() {
                       </div>
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
-                        <span className="font-bold text-[#200b01]">Pecahkan kuis tebak kata <strong className="font-black text-[#1a0800] underline decoration-amber-700/60">Wordle Sains</strong> bersama Bu Tyas, M.Pd. di tiap gerbang strata untuk membuka akses ke <strong className="font-black text-[#1a0800]">Level 2</strong>!</span>
+                        <span className="font-bold text-[#200b01]">Pecahkan kuis tebak kata <strong className="font-black text-[#1a0800] underline decoration-amber-700/60">Wordle Sains</strong> bersama Bu Tyas di tiap gerbang strata untuk membuka akses ke <strong className="font-black text-[#1a0800]">Level 2</strong>!</span>
                       </div>
                     </div>
                   </div>
@@ -1036,7 +1036,7 @@ export default function Dashboard() {
                     <ul className="list-disc list-inside space-y-2 text-[#1a0800] font-bold">
                       <li>Gunakan tombol <strong className="font-black text-[#1a0800]">A/D</strong> atau <strong className="font-black text-[#1a0800]">Panah Kiri/Kanan</strong> untuk bergerak, <strong className="font-black text-[#1a0800]">Spasi</strong> untuk melompat, dan <strong className="font-black text-[#1a0800]">E</strong> untuk berinteraksi.</li>
                       <li>Dekati rekan ekspedisi (Zidane, Zahra, Ican, Lintang) bertanda <strong className="font-black text-[#1a0800]">kaca pembesar [🔍]</strong> untuk membaca materi sains.</li>
-                      <li>Setiap gerbang strata dijaga oleh <strong className="font-black text-[#1a0800]">Bu Tyas, M.Pd.</strong> yang memberikan tantangan <strong className="font-black text-[#1a0800]">Wordle Tebak Kata</strong>. Seluruh kata kunci evaluasi diambil langsung dari materi rekan tim di area terkait!</li>
+                      <li>Setiap gerbang strata dijaga oleh <strong className="font-black text-[#1a0800]">Bu Tyas</strong> yang memberikan tantangan <strong className="font-black text-[#1a0800]">Wordle Tebak Kata</strong>. Seluruh kata kunci evaluasi diambil langsung dari materi rekan tim di area terkait!</li>
                     </ul>
                   </div>
                 </div>
@@ -1089,7 +1089,7 @@ export default function Dashboard() {
                     </h5>
                     <ul className="list-disc list-inside space-y-2 text-[#1a0800] font-bold">
                       <li>Jelajahi setiap pos mitigasi dan pelajari modul panduan buku saku BNPB bertanda <strong className="font-black text-[#1a0800]">kaca pembesar [🔍]</strong>.</li>
-                      <li>Di setiap pos, temui <strong className="font-black text-[#1a0800]">Bu Tyas, M.Pd.</strong> untuk menyelesaikan kuis <strong className="font-black text-[#1a0800]">Teka-Teki Silang (TTS Crossword Mitigasi)</strong>.</li>
+                      <li>Di setiap pos, temui <strong className="font-black text-[#1a0800]">Bu Tyas</strong> untuk menyelesaikan kuis <strong className="font-black text-[#1a0800]">Teka-Teki Silang (TTS Crossword Mitigasi)</strong>.</li>
                       <li>Menuntaskan seluruh 6 pos mitigasi akan membuka kunci <strong className="font-black text-[#1a0800]">Level 3: Simulation Game</strong>!</li>
                     </ul>
                   </div>

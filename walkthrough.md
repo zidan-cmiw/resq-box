@@ -40,6 +40,7 @@ Dokumen ini merangkum seluruh rekaman pembicaraan, arahan pengguna, keputusan de
 | **31** | *"tapi kok ini masih 50 level disini... apa itu lingkar utama, terus itu logika npc nya tuh udah dibenerin belum sih, kok ini ku tes kayak masih sama... ini tuh logika npc nya masih kayak jelek banget gituu, dia masa evakuasinya tuh bener bener kayak di tempat yang sama terus npc nya tuh jalannya kayak sama semua, dbikin beda beda gituu laaa, coba kamu cek semua logika npc nya deh, dibikin real bangett gitu lah pokoknya..."* | **Pembenahan Peta Level 3 Tepat 20 Level & Overhaul AI NPC Multi-Phase 3D**:<br>• Memangkas peta Level 3 dari 50 menjadi tepat 20 level bertingkat dengan counter `TUNTAS: 0 / 20` dan scrollbar `4650px`.<br>• Menjelaskan konsep "Jalur Lingkar Utama (Bebas Lahar)" vs jalur sungai.<br>• Mengeliminasi antrean kaku (*conga line*) via Multi-Lane Lateral Spreading ($-0.65$ s/d $+0.65$) dan desinkronisasi langkah.<br>• 4 Arketipe (20 Siswa, 10 BPBD, 13 Lansia, 32 Dewasa).<br>• Logika responsif: Gempa Ringan (outdoor cek genteng $1.5$s, indoor keluar), Gempa Sedang (rumah kayu lari, gedung beton Duck & Cover), Gempa Besar (tiarap di tanah, puing roboh vs kolong meja selamat).<br>• Logika Erupsi: Waspada menatap kawah, Siaga berkemas $1.7\times$, Awas lari massal $2.5\times$, Dynamic Bomb Dodge (meliuk $1.6$m), dan awan panas (lindung gedung beton). |
 | **32** | *"terus aku mau nambahin untuk studi kasus yang individu itu yang ada 20 soal itu, kalo yang itu dibikin cuma studi kasusnya sama nanti jawaban akhirnya yang bener itu gimana gitu aja gausah lengkap lengkap kayak yang kelompok itu... kita dikasih 2 pertemuan untuk implementasi media nya ini ke mitranya... pertemuan 1 buat nyelesain level 1 dan 2, terus nanti level 3 buat tugas mereka... pertemuan 2 untuk studi kasus kelompok..."* | **Penyusunan Kurikulum Implementasi 2 Pertemuan Pembelajaran Mitra, LKPD 5 Kasus Kelompok PjBL, dan 20 Misi Tugas Mandiri Individu Level 3**:<br>• Merancang pembagian pembelajaran sekolah mitra: Pertemuan 1 (Level 1 & Level 2), Tugas Mandiri di Rumah (Level 3: Job 1 s.d. 20), dan Pertemuan 2 (PjBL 5 Studi Kasus Kelompok uji 20 detik target 0 korban).<br>• Menyusun berkas panduan & LKPD lengkap (`LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md` & `LKPD_PJBL_ETNOSAINS_MERAPI_5_KELOMPOK.md`).<br>• Menegakkan 4 batasan pedagogis & teknis: Zero etnosains, Zero sensor fisik, Zero banjir lahar dingin (hanya Gempa Bumi dan Erupsi Merapi), serta bahasa ramah anak SMP Kelas 8.<br>• Memetakan 20 soal studi kasus individu ringkas (skenario + tujuan + kunci blok) dan 5 studi kasus kelompok kompleks tanpa panduan blok.<br>• Memperbesar ukuran teks dan keterbacaan modal UI (Panduan Resqy, Proyek Saya, Discovery Modal) agar terbaca jelas di tablet dan laptop. |
 | **33** | *"ini juga coba kamu benerin deh, jadi ini avatar yang disusun di bengkel avatar sama disini tuh ga sesuai gitu, di bengkel avatar kan aku pake avatar yang pake hijab ijo itu kan, nah disini itu malah jadi karakter dengan rambut ijo, itu juga kamu benerin deh"* | **Sinkronisasi Presisi Render Avatar Berhijab & Gaya Rambut pada Seluruh Dialog dan In-Game Sprites**:<br>• Memperbaiki engine potret dialog Level 2 ([`getPlayerPortraitL2`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level2/engine/npcSpritesL2.ts)) dan Level 1 ([`getPlayerPortrait`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level1/EarthDive/engine/npcSprites.ts)) dengan rendering lengkap Hijab Rescuer (kubah kepala melengkung, ciput putih dahi, kerudung samping menutupi telinga hingga bahu bertekstur lipatan, penutup leher & dagu penuh, serta bros emas).<br>• Memperbaiki sprite duduk menyimak di kelas ([`drawStudentSittingInDesk`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/app/Level2/engine/npcSpritesL2.ts)) agar menggambar kerudung rapi menutupi kepala dan leher.<br>• Memperbaiki sprite sheet in-game ([`studentAvatarSheet.ts`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/studentAvatarSheet.ts)) agar warna hijab dinamis mengikuti `hairColor` kustom alih-alih hardcode abu-abu `#334155`.<br>• Membersihkan cache sprite sheet ([`clearSpriteCache`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/utils/studentAvatarSheet.ts)) seketika saat kustomisasi disimpan di [`AvatarCustomizerModal.tsx`](file:///c:/github/lidm%20buatan%20vincent/RESQ-BOX/src/components/PixelAvatar/AvatarCustomizerModal.tsx). |
+| **34** | *"ini awan panasnya coba kamu bikin lebih banyak dan coba dibuat pas mereka makin jauh tuh makin kayak ngilang gitu awan panasnya"* | **Overhaul Simulasi Awan Panas 3D Wedhus Gembel Merapi (Perbanyakan Gumpalan & Sistem Disipasi Menghilang Seiring Jarak)**:<br>• Memperbanyak gumpalan awan panas dari 66 menjadi 210 puff (70 puff per lembah di Kali Gendol, Kali Kuning, Kali Boyong) bertingkat 3-tier (`base`, `body`, `crest`).<br>• Menggunakan material independen per-puff dengan `depthWrite: false` untuk blending transparan volumetrik lembut bebas batas poligon kaku.<br>• Menerapkan disipasi bertingkat seiring jarak lereng: pekat penuh di kawah atas (opacity ~0.95), menipis di lereng tengah (opacity ~0.70), dan meluruh cepat ke 0.0 (menghilang total) saat mendekati permukiman/jalan desa bawah.<br>• Menambahkan disipasi seiring waktu pasca-surge saat erupsi beralih ke aliran lava merayap & hujan abu. |
 
 ---
 
@@ -3469,6 +3470,40 @@ Status: **100% SUKSES (0 error)**.
 - [x] **Auto Cache Invalidation**: `clearSpriteCache()` aktif saat simpan avatar.
 - [x] **TypeScript Clean**: `npx tsc -b` exit code 0.
 - [x] **Production Build Clean**: `npm run build` exit code 0.
+
+---
+
+### Bab 38: Panduan Pengujian & Verifikasi Overhaul Awan Panas Wedhus Gembel 3D Merapi
+
+#### 1. Uji Tampilan & Kepadatan Aliran Awan Panas (210 Gumpalan)
+- **Tindakan**:
+  - Buka simulator 3D Merapi di `/workspace` (Action Lab) atau Level 3.
+  - Aktifkan kondisi erupsi: Status **AWAS** dengan tipe **ERUPSI EKSPLOSIF**.
+  - Amati saat fase erupsi mencapai detik 6.2 ke atas (Tahap 4: Awan Panas Wedhus Gembel Menyapu Lereng).
+- **Hasil**:
+  - Aliran awan panas meluncur menuruni 3 lembah sungai utama (Kali Gendol, Kali Kuning, Kali Boyong).
+  - Awan tidak lagi berupa 3 kapsul raksasa yang menumpuk di satu titik, melainkan 210 gumpalan bertingkat (`base` dekat tanah dengan bara termal, `body` pekat di tengah alur, dan `crest` membubung di lapisan atas).
+  - Alur awan menutupi seluruh lereng dari bibir kawah hingga lereng bawah secara kontinu dan dinamis.
+
+#### 2. Uji Disipasi & Menghilang Seiring Jarak ("Makin Jauh Makin Ngilang")
+- **Tindakan**:
+  - Amati pergerakan awan panas dari kawah puncak ($Z = -47$) hingga mendekati jalan dan jembatan permukiman desa bawah ($Z > 20$).
+  - Perhatikan transisi transparansi dan kepadatan awan.
+- **Hasil**:
+  - **Lereng Atas (Kawah)**: Awan sangat padat, tebal, dan pekat (opacity ~0.95), dengan bara pijar kemerahan di dasar lembah.
+  - **Lereng Tengah**: Awan mulai mengembang dan menipis (opacity meluruh ke ~0.70).
+  - **Lereng Bawah (Mendekati Pemukiman Warga)**: Awan menipis tajam (opacity ~0.20 $\to$ 0.0).
+  - **Area Permukiman & Jembatan Bawah**: Awan **benar-benar terdispersi dan menghilang total ke udara** (zero artifact, zero tumpukan gumpalan statis di atas perumahan warga).
+  - Saat erupsi memasuki tahap 5 (aliran lava & hujan abu, detik 9.8 ke atas), sisa awan panas di bagian bawah sudah lenyap ditiup angin, menyisakan kepulan uap tipis di lereng atas.
+
+#### 3. Matriks Checklist Verifikasi Bab 38
+- [x] **210 Puffs Dense Stream**: Aliran awan panas 3-tier melimpah menuruni 3 lembah sungai.
+- [x] **Soft Volumetric Blending**: Material per-puff transparan dengan `depthWrite: false` bebas garis kotak poligon.
+- [x] **Multi-Stage Distance Fade**: Awan memudar halus dan hilang total sebelum memasuki kawasan permukiman bawah.
+- [x] **Post-Surge Temporal Decay**: Awan tidak membeku di atas desa saat tahap lava & hujan abu dimulai.
+- [x] **TypeScript Clean**: `npx tsc -b` exit code 0.
+- [x] **Production Build Clean**: `npm run build` exit code 0.
+
 
 
 

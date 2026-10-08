@@ -3189,17 +3189,20 @@ export default function Merapi3DScene() {
       scene.add(expLight);
     }
 
-    // ── 12B. AWAN PANAS WEDHUS GEMBEL (MASIF & SANGAT JELAS SAAT ZOOM OUT) ──
+    // ── 12B. AWAN PANAS WEDHUS GEMBEL (MASIF, RAPAT & MEMUDAR SEIRING JARAK) ──
     interface PyroclasticPuff {
       mesh: THREE.Mesh;
+      material: THREE.MeshStandardMaterial;
       valleyIdx: number;
-      tier: 'base' | 'mid' | 'crest';
+      tier: 'base' | 'body' | 'crest';
       streamProgress: number;
+      streamPosNorm: number;
       sideOffset: number;
       heightOffset: number;
       scaleBase: number;
       rotSpeed: THREE.Vector3;
-      puffDelay: number;
+      puffSeed: number;
+      initialEmissiveIntensity: number;
     }
     const pyroclasticPuffs: PyroclasticPuff[] = [];
     const valleySurgeLights: THREE.PointLight[] = [];
@@ -3219,71 +3222,69 @@ export default function Merapi3DScene() {
       }
       scene.add(lightsGroup);
 
-      // Geometri Gumpalan Awan Gedean Proporsional (Radius dasar 3.4 unit, bervolume gagah di lembah sungai)
-      const billowGeom = new THREE.DodecahedronGeometry(3.4, 1);
+      // Geometri Gumpalan Awan (Dodecahedron detail 1, radius 1.85 unit)
+      const billowGeom = new THREE.DodecahedronGeometry(1.85, 1);
 
-      // Material Tudung Awan Panas Luar (Kepulan Abu Vulkanik Putih-Kelabu Terang & Pekat)
-      const ashCloudMat = new THREE.MeshStandardMaterial({
-        color: 0xf1f5f9, // Putih kelabu cerah kontras tinggi
-        emissive: 0x475569, // Pendaran lembut volume kabut abu
-        emissiveIntensity: 0.22,
-        roughness: 0.82,
-        metalness: 0.02,
-        transparent: true,
-        opacity: 0.98,
-        depthWrite: true,
-      });
-
-      // Material Dasar Awan Panas (Bara Termal Panas 800°C di Dasar Lembah)
-      const incandescentBaseMat = new THREE.MeshStandardMaterial({
-        color: 0x7c2d12,
-        emissive: 0xff3b00,
-        emissiveIntensity: 3.5,
-        roughness: 0.65,
-        depthWrite: true,
-      });
-
-      // 66 Gumpalan Awan Proporsional (22 per lembah) bertingkat 3-Tier di alur sungai
+      // 210 Gumpalan Awan (70 per lembah) bertingkat 3-Tier di alur sungai
       for (let v = 0; v < 3; v++) {
-        for (let i = 0; i < 22; i++) {
-          const tier: 'base' | 'mid' | 'crest' = i < 6 ? 'base' : i < 14 ? 'mid' : 'crest';
-          const mat = tier === 'base' ? incandescentBaseMat : ashCloudMat;
-          const pMesh = new THREE.Mesh(billowGeom, mat);
+        for (let i = 0; i < 70; i++) {
+          const tier: 'base' | 'body' | 'crest' = i < 16 ? 'base' : i < 48 ? 'body' : 'crest';
+          const isBase = tier === 'base';
+
+          // Material unik per-puff agar opacity & disipasi dapat dikontrol presisi per gumpalan
+          const pMat = new THREE.MeshStandardMaterial({
+            color: isBase ? 0x9a3412 : 0xf1f5f9,
+            emissive: isBase ? 0xff3b00 : 0x475569,
+            emissiveIntensity: isBase ? 2.8 : 0.18,
+            roughness: 0.86,
+            metalness: 0.02,
+            transparent: true,
+            opacity: 0.95,
+            depthWrite: false, // Menghilangkan artefak kotak / clipping tumpang tindih
+          });
+
+          const pMesh = new THREE.Mesh(billowGeom, pMat);
           group.add(pMesh);
 
-          // Ketinggian vertikal dan skala proporsional bervolume gagah
+          // Posisi nominal 0.0 s.d 1.0 sepanjang alur sungai dengan sebaran merata dan jitter
+          const norm = i / 69;
+          const jitter = (Math.random() - 0.5) * 0.035;
+          const streamPosNorm = Math.max(0.01, Math.min(0.99, norm + jitter));
+
+          // Ketinggian vertikal dan skala proporsional bervolume dinamis
           const heightOffset = tier === 'base'
-            ? 1.6 + Math.random() * 1.0
-            : tier === 'mid'
-              ? 4.2 + Math.random() * 1.8
-              : 7.5 + Math.random() * 2.8;
+            ? 1.1 + Math.random() * 0.7
+            : tier === 'body'
+              ? 2.8 + Math.random() * 1.5
+              : 5.2 + Math.random() * 2.4;
 
           const scaleBase = tier === 'base'
-            ? 1.1 + Math.random() * 0.25
-            : tier === 'mid'
-              ? 1.5 + Math.random() * 0.30
-              : 2.0 + Math.random() * 0.35;
+            ? 1.15 + Math.random() * 0.35
+            : tier === 'body'
+              ? 1.55 + Math.random() * 0.45
+              : 1.95 + Math.random() * 0.55;
 
-          const sideOffset = tier === 'base'
-            ? (Math.random() - 0.5) * 2.8
-            : tier === 'mid'
-              ? (Math.random() - 0.5) * 4.2
-              : (Math.random() - 0.5) * 5.0;
+          // Simpangan lateral melebar ke samping seiring menuruni lereng
+          const sideSpread = 1.3 + streamPosNorm * 3.8;
+          const sideOffset = (Math.random() - 0.5) * 2 * sideSpread;
 
           pyroclasticPuffs.push({
             mesh: pMesh,
+            material: pMat,
             valleyIdx: v,
             tier,
-            streamProgress: (i / 22) * 0.12,
+            streamProgress: streamPosNorm,
+            streamPosNorm,
             sideOffset,
             heightOffset,
             scaleBase,
             rotSpeed: new THREE.Vector3(
-              (Math.random() - 0.5) * 1.8,
-              (Math.random() - 0.5) * 2.2,
-              (Math.random() - 0.5) * 1.8
+              (Math.random() - 0.5) * 1.6,
+              (Math.random() - 0.5) * 2.0,
+              (Math.random() - 0.5) * 1.6
             ),
-            puffDelay: (i / 22) * 0.45,
+            puffSeed: Math.random() * 10.0,
+            initialEmissiveIntensity: isBase ? 2.8 : 0.18,
           });
         }
       }
@@ -4755,7 +4756,9 @@ export default function Merapi3DScene() {
             if (pyroclasticGroupRef.current) {
               pyroclasticGroupRef.current.visible = true;
               pyroclasticPuffs.forEach((puff) => {
-                puff.mesh.rotation.y += puff.rotSpeed.y * dt * 0.12;
+                if (puff.mesh.visible) {
+                  puff.mesh.rotation.y += puff.rotSpeed.y * dt * 0.12;
+                }
               });
             }
             updateRiverTurbidity(dt, [], []);
@@ -5017,50 +5020,103 @@ export default function Merapi3DScene() {
               pyroclasticGroupRef.current.visible = true;
               const valleyStreams = [LAVA_STREAM_GENDOL, LAVA_STREAM_KUNING, LAVA_STREAM_BOYONG];
 
-              // Kecepatan sangat tinggi meluncur menuruni lereng (3.6 detik mencapai dasar!)
-              const surgeProg = Math.min(1.0, (eTime - 6.2) / 3.6);
+              // Kecepatan tinggi meluncur menuruni lereng (3.8 detik mencapai jangkauan terjauh)
+              const surgeProg = Math.min(1.0, (eTime - 6.2) / 3.8);
               const maxPyroRadius = Math.min(96, surgeProg * 96);
               currentPyroRadius = maxPyroRadius;
 
               pyroclasticPuffs.forEach((puff) => {
                 const stream = valleyStreams[puff.valleyIdx];
-                const pProg = Math.max(0, Math.min(1.0, surgeProg * 1.15 - puff.puffDelay));
+
+                // Posisi kemajuan puff di sepanjang alur lembah sungai
+                // Kepala surge bergerak maju di surgeProg. Puff terbentang proporsional dari kawah ke kepala surge.
+                const targetProg = puff.streamPosNorm * Math.min(1.0, surgeProg * 1.05);
+
+                // Turbulensi dinamis bergulung menuruni alur (rolling flow)
+                const rollCycle = (elapsed * 0.20 + puff.puffSeed * 1.7) % 1.0;
+                const flowOffset = (rollCycle - 0.5) * 0.05;
+                const pProg = Math.max(0.0, Math.min(1.0, targetProg + flowOffset));
                 puff.streamProgress = pProg;
 
-                const sIdx = Math.min(stream.length - 2, Math.floor(pProg * (stream.length - 1)));
-                const sFrac = (pProg * (stream.length - 1)) - sIdx;
+                const sLen = stream.length;
+                const floatIdx = pProg * (sLen - 1);
+                const sIdx = Math.min(sLen - 2, Math.floor(floatIdx));
+                const sFrac = floatIdx - sIdx;
                 const pA = stream[sIdx];
                 const pB = stream[sIdx + 1];
 
                 const basePos = new THREE.Vector3().lerpVectors(pA, pB, sFrac);
-                const groundY = sampleTerrain(basePos.x + puff.sideOffset, basePos.z);
+                const px = basePos.x + puff.sideOffset;
+                const pz = basePos.z;
+                const groundY = sampleTerrain(px, pz);
                 const py = groundY + puff.heightOffset;
-                puff.mesh.position.set(basePos.x + puff.sideOffset, py, basePos.z);
+                puff.mesh.position.set(px, py, pz);
 
                 // Rotasi turbulensi vorteks wedhus gembel
                 puff.mesh.rotation.x += puff.rotSpeed.x * dt;
                 puff.mesh.rotation.y += puff.rotSpeed.y * dt;
                 puff.mesh.rotation.z += puff.rotSpeed.z * dt;
 
-                // Gumpalan awan proporsional bervolume gagah di koridor lembah alur sungai
-                const billowScale = puff.scaleBase * (1.0 + pProg * 0.40 + Math.sin(elapsed * 2.8 + puff.sideOffset) * 0.12);
+                // Jarak horizontal dari kawah puncak Merapi
+                const distFromCrater = Math.hypot(px - PEAK_X, pz - PEAK_Z);
+
+                // ── MAKIN JAUH MAKIN NGILANG (DISPERSI & FADE-OUT BERTINGKAT) ──
+                // 1. Fading berdasarkan kemajuan lereng (pProg)
+                let progressFade = 1.0;
+                if (pProg <= 0.22) {
+                  progressFade = 1.0; // Lereng atas/kawah: pekat maksimal
+                } else if (pProg <= 0.52) {
+                  progressFade = 1.0 - ((pProg - 0.22) / 0.30) * 0.28; // Mulai menipis lembut (1.0 -> 0.72)
+                } else if (pProg <= 0.76) {
+                  progressFade = 0.72 - ((pProg - 0.52) / 0.24) * 0.57; // Menipis tajam (0.72 -> 0.15)
+                } else {
+                  progressFade = Math.max(0.0, 0.15 - ((pProg - 0.76) / 0.12) * 0.15); // Lenyap total ke 0
+                }
+
+                // 2. Fading berdasarkan jarak mutlak dari kawah (distFromCrater)
+                // Di radius > 40 mulai memudar, di radius >= 74 (sebelum masuk perumahan desa) hilang total!
+                let distanceFade = 1.0;
+                if (distFromCrater > 40.0) {
+                  distanceFade = Math.max(0.0, 1.0 - (distFromCrater - 40.0) / 34.0);
+                }
+
+                // 3. Fading seiring waktu pasca-surge (tahap lava pijar & hujan abu, eTime >= 9.8s)
+                let stageFade = 1.0;
+                if (eTime >= 9.8) {
+                  const tPast = eTime - 9.8;
+                  stageFade = Math.max(0.12, 1.0 - tPast * 0.08);
+                }
+
+                // Opacity gabungan per-puff
+                const finalOpacity = Math.max(0.0, Math.min(0.96, progressFade * distanceFade * stageFade));
+                puff.material.opacity = finalOpacity;
+
+                // Pendaran bara termal mendingin seiring menjauh dari kawah
+                if (puff.tier === 'base') {
+                  const heatFade = Math.max(0.0, 1.0 - pProg * 1.8);
+                  puff.material.emissiveIntensity = puff.initialEmissiveIntensity * heatFade * stageFade;
+                }
+
+                // Skala bervolume dinamis
+                const billowScale = puff.scaleBase * (1.0 + pProg * 0.30 + Math.sin(elapsed * 2.4 + puff.puffSeed) * 0.08);
                 puff.mesh.scale.setScalar(billowScale);
 
-                const distFromCrater = Math.hypot(puff.mesh.position.x - PEAK_X, puff.mesh.position.z - PEAK_Z);
-                puff.mesh.visible = distFromCrater <= maxPyroRadius && (pProg > 0.01 || surgeProg > 0.08);
+                // Mesh hanya dirender jika terlihat dan berada dalam jangkauan aktif
+                puff.mesh.visible = finalOpacity > 0.02 && (surgeProg > 0.05) && (distFromCrater <= maxPyroRadius + 10);
               });
 
               // Lampu termal frontal di garis depan masing-masing lembah
               if (valleySurgeLights.length >= 3) {
                 for (let v = 0; v < 3; v++) {
                   const stream = valleyStreams[v];
-                  const pProg = Math.min(1.0, surgeProg * 1.05);
+                  const pProg = Math.min(0.68, surgeProg * 0.82);
                   const sIdx = Math.min(stream.length - 2, Math.floor(pProg * (stream.length - 1)));
                   const sFrac = (pProg * (stream.length - 1)) - sIdx;
                   const pFront = new THREE.Vector3().lerpVectors(stream[sIdx], stream[sIdx + 1], sFrac);
                   const gY = sampleTerrain(pFront.x, pFront.z);
                   valleySurgeLights[v].position.set(pFront.x, gY + 2.5, pFront.z);
-                  valleySurgeLights[v].intensity = surgeProg > 0.05 && surgeProg < 0.98 ? 4.5 : 0;
+                  const lightFade = Math.max(0, 1.0 - pProg / 0.68);
+                  valleySurgeLights[v].intensity = surgeProg > 0.05 && surgeProg < 0.98 ? 4.5 * lightFade : 0;
                 }
               }
 

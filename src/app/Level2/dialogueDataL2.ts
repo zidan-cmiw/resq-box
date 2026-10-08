@@ -102,7 +102,7 @@ export const CHARACTER_PROFILES_L2: Record<string, CharacterProfileL2> = {
   },
   bu_tyas: {
     id: 'bu_tyas',
-    name: 'Bu Tyas, M.Pd.',
+    name: 'Bu Tyas',
     title: 'Evaluator',
     nameColor: '#eab308', // Emas akademis
     role: 'npc',
@@ -129,7 +129,7 @@ export const CHARACTER_PROFILES_L2: Record<string, CharacterProfileL2> = {
   },
   bu_rahma: {
     id: 'bu_rahma',
-    name: 'Bu Tyas, M.Pd.',
+    name: 'Bu Tyas',
     title: 'Guru Kelas & Evaluator',
     nameColor: '#eab308',
     role: 'npc',
@@ -193,7 +193,7 @@ export const CHARACTER_PROFILES_L2: Record<string, CharacterProfileL2> = {
   },
   kak_fajar: {
     id: 'kak_fajar',
-    name: 'Bu Tyas, M.Pd.',
+    name: 'Bu Tyas',
     title: 'Evaluator TTS',
     nameColor: '#eab308',
     role: 'npc',
@@ -799,7 +799,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
   // ═════════════════════════════════════════════════════════════════════════
   bu_rahma_teaching_cutscene: {
     id: 'bu_rahma_teaching_cutscene',
-    title: 'Kegiatan Belajar IPA: Struktur Lapisan Bumi Bersama Bu Tyas, M.Pd.',
+    title: 'Kegiatan Belajar IPA: Struktur Lapisan Bumi Bersama Bu Tyas',
     startNodeId: 'teach_1',
     npcSpeakerId: 'bu_rahma',
     nodes: {

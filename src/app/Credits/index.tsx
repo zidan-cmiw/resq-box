@@ -320,7 +320,7 @@ export default function Credits() {
               Dosen Pembimbing
             </span>
             <h3 className="font-pixel font-bold text-sm text-white">
-              Rizki Arumning Tyas, M.Pd.
+              Rizki Arumning Tyas
             </h3>
             <p className="text-xs text-amber-200 mt-0.5 leading-relaxed font-pixel">
               Dosen Pendamping Inovasi Pembelajaran Digital Mitigasi Bencana • Universitas Negeri Yogyakarta

@@ -123,7 +123,7 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
     const buTyas: NpcStateL2 = {
       id: 'l2_npc_bu_tyas',
       type: 'bu_tyas',
-      name: 'Bu Tyas, M.Pd.',
+      name: 'Bu Tyas',
       dialogueId: 'kak_fajar_dialogue',
       x: 1980,
       y: 360,
@@ -165,7 +165,7 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
     const buTyasClass: NpcStateL2 = {
       id: 'l2_sim_npc_bu_tyas',
       type: 'bu_tyas',
-      name: 'Bu Tyas, M.Pd.',
+      name: 'Bu Tyas',
       dialogueId: 'bu_rahma_classroom_intro',
       x: 200,
       y: 360,
@@ -336,7 +336,7 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
     const buTyas: NpcStateL2 = {
       id: 'l2_field_npc_bu_tyas',
       type: 'bu_tyas',
-      name: 'Bu Tyas, M.Pd.',
+      name: 'Bu Tyas',
       dialogueId: 'komandan_satria_dialogue',
       x: 1940,
       y: 360,
@@ -424,7 +424,7 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
     const buTyas: NpcStateL2 = {
       id: 'l2_v_npc_bu_tyas',
       type: 'bu_tyas',
-      name: 'Bu Tyas, M.Pd.',
+      name: 'Bu Tyas',
       dialogueId: 'satria_volcano_dialogue',
       x: 1940,
       y: 360,
@@ -683,7 +683,7 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
     const buTyas: NpcStateL2 = {
       id: 'l2_shelter_npc_bu_tyas',
       type: 'bu_tyas',
-      name: 'Bu Tyas, M.Pd.',
+      name: 'Bu Tyas',
       dialogueId: 'satria_shelter_dialogue',
       x: 1980,
       y: 360,

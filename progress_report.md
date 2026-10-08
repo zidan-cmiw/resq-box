@@ -181,6 +181,7 @@ Dokumen ini merekam secara komprehensif seluruh percakapan, instruksi pengguna, 
 | 176 | **Minimalist Overhaul Journey Progress Tracker (Anti-Collision, Z-Index Optimization) & Restorasi Highlight Dinamis Radar Bumi (PixelEarthDiagram)**: Merombak antarmuka `JourneyProgressTracker` menjadi ultra-ramping dan borderless murni (menghapus kotak kartu tebal, baris judul, badge level, badge area, dan tombol toggle); memposisikan avatar mini di atas bar menghadap ke bawah (`▼`) dan label metrik di bawah node (bebas tabrakan visual 100%); menata z-index tracker ke `z-10 pointer-events-none` dan menaikkan prompt interaksi ke `bottom-20 sm:bottom-24 z-30` (bebas halangan popup); serta mengembalikan penyorotan selektif dinamis lapisan interior bumi aktif pada Radar Bumi (`PixelEarthDiagram.tsx`). | `src/components/JourneyProgressTracker.tsx`, `src/app/Level1/EarthDive/EarthDiveGame.tsx`, `src/app/Level2/engine/TectonicGame.tsx`, `src/app/Level1/PixelEarthDiagram.tsx` |
 | 177 | **Penyusunan Kurikulum Implementasi 2 Pertemuan Pembelajaran Mitra, LKPD 5 Studi Kasus Kelompok PjBL (Gempa & Merapi), Rekap 20 Tugas Mandiri Individu Level 3, serta Peningkatan Readability Modal UI**: Merancang kurikulum implementasi sekolah mitra 2 pertemuan tatap muka (Pertemuan 1: Level 1 & 2; PR Mandiri di Rumah: 20 Misi Mandiri Level 3; Pertemuan 2: PjBL 5 Studi Kasus Kelompok di simulator Level 3 target 0 korban). Menyusun dokumen resmi LKPD (`LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md` & `LKPD_PJBL_ETNOSAINS_MERAPI_5_KELOMPOK.md`) yang ramah anak SMP Kelas 8, zero etnosains, zero sensor fisik, tanpa banjir lahar dingin (hanya Gempa Bumi dan Erupsi Merapi), serta 100% selaras dengan 19 blok Blockly toolbox Level 3 (`INITIAL_TOOLBOX`). Menyajikan 20 tugas mandiri individu secara ringkas (skenario singkat + tujuan misi + kunci jawaban susunan blok) serta 5 studi kasus kelompok menantang tanpa panduan blok. Memperbesar ukuran teks dan keterbacaan modal UI (Panduan Resqy, Proyek Saya, Discovery Modal) agar terbaca jelas di tablet dan laptop. | `LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md`, `LKPD_PJBL_ETNOSAINS_MERAPI_5_KELOMPOK.md`, `src/app/Dashboard/index.tsx`, `src/components/Tutorial/tutorialConfig.ts`, `src/components/Tutorial/ResqyTutorialOverlay.tsx` |
 | 178 | **Sinkronisasi Presisi Render Avatar Berhijab & Gaya Rambut pada Seluruh Dialog dan In-Game Sprites**: Memperbaiki inkonsistensi avatar di mana pilihan hijab (misal hijab hijau) di Bengkel Avatar berubah menjadi karakter berambut hijau pendek dengan leher terbuka di dalam game. Memperbarui engine potret dialog Level 2 (`getPlayerPortraitL2`) dan Level 1 (`getPlayerPortrait`) dengan rendering hijab rescuer lengkap (kubah kepala melengkung, ciput putih dahi, kerudung samping menutupi telinga hingga bahu bertekstur lipatan, penutup leher & dagu penuh, serta bros emas), memperbaiki sprite duduk menyimak di kelas (`drawStudentSittingInDesk`), memperbaiki sprite sheet in-game (`studentAvatarSheet.ts`) agar warna hijab dinamis mengikuti `hairColor` kustom alih-alih hardcode abu-abu `#334155`, serta membersihkan cache sprite (`clearSpriteCache`) seketika saat kustomisasi disimpan. | `src/app/Level2/engine/npcSpritesL2.ts`, `src/app/Level1/EarthDive/engine/npcSprites.ts`, `src/utils/studentAvatarSheet.ts`, `src/components/PixelAvatar/AvatarCustomizerModal.tsx` |
+| 179 | **Penyempurnaan Simulasi Awan Panas Wedhus Gembel (Jumlah 3x Lipat Melimpah & Disipasi Menghilang Seiring Jarak)**: Merombak simulasi awan panas 3D di `Merapi3DScene.tsx`. Memperbanyak gumpalan awan dari 66 menjadi 210 puff (70 per lembah: Kali Gendol, Kali Kuning, Kali Boyong) bertingkat 3-tier (`base`, `body`, `crest`), mendistribusikannya merata di sepanjang alur lembah dari kawah hingga lereng bawah, serta mengimplementasikan disipasi bertingkat ("makin jauh makin ngilang"): pekat penuh di lereng kawah atas (opacity ~0.95), menipis lembut di lereng tengah (opacity ~0.70), dan meluruh tajam hingga 0.0 (menghilang total) saat mendekati pemukiman warga/jalan desa bawah tanpa tumpukan gumpalan statis. | `src/app/EvacuationGame/Merapi3DScene.tsx` |
 
 ---
 
@@ -4907,6 +4908,38 @@ Pengguna meminta implementasi menyeluruh logika block coding, efek visual kamera
 1. **TypeScript Verification (`npx tsc -b`)**: 100% lolos tanpa error (exit code 0).
 2. **Production Bundle Build (`npm run build`)**: 100% sukses dalam 4.26s (exit code 0, 33 precache PWA valid, 4759.56 KiB).
 3. **Git Version Control**: Berhasil di-commit dan di-push ke repositori remote `main`.
+
+---
+
+### Bab 107: Overhaul Simulasi Awan Panas 3D Wedhus Gembel Merapi (Perbanyakan Gumpalan Aliran & Sistem Disipasi Menghilang Seiring Jarak)
+
+#### 1. Latar Belakang & Identifikasi Bug Visual
+- **Keluhan Pengguna**: Pada adegan 3D Merapi saat letusan eksplosif berlangsung (khususnya tahap aliran awan panas dan lava), awan panas tampak hanya berupa 3 gumpalan kapsul/bola raksasa yang menumpuk padat di satu titik di tengah desa/jalan, tidak tersebar alami dari kawah ke lembah, serta tidak menghilang melainkan membeku padat di atas permukiman.
+- **Akar Masalah Teknis**:
+  1. Jumlah gumpalan hanya 22 puff per lembah (total 66), dan saat `surgeProg` mencapai 1.0, semua puff terdorong ke 30% ujung alur sungai terakhir sehingga bertumpuk jadi satu gumpalan raksasa di tengah jalan desa.
+  2. Seluruh puff berbagi satu instance material `ashCloudMat` dengan `opacity: 0.98` dan `depthWrite: true`, sehingga tidak dapat memudar secara individual seiring jarak atau posisi alur.
+  3. Ketiadaan mekanisme disipasi termal dan dispersi partikel debu seiring menjauh dari kawah Merapi.
+
+#### 2. Solusi & Rincian Implementasi
+1. **Perbanyakan Gumpalan Awan Menjadi 210 Puff (70 per Lembah)**:
+   - Memperluas sistem gumpalan awan di Kali Gendol, Kali Kuning, dan Kali Boyong menjadi 70 puff per lembah dengan variasi 3-tier:
+     - `base` (16 puff): Merayap di dasar alur lembah sungai dengan pendaran bara termal merah-oranye di lereng atas.
+     - `body` (32 puff): Badan utama kepulan awan abu tebal yang bergulung-gulung pekat menuruni alur sungai.
+     - `crest` (22 puff): Kubah atas awan yang membubung ke angkasa dan melebar ke samping ditiup angin.
+   - Menggunakan geometri dodecahedron proporsional (`billowGeom = new THREE.DodecahedronGeometry(1.85, 1)`).
+2. **Material Per-Puff dengan DepthWrite False**:
+   - Setiap puff memiliki instance `MeshStandardMaterial` independen dengan `transparent: true, depthWrite: false` agar partikel awan yang tumpang tindih membaur lembut (*soft volumetric blending*) tanpa garis batas poligon yang kaku.
+3. **Sistem Disipasi Bertingkat ("Makin Jauh Makin Ngilang")**:
+   - **Lereng Atas (Kawah & KRB III, $pProg \le 0.22$, $dist \le 40$)**: Awan sangat pekat, tebal, dan bersuhu tinggi (opacity ~0.95, bara termal menyala di dasar).
+   - **Lereng Tengah ($pProg$ 0.22 s.d. 0.52)**: Awan mengembang dan mulai menipis secara halus (opacity meluruh dari 0.95 ke 0.72).
+   - **Lereng Bawah ($pProg$ 0.52 s.d. 0.76)**: Partikel debu berat mengendap dan udara dingin mendinginkan gas, opacity menipis tajam dari 0.72 ke 0.15.
+   - **Ujung Aliran / Memasuki Desa ($pProg > 0.76$ atau $dist \ge 74$)**: Awan panas **terdispersi dan menghilang total (opacity = 0.0, mesh hidden)** sehingga kawasan desa bawah dan jembatan tetap bersih tanpa tumpukan gumpalan statis.
+4. **Disipasi Seiring Waktu Pasca-Surge (`eTime >= 9.8s`)**:
+   - Saat erupsi memasuki tahap aliran lava merayap dan hujan abu, awan panas di bagian bawah sudah lenyap ditiup angin dan menyisakan uap tipis di lereng atas kawah.
+
+#### 3. Hasil Pengujian & Verifikasi Build
+1. **TypeScript Verification (`npx tsc -b`)**: 100% lolos tanpa error (exit code 0).
+2. **Production Bundle Build (`npm run build`)**: 100% sukses dalam 3.33s (exit code 0, 33 precache PWA valid, 4759.87 KiB).
 
 ---
 
