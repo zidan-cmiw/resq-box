@@ -72,9 +72,65 @@ Tidak butuh Supabase CLI, tidak butuh service key.
 | 1 | `supabase/migrations/01_secure_schema.sql` | Tabel `profiles`/`classrooms`/`level_submissions`, RLS ketat, view `students` yang aman, penutupan tabel lama, indeks |
 | 2 | `supabase/migrations/02_rpc_and_hardening.sql` | Hapus 11 RPC berbahaya, RPC baru ber-otorisasi, batas laju, hardening hak akses |
 | 3 | `supabase/migrations/03_signup_role_control.sql` | Kontrol peran saat signup, RPC guru membuat akun siswa, fungsi admin, kelas awal |
+| 4 | `supabase/migrations/04_lock_functions_and_cleanup.sql` | Kunci hak eksekusi seluruh fungsi sensitif |
+| 5 | `supabase/migrations/05_realtime_publication.sql` | Nyalakan Realtime untuk tabel yang perlu |
+| 6 | `supabase/migrations/06_fix_profile_trigger.sql` | Perbaiki trigger pembuatan profil (tiga sumber metadata) |
+| 7 | `supabase/migrations/07_fix_rls_helper_grants.sql` | Perbaiki hak eksekusi fungsi bantu RLS |
+| — | ~~`08_nisn_dan_tutup_pendaftaran.sql`~~ | **JANGAN DIJALANKAN.** Sudah digantikan oleh 09. Lihat catatan di bawah |
+| 8 | `supabase/migrations/09_absen_unik_per_kelas.sql` | Pengenal unik siswa = **kode kelas + nomor absen**; hapus kolom `nisn` bila ada; kembalikan RPC guru ke 5 argumen |
 
 Jalankan **berurutan**. Setiap berkas idempoten (aman diulang).
 Setelah langkah 3, periksa bagian **"5. VERIFIKASI"** di dalam berkas itu.
+
+> ⚠️ **Migrasi 08 JANGAN dijalankan.** Berkas itu memakai NISN sebagai pengenal
+> unik, dan cara itu sudah ditinggalkan karena terlalu merepotkan. Penggantinya
+> adalah migrasi 09, yang memakai pasangan kode kelas + nomor absen.
+>
+> - Bila 08 **belum pernah** dijalankan: lewati saja, langsung ke 09.
+> - Bila 08 **sudah terlanjur** dijalankan: jalankan 09 setelahnya. Migrasi 09
+>   sudah dirancang aman untuk kedua keadaan — kolom `nisn` dibuang bila ada,
+>   dan dilewati tanpa galat bila tidak ada.
+>
+> Berkas 08 sengaja tidak dihapus agar riwayat migrasi tetap runut (nomor 09
+> tanpa 08 akan membingungkan). Isinya kini hanya catatan.
+
+> ⚠️ **Menutup pendaftaran mandiri TIDAK bisa dilakukan lewat SQL.** Endpoint
+> pendaftaran berjalan di luar PostgreSQL, sehingga tidak ada trigger yang
+> dapat memblokirnya. Matikan di dashboard:
+> **Authentication → Sign In / Providers → Email → matikan "Allow new users to
+> sign up"**. Tanpa langkah ini, siswa masih dapat mendaftar lewat API
+> walaupun tombolnya sudah dihapus dari tampilan.
+>
+> Hal ini penting karena pengenal unik siswa sekarang adalah kode kelas +
+> nomor absen. Kalau pendaftaran mandiri dibuka kembali, siswa dapat memilih
+> nomor absen yang berbeda-beda sehingga aturan itu tidak lagi menghalanginya
+> membuat banyak akun.
+
+> ⚠️ **Periksa dulu sebelum menjalankan migrasi 09.** Migrasi itu memasang index
+> unik pada (kode kelas + nomor absen) untuk siswa. Bila di database sudah ada
+> nomor absen kembar di kelas yang sama, **index akan gagal dibuat** dan
+> migrasi berhenti. Cek lebih dulu di SQL Editor:
+>
+> ```sql
+> SELECT classroom_code, absent_number, count(*) AS jumlah,
+>        string_agg(name, ', ') AS nama_siswa
+>   FROM public.profiles
+>  WHERE role = 'student' AND classroom_code IS NOT NULL
+>  GROUP BY classroom_code, absent_number
+> HAVING count(*) > 1
+>  ORDER BY classroom_code, absent_number;
+> ```
+>
+> Hasil kosong berarti aman. Bila ada isinya, ubah nomor absen salah satu siswa
+> lebih dulu, misalnya:
+>
+> ```sql
+> UPDATE public.profiles SET absent_number = '17' WHERE username = 'nama_siswa';
+> ```
+>
+> Ini kemungkinan besar terjadi pada akun **demo**: bila akun itu dibuat tanpa
+> mengisi nomor absen, kolomnya bernilai '1', dan siswa pertama yang dibuat guru
+> di kelas yang sama juga bernilai '1'.
 
 > ⚠️ **Kalau migrasi 01 berhenti dengan error
 > `function public.can_read_student(character varying) does not exist`:**

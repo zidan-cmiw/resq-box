@@ -2,6 +2,32 @@
 -- 08. NISN SEBAGAI IDENTITAS UNIK + PENDAFTARAN MANDIRI DITUTUP
 -- ══════════════════════════════════════════════════════════════════════════
 --
+-- ⚠️⚠️  JANGAN JALANKAN BERKAS INI — SUDAH DIGANTIKAN OLEH 09  ⚠️⚠️
+--
+--   Berkas ini memakai NISN sebagai pengenal unik siswa. Setelah dicoba, cara
+--   itu dirasa terlalu merepotkan (NISN harus dicari, 10 digit, mudah salah
+--   ketik), sehingga diganti dengan pasangan KODE KELAS + NO. ABSEN.
+--
+--   Penggantinya ada di:  09_absen_unik_per_kelas.sql
+--
+--   Yang masih berlaku dari berkas ini HANYA SATU HAL, yaitu penutupan
+--   pendaftaran mandiri. Tetapi penutupan itu TIDAK dikerjakan lewat SQL —
+--   harus dimatikan di dashboard Supabase:
+--
+--       Authentication → Sign In / Providers → Email
+--           matikan "Allow new users to sign up"
+--
+--   Bila berkas ini sudah terlanjur dijalankan, jalankan 09 setelahnya:
+--   09 sudah dirancang aman untuk kedua keadaan (kolom `nisn` ada atau tidak).
+--
+--   Berkas ini SENGAJA TIDAK DIHAPUS, supaya riwayat perubahan tetap dapat
+--   ditelusuri. Menghapusnya akan membuat riwayat migrasi membingungkan
+--   (nomor 09 tanpa 08).
+--
+-- ══════════════════════════════════════════════════════════════════════════
+-- Isi asli berkas ini di bawah, disimpan sebagai catatan.
+-- ══════════════════════════════════════════════════════════════════════════
+--
 -- MASALAH YANG DIPERBAIKI
 --   Sebelumnya SATU-SATUNYA kolom unik di tabel profiles adalah username:
 --

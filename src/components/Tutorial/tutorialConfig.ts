@@ -453,9 +453,9 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         targetSelector: '#tour-teacher-classroom',
         placement: 'bottom',
         content:
-          'Pilih kelas aktif, atau buat kelas baru lebih dulu. Setelah itu tekan [EDIT KELAS] lalu buka tab [+ TAMBAH SISWA] untuk membuatkan akun bagi siswa Bapak/Ibu. Isi nama, NISN, nomor absen, username, dan kata sandi sementara — akun itu langsung dapat dipakai siswa untuk masuk, tanpa perlu konfirmasi email.',
+          'Pilih kelas aktif, atau buat kelas baru lebih dulu. Setelah itu tekan [EDIT KELAS] lalu buka tab [+ TAMBAH SISWA] untuk membuatkan akun bagi siswa Bapak/Ibu. Isi nama, nomor absen, username, dan kata sandi sementara — akun itu langsung dapat dipakai siswa untuk masuk, tanpa perlu konfirmasi email.',
         actionHint:
-          'NISN wajib diisi 10 digit. Satu NISN hanya boleh memiliki satu akun, sehingga seorang siswa tidak dapat memiliki dua akun.',
+          'Nomor absen wajib diisi dan tidak boleh kembar di dalam satu kelas. Nomor absen dipakai sebagai pengenal siswa, sehingga satu nomor hanya untuk satu siswa.',
       },
       {
         id: 'teacher_kpi',

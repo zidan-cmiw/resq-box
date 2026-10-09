@@ -27,14 +27,16 @@ export interface UserAccount {
   password?: string;
   role: 'student' | 'teacher';
   name: string;
-  absent_number?: string;
   /**
-   * NISN (10 digit). Pengenal unik siswa — satu NISN hanya boleh memiliki satu
-   * akun. Menggantikan nomor absen sebagai pengenal, karena nomor absen
-   * diulang setiap tahun ajaran dan boleh sama antar kelas, sehingga tidak
-   * dapat dijadikan unik. Kosong untuk guru dan admin.
+   * Nomor absen. Berperan ganda: nomor urut di dalam kelas SEKALIGUS pengenal
+   * unik siswa bersama `classroom_code` — dalam satu kelas tidak boleh ada dua
+   * siswa dengan nomor absen yang sama.
+   *
+   * Nomor absen saja tidak unik (setiap kelas punya nomor 1–30-an), sehingga
+   * pasangan (kode kelas + nomor absen) yang dijadikan pengenal. Aturan ini
+   * ditegakkan di database lewat index unik, bukan hanya di tampilan.
    */
-  nisn?: string;
+  absent_number?: string;
   classroom_code?: string;
   school_name?: string;
   avatar_config?: CustomAvatarConfig;
@@ -62,7 +64,6 @@ export interface StudentDbRecord {
   password?: string;
   class_name: string;
   absent_number: string;
-  nisn?: string | null;
   avatar_config: CustomAvatarConfig;
   unlocked_level: number;
   created_at?: string;
@@ -404,14 +405,10 @@ export async function fetchMyProfile(): Promise<UserAccount | null> {
  *   identitas siswa. Setiap akun duplikat menambah 1 baris `profiles` dan
  *   sampai 3 baris `level_submissions`.
  *
- *   Nomor absen tidak dapat dipakai sebagai pengenal unik: nomornya diulang
- *   setiap tahun ajaran dan boleh sama antar kelas. Karena itu pengenalnya
- *   diganti NISN, yang unik secara nasional.
- *
- *   Namun NISN saja tidak cukup. Selama pendaftaran mandiri terbuka, siswa
- *   tetap dapat mendaftar berulang kali dengan mengisi NISN yang berbeda-beda —
- *   aplikasi tidak punya cara memeriksa bahwa NISN itu benar-benar miliknya.
  *   Karena itu pendaftaran mandiri ditutup dan akun siswa dibuat oleh guru.
+ *   Dengan begitu, guru yang menentukan kelas dan nomor absen setiap siswa,
+ *   sehingga pasangan (kode kelas + nomor absen) dapat dijadikan pengenal unik
+ *   dan tidak mungkin ada dua akun untuk siswa yang sama di satu kelas.
  *
  *   Penutupan sebenarnya dikerjakan di dua tempat, dan KEDUANYA diperlukan:
  *     1. Fungsi ini menolak lebih awal, supaya siswa mendapat penjelasan yang
@@ -424,13 +421,17 @@ export async function fetchMyProfile(): Promise<UserAccount | null> {
  *   Guru tetap dapat membuat akun siswa lewat createStudentByTeacher, karena
  *   fungsi itu menulis langsung ke auth.users dan tidak melewati endpoint
  *   pendaftaran.
+ *
+ * ⚠️ JANGAN BUKA KEMBALI pendaftaran mandiri selama aturan (kode kelas +
+ *    nomor absen) masih dipakai sebagai pengenal unik. Kalau siswa boleh
+ *    mendaftar sendiri, ia dapat memilih nomor absen yang berbeda-beda
+ *    sehingga aturan itu tidak lagi menghalanginya membuat banyak akun.
  */
 export async function registerStudent(_data: {
   username: string;
   password: string;
   name: string;
   absent_number?: string;
-  nisn?: string;
   classroom_code: string;
 }): Promise<{ success: boolean; user?: UserAccount; message?: string }> {
   return {
@@ -650,13 +651,15 @@ export async function createStudentByTeacher(data: {
   classroom_code: string;
   name: string;
   absent_number: string;
-  nisn: string;
   username: string;
   password: string;
   class_name?: string;
 }): Promise<{ success: boolean; student?: StudentDbRecord; message?: string }> {
   const username = data.username.trim().toLowerCase();
-  const nisn = data.nisn.trim();
+  // Nol di depan dibuang agar "01" dan "1" tidak menjadi dua siswa berbeda.
+  // Server melakukan hal yang sama; ini hanya supaya pemeriksaan di klien dan
+  // di server menghasilkan kesimpulan yang sama.
+  const absen = data.absent_number.trim().replace(/^0+(?=\d)/, '');
 
   if (!supabase) {
     return {
@@ -668,33 +671,32 @@ export async function createStudentByTeacher(data: {
   // Diperiksa juga di klien supaya guru mendapat jawaban seketika tanpa
   // menunggu perjalanan ke server. Server TETAP memeriksa ulang — aturan
   // sebenarnya ada di sana, bukan di sini.
-  if (!/^[0-9]{10}$/.test(nisn)) {
-    return { success: false, message: 'NISN harus 10 digit angka.' };
+  if (!/^[0-9]{1,3}$/.test(absen)) {
+    return { success: false, message: 'Nomor absen wajib diisi dan harus berupa angka.' };
   }
 
   try {
     const { data: result, error } = await supabase.rpc('teacher_create_student', {
       p_classroom_code: data.classroom_code,
       p_name: data.name.trim(),
-      p_absent_number: data.absent_number.trim() || '1',
+      p_absent_number: absen,
       p_username: username,
       p_password: data.password,
-      p_nisn: nisn,
     });
 
     if (error) {
       noteError('createStudentByTeacher', error);
       const msg = (error.message || '').toLowerCase();
-      // NISN duplikat adalah sebab yang paling mungkin, jadi diperiksa lebih
-      // dulu. Pesannya harus menyebut NISN supaya guru tidak mengira ini
-      // masalah username.
-      if (msg.includes('nisn')) {
+      // Nomor absen duplikat DIPERIKSA LEBIH DULU, karena inilah aturan yang
+      // paling mungkin dilanggar: guru dapat lupa nomor mana yang sudah
+      // dipakai di kelas itu. Pesannya menyebut nomor absen supaya guru tidak
+      // mengira ini masalah username.
+      if (msg.includes('nomor absen') || msg.includes('absen')) {
         return {
           success: false,
-          message:
-            error.message.includes('sudah terdaftar')
-              ? `NISN ${nisn} sudah terdaftar. Satu NISN hanya boleh memiliki satu akun.`
-              : 'NISN harus 10 digit angka.',
+          message: error.message.includes('sudah dipakai')
+            ? `Nomor absen ${absen} sudah dipakai siswa lain di kelas ini. Pilih nomor lain.`
+            : 'Nomor absen harus berupa angka (1–3 digit).',
         };
       }
       if (msg.includes('sudah')) {

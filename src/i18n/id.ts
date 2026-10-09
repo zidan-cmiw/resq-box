@@ -82,7 +82,8 @@ export const id = {
     //                          -> seluruh formulir pendaftaran mandiri dihapus
     //
     // Pendaftaran mandiri ditutup: akun siswa kini dibuat oleh guru lewat
-    // Posko Guru, dan satu NISN hanya boleh memiliki satu akun.
+    // Posko Guru, dan pengenal unik siswa adalah pasangan kode kelas + nomor
+    // absen (dalam satu kelas satu nomor hanya untuk satu siswa).
     //
     // CATATAN LEBIH LUAS: seluruh bagian `login` di kamus ini sebenarnya sudah
     // tidak terpakai — halaman Login menuliskan teksnya langsung dan tidak

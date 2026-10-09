@@ -74,7 +74,6 @@ export default function TeacherDashboard() {
   // Add Student Sub-state inside modal
   const [newStdName, setNewStdName] = useState('');
   const [newStdAbsent, setNewStdAbsent] = useState('');
-  const [newStdNisn, setNewStdNisn] = useState('');
   const [newStdUsername, setNewStdUsername] = useState('');
   const [newStdPassword, setNewStdPassword] = useState('12345');
   const [addStdError, setAddStdError] = useState('');
@@ -299,8 +298,13 @@ export default function TeacherDashboard() {
       setAddStdError('Nama, Username, dan Password wajib diisi!');
       return;
     }
-    if (!/^[0-9]{10}$/.test(newStdNisn.trim())) {
-      setAddStdError('NISN wajib diisi dan harus 10 digit angka.');
+    // Nomor absen kini WAJIB, bukan lagi opsional. Sebelumnya ia hanya nomor
+    // urut sehingga boleh dikosongkan (diisi '1' otomatis) — tetapi sekarang
+    // ia menjadi pengenal unik siswa bersama kode kelas. Kalau dikosongkan,
+    // semua siswa tanpa nomor akan bertabrakan dan hanya siswa pertama yang
+    // dapat dibuat.
+    if (!/^[0-9]{1,3}$/.test(newStdAbsent.trim().replace(/^0+(?=\d)/, ''))) {
+      setAddStdError('Nomor absen wajib diisi dan harus berupa angka.');
       return;
     }
 
@@ -309,8 +313,7 @@ export default function TeacherDashboard() {
     const res = await createStudentByTeacher({
       classroom_code: selectedClassCode,
       name: newStdName,
-      absent_number: newStdAbsent || (students.length + 1).toString(),
-      nisn: newStdNisn.trim(),
+      absent_number: newStdAbsent,
       username: newStdUsername,
       password: newStdPassword,
       class_name: activeClassObj.name,
@@ -322,7 +325,6 @@ export default function TeacherDashboard() {
       setAddStdSuccess(`Akun "${res.student.name}" berhasil ditambahkan!`);
       setNewStdName('');
       setNewStdAbsent('');
-      setNewStdNisn('');
       setNewStdUsername('');
       setNewStdPassword('12345');
       setTimeout(() => setAddStdSuccess(''), 2500);
@@ -715,7 +717,7 @@ export default function TeacherDashboard() {
             <p className="text-[14.5px] text-amber-900 font-pixel mt-1 font-bold">
               Kode kelas hanya untuk menandai kelasmu — siswa <strong>tidak bisa</strong> mendaftar
               sendiri. Buatkan akun siswamu lewat <strong>EDIT KELAS → + TAMBAH SISWA</strong>:
-              akun langsung aktif dan satu NISN hanya boleh dipakai sekali.
+              akun langsung aktif, dan dalam satu kelas satu nomor absen hanya untuk satu siswa.
             </p>
           </div>
 
@@ -1150,8 +1152,8 @@ export default function TeacherDashboard() {
             {manageTab === 'add_student' && (
               <form onSubmit={handleCreateStudent} className="space-y-3 pt-1">
                 {/* Keterangan singkat: guru perlu tahu bahwa akun langsung
-                    aktif dan tidak perlu konfirmasi email, serta bahwa NISN
-                    tidak dapat dipakai dua kali. */}
+                    aktif dan tidak perlu konfirmasi email, serta bahwa nomor
+                    absen tidak boleh kembar di satu kelas. */}
                 <div className="p-2.5 rounded-xl bg-amber-100 border-2 border-amber-950/40">
                   <p className="text-[13px] text-amber-900 font-pixel font-semibold leading-relaxed">
                     Isi data siswa di bawah ini. Akun <strong>langsung aktif</strong> dan dapat
@@ -1181,38 +1183,27 @@ export default function TeacherDashboard() {
                     className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                   />
                 </div>
-                {/* NISN — pengenal unik siswa. Dibuat satu baris penuh karena
-                    10 digit lebih lebar dari kolom setengah. Satu NISN hanya
-                    boleh memiliki satu akun; server menolak yang duplikat. */}
-                <div>
-                  <label htmlFor="f-nisn" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
-                    NISN <span className="text-rose-700">(WAJIB)</span>
-                  </label>
-                  <input id="f-nisn"
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={10}
-                    value={newStdNisn}
-                    onChange={(e) => setNewStdNisn(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
-                    placeholder="0081234567"
-                    className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold tracking-wider"
-                  />
-                  <p className="mt-1 text-[12.5px] font-pixel text-amber-900/80 font-semibold">
-                    10 digit. Dipakai agar satu siswa tidak dapat memiliki dua akun.
-                  </p>
-                </div>
                 <div className="grid grid-cols-1 xs:grid-cols-2 gap-2.5">
                   <div>
+                    {/* NO. ABSEN kini WAJIB dan tidak boleh dikosongkan.
+                        Berperan ganda: nomor urut di kelas SEKALIGUS pengenal
+                        unik siswa bersama kode kelas. Server menolak nomor
+                        yang sudah dipakai siswa lain di kelas yang sama. */}
                     <label htmlFor="f-no-absen" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
-                      NO. ABSEN
+                      NO. ABSEN <span className="text-rose-700">(WAJIB)</span>
                     </label>
                     <input id="f-no-absen"
                       type="text"
+                      inputMode="numeric"
+                      maxLength={3}
                       value={newStdAbsent}
-                      onChange={(e) => setNewStdAbsent(e.target.value)}
+                      onChange={(e) => setNewStdAbsent(e.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
                       placeholder="15"
                       className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                     />
+                    <p className="mt-1 text-[12.5px] font-pixel text-amber-900/80 font-semibold">
+                      Dalam satu kelas tidak boleh ada nomor yang sama.
+                    </p>
                   </div>
                   <div>
                     <label htmlFor="f-username-siswa" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">

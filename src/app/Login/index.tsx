@@ -314,7 +314,7 @@ export default function Login() {
                 </p>
                 <p className="mt-1 text-[12.5px] text-amber-900 font-semibold leading-relaxed">
                   Akun siswa dibuat oleh guru. Mintalah gurumu membuka Posko Guru
-                  dan membuatkan akun dengan namamu, NISN, dan nomor absenmu.
+                  dan membuatkan akun dengan namamu dan nomor absenmu.
                   Pendaftaran sendiri sudah ditutup agar satu siswa hanya
                   memiliki satu akun.
                 </p>
