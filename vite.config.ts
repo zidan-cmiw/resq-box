@@ -8,12 +8,47 @@ export default defineConfig({
     chunkSizeWarningLimit: 800,
     rollupOptions: {
       output: {
+        // ── Pemecahan chunk ────────────────────────────────────────────────
+        // Tujuan: (1) unduhan pertama sekecil mungkin, (2) cache jangka
+        // panjang — memperbarui kode level TIDAK memaksa siswa mengunduh
+        // ulang library pihak ketiga.
+        //
+        // Catatan: paket yang sudah tidak dipakai (xyflow, lucide-react)
+        // entrinya dihapus, karena @xyflow/react dan page-flip sudah tidak
+        // diimpor apa pun. @dnd-kit dipertahankan karena masih dipakai.
         manualChunks(id: string) {
+          if (!id.includes('node_modules')) return;
+
+          // Mesin 3D — hanya dibutuhkan di Digital Twin Merapi.
+          // Dipisah agar tidak ikut terbawa ke halaman lain.
+          if (id.includes('node_modules/three')) return 'three-vendor';
+
+          // Mesin blok kode — hanya di Workspace/Action Lab.
           if (id.includes('node_modules/blockly')) return 'blockly';
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router')) return 'react-vendor';
-          if (id.includes('node_modules/@dnd-kit')) return 'dnd-vendor';
-          if (id.includes('node_modules/@xyflow')) return 'xyflow';
+
+          // Klien database & autentikasi.
+          if (id.includes('node_modules/@supabase') || id.includes('node_modules/supabase'))
+            return 'supabase-vendor';
+
+          // Grafik & ikon serbaguna.
+          if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-'))
+            return 'chart-vendor';
           if (id.includes('node_modules/lucide-react')) return 'icons';
+
+          // Tarik-seret.
+          if (id.includes('node_modules/@dnd-kit')) return 'dnd-vendor';
+
+          // Inti React — paling stabil, paling sering dipakai ulang.
+          if (
+            id.includes('node_modules/react/') ||
+            id.includes('node_modules/react-dom/') ||
+            id.includes('node_modules/react-router') ||
+            id.includes('node_modules/scheduler')
+          )
+            return 'react-vendor';
+
+          // Sisanya: satu keranjang agar tidak menjadi puluhan chunk kecil.
+          return 'vendor';
         },
       },
     },
@@ -38,10 +73,13 @@ export default defineConfig({
         // berkasnya masuk cache lewat runtimeCaching di bawah.
         globIgnores: [
           'assets/blockly-*.js',
+          'assets/three-vendor-*.js',
           'assets/Workspace-*.js',
           'assets/EvacuationCanvas-*.js',
+          'assets/Level1-*.js',
           'assets/Level2-*.js',
           'assets/Level3-*.js',
+          'assets/TeacherDashboard-*.js',
           // Ikon manifest sudah ditambahkan otomatis oleh vite-plugin-pwa;
           // mengecualikannya di sini mencegah entri precache ganda.
           'pwa-*.png',
