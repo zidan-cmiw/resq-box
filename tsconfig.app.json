@@ -7,6 +7,18 @@
     "types": ["vite/client", "vite-plugin-pwa/client", "node"],
     "skipLibCheck": true,
 
+    /* ── Keketatan tipe ────────────────────────────────────────────────────
+       Dinyatakan EKSPLISIT, bukan mengandalkan bawaan.
+
+       Catatan temuan: proyek ini memakai TypeScript 6.0.3, dan pada versi itu
+       `strict` sudah menyala secara BAWAAN. Karena itu kode ini sebenarnya
+       sudah lolos strictNullChecks + noImplicitAny tanpa error — pengukuran
+       menunjukkan 0 error baik dengan maupun tanpa flag ini.
+
+       Tetap ditulis di sini agar perilakunya tidak berubah bila kelak versi
+       TypeScript dinaikkan atau bawaannya diubah. */
+    "strict": true,
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,

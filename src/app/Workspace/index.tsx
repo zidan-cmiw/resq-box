@@ -166,9 +166,9 @@ export default function Workspace() {
       };
 
       wsRef.current = ws;
-    } catch (e: any) {
+    } catch (e) {
       setWsStatus('idle');
-      addLog(`[DIORAMA] Format IP salah: ${e.message}`, 'error');
+      addLog(`[DIORAMA] Format IP salah: ${e instanceof Error ? e.message : String(e)}`, 'error');
     }
   };
 
@@ -529,13 +529,13 @@ export default function Workspace() {
         if (typeof loop === 'function') await loop();
         await api.delay(50);
       }
-    } catch (err: any) {
-      if (err?.message === 'SIMULATION_STOPPED') {
+    } catch (err) {
+      if (err instanceof Error && err.message === 'SIMULATION_STOPPED') {
         // Silently abort, user pressed stop during a delay
         return;
       }
       console.error('Runtime error:', err);
-      addLog(`[ERROR] Error: ${err?.message ?? 'Unknown error'}`, 'error');
+      addLog(`[ERROR] Error: ${err instanceof Error ? err.message : String(err)}`, 'error');
       setRunning(false);
       runningRef.current = false;
     } finally {
