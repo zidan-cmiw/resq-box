@@ -72,10 +72,12 @@ export async function syncLevel3Progress(
   }
 
   const effectiveId = effectiveStudent?.id || activeUserId;
+  // Nama cadangan bila siswa belum terisi. Cabang khusus akun demo sudah
+  // dihapus bersama akunnya, sehingga nama cadangan kini tunggal.
   const effectiveName =
     effectiveStudent?.name ||
     authState.currentUser?.name ||
-    (effectiveId === 'std-demo-all-unlocked' ? 'Taruna Demo (Semua Level Terbuka)' : 'Petualang RESQ');
+    'Petualang RESQ';
   const effectiveClassroom =
     effectiveStudent?.classroom_id ||
     authState.currentUser?.classroom_code ||

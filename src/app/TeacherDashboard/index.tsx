@@ -233,9 +233,7 @@ export default function TeacherDashboard() {
         const isLv2Done = (sub2 && sub2.score >= 100) || Boolean(sub2?.details?.is_completed);
 
         let studentActiveLevel = 1;
-        if (s.username === 'demo') {
-          studentActiveLevel = s.unlocked_level || 3;
-        } else if (isLv2Done || (s.unlocked_level >= 3 && isLv1Done) || Boolean(sub3)) {
+        if (isLv2Done || (s.unlocked_level >= 3 && isLv1Done) || Boolean(sub3)) {
           studentActiveLevel = 3;
         } else if (isLv1Done || (s.unlocked_level >= 2 && !sub1)) {
           studentActiveLevel = 2;
@@ -875,13 +873,11 @@ export default function TeacherDashboard() {
                     const score3 = sub3 ? sub3.score : (completedMissionsCount3 > 0 ? Math.round((completedMissionsCount3 / 20) * 100) : 0);
                     const isLv3Done = score3 >= 100 || Boolean(sub3?.details?.is_completed) || completedMissionsCount3 >= 20;
                     const isLv3InProgress = !isLv3Done && (score3 > 0 || completedMissionsCount3 > 0);
-                    const isLv3Unlocked = isLv2Done || s.unlocked_level >= 3 || s.username === 'demo';
+                    const isLv3Unlocked = isLv2Done || s.unlocked_level >= 3;
 
                     // Hitung level aktif murid yang sesungguhnya:
                     let studentActiveLevel = 1;
-                    if (s.username === 'demo') {
-                      studentActiveLevel = s.unlocked_level || 3;
-                    } else if (isLv2Done || (s.unlocked_level >= 3 && isLv1Done)) {
+                    if (isLv2Done || (s.unlocked_level >= 3 && isLv1Done)) {
                       studentActiveLevel = 3;
                     } else if (isLv1Done || (s.unlocked_level >= 2 && !sub1)) {
                       studentActiveLevel = 2;
@@ -1399,7 +1395,7 @@ export default function TeacherDashboard() {
                 const score3 = sub3 ? sub3.score : (completedMissionsCount > 0 ? Math.round((completedMissionsCount / 20) * 100) : 0);
                 const isLv3Done = score3 >= 100 || Boolean(sub3?.details?.is_completed) || completedMissionsCount >= 20;
                 const isLv3InProgress = !isLv3Done && (score3 > 0 || completedMissionsCount > 0);
-                const isLv3Active = selectedStudentForDetail.unlocked_level >= 3 || selectedStudentForDetail.username === 'demo';
+                const isLv3Active = selectedStudentForDetail.unlocked_level >= 3;
 
                 return (
                   <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-2 text-[13px] font-semibold">

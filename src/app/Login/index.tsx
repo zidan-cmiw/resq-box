@@ -355,26 +355,12 @@ export default function Login() {
                 />
               </div>
 
-              {role === 'student' && (
-                <div id="tour-login-quick-demo" className="p-2.5 bg-amber-950/10 rounded-xl border-2 border-amber-900/30 text-center space-y-1">
-                  <span className="text-[13.5px] font-bold text-amber-950 block uppercase font-pixel-title">
-                    Akun Demo (Semua Level Terbuka):
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLoginUsername('demo');
-                      setLoginPassword('demo123');
-                      retroAudio.playSelect();
-                    }}
-                    className="font-pixel text-[14.5px] font-bold text-amber-950 bg-amber-50 hover:bg-amber-100/90 py-1 px-2 rounded border border-amber-900/40 w-full cursor-pointer flex items-center justify-between"
-                    title="Klik untuk mengisi otomatis akun demo"
-                  >
-                    <span>User: <strong className="text-emerald-700 font-pixel-title text-[13.5px] font-semibold">demo</strong> • Pass: <strong className="text-emerald-700 font-pixel-title text-[13.5px] font-semibold">demo123</strong></span>
-                    <span className="text-[12px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-pixel-title font-semibold">[ISI]</span>
-                  </button>
-                </div>
-              )}
+              {/* Kotak "Akun Demo" DIHAPUS.
+                  Sebelumnya bagian ini menampilkan kombinasi username dan
+                  password akun demo secara terbuka, lengkap dengan tombol yang
+                  mengisi otomatis kolom login. Siapa pun yang membuka halaman
+                  login dapat memakainya, dan akun itu membuka seluruh level.
+                  Kredensial tidak boleh ditampilkan di antarmuka. */}
 
               <button
                 type="submit"

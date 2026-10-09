@@ -106,16 +106,9 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         content:
           'Ayo masukkan username dan password akunmu di sini, lalu tekan tombol [MASUK SEKARANG] untuk meluncur ke markas utama permainan!',
       },
-      {
-        id: 'quick_demo',
-        title: 'Uji Coba Cepat (Akun Demo)',
-        badge: 'AKSES CEPAT',
-        targetSelector: '#tour-login-quick-demo',
-        placement: 'top',
-        content:
-          'Ingin mencoba fitur tanpa daftar? Klik tombol cepat di bawah ini untuk masuk sebagai Akun Siswa Demo (semua level langsung terbuka)!',
-        actionHint: 'Selamat mencoba dan nikmati petualangan belajarmu!',
-      },
+      // Langkah tour "Uji Coba Cepat (Akun Demo)" DIHAPUS bersama kotak akun
+      // demo di halaman login. Langkah itu menyuruh siswa memakai akun demo
+      // yang membuka seluruh level, dan kredensialnya ditampilkan terbuka.
     ],
   },
 

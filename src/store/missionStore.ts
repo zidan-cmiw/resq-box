@@ -41,10 +41,6 @@ export function loadMissionsForUser(userId?: string): string[] {
         const u = JSON.parse(rawUser);
         if (u.id && u.id !== targetId) candidateKeys.push(`resqbox_missions_${u.id}`);
         if (u.username) candidateKeys.push(`resqbox_missions_${u.username}`);
-        if (u.username === 'demo') {
-          candidateKeys.push('resqbox_missions_std-demo-all-unlocked');
-          candidateKeys.push('resqbox_missions_demo');
-        }
       } catch {}
     }
 
@@ -79,10 +75,6 @@ export function saveMissionsForUser(userId: string | undefined, missionIds: stri
         const u = JSON.parse(rawUser);
         if (u.id && u.id !== targetId) localStorage.setItem(`resqbox_missions_${u.id}`, data);
         if (u.username) localStorage.setItem(`resqbox_missions_${u.username}`, data);
-        if (u.username === 'demo') {
-          localStorage.setItem('resqbox_missions_std-demo-all-unlocked', data);
-          localStorage.setItem('resqbox_missions_demo', data);
-        }
       } catch {}
     }
   } catch {}
@@ -194,7 +186,7 @@ export const useMissionStore = create<MissionState>()((set, get) => ({
     if (!currentCategory || currentCategory.id === 'proyek') return true;
 
     const authState = useAuthStore.getState();
-    if (authState.currentUser?.username === 'demo' || authState.unlockedLevel >= 4) return true;
+    if (authState.unlockedLevel >= 4) return true;
 
     let unlockedMax = 1;
     const settings = authState.settings;

@@ -127,7 +127,6 @@ const getInitialStudent = (): Student | null => {
 
 const getInitialUnlockedLevel = (user: UserAccount | null): number => {
   if (typeof window === 'undefined') return 1;
-  if (user && user.username === 'demo') return 3;
   try {
     // Nilai dari SERVER selalu menang: dialah sumber kebenaran setelah
     // submit_level_result menaikkan level. Cache lokal hanya cadangan
@@ -165,9 +164,6 @@ export const useAuthStore = create<AuthState>()((set) => ({
     const res = await loginUser(username, password, role);
     if (res.success && res.user) {
       const user = res.user;
-      if (user.username === 'demo') {
-        user.unlocked_level = 3;
-      }
       // Bersihkan progress guest un-scoped agar tidak bocor ke akun baru
       try {
         localStorage.removeItem('resqbox_level2_progress_guest');
@@ -197,9 +193,10 @@ export const useAuthStore = create<AuthState>()((set) => ({
         localStorage.setItem('resqbox-student-profile', JSON.stringify(studentObj));
         const byUser = localStorage.getItem(`resqbox-unlocked-level_${user.id}`);
         const parsedByUser = byUser ? parseInt(byUser, 10) : 0;
-        const level = user.username === 'demo'
-          ? 3
-          : Math.max(user.unlocked_level || 1, !isNaN(parsedByUser) ? parsedByUser : 1);
+        const level = Math.max(
+          user.unlocked_level || 1,
+          !isNaN(parsedByUser) ? parsedByUser : 1
+        );
         localStorage.setItem(`resqbox-unlocked-level_${user.id}`, level.toString());
         localStorage.setItem('resqbox-unlocked-level', level.toString());
         try {
@@ -232,9 +229,6 @@ export const useAuthStore = create<AuthState>()((set) => ({
 
   setCurrentUser: (user: UserAccount | null) => {
     if (user) {
-      if (user.username === 'demo') {
-        user.unlocked_level = 3;
-      }
       localStorage.setItem('resqbox-current-user', JSON.stringify(user));
       if (user.role === 'student') {
         const studentObj: Student = {
@@ -254,9 +248,10 @@ export const useAuthStore = create<AuthState>()((set) => ({
         localStorage.setItem('resqbox-student-profile', JSON.stringify(studentObj));
         const byUser = localStorage.getItem(`resqbox-unlocked-level_${user.id}`);
         const parsedByUser = byUser ? parseInt(byUser, 10) : 0;
-        const level = user.username === 'demo'
-          ? 3
-          : Math.max(user.unlocked_level || 1, !isNaN(parsedByUser) ? parsedByUser : 1);
+        const level = Math.max(
+          user.unlocked_level || 1,
+          !isNaN(parsedByUser) ? parsedByUser : 1
+        );
         localStorage.setItem(`resqbox-unlocked-level_${user.id}`, level.toString());
         localStorage.setItem('resqbox-unlocked-level', level.toString());
         try {
