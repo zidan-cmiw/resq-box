@@ -91,13 +91,32 @@ Jangan menggabungkan dua langkah dalam satu commit.
 |---|---|---|---|
 1 | `engine/draw/base.ts` — `drawRoundedBadgeL2`, `drawRealisticVolcanicSmoke` | ✅ **selesai** | 10.992 → 10.849 baris |
 2 | `engine/draw/volcano.ts` — magma, lava, abu, kawanan burung | ✅ **selesai** | 10.849 → 9.623 baris |
-3 | `engine/draw/assembly.ts` — lapangan evakuasi Area 3 | ✅ **selesai** | 9.623 → **8.823 baris** |
-4 | `engine/draw/classroom.ts` (≈2.050 baris) | belum | |
+3 | `engine/draw/assembly.ts` — lapangan evakuasi Area 3 | ✅ **selesai** | 9.623 → 8.838 baris |
+4 | `engine/draw/classroom.ts` + `overlay.ts` — ruang kelas & lapisan tampilan | ✅ **selesai** | 8.838 → **6.234 baris** |
 5 | `engine/draw/merapi.ts` (≈700 baris) | belum | |
-6 | `engine/draw/facilities.ts` + `overlay.ts` (≈600 baris) | belum | |
-7 | `renderer.ts` menjadi orkestrator tipis (< 600 baris) | belum | |
+6 | `engine/draw/facilities.ts` (≈300 baris) | belum | |
+7 | `renderer.ts` menjadi orkestrator tipis (< 1.500 baris) | belum | |
 
-**Progres: 10.992 → 8.823 baris (−20%), 3 dari 7 langkah selesai.**
+**Progres: 10.992 → 6.234 baris (−43%), 4 dari 7 langkah selesai.**
+
+### Catatan dari Langkah 4
+
+Rentang 1526–4127 ternyata **satu blok berurutan tanpa deklarasi lain yang
+menyela**, dan terbukti tidak memanggil fungsi di luar dirinya. Blok itu berisi
+DUA tema sekaligus, sehingga dipecah berdasarkan batas fungsi menjadi:
+
+- `classroom.ts` (2.252 baris, 8 fungsi) — hanya bergantung pada `./base`
+  dan tipe `GameStateL2`.
+- `overlay.ts` (413 baris, 6 fungsi) — hanya bergantung pada `./base`.
+
+Ketiga belas fungsi diverifikasi identik baris-per-barris dengan versi git
+sebelumnya. Blok komentar banner (34 baris) yang tidak terklasifikasi otomatis
+dipindahkan ke bagian atas `classroom.ts` sebagai catatan bagian.
+
+Temuan kecil: `drawClassroomEarthquakeWallCracks` hanya dipanggil dari dalam
+`classroom.ts` sendiri, sehingga tidak perlu diimpor oleh `renderer.ts` —
+hanya perlu diekspor ulang agar API publik tidak berubah.
+
 
 ### Catatan dari Langkah 3
 
