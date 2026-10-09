@@ -1,0 +1,78 @@
+# ── Header Keamanan untuk Cloudflare Pages ────────────────────────────────
+#
+# MENGAPA BERKAS INI ADA
+#   Sebelumnya header keamanan diatur di `vercel.json`. Proyek ini pindah ke
+#   Cloudflare Pages karena jaringan kampus MEMBLOKIR `vercel.app` (DNS-nya
+#   dijail ke 127.0.0.1), sehingga web tidak dapat diakses dari kampus.
+#
+#   Cloudflare Pages membaca berkas bernama `_headers` di akar keluaran build.
+#   Karena `public/` disalin apa adanya oleh Vite ke `dist/`, berkas ini
+#   otomatis ikut ke hasil build tanpa konfigurasi tambahan.
+#
+# PERBEDAAN DENGAN versi vercel.json
+#   Cloudflare TIDAK mendukung pola regex pada `_headers`. Pola yang dipakai
+#   di sini adalah pencocokan sederhana:
+#     /*            -> semua berkas
+#     /assets/*     -> berkas di dalam folder assets
+#     /*.webp       -> semua berkas berakhiran .webp
+#
+#   Aturan penggantian SPA (`/*` -> `/index.html`) TIDAK ditulis di sini karena
+#   Cloudflare Pages sudah menanganinya sendiri: bila berkas tidak ditemukan
+#   dan tidak ada `404.html`, halaman `index.html` yang disajikan.
+
+# ── Header keamanan untuk SEMUA berkas ────────────────────────────────────
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://fonts.googleapis.com https://fonts.gstatic.com; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+
+# ── Berkas ber-hash: aman di-cache selamanya ──────────────────────────────
+# Vite memberi nama berkas dengan hash isi (mis. index-DbITgrVG.js), sehingga
+# isinya tidak akan pernah berubah untuk nama yang sama.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ── Ikon dan manifest: jarang berubah ─────────────────────────────────────
+/favicon.png
+  Cache-Control: public, max-age=604800
+/favicon.svg
+  Cache-Control: public, max-age=604800
+/apple-touch-icon.png
+  Cache-Control: public, max-age=604800
+/pwa-192x192.png
+  Cache-Control: public, max-age=604800
+/pwa-512x512.png
+  Cache-Control: public, max-age=604800
+
+# ── Gambar dan model 3D: jarang berubah ───────────────────────────────────
+/*.webp
+  Cache-Control: public, max-age=2592000
+/*.jpg
+  Cache-Control: public, max-age=2592000
+/*.jpeg
+  Cache-Control: public, max-age=2592000
+/*.png
+  Cache-Control: public, max-age=2592000
+/*.stl
+  Cache-Control: public, max-age=2592000
+
+# ── Service worker: HARUS selalu diperiksa ulang ──────────────────────────
+# Bila berkas ini di-cache, pembaruan aplikasi tidak akan pernah terdeteksi
+# dan pengguna terjebak pada versi lama.
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+/registerSW.js
+  Cache-Control: public, max-age=0, must-revalidate
+/manifest.webmanifest
+  Cache-Control: public, max-age=0, must-revalidate
+
+# ── index.html: harus selalu diperiksa ulang ──────────────────────────────
+# index.html memuat nama berkas ber-hash. Bila di-cache, pengguna akan terus
+# memuat berkas lama walaupun sudah ada versi baru.
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+/
+  Cache-Control: public, max-age=0, must-revalidate

@@ -57,7 +57,21 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'prompt',
+      // ── autoUpdate, BUKAN prompt ──────────────────────────────────────
+      // Sebelumnya 'prompt': service worker menunggu pengguna menekan tombol
+      // "Muat Ulang" pada notifikasi PWABadge. Akibatnya, bila notifikasi itu
+      // tidak terlihat atau ditutup, browser TETAP menyajikan berkas lama
+      // tanpa batas waktu.
+      //
+      // Gejala nyata yang pernah terjadi: halaman login masih menampilkan kotak
+      // akun demo yang sudah dihapus dari kode, dan gambar latar tampil rusak
+      // karena berkas WebP baru belum pernah dimuat. Pengguna tidak punya cara
+      // menyadari bahwa yang dilihatnya sudah usang.
+      //
+      // Dengan 'autoUpdate', service worker baru langsung mengambil alih dan
+      // halaman dimuat ulang sendiri. Ini penting untuk lomba: juri yang pernah
+      // membuka web akan selalu melihat versi terbaru tanpa perlu hard refresh.
+      registerType: 'autoUpdate',
       devOptions: {
         enabled: true,
       },

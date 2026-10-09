@@ -12,10 +12,17 @@ dan ke mana harus melihat saat ada laporan dari lapangan.
 
 | Komponen | Di mana | Yang perlu dijaga |
 |---|---|---|
-Aplikasi web (SPA) | Vercel | Build sukses, env var lengkap, aset ter-cache |
+Aplikasi web (SPA) | Cloudflare Pages | Build sukses, env var lengkap, aset ter-cache |
 Database & Auth | Supabase (Postgres + Auth) | Ukuran DB, egress, koneksi Realtime, backup |
 PWA cache | Peramban siswa | Service worker tidak menahan versi lama |
 Aset statis | `public/` di repo | Ukuran unduhan, header cache |
+
+> **Mengapa Cloudflare Pages, bukan Vercel:** jaringan kampus MEMBLOKIR seluruh
+> domain `vercel.app` dengan menjail DNS-nya ke `127.0.0.1`. Dari WiFi kampus,
+> web di Vercel tidak dapat dibuka sama sekali. Domain Cloudflare
+> (`pages.dev`, `workers.dev`) tidak diblokir, sehingga aplikasi tetap dapat
+> diakses. Bila memindahkan hosting lagi, **uji dulu dari jaringan tempat
+> aplikasi akan dipakai**, bukan hanya dari jaringan rumah.
 
 ---
 
@@ -41,7 +48,8 @@ Tambahan yang berguna:
 
 ### Cara menyalakan pelaporan
 
-Isi di Vercel → Settings → Environment Variables (centang Production + Preview):
+Isi di **Cloudflare Pages → Settings → Environment variables** (tambahkan untuk
+**Production** dan **Preview** sekaligus):
 
 ```ini
 VITE_SUPABASE_URL=https://<project-ref>.supabase.co
@@ -51,6 +59,13 @@ VITE_SENTRY_DSN=https://<key>@o<org>.ingest.sentry.io/<project>
 VITE_MONITORING_SAMPLE=0.1
 VITE_APP_VERSION=<nomor rilis, mis. 1.0.0>
 ```
+
+> **Dua variabel pertama WAJIB ada sebelum build.** Vite menanamkan nilainya
+> ke dalam berkas JavaScript pada saat build, jadi bila kosong, aplikasi akan
+> terbangun dalam keadaan tidak dapat login — sementara build tetap terlihat
+> berhasil. Untuk mencegahnya, `npm run build` menjalankan
+> `scripts/cek-env.mjs` lebih dahulu dan **menghentikan build** dengan pesan
+> jelas bila kedua variabel itu belum diisi.
 
 > Bila `VITE_SENTRY_DSN` dikosongkan, aplikasi tetap berjalan normal — hanya
 > laporan error yang tidak terkirim. Semua sudah ditangani di
@@ -70,9 +85,9 @@ email, UUID, JWT, nomor telepon, dan kunci berisi kredensial
 
 ### 3.1 Aplikasi tidak bisa dibuka sama sekali
 
-1. Cek status: **status.supabase.com** dan **vercel-status.com**.
-2. Cek deployment terakhir di Vercel — apakah build gagal?
-3. Bila baru saja deploy: **rollback** lewat Vercel → Deployments → pilih
+1. Cek status: **status.supabase.com** dan **cloudflarestatus.com**.
+2. Cek deployment terakhir di Cloudflare Pages — apakah build gagal?
+3. Bila baru saja deploy: **rollback** lewat Cloudflare Pages → Deployments → pilih
    deployment sebelumnya → *Promote to Production*.
 4. Bila Supabase yang bermasalah: tunggu, sambil pantau status page.
 

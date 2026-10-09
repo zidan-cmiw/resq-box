@@ -8,10 +8,12 @@
   },
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/cek-env.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc -b",
+    "cek:env": "node scripts/cek-env.mjs",
     "test": "node --test --experimental-strip-types \"src/**/__tests__/*.test.ts\"",
     "test:sql": "python supabase/validate_sql.py && python supabase/validate_plpgsql_vars.py",
     "test:isolation": "node supabase/test_isolation.mjs"

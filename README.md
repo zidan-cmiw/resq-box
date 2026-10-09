@@ -211,7 +211,7 @@ RESQ-BOX/
 │
 ├── public/                         # Aset publik & PWA manifest
 ├── vite.config.ts                  # Konfigurasi Vite + PWA
-├── vercel.json                     # Deployment config
+├── public/_headers                 # Header keamanan (Cloudflare Pages)
 └── package.json
 ```
 
@@ -318,10 +318,19 @@ Level 3: Simulation Game (Mitigasi Bencana)  ▼
 
 ## 🌐 Deployment & Offline
 
-- **Platform**: Vercel (frontend) + shared hosting (Laravel backend)
-- **PWA**: Service worker aktif — aplikasi bekerja offline setelah pemuatan pertama
+- **Platform**: Cloudflare Pages (frontend statis). Header keamanan diatur lewat
+  `public/_headers`
+- **Database & Auth**: Supabase (Postgres + Auth + Row Level Security). Tidak ada
+  server aplikasi sendiri — seluruh otorisasi ditegakkan RLS di database
+- **PWA**: Service worker aktif dengan `autoUpdate` — aplikasi bekerja offline
+  setelah pemuatan pertama, dan versi baru langsung menggantikan versi lama
 - **Cache**: Semua aset dan logika engine di-cache lokal
-- **State**: Progress disimpan di localStorage, tersinkronisasi ke backend saat online
+- **State**: Progress disimpan di localStorage, tersinkronisasi ke Supabase saat online
+
+> **Catatan hosting:** Vercel tidak dipakai karena seluruh domain `vercel.app`
+> diblokir di jaringan kampus (DNS dijail ke `127.0.0.1`), sehingga aplikasi
+> tidak dapat dibuka dari sana. Bila memindahkan hosting lagi, **uji dulu dari
+> jaringan tempat aplikasi akan dipakai**.
 
 ---
 
