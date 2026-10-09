@@ -88,6 +88,25 @@ CREATE UNIQUE INDEX IF NOT EXISTS profiles_kelas_absen_key
 
 
 -- ── 3. Guru membuat akun siswa — kembali ke 5 argumen, tanpa NISN ─────────
+
+-- ⚠️ DROP DIJALANKAN SEBELUM GRANT — INI PENTING
+--
+--   Versi pertama migrasi ini menaruh DROP di BAGIAN AKHIR, setelah GRANT.
+--   Di database yang masih memakai fungsi 6-argumen (hasil migrasi 08),
+--   perintah GRANT untuk 5-argumen dijalankan lebih dulu — dan gagal, karena
+--   fungsi dengan tanda tangan itu belum ada.
+--
+--   Kegagalan itu bukan sekadar satu baris yang dilewati: di Supabase SQL
+--   Editor seluruh blok dijalankan sebagai SATU transaksi, sehingga perintah
+--   yang gagal MEMBATALKAN SEMUA perintah sebelumnya di blok yang sama.
+--   Akibatnya GRANT untuk fungsi lain (termasuk get_my_profile) ikut batal,
+--   dan seluruh pengguna tidak dapat login dengan pesan "Profil tidak
+--   ditemukan" — padahal profilnya ada dan haknya sudah ditulis di berkas.
+--
+--   Karena itu urutannya dibalik: bereskan tanda tangan fungsi DULU, baru
+--   berikan haknya.
+DROP FUNCTION IF EXISTS public.teacher_create_student(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT);
+
 CREATE OR REPLACE FUNCTION public.teacher_create_student(
   p_classroom_code TEXT,
   p_name           TEXT,
@@ -245,9 +264,8 @@ END $$;
 REVOKE ALL ON FUNCTION public.teacher_create_student(TEXT, TEXT, TEXT, TEXT, TEXT) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.teacher_create_student(TEXT, TEXT, TEXT, TEXT, TEXT) TO authenticated;
 
--- Cabut versi 6-argumen (yang memakai NISN) supaya tidak ada jalur pembuatan
--- akun lama yang masih dapat dipanggil.
-DROP FUNCTION IF EXISTS public.teacher_create_student(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT);
+-- Versi 6-argumen sudah dibuang di ATAS, sebelum GRANT. Tidak ada lagi
+-- perintah di sini yang dapat gagal karena tanda tangan yang tidak cocok.
 
 
 -- ── 4. Trigger pembuatan profil: hapus pembacaan nisn ─────────────────────

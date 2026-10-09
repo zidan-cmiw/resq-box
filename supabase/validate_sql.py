@@ -29,13 +29,16 @@ SUPABASE_DIR = Path(__file__).resolve().parent
 
 # Daftar berkas DIPINDAI OTOMATIS, bukan ditulis satu per satu.
 #
-# Sebelumnya daftar ini hardcoded dan hanya memuat migrasi 01-03. Akibatnya
-# migrasi 04 sampai 08 tidak pernah diperiksa oleh validator, sehingga galat
-# sintaks pada berkas itu baru ketahuan saat dijalankan di Supabase SQL Editor
-# — di database produksi. Berkas baru kini otomatis ikut diperiksa.
-TARGETS = sorted((SUPABASE_DIR / "migrations").glob("*.sql")) + [
-    SUPABASE_DIR / "verify_security.sql",
-]
+# Sejarah kesalahan berkas ini, supaya tidak terulang:
+#   - Versi 1: daftarnya hardcoded dan hanya memuat migrasi 01-03, sehingga
+#     migrasi 04-08 tidak pernah diperiksa. Galat sintaks di berkas itu baru
+#     ketahuan saat dijalankan di Supabase — di database produksi.
+#   - Versi 2: memindai folder migrations/, tetapi MASIH melewatkan berkas .sql
+#     yang berada di akar folder supabase/ (mis. perbaiki_hak_fungsi.sql).
+#   - Versi 3 (ini): memindai SELURUH berkas .sql di bawah supabase/.
+#
+# Berkas baru kini otomatis ikut diperiksa, di mana pun ia diletakkan.
+TARGETS = sorted(SUPABASE_DIR.rglob("*.sql"))
 
 
 def validate(path: Path) -> tuple[bool, str]:
