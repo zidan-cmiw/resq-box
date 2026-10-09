@@ -18,7 +18,8 @@
     "test:sql": "python supabase/validate_sql.py && python supabase/validate_plpgsql_vars.py",
     "test:isolation": "node supabase/test_isolation.mjs",
     "cek:pendaftaran": "node supabase/cek_pendaftaran.mjs",
-    "cek:keamanan": "python scripts/audit_keamanan.py"
+    "cek:keamanan": "python scripts/audit_keamanan.py",
+    "diagnosa:akun": "node supabase/diagnosa_akun.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

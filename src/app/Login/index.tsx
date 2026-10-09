@@ -16,6 +16,17 @@ export default function Login() {
   // Login Form States
   const [loginUsername, setLoginUsername] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  /**
+   * Apakah sandi sedang ditampilkan.
+   *
+   * Disediakan karena siswa SMP sering salah ketik sandi, terutama di ponsel
+   * yang menyembunyikan huruf terakhir yang baru diketik. Tanpa cara
+   * memeriksa, mereka hanya tahu "sandi salah" tanpa tahu huruf mana yang
+   * keliru, lalu mencoba berulang kali sampai terkena pembatasan percobaan.
+   *
+   * Keadaannya dimulai dari tersembunyi, dan TIDAK disimpan ke mana pun.
+   */
+  const [lihatPassword, setLihatPassword] = useState(false);
 
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -274,16 +285,41 @@ export default function Login() {
               >
                 Password
               </label>
-              <input
-                id="login-password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                placeholder="Masukkan password..."
-                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner font-semibold"
-              />
+              {/* Tombol lihat sandi.
+                  Siswa SMP sering salah ketik sandi, terutama karena papan
+                  ketik ponsel menyembunyikan huruf yang baru diketik. Tanpa
+                  cara memeriksa, mereka hanya tahu "sandi salah" tanpa tahu
+                  huruf mana yang keliru, lalu mencoba berulang kali sampai
+                  terkunci sementara oleh pembatasan percobaan.
+
+                  Tombolnya diletakkan DI DALAM kolom agar tidak memakan ruang
+                  tambahan pada layar sempit. `pr-11` pada kolom memberi ruang
+                  supaya teks sandi tidak tertimpa tombol. */}
+              <div className="relative">
+                <input
+                  id="login-password"
+                  name="password"
+                  type={lihatPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="Masukkan password..."
+                  className="w-full pl-3 pr-11 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner font-semibold"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    retroAudio.playHover();
+                    setLihatPassword((v) => !v);
+                  }}
+                  aria-label={lihatPassword ? 'Sembunyikan password' : 'Lihat password'}
+                  aria-pressed={lihatPassword}
+                  title={lihatPassword ? 'Sembunyikan password' : 'Lihat password'}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 rounded-md flex items-center justify-center text-amber-900 hover:bg-amber-200/80 active:translate-y-[calc(-50%+1px)] transition-colors cursor-pointer"
+                >
+                  <PixelIcon name={lihatPassword ? 'eye-off' : 'eye'} size={19} />
+                </button>
+              </div>
             </div>
 
             {/* Kotak "Akun Demo" DIHAPUS.
