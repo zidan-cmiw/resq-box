@@ -46,7 +46,6 @@ interface RuntimeState {
   isRunning: boolean;
   sensorValues: SensorValues;
   consoleLogs: ConsoleLog[];
-  showSensorPanel: boolean;
   showConsole: boolean;
   pinStates: PinStates;
 
@@ -70,7 +69,6 @@ interface RuntimeState {
   setSensorValue: (pin: keyof SensorValues, value: number | boolean) => void;
   addLog: (text: string, type?: ConsoleLog['type']) => void;
   clearLogs: () => void;
-  toggleSensorPanel: () => void;
   toggleConsole: () => void;
   toggleMapExpanded: () => void;
   triggerDisasterReset: () => void;
@@ -98,7 +96,6 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
     D3: false,
   },
   consoleLogs: [],
-  showSensorPanel: false,
   showConsole: true,
   pinStates: { ...DEFAULT_PIN_STATES },
 
@@ -137,7 +134,6 @@ export const useRuntimeStore = create<RuntimeState>((set) => ({
   },
 
   clearLogs: () => set({ consoleLogs: [] }),
-  toggleSensorPanel: () => set((s) => ({ showSensorPanel: !s.showSensorPanel })),
   toggleConsole: () => set((s) => ({ showConsole: !s.showConsole })),
   toggleMapExpanded: () => set((s) => ({ isMapExpanded: !s.isMapExpanded })),
 

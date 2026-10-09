@@ -55,30 +55,22 @@ import {
 } from '../../utils/webSerial';
 
 
-// Parse satu baris data dari hardware (serial/websocket) → perbarui Digital Twin.
-// Format dari ESP32: "SENSOR:A1:750", "SENSOR:A2:600", "SENSOR:D2:1", "SENSOR:D3:0"
+// Deteksi ESP32 baru menyala/reboot, lalu kirim perintah penjinak agar LED
+// RGB (mode Common Anode, Active LOW) tidak menyala putih saat idle.
+//
+// CATATAN: parsing baris "SENSOR:..." SUDAH DIHAPUS. Diorama fisik tidak
+// memakai sensor (keputusan pemilik proyek), jadi jalur itu hanya menyesatkan
+// pembaca kode. Format yang dulu dirancang, bila kelak sensor ditambahkan:
+//   "SENSOR:A1:750" (getaran 0-1023), "SENSOR:A2:600" (suhu),
+//   "SENSOR:D2:1" dan "SENSOR:D3:0" (tombol)
 function handleHardwareLine(line: string) {
   const clean = line.trim();
-  // Jika ESP32 baru dinyalakan/reboot, pastikan mode Common Anode (default yom.ino) & matikan LED
   if (clean.includes('ESP32') || clean.includes('SISTEM SIAP') || clean.includes('CONNECTED_TO_ESP32')) {
     if (isSerialConnected()) {
       sendSerial('anode\n');
       sendSerial('rgb off\n');
       sendSerial('led off\n');
     }
-  }
-
-  const parts = clean.split(':');
-  if (parts[0] !== 'SENSOR' || parts.length < 3) return;
-  const pin = parts[1];
-  const raw = parts[2];
-  const store = useRuntimeStore.getState();
-  if (pin === 'A1' || pin === 'A2') {
-    const num = parseInt(raw, 10);
-    if (!Number.isNaN(num)) store.setSensorValue(pin, num);
-  } else if (pin === 'D2' || pin === 'D3') {
-    const on = raw === '1' || raw.toUpperCase() === 'HIGH' || raw.toUpperCase() === 'ON';
-    store.setSensorValue(pin, on);
   }
 }
 
@@ -477,13 +469,20 @@ export default function Workspace() {
       setLocation: (loc: string) => {
         useRuntimeStore.getState().setLocationContext(loc);
       },
+      // Dipakai oleh blok "Tombol D2 ditekan?" dan "Tombol D3 ditekan?".
+      //
+      // PENTING — keterbatasan yang perlu diketahui guru:
+      //   Diorama fisik TIDAK memakai sensor/tombol, sehingga kedua blok ini
+      //   selalu bernilai false saat dijalankan. Blok tetap disediakan karena
+      //   masih berguna untuk melatih pola percabangan (jika ... maka ...),
+      //   tetapi JANGAN dijadikan dasar penilaian otomatis.
+      //
+      //   Bila kelak tombol ditambahkan ke diorama, firmware cukup memancarkan
+      //   baris "SENSOR:D2:1" / "SENSOR:D3:0" dan parser di handler serial
+      //   perlu dihidupkan kembali (lihat catatan pada handleHardwareLine).
       getPin: (pin: string) => {
-        const s = useRuntimeStore.getState().sensorValues;
-        return (s as any)[pin] ?? false;
-      },
-      getSensor: (pin: string) => {
-        const s = useRuntimeStore.getState().sensorValues;
-        return (s as any)[pin] ?? 0;
+        const s = useRuntimeStore.getState().sensorValues as unknown as Record<string, unknown>;
+        return s[pin] === true;
       },
       delay: (ms: number) => new Promise<void>((resolve, reject) => {
         if (!runningRef.current) return reject(new Error('SIMULATION_STOPPED'));
