@@ -74,8 +74,21 @@ export const id = {
   // ── Halaman masuk & daftar ──────────────────────────────────────────────
   login: {
     title: 'MASUK RESQ-BOX',
-    loginTab: 'MASUK',
-    registerTab: 'DAFTAR BARU',
+    // CATATAN: kunci berikut sudah TIDAK ADA karena fiturnya dihapus.
+    //   loginTab, registerTab  -> tab [ MASUK ] / [ DAFTAR AKUN BARU ] dihapus
+    //   registerTitle, fullName, fullNamePlaceholder, absentPlaceholder,
+    //   classCode, classCodePlaceholder, classCodeHint,
+    //   usernamePlaceholderRegister, submitRegister
+    //                          -> seluruh formulir pendaftaran mandiri dihapus
+    //
+    // Pendaftaran mandiri ditutup: akun siswa kini dibuat oleh guru lewat
+    // Posko Guru, dan satu NISN hanya boleh memiliki satu akun.
+    //
+    // CATATAN LEBIH LUAS: seluruh bagian `login` di kamus ini sebenarnya sudah
+    // tidak terpakai — halaman Login menuliskan teksnya langsung dan tidak
+    // memanggil useTranslation sama sekali. Yang dihapus di sini hanya kunci
+    // yang menjadi yatim AKIBAT perubahan ini; sisanya dibiarkan supaya
+    // pembersihannya tidak tercampur dengan perubahan fitur.
     roleStudent: 'Siswa',
     roleTeacher: 'Guru',
     usernameLabel: 'Username',
@@ -84,15 +97,6 @@ export const id = {
     passwordLabel: 'Password',
     passwordPlaceholder: 'Masukkan password…',
     submitLogin: 'MASUK',
-    registerTitle: 'DAFTAR AKUN SISWA',
-    fullName: 'Nama Lengkap Siswa',
-    fullNamePlaceholder: 'Misal: Vincent Pratama',
-    absentPlaceholder: 'Misal: 08',
-    classCode: 'Kode Kelas',
-    classCodePlaceholder: 'Misal: 8B atau RESQ-8B',
-    classCodeHint: 'Wajib diisi. Mintakan kode kelas kepada gurumu bila belum tahu.',
-    usernamePlaceholderRegister: 'vincent8b',
-    submitRegister: 'DAFTAR SEKARANG',
     loadingSession: 'Memeriksa sesi…',
     errorUsernameTaken: 'Username sudah dipakai. Coba username lain.',
     errorCredentials: 'Username atau password salah.',

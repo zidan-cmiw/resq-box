@@ -88,15 +88,19 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         content:
           'Pilih peranmu terlebih dahulu: [AKUN SISWA] untuk bermain petualangan sains Level 1-3, atau [AKUN GURU] untuk bapak/ibu guru yang ingin mengelola kelas dan memantau rapor nilai siswa.',
       },
-      {
-        id: 'auth_modes',
-        title: 'Masuk Akun atau Daftar Baru',
-        badge: 'AUTENTIKASI',
-        targetSelector: '#tour-login-modes',
-        placement: 'bottom',
-        content:
-          'Jika sudah memiliki akun, pilih [MASUK]. Namun jika kamu siswa baru yang belum terdaftar, klik [DAFTAR AKUN BARU] untuk membuat akun menggunakan Nama, No Absen, dan Kode Kelas dari gurumu!',
-      },
+      // Langkah tour "auth_modes" (Masuk Akun atau Daftar Baru) DIHAPUS.
+      //
+      // Langkah itu menunjuk `#tour-login-modes` dan menyuruh siswa menekan
+      // [DAFTAR AKUN BARU]. Keduanya sudah tidak ada: pendaftaran mandiri
+      // ditutup, akun siswa dibuat oleh guru, dan tombolnya dihapus dari
+      // halaman login.
+      //
+      // Kalau langkah ini dibiarkan, panduan akan menyorot elemen yang tidak
+      // ada — sehingga kotak panduannya muncul tanpa arah, dan siswa disuruh
+      // menekan tombol yang tidak terlihat.
+      //
+      // Petunjuk "belum punya akun" kini tampil tetap di bawah formulir login,
+      // jadi tidak lagi memerlukan langkah panduan tersendiri.
       {
         id: 'form_inputs',
         title: 'Formulir Username & Password',

@@ -12,7 +12,6 @@ export default function Login() {
   const initialRole = searchParams.get('role') === 'teacher' ? 'teacher' : 'student';
 
   const [role, setRole] = useState<'student' | 'teacher'>(initialRole);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   // Login Form States
   const [loginUsername, setLoginUsername] = useState('');
@@ -213,7 +212,6 @@ export default function Login() {
               onClick={() => {
                 retroAudio.playSelect();
                 setRole('teacher');
-                setAuthMode('login');
                 setErrorMsg('');
               }}
               className={`py-2 px-3 rounded-lg text-[13px] font-pixel-title font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${role === 'teacher'
@@ -226,43 +224,15 @@ export default function Login() {
             </button>
           </div>
 
-          {/* ── SUB-HEADER PER ROLE ── */}
-          {role === 'student' ? (
-            <div id="tour-login-modes" className="flex items-center justify-center gap-3 text-[13px] font-semibold">
-              <button
-                type="button"
-                onClick={() => {
-                  retroAudio.playSelect();
-                  setAuthMode('login');
-                  setErrorMsg('');
-                }}
-                className={`pb-1 border-b-2 font-bold cursor-pointer transition-colors ${authMode === 'login'
-                  ? 'border-amber-950 text-amber-950 font-pixel-title'
-                  : 'border-transparent text-amber-900/60 hover:text-amber-950'
-                  }`}
-              >
-                [ MASUK ]
-              </button>
-              <span className="text-amber-950/30">•</span>
-              <button
-                type="button"
-                onClick={() => {
-                  retroAudio.playSelect();
-                  setAuthMode('register');
-                  setErrorMsg('');
-                }}
-                className={`pb-1 border-b-2 font-bold cursor-pointer transition-colors ${authMode === 'register'
-                  ? 'border-amber-950 text-amber-950 font-pixel-title'
-                  : 'border-transparent text-amber-900/60 hover:text-amber-950'
-                  }`}
-              >
-                [ DAFTAR AKUN BARU ]
-              </button>
-            </div>
-          ) : (
-            <div className="">
-            </div>
-          )}
+          {/* ── SUB-HEADER PER ROLE ──
+              Sebelumnya di sini ada dua tab: [ MASUK ] dan [ DAFTAR AKUN BARU ].
+              Tab "DAFTAR AKUN BARU" DIHAPUS karena pendaftaran mandiri sudah
+              ditutup — akun siswa kini dibuat oleh guru lewat Posko Guru.
+
+              Seluruh blok sub-header ikut dihapus, bukan hanya tombolnya:
+              dengan hanya satu pilihan tersisa, deretan tab tidak lagi punya
+              fungsi dan hanya membingungkan (terlihat seperti masih ada pilihan
+              lain). Karena itu tidak ada yang perlu ditampilkan di sini. */}
 
           {/* Error Notification Alert */}
           {errorMsg && (
@@ -272,104 +242,85 @@ export default function Login() {
             </div>
           )}
 
-          {/* ── 1. FORM LOGIN (SISWA ATAU GURU) ── */}
-          {(authMode === 'login' || role === 'teacher') && (
-            <form id="tour-login-inputs" onSubmit={handleLogin} className="space-y-3">
-              <div>
-                <label
-                  htmlFor="login-username"
-                  className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide"
-                >
-                  Username {role === 'teacher' ? 'Guru' : 'Siswa'}
-                </label>
-                <div className="relative">
-                  <input
-                    id="login-username"
-                    name="username"
-                    type="text"
-                    autoComplete="username"
-                    value={loginUsername}
-                    onChange={(e) => setLoginUsername(e.target.value)}
-                    placeholder={role === 'teacher' ? 'Misal: guru' : 'Username siswa...'}
-                    className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner font-semibold"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="login-password"
-                  className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide"
-                >
-                  Password
-                </label>
+          {/* ── 1. FORM LOGIN (SISWA ATAU GURU) ──
+              Dulu dibungkus syarat authMode; sekarang form ini selalu
+              tampil karena tidak ada lagi mode pendaftaran. */}
+          <form id="tour-login-inputs" onSubmit={handleLogin} className="space-y-3">
+            <div>
+              <label
+                htmlFor="login-username"
+                className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide"
+              >
+                Username {role === 'teacher' ? 'Guru' : 'Siswa'}
+              </label>
+              <div className="relative">
                 <input
-                  id="login-password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  placeholder="Masukkan password..."
+                  id="login-username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  value={loginUsername}
+                  onChange={(e) => setLoginUsername(e.target.value)}
+                  placeholder={role === 'teacher' ? 'Misal: guru' : 'Username siswa...'}
                   className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner font-semibold"
                 />
               </div>
-
-              {/* Kotak "Akun Demo" DIHAPUS.
-                  Sebelumnya bagian ini menampilkan kombinasi username dan
-                  password akun demo secara terbuka, lengkap dengan tombol yang
-                  mengisi otomatis kolom login. Siapa pun yang membuka halaman
-                  login dapat memakainya, dan akun itu membuka seluruh level.
-                  Kredensial tidak boleh ditampilkan di antarmuka. */}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2 font-semibold"
-              >
-                <span>{loading ? 'MEMERIKSA...' : role === 'teacher' ? 'BUKA POSKO GURU' : 'MULAI PETUALANGAN'}</span>
-              </button>
-            </form>
-          )}
-
-          {/* ── 2. FORM REGISTER SISWA (HANYA SISWA) ── */}
-          {authMode === 'register' && role === 'student' && (
-            <div className="space-y-3">
-              <div className="p-3 rounded-xl bg-amber-100/80 border-2 border-amber-950/60">
-                <p className="text-[14px] font-bold text-amber-950 leading-relaxed">
-                  Pendaftaran mandiri sudah ditutup.
-                </p>
-                <p className="mt-1.5 text-[13px] text-amber-900 font-semibold leading-relaxed">
-                  Akun siswa sekarang dibuat oleh guru. Ini dilakukan agar satu siswa
-                  hanya memiliki satu akun: setiap akun dikaitkan dengan NISN, dan satu
-                  NISN tidak dapat dipakai dua kali.
-                </p>
-              </div>
-
-              <div className="p-3 rounded-xl bg-emerald-100/80 border-2 border-emerald-800/60">
-                <p className="text-[13.5px] font-bold text-emerald-950 mb-1">
-                  Cara mendapatkan akun:
-                </p>
-                <p className="text-[13px] text-emerald-900 font-semibold leading-relaxed">
-                  Mintalah gurumu membuka Posko Guru, lalu membuatkan akun dengan
-                  menuliskan namamu, NISN, dan nomor absenmu. Setelah itu kamu akan
-                  menerima username dan kata sandi untuk masuk.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  retroAudio.playSelect();
-                  setAuthMode('login');
-                  setErrorMsg('');
-                }}
-                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2"
-              >
-                <span>SUDAH PUNYA AKUN? MASUK DI SINI</span>
-              </button>
             </div>
-          )}
+
+            <div>
+              <label
+                htmlFor="login-password"
+                className="block text-[13.5px] font-bold text-amber-950 mb-1 uppercase tracking-wide"
+              >
+                Password
+              </label>
+              <input
+                id="login-password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                placeholder="Masukkan password..."
+                className="w-full px-3 py-2 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel focus:outline-none focus:ring-2 focus:ring-amber-600 shadow-inner font-semibold"
+              />
+            </div>
+
+            {/* Kotak "Akun Demo" DIHAPUS.
+                Sebelumnya bagian ini menampilkan kombinasi username dan
+                password akun demo secara terbuka, lengkap dengan tombol yang
+                mengisi otomatis kolom login. Siapa pun yang membuka halaman
+                login dapat memakainya, dan akun itu membuka seluruh level.
+                Kredensial tidak boleh ditampilkan di antarmuka. */}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2 font-semibold"
+            >
+              <span>{loading ? 'MEMERIKSA...' : role === 'teacher' ? 'BUKA POSKO GURU' : 'MULAI PETUALANGAN'}</span>
+            </button>
+
+            {/* ── Petunjuk untuk siswa yang belum punya akun ──
+                SEBELUMNYA petunjuk ini berada di tab "DAFTAR AKUN BARU".
+                Karena tab itu dihapus, petunjuknya dipindahkan ke sini agar
+                tetap terbaca — diletakkan di bawah form, bukan di atas,
+                supaya tidak mengalihkan perhatian dari kolom yang perlu diisi.
+                Hanya tampil untuk peran siswa; guru tidak perlu petunjuk ini. */}
+            {role === 'student' && (
+              <div className="p-2.5 rounded-lg bg-amber-100/80 border-2 border-amber-950/50">
+                <p className="text-[13px] font-bold text-amber-950">
+                  Belum punya akun?
+                </p>
+                <p className="mt-1 text-[12.5px] text-amber-900 font-semibold leading-relaxed">
+                  Akun siswa dibuat oleh guru. Mintalah gurumu membuka Posko Guru
+                  dan membuatkan akun dengan namamu, NISN, dan nomor absenmu.
+                  Pendaftaran sendiri sudah ditutup agar satu siswa hanya
+                  memiliki satu akun.
+                </p>
+              </div>
+            )}
+          </form>
 
         </div>
       </div>
