@@ -90,12 +90,22 @@ Jangan menggabungkan dua langkah dalam satu commit.
 | Langkah | Isi | Status | Hasil |
 |---|---|---|---|
 1 | `engine/draw/base.ts` — `drawRoundedBadgeL2`, `drawRealisticVolcanicSmoke` | ✅ **selesai** | 10.992 → 10.849 baris |
-2 | `engine/draw/volcano.ts` — magma, lava, abu, kawanan burung | ✅ **selesai** | 10.849 → **9.610 baris** |
-3 | `engine/draw/classroom.ts` (≈2.050 baris) | belum | |
-4 | `engine/draw/assembly.ts` (≈800 baris) | belum | |
+2 | `engine/draw/volcano.ts` — magma, lava, abu, kawanan burung | ✅ **selesai** | 10.849 → 9.623 baris |
+3 | `engine/draw/assembly.ts` — lapangan evakuasi Area 3 | ✅ **selesai** | 9.623 → **8.823 baris** |
+4 | `engine/draw/classroom.ts` (≈2.050 baris) | belum | |
 5 | `engine/draw/merapi.ts` (≈700 baris) | belum | |
 6 | `engine/draw/facilities.ts` + `overlay.ts` (≈600 baris) | belum | |
 7 | `renderer.ts` menjadi orkestrator tipis (< 600 baris) | belum | |
+
+**Progres: 10.992 → 8.823 baris (−20%), 3 dari 7 langkah selesai.**
+
+### Catatan dari Langkah 3
+
+Blok lapangan evakuasi (baris 5073–5872) adalah yang **paling bersih sejauh
+ini**: rentangnya tidak disela deklarasi lain, tidak memerlukan tipe dari
+`../gameEngine`, dan satu-satunya ketergantungan adalah `drawRoundedBadgeL2`
+dari `./base`. Keempat fungsinya diverifikasi identik baris-per-baris.
+
 
 ### Catatan penting dari Langkah 2
 
