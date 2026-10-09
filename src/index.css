@@ -939,7 +939,10 @@ html, body {
 .pixel-btn-wood-plank.locked {
   background: linear-gradient(180deg, #64748b 0%, #475569 50%, #334155 100%);
   border-color: #0f172a;
-  color: #cbd5e1;
+  /* #f8fafc, bukan #cbd5e1: pada latar #475569 rasio kontrasnya
+     4,55:1 (memenuhi WCAG AA). Sebelumnya #cbd5e1 hanya 3,21:1 —
+     teks "TERKUNCI" pada tombol level sulit dibaca di proyektor sekolah. */
+  color: #f8fafc;
   box-shadow: 0 6px 0 #0f172a, inset 0 3px 0 #94a3b8, inset 0 -3px 0 #1e293b;
   text-shadow: 0 2px 0 #1e293b;
   cursor: not-allowed;
@@ -1061,7 +1064,8 @@ html, body {
 .pixel-btn-wood-compact.locked {
   background: linear-gradient(180deg, #64748b 0%, #475569 50%, #334155 100%);
   border-color: #0f172a;
-  color: #cbd5e1;
+  /* Lihat catatan pada .pixel-btn-wood-plank.locked — rasio 4,55:1 */
+  color: #f8fafc;
   box-shadow: 0 4px 0 #0f172a, inset 0 2px 0 #94a3b8, inset 0 -2px 0 #1e293b;
   text-shadow: 0 1px 0 #0f172a;
   cursor: not-allowed;
