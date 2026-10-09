@@ -82,36 +82,39 @@ DASAR. Orkestrator mengimpor semua.
 
 ---
 
-## 4. Urutan pengerjaan yang disarankan
+## 4. Urutan pengerjaan
 
 Lakukan satu langkah per commit, dan **verifikasi setelah setiap langkah**.
 Jangan menggabungkan dua langkah dalam satu commit.
 
-### Langkah 1 — `engine/draw/base.ts`
-Pindahkan `drawRoundedBadgeL2` dan `drawRealisticVolcanicSmoke` beserta
-konstanta yang hanya dipakai keduanya.
-`renderer.ts` mengimpor dan **mengekspor ulang** keduanya agar API tetap sama.
+| Langkah | Isi | Status | Hasil |
+|---|---|---|---|
+1 | `engine/draw/base.ts` — `drawRoundedBadgeL2`, `drawRealisticVolcanicSmoke` | ✅ **selesai** | 10.992 → 10.849 baris |
+2 | `engine/draw/volcano.ts` — magma, lava, abu, kawanan burung | ✅ **selesai** | 10.849 → **9.610 baris** |
+3 | `engine/draw/classroom.ts` (≈2.050 baris) | belum | |
+4 | `engine/draw/assembly.ts` (≈800 baris) | belum | |
+5 | `engine/draw/merapi.ts` (≈700 baris) | belum | |
+6 | `engine/draw/facilities.ts` + `overlay.ts` (≈600 baris) | belum | |
+7 | `renderer.ts` menjadi orkestrator tipis (< 600 baris) | belum | |
 
-Verifikasi: `npm run typecheck && npm run test && npm run build`.
+### Catatan penting dari Langkah 2
 
-### Langkah 2 — `engine/draw/volcano.ts`
-Pindahkan kelompok gunung/magma/lahar (baris 6582–8381 pada keadaan saat ini,
-kurang lebih 1.800 baris): `drawDenseDarkAshPlume`,
-`drawMagmaExplosiveFountain`, `drawMagmaEffusiveFountain`,
-`drawEffusiveDownstreamRiver`, `getActiveLavaStream`, `drawLavaDeltaPool`,
-`drawEruptingLavaFlows`, `drawFleeingBirdFlock`, `drawAshFallOverlay`,
-`drawVolcanoSimulationHills`, `drawVolcanoSimulationGround`,
-`drawVolcanoSimulationAtmosphere`.
-Catatan: modul ini mengimpor dari DASAR dan MERAPI.
+Dua fungsi tema gunung **sengaja belum dipindahkan**:
+`drawVolcanoSimulationVillage` (baris 8444) dan `drawEvacuationRescueTruck`
+(baris 8686). Keduanya berada SETELAH blok volcano di `renderer.ts` dan
+memanggil fungsi volcano, sehingga memindahkannya sekarang akan menimbulkan
+impor melingkar. Keduanya menunggu **Langkah 7**, ketika orkestrator sudah
+tipis dan siklus itu hilang dengan sendirinya.
 
-### Langkah 3 — `engine/draw/classroom.ts`
-Kelompok ruang kelas (sekitar 2.050 baris).
+Blok volcano yang dipindahkan terbukti **hanya bergantung pada `./base`** plus
+tiga tipe dari `../gameEngine` (`GameStateL2`, `BirdParticleL2`,
+`AshFallParticleL2`, `VolcanoSimulationDataL2`). Verifikasi mekanis
+menunjukkan seluruh isi fungsi identik dengan aslinya, kecuali penambahan kata
+`export` yang memang diperlukan.
 
-### Langkah 4–6 — `assembly.ts`, `merapi.ts`, `facilities.ts`, `overlay.ts`
+Interface `Point2D` juga ikut pindah ke `volcano.ts` (dipakai
+`getActiveLavaStream`), dan diekspor karena masih dirujuk `renderer.ts`.
 
-### Langkah 7 — `renderer.ts` menjadi orkestrator tipis
-Setelah semua dipindahkan, `renderer.ts` hanya berisi `renderTectonicGameL2`
-dan mengekspor ulang fungsi publik yang diperlukan. Target: **< 600 baris**.
 
 ---
 
