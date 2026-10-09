@@ -117,7 +117,7 @@ Akun guru **tidak** bisa didaftarkan sendiri (sengaja). Buat lewat
 
 Profil guru akan **otomatis** dibuat oleh trigger `handle_new_auth_user`.
 
-### Langkah 4 — Buat akun Demo untuk juri (opsional)
+### Langkah 4 — Buat akun Demo untuk juri
 
 Buat user kedua dengan `app_metadata`:
 
@@ -125,14 +125,24 @@ Buat user kedua dengan `app_metadata`:
 {"role":"student","username":"demo","name":"Taruna Demo","classroom_code":"RESQ-8A"}
 ```
 
-Lalu buka semua level untuk akun itu:
+**WAJIB** — buka semua level untuk akun itu:
 
 ```sql
 SELECT public.admin_set_unlocked_level('demo', 3);
 ```
 
+Harus dijalankan, bukan opsional. Level akun demo dibaca dari kolom
+`profiles.unlocked_level`, tepat seperti akun siswa lain. Bila langkah ini
+terlewat, akun demo hanya terbuka sampai Level 1.
+
+Sebelumnya level akun demo dipaksa di sisi kode (delapan tempat memeriksa
+`username === 'demo'`). Paksaan itu sudah dihapus karena menampilkan
+kredensial di halaman login dan membuka level tanpa dasar data. Sekarang
+satu-satunya cara yang berlaku adalah perintah di atas.
+
 Siswa lain **tidak bisa** melakukan ini — fungsinya dicabut dari `anon`
-dan `authenticated`.
+dan `authenticated`, sehingga hanya dapat dijalankan dari SQL Editor atau
+`service_role`.
 
 ### Langkah 5 — Setel environment
 
@@ -298,6 +308,9 @@ Untuk produksi (>1000 bersamaan), pantau empat metrik ini dan pasang alarm
 - [ ] `.env` tidak ter-commit (`git check-ignore .env` mengembalikan `.env`).
 - [ ] Service role key **tidak ada** di repo maupun di variabel `VITE_*`.
 - [ ] Password guru & demo sudah diganti dari nilai contoh.
+- [ ] Level akun demo sudah dibuka: `SELECT public.admin_set_unlocked_level('demo', 3);`
+- [ ] Kredensial akun demo **tidak ditampilkan di antarmuka** (kotak di halaman
+      login sudah dihapus; jangan ditambahkan kembali sebelum lomba).
 - [ ] Uji DevTools: `SELECT` ke `profiles`/`user_accounts` sebagai anon → kosong/tertolak.
 - [ ] Uji dua akun: siswa A tidak bisa melihat data siswa B.
 - [ ] `npm run build` hijau.
