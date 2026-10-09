@@ -336,10 +336,13 @@ RESQ-BOX/
 │   │
 │   └── assets/                    ← Gambar, SVG, aset statis
 │
-├── backend/                       ← Laravel backend
 ├── public/                        ← Aset publik & PWA icons
 └── vite.config.ts
 ```
+
+> **Perubahan:** direktori `backend/` (Laravel) sudah dihapus. Lihat bagian
+> Riwayat Perubahan di bawah untuk alasannya. Manajemen kelas kini sepenuhnya
+> lewat Supabase dan Posko Guru di dalam aplikasi web.
 
 ---
 

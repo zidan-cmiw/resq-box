@@ -209,16 +209,17 @@ RESQ-BOX/
 │   │
 │   └── assets/                     # Gambar & aset statis
 │
-├── backend/                        # Laravel backend (API)
-│   ├── app/                        # Models, Controllers, dll
-│   ├── routes/                     # API routes
-│   └── database/                   # Migrations & seeders
-│
 ├── public/                         # Aset publik & PWA manifest
 ├── vite.config.ts                  # Konfigurasi Vite + PWA
 ├── vercel.json                     # Deployment config
 └── package.json
 ```
+
+> Catatan: dahulu ada direktori `backend/` (Laravel + Filament) untuk manajemen
+> kelas. Direktori itu sudah dihapus — aplikasi web ini sepenuhnya memakai
+> Supabase, dan `backend/` tidak pernah dirujuk dari kode mana pun. Dihapus juga
+> karena migrasinya dapat menghapus tabel `classrooms` produksi, dan berkas
+> `.env`-nya memuat kredensial database produksi.
 
 ---
 

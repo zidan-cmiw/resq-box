@@ -58,7 +58,12 @@
 - `src/store/` : Zustand multi-store (`teacherStore.ts`, `missionStore.ts`, `workspaceStore.ts`, `runtimeStore.ts`, `simulatorStore.ts`)
 - `src/components/` : Ikon 2D pixel art kustom murni (`PixelIcon.tsx`) dan generator avatar pixel
 - `src/utils/` : Klien Supabase & local cache (`supabaseClient.ts`), audio synthesizer (`retroAudio.ts`), fullscreen API (`fullscreen.ts`), Web Serial (`webSerial.ts`)
-- `backend/` : Layanan API Laravel 11 untuk manajemen kelas dan sinkronisasi data siswa
+
+> `backend/` (Laravel 11 + Filament) sudah DIHAPUS. Manajemen kelas kini
+> sepenuhnya lewat Supabase dan Posko Guru di dalam aplikasi web. Direktori itu
+> tidak pernah dirujuk dari `src/`, dan migrasinya berisiko menghapus tabel
+> `classrooms` produksi karena memakai nama tabel yang sama dengan skema
+> Supabase.
 
 ### Cara Run
 - **Frontend**:

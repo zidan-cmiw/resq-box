@@ -5387,3 +5387,42 @@ P10 indeks skala | 6 | siap skala besar |
 2. **Validasi sintaks tidak menangkap kesalahan semantik.** `pglast` meloloskan `FOREACH sig` tanpa deklarasi variabel; karena itu dibuat `validate_plpgsql_vars.py` untuk memeriksa resolusi variabel PL/pgSQL.
 3. **`DROP ... CASCADE` punya efek samping tak terlihat.** Urutan pembersihan objek database harus eksplisit, tidak mengandalkan efek samping.
 4. **Asumsi tentang perilaku internal platform harus diverifikasi.** Dua bug berasal dari asumsi keliru tentang Supabase (`user_metadata` sebagai kolom, dan urutan penulisan metadata saat signup).
+
+---
+
+## Catatan Revisi — Perubahan yang Membatalkan Entri Lama
+
+Entri di atas adalah catatan riwayat dan **sengaja tidak diubah**, supaya apa yang
+dikerjakan pada masanya tetap terekam apa adanya. Namun dua hal berikut sudah
+tidak berlaku lagi, sehingga perlu dicatat di sini:
+
+### 1. Direktori `backend/` (Laravel) sudah DIHAPUS
+
+Entri 18 dan 20 menyebut `backend/routes/api.php`. Direktori `backend/` kini
+tidak ada lagi. Alasannya:
+
+- Tidak pernah dirujuk dari kode mana pun (0 impor dari `src/`)
+- Migrasinya membuat tabel `classrooms` dengan skema berbeda dari tabel
+  `classrooms` Supabase, dan `down()`-nya berisi
+  `Schema::dropIfExists('classrooms')` — berisiko menghapus tabel produksi
+- Berkas `backend/.env` memuat kredensial database produksi (host pooler
+  Supabase dan user `postgres.<ref>`) sebagai teks biasa
+
+Manajemen kelas kini sepenuhnya lewat Supabase dan Posko Guru di dalam
+aplikasi web.
+
+### 2. Kotak "Akun Demo" di halaman login sudah DIHAPUS
+
+Entri 20 menyebut "tombol quick auto-fill pada form login". Tombol itu sudah
+dihapus karena **menampilkan kombinasi username dan password secara terbuka**
+di halaman login publik, dan akun tersebut membuka seluruh level.
+
+Selain kotak itu, delapan tempat di kode yang memaksa level 3 untuk akun demo
+(`username === 'demo'`) juga dihapus. Level akun demo kini dibaca dari kolom
+`profiles.unlocked_level` seperti akun siswa lain, dan ditetapkan lewat:
+
+```sql
+SELECT public.admin_set_unlocked_level('demo', 3);
+```
+
+Akun `demo` sendiri tetap ada dan tetap dapat dipakai untuk pengujian juri.
