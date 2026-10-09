@@ -22,6 +22,11 @@ const INITIAL_TOOLBOX = {
         { kind: 'block', type: 'resq_tunggu' },
         { kind: 'block', type: 'resq_ulangi' },
         { kind: 'block', type: 'resq_layar_oled' },
+        // Hentikan seluruh perangkat sekaligus. Fungsi stopAll() ada di
+        // firmware (program_esp.ino baris 1002) dan api.stopAll() ada di
+        // simulator; komentar firmware bahkan menyebut blok ini secara
+        // eksplisit: "Selaras dengan blok resq_stopall & tombol Berhenti web".
+        { kind: 'block', type: 'resq_stopall' },
       ],
     },
     {
@@ -94,6 +99,14 @@ const INITIAL_TOOLBOX = {
         { kind: 'block', type: 'resq_jika_tidak' },
         { kind: 'block', type: 'resq_bandingkan' },
         { kind: 'block', type: 'resq_dan_atau' },
+        // Pembalik kondisi: "Tidak Terjadi (...)?" — melengkapi DAN/ATAU agar
+        // siswa dapat menyusun logika lengkap, misalnya
+        // "Kalau TIDAK (status Awas) maka ...". Hasilnya !(...) pada kedua
+        // generator, dan sudah terdaftar di label validasi misi.
+        { kind: 'block', type: 'resq_bukan' },
+        // Operasi matematika sederhana: tambah, kurang, kali, bagi. Berguna
+        // untuk menghitung jumlah langkah atau durasi jeda.
+        { kind: 'block', type: 'resq_hitung' },
         { kind: 'block', type: 'math_number' },
         { kind: 'block', type: 'resq_teks' },
       ],
