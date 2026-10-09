@@ -288,7 +288,7 @@ export default function Profile() {
             </div>
           </div>
 
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               navigate('/');
@@ -332,10 +332,10 @@ export default function Profile() {
           {/* Form Fields Grid */}
           <div id="tour-profile-fields" className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
+              <label htmlFor="f-nama-lengkap-siswa" className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
                 Nama Lengkap Siswa:
               </label>
-              <input
+              <input id="f-nama-lengkap-siswa"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -346,10 +346,10 @@ export default function Profile() {
             </div>
 
             <div>
-              <label className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
+              <label htmlFor="f-kelas" className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
                 Kelas:
               </label>
-              <input
+              <input id="f-kelas"
                 type="text"
                 value={className}
                 onChange={(e) => setClassName(e.target.value)}
@@ -360,10 +360,10 @@ export default function Profile() {
             </div>
 
             <div>
-              <label className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
+              <label htmlFor="f-nomor-absen" className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
                 Nomor Absen:
               </label>
-              <input
+              <input id="f-nomor-absen"
                 type="text"
                 value={absentNumber}
                 onChange={(e) => setAbsentNumber(e.target.value)}
@@ -374,10 +374,10 @@ export default function Profile() {
             </div>
 
             <div>
-              <label className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
+              <label htmlFor="f-nama-sekolah" className="block text-[13px] font-bold text-amber-950 uppercase tracking-wider mb-1">
                 Nama Sekolah:
               </label>
-              <input
+              <input id="f-nama-sekolah"
                 type="text"
                 value={schoolName}
                 onChange={(e) => setSchoolName(e.target.value)}
@@ -458,10 +458,10 @@ export default function Profile() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
               <div>
-                <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5">
+                <label htmlFor="f-password-baru" className="block text-[13.5px] font-bold text-amber-950 mb-0.5">
                   PASSWORD BARU:
                 </label>
-                <input
+                <input id="f-password-baru"
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -470,10 +470,10 @@ export default function Profile() {
                 />
               </div>
               <div>
-                <label className="block text-[13.5px] font-bold text-amber-950 mb-0.5">
+                <label htmlFor="f-ulangi-password-baru" className="block text-[13.5px] font-bold text-amber-950 mb-0.5">
                   ULANGI PASSWORD BARU:
                 </label>
-                <input
+                <input id="f-ulangi-password-baru"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -542,7 +542,7 @@ export default function Profile() {
 
           {/* Action Buttons */}
           <div id="tour-profile-actions" className="pt-2 flex flex-col gap-2">
-            <button
+            <button aria-label="Lanjutkan"
               type="submit"
               className="w-full py-3.5 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-pixel-title text-[15px] tracking-wider border-3 border-amber-950 shadow-[0_5px_0_#231206] transition-transform active:translate-y-1 cursor-pointer flex items-center justify-center gap-2 font-semibold"
             >

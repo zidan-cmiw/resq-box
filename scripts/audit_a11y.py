@@ -25,15 +25,23 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from jsx_scan import akhir_tag, attribut, punya, tag_lengkap, teks_terlihat  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
+
+
+def attribut_dimulai(tag: str, nama: str) -> str | None:
+    """Nilai atribut, untuk pembandingan (mis. type="hidden")."""
+    return attribut(tag, nama)
 
 ICON_ONLY = re.compile(
     r"material-symbols-outlined|<PixelIcon\b|className=\"[^\"]*material-symbols"
 )
 
-# Deteksi (kasar tetapi berguna) atas tombol tanpa nama yang dapat dibaca.
-BUTTON_RE = re.compile(r"<button\b[^>]*>(.*?)</button>", re.S)
+# Batas pencarian isi <button>…</button>
+BUTTON_RE = re.compile(r"<button\b", re.S)
 
 
 def read(path: Path) -> str:
@@ -52,48 +60,82 @@ def audit_file(path: Path) -> dict[str, list[tuple[int, str]]]:
     issues: dict[str, list[tuple[int, str]]] = defaultdict(list)
 
     # 1. <img> tanpa alt
-    for m in re.finditer(r"<img\b[^>]*>", text):
-        tag = m.group(0)
-        if "alt=" not in tag:
-            issues["img tanpa alt"].append((line_of(text, m.start()), tag[:80]))
+    #    Memakai pemindai tag yang memahami konteks: regex `[^>]*` akan berhenti
+    #    pada `>` di dalam `=>` sehingga alt yang berada setelah onError tidak
+    #    terbaca dan muncul sebagai positif palsu.
+    for m in re.finditer(r"<img\b", text):
+        tag = tag_lengkap(text, m.start())
+        if not punya(tag, "alt"):
+            issues["img tanpa alt"].append((line_of(text, m.start()), tag.replace("\n", " ")[:80]))
 
     # 2. <button> hanya ikon tanpa aria-label
     for m in BUTTON_RE.finditer(text):
-        tag_full = m.group(0)
-        inner = m.group(1).strip()
-        has_aria = "aria-label" in tag_full or "aria-labelledby" in tag_full
+        buka_akhir = akhir_tag(text, m.start())
+        if buka_akhir < 0:
+            continue
+        tag_buka = text[m.start():buka_akhir + 1]
+        tutup = text.find("</button>", buka_akhir)
+        if tutup < 0:
+            continue
+        inner = text[buka_akhir + 1:tutup].strip()
+        tag_full = text[m.start():tutup + 9]
+        has_aria = "aria-label" in tag_buka or "aria-labelledby" in tag_buka
         if has_aria:
             continue
         # Apakah ada teks yang terlihat?
-        text_only = re.sub(r"<[^>]+>", "", inner).strip()
-        text_only = re.sub(r"\{[^}]*\}", "", text_only).strip()
+        # Memakai teks_terlihat() dari jsx_scan, bukan penyederhanaan sendiri,
+        # supaya audit dan skrip perbaikan tidak berbeda pendapat. Versi
+        # sederhana membuang seluruh {..} sehingga tombol seperti
+        #   {areaIndex === 1 ? 'SELESAIKAN!' : 'BUKA GERBANG!'}
+        # salah dilaporkan tanpa nama, padahal ada teksnya.
+        text_only = teks_terlihat(inner)
         if not text_only and (ICON_ONLY.search(inner) or inner == ""):
             issues["button ikon tanpa aria-label"].append(
                 (line_of(text, m.start()), tag_full.replace("\n", " ")[:80])
             )
 
     # 3. onClick pada elemen non-interaktif
-    for m in re.finditer(r"<(div|span|li|td|tr)\b[^>]*onClick=", text):
-        tag = m.group(0)
-        if 'role="button"' in tag or "tabIndex" in tag:
+    #
+    # DUA BENTUK DILEWATI DENGAN SENGAJA, karena menambahkan onKeyDown pada
+    # keduanya justru akan MERUSAK perilaku:
+    #
+    #   a. Pembungkus `onClick={(e) => e.stopPropagation()}`
+    #      Elemen ini bukan tombol; ia hanya menahan klik agar tidak memicu
+    #      aksi induk. Sudah diberi penahan rambatan tombol.
+    #
+    #   b. Kotak dialog Visual Novel `onClick={handleAdvance}`
+    #      Berkasnya sudah menangani tombol secara GLOBAL pada window dan
+    #      memanggil handleAdvance saat Spasi atau Enter ditekan — antarmukanya
+    #      bahkan menampilkan "[Klik / SPASI untuk Lanjut]". Menambahkan
+    #      onKeyDown pada elemen ini akan membuat satu penekanan Spasi
+    #      memajukan DUA dialog sekaligus.
+    with_global_keys = bool(re.search(r"addEventListener\(\s*['\"]keydown", text))
+    for m in re.finditer(r"<(div|span|li|td|tr)\b", text):
+        tag = tag_lengkap(text, m.start())
+        if "onClick=" not in tag:
             continue
-        # Ambil seluruh tag untuk memeriksa atribut role/tabIndex
-        end = text.find(">", m.start())
-        whole = text[m.start(): end + 1] if end > 0 else tag
-        if 'role="button"' in whole or "tabIndex" in whole or "onKeyDown" in whole:
+        if punya(tag, "role") or punya(tag, "tabIndex") or punya(tag, "onKeyDown"):
+            continue
+        # Sebaran sifat dari utilitas keyboard juga memenuhi syarat:
+        #   {...sifatTombol(aksi, label)}  atau  {...sifatTombol}
+        if "sifatTombol" in tag:
+            continue
+        if "stopPropagation" in tag:
+            continue
+        if with_global_keys:
             continue
         issues["onClick pada elemen non-interaktif"].append(
-            (line_of(text, m.start()), whole.replace("\n", " ")[:80])
+            (line_of(text, m.start()), tag.replace("\n", " ")[:80])
         )
 
     # 4. input tanpa label / aria-label
-    for m in re.finditer(r"<(input|select|textarea)\b[^>]*>", text):
-        tag = m.group(0)
-        if tag.startswith("<input") and 'type="hidden"' in tag:
+    for m in re.finditer(r"<(input|select|textarea)\b", text):
+        tag = tag_lengkap(text, m.start())
+        if attribut_dimulai(tag, "type") == "hidden":
             continue
-        if any(a in tag for a in ("aria-label", "aria-labelledby", "id=", "title=")):
+        if any(punya(tag, a) for a in ("aria-label", "aria-labelledby", "id", "title")):
             continue
-        issues["input tanpa label"].append((line_of(text, m.start()), tag[:80]))
+        issues["input tanpa label"].append((line_of(text, m.start()), tag.replace("\n", " ")[:80]))
 
     return issues
 

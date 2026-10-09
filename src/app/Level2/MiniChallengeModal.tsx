@@ -61,7 +61,7 @@ export default function MiniChallengeModal({
               </h2>
             </div>
           </div>
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               onClose();

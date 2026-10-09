@@ -249,7 +249,7 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             </div>
           </div>
 
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               onClose();

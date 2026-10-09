@@ -48,7 +48,7 @@ export default function DiscoveryModal({
               </h2>
             </div>
           </div>
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               onClose();
@@ -155,7 +155,7 @@ export default function DiscoveryModal({
 
         {/* ── ACTION BUTTONS ── */}
         <div className="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t-2 border-[#b45309]/40 flex justify-end">
-          <button
+          <button aria-label="Lanjutkan"
             onClick={() => {
               retroAudio.playSelect();
               onClose();

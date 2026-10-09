@@ -7,6 +7,8 @@ import { PixelAvatarRenderer } from '../../components/PixelAvatar/PixelAvatarRen
 import PixelIcon from '../../components/PixelIcon';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
+import { tutupModalDenganKeyboard } from '../../utils/keyboard';
+import { blokirRambatanTombol } from '../../utils/keyboard';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -727,11 +729,11 @@ export default function Dashboard() {
 
       {/* ── 5. RETRO WOODEN NOTICE BOARD MODAL (PANDUAN & MISI) ── */}
       {showGuideModal && (
-        <div
+        <div onKeyDown={tutupModalDenganKeyboard(() => setShowGuideModal(false))}
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in select-none"
           onClick={() => setShowGuideModal(false)}
         >
-          <div
+          <div onKeyDown={blokirRambatanTombol()}
             className="pixel-wood-board p-4 sm:p-6 md:p-7 text-[#260c02] space-y-4 sm:space-y-5 max-h-[92vh] overflow-y-auto font-pixel"
             style={{ width: '880px', maxWidth: '96vw' }}
             onClick={(e) => e.stopPropagation()}
@@ -752,7 +754,7 @@ export default function Dashboard() {
                   </p>
                 </div>
               </div>
-              <button
+              <button aria-label="Tutup"
                 onClick={() => {
                   retroAudio.playSelect();
                   setShowGuideModal(false);

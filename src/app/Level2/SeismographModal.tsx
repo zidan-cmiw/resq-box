@@ -148,7 +148,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
               </p>
             </div>
           </div>
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               onClose();
@@ -616,7 +616,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
 
         {/* Tombol Aksi Penutup */}
         <div className="mt-4 pt-3 border-t-2 border-[#b45309]/40 flex justify-end">
-          <button
+          <button aria-label="Lanjutkan"
             onClick={() => {
               retroAudio.playSelect();
               onClose();

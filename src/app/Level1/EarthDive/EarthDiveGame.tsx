@@ -1677,7 +1677,7 @@ export default function EarthDiveGame() {
                 ◀
               </button>
               <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-slate-700/90 border-2 border-slate-500 shadow-inner" />
-              <button
+              <button aria-label="Mulai simulasi"
                 onPointerDown={() => handleMobileBtnDown('right')}
                 onPointerUp={() => handleMobileBtnUp('right')}
                 onPointerLeave={() => handleMobileBtnUp('right')}
@@ -1906,7 +1906,7 @@ export default function EarthDiveGame() {
                   BONUS QUEST: TEBAK KATA GEOLOGI
                 </span>
               </div>
-              <button
+              <button aria-label="Tutup"
                 onClick={() => {
                   retroAudio.playSelect();
                   setShowWordleBonus(false);

@@ -6,6 +6,8 @@ import { PixelAvatarRenderer } from '../../components/PixelAvatar/PixelAvatarRen
 import PixelIcon from '../../components/PixelIcon';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
+import { tutupModalDenganKeyboard } from '../../utils/keyboard';
+import { blokirRambatanTombol } from '../../utils/keyboard';
 import type {
   StudentDbRecord,
   LevelSubmissionDbRecord,
@@ -787,7 +789,7 @@ export default function TeacherDashboard() {
           {/* Controls Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pb-3 border-b-2 border-amber-950/20">
             <div className="flex items-center gap-2 flex-1">
-              <input
+              <input aria-label="Cari siswa berdasarkan nama, nomor absen, atau username"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -1048,7 +1050,7 @@ export default function TeacherDashboard() {
                   Kode Kelas: <strong className="font-pixel-title text-amber-950">{selectedClassCode}</strong>
                 </p>
               </div>
-              <button
+              <button aria-label="Tutup"
                 onClick={() => setShowManageClassModal(false)}
                 className="w-8 h-8 rounded-lg bg-amber-900 text-amber-100 flex items-center justify-center border border-amber-950 font-bold cursor-pointer hover:bg-amber-800"
               >
@@ -1105,10 +1107,10 @@ export default function TeacherDashboard() {
                   </div>
                 )}
                 <div>
-                  <label className="block text-[14.5px] font-bold font-pixel-title text-amber-950 mb-1">
+                  <label htmlFor="f-nama-kelas-saat-ini" className="block text-[14.5px] font-bold font-pixel-title text-amber-950 mb-1">
                     NAMA KELAS SAAT INI
                   </label>
-                  <input
+                  <input id="f-nama-kelas-saat-ini"
                     type="text"
                     value={editClassName}
                     onChange={(e) => setEditClassName(e.target.value)}
@@ -1140,10 +1142,10 @@ export default function TeacherDashboard() {
                   </div>
                 )}
                 <div>
-                  <label className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
+                  <label htmlFor="f-nama-lengkap-siswa" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
                     NAMA LENGKAP SISWA
                   </label>
-                  <input
+                  <input id="f-nama-lengkap-siswa"
                     type="text"
                     value={newStdName}
                     onChange={(e) => setNewStdName(e.target.value)}
@@ -1153,10 +1155,10 @@ export default function TeacherDashboard() {
                 </div>
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
-                    <label className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
+                    <label htmlFor="f-no-absen" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
                       NO. ABSEN
                     </label>
-                    <input
+                    <input id="f-no-absen"
                       type="text"
                       value={newStdAbsent}
                       onChange={(e) => setNewStdAbsent(e.target.value)}
@@ -1165,10 +1167,10 @@ export default function TeacherDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
+                    <label htmlFor="f-username-siswa" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
                       USERNAME SISWA
                     </label>
-                    <input
+                    <input id="f-username-siswa"
                       type="text"
                       value={newStdUsername}
                       onChange={(e) => setNewStdUsername(e.target.value)}
@@ -1178,10 +1180,10 @@ export default function TeacherDashboard() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
+                  <label htmlFor="f-password-sementara" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
                     PASSWORD SEMENTARA
                   </label>
-                  <input
+                  <input id="f-password-sementara"
                     type="text"
                     value={newStdPassword}
                     onChange={(e) => setNewStdPassword(e.target.value)}
@@ -1233,7 +1235,7 @@ export default function TeacherDashboard() {
               <h3 className="font-pixel-title text-[15px] text-amber-950 font-bold">
                 BUAT KELAS BARU
               </h3>
-              <button
+              <button aria-label="Tutup"
                 onClick={() => setShowNewClassModal(false)}
                 className="w-7 h-7 rounded-lg bg-amber-900 text-amber-100 flex items-center justify-center border border-amber-950 font-bold cursor-pointer"
               >
@@ -1243,10 +1245,10 @@ export default function TeacherDashboard() {
 
             <form onSubmit={handleCreateClass} className="space-y-3">
               <div>
-                <label className="block text-[14.5px] font-pixel-title font-bold text-amber-950 mb-1">
+                <label htmlFor="f-nama-kelas" className="block text-[14.5px] font-pixel-title font-bold text-amber-950 mb-1">
                   NAMA KELAS
                 </label>
-                <input
+                <input id="f-nama-kelas"
                   type="text"
                   value={newClassName}
                   onChange={(e) => setNewClassName(e.target.value)}
@@ -1285,7 +1287,7 @@ export default function TeacherDashboard() {
                   </p>
                 </div>
               </div>
-              <button
+              <button aria-label="Tutup"
                 onClick={() => setSelectedStudentForDetail(null)}
                 className="w-8 h-8 rounded-lg bg-amber-900 text-amber-100 flex items-center justify-center border border-amber-950 font-bold cursor-pointer"
               >
@@ -1460,7 +1462,7 @@ export default function TeacherDashboard() {
                 <span>CETAK / UNDUH RAPOR</span>
               </button>
 
-              <button
+              <button aria-label="Hapus"
                 onClick={() => {
                   setStudentToDelete(selectedStudentForDetail);
                 }}
@@ -1508,11 +1510,11 @@ export default function TeacherDashboard() {
 
       {/* ── MODAL: EDIT PROFIL GURU ── */}
       {showTeacherProfileModal && (
-        <div
+        <div onKeyDown={tutupModalDenganKeyboard(() => setShowTeacherProfileModal(false))}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
           onClick={() => setShowTeacherProfileModal(false)}
         >
-          <div
+          <div onKeyDown={blokirRambatanTombol()}
             className="pixel-wood-board p-5 rounded-2xl text-amber-950 w-full max-w-md space-y-4"
             style={{ background: '#fef3c7' }}
             onClick={(e) => e.stopPropagation()}
@@ -1523,7 +1525,7 @@ export default function TeacherDashboard() {
                 <PixelIcon name="user" size={18} />
                 <h3 className="font-pixel-title text-[15px] text-amber-950 font-bold">EDIT PROFIL GURU</h3>
               </div>
-              <button
+              <button aria-label="Tutup"
                 onClick={() => setShowTeacherProfileModal(false)}
                 className="w-8 h-8 flex items-center justify-center rounded-lg bg-amber-950/10 hover:bg-amber-950/20 text-amber-950 font-bold cursor-pointer border border-amber-950/20"
               >
@@ -1560,8 +1562,8 @@ export default function TeacherDashboard() {
               className="space-y-3"
             >
               <div>
-                <label className="block text-[14.5px] font-pixel-title text-amber-900 mb-1.5 font-semibold">NAMA LENGKAP GURU</label>
-                <input
+                <label htmlFor="f-nama-lengkap-guru" className="block text-[14.5px] font-pixel-title text-amber-900 mb-1.5 font-semibold">NAMA LENGKAP GURU</label>
+                <input id="f-nama-lengkap-guru"
                   type="text"
                   value={editTeacherName}
                   onChange={(e) => setEditTeacherName(e.target.value)}
@@ -1570,8 +1572,8 @@ export default function TeacherDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-[14.5px] font-pixel-title text-amber-900 mb-1.5 font-semibold">NAMA SEKOLAH</label>
-                <input
+                <label htmlFor="f-nama-sekolah" className="block text-[14.5px] font-pixel-title text-amber-900 mb-1.5 font-semibold">NAMA SEKOLAH</label>
+                <input id="f-nama-sekolah"
                   type="text"
                   value={editTeacherSchool}
                   onChange={(e) => setEditTeacherSchool(e.target.value)}

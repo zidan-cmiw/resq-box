@@ -10,6 +10,7 @@ import { getNpcPortrait, getPlayerPortrait } from './engine/npcSprites';
 import type { CustomAvatarConfig } from '../../../store/teacherStore';
 import { retroAudio } from '../../../utils/retroAudio';
 import PixelIcon from '../../../components/PixelIcon';
+import { blokirRambatanTombol } from '../../../utils/keyboard';
 
 interface VisualNovelDialogueProps {
   dialogueTree: DialogueTree;
@@ -379,7 +380,7 @@ export default function VisualNovelDialogue({
 
           {/* ── PILIHAN PERCABANGAN RESPON PEMAIN (TOMBOL WARNA BIASA, TIDAK GONJRENG) ── */}
           {currentNode?.choices && currentNode.choices.length > 0 && !isTyping && (
-            <div
+            <div onKeyDown={blokirRambatanTombol()}
               className="mt-3 pt-3 border-t border-slate-800 flex flex-col sm:flex-row gap-2.5 z-20"
               onClick={(e) => e.stopPropagation()} // Mencegah advance dialog saat klik opsi
             >
@@ -399,7 +400,7 @@ export default function VisualNovelDialogue({
           )}
 
           {/* ── TOOLBAR BAWAH ── */}
-          <div
+          <div onKeyDown={blokirRambatanTombol()}
             className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800/80 text-[13px] sm:text-[15px] text-slate-300 font-semibold"
             onClick={(e) => e.stopPropagation()}
           >

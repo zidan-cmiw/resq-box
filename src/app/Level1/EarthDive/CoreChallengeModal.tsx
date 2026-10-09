@@ -82,7 +82,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   </h2>
                 </div>
               </div>
-              <button
+              <button aria-label="Tutup"
                 onClick={() => {
                   retroAudio.playSelect();
                   onClose();
@@ -167,7 +167,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
             
             {/* Top Close Button for wandering/viewing open gate */}
             <div className="flex justify-end mb-2">
-              <button
+              <button aria-label="Tutup"
                 onClick={() => {
                   retroAudio.playSelect();
                   onClose();

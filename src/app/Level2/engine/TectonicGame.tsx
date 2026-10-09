@@ -1,3 +1,4 @@
+
 // ── src/app/Level2/engine/TectonicGame.tsx ────────────────────────────
 // Komponen Utama Canvas Game Level 2: Batas Divergen & Pecahnya Pangea
 // Menyatukan engine fisika, multi-layer canvas renderer, karakter kustom siswa,
@@ -6,6 +7,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { sifatTombol } from '../../../utils/keyboard';
 import {
   createInitialGameStateL2,
   updateGameEngineL2,
@@ -1007,23 +1009,28 @@ export default function TectonicGame() {
             (currentAreaIndex === 4 && gameStateRef.current?.volcanoSim && gameStateRef.current.volcanoSim.phase !== 'idle' && gameStateRef.current.volcanoSim.phase !== 'volcano_completed')
           ) && (
               <div
-                onClick={() => {
-                  if (currentAreaIndex === 1 && simPhase === 'idle') {
-                    const tree = DIALOGUE_TREES_L2['resqy_briefing_area2'];
-                    if (tree) {
-                      retroAudio.playSelect();
-                      setActiveDialogueTree(tree);
-                      if (gameStateRef.current) gameStateRef.current.activeDialogueTree = tree;
-                    }
-                  } else if (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle')) {
-                    if (gameStateRef.current) {
-                      startSimulationArea5(gameStateRef.current, activeVolcanoScenario);
-                      if (gameStateRef.current.activeDialogueTree) {
-                        setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+                {...(() => {
+                  const aksi = () => {
+                    if (currentAreaIndex === 1 && simPhase === 'idle') {
+                      const tree = DIALOGUE_TREES_L2['resqy_briefing_area2'];
+                      if (tree) {
+                        retroAudio.playSelect();
+                        setActiveDialogueTree(tree);
+                        if (gameStateRef.current) gameStateRef.current.activeDialogueTree = tree;
+                      }
+                    } else if (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle')) {
+                      if (gameStateRef.current) {
+                        startSimulationArea5(gameStateRef.current, activeVolcanoScenario);
+                        if (gameStateRef.current.activeDialogueTree) {
+                          setActiveDialogueTree(gameStateRef.current.activeDialogueTree);
+                        }
                       }
                     }
-                  }
-                }}
+                  };
+                  const bisa = (currentAreaIndex === 1 && simPhase === 'idle')
+                    || (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle'));
+                  return { onClick: aksi, ...sifatTombol(aksi, `Mulai simulasi area ${activeArea.name}`, { aktif: bisa }) };
+                })()}
                 className={`bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl text-amber-200 font-pixel text-[13px] sm:text-[15px] md:text-base font-bold shadow-[0_4px_0_#231206] flex items-center gap-2 whitespace-nowrap ${(currentAreaIndex === 1 && simPhase === 'idle') || (currentAreaIndex === 4 && (!gameStateRef.current?.volcanoSim || gameStateRef.current.volcanoSim.phase === 'idle'))
                     ? 'cursor-pointer hover:border-amber-400 hover:scale-105 transition-all'
                     : ''
@@ -1228,7 +1235,7 @@ export default function TectonicGame() {
                 ◀
               </button>
               <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-700/70 border border-slate-600/80" />
-              <button
+              <button aria-label="Mulai simulasi"
                 onPointerDown={() => handleMobileBtnDown('right')}
                 onPointerUp={() => handleMobileBtnUp('right')}
                 onPointerLeave={() => handleMobileBtnUp('right')}

@@ -400,7 +400,7 @@ export default function Wordle({
             </span>
           ))}
           {onClose && (
-            <button
+            <button aria-label="Tutup"
               onClick={() => {
                 retroAudio.playSelect();
                 onClose();

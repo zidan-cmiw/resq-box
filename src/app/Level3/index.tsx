@@ -1040,7 +1040,7 @@ export default function Level3() {
       </div>
 
       {/* ── 3. FLOATING PAN BUTTONS ON SCREEN EDGES ── */}
-      <button
+      <button aria-label="Sebelumnya"
         onClick={panLeft}
         className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-2xl bg-[#451a03]/90 hover:bg-[#78350f] text-amber-200 border-2 sm:border-3 border-[#92400e] shadow-[0_4px_0_#1c0d02] flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-all"
         title="Geser Peta ke Kiri"
@@ -1050,7 +1050,7 @@ export default function Level3() {
         </svg>
       </button>
 
-      <button
+      <button aria-label="Berikutnya"
         onClick={panRight}
         className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-2xl bg-[#451a03]/90 hover:bg-[#78350f] text-amber-200 border-2 sm:border-3 border-[#92400e] shadow-[0_4px_0_#1c0d02] flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-all"
         title="Geser Peta ke Kanan"
@@ -1085,7 +1085,7 @@ export default function Level3() {
                 </div>
               </div>
 
-              <button
+              <button aria-label="Tutup"
                 onClick={() => {
                   retroAudio.playSelect();
                   setSelectedMission(null);
@@ -1219,7 +1219,7 @@ export default function Level3() {
                   </p>
                 </div>
               </div>
-              <button
+              <button aria-label="Tutup"
                 onClick={() => setShowLkpdModal(false)}
                 className="w-10 h-10 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-bold text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0"
               >
@@ -1290,7 +1290,7 @@ export default function Level3() {
                 </div>
               </div>
 
-              <button
+              <button aria-label="Tutup"
                 onClick={() => setShowProjectsModal(false)}
                 className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-100 border-2 border-amber-950 font-bold text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#231206] shrink-0"
                 title="Tutup Modal"
@@ -1338,7 +1338,7 @@ export default function Level3() {
                         BUKA
                       </button>
 
-                      <button
+                      <button aria-label="Hapus"
                         onClick={() => setConfirmDeleteProjectId(proj.id)}
                         className="p-2.5 rounded-xl text-rose-700 hover:bg-rose-100 hover:text-rose-900 border border-rose-300 cursor-pointer"
                         title="Hapus Proyek"
@@ -1373,7 +1373,7 @@ export default function Level3() {
             <p className="text-[13px] sm:text-[15px] text-[#381504] font-extrabold -mt-2">
               Beri nama proyek kreasi logika mitigasi mandirimu:
             </p>
-            <input
+            <input aria-label="Nama proyek baru"
               type="text"
               autoFocus
               value={newProjectName}

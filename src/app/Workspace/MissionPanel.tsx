@@ -78,7 +78,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
               {currentStep + 1} / {totalSteps}
             </span>
             {onClose && (
-              <button
+              <button aria-label="Tutup"
                 onClick={onClose}
                 className="w-5 h-5 rounded bg-[#b45309] hover:bg-[#92400e] text-white flex items-center justify-center font-bold text-[13.5px] cursor-pointer lg:hidden"
                 title="Tutup Panduan Misi"

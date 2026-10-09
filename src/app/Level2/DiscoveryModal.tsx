@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import type { DiscoveryPointL2 } from './level2Data';
 import { retroAudio } from '../../utils/retroAudio';
+import { sifatTombol } from '../../utils/keyboard';
 import PixelIcon from '../../components/PixelIcon';
+import { tutupModalDenganKeyboard } from '../../utils/keyboard';
+import { blokirRambatanTombol } from '../../utils/keyboard';
 
 interface DiscoveryModalProps {
   discovery: DiscoveryPointL2;
@@ -41,7 +44,7 @@ export default function DiscoveryModal({
               </h2>
             </div>
           </div>
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               onClose();
@@ -210,7 +213,7 @@ export default function DiscoveryModal({
 
         {/* Close Button */}
         <div className="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t-2 border-[#b45309]/40 flex justify-end">
-          <button
+          <button aria-label="Lanjutkan"
             onClick={() => {
               retroAudio.playSelect();
               onClose();
@@ -4847,6 +4850,13 @@ function VolcanoStatusIllustration() {
             {levels.map((l) => (
               <div
                 key={l.lvl}
+                {...sifatTombol(
+                  () => {
+                    retroAudio.playSelect();
+                    setActiveLevel(l.lvl);
+                  },
+                  `Lihat materi tingkat ${l.lvl} ${l.shortName}`,
+                )}
                 onClick={() => {
                   retroAudio.playSelect();
                   setActiveLevel(l.lvl);
@@ -5295,6 +5305,13 @@ function VolcanoResponseIllustration() {
       <div className="w-full flex-1 flex flex-col md:flex-row items-center justify-between gap-3 p-1.5 overflow-hidden">
         {/* Kolom Kiri: Visual Gambar / Ilustrasi Sesuai Materi Tab Aktif - Memenuhi Kotak Maksimal & Fullscreen */}
         <div
+          {...sifatTombol(
+            () => {
+              retroAudio.playSelect();
+              setIsFullscreen(true);
+            },
+            'Perbesar gambar ke tampilan penuh',
+          )}
           onClick={() => {
             retroAudio.playSelect();
             setIsFullscreen(true);
@@ -5430,11 +5447,11 @@ function VolcanoResponseIllustration() {
 
       {/* Lightbox Modal Fullscreen untuk Gambar/Visual */}
       {isFullscreen && (
-        <div
+        <div onKeyDown={tutupModalDenganKeyboard(() => setIsFullscreen(false))}
           className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-6 animate-fadeIn font-pixel"
           onClick={() => setIsFullscreen(false)}
         >
-          <div
+          <div onKeyDown={blokirRambatanTombol()}
             className="relative w-full max-w-5xl max-h-[92vh] bg-slate-950 border-3 border-amber-600/90 rounded-2xl p-3 sm:p-5 flex flex-col items-center shadow-[0_0_60px_rgba(0,0,0,0.95)]"
             onClick={(e) => e.stopPropagation()}
           >

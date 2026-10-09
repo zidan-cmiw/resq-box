@@ -45,6 +45,7 @@ import { useAuthStore } from '../../store/teacherStore';
 import { sanitizeCode } from '../../engine/codeSanitizer';
 import ResqyTutorialOverlay from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
+import { tutupModalDenganKeyboard } from '../../utils/keyboard';
 import {
   connectSerial,
   disconnectSerial,
@@ -633,7 +634,7 @@ export default function Workspace() {
                 </p>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-1.5">
-                    <input
+                    <input aria-label="Alamat IP Diorama"
                       type="text"
                       value={wsIp}
                       onChange={(e) => setWsIp(e.target.value)}
@@ -718,7 +719,7 @@ export default function Workspace() {
         {/* Mobile / Tablet Drawer Mission Panel */}
         {activeMission && showMissionPanel && (
           <div className="lg:hidden fixed inset-0 z-[100] flex">
-            <div
+            <div onKeyDown={tutupModalDenganKeyboard(() => setShowMissionPanel(false))}
               className="fixed inset-0 bg-black/60 backdrop-blur-xs z-[100]"
               onClick={() => setShowMissionPanel(false)}
             />

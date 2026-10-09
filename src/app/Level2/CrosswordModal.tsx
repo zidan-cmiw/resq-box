@@ -382,7 +382,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
               </h2>
             </div>
           </div>
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               onClose();
@@ -518,7 +518,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
           </div>
 
           {!isCompleted ? (
-            <button
+            <button aria-label="Lanjutkan"
               onClick={handleCheckSolution}
               className="px-7 sm:px-9 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 border-[#451a03] shadow-[0_4px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2.5 font-bold"
             >

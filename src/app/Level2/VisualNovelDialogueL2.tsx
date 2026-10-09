@@ -12,6 +12,7 @@ import { getNpcPortraitL2, getPlayerPortraitL2 } from './engine/npcSpritesL2';
 import type { CustomAvatarConfig } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
 import PixelIcon from '../../components/PixelIcon';
+import { blokirRambatanTombol } from '../../utils/keyboard';
 
 interface VisualNovelDialogueL2Props {
   dialogueTree: DialogueTreeL2;
@@ -393,7 +394,7 @@ export default function VisualNovelDialogueL2({
 
           {/* ── PILIHAN PERCABANGAN RESPON PEMAIN (TOMBOL WARNA BIASA, TIDAK GONJRENG) ── */}
           {currentNode?.choices && currentNode.choices.length > 0 && !isTyping && (
-            <div
+            <div onKeyDown={blokirRambatanTombol()}
               className="mt-3 pt-3 border-t border-slate-800 flex flex-col sm:flex-row gap-2.5 z-20"
               onClick={(e) => e.stopPropagation()}
             >
@@ -413,7 +414,7 @@ export default function VisualNovelDialogueL2({
           )}
 
           {/* ── TOOLBAR BAWAH (PERSIS LEVEL 1) ── */}
-          <div
+          <div onKeyDown={blokirRambatanTombol()}
             className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800/80 text-[13px] sm:text-[15px] text-slate-300 font-semibold"
             onClick={(e) => e.stopPropagation()}
           >

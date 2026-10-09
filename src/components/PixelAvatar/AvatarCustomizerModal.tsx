@@ -243,7 +243,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               </p>
             </div>
           </div>
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               onClose();
@@ -616,7 +616,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
             BATAL
           </button>
 
-          <button
+          <button aria-label="Lanjutkan"
             onClick={handleSave}
             className="px-7 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-3 border-amber-950 shadow-[0_4px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer flex items-center gap-2 font-semibold"
           >

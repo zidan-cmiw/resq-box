@@ -417,7 +417,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                   </div>
                 </div>
 
-                <button
+                <button aria-label="Tutup"
                   type="button"
                   onClick={handleSkip}
                   className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-lg sm:rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel text-[13px] sm:text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_#451a03] shrink-0 transition-colors font-semibold"

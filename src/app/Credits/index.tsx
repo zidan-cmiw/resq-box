@@ -269,7 +269,7 @@ export default function Credits() {
             </div>
           </div>
 
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               navigate('/');

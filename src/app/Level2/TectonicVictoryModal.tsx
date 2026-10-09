@@ -27,7 +27,7 @@ export default function TectonicVictoryModal({
       <div className="relative w-full max-w-2xl bg-[#fef3c7] border-4 border-[#451a03] rounded-3xl p-5 sm:p-7 shadow-[0_12px_0_#1c0d02] text-[#451a03] text-center max-h-[96vh] overflow-y-auto">
         {/* Close Button Top Right */}
         <div className="flex justify-end mb-1">
-          <button
+          <button aria-label="Tutup"
             onClick={() => {
               retroAudio.playSelect();
               onClose();
