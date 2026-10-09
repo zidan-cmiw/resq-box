@@ -12,6 +12,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import PixelIcon from '../../components/PixelIcon';
+import { useI18n } from '../../i18n';
 
 const KONTAK = 'tim.resqbox@gmail.com'; // ← ganti dengan kontak resmi tim
 const TERAKHIR_DIPERBARUI = '8 Oktober 2026';
@@ -97,6 +98,7 @@ const SECTIONS: Section[] = [
 
 export default function PrivacyPage() {
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   return (
     <div className="fixed inset-0 w-screen h-screen overflow-y-auto bg-[#0a0e1a] font-pixel">
@@ -114,7 +116,7 @@ export default function PrivacyPage() {
               &larr; KEMBALI
             </button>
             <h1 className="font-pixel-title text-[16px] sm:text-[19px] font-black text-amber-200 leading-snug">
-              KEBIJAKAN PRIVASI &amp; DATA SISWA
+              {t('privacy.title')}
             </h1>
           </div>
 
@@ -125,13 +127,10 @@ export default function PrivacyPage() {
               </span>
               <div>
                 <p className="font-pixel text-[14.5px] sm:text-[15px] leading-relaxed font-semibold">
-                  RESQ-BOX adalah media pembelajaran IPA untuk SMP. Kami hanya
-                  menyimpan data yang benar-benar diperlukan untuk mencatat hasil
-                  belajar, dan kami tidak memakainya untuk iklan atau
-                  memperdagangkannya.
+                  {t('privacy.intro')}
                 </p>
                 <p className="font-pixel text-[12.5px] mt-2 opacity-75 font-semibold">
-                  Terakhir diperbarui: {TERAKHIR_DIPERBARUI}
+                  {t('privacy.lastUpdated')}: {TERAKHIR_DIPERBARUI}
                 </p>
               </div>
             </div>
@@ -158,10 +157,7 @@ export default function PrivacyPage() {
 
             <div className="mt-6 pt-4 border-t-2 border-[#451a03]/25">
               <p className="font-pixel text-[13px] leading-relaxed opacity-80 font-semibold">
-                Halaman ini disediakan agar sekolah dan orang tua dapat memeriksa
-                sendiri bagaimana data siswa ditangani. Bila ada bagian yang perlu
-                dijelaskan lebih lanjut, silakan hubungi kami melalui kontak di
-                bagian 8.
+                {t('privacy.footerNote')}
               </p>
             </div>
           </div>
@@ -172,7 +168,7 @@ export default function PrivacyPage() {
               onClick={() => navigate('/')}
               className="pixel-btn-wood-plank px-5 py-2.5 text-[14.5px] font-semibold"
             >
-              KEMBALI KE MENU UTAMA
+              {t('common.home')}
             </button>
           </div>
         </div>
