@@ -56,7 +56,13 @@ export default function TeacherDashboard() {
   const [showManageClassModal, setShowManageClassModal] = useState(false);
   const [editClassName, setEditClassName] = useState('');
   const [editClassSuccess, setEditClassSuccess] = useState('');
-  const [manageTab, setManageTab] = useState<'rename' | 'add_student' | 'danger'>('rename');
+  // Tab bawaan modal kelola kelas.
+  //
+  // SEBELUMNYA 'rename' (Ganti Nama Kelas). Diubah menjadi 'add_student'
+  // karena membuat akun siswa kini menjadi pekerjaan utama guru di halaman ini
+  // — pendaftaran mandiri sudah ditutup, jadi seluruh akun siswa harus dibuat
+  // dari sini. Mengubah nama kelas jarang dilakukan (biasanya sekali saja).
+  const [manageTab, setManageTab] = useState<'rename' | 'add_student' | 'danger'>('add_student');
 
   // Students & Submissions State
   const [students, setStudents] = useState<StudentDbRecord[]>([]);
@@ -707,7 +713,9 @@ export default function TeacherDashboard() {
               </span>
             </div>
             <p className="text-[14.5px] text-amber-900 font-pixel mt-1 font-bold">
-              Bagikan kode kelas kepada siswa untuk mendaftar mandiri, atau kelola akun kelas lewat tombol di bawah.
+              Kode kelas hanya untuk menandai kelasmu — siswa <strong>tidak bisa</strong> mendaftar
+              sendiri. Buatkan akun siswamu lewat <strong>EDIT KELAS → + TAMBAH SISWA</strong>:
+              akun langsung aktif dan satu NISN hanya boleh dipakai sekali.
             </p>
           </div>
 
@@ -724,6 +732,13 @@ export default function TeacherDashboard() {
             <button
               onClick={() => {
                 retroAudio.playSelect();
+                // Selalu buka di tab "+ TAMBAH SISWA".
+                //
+                // State manageTab bertahan setelah modal ditutup, sehingga
+                // tanpa set ulang di sini modal akan terbuka di tab terakhir
+                // yang dipakai — bisa saja tab "HAPUS KELAS", yang berbahaya
+                // bila terbuka tanpa sengaja.
+                setManageTab('add_student');
                 setShowManageClassModal(true);
               }}
               className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-pixel-title font-bold text-[13px] border-2 border-emerald-950 shadow-[0_2px_0_#064e3b] cursor-pointer flex items-center gap-1.5 transition-transform active:translate-y-0.5"
@@ -1134,6 +1149,16 @@ export default function TeacherDashboard() {
             {/* Tab Content 2: Tambah Akun Siswa Baru */}
             {manageTab === 'add_student' && (
               <form onSubmit={handleCreateStudent} className="space-y-3 pt-1">
+                {/* Keterangan singkat: guru perlu tahu bahwa akun langsung
+                    aktif dan tidak perlu konfirmasi email, serta bahwa NISN
+                    tidak dapat dipakai dua kali. */}
+                <div className="p-2.5 rounded-xl bg-amber-100 border-2 border-amber-950/40">
+                  <p className="text-[13px] text-amber-900 font-pixel font-semibold leading-relaxed">
+                    Isi data siswa di bawah ini. Akun <strong>langsung aktif</strong> dan dapat
+                    dipakai siswa untuk masuk — tidak perlu konfirmasi email. Sampaikan
+                    username dan kata sandi sementara kepada siswa yang bersangkutan.
+                  </p>
+                </div>
                 {addStdSuccess && (
                   <div className="p-2.5 rounded-xl bg-emerald-100 border-2 border-emerald-700 text-emerald-950 text-[13px] font-bold font-pixel">
                     ✓ {addStdSuccess}

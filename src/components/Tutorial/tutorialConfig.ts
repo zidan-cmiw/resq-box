@@ -226,7 +226,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         targetSelector: '#tour-dash-profile',
         placement: 'right',
         content:
-          'Klik tombol [POSKO GURU] ini untuk membuka ruang manajemen kelas, membagikan kode kelas, memantau nilai tugas siswa real-time, serta mencetak rapor evaluasi!',
+          'Klik tombol [POSKO GURU] ini untuk membuka ruang manajemen kelas, membuatkan akun bagi siswa Bapak/Ibu, memantau nilai tugas siswa secara langsung, serta mencetak rapor evaluasi!',
       },
     ],
   },
@@ -444,16 +444,18 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'MANAJEMEN KELAS',
         placement: 'center',
         content:
-          'Selamat datang Bapak/Ibu Guru IPA! Di Posko Guru ini, Bapak/Ibu dapat mengelola kelas, membagikan kode kelas, memantau kemajuan belajar siswa real-time, dan mengunduh laporan nilai resmi.',
+          'Selamat datang Bapak/Ibu Guru IPA! Di Posko Guru ini, Bapak/Ibu dapat membuat kelas, membuatkan akun untuk siswa, memantau kemajuan belajar siswa secara langsung, dan mengunduh laporan nilai resmi.',
       },
       {
         id: 'teacher_classroom',
-        title: 'Manajemen Kelas & Kode Kelas',
-        badge: 'KODE KELAS',
+        title: 'Membuat Akun Siswa',
+        badge: 'AKUN SISWA',
         targetSelector: '#tour-teacher-classroom',
         placement: 'bottom',
         content:
-          'Pilih kelas aktif dari dropdown atau buat kelas baru. Salin Kode Kelas (misal: RESQ-8A) dan bagikan kepada siswa agar mereka terdaftar ke dalam kelas Bapak/Ibu.',
+          'Pilih kelas aktif, atau buat kelas baru lebih dulu. Setelah itu tekan [EDIT KELAS] lalu buka tab [+ TAMBAH SISWA] untuk membuatkan akun bagi siswa Bapak/Ibu. Isi nama, NISN, nomor absen, username, dan kata sandi sementara — akun itu langsung dapat dipakai siswa untuk masuk, tanpa perlu konfirmasi email.',
+        actionHint:
+          'NISN wajib diisi 10 digit. Satu NISN hanya boleh memiliki satu akun, sehingga seorang siswa tidak dapat memiliki dua akun.',
       },
       {
         id: 'teacher_kpi',
