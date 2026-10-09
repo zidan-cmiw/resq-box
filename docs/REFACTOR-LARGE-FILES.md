@@ -89,15 +89,34 @@ Jangan menggabungkan dua langkah dalam satu commit.
 
 | Langkah | Isi | Status | Hasil |
 |---|---|---|---|
-1 | `engine/draw/base.ts` — `drawRoundedBadgeL2`, `drawRealisticVolcanicSmoke` | ✅ **selesai** | 10.992 → 10.849 |
-2 | `engine/draw/volcano.ts` — magma, lava, abu, kawanan burung | ✅ **selesai** | 10.849 → 9.623 |
-3 | `engine/draw/assembly.ts` — lapangan evakuasi Area 3 | ✅ **selesai** | 9.623 → 8.838 |
+1 | `engine/draw/base.ts` | ✅ **selesai** | 10.992 → 10.849 |
+2 | `engine/draw/volcano.ts` | ✅ **selesai** | 10.849 → 9.623 |
+3 | `engine/draw/assembly.ts` | ✅ **selesai** | 9.623 → 8.838 |
 4 | `engine/draw/classroom.ts` + `overlay.ts` | ✅ **selesai** | 8.838 → 6.270 |
-5 | `engine/draw/merapi.ts` — Merapi prabencana, desa, truk penyelamat | ✅ **selesai** | 6.270 → **3.666** |
-6 | `engine/draw/facilities.ts` — pos pengamatan, gapura, shelter | belum | |
-7 | `renderer.ts` menjadi orkestrator tipis | belum | |
+5 | `engine/draw/merapi.ts` | ✅ **selesai** | 6.270 → 3.666 |
+6 | `engine/draw/locations.ts` — fasilitas, overlay gunung, shelter | ✅ **selesai** | 3.666 → **1.608** |
+7 | `renderer.ts` menjadi orkestrator | belum | tinggal 2 fungsi |
 
-**Progres: 10.992 → 3.666 baris (−67%), 5 dari 7 langkah selesai.**
+**Progres: 10.992 → 1.608 baris (−85%), 6 dari 7 langkah selesai.**
+
+Setelah Langkah 6, `renderer.ts` hanya berisi **2 fungsi**:
+`drawPosPengamatanInterior` (767 baris) dan `renderTectonicGameL2`
+(549 baris) — orkestratornya. Keduanya relatif mandiri dan dapat dipindahkan
+pada Langkah 7 bila diinginkan; berkas ini sudah tidak lagi berukuran raksasa.
+
+### Modul yang terbentuk
+
+| Berkas | Baris | Isi |
+|---|---|---|
+`draw/base.ts` | 182 | 2 fungsi dasar lintas tema |
+`draw/volcano.ts` | 1.264 | magma, lava, abu, kawanan burung |
+`draw/assembly.ts` | 814 | lapangan evakuasi Area 3 |
+`draw/classroom.ts` | 2.251 | ruang kelas Area 2 |
+`draw/overlay.ts` | 411 | QTE, timer, prompt interaksi |
+`draw/merapi.ts` | 2.663 | Merapi prabencana, desa, truk penyelamat |
+`draw/locations.ts` | 2.111 | fasilitas, overlay gunung, shelter |
+`renderer.ts` | **1.608** | orkestrator + pos pengamatan |
+
 
 ### Catatan dari Langkah 5 — pelajaran tentang impor melingkar
 
