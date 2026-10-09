@@ -7,6 +7,7 @@ import {
   type DiscoveryPoint,
 } from './earthDiveData';
 import TelemetryHUD from './TelemetryHUD';
+import PlateBoundaryStatus from './PlateBoundaryStatus';
 import PixelEarthDiagram from '../PixelEarthDiagram';
 import DiscoveryModal from './DiscoveryModal';
 import CoreChallengeModal from './CoreChallengeModal';
@@ -1662,6 +1663,22 @@ export default function EarthDiveGame() {
           onAreaSelect={handleTeleportToArea}
         />
       </div>
+
+      {/* ── 5.9 KETERANGAN GERAK LEMPENG (hanya di zona batas lempeng) ──
+          Diletakkan tepat di bawah tracker, di ATAS area animasi.
+
+          Alasan penempatan: animasi lempeng berlangsung di bagian tengah
+          layar, dan kartu ajakan berinteraksi ada di bawah. Keterangan yang
+          ditaruh di bawah akan saling menutupi dengan keduanya, sehingga
+          siswa tidak dapat membaca sambil melihat animasinya.
+
+          `pointer-events-none` supaya bilah ini tidak menghalangi klik ke
+          canvas di belakangnya. */}
+      {!isPaused && (
+        <div className="absolute top-[7.5rem] sm:top-[8.25rem] left-1/2 -translate-x-1/2 z-10 w-[min(94vw,520px)] pointer-events-none">
+          <PlateBoundaryStatus zoneIndex={hudData.zoneIndex} />
+        </div>
+      )}
 
       {/* ── 6. DISCREET KEYBOARD CONTROLS GUIDE (Desktop Bottom) ── */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[12.5px] font-pixel text-slate-300 pointer-events-none z-10 select-none font-semibold">

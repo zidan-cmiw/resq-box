@@ -23,8 +23,22 @@ interface SuitDetails {
   dialogue: string;
   features: { label: string; desc: string }[];
   accentColor: string;
-  bgGradient: string;
+  /**
+   * Warna latar & batas label tier pakaian.
+   * Dirancang untuk latar KREM (modal sudah diseragamkan dengan popup materi).
+   */
   badgeBg: string;
+  /**
+   * Warna TEKS pada label tier.
+   *
+   * MENGAPA TERPISAH DARI badgeBg
+   *   Sebelum modal diseragamkan, label ini memakai warna cerah (mis.
+   *   text-orange-400) yang cocok untuk latar gelap. Di atas latar krem,
+   *   warna cerah itu nyaris tidak terbaca. Karena itu teksnya memakai versi
+   *   lebih gelap dari warna yang sama (mis. text-orange-700), sehingga
+   *   identitas warna tiap pakaian tetap ada tetapi tetap terbaca.
+   */
+  badgeTeks: string;
   borderGlow: string;
   suitPreviewSvg: React.ReactNode;
 }
@@ -45,8 +59,8 @@ const SUIT_CATALOG: Record<string, SuitDetails> = {
       { label: 'Helm Silikat Oranye', desc: 'Visor amber anti-radiasi inframerah magma kental' },
     ],
     accentColor: '#f97316',
-    bgGradient: 'from-orange-950/80 via-slate-900/90 to-amber-950/80',
-    badgeBg: 'bg-orange-500/20 text-orange-400 border-orange-500/40',
+    badgeBg: 'bg-orange-500/20 border-orange-500/40',
+    badgeTeks: 'text-orange-700',
     borderGlow: 'shadow-[0_0_30px_rgba(249,115,22,0.35)] border-orange-500/50',
     suitPreviewSvg: (
       <svg viewBox="0 0 48 48" className="w-20 h-20 filter drop-shadow-[0_0_12px_rgba(249,115,22,0.6)]">
@@ -81,8 +95,8 @@ const SUIT_CATALOG: Record<string, SuitDetails> = {
       { label: 'Reaktor Daya Dada', desc: 'Penetral lompatan listrik induksi elektromagnetik' },
     ],
     accentColor: '#00e5ff',
-    bgGradient: 'from-cyan-950/80 via-slate-900/90 to-blue-950/80',
-    badgeBg: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40',
+    badgeBg: 'bg-cyan-500/20 border-cyan-500/40',
+    badgeTeks: 'text-cyan-700',
     borderGlow: 'shadow-[0_0_30px_rgba(0,229,255,0.35)] border-cyan-500/50',
     suitPreviewSvg: (
       <svg viewBox="0 0 48 48" className="w-20 h-20 filter drop-shadow-[0_0_12px_rgba(0,229,255,0.7)]">
@@ -120,8 +134,8 @@ const SUIT_CATALOG: Record<string, SuitDetails> = {
       { label: 'Singularitas Anti-Gravitasi', desc: 'Penyeimbang gaya resultan gravitasi nol di titik pusat' },
     ],
     accentColor: '#facc15',
-    bgGradient: 'from-amber-950/80 via-slate-900/90 to-yellow-950/80',
-    badgeBg: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/40',
+    badgeBg: 'bg-yellow-500/20 border-yellow-500/40',
+    badgeTeks: 'text-yellow-700',
     borderGlow: 'shadow-[0_0_35px_rgba(250,204,21,0.4)] border-yellow-500/60',
     suitPreviewSvg: (
       <svg viewBox="0 0 48 48" className="w-20 h-20 filter drop-shadow-[0_0_14px_rgba(250,204,21,0.8)]">
@@ -159,8 +173,8 @@ const SUIT_CATALOG: Record<string, SuitDetails> = {
       { label: 'Propulsor Fin Hidrodinamik', desc: 'Kemudahan berenang melintasi rekahan magma bawah laut' },
     ],
     accentColor: '#38bdf8',
-    bgGradient: 'from-sky-950/80 via-slate-900/90 to-blue-950/80',
-    badgeBg: 'bg-sky-500/20 text-sky-400 border-sky-500/40',
+    badgeBg: 'bg-sky-500/20 border-sky-500/40',
+    badgeTeks: 'text-sky-700',
     borderGlow: 'shadow-[0_0_30px_rgba(56,189,248,0.35)] border-sky-500/50',
     suitPreviewSvg: (
       <svg viewBox="0 0 48 48" className="w-20 h-20 filter drop-shadow-[0_0_12px_rgba(56,189,248,0.7)]">
@@ -214,22 +228,22 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-sans select-none">
       <div
-        className={`relative w-full max-w-2xl bg-gradient-to-b ${suit.bgGradient} border-2 rounded-2xl p-6 sm:p-8 text-white ${suit.borderGlow} transition-all duration-300 overflow-hidden shadow-2xl`}
+        className={`relative w-full max-w-2xl bg-[#fef3c7] border-4 border-[#78350f] rounded-2xl p-5 sm:p-6 md:p-7 text-[#291305] ${suit.borderGlow} transition-all duration-300 overflow-hidden shadow-[0_6px_0_#451a03,0_16px_36px_rgba(0,0,0,0.65)]`}
       >
         {/* Background Grid Pattern */}
         <div
           className="absolute inset-0 opacity-10 pointer-events-none"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
+              'linear-gradient(rgba(120,53,15,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(120,53,15,0.12) 1px, transparent 1px)',
             backgroundSize: '24px 24px',
           }}
         />
 
         {/* Header Modal */}
-        <div className="relative flex items-start justify-between pb-4 border-b border-white/20 gap-3">
+        <div className="relative flex items-start justify-between pb-3 border-b-2 border-[#b45309]/30 gap-3">
           <div className="flex items-center gap-3.5">
-            <div className="p-3 rounded-xl bg-slate-800/90 border border-white/25 shadow-inner">
+            <div className="p-2.5 rounded-xl bg-[#fffbeb] border-2 border-[#b45309]/50 shadow-inner shrink-0">
               <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke={suit.accentColor} strokeWidth="2.5">
                 <path d="M12 2L2 7l10 5 10-5-10-5z" />
                 <path d="M2 17l10 5 10-5" />
@@ -238,12 +252,12 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <span className={`text-[13px] sm:text-[15px] font-black uppercase tracking-wider px-3 py-1 rounded-full border ${suit.badgeBg}`}>
+                <span className={`text-[12.5px] sm:text-[13.5px] font-black uppercase tracking-wider px-3 py-1 rounded-full border-2 ${suit.badgeBg} ${suit.badgeTeks}`}>
                   {suit.tierLabel}
                 </span>
-                <span className="text-[13px] sm:text-[15px] text-slate-300 font-mono tracking-tight font-semibold">{suit.codeName}</span>
+                <span className="text-[12.5px] sm:text-[13.5px] text-[#78350f] font-mono tracking-tight font-semibold">{suit.codeName}</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black tracking-wide text-white drop-shadow-md mt-1">
+              <h2 className="font-pixel text-[17px] sm:text-[21px] font-black tracking-tight text-[#2e0e02] mt-1 leading-tight break-words">
                 {suit.name}
               </h2>
             </div>
@@ -254,7 +268,7 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
               retroAudio.playSelect();
               onClose();
             }}
-            className="p-2 text-slate-300 hover:text-white rounded-xl hover:bg-white/15 transition-colors text-2xl leading-none font-bold"
+            className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-lg bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] flex items-center justify-center transition-colors text-[15px] font-bold cursor-pointer"
             title="Tutup [ESC]"
           >
             ✕
@@ -263,8 +277,12 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
 
         {/* Showcase Baju & Fitur Ilmiah */}
         <div className="relative grid grid-cols-1 sm:grid-cols-12 gap-5 my-5">
-          {/* Visual Avatar / Suit Sprite Box */}
-          <div className="sm:col-span-4 rounded-2xl bg-slate-950/80 border border-white/20 p-5 flex flex-col items-center justify-center text-center shadow-inner relative overflow-hidden group">
+          {/* Visual Avatar / Suit Sprite Box
+              SENGAJA tetap gelap: pratinjau pakaian memakai warna terang
+              (ivory, putih, neon) sehingga di atas latar krem gambarnya tidak
+              terlihat. Warna gelapnya dibuat hangat (coklat tua) agar tetap
+              selaras dengan palet aplikasi, bukan biru keabu-abuan. */}
+          <div className="sm:col-span-4 rounded-2xl bg-[#2b1204] border-2 border-[#78350f] p-4 sm:p-5 flex flex-col items-center justify-center text-center shadow-inner relative overflow-hidden group">
             <div
               className="absolute inset-0 opacity-25 pointer-events-none"
               style={{
@@ -274,27 +292,27 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
               {suit.suitPreviewSvg}
             </div>
-            <div className="relative z-10 mt-4 font-mono font-black text-[15px] uppercase text-slate-100 tracking-wider">
+            <div className="relative z-10 mt-4 font-mono font-black text-[15px] uppercase text-[#291305] tracking-wider">
               {isEquipped ? 'STATUS: AKTIF' : hasPurchased ? 'SUDAH DIMILIKI' : 'SIAP DIBELI'}
             </div>
-            <div className="relative z-10 text-[13px] text-slate-300 mt-1 font-semibold">
+            <div className="relative z-10 text-[13px] text-[#78350f] mt-1 font-semibold">
               Target: {suit.zoneTarget.split(' ')[0]} {suit.zoneTarget.split(' ')[1] || ''}
             </div>
           </div>
 
           {/* Fitur Sains & Spesifikasi */}
           <div className="sm:col-span-8 flex flex-col justify-between gap-3">
-            <div className="text-[15px] sm:text-base font-black text-slate-100 uppercase tracking-wider flex items-center gap-2">
+            <div className="text-[15px] sm:text-base font-black text-[#291305] uppercase tracking-wider flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: suit.accentColor }} />
               Spesifikasi Proteksi Geologis:
             </div>
             <div className="space-y-2.5">
               {suit.features.map((f, idx) => (
-                <div key={idx} className="p-3 sm:p-3.5 rounded-xl bg-slate-900/80 border border-white/15 flex items-start gap-3 shadow-sm">
+                <div key={idx} className="p-3 sm:p-3.5 rounded-xl bg-[#fffbeb]/90 border border-[#b45309]/25 flex items-start gap-3 shadow-sm">
                   <span className="text-base sm:text-lg shrink-0 mt-0.5 font-medium" style={{ color: suit.accentColor }}>✦</span>
                   <div className="text-left">
-                    <span className="font-black text-[15px] sm:text-base text-white block leading-snug">{f.label}</span>
-                    <span className="text-[13px] sm:text-[15px] text-slate-200 font-medium leading-relaxed block mt-0.5">{f.desc}</span>
+                    <span className="font-black text-[15px] sm:text-base text-[#291305] block leading-snug">{f.label}</span>
+                    <span className="text-[13px] sm:text-[15px] text-[#3f1d06] font-medium leading-relaxed block mt-0.5">{f.desc}</span>
                   </div>
                 </div>
               ))}
@@ -303,15 +321,15 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
         </div>
 
         {/* Saldo Kristal & Bar Aksi Pembelian */}
-        <div className="relative pt-5 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="relative pt-5 border-t border-[#b45309]/30 flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Status Saldo Kristal Pemain */}
-          <div className="flex items-center gap-3.5 w-full sm:w-auto bg-slate-900/90 px-4 py-2.5 rounded-xl border border-white/15 shadow-inner">
+          <div className="flex items-center gap-3.5 w-full sm:w-auto bg-[#fffbeb]/90 px-4 py-2.5 rounded-xl border border-[#b45309]/25 shadow-inner">
             <div className="flex items-center gap-2.5">
               <svg className="w-6 h-6 text-cyan-400 filter drop-shadow-[0_0_8px_rgba(34,211,238,0.9)]" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5" />
               </svg>
               <div className="flex flex-col">
-                <span className="text-[13px] uppercase font-extrabold text-slate-400 tracking-wider">Saldo Kristal</span>
+                <span className="text-[13px] uppercase font-extrabold text-[#92400e] tracking-wider">Saldo Kristal</span>
                 <span className="text-base sm:text-lg font-black text-cyan-300 font-mono leading-tight">
                   {playerCrystals} Kristal Energi
                 </span>
@@ -319,7 +337,7 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             </div>
             <div className="h-7 w-px bg-white/25 mx-1" />
             <div className="flex flex-col">
-              <span className="text-[13px] uppercase font-extrabold text-slate-400 tracking-wider">Harga Baju</span>
+              <span className="text-[13px] uppercase font-extrabold text-[#92400e] tracking-wider">Harga Baju</span>
               <span className="text-base sm:text-lg font-black text-amber-300 font-mono leading-tight">1 Kristal</span>
             </div>
           </div>
@@ -331,7 +349,7 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
                 retroAudio.playSelect();
                 onClose();
               }}
-              className="px-4 sm:px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-[15px] sm:text-base border border-white/20 transition-all shadow-md active:scale-95 cursor-pointer"
+              className="px-4 sm:px-5 py-3 rounded-xl bg-[#fde68a] hover:bg-[#fcd34d] text-[#3f1d06] font-bold text-[15px] sm:text-base border-2 border-[#b45309]/50 transition-all shadow-sm active:scale-95 cursor-pointer"
             >
               Nanti Saja
             </button>
@@ -346,14 +364,14 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
             ) : hasPurchased ? (
               <button
                 onClick={handleAction}
-                className="px-5 sm:px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-black text-[15px] sm:text-base border border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
+                className="px-5 sm:px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-[#291305] font-black text-[15px] sm:text-base border border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 <span>⚡</span> KENAKAN SEKARANG
               </button>
             ) : canAfford ? (
               <button
                 onClick={handleAction}
-                className="px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-[15px] sm:text-base border border-yellow-300 shadow-[0_0_25px_rgba(245,158,11,0.6)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
+                className="px-5 sm:px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-[#451a03] font-black text-[15px] sm:text-base border border-yellow-300 shadow-[0_0_25px_rgba(245,158,11,0.6)] transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 BELI & LANGSUNG PAKAI (1 KRISTAL)
               </button>
