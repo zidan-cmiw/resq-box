@@ -42,8 +42,8 @@ class Level2ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
   render() {
     if (this.state.hasError) {
       return (
-        <div className="fixed inset-0 w-screen h-screen bg-[#1c1917] flex items-center justify-center p-6 text-amber-100 font-pixel z-50">
-          <div className="max-w-md w-full bg-[#0f172a] border-4 border-rose-600 rounded-2xl p-6 shadow-2xl text-center space-y-4">
+        <div className="fixed inset-0 w-screen h-screen bg-[#1c1917] flex items-center justify-center p-3 sm:p-6 text-amber-100 font-pixel z-50">
+          <div className="max-w-md w-full bg-[#0f172a] border-4 border-rose-600 rounded-2xl p-4 sm:p-6 shadow-2xl text-center space-y-4">
             <div className="w-14 h-14 mx-auto rounded-xl bg-rose-500/20 border-2 border-rose-500 flex items-center justify-center text-rose-400 animate-pulse">
               <PixelIcon name="warning" size={26} className="text-rose-400" />
             </div>

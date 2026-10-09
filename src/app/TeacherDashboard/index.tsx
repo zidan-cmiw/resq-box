@@ -847,7 +847,7 @@ export default function TeacherDashboard() {
               <tbody className="divide-y divide-amber-950/10 font-pixel font-bold text-amber-950">
                 {filteredStudents.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="p-8 text-center text-amber-900/70 font-pixel text-[13px] italic font-semibold">
+                    <td colSpan={8} className="p-5 sm:p-8 text-center text-amber-900/70 font-pixel text-[13px] italic font-semibold">
                       Belum ada siswa yang sesuai kriteria di kelas ini. Klik [EDIT KELAS] untuk menambahkan akun murid.
                     </td>
                   </tr>

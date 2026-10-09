@@ -494,7 +494,7 @@ export default function Profile() {
                 LEVEL {unlockedLevel} / 3
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-center text-[13.5px] font-semibold">
+            <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 text-center text-[13.5px] font-semibold">
               <div className={`p-2 rounded border ${unlockedLevel >= 1 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900 border-slate-800 text-slate-600'}`}>
                 <div className="font-bold">STAGE 1</div>
                 <div className="truncate">Earth Explorer</div>

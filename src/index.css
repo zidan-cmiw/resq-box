@@ -121,6 +121,12 @@
 
      Yang memang dibuang: Inter (dirujuk 11 token tetapi 0 pemakaian dan tidak
      dimuat di index.html) dan Pixelify Sans (hanya di beberapa SVG). */
+  /* Breakpoint tambahan untuk HP kecil (360-479px).
+     Tailwind 4 hanya menyediakan sm: (640px) sebagai varian terkecil,
+     sehingga layar 360px tidak punya titik henti di antaranya.
+     Tanpa breakpoint ini, tata letak harus melompat dari 1 kolom
+     langsung ke 3-5 kolom pada 640px. */
+  --breakpoint-xs: 480px;
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-pixel-title: "Press Start 2P", cursive, monospace;
   --font-pixel: "Plus Jakarta Sans", system-ui, sans-serif;

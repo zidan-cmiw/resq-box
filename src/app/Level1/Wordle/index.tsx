@@ -321,7 +321,7 @@ export default function Wordle({
           <p className="text-[15px] sm:text-base text-amber-950 font-pixel font-bold leading-relaxed">
             Kamu telah menguasai <span className="text-amber-800 font-extrabold">Struktur Lapisan Bumi</span> &amp; <span className="text-amber-800 font-extrabold">Dinamika Lempeng Tektonik</span>!
           </p>
-          <div className="grid grid-cols-3 gap-2.5 pt-2 border-t-2 border-amber-950/20 text-[13px] sm:text-[15px] text-amber-950 font-bold">
+          <div className="grid grid-cols-1 xs:grid-cols-3 gap-2.5 pt-2 border-t-2 border-amber-950/20 text-[13px] sm:text-[15px] text-amber-950 font-bold">
             <span className="bg-amber-100 py-2 px-2.5 rounded-xl border border-amber-950/30 truncate">
               Bab 1 &amp; 2
             </span>

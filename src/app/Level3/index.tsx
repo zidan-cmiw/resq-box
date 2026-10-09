@@ -1170,7 +1170,7 @@ export default function Level3() {
       {/* ── MODAL 2: CONFIRM REPLAY MODAL ── */}
       {confirmReplayMissionId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-['Plus_Jakarta_Sans',sans-serif]">
-          <div className="relative w-full max-w-md bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl sm:rounded-3xl p-6 shadow-[0_16px_0_#1c0d02] text-[#451a03] flex flex-col gap-4">
+          <div className="relative w-full max-w-md bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-[0_16px_0_#1c0d02] text-[#451a03] flex flex-col gap-4">
             <div className="flex items-center gap-3 border-b-2 border-[#78350f]/30 pb-3">
               <div className="w-10 h-10 rounded-xl bg-amber-500/20 border-2 border-amber-600 flex items-center justify-center shrink-0">
                 <PixelIcon name="warning" size={20} className="text-amber-800" />
