@@ -33,6 +33,26 @@ const INITIAL_TOOLBOX = {
         { kind: 'block', type: 'resq_gunung_sim' },
       ],
     },
+    // ── Perangkat Diorama ───────────────────────────────────────────────
+    // Blok pengendali perangkat KERAS yang benar-benar ada di RESQ-BOX Board.
+    // Keempatnya sudah lengkap: blok, generator Arduino, generator simulator,
+    // dan fungsi API yang mengirim perintah ke perangkat. Sebelumnya
+    // terdefinisi tetapi tidak pernah ditampilkan, sehingga siswa tidak dapat
+    // memakai motor getar, pengabut, sirine, dan speaker secara langsung.
+    //
+    // Nilai PWM motor getar (20/35/50) sesuai yang diterima firmware, lihat
+    // perintah "motor <pwm>" pada program_esp.ino.
+    {
+      kind: 'category',
+      name: 'Perangkat Diorama',
+      colour: '#B45309',
+      contents: [
+        { kind: 'block', type: 'resq_motor_getar' },
+        { kind: 'block', type: 'resq_mist' },
+        { kind: 'block', type: 'resq_buzzer' },
+        { kind: 'block', type: 'resq_audio' },
+      ],
+    },
     {
       kind: 'category',
       name: 'Peringatan & EWS',
