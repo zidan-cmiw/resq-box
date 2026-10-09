@@ -27,7 +27,8 @@ const SECTIONS: Section[] = [
     judul: '1. Data apa yang kami simpan',
     isi: [
       'Data akun: nama lengkap, username, dan password. Password disimpan dalam bentuk terenkripsi (hash bcrypt) oleh layanan autentikasi, dan tidak pernah dapat dilihat kembali oleh guru, admin, maupun pengembang.',
-      'Data kelas: kode kelas, asal sekolah, dan nomor absen. Dipakai agar guru dapat melihat rekap kelasnya sendiri.',
+      'Identitas siswa: NISN (Nomor Induk Siswa Nasional, 10 digit). Dipakai sebagai pengenal tunggal agar satu siswa hanya memiliki satu akun, dan agar hasil belajarnya tidak terpecah ke beberapa akun.',
+      'Data kelas: kode kelas, asal sekolah, dan nomor absen. Nomor absen hanya dipakai sebagai nomor urut di dalam kelas, bukan sebagai pengenal. Guru dapat melihat rekap kelasnya sendiri.',
       'Hasil belajar: capaian per level, jumlah kristal, kata kunci yang berhasil dijawab, dan nilai akhir. Inilah yang muncul di rapor guru.',
       'Data teknis: jenis perangkat, ukuran layar, dan laporan error. Dipakai hanya untuk memperbaiki gangguan. Kami TIDAK menyimpan riwayat penjelajahan, lokasi, kamera, mikrofon, atau kontak.',
     ],
@@ -64,6 +65,7 @@ const SECTIONS: Section[] = [
     isi: [
       'Meminta salinan data: guru dapat mengunduh rekap kelas dalam format CSV kapan saja dari Posko Guru.',
       'Meminta perbaikan: nama, kelas, dan nomor absen dapat diperbaiki sendiri oleh siswa di halaman Profil, atau oleh guru.',
+      'Perbaikan NISN: karena NISN adalah pengenal unik, kesalahan penulisannya TIDAK dapat diperbaiki sendiri oleh siswa (kalau boleh, satu siswa dapat mengubah NISN-nya untuk membuat akun kedua). Ajukan perbaikan melalui guru atau admin sekolah.',
       'Meminta penghapusan: ajukan melalui guru atau kontak di bagian 8. Kami akan menghapus akun beserta seluruh hasil belajarnya.',
       'Menolak pemakaian: bila sekolah memutuskan tidak memakai aplikasi ini, tidak ada data yang perlu diserahkan karena seluruhnya tersimpan di akun yang dapat dihapus.',
     ],

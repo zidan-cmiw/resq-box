@@ -281,11 +281,10 @@ export function createGameState(userId?: string): GameState {
   if (saved?.equippedSuit) {
     state.player.equippedSuit = saved.equippedSuit;
   } else {
-    // Backward compatibility untuk save game lama yang sudah berada di zona bawah
-    if (zoneIndex === 2) state.player.equippedSuit = 'mantle_suit';
-    else if (zoneIndex === 3) state.player.equippedSuit = 'outer_core_suit';
-    else if (zoneIndex === 4) state.player.equippedSuit = 'inner_core_suit';
-    else if (zoneIndex >= 5) state.player.equippedSuit = 'diver_suit';
+    // Backward compatibility untuk save game lama yang sudah berada di zona bawah.
+    // Memakai aturan yang sama dengan perpindahan zona, supaya keduanya tidak
+    // dapat berbeda lagi.
+    syncSuitToZone(state);
   }
 
   const savedDir = savedZonePos?.dir ?? saved?.playerDir;
@@ -378,6 +377,11 @@ function updateTransition(state: GameState): void {
     // Switch zone at midpoint
     state.currentZone = state.transitionTargetZone;
     const zone = getZone(state.currentZone);
+
+    // Pakaian disesuaikan dengan zona baru. Tanpa ini, pakaian dari zona
+    // sebelumnya terbawa turun — misalnya pakaian selam tetap dipakai saat
+    // sampai di Inti Dalam.
+    syncSuitToZone(state);
 
     if (state.currentZone === 5) {
       state.divergentProgress = 0;
@@ -489,6 +493,52 @@ function updateTransition(state: GameState): void {
 }
 
 // ── SUIT HELPER & VALIDATION ──
+
+/**
+ * Pakaian yang WAJIB dipakai di setiap zona.
+ *
+ * MENGAPA DIBUAT TERPISAH
+ *   Sebelumnya aturan ini hanya ada di satu tempat, yaitu saat memuat simpanan
+ *   lama (loadEarthDiveProgress). Akibatnya pakaian diperbaiki saat memuat
+ *   permainan, tetapi TIDAK diperbarui saat pemain berpindah zona di tengah
+ *   permainan. Gejalanya persis seperti yang dilaporkan: dari Batas Divergen
+ *   (memakai pakaian selam) turun ke Inti Dalam, pakaian selam itu tetap
+ *   terpakai — padahal seharusnya pakaian Inti Dalam.
+ *
+ *   Dengan satu fungsi sebagai acuan tunggal, pemuatan simpanan dan
+ *   perpindahan zona tidak dapat lagi berbeda aturan.
+ *
+ * Indeks zona (lihat ZONES di zones.ts):
+ *   0 Permukaan, 1 Kerak, 2 Mantel, 3 Inti Luar, 4 Inti Dalam,
+ *   5 Batas Divergen, 6 Batas Konvergen, 7 Batas Transform
+ *
+ * @returns nama pakaian, atau null bila zona itu tidak mewajibkan pakaian
+ *          khusus (Permukaan dan Kerak).
+ */
+export function getRequiredSuitForZone(zoneIndex: number): string | null {
+  if (zoneIndex === 2) return 'mantle_suit';       // Mantel
+  if (zoneIndex === 3) return 'outer_core_suit';   // Inti Luar
+  if (zoneIndex === 4) return 'inner_core_suit';   // Inti Dalam
+  if (zoneIndex >= 5) return 'diver_suit';         // Batas lempeng (bawah laut)
+  return null;                                     // Permukaan & Kerak
+}
+
+/**
+ * Sesuaikan pakaian dengan zona sekarang.
+ *
+ * Dipanggil pada dua saat:
+ *   1. Saat permainan dimuat (memperbaiki simpanan lama yang pakaiannya salah).
+ *   2. Saat perpindahan zona mencapai titik tengah (pemain benar-benar pindah).
+ *
+ * Pakaian TIDAK diturunkan bila zona tidak mewajibkan pakaian khusus. Dengan
+ * begitu pemain yang sudah membeli pakaian di zona bawah tidak kehilangannya
+ * saat naik kembali ke Permukaan atau Kerak.
+ */
+export function syncSuitToZone(state: GameState): void {
+  const wajib = getRequiredSuitForZone(state.currentZone);
+  if (wajib) state.player.equippedSuit = wajib;
+}
+
 export function buyAndEquipSuit(state: GameState, suitType: string): boolean {
   state.purchasedSuits.add(suitType);
   state.player.equippedSuit = suitType;
@@ -1098,6 +1148,54 @@ export function triggerAscendUp(state: GameState): boolean {
   if (state.currentZone <= 0) return false;
   startTransition(state, state.currentZone - 1, 'up');
   return true;
+}
+
+/**
+ * Teleport langsung ke zona tertentu — dipakai oleh tracker progres.
+ *
+ * MENGAPA ADA
+ *   Saat demo, berpindah antar area dengan berjalan memakan waktu lama.
+ *   Tracker progres menampilkan seluruh area, jadi area yang sudah dilewati
+ *   dapat diklik untuk melompat ke sana.
+ *
+ * BATASAN YANG DISENGAJA
+ *   Hanya area yang SUDAH DILEWATI yang dapat dituju (targetZone <= zona
+ *   sekarang). Melompat ke area yang belum dicapai akan melewati materi dan
+ *   tantangan di antaranya, sehingga hasil belajar tidak lagi sah.
+ *
+ *   Aturan ini juga yang membuat fungsi ini aman: tidak ada cara mencapai
+ *   zona 5 tanpa melewati zona 1-4, jadi "sudah dilewati" sama artinya dengan
+ *   "sudah diselesaikan".
+ *
+ * Transisi tetap dijalankan (bukan lompat seketika) supaya layar perpindahan
+ * zona, nama zona, dan kedalamannya tetap muncul seperti perpindahan biasa.
+ *
+ * @returns `{ success, reason }` — reason berisi alasan bila ditolak.
+ */
+export function teleportToZone(
+  state: GameState,
+  targetZone: number
+): { success: boolean; reason?: string } {
+  if (state.isTransitioning) {
+    return { success: false, reason: 'Sedang berpindah area. Tunggu sebentar.' };
+  }
+  if (!Number.isInteger(targetZone) || targetZone < 0 || targetZone >= ZONES.length) {
+    return { success: false, reason: 'Area tidak dikenal.' };
+  }
+  if (targetZone === state.currentZone) {
+    return { success: false, reason: 'Kamu sudah berada di area ini.' };
+  }
+  if (targetZone > state.currentZone) {
+    return {
+      success: false,
+      reason: 'Selesaikan area sebelumnya dulu sebelum berpindah ke area ini.',
+    };
+  }
+
+  // Arah ditentukan dari posisi relatif, supaya animasi perpindahan tetap
+  // masuk akal (naik bila menuju area yang lebih dangkal, turun bila lebih dalam).
+  startTransition(state, targetZone, targetZone > state.currentZone ? 'down' : 'up');
+  return { success: true };
 }
 
 /**

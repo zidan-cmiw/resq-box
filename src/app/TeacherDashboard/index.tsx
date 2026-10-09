@@ -68,6 +68,7 @@ export default function TeacherDashboard() {
   // Add Student Sub-state inside modal
   const [newStdName, setNewStdName] = useState('');
   const [newStdAbsent, setNewStdAbsent] = useState('');
+  const [newStdNisn, setNewStdNisn] = useState('');
   const [newStdUsername, setNewStdUsername] = useState('');
   const [newStdPassword, setNewStdPassword] = useState('12345');
   const [addStdError, setAddStdError] = useState('');
@@ -292,6 +293,10 @@ export default function TeacherDashboard() {
       setAddStdError('Nama, Username, dan Password wajib diisi!');
       return;
     }
+    if (!/^[0-9]{10}$/.test(newStdNisn.trim())) {
+      setAddStdError('NISN wajib diisi dan harus 10 digit angka.');
+      return;
+    }
 
     retroAudio.playSelect();
     setAddStdError('');
@@ -299,6 +304,7 @@ export default function TeacherDashboard() {
       classroom_code: selectedClassCode,
       name: newStdName,
       absent_number: newStdAbsent || (students.length + 1).toString(),
+      nisn: newStdNisn.trim(),
       username: newStdUsername,
       password: newStdPassword,
       class_name: activeClassObj.name,
@@ -310,6 +316,7 @@ export default function TeacherDashboard() {
       setAddStdSuccess(`Akun "${res.student.name}" berhasil ditambahkan!`);
       setNewStdName('');
       setNewStdAbsent('');
+      setNewStdNisn('');
       setNewStdUsername('');
       setNewStdPassword('12345');
       setTimeout(() => setAddStdSuccess(''), 2500);
@@ -1149,7 +1156,27 @@ export default function TeacherDashboard() {
                     className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-2.5">
+                {/* NISN — pengenal unik siswa. Dibuat satu baris penuh karena
+                    10 digit lebih lebar dari kolom setengah. Satu NISN hanya
+                    boleh memiliki satu akun; server menolak yang duplikat. */}
+                <div>
+                  <label htmlFor="f-nisn" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
+                    NISN <span className="text-rose-700">(WAJIB)</span>
+                  </label>
+                  <input id="f-nisn"
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={10}
+                    value={newStdNisn}
+                    onChange={(e) => setNewStdNisn(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
+                    placeholder="0081234567"
+                    className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold tracking-wider"
+                  />
+                  <p className="mt-1 text-[12.5px] font-pixel text-amber-900/80 font-semibold">
+                    10 digit. Dipakai agar satu siswa tidak dapat memiliki dua akun.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-2.5">
                   <div>
                     <label htmlFor="f-no-absen" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
                       NO. ABSEN

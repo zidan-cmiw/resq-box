@@ -38,6 +38,7 @@ import {
   buyAndEquipSuit,
   triggerDiveDown,
   triggerAscendUp,
+  teleportToZone,
   triggerDivergentSimulation,
   triggerConvergentSimulation,
   setConvergentMode,
@@ -1160,6 +1161,26 @@ export default function EarthDiveGame() {
     }
   }, [activeUserId]);
 
+  /**
+   * Teleport ke area yang sudah dilewati, dipicu dari tracker progres.
+   *
+   * ENGINE yang memutuskan boleh atau tidak (lihat teleportToZone): area yang
+   * belum dicapai ditolak supaya materi di antaranya tidak terlewat. Karena
+   * itu penolakan di sini hanya menampilkan pesannya, bukan memutuskan sendiri.
+   */
+  const handleTeleportToArea = useCallback((targetAreaIndex: number) => {
+    const game = gameRef.current;
+    if (!game) return;
+
+    const hasil = teleportToZone(game, targetAreaIndex);
+    if (hasil.success) {
+      retroAudio.playSelect();
+    } else {
+      retroAudio.playLocked();
+      if (hasil.reason) setToastMessage(hasil.reason);
+    }
+  }, []);
+
   const handleTriggerGateChallenge = useCallback(() => {
     const game = gameRef.current;
     if (!game) return;
@@ -1610,14 +1631,35 @@ export default function EarthDiveGame() {
         </div>
       )}
 
-      {/* ── 5.8 REAL-TIME JOURNEY PROGRESS TRACKER (Level 1: 8 Area Geologis) ── */}
-      <div className="absolute bottom-9 sm:bottom-10 lg:bottom-9 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+      {/* ── 5.8 REAL-TIME JOURNEY PROGRESS TRACKER (Level 1: 8 Area Geologis) ──
+          DIPINDAH DARI BAWAH KE ATAS pada revisi ini.
+
+          Alasan (masukan penguji):
+            1. Di bawah, tracker TERTUTUPI oleh kartu ajakan berinteraksi
+               ("TEKAN [E] ...") yang muncul di `bottom-20`/`bottom-24`.
+            2. Tracker juga menghalangi animasi lempeng pada area Batas
+               Divergen, Konvergen, dan Transform, yang berlangsung di bagian
+               tengah-bawah layar.
+
+          Penempatan baru: di ATAS, tepat di bawah bilah telemetri.
+          - Telemetri ada di `top-2.5` dengan tinggi ciut sekitar 50px.
+          - Tracker diletakkan di `top-14` (56px) sehingga berada persis di
+            bawah telemetri, tidak menutupinya.
+          - Lebarnya dibatasi `min(94vw, 620px)`: di layar 1280px, kiri dan
+            kanan masih tersisa sekitar 330px, sehingga tombol menu kiri-atas
+            dan widget kanan-atas tidak tertutupi.
+
+          Catatan: pada zona 6 (Batas Konvergen) telemetri memang disembunyikan
+          oleh kode, sehingga tracker di posisi ini justru mengisi ruang kosong
+          dan tidak bertabrakan dengan tombol kendali lempeng. ── */}
+      <div className="absolute top-14 sm:top-15 left-1/2 -translate-x-1/2 z-10 w-[min(94vw,620px)]">
         <JourneyProgressTracker
           ref={journeyTrackerRef}
           totalAreas={8}
           currentAreaIndex={hudData.zoneIndex}
           areas={LEVEL1_TRACKER_AREAS}
           avatarConfig={avatarConfig}
+          onAreaSelect={handleTeleportToArea}
         />
       </div>
 

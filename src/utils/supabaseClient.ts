@@ -28,6 +28,13 @@ export interface UserAccount {
   role: 'student' | 'teacher';
   name: string;
   absent_number?: string;
+  /**
+   * NISN (10 digit). Pengenal unik siswa — satu NISN hanya boleh memiliki satu
+   * akun. Menggantikan nomor absen sebagai pengenal, karena nomor absen
+   * diulang setiap tahun ajaran dan boleh sama antar kelas, sehingga tidak
+   * dapat dijadikan unik. Kosong untuk guru dan admin.
+   */
+  nisn?: string;
   classroom_code?: string;
   school_name?: string;
   avatar_config?: CustomAvatarConfig;
@@ -55,6 +62,7 @@ export interface StudentDbRecord {
   password?: string;
   class_name: string;
   absent_number: string;
+  nisn?: string | null;
   avatar_config: CustomAvatarConfig;
   unlocked_level: number;
   created_at?: string;
@@ -386,113 +394,53 @@ export async function fetchMyProfile(): Promise<UserAccount | null> {
   return profileToUser(payload);
 }
 
-/** Siswa mendaftar mandiri. Kelas divalidasi di server, bukan dari cache lokal. */
-export async function registerStudent(data: {
+/**
+ * Pendaftaran mandiri siswa — SUDAH DITUTUP.
+ *
+ * MENGAPA DITUTUP
+ *   Sebelumnya siswa dapat membuat akunnya sendiri asalkan tahu kode kelas.
+ *   Celahnya: satu siswa dapat mendaftar berkali-kali memakai username berbeda,
+ *   karena tidak ada satu pun batasan database yang mengaitkan akun dengan
+ *   identitas siswa. Setiap akun duplikat menambah 1 baris `profiles` dan
+ *   sampai 3 baris `level_submissions`.
+ *
+ *   Nomor absen tidak dapat dipakai sebagai pengenal unik: nomornya diulang
+ *   setiap tahun ajaran dan boleh sama antar kelas. Karena itu pengenalnya
+ *   diganti NISN, yang unik secara nasional.
+ *
+ *   Namun NISN saja tidak cukup. Selama pendaftaran mandiri terbuka, siswa
+ *   tetap dapat mendaftar berulang kali dengan mengisi NISN yang berbeda-beda —
+ *   aplikasi tidak punya cara memeriksa bahwa NISN itu benar-benar miliknya.
+ *   Karena itu pendaftaran mandiri ditutup dan akun siswa dibuat oleh guru.
+ *
+ *   Penutupan sebenarnya dikerjakan di dua tempat, dan KEDUANYA diperlukan:
+ *     1. Fungsi ini menolak lebih awal, supaya siswa mendapat penjelasan yang
+ *        jelas alih-alih galat server yang membingungkan.
+ *     2. Setelan Supabase "Allow new users to sign up" dimatikan, sehingga
+ *        endpoint pendaftaran benar-benar tertutup. Endpoint itu berjalan di
+ *        luar PostgreSQL, jadi tidak dapat dimatikan lewat SQL.
+ *        Lihat supabase/migrations/08_nisn_dan_tutup_pendaftaran.sql.
+ *
+ *   Guru tetap dapat membuat akun siswa lewat createStudentByTeacher, karena
+ *   fungsi itu menulis langsung ke auth.users dan tidak melewati endpoint
+ *   pendaftaran.
+ */
+export async function registerStudent(_data: {
   username: string;
   password: string;
   name: string;
-  absent_number: string;
+  absent_number?: string;
+  nisn?: string;
   classroom_code: string;
 }): Promise<{ success: boolean; user?: UserAccount; message?: string }> {
-  const username = data.username.trim().toLowerCase();
-  const password = data.password;
-
-  if (!/^[a-z0-9._-]{3,30}$/.test(username)) {
-    return {
-      success: false,
-      message: 'Username hanya boleh huruf kecil, angka, titik, garis bawah, dan strip (3–30 karakter).',
-    };
-  }
-  if (password.length < 6) {
-    return { success: false, message: 'Password minimal 6 karakter.' };
-  }
-
-  if (!supabase) {
-    return { success: false, message: 'Mode luring: pendaftaran butuh koneksi ke server.' };
-  }
-
-  const classCode = data.classroom_code.trim().toUpperCase();
-
-  try {
-    // Cek ketersediaan username (server hanya menjawab boolean).
-    const avail = await supabase.rpc('username_available', { p_username: username });
-    if (avail.error) {
-      noteError('username_available', avail.error);
-    } else if (avail.data === false) {
-      return { success: false, message: `Username "${username}" sudah dipakai. Pilih yang lain.` };
-    }
-
-    // Validasi kode kelas (server hanya mengembalikan nama kelas/sekolah).
-    const classInfo = await supabase.rpc('class_code_info', { p_code: classCode });
-    if (classInfo.error) {
-      noteError('class_code_info', classInfo.error);
-      return { success: false, message: 'Gagal memeriksa kode kelas. Coba lagi.' };
-    }
-    const info = classInfo.data as { found?: boolean; name?: string; school_name?: string } | null;
-    if (!info || info.found !== true) {
-      return {
-        success: false,
-        message: `Kode kelas "${classCode}" tidak ditemukan. Mintalah kode yang benar dari gurumu.`,
-      };
-    }
-
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email: usernameToEmail(username),
-      password,
-      options: {
-        data: {
-          username,
-          name: data.name.trim(),
-          absent_number: data.absent_number.trim() || '1',
-          classroom_code: classCode,
-          school_name: info.school_name || 'SMP Negeri 1',
-          role: 'student', // server tetap memaksa 'student' untuk pendaftaran mandiri
-        },
-      },
-    });
-
-    if (signUpError) {
-      noteError('registerStudent:signUp', signUpError);
-      const m = (signUpError.message || '').toLowerCase();
-      if (m.includes('already registered') || m.includes('already exists')) {
-        return { success: false, message: `Username "${username}" sudah dipakai. Pilih yang lain.` };
-      }
-      return { success: false, message: 'Gagal membuat akun. Coba lagi sebentar lagi.' };
-    }
-
-    // Bila konfirmasi email dimatikan, sesi langsung aktif.
-    if (!signUpData.session) {
-      return {
-        success: false,
-        message:
-          'Akun dibuat, tetapi perlu konfirmasi email. Hubungi gurumu, atau minta admin menonaktifkan konfirmasi email.',
-      };
-    }
-
-    const profile = await fetchMyProfile();
-    if (!profile) {
-      return {
-        success: true,
-        user: {
-          id: signUpData.user?.id ?? '',
-          username,
-          role: 'student',
-          name: data.name.trim(),
-          absent_number: data.absent_number.trim() || '1',
-          classroom_code: classCode,
-          school_name: info.school_name || 'SMP Negeri 1',
-          avatar_config: DEFAULT_AVATAR,
-          unlocked_level: 1,
-        },
-      };
-    }
-
-    return { success: true, user: profile };
-  } catch (err) {
-    noteError('registerStudent:exception', err);
-    return { success: false, message: 'Tidak bisa menghubungi server. Periksa koneksi internetmu.' };
-  }
+  return {
+    success: false,
+    message:
+      'Pendaftaran mandiri sudah ditutup. Mintalah gurumu membuatkan akun, ' +
+      'lalu masuk memakai username dan kata sandi yang diberikan.',
+  };
 }
+
 
 /**
  * Pendaftaran akun guru.
@@ -702,17 +650,26 @@ export async function createStudentByTeacher(data: {
   classroom_code: string;
   name: string;
   absent_number: string;
+  nisn: string;
   username: string;
   password: string;
   class_name?: string;
 }): Promise<{ success: boolean; student?: StudentDbRecord; message?: string }> {
   const username = data.username.trim().toLowerCase();
+  const nisn = data.nisn.trim();
 
   if (!supabase) {
     return {
       success: false,
       message: 'Mode luring: pembuatan akun siswa memerlukan koneksi ke server.',
     };
+  }
+
+  // Diperiksa juga di klien supaya guru mendapat jawaban seketika tanpa
+  // menunggu perjalanan ke server. Server TETAP memeriksa ulang — aturan
+  // sebenarnya ada di sana, bukan di sini.
+  if (!/^[0-9]{10}$/.test(nisn)) {
+    return { success: false, message: 'NISN harus 10 digit angka.' };
   }
 
   try {
@@ -722,11 +679,24 @@ export async function createStudentByTeacher(data: {
       p_absent_number: data.absent_number.trim() || '1',
       p_username: username,
       p_password: data.password,
+      p_nisn: nisn,
     });
 
     if (error) {
       noteError('createStudentByTeacher', error);
       const msg = (error.message || '').toLowerCase();
+      // NISN duplikat adalah sebab yang paling mungkin, jadi diperiksa lebih
+      // dulu. Pesannya harus menyebut NISN supaya guru tidak mengira ini
+      // masalah username.
+      if (msg.includes('nisn')) {
+        return {
+          success: false,
+          message:
+            error.message.includes('sudah terdaftar')
+              ? `NISN ${nisn} sudah terdaftar. Satu NISN hanya boleh memiliki satu akun.`
+              : 'NISN harus 10 digit angka.',
+        };
+      }
       if (msg.includes('sudah')) {
         return { success: false, message: `Username "${username}" sudah ada!` };
       }

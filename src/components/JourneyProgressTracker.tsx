@@ -34,6 +34,13 @@ export interface JourneyProgressTrackerProps {
   avatarConfig?: CustomAvatarConfig;
   initialPercent?: number;
   className?: string;
+  /**
+   * Dipanggil saat pengguna menekan salah satu titik area untuk berpindah.
+   * Hanya dipanggil untuk area yang SUDAH dilewati (index < currentAreaIndex);
+   * area yang belum dicapai tidak dapat ditekan. Bila tidak diberikan,
+   * titik-titik area hanya menampilkan keterangan dan tidak dapat ditekan.
+   */
+  onAreaSelect?: (areaIndex: number) => void;
 }
 
 const JourneyProgressTracker = forwardRef<
@@ -48,6 +55,7 @@ const JourneyProgressTracker = forwardRef<
       avatarConfig,
       initialPercent,
       className = '',
+      onAreaSelect,
     },
     ref
   ) => {
@@ -137,13 +145,29 @@ const JourneyProgressTracker = forwardRef<
               const nodeX = ((idx + 0.5) / totalAreas) * 100;
               const isCompleted = idx < currentAreaIndex;
               const isCurrent = idx === currentAreaIndex;
+              // Teleport hanya untuk area yang sudah dilewati. Area yang belum
+              // dicapai tidak dapat diklik supaya materi dan tantangan di
+              // antaranya tidak terlewat.
+              const bisaTeleport = onAreaSelect !== undefined && idx < currentAreaIndex;
 
               return (
-                <div
+                <button
                   key={area.id}
+                  type="button"
+                  disabled={!bisaTeleport}
+                  aria-label={
+                    bisaTeleport
+                      ? `Pindah ke ${area.name}`
+                      : `${area.name} — selesaikan area sebelumnya dulu`
+                  }
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 pointer-events-auto cursor-pointer group"
+                  onClick={() => {
+                    if (bisaTeleport) onAreaSelect?.(idx);
+                  }}
+                  className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 pointer-events-auto bg-transparent border-0 p-0 group ${
+                    bisaTeleport ? 'cursor-pointer' : 'cursor-not-allowed'
+                  }`}
                   style={{ left: `${nodeX}%` }}
                 >
                   {/* Lingkaran Pin Checkpoint */}
@@ -178,7 +202,7 @@ const JourneyProgressTracker = forwardRef<
                   >
                     {area.metricLabel}
                   </span>
-                </div>
+                </button>
               );
             })}
 

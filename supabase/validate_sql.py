@@ -26,10 +26,14 @@ except ImportError:  # pragma: no cover
     raise SystemExit(2)
 
 SUPABASE_DIR = Path(__file__).resolve().parent
-TARGETS = [
-    SUPABASE_DIR / "migrations" / "01_secure_schema.sql",
-    SUPABASE_DIR / "migrations" / "02_rpc_and_hardening.sql",
-    SUPABASE_DIR / "migrations" / "03_signup_role_control.sql",
+
+# Daftar berkas DIPINDAI OTOMATIS, bukan ditulis satu per satu.
+#
+# Sebelumnya daftar ini hardcoded dan hanya memuat migrasi 01-03. Akibatnya
+# migrasi 04 sampai 08 tidak pernah diperiksa oleh validator, sehingga galat
+# sintaks pada berkas itu baru ketahuan saat dijalankan di Supabase SQL Editor
+# — di database produksi. Berkas baru kini otomatis ikut diperiksa.
+TARGETS = sorted((SUPABASE_DIR / "migrations").glob("*.sql")) + [
     SUPABASE_DIR / "verify_security.sql",
 ]
 

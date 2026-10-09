@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
-import { registerStudent } from '../../utils/supabaseClient';
 import PixelIcon from '../../components/PixelIcon';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
@@ -19,18 +18,10 @@ export default function Login() {
   const [loginUsername, setLoginUsername] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
-  // Register Student States
-  const [regStdName, setRegStdName] = useState('');
-  const [regStdAbsent, setRegStdAbsent] = useState('');
-  const [regStdUsername, setRegStdUsername] = useState('');
-  const [regStdPassword, setRegStdPassword] = useState('');
-  const [regStdClassCode, setRegStdClassCode] = useState('');
-
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
   const login = useAuthStore((state) => state.login);
-  const setCurrentUser = useAuthStore((state) => state.setCurrentUser);
 
   // Handle Login Action
   const handleLogin = async (e: React.FormEvent) => {
@@ -61,37 +52,6 @@ export default function Login() {
     }
   };
 
-  // Handle Student Registration
-  const handleRegisterStudent = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!regStdName.trim() || !regStdUsername.trim() || !regStdPassword.trim() || !regStdClassCode.trim()) {
-      retroAudio.playLocked();
-      setErrorMsg('Nama, Kode Kelas, Username, dan Password wajib diisi!');
-      return;
-    }
-
-    setLoading(true);
-    setErrorMsg('');
-    retroAudio.playSelect();
-
-    const res = await registerStudent({
-      name: regStdName.trim(),
-      absent_number: regStdAbsent.trim() || '1',
-      username: regStdUsername.trim(),
-      password: regStdPassword.trim(),
-      classroom_code: regStdClassCode.trim(),
-    });
-
-    setLoading(false);
-    if (res.success && res.user) {
-      retroAudio.playWin();
-      setCurrentUser(res.user);
-      navigate('/');
-    } else {
-      retroAudio.playLocked();
-      setErrorMsg(res.message || 'Gagal mendaftar akun.');
-    }
-  };
 
   return (
     <div className="min-h-screen w-full bg-[#050813] flex flex-col items-center justify-center p-4 font-pixel select-none relative overflow-hidden">
@@ -374,121 +334,41 @@ export default function Login() {
 
           {/* ── 2. FORM REGISTER SISWA (HANYA SISWA) ── */}
           {authMode === 'register' && role === 'student' && (
-            <form onSubmit={handleRegisterStudent} className="space-y-2.5">
-              <div>
-                <label
-                  htmlFor="reg-name"
-                  className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
-                >
-                  Nama Lengkap Siswa
-                </label>
-                <input
-                  id="reg-name"
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  required
-                  value={regStdName}
-                  onChange={(e) => setRegStdName(e.target.value)}
-                  placeholder="Misal: Vincent Pratama"
-                  className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
-                />
+            <div className="space-y-3">
+              <div className="p-3 rounded-xl bg-amber-100/80 border-2 border-amber-950/60">
+                <p className="text-[14px] font-bold text-amber-950 leading-relaxed">
+                  Pendaftaran mandiri sudah ditutup.
+                </p>
+                <p className="mt-1.5 text-[13px] text-amber-900 font-semibold leading-relaxed">
+                  Akun siswa sekarang dibuat oleh guru. Ini dilakukan agar satu siswa
+                  hanya memiliki satu akun: setiap akun dikaitkan dengan NISN, dan satu
+                  NISN tidak dapat dipakai dua kali.
+                </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label
-                    htmlFor="reg-absent"
-                    className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
-                  >
-                    No. Absen
-                  </label>
-                  <input
-                    id="reg-absent"
-                    name="absent_number"
-                    type="text"
-                    inputMode="numeric"
-                    value={regStdAbsent}
-                    onChange={(e) => setRegStdAbsent(e.target.value)}
-                    placeholder="Misal: 08"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="reg-class-code"
-                    className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
-                  >
-                    Kode Kelas *
-                  </label>
-                  <input
-                    id="reg-class-code"
-                    name="classroom_code"
-                    type="text"
-                    required
-                    aria-required="true"
-                    aria-describedby="reg-class-code-hint"
-                    value={regStdClassCode}
-                    onChange={(e) => setRegStdClassCode(e.target.value)}
-                    placeholder="Misal: 8B atau RESQ-8B"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-bold"
-                  />
-                  <p id="reg-class-code-hint" className="sr-only">
-                    Wajib diisi. Mintakan kode kelas kepada gurumu bila belum tahu.
-                  </p>
-                </div>
-              </div>
-
-
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label
-                    htmlFor="reg-username"
-                    className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
-                  >
-                    Username
-                  </label>
-                  <input
-                    id="reg-username"
-                    name="username"
-                    type="text"
-                    autoComplete="username"
-                    required
-                    value={regStdUsername}
-                    onChange={(e) => setRegStdUsername(e.target.value)}
-                    placeholder="vincent8b"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="reg-password"
-                    className="block text-[13.5px] font-bold text-amber-950 mb-0.5 uppercase"
-                  >
-                    Password
-                  </label>
-                  <input
-                    id="reg-password"
-                    name="password"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    value={regStdPassword}
-                    onChange={(e) => setRegStdPassword(e.target.value)}
-                    placeholder="******"
-                    className="w-full px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
-                  />
-                </div>
+              <div className="p-3 rounded-xl bg-emerald-100/80 border-2 border-emerald-800/60">
+                <p className="text-[13.5px] font-bold text-emerald-950 mb-1">
+                  Cara mendapatkan akun:
+                </p>
+                <p className="text-[13px] text-emerald-900 font-semibold leading-relaxed">
+                  Mintalah gurumu membuka Posko Guru, lalu membuatkan akun dengan
+                  menuliskan namamu, NISN, dan nomor absenmu. Setelah itu kamu akan
+                  menerima username dan kata sandi untuk masuk.
+                </p>
               </div>
 
               <button
-                type="submit"
-                disabled={loading}
-                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2 font-semibold"
+                type="button"
+                onClick={() => {
+                  retroAudio.playSelect();
+                  setAuthMode('login');
+                  setErrorMsg('');
+                }}
+                className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2"
               >
-                <span>{loading ? 'MEMPROSES...' : 'DAFTAR & GABUNG KELAS'}</span>
+                <span>SUDAH PUNYA AKUN? MASUK DI SINI</span>
               </button>
-            </form>
+            </div>
           )}
 
         </div>
