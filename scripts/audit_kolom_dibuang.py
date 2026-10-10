@@ -117,9 +117,31 @@ def definisi_terakhir(migrasi: list[tuple[str, str]], kolom: str) -> dict[str, t
       urutan — dan pemeriksa yang melaporkan masalah yang sudah selesai sama
       tidak bergunanya dengan pemeriksa yang melewatkan masalah nyata.
 
-    Kembalikan: nama_fungsi -> (indeks_migrasi, nama_berkas, menyebut_kolom?)
+    Kembalikan: nama_fungsi -> (indeks_migrasi, nama_berkas, memakai_kolom?)
     """
-    pola_kolom = re.compile(rf"(?<![A-Za-z0-9_]){re.escape(kolom)}(?![A-Za-z0-9_])")
+    # ⚠️ POLA INI HANYA MENDETEKSI PENGGUNAAN KOLOM, BUKAN SEKADAR KATA.
+    #
+    # Versi sebelumnya mencari kata `nisn` begitu saja, sehingga melaporkan
+    # `teacher_create_student` sebagai bermasalah — padahal fungsi itu hanya
+    # MENYEBUT "NISN" di dalam komentar penjelas, bukan membaca kolomnya.
+    #
+    # Positif palsu itu sempat menutupi masalah yang sebenarnya: pemeriksa
+    # melaporkan fungsi yang justru sudah benar, sementara kesalahan aslinya
+    # (berkas perbaikan yang melewatkan satu fungsi) tidak terdeteksi.
+    #
+    # Yang dihitung sebagai pemakaian kolom:
+    #   - `v.nisn`, `p.nisn`, `NEW.nisn`   -> akses lewat alias/baris
+    #   - `nisn TEXT` pada daftar parameter -> parameter bernama sama
+    #
+    # CATATAN: pola disusun sebagai SATU string, bukan beberapa string
+    # bersambung. Percobaan pertama memakai tiga string bersambung dengan
+    # komentar di antaranya, dan Python menolaknya sebagai galat sintaks —
+    # tanda kutip di dalam salah satu bagiannya membingungkan pengurai.
+    pola_kolom = re.compile(
+        r"(?:\." + re.escape(kolom) + r"\b)"
+        r"|(?:\b" + re.escape(kolom) + r"\s+(?:TEXT|UUID|INT|INTEGER|BOOLEAN|JSONB))",
+        re.I,
+    )
     terakhir: dict[str, tuple[int, str, bool]] = {}
 
     for idx, (nama_berkas, isi) in enumerate(migrasi):
