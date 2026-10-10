@@ -1660,6 +1660,14 @@ export default function EarthDiveGame() {
           currentAreaIndex={hudData.zoneIndex}
           areas={LEVEL1_TRACKER_AREAS}
           avatarConfig={avatarConfig}
+          // Daftar area yang PERNAH dikunjungi, dibaca langsung dari keadaan
+          // permainan. Inilah yang membuat area yang sudah terbuka tetap dapat
+          // ditekan walaupun pemain sedang berada di area yang lebih dangkal.
+          //
+          // Dibaca dari `gameRef.current` (bukan dari state React) karena
+          // `zonesVisited` berubah di dalam mesin permainan; menyalinnya ke
+          // state akan membuat salinan yang bisa tertinggal dari kenyataan.
+          areaDikunjungi={Array.from(gameRef.current?.zonesVisited ?? [])}
           onAreaSelect={handleTeleportToArea}
         />
       </div>

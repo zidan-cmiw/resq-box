@@ -25,6 +25,12 @@ export interface JourneyProgressTrackerRef {
   ) => void;
 }
 
+// Aturan "titik area mana yang dapat ditekan" ada di berkas terpisah
+// (`JourneyProgressTracker.helpers.ts`) supaya dapat diuji tanpa menggambar
+// komponen React. Diimpor di sini agar tetap dipakai oleh komponen ini.
+export { areaDapatDitekan } from './JourneyProgressTracker.helpers';
+import { areaDapatDitekan } from './JourneyProgressTracker.helpers';
+
 export interface JourneyProgressTrackerProps {
   title?: string;
   levelBadge?: string;
@@ -35,10 +41,23 @@ export interface JourneyProgressTrackerProps {
   initialPercent?: number;
   className?: string;
   /**
+   * Indeks area yang PERNAH DIKUNJUNGI pemain.
+   *
+   * MENGAPA PERLU
+   *   Tanpa daftar ini, tracker hanya tahu area mana yang berada DI BELAKANG
+   *   posisi sekarang. Itu tidak cukup: pemain yang sudah pernah sampai
+   *   Mantel lalu kembali ke Kerak harus tetap dapat menekan Mantel, karena
+   *   area itu sudah terbuka.
+   *
+   *   Bila tidak diberikan, tracker memakai perkiraan lama (area di belakang
+   *   posisi sekarang) supaya tetap berfungsi.
+   */
+  areaDikunjungi?: number[];
+  /**
    * Dipanggil saat pengguna menekan salah satu titik area untuk berpindah.
-   * Hanya dipanggil untuk area yang SUDAH dilewati (index < currentAreaIndex);
-   * area yang belum dicapai tidak dapat ditekan. Bila tidak diberikan,
-   * titik-titik area hanya menampilkan keterangan dan tidak dapat ditekan.
+   * Hanya dipanggil untuk area yang SUDAH PERNAH dibuka. Area yang belum
+   * dicapai tidak dapat ditekan. Bila tidak diberikan, titik-titik area hanya
+   * menampilkan keterangan dan tidak dapat ditekan.
    */
   onAreaSelect?: (areaIndex: number) => void;
 }
@@ -55,6 +74,7 @@ const JourneyProgressTracker = forwardRef<
       avatarConfig,
       initialPercent,
       className = '',
+      areaDikunjungi,
       onAreaSelect,
     },
     ref
@@ -145,10 +165,20 @@ const JourneyProgressTracker = forwardRef<
               const nodeX = ((idx + 0.5) / totalAreas) * 100;
               const isCompleted = idx < currentAreaIndex;
               const isCurrent = idx === currentAreaIndex;
-              // Teleport hanya untuk area yang sudah dilewati. Area yang belum
-              // dicapai tidak dapat diklik supaya materi dan tantangan di
-              // antaranya tidak terlewat.
-              const bisaTeleport = onAreaSelect !== undefined && idx < currentAreaIndex;
+
+              // Area mana yang dapat ditekan — aturannya ada di
+              // `areaDapatDitekan()` di atas, supaya dapat diuji terpisah.
+              //
+              // Versi pertama memakai `idx < currentAreaIndex` langsung di
+              // sini. Itu berarti hanya area di BELAKANG yang dapat ditekan,
+              // sehingga pemain yang sudah pernah sampai Mantel lalu kembali
+              // ke Kerak tidak dapat menekan Mantel — padahal sudah terbuka.
+              const bisaTeleport = areaDapatDitekan(
+                idx,
+                currentAreaIndex,
+                areaDikunjungi,
+                onAreaSelect !== undefined
+              );
 
               return (
                 <button
@@ -158,7 +188,9 @@ const JourneyProgressTracker = forwardRef<
                   aria-label={
                     bisaTeleport
                       ? `Pindah ke ${area.name}`
-                      : `${area.name} — selesaikan area sebelumnya dulu`
+                      : idx === currentAreaIndex
+                        ? `${area.name} — kamu sedang di sini`
+                        : `${area.name} — belum terbuka`
                   }
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onMouseLeave={() => setHoveredIndex(null)}

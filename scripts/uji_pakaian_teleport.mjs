@@ -48,6 +48,7 @@ writeFileSync(
   berkasMasuk,
   `export { teleportToZone, checkSuitRequirements, getRequiredSuitForZone }
      from '../src/app/Level1/EarthDive/engine/gameEngine';
+   export { areaDapatDitekan } from '../src/components/JourneyProgressTracker.helpers';
    export const jumlahZona = 8;
   `,
   'utf8'
@@ -77,7 +78,7 @@ try {
   try { rmSync(berkasMasuk, { force: true }); } catch { /* abaikan */ }
 }
 
-const { teleportToZone, checkSuitRequirements, getRequiredSuitForZone } = ekspor;
+const { teleportToZone, checkSuitRequirements, getRequiredSuitForZone, areaDapatDitekan } = ekspor;
 
 // ── Kerangka state seminimal mungkin ──────────────────────────────────────
 // Hanya memuat bagian yang dibaca kedua fungsi yang diuji, supaya uji ini
@@ -269,6 +270,70 @@ uji('Area 4 Inti Dalam -> inner_core_suit', getRequiredSuitForZone(4), 'inner_co
 uji('Area 5 Divergen   -> diver_suit', getRequiredSuitForZone(5), 'diver_suit');
 uji('Area 6 Konvergen  -> diver_suit', getRequiredSuitForZone(6), 'diver_suit');
 uji('Area 7 Transform  -> diver_suit', getRequiredSuitForZone(7), 'diver_suit');
+
+// ═══════════════════════════════════════════════════════════════════════════
+console.log('\n── 4. TITIK AREA DI TRACKER: mana yang dapat ditekan ──');
+//
+// BAGIAN INI PALING PENTING — dan ditambahkan setelah perbaikan pertama GAGAL.
+//
+// Perbaikan pertama hanya membetulkan mesin permainan (`teleportToZone`),
+// tetapi TIDAK membetulkan gerbang di tampilan tracker, yang saat itu berbunyi:
+//
+//     const bisaTeleport = idx < currentAreaIndex;
+//
+// Tombolnya dinonaktifkan untuk area di depan, sehingga klik pemain tidak
+// pernah sampai ke mesin. Akibatnya keluhannya tetap: "masih belum bisa".
+//
+// Menguji mesinnya saja tidak dapat menangkap hal itu. Karena itulah aturan
+// gerbangnya kini dipisahkan menjadi `areaDapatDitekan()` dan diuji di sini.
+
+uji(
+  'Tracker: pernah ke Mantel, sekarang di Kerak, titik Mantel DAPAT ditekan',
+  areaDapatDitekan(2, 1, [0, 1, 2], true),
+  true
+);
+
+uji(
+  'Tracker: pernah ke Inti Dalam (4), sekarang di Kerak (1), DAPAT ditekan',
+  areaDapatDitekan(4, 1, [0, 1, 2, 3, 4], true),
+  true
+);
+
+uji(
+  'Tracker: titik area tempat berada sekarang TIDAK dapat ditekan',
+  areaDapatDitekan(1, 1, [0, 1, 2], true),
+  false
+);
+
+uji(
+  'Tracker: area yang belum pernah dibuka TIDAK dapat ditekan',
+  areaDapatDitekan(5, 1, [0, 1, 2], true),
+  false
+);
+
+uji(
+  'Tracker: tanpa penangan klik, TIDAK ada yang dapat ditekan',
+  areaDapatDitekan(0, 1, [0, 1, 2], false),
+  false
+);
+
+uji(
+  'Tracker: simpanan lama tanpa daftar kunjungan -> area di belakang tetap bisa',
+  areaDapatDitekan(0, 2, undefined, true),
+  true
+);
+
+uji(
+  'Tracker: simpanan lama -> area di depan TIDAK dapat ditekan',
+  areaDapatDitekan(3, 2, undefined, true),
+  false
+);
+
+uji(
+  'Tracker rantai: setelah ke Mantel lalu balik ke Kerak, area 0 dan 2 DAPAT ditekan',
+  areaDapatDitekan(0, 1, [0, 1, 2], true) && areaDapatDitekan(2, 1, [0, 1, 2], true),
+  true
+);
 
 console.log('\n' + '='.repeat(76));
 console.log(`  HASIL: ${lulus} lulus, ${gagal} gagal dari ${lulus + gagal} pemeriksaan`);
