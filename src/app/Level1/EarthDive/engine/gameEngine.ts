@@ -43,6 +43,15 @@ export interface GameState {
     suitName: string;
     zoneName: string;
     reason: string;
+    /**
+     * `true` berarti pemain memang harus MEMBELI pakaian itu.
+     *
+     * Selalu `true` untuk saat ini, karena pakaian yang sudah dimiliki tidak
+     * pernah sampai ke sini — `checkSuitRequirements` langsung memakainya.
+     * Tetap disertakan supaya layar peringatan dapat membedakan "harus beli"
+     * dari "harus memakai", bila aturannya berubah di kemudian hari.
+     */
+    harusBeli?: boolean;
   } | null;
   pendingCoreChallenge: boolean;
   pendingWordleEvaluation: boolean;
@@ -547,7 +556,34 @@ export function buyAndEquipSuit(state: GameState, suitType: string): boolean {
   return true;
 }
 
-function checkSuitRequirements(state: GameState): boolean {
+/**
+ * Periksa apakah pemain boleh turun ke area berikutnya.
+ *
+ * MENGAPA PAKAIAN YANG SUDAH DIBELI OTOMATIS DIPAKAI
+ *
+ *   Gejala yang dilaporkan: pemain pergi ke Mantel, membeli baju pelindung di
+ *   sana, lalu kembali ke Kerak untuk melihat-lihat. Saat hendak turun lagi ke
+ *   Mantel, ia diminta MEMBELI LAGI — padahal baju itu sudah dibeli.
+ *
+ *   Penyebabnya: pemeriksaan di bawah hanya melihat `equippedSuit` (pakaian
+ *   yang SEDANG dipakai). Pakaian itu memang dilepas saat pemain naik kembali
+ *   ke Kerak, karena `syncSuitToZone` menyesuaikan pakaian dengan zona.
+ *   Akibatnya pemain yang sudah membayar diminta membayar dua kali.
+ *
+ *   Perbaikannya: bila pakaiannya SUDAH DIMILIKI (`purchasedSuits`), pakaian
+ *   itu langsung dipakai tanpa biaya dan tanpa peringatan. Pemain tidak perlu
+ *   membeli ulang apa yang sudah ia bayar.
+ *
+ *   Peringatan "wajib beli" hanya muncul bila pakaiannya memang BELUM PERNAH
+ *   dibeli — yaitu saat pertama kali menuju area itu.
+ *
+ * DIEKSPOR UNTUK DIUJI
+ *   Fungsi ini sengaja diekspor supaya `scripts/uji_pakaian_teleport.mjs`
+ *   dapat mengujinya langsung. Tanpa itu, perbaikan ini hanya dapat diperiksa
+ *   dengan membuka permainan dan mencobanya secara manual — dan pada proyek
+ *   ini, perbaikan yang tidak diuji terbukti berulang kali salah.
+ */
+export function checkSuitRequirements(state: GameState): boolean {
   let requiredSuit: string | null = null;
   let requiredSuitName = '';
   let nextZoneName = '';
@@ -576,11 +612,32 @@ function checkSuitRequirements(state: GameState): boolean {
   }
 
   if (requiredSuit && state.player.equippedSuit !== requiredSuit) {
+    // ── SUDAH DIBELI? PAKAI LANGSUNG, TANPA BIAYA ─────────────────────────
+    //
+    // Bila pemain sudah pernah membeli pakaian ini, ia TIDAK boleh diminta
+    // membelinya lagi. Pakaian itu langsung dikenakan dan pemain boleh
+    // melanjutkan.
+    //
+    // Mengapa sampai perlu: saat pemain naik kembali ke area sebelumnya,
+    // `syncSuitToZone` melepas pakaiannya (karena area itu tidak mewajibkan
+    // pakaian khusus). Ketika ia turun lagi, pakaian itu tidak sedang dipakai
+    // — dan pemeriksaan lama menyimpulkan pemain belum memilikinya, lalu
+    // meminta pembelian kedua atas barang yang sudah dibayar.
+    if (state.purchasedSuits.has(requiredSuit)) {
+      state.player.equippedSuit = requiredSuit;
+      saveEarthDiveProgress(state, state.userId);
+      return true;
+    }
+
+    // Belum pernah dibeli: tampilkan peringatan agar pemain menemui teknisi.
     state.pendingSuitRequired = {
       requiredSuit,
       suitName: requiredSuitName,
       zoneName: nextZoneName,
       reason: suitReason,
+      // Ditandai supaya layar peringatan tahu bahwa pemain memang harus
+      // MEMBELI, bukan sekadar memakai.
+      harusBeli: true,
     };
     return false;
   }
@@ -1158,17 +1215,33 @@ export function triggerAscendUp(state: GameState): boolean {
  *   Tracker progres menampilkan seluruh area, jadi area yang sudah dilewati
  *   dapat diklik untuk melompat ke sana.
  *
- * BATASAN YANG DISENGAJA
- *   Hanya area yang SUDAH DILEWATI yang dapat dituju (targetZone <= zona
- *   sekarang). Melompat ke area yang belum dicapai akan melewati materi dan
- *   tantangan di antaranya, sehingga hasil belajar tidak lagi sah.
+ * BATASAN: HANYA AREA YANG PERNAH DIKUNJUNGI
  *
- *   Aturan ini juga yang membuat fungsi ini aman: tidak ada cara mencapai
- *   zona 5 tanpa melewati zona 1-4, jadi "sudah dilewati" sama artinya dengan
- *   "sudah diselesaikan".
+ *   Aturannya memakai `zonesVisited` — daftar area yang PERNAH dimasuki —
+ *   bukan perbandingan dengan area yang sedang ditempati.
+ *
+ *   Versi pertama memakai `targetZone > state.currentZone`, dan itu salah.
+ *   Gejalanya: pemain sudah pernah sampai Mantel, lalu kembali ke Kerak, dan
+ *   tidak dapat teleport kembali ke Mantel — padahal Mantel sudah terbuka.
+ *   Membandingkan dengan area SEKARANG berarti kemajuan pemain "mundur"
+ *   setiap kali ia naik ke area sebelumnya.
+ *
+ *   Dengan `zonesVisited`, area yang pernah dibuka tetap terbuka walaupun
+ *   pemain sedang berada di area yang lebih dangkal.
+ *
+ *   Batasan ini juga menjaga keabsahan hasil belajar: area yang belum pernah
+ *   dicapai tetap tidak dapat dituju, sehingga materi dan tantangan di
+ *   antaranya tidak terlewat.
  *
  * Transisi tetap dijalankan (bukan lompat seketika) supaya layar perpindahan
  * zona, nama zona, dan kedalamannya tetap muncul seperti perpindahan biasa.
+ *
+ * ARAH PERPINDAHAN
+ *   Ditentukan dari perbandingan zona sekarang dengan zona tujuan, supaya
+ *   animasinya masuk akal: 'down' bila menuju area yang lebih dalam, 'up' bila
+ *   menuju area yang lebih dangkal. Nama zona di layar transisi mengikuti arah
+ *   itu, jadi pemain melihat "MEMASUKI AREA BARU" atau "KEMBALI KE AREA
+ *   SEBELUMNYA" dengan benar.
  *
  * @returns `{ success, reason }` — reason berisi alasan bila ditolak.
  */
@@ -1185,10 +1258,25 @@ export function teleportToZone(
   if (targetZone === state.currentZone) {
     return { success: false, reason: 'Kamu sudah berada di area ini.' };
   }
-  if (targetZone > state.currentZone) {
+
+  // Hanya area yang PERNAH dimasuki yang dapat dituju. Perhatikan: bukan
+  // "area yang lebih dangkal dari area sekarang", melainkan "area yang sudah
+  // pernah dibuka".
+  if (!state.zonesVisited.has(targetZone)) {
     return {
       success: false,
-      reason: 'Selesaikan area sebelumnya dulu sebelum berpindah ke area ini.',
+      reason: 'Area itu belum terbuka. Selesaikan area sebelumnya dulu.',
+    };
+  }
+
+  // Bila area tujuan memerlukan baju pelindung, pastikan sudah dimiliki atau
+  // dipakai. Pemeriksaan yang sama dipakai saat turun lewat gerbang, supaya
+  // teleport tidak menjadi jalan pintas melewati syarat pakaian.
+  const wajib = getRequiredSuitForZone(targetZone);
+  if (wajib && !state.purchasedSuits.has(wajib)) {
+    return {
+      success: false,
+      reason: 'Kamu belum memiliki baju pelindung untuk area itu. Beli dulu dari teknisi.',
     };
   }
 

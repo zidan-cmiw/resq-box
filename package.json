@@ -25,7 +25,8 @@
     "test:pesan-galat": "node scripts/uji_pesan_galat.mjs",
     "cek:kebocoran": "python scripts/audit_kebocoran.py",
     "hitung:beban": "python scripts/hitung_beban.py",
-    "uji:beban": "node scripts/uji_beban.mjs"
+    "uji:beban": "node scripts/uji_beban.mjs",
+    "test:pakaian": "node scripts/uji_pakaian_teleport.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
