@@ -17,6 +17,29 @@ export default function Dashboard() {
   const logout = useAuthStore((state) => state.logout);
   const unlockedLevel = useAuthStore((state) => state.unlockedLevel);
 
+  // ── LEVEL YANG BERLAKU UNTUK PENGGUNA INI ────────────────────────────────
+  //
+  // MENGAPA TIDAK MEMAKAI `unlockedLevel` LANGSUNG
+  //
+  //   Akun guru dibuat dengan `unlocked_level = 1`, dan nilai itu hanya naik
+  //   ketika SISWA menuntaskan level. Akibatnya seluruh tampilan beranda yang
+  //   memeriksa `levelBerlaku >= 2` merender tombol TERKUNCI bergembok untuk
+  //   guru — sehingga Level 2 dan Level 3 tidak dapat ditekan sama sekali.
+  //
+  //   Memperbaiki satu per satu setiap pemeriksaan `unlockedLevel` di berkas
+  //   ini tidak dapat diandalkan: jumlahnya belasan, dan itulah sebabnya
+  //   perbaikan sebelumnya yang hanya menyentuh penjaga rute TIDAK
+  //   menyelesaikan masalahnya.
+  //
+  //   Karena itu nilainya dihitung SEKALI di sini, lalu seluruh berkas ini
+  //   memakai `levelBerlaku`. Dengan begitu tidak ada lagi pemeriksaan yang
+  //   terlewat — termasuk yang ditambahkan di kemudian hari, karena nama
+  //   `unlockedLevel` tidak lagi dipakai di bagian tampilan.
+  //
+  //   Aturannya sendiri tetap diambil dari `levelTertinggiYangBoleh` supaya
+  //   sama persis dengan penjaga rute di App.tsx.
+  const levelBerlaku = levelTertinggiYangBoleh(currentUser?.role, unlockedLevel);
+
   const [soundOn, setSoundOn] = useState(() => retroAudio.isEnabled());
   const [isFullscreen, setIsFullscreen] = useState(() => isFullscreenActive());
   const [showGuideModal, setShowGuideModal] = useState(false);
@@ -491,7 +514,7 @@ export default function Dashboard() {
                 {currentUser?.role === 'teacher' ? 'AKUN GURU' : 'PROFIL SISWA'}
               </span>
               <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[12.5px] font-pixel-title font-bold">
-                {currentUser?.role === 'teacher' ? 'POSKO' : `LV.${unlockedLevel}`}
+                {currentUser?.role === 'teacher' ? 'POSKO' : `LV.${levelBerlaku}`}
               </span>
             </div>
             <h2 className="font-pixel text-base font-bold text-white tracking-wide truncate max-w-[150px] sm:max-w-[200px]">
@@ -619,7 +642,7 @@ export default function Dashboard() {
           </button>
 
           {/* Button 2: Disaster Analyst */}
-          {unlockedLevel >= 2 ? (
+          {levelBerlaku >= 2 ? (
             <button
               id="tour-dash-level2"
               onClick={() => handleLevelClick(2, '/level2')}
@@ -644,7 +667,7 @@ export default function Dashboard() {
           )}
 
           {/* Button 3: Simulation Game */}
-          {unlockedLevel >= 3 ? (
+          {levelBerlaku >= 3 ? (
             <button
               id="tour-dash-level3"
               onClick={() => handleLevelClick(3, '/level3')}
@@ -891,7 +914,7 @@ export default function Dashboard() {
                           8 Area Geologis
                         </span>
                         <span className="px-2.5 py-1 rounded-md bg-emerald-600 text-white font-black text-[13px] sm:text-[15px] shadow-sm">
-                          {unlockedLevel >= 2 ? '✓ TUNTAS' : 'AKTIF'}
+                          {levelBerlaku >= 2 ? '✓ TUNTAS' : 'AKTIF'}
                         </span>
                       </div>
                     </div>
@@ -925,13 +948,13 @@ export default function Dashboard() {
                         <span className="px-2.5 py-1 rounded-md bg-amber-200 text-amber-950 font-black text-[13px] sm:text-[15px] border border-amber-800/40">
                           6 Pos Mitigasi
                         </span>
-                        <span className={`px-2.5 py-1 rounded-md font-black text-[13px] sm:text-[15px] shadow-sm ${unlockedLevel >= 3
+                        <span className={`px-2.5 py-1 rounded-md font-black text-[13px] sm:text-[15px] shadow-sm ${levelBerlaku >= 3
                           ? 'bg-emerald-600 text-white'
-                          : unlockedLevel >= 2
+                          : levelBerlaku >= 2
                             ? 'bg-amber-600 text-white'
                             : 'bg-stone-300 text-stone-700'
                           }`}>
- {unlockedLevel >= 3 ? '✓ TUNTAS' : unlockedLevel >= 2 ? 'AKTIF' : ' TERKUNCI'}
+ {levelBerlaku >= 3 ? '✓ TUNTAS' : levelBerlaku >= 2 ? 'AKTIF' : ' TERKUNCI'}
                         </span>
                       </div>
                     </div>
@@ -965,9 +988,9 @@ export default function Dashboard() {
                         <span className="px-2.5 py-1 rounded-md bg-purple-200 text-purple-950 font-black text-[13px] sm:text-[15px] border border-purple-800/40">
                           20 Misi Studi Kasus
                         </span>
-                        <span className={`px-2.5 py-1 rounded-md font-black text-[13px] sm:text-[15px] shadow-sm ${unlockedLevel >= 3 ? 'bg-amber-600 text-white' : 'bg-stone-300 text-stone-700'
+                        <span className={`px-2.5 py-1 rounded-md font-black text-[13px] sm:text-[15px] shadow-sm ${levelBerlaku >= 3 ? 'bg-amber-600 text-white' : 'bg-stone-300 text-stone-700'
                           }`}>
- {unlockedLevel >= 3 ? 'AKTIF' : ' TERKUNCI'}
+ {levelBerlaku >= 3 ? 'AKTIF' : ' TERKUNCI'}
                         </span>
                       </div>
                     </div>
@@ -1158,9 +1181,9 @@ export default function Dashboard() {
                 onClick={() => {
                   retroAudio.playSelect();
                   setShowGuideModal(false);
-                  if (unlockedLevel >= 3) {
+                  if (levelBerlaku >= 3) {
                     handleLevelClick(3, '/level3');
-                  } else if (unlockedLevel >= 2) {
+                  } else if (levelBerlaku >= 2) {
                     handleLevelClick(2, '/level2');
                   } else {
                     handleLevelClick(1, '/level1');
@@ -1169,9 +1192,9 @@ export default function Dashboard() {
                 className="pixel-btn-wood-plank !w-full !h-14 sm:!h-16 !text-[13px] sm:!text-[15px] md:!text-base lg:!text-lg !bg-amber-800 hover:!bg-amber-700 !text-white mt-3 cursor-pointer flex items-center justify-center gap-2.5 font-pixel-title font-bold shadow-md transition-all active:scale-[0.99]"
               >
                 <span>
-                  {unlockedLevel >= 3
+                  {levelBerlaku >= 3
                     ? 'LANJUTKAN KE TAHAP 3 (SIMULATION GAME)'
-                    : unlockedLevel >= 2
+                    : levelBerlaku >= 2
                       ? 'LANJUTKAN KE TAHAP 2 (DISASTER ANALYST)'
                       : 'MULAI PETUALANGAN TAHAP 1'}
                 </span>
@@ -1194,7 +1217,7 @@ export default function Dashboard() {
             )}
 
             {guideTab === 'level2' && (
-              unlockedLevel >= 2 ? (
+              levelBerlaku >= 2 ? (
                 <button
                   onClick={() => {
                     retroAudio.playSelect();
@@ -1219,7 +1242,7 @@ export default function Dashboard() {
             )}
 
             {guideTab === 'level3' && (
-              unlockedLevel >= 3 ? (
+              levelBerlaku >= 3 ? (
                 <button
                   onClick={() => {
                     retroAudio.playSelect();

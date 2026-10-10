@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { MISSIONS, CATEGORIES, type MissionCategory } from '../missions/data/missions';
-import { useAuthStore } from './teacherStore';
+import { useAuthStore, levelTertinggiYangBoleh } from './teacherStore';
 
 type ValidationStatus = 'idle' | 'checking' | 'pass' | 'fail';
 
@@ -186,7 +186,13 @@ export const useMissionStore = create<MissionState>()((set, get) => ({
     if (!currentCategory || currentCategory.id === 'proyek') return true;
 
     const authState = useAuthStore.getState();
-    if (authState.unlockedLevel >= 4) return true;
+    // Guru dan admin dapat membuka seluruh kategori misi.
+    //
+    // Sebelumnya tertulis `unlockedLevel >= 4`, dan itu MUSTAHIL: kolom
+    // `unlocked_level` dibatasi 1..3 oleh database, sehingga syarat itu
+    // tidak pernah terpenuhi siapa pun — termasuk siswa yang sudah
+    // menuntaskan semua level. Diganti memakai aturan peran yang sama.
+    if (levelTertinggiYangBoleh(authState.currentUser?.role, authState.unlockedLevel) >= 3) return true;
 
     let unlockedMax = 1;
     const settings = authState.settings;

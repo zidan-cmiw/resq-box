@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore, DEFAULT_CUSTOM_AVATAR, type CustomAvatarConfig } from '../../store/teacherStore';
+import { useAuthStore, levelTertinggiYangBoleh, DEFAULT_CUSTOM_AVATAR, type CustomAvatarConfig } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
 import { PixelAvatarRenderer } from '../../components/PixelAvatar/PixelAvatarRenderer';
 import { AvatarCustomizerModal } from '../../components/PixelAvatar/AvatarCustomizerModal';
@@ -21,6 +21,11 @@ export default function Profile() {
   const student = useAuthStore((state) => state.student);
   const currentUser = useAuthStore((state) => state.currentUser);
   const unlockedLevel = useAuthStore((state) => state.unlockedLevel);
+
+  // Sama seperti di beranda: guru dan admin selalu dianggap membuka seluruh
+  // level, sedangkan siswa mengikuti capaiannya. Dihitung sekali di sini
+  // supaya seluruh pemeriksaan di berkas ini memakai aturan yang sama.
+  const levelBerlaku = levelTertinggiYangBoleh(currentUser?.role, unlockedLevel);
   const dataSaver = useDataSaver();
   const updateProfile = useAuthStore((state) => state.updateProfile);
 
@@ -491,11 +496,11 @@ export default function Profile() {
                 TINGKAT KESIAPSIAGAAN:
               </span>
               <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[13.5px] font-pixel-title font-bold">
-                LEVEL {unlockedLevel} / 3
+                LEVEL {levelBerlaku} / 3
               </span>
             </div>
             <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 text-center text-[13.5px] font-semibold">
-              <div className={`p-2 rounded border ${unlockedLevel >= 1 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900 border-slate-800 text-slate-600'}`}>
+              <div className={`p-2 rounded border ${levelBerlaku >= 1 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900 border-slate-800 text-slate-600'}`}>
                 <div className="font-bold">STAGE 1</div>
                 <div className="truncate">Earth Explorer</div>
                 <div className="text-[12.5px] text-emerald-400 mt-0.5 flex items-center justify-center gap-1 font-semibold">
@@ -503,11 +508,11 @@ export default function Profile() {
                   <span>Terbuka</span>
                 </div>
               </div>
-              <div className={`p-2 rounded border ${unlockedLevel >= 2 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
+              <div className={`p-2 rounded border ${levelBerlaku >= 2 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
                 <div className="font-bold">STAGE 2</div>
                 <div className="truncate">Disaster Analyst</div>
                 <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1 font-semibold">
-                  {unlockedLevel >= 2 ? (
+                  {levelBerlaku >= 2 ? (
                     <>
                       <PixelIcon name="check" size={10} />
                       <span className="text-emerald-400">Terbuka</span>
@@ -520,11 +525,11 @@ export default function Profile() {
                   )}
                 </div>
               </div>
-              <div className={`p-2 rounded border ${unlockedLevel >= 3 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
+              <div className={`p-2 rounded border ${levelBerlaku >= 3 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
                 <div className="font-bold">STAGE 3</div>
                 <div className="truncate">Simulation Game</div>
                 <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1 font-semibold">
-                  {unlockedLevel >= 3 ? (
+                  {levelBerlaku >= 3 ? (
                     <>
                       <PixelIcon name="check" size={10} />
                       <span className="text-emerald-400">Terbuka</span>
