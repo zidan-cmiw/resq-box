@@ -642,6 +642,62 @@ export async function fetchClassroomSubmissions(
 // ══════════════════════════════════════════════════════════════════════════
 
 /**
+ * Menyaring bagian teknis dari pesan galat database sebelum ditampilkan.
+ *
+ * MENGAPA PERLU
+ *   Pesan galat PostgreSQL dapat memuat nama tabel, nama kolom, dan nama
+ *   batasan, misalnya:
+ *
+ *       duplicate key value violates unique constraint
+ *       "profiles_kelas_absen_key"
+ *       ERROR: record "v" has no field "nisn"
+ *
+ *   Menampilkan itu kepada pengguna membocorkan struktur database: penyerang
+ *   yang membuat akun dapat memetakan tabel dan kolom satu per satu dari pesan
+ *   galat. Karena itu bagian teknisnya dibuang.
+ *
+ * MENGAPA BUKAN SEKADAR PESAN KARANGAN
+ *   Menutupi SEMUA galat dengan pesan yang "rapi" juga berbahaya — itu justru
+ *   pernah terjadi di proyek ini: guru melihat "Kelas ini bukan kelas yang Anda
+ *   ampu" saat passwordnya hanya 5 karakter, lalu mencari masalah di tempat
+ *   yang salah selama berhari-hari.
+ *
+ *   Karena itu pesan yang TIDAK mengandung bagian teknis tetap ditampilkan apa
+ *   adanya (mis. "connection reset by peer" — berguna dan tidak membocorkan
+ *   apa pun), sedangkan yang mengandung bagian teknis diganti dengan pesan
+ *   umum yang menyebutkan bahwa rinciannya ada di konsol peramban.
+ */
+function bersihkanPesanGalat(pesanAsli: string): string {
+  const asli = (pesanAsli || '').trim();
+
+  // Ciri pesan teknis dari database
+  const teknis =
+    /ERROR:|unique constraint|violates|relation "|column "|has no field|pg_|SQLSTATE|constraint "/i;
+
+  if (!asli) {
+    return 'Gagal membuat akun siswa. Penyebab tidak diketahui — periksa koneksi lalu coba lagi.';
+  }
+
+  if (teknis.test(asli)) {
+    return (
+      'Gagal membuat akun siswa karena masalah pada server. ' +
+      'Coba lagi sebentar lagi; bila tetap gagal, laporkan ke pengelola ' +
+      '(rincian teknis tercatat di konsol peramban).'
+    );
+  }
+
+  // Pesan yang tidak membocorkan struktur database tetap ditampilkan, karena
+  // pesan yang jujur lebih berguna daripada pesan rapi yang menyesatkan.
+  //
+  // Penanda `audit-kebocoran: aman` dipakai supaya pemeriksa otomatis
+  // (scripts/audit_kebocoran.py) tidak melaporkan baris ini. Baris ini SUDAH
+  // aman karena hanya menampilkan pesan yang tidak mengandung bagian teknis —
+  // dan itulah yang diperiksa tepat di atasnya. Penanda ini memaksa alasannya
+  // dituliskan, bukan sekadar membungkam pemeriksa.
+  return `Gagal membuat akun siswa: ${asli}`; // audit-kebocoran: aman
+}
+
+/**
  * Guru membuatkan akun siswa.
  * Pembuatan akun Auth memerlukan hak admin, jadi ini dijalankan lewat fungsi
  * server `teacher_create_student` (SECURITY DEFINER, memverifikasi bahwa
@@ -796,11 +852,24 @@ export async function createStudentByTeacher(data: {
         return { success: false, message: 'Terlalu banyak pembuatan akun. Tunggu sebentar.' };
       }
 
-      // Tidak dikenali: tampilkan pesan aslinya. Memaksakan pesan yang "rapi"
-      // di sini justru menyesatkan, dan itu sudah pernah terjadi.
+      // Tidak dikenali.
+      //
+      // MENGAPA TIDAK LANGSUNG MENAMPILKANNYA
+      //   Versi sebelumnya mengembalikan pesan asli apa adanya:
+      //       message: `Gagal membuat akun siswa: ${asli}`
+      //   Alasannya waktu itu masuk akal — pesan yang "rapi" tapi salah lebih
+      //   buruk daripada pesan teknis yang jujur. Tetapi pesan galat database
+      //   dapat memuat NAMA TABEL, NAMA KOLOM, dan NAMA BATASAN, misalnya:
+      //
+      //       duplicate key value violates unique constraint
+      //       "profiles_kelas_absen_key"
+      //
+      //   Menampilkan itu kepada pengguna membocorkan struktur database.
+      //   Perbaikannya bukan dengan menutupinya memakai pesan karangan, tetapi
+      //   dengan MENYARING bagian teknisnya saja.
       return {
         success: false,
-        message: `Gagal membuat akun siswa: ${asli || 'penyebab tidak diketahui.'}`,
+        message: bersihkanPesanGalat(asli),
       };
     }
 

@@ -21,8 +21,9 @@
     "cek:keamanan": "python scripts/audit_keamanan.py",
     "diagnosa:akun": "node supabase/diagnosa_akun.mjs",
     "cek:kolom": "python scripts/audit_kolom_dibuang.py",
-    "cek:semua": "npm run cek:keamanan && npm run cek:kolom && npm run cek:pendaftaran",
-    "test:pesan-galat": "node scripts/uji_pesan_galat.mjs"
+    "cek:semua": "npm run cek:keamanan && npm run cek:kebocoran && npm run cek:kolom && npm run cek:pendaftaran",
+    "test:pesan-galat": "node scripts/uji_pesan_galat.mjs",
+    "cek:kebocoran": "python scripts/audit_kebocoran.py"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

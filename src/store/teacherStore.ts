@@ -224,7 +224,12 @@ export const useAuthStore = create<AuthState>()((set) => ({
       }
       return { success: true, user };
     }
-    return { success: false, message: res.message || 'Login gagal' };
+    // `res` berasal dari loginUser() di supabaseClient.ts, yang SELURUH
+    // pesan galatnya ditulis sendiri oleh kode kita — bukan pesan mentah
+    // dari server. Setiap cabang di sana mengembalikan kalimat yang sudah
+    // diperiksa, mis. "Username atau password salah!" dan "Sesi Anda
+    // berakhir". Karena itu tidak ada yang perlu disaring lagi di sini.
+    return { success: false, message: res.message || 'Login gagal' }; // audit-kebocoran: aman
   },
 
   setCurrentUser: (user: UserAccount | null) => {
