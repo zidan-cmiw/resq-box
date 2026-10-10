@@ -668,11 +668,38 @@ export async function createStudentByTeacher(data: {
     };
   }
 
-  // Diperiksa juga di klien supaya guru mendapat jawaban seketika tanpa
-  // menunggu perjalanan ke server. Server TETAP memeriksa ulang — aturan
-  // sebenarnya ada di sana, bukan di sini.
+  // ── PEMERIKSAAN DI KLIEN ────────────────────────────────────────────────
+  //
+  // Diperiksa juga di klien supaya guru mendapat jawaban SEKETIKA tanpa
+  // menunggu perjalanan ke server, dan supaya pesannya menyebut kolom yang
+  // salah dengan tepat. Server TETAP memeriksa ulang — aturan sebenarnya ada
+  // di sana, bukan di sini.
+  //
+  // Sebelumnya HANYA nomor absen yang diperiksa di sini. Akibatnya nama yang
+  // kosong, username yang tidak sah, dan password yang terlalu pendek baru
+  // ketahuan setelah dikirim ke server — dan galat dari server itulah yang
+  // kemudian salah ditampilkan sebagai "kelas bukan milik Anda".
+  if (!data.name.trim()) {
+    return { success: false, message: 'Nama lengkap siswa wajib diisi.' };
+  }
+  if (!/^[a-z0-9._-]{3,30}$/.test(username)) {
+    return {
+      success: false,
+      message:
+        'Username hanya boleh huruf kecil, angka, titik, garis bawah, dan strip (3–30 karakter).',
+    };
+  }
+  if ((data.password || '').length < 6) {
+    return { success: false, message: 'Password minimal 6 karakter.' };
+  }
   if (!/^[0-9]{1,3}$/.test(absen)) {
-    return { success: false, message: 'Nomor absen wajib diisi dan harus berupa angka.' };
+    return {
+      success: false,
+      message: 'Nomor absen wajib diisi dan harus berupa angka (1–3 digit).',
+    };
+  }
+  if (!data.classroom_code.trim()) {
+    return { success: false, message: 'Kelas belum dipilih.' };
   }
 
   try {
@@ -686,26 +713,95 @@ export async function createStudentByTeacher(data: {
 
     if (error) {
       noteError('createStudentByTeacher', error);
-      const msg = (error.message || '').toLowerCase();
-      // Nomor absen duplikat DIPERIKSA LEBIH DULU, karena inilah aturan yang
-      // paling mungkin dilanggar: guru dapat lupa nomor mana yang sudah
-      // dipakai di kelas itu. Pesannya menyebut nomor absen supaya guru tidak
-      // mengira ini masalah username.
-      if (msg.includes('nomor absen') || msg.includes('absen')) {
+
+      // ── PEMBACAAN GALAT YANG TEPAT ──────────────────────────────────────
+      //
+      // Versi sebelumnya mencocokkan pesan dengan kata kunci pendek:
+      //
+      //     if (msg.includes('absen'))      -> "Nomor absen sudah dipakai"
+      //     if (msg.includes('sudah'))      -> "Username sudah ada"
+      //     if (msg.includes('bukan milik')) -> "Kelas bukan milik Anda"
+      //
+      // Cara itu SALAH dan menyesatkan pengguna. Dua akibatnya:
+      //
+      //   1. Pemeriksaan 'absen' ditempatkan paling awal, sehingga ia menangkap
+      //      pesan apa pun yang menyebut kata "absen" — termasuk pesan
+      //      gabungan dari server. Akibatnya galat yang sebenarnya berbeda
+      //      ditampilkan seolah-olah masalah nomor absen.
+      //
+      //   2. Galat apa pun yang tidak dikenali akan jatuh ke baris terakhir
+      //      dan ditampilkan sebagai "Kelas ini bukan kelas yang Anda ampu."
+      //      Padahal penyebabnya bisa password terlalu pendek, nomor absen
+      //      kembar, atau apa saja. Guru lalu mencari masalah di tempat yang
+      //      salah — persis yang dilaporkan: pesan "bukan kelas Anda" muncul
+      //      saat passwordnya hanya 5 karakter.
+      //
+      // Sekarang setiap galat dicocokkan pada FRASA yang khas, dan bila tidak
+      // ada yang cocok, pesan ASLI dari server ditampilkan apa adanya. Lebih
+      // baik menampilkan pesan teknis yang jujur daripada pesan rapi yang
+      // menyesatkan.
+      const asli = error.message || '';
+      const msg = asli.toLowerCase();
+
+      // Nomor absen sudah dipakai — galat sengaja dari server
+      if (msg.includes('nomor absen') && msg.includes('sudah dipakai')) {
         return {
           success: false,
-          message: error.message.includes('sudah dipakai')
-            ? `Nomor absen ${absen} sudah dipakai siswa lain di kelas ini. Pilih nomor lain.`
-            : 'Nomor absen harus berupa angka (1–3 digit).',
+          message: `Nomor absen ${absen} sudah dipakai siswa lain di kelas ini. Pilih nomor lain.`,
         };
       }
-      if (msg.includes('sudah')) {
-        return { success: false, message: `Username "${username}" sudah ada!` };
+      // Nama pengguna sudah dipakai
+      if (msg.includes('username') && msg.includes('sudah ada')) {
+        return { success: false, message: `Username "${username}" sudah ada! Pilih yang lain.` };
       }
-      if (msg.includes('bukan milik') || msg.includes('hanya guru')) {
-        return { success: false, message: 'Kelas ini bukan kelas yang Anda ampu.' };
+      // Pelanggaran index unik tanpa keterangan jelas — sebutkan kedua
+      // kemungkinan supaya guru tahu apa yang harus diperiksa.
+      if (msg.includes('unique') || msg.includes('duplicate') || msg.includes('sudah terdaftar')) {
+        return {
+          success: false,
+          message:
+            `Username "${username}" atau nomor absen ${absen} sudah dipakai di kelas ini. ` +
+            'Periksa daftar siswa, lalu coba lagi dengan nilai yang berbeda.',
+        };
       }
-      return { success: false, message: 'Gagal membuat akun siswa di server.' };
+      // Password terlalu pendek
+      if (msg.includes('password') || msg.includes('sandi')) {
+        return { success: false, message: 'Password minimal 6 karakter.' };
+      }
+      // Nomor absen tidak sah
+      if (msg.includes('nomor absen')) {
+        return { success: false, message: 'Nomor absen wajib diisi dan harus berupa angka (1–3 digit).' };
+      }
+      // Kelas memang bukan milik guru ini
+      if (msg.includes('bukan milik')) {
+        return {
+          success: false,
+          message: 'Kelas ini bukan kelas yang Anda ampu. Pastikan Anda masuk sebagai guru pemilik kelas ini.',
+        };
+      }
+      // Bukan guru
+      if (msg.includes('hanya guru')) {
+        return { success: false, message: 'Hanya akun guru yang dapat membuat akun siswa.' };
+      }
+      // Kelas tidak ditemukan
+      if (msg.includes('tidak ditemukan')) {
+        return { success: false, message: 'Kode kelas tidak ditemukan di server.' };
+      }
+      // Belum login / sesi kedaluwarsa
+      if (msg.includes('harus login') || msg.includes('jwt')) {
+        return { success: false, message: 'Sesi Anda berakhir. Silakan masuk kembali.' };
+      }
+      // Terlalu banyak permintaan
+      if (msg.includes('terlalu banyak')) {
+        return { success: false, message: 'Terlalu banyak pembuatan akun. Tunggu sebentar.' };
+      }
+
+      // Tidak dikenali: tampilkan pesan aslinya. Memaksakan pesan yang "rapi"
+      // di sini justru menyesatkan, dan itu sudah pernah terjadi.
+      return {
+        success: false,
+        message: `Gagal membuat akun siswa: ${asli || 'penyebab tidak diketahui.'}`,
+      };
     }
 
     const payload = result as { success?: boolean; student?: Record<string, unknown>; message?: string };

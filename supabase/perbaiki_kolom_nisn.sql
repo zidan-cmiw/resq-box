@@ -380,8 +380,30 @@ BEGIN
 
 EXCEPTION
   WHEN unique_violation THEN
-    RAISE EXCEPTION 'Username % atau nomor absen % sudah terdaftar.', v_username, v_absen
-      USING ERRCODE = '23505';
+    -- Pesan disesuaikan dengan BATASAN MANA yang dilanggar.
+    --
+    -- Versi sebelumnya menggabungkan kedua kemungkinan menjadi satu pesan:
+    --     'Username % atau nomor absen % sudah terdaftar.'
+    -- Akibatnya guru tidak tahu mana yang harus diperbaiki, dan kode klien
+    -- salah mengklasifikasikannya sehingga menampilkan "Kelas ini bukan kelas
+    -- yang Anda ampu" — pesan yang sama sekali tidak berhubungan.
+    --
+    -- Nama batasan diambil dari galatnya, lalu pesan yang dihasilkan hanya
+    -- menyebut penyebab yang sebenarnya.
+    IF SQLERRM LIKE '%profiles_kelas_absen_key%' THEN
+      RAISE EXCEPTION 'Nomor absen % sudah dipakai siswa lain di kelas ini. Pilih nomor lain.', v_absen
+        USING ERRCODE = '23505';
+    ELSIF SQLERRM LIKE '%profiles_username_lower_key%' THEN
+      RAISE EXCEPTION 'Username % sudah ada! Pilih username lain.', v_username
+        USING ERRCODE = '23505';
+    ELSIF SQLERRM LIKE '%users_email_key%' OR SQLERRM LIKE '%identities%' THEN
+      RAISE EXCEPTION 'Username % sudah terdaftar sebagai akun.', v_username
+        USING ERRCODE = '23505';
+    ELSE
+      -- Sebutkan batasannya supaya penyebabnya dapat ditelusuri, bukan ditebak.
+      RAISE EXCEPTION 'Data siswa bentrok dengan data yang sudah ada (%).', SQLERRM
+        USING ERRCODE = '23505';
+    END IF;
 END $$;
 
 
