@@ -19,7 +19,9 @@
     "test:isolation": "node supabase/test_isolation.mjs",
     "cek:pendaftaran": "node supabase/cek_pendaftaran.mjs",
     "cek:keamanan": "python scripts/audit_keamanan.py",
-    "diagnosa:akun": "node supabase/diagnosa_akun.mjs"
+    "diagnosa:akun": "node supabase/diagnosa_akun.mjs",
+    "cek:kolom": "python scripts/audit_kolom_dibuang.py",
+    "cek:semua": "npm run cek:keamanan && npm run cek:kolom && npm run cek:pendaftaran"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

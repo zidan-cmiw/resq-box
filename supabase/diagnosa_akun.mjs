@@ -1,24 +1,36 @@
 /**
- * Diagnosa akun guru & demo yang dilaporkan hilang.
+ * Diagnosa lengkap: kenapa login gagal dengan "Profil tidak ditemukan".
  *
- * MENGAPA BERKAS INI ADA
- *   Setelah migrasi 09 dijalankan, akun guru dan akun demo dilaporkan tidak
- *   dapat dipakai lagi. Ada beberapa kemungkinan yang sangat berbeda akibatnya,
- *   dan menebak di antara kemungkinan itu berbahaya:
+ * ═══════════════════════════════════════════════════════════════════════════
+ * MENGAPA BERKAS INI DIPERLUAS
+ * ═══════════════════════════════════════════════════════════════════════════
  *
- *     a. Akun masih ada, hanya gagal masuk (mis. email/sandi berubah)
- *     b. Akun masih ada tetapi tidak muncul di tampilan tertentu
- *     c. Akun benar-benar terhapus dari auth.users
+ * Versi pertama skrip ini hanya mencoba MASUK dan melaporkan berhasil/gagal.
+ * Itu belum cukup: login dapat BERHASIL di Supabase Auth, tetapi tetap gagal
+ * di aplikasi karena pengambilan profil setelahnya bermasalah. Persis itulah
+ * gejalanya — pesannya "Profil tidak ditemukan", bukan "sandi salah".
  *
- *   Untuk membedakannya, skrip ini MENCOBA MASUK sungguhan ke Supabase memakai
- *   kredensial dari .env. Jawaban server menunjukkan dengan pasti yang mana.
+ * Versi ini menirukan SELURUH urutan yang dilakukan aplikasi saat login:
  *
- * PENTING — SKRIP INI TIDAK MENGUBAH APA PUN
- *   Ia hanya memanggil endpoint masuk (sign-in) dan membaca jawabannya.
+ *   1. Masuk memakai nama pengguna + sandi      (Supabase Auth)
+ *   2. Ambil profil lewat RPC get_my_profile    (langkah tempat gagalnya)
+ *   3. Baca nilai yang dikembalikan, khususnya kunci 'found' dan 'role'
+ *   4. Periksa kecocokan peran: akun guru tidak boleh masuk lewat pintu siswa
+ *
+ * Dengan begitu, bila langkah 2 atau 3 yang bermasalah, skrip ini menunjuk
+ * langkah yang tepat — bukan sekadar mengatakan "gagal".
+ *
+ * TIDAK MENGUBAH APA PUN
+ *   Hanya memanggil endpoint masuk dan satu fungsi yang sifatnya membaca.
  *   Tidak ada INSERT, UPDATE, atau DELETE. Sandi tidak pernah ditampilkan.
  *
  * CARA MENJALANKAN
- *   node supabase/diagnosa_akun.mjs
+ *   Lewat berkas .env:
+ *       node supabase/diagnosa_akun.mjs
+ *
+ *   Atau lewat argumen (lebih praktis, tidak perlu menyimpan sandi):
+ *       node supabase/diagnosa_akun.mjs guru <sandi-guru>
+ *       node supabase/diagnosa_akun.mjs demo <sandi-demo>
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -52,135 +64,219 @@ const KUNCI = nilai('VITE_SUPABASE_ANON_KEY');
 const DOMAIN = nilai('VITE_AUTH_EMAIL_DOMAIN') || 'resqbox.local';
 
 const garis = '─'.repeat(74);
+const tebal = '═'.repeat(74);
 
 if (!URL_SB || !KUNCI) {
   console.error('  Konfigurasi Supabase tidak ditemukan di .env');
   process.exit(2);
 }
 
-console.log(`\n${garis}`);
-console.log('  DIAGNOSA AKUN GURU & DEMO');
-console.log(garis);
-console.log(`\n  Supabase   : ${URL_SB}`);
-console.log(`  Domain mail: @${DOMAIN}`);
-console.log('\n  Skrip ini hanya MENCOBA MASUK (tidak mengubah apa pun).');
+// Argumen baris perintah: namaPengguna sandi
+const argNama = process.argv[2];
+const argSandi = process.argv[3];
 
 /**
- * Coba masuk. Mengembalikan keterangan hasilnya.
- *
- * PENTING: alamat surel dibuat dari nama pengguna, karena aplikasi ini memakai
- * alamat sintetis `<username>@resqbox.local`.
+ * Menirukan urutan login yang dilakukan aplikasi, langkah demi langkah.
+ * Mengembalikan nama langkah yang gagal, atau 'berhasil'.
  */
-async function cobaMasuk(username, sandi, keterangan) {
-  const email = `${username}@${DOMAIN}`;
-  console.log(`\n${garis}`);
+async function telusuriLogin(username, sandi, keterangan) {
+  console.log(`\n${tebal}`);
   console.log(`  ${keterangan}`);
-  console.log(garis);
-  console.log(`  Alamat uji : ${email}`);
-  console.log(`  Sandi      : ${sandi ? `(dari .env, ${sandi.length} karakter)` : '(TIDAK ADA di .env)'}`);
+  console.log(tebal);
 
   if (!sandi) {
-    console.log('\n  >>> Dilewati: sandi tidak tersedia di .env, jadi tidak dapat diuji.');
+    console.log(`  DILEWATI — sandi untuk "${username}" tidak tersedia.`);
+    console.log(`  Tambahkan ke .env:  VITE_${keterangan.includes('GURU') ? 'GURU' : 'DEMO'}_PASSWORD=<sandi>`);
+    console.log(`  Atau jalankan:      node supabase/diagnosa_akun.mjs ${username} <sandi>`);
     return 'tanpa-sandi';
   }
 
-  let respons, badan;
+  const email = `${username}@${DOMAIN}`;
+  console.log(`  Alamat surel yang dibentuk aplikasi : ${email}`);
+  console.log(`  Sandi                               : ${sandi.length} karakter (tidak ditampilkan)`);
+
+  // ── LANGKAH 1: masuk ────────────────────────────────────────────────────
+  console.log(`\n  LANGKAH 1 — Masuk ke Supabase Auth`);
+  let isiMasuk;
   try {
-    respons = await fetch(`${URL_SB}/auth/v1/token?grant_type=password`, {
+    const r = await fetch(`${URL_SB}/auth/v1/token?grant_type=password`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: KUNCI,
-        Authorization: `Bearer ${KUNCI}`,
-      },
+      headers: { 'Content-Type': 'application/json', apikey: KUNCI, Authorization: `Bearer ${KUNCI}` },
       body: JSON.stringify({ email, password: sandi }),
     });
-    badan = await respons.text();
+    isiMasuk = { status: r.status, isi: JSON.parse((await r.text()) || '{}') };
   } catch (e) {
-    console.log(`\n  GAGAL menghubungi server: ${e.message}`);
+    console.log(`    GAGAL menghubungi server: ${e.message}`);
     return 'galat-jaringan';
   }
 
-  let isi = {};
-  try {
-    isi = JSON.parse(badan);
-  } catch {
-    /* bukan JSON */
-  }
-
-  const pesan = String(
-    isi.error_description || isi.msg || isi.message || isi.error || ''
+  const pesanMasuk = String(
+    isiMasuk.isi.error_description || isiMasuk.isi.msg || isiMasuk.isi.message || ''
   ).toLowerCase();
 
-  console.log(`\n  Jawaban : HTTP ${respons.status}`);
-  if (pesan) console.log(`  Pesan   : ${pesan.slice(0, 110)}`);
+  console.log(`    HTTP ${isiMasuk.status}${pesanMasuk ? `  — ${pesanMasuk.slice(0, 100)}` : ''}`);
 
-  if (respons.status === 200 && isi.access_token) {
-    const u = isi.user || {};
-    const app = u.app_metadata || {};
-    console.log('\n  >>> AKUN MASIH ADA DAN DAPAT DIPAKAI');
-    console.log(`      peran di app_metadata : ${app.role ?? '(tidak ada)'}`);
-    console.log(`      kelas                 : ${app.classroom_code ?? '(tidak ada)'}`);
-    console.log('      Kesimpulan: akun TIDAK terhapus. Kalau tidak terlihat di');
-    console.log('      tampilan, penyebabnya ada di aplikasi, bukan di database.');
-    return 'bisa-masuk';
+  if (!(isiMasuk.status === 200 && isiMasuk.isi.access_token)) {
+    if (pesanMasuk.includes('invalid') || pesanMasuk.includes('credentials')) {
+      console.log('\n  >>> BERHENTI DI LANGKAH 1: SANDI SALAH ATAU AKUN TIDAK ADA');
+      console.log('      Supabase memberi jawaban yang sama untuk kedua hal itu,');
+      console.log('      sehingga belum dapat dibedakan dari sini.');
+      console.log('      Periksa sandi di Authentication > Users, atau setel ulang.');
+      return 'sandi-salah';
+    }
+    if (pesanMasuk.includes('confirm')) {
+      console.log('\n  >>> BERHENTI DI LANGKAH 1: AKUN BELUM TERKONFIRMASI');
+      return 'belum-konfirmasi';
+    }
+    console.log('\n  >>> BERHENTI DI LANGKAH 1: jawaban tidak dikenal.');
+    return 'masuk-gagal';
   }
 
-  if (pesan.includes('invalid') || pesan.includes('credentials')) {
-    console.log('\n  >>> SANDI TIDAK COCOK, ATAU ALAMAT SURELNYA BERBEDA');
-    console.log('      Ini BUKAN bukti akun terhapus. Supabase memberi jawaban yang');
-    console.log('      sama untuk "akun tidak ada" dan "sandi salah", jadi keduanya');
-    console.log('      belum dapat dibedakan dari sini.');
-    return 'sandi-atau-alamat';
+  const token = isiMasuk.isi.access_token;
+  const user = isiMasuk.isi.user || {};
+  console.log('    BERHASIL. Sesi terbentuk.');
+  console.log(`    peran di app_metadata : ${user.app_metadata?.role ?? '(tidak ada)'}`);
+
+  // ── LANGKAH 2: ambil profil, langkah yang dicurigai ─────────────────────
+  console.log(`\n  LANGKAH 2 — Ambil profil lewat RPC get_my_profile`);
+  console.log('    (inilah langkah tempat aplikasi menampilkan "Profil tidak ditemukan")');
+
+  const r2 = await fetch(`${URL_SB}/rest/v1/rpc/get_my_profile`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: KUNCI,
+      Authorization: `Bearer ${token}`,
+      'Accept-Profile': 'public',
+    },
+    body: '{}',
+  });
+  const teks2 = await r2.text();
+  let isi2;
+  try {
+    isi2 = JSON.parse(teks2);
+  } catch {
+    isi2 = teks2;
   }
 
-  if (pesan.includes('confirm') || pesan.includes('not confirmed')) {
-    console.log('\n  >>> AKUN ADA TETAPI BELUM TERKONFIRMASI');
-    console.log('      Akun yang dibuat guru seharusnya langsung terkonfirmasi.');
-    return 'belum-konfirmasi';
+  console.log(`    HTTP ${r2.status}`);
+  console.log(`    Jawaban: ${teks2.slice(0, 320)}`);
+
+  if (r2.status === 401 || r2.status === 403) {
+    console.log('\n  >>> GAGAL DI LANGKAH 2: HAK EKSEKUSI FUNGSI DITOLAK');
+    console.log('      Login berhasil, tetapi fungsi pembaca profil tidak dapat');
+    console.log('      dipanggil. Inilah penyebab pesan "Profil tidak ditemukan".');
+    console.log('\n      Perbaiki dengan menjalankan di Supabase SQL Editor:');
+    console.log('          GRANT EXECUTE ON FUNCTION public.get_my_profile() TO authenticated;');
+    return 'rpc-ditolak';
+  }
+  if (r2.status === 404) {
+    console.log('\n  >>> GAGAL DI LANGKAH 2: FUNGSI TIDAK DITEMUKAN');
+    console.log('      Periksa apakah migrasi 02 atau 04 sudah pernah dijalankan.');
+    return 'rpc-hilang';
+  }
+  if (r2.status !== 200) {
+    console.log('\n  >>> GAGAL DI LANGKAH 2: FUNGSI ADA TETAPI GAGAL DIJALANKAN');
+    console.log('      Pesan di atas biasanya menyebut kolom atau tabel yang');
+    console.log('      tidak ada. Kirim keluaran ini untuk diperiksa.');
+    return 'rpc-galat';
   }
 
-  console.log('\n  >>> Jawaban tidak dikenal — kirim keluaran ini untuk diperiksa.');
-  return 'tidak-dikenal';
+  // ── LANGKAH 3: baca isi jawaban ─────────────────────────────────────────
+  console.log(`\n  LANGKAH 3 — Membaca isi jawaban`);
+  if (isi2 === null || isi2 === undefined || (Array.isArray(isi2) && isi2.length === 0)) {
+    console.log('    Jawaban KOSONG.');
+  } else {
+    const profil = Array.isArray(isi2) ? isi2[0] : isi2;
+    if (profil && typeof profil === 'object') {
+      const punyaFound = Object.prototype.hasOwnProperty.call(profil, 'found');
+      console.log(`    kunci 'found' ada?  : ${punyaFound ? 'YA' : 'TIDAK'}`);
+      console.log(`    nilai 'found'       : ${JSON.stringify(profil.found)}`);
+      console.log(`    username            : ${profil.username ?? '(tidak ada)'}`);
+      console.log(`    role                : ${profil.role ?? '(tidak ada)'}`);
+      console.log(`    unlocked_level      : ${profil.unlocked_level ?? '(tidak ada)'}`);
+
+      // Inilah pemeriksaan yang dilakukan aplikasi:
+      //     if (!payload || payload.found === false) -> "Profil tidak ditemukan"
+      const aplikasiMenolak = !profil || profil.found === false;
+      console.log(`\n    Pemeriksaan aplikasi (!payload || payload.found === false)`);
+      console.log(`    hasilnya            : ${aplikasiMenolak ? 'MENOLAK' : 'MENERIMA'}`);
+
+      if (aplikasiMenolak) {
+        console.log('\n  >>> GAGAL DI LANGKAH 3: APLIKASI MENOLAK JAWABAN INI');
+        if (!punyaFound) {
+          console.log('      Kunci \'found\' tidak ada pada jawaban. Ini terjadi bila');
+          console.log('      versi fungsi di database BUKAN versi dari migrasi 01/02.');
+          console.log('      Jalankan ulang migrasi 02 untuk memulihkan definisinya.');
+          return 'found-hilang';
+        }
+        console.log('      Fungsi menjawab found=false, artinya profilnya TIDAK ADA');
+        console.log('      untuk id pengguna ini. Periksa dengan query:');
+        console.log(`          SELECT * FROM public.profiles WHERE username = '${username}';`);
+        return 'profil-tidak-ada';
+      }
+
+      // Langkah 4: kecocokan peran
+      console.log(`\n  LANGKAH 4 — Kecocokan peran (pemeriksaan terakhir aplikasi)`);
+      const mauGuru = keterangan.includes('GURU');
+      if (mauGuru && profil.role !== 'teacher') {
+        console.log(`    Peran profil: ${profil.role}, tetapi mencoba masuk lewat pintu GURU.`);
+        console.log('\n  >>> GAGAL DI LANGKAH 4: "Akun ini bukan akun Guru."');
+        console.log('      Perbaiki dengan:');
+        console.log(`          UPDATE public.profiles SET role='teacher' WHERE username='${username}';`);
+        return 'peran-salah';
+      }
+      if (!mauGuru && profil.role === 'teacher') {
+        console.log('\n  >>> GAGAL DI LANGKAH 4: akun guru dicoba lewat pintu siswa.');
+        return 'peran-salah';
+      }
+    }
+  }
+
+  console.log(`\n  >>> SELURUH LANGKAH BERHASIL — akun ini seharusnya dapat masuk.`);
+  console.log('      Bila di aplikasi tetap gagal, masalahnya ada di sisi peramban:');
+  console.log('      versi lama yang tersimpan, atau alamat Supabase yang berbeda.');
+  return 'berhasil';
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+console.log(`\n${tebal}`);
+console.log('  DIAGNOSA LOGIN — menirukan urutan yang dilakukan aplikasi');
+console.log(tebal);
+console.log(`\n  Supabase    : ${URL_SB}`);
+console.log(`  Domain mail : @${DOMAIN}`);
+console.log('  Skrip ini TIDAK mengubah apa pun (hanya masuk dan membaca).');
+
+const daftar = argNama
+  ? [[argNama, argSandi, `AKUN ${argNama.toUpperCase()}`]]
+  : [
+      [nilai('VITE_GURU_USERNAME') || 'guru', nilai('VITE_GURU_PASSWORD'), 'AKUN GURU'],
+      [nilai('VITE_DEMO_USERNAME') || 'demo', nilai('VITE_DEMO_PASSWORD'), 'AKUN DEMO'],
+    ];
 
 const hasil = {};
-
-// Akun guru & demo: sandi diambil dari .env bila ada. Nama variabelnya
-// mengikuti kebiasaan yang sudah dipakai proyek ini.
-hasil.guru = await cobaMasuk(
-  nilai('VITE_GURU_USERNAME') || 'guru',
-  nilai('VITE_GURU_PASSWORD'),
-  'AKUN GURU'
-);
-
-hasil.demo = await cobaMasuk(
-  nilai('VITE_DEMO_USERNAME') || 'demo',
-  nilai('VITE_DEMO_PASSWORD'),
-  'AKUN DEMO'
-);
-
-console.log(`\n${garis}`);
-console.log('  RINGKASAN');
-console.log(garis);
-for (const [nama, h] of Object.entries(hasil)) {
-  const arti = {
-    'bisa-masuk': 'AKUN ADA, dapat dipakai',
-    'sandi-atau-alamat': 'perlu diperiksa (sandi/alamat)',
-    'belum-konfirmasi': 'ADA, tetapi belum dikonfirmasi',
-    'tanpa-sandi': 'tidak diuji (sandi tidak ada di .env)',
-    'galat-jaringan': 'tidak diuji (jaringan)',
-    'tidak-dikenal': 'tidak dapat disimpulkan',
-  }[h] || h;
-  console.log(`  akun ${nama.padEnd(6)} : ${arti}`);
+for (const [nama, sandi, ket] of daftar) {
+  hasil[ket] = await telusuriLogin(nama, sandi, ket);
 }
 
-console.log(`
-  CATATAN: bila hasilnya "tidak diuji (sandi tidak ada di .env)", tambahkan
-  baris berikut ke .env lalu jalankan ulang:
-
-      VITE_GURU_PASSWORD=<sandi guru>
-      VITE_DEMO_PASSWORD=<sandi demo>
-
-  Skrip ini tidak pernah menampilkan sandi, hanya panjangnya.
-`);
+console.log(`\n${tebal}`);
+console.log('  RINGKASAN');
+console.log(tebal);
+const arti = {
+  berhasil: 'BERHASIL — akun dapat masuk',
+  'sandi-salah': 'GAGAL di langkah 1: sandi salah atau akun tidak ada',
+  'belum-konfirmasi': 'GAGAL di langkah 1: akun belum dikonfirmasi',
+  'rpc-ditolak': 'GAGAL di langkah 2: HAK FUNGSI DITOLAK  <-- paling mungkin',
+  'rpc-hilang': 'GAGAL di langkah 2: fungsi get_my_profile tidak ada',
+  'rpc-galat': 'GAGAL di langkah 2: fungsi gagal dijalankan',
+  'found-hilang': "GAGAL di langkah 3: kunci 'found' tidak ada",
+  'profil-tidak-ada': 'GAGAL di langkah 3: profil tidak ada di tabel',
+  'peran-salah': 'GAGAL di langkah 4: peran tidak cocok dengan pintu masuk',
+  'masuk-gagal': 'GAGAL di langkah 1: jawaban tidak dikenal',
+  'galat-jaringan': 'TIDAK DIUJI: jaringan',
+  'tanpa-sandi': 'TIDAK DIUJI: sandi belum tersedia',
+};
+for (const [ket, h] of Object.entries(hasil)) {
+  console.log(`  ${ket.padEnd(12)}: ${arti[h] ?? h}`);
+}
+console.log('');

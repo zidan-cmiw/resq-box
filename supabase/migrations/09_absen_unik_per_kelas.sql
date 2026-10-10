@@ -355,7 +355,216 @@ BEGIN
 END $$;
 
 
--- ── 5. QUERY PEMERIKSA — jalankan bila index bagian 2 gagal dibuat ────────
+-- ══════════════════════════════════════════════════════════════════════════
+-- 5. PERBAIKI FUNGSI YANG MASIH MEMBACA KOLOM `nisn`
+-- ══════════════════════════════════════════════════════════════════════════
+--
+-- ⚠️ BAGIAN INI WAJIB ADA. TANPA INI, SELURUH PENGGUNA TIDAK DAPAT LOGIN.
+--
+-- KENAPA
+--   Migrasi 08 membuat kolom `nisn` DAN tiga fungsi yang membaca kolom itu:
+--     - get_my_profile         -> mengembalikan 'nisn', v.nisn
+--     - list_class_students    -> memilih p.nisn
+--     - handle_new_auth_user   -> membaca dan menulis nisn
+--
+--   Bagian 1 di atas MEMBUANG kolom `nisn`. Bila ketiga fungsi itu dibiarkan,
+--   mereka akan gagal dengan galat:
+--
+--       ERROR 42703: record "v" has no field "nisn"
+--
+--   Karena get_my_profile dipanggil SETIAP kali login, akibatnya seluruh
+--   pengguna gagal masuk dengan pesan "Profil tidak ditemukan" — padahal akun
+--   dan profilnya ada. Pesan itu menyesatkan, dan penyebab sebenarnya baru
+--   ketahuan setelah fungsinya diuji langsung.
+--
+-- KESALAHAN INI TERJADI DI DATABASE PRODUKSI
+--   Versi pertama migrasi ini TIDAK memuat bagian ini, sehingga membuang
+--   kolom tanpa menyesuaikan fungsi yang membacanya. Kesalahannya adalah:
+--   mengubah bentuk tabel tanpa memeriksa siapa saja yang membaca tabel itu.
+--
+-- PELAJARAN YANG DITULIS DI SINI SUPAYA TIDAK TERULANG
+--   Setiap kali sebuah kolom dibuang, seluruh fungsi di skema ini harus
+--   diperiksa. Caranya:
+--
+--       SELECT p.proname
+--         FROM pg_proc p
+--         JOIN pg_namespace n ON n.oid = p.pronamespace
+--        WHERE n.nspname = 'public'
+--          AND pg_get_functiondef(p.oid) ILIKE '%nisn%';
+--
+--   Hasilnya harus kosong sebelum migrasi dianggap selesai.
+
+-- ── 5a. get_my_profile ────────────────────────────────────────────────────
+-- Definisi dari 02_rpc_and_hardening.sql. Kunci 'found' WAJIB ada: pemanggil
+-- di aplikasi memeriksanya untuk membedakan "profil belum ada" dari "gagal
+-- memuat profil".
+CREATE OR REPLACE FUNCTION public.get_my_profile()
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v public.profiles%ROWTYPE;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Harus login.' USING ERRCODE = '28000';
+  END IF;
+
+  SELECT * INTO v FROM public.profiles WHERE id = auth.uid();
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object('found', false);
+  END IF;
+
+  RETURN jsonb_build_object(
+    'found', true,
+    'id', v.id,
+    'username', v.username,
+    'role', v.role,
+    'is_admin', v.is_admin,
+    'name', v.name,
+    'absent_number', v.absent_number,
+    'classroom_code', v.classroom_code,
+    'school_name', v.school_name,
+    'avatar_config', v.avatar_config,
+    'unlocked_level', v.unlocked_level
+  );
+END $$;
+
+REVOKE ALL ON FUNCTION public.get_my_profile() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.get_my_profile() TO authenticated;
+
+-- ── 5b. list_class_students ───────────────────────────────────────────────
+CREATE OR REPLACE FUNCTION public.list_class_students(p_code TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql STABLE
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_me public.profiles%ROWTYPE;
+BEGIN
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Harus login.' USING ERRCODE = '28000';
+  END IF;
+
+  SELECT * INTO v_me FROM public.profiles WHERE id = auth.uid();
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Profil tidak ditemukan.' USING ERRCODE = 'P0002';
+  END IF;
+
+  IF NOT (v_me.is_admin OR v_me.role = 'admin') THEN
+    IF v_me.role <> 'teacher' THEN
+      RAISE EXCEPTION 'Hanya guru yang boleh melihat rekap kelas.' USING ERRCODE = '42501';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM public.classrooms c
+                   WHERE c.code = upper(trim(p_code)) AND c.teacher_username = v_me.username) THEN
+      RAISE EXCEPTION 'Kelas bukan milik Anda.' USING ERRCODE = '42501';
+    END IF;
+  END IF;
+
+  RETURN (
+    SELECT COALESCE(jsonb_agg(row_to_json(s) ORDER BY s.absent_number::text, s.name), '[]'::jsonb)
+    FROM (
+      SELECT p.id, p.id AS user_id, p.classroom_code, p.name, p.username,
+             COALESCE(c.name, 'Kelas VIII-A') AS class_name,
+             p.absent_number, p.avatar_config, p.unlocked_level,
+             p.created_at, p.updated_at
+      FROM public.profiles p
+      LEFT JOIN public.classrooms c ON c.code = p.classroom_code
+      WHERE p.classroom_code = upper(trim(p_code)) AND p.role = 'student'
+    ) s
+  );
+END $$;
+
+REVOKE ALL ON FUNCTION public.list_class_students(TEXT) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.list_class_students(TEXT) TO authenticated;
+
+-- ── 5c. handle_new_auth_user ──────────────────────────────────────────────
+-- Versi dari 06_fix_profile_trigger.sql, ditambah menormalkan nomor absen
+-- (nol di depan dibuang) karena nomor absen kini menjadi pengenal unik
+-- bersama kode kelas.
+CREATE OR REPLACE FUNCTION public.handle_new_auth_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  v_username TEXT;
+  v_role     TEXT;
+  v_class    TEXT;
+  v_name     TEXT;
+  v_absent   TEXT;
+  v_school   TEXT;
+  v_existing public.profiles%ROWTYPE;
+BEGIN
+  IF TG_OP = 'UPDATE' THEN
+    SELECT * INTO v_existing FROM public.profiles WHERE id = NEW.id;
+    IF FOUND
+       AND COALESCE(v_existing.username, '') <> ''
+       AND (v_existing.classroom_code IS NOT NULL
+            OR v_existing.role IN ('teacher', 'admin')
+            OR v_existing.is_admin)
+    THEN
+      RETURN NEW;
+    END IF;
+  END IF;
+
+  v_username := lower(trim(COALESCE(
+    NULLIF(NEW.raw_app_meta_data  ->> 'username', ''),
+    NULLIF(NEW.raw_user_meta_data ->> 'username', ''),
+    split_part(COALESCE(NEW.email, ''), '@', 1)
+  )));
+
+  v_role := CASE
+    WHEN COALESCE(NEW.raw_app_meta_data ->> 'role', '') IN ('teacher', 'admin')
+      THEN NEW.raw_app_meta_data ->> 'role'
+    ELSE 'student'
+  END;
+
+  v_class := upper(trim(COALESCE(
+    NULLIF(NEW.raw_app_meta_data  ->> 'classroom_code', ''),
+    NULLIF(NEW.raw_user_meta_data ->> 'classroom_code', '')
+  )));
+
+  v_name := COALESCE(
+    NULLIF(trim(COALESCE(NEW.raw_app_meta_data  ->> 'name', '')), ''),
+    NULLIF(trim(COALESCE(NEW.raw_user_meta_data ->> 'name', '')), ''),
+    'Petualang RESQ'
+  );
+
+  v_absent := COALESCE(
+    NULLIF(trim(COALESCE(NEW.raw_app_meta_data  ->> 'absent_number', '')), ''),
+    NULLIF(trim(COALESCE(NEW.raw_user_meta_data ->> 'absent_number', '')), ''),
+    '1'
+  );
+  IF v_absent ~ '^[0-9]+$' THEN
+    v_absent := (v_absent::INT)::TEXT;
+  END IF;
+
+  v_school := COALESCE(
+    NULLIF(trim(COALESCE(NEW.raw_app_meta_data  ->> 'school_name', '')), ''),
+    NULLIF(trim(COALESCE(NEW.raw_user_meta_data ->> 'school_name', '')), ''),
+    'SMP Negeri 1'
+  );
+
+  INSERT INTO public.profiles AS p (
+    id, username, role, name, absent_number, classroom_code, school_name
+  ) VALUES (
+    NEW.id, v_username, v_role, v_name, v_absent, NULLIF(v_class, ''), v_school
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    name           = COALESCE(NULLIF(p.name, ''), EXCLUDED.name),
+    absent_number  = COALESCE(NULLIF(p.absent_number, ''), EXCLUDED.absent_number),
+    classroom_code = COALESCE(EXCLUDED.classroom_code, p.classroom_code),
+    school_name    = COALESCE(NULLIF(p.school_name, ''), EXCLUDED.school_name);
+
+  RETURN NEW;
+END $$;
+
+
+-- ── 6. QUERY PEMERIKSA — jalankan bila index bagian 2 gagal dibuat ────────
 -- Nomor absen kembar di kelas yang sama:
 --
 --   SELECT classroom_code, absent_number, count(*) AS jumlah,

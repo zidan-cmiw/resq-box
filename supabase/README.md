@@ -77,10 +77,51 @@ Tidak butuh Supabase CLI, tidak butuh service key.
 | 6 | `supabase/migrations/06_fix_profile_trigger.sql` | Perbaiki trigger pembuatan profil (tiga sumber metadata) |
 | 7 | `supabase/migrations/07_fix_rls_helper_grants.sql` | Perbaiki hak eksekusi fungsi bantu RLS |
 | — | ~~`08_nisn_dan_tutup_pendaftaran.sql`~~ | **JANGAN DIJALANKAN.** Sudah digantikan oleh 09. Lihat catatan di bawah |
-| 8 | `supabase/migrations/09_absen_unik_per_kelas.sql` | Pengenal unik siswa = **kode kelas + nomor absen**; hapus kolom `nisn` bila ada; kembalikan RPC guru ke 5 argumen |
+| 8 | `supabase/migrations/09_absen_unik_per_kelas.sql` | Pengenal unik siswa = **kode kelas + nomor absen**; hapus kolom `nisn` bila ada; kembalikan RPC guru ke 5 argumen; **perbaiki 3 fungsi yang masih membaca `nisn`** |
+
+> ### ⚠️ PELAJARAN PENTING DARI MIGRASI 08 → 09
+>
+> Versi pertama migrasi 09 **membuang kolom `nisn` tanpa memperbarui fungsi
+> yang membacanya**. Akibatnya di database produksi:
+>
+> ```
+> ERROR 42703: record "v" has no field "nisn"
+> ```
+>
+> Karena `get_my_profile` dipanggil **setiap kali login**, seluruh pengguna
+> gagal masuk dengan pesan **"Profil tidak ditemukan"** — padahal akun dan
+> profilnya ada. Pesan itu menyesatkan, dan penyebab sebenarnya baru ketahuan
+> setelah fungsinya diuji langsung.
+>
+> **Aturan yang harus dipatuhi: setiap kali sebuah kolom dibuang, periksa
+> SELURUH fungsi yang membacanya.** Caranya:
+>
+> ```sql
+> SELECT p.proname
+>   FROM pg_proc p
+>   JOIN pg_namespace n ON n.oid = p.pronamespace
+>  WHERE n.nspname = 'public'
+>    AND pg_get_functiondef(p.oid) ILIKE '%nisn%';
+> ```
+>
+> Hasilnya harus **kosong**. Pemeriksa otomatisnya ada di repositori:
+> `npm run cek:kolom` — ia membandingkan seluruh migrasi sebagai satu
+> rangkaian dan gagal bila ada fungsi yang membaca kolom yang sudah dibuang.
 
 Jalankan **berurutan**. Setiap berkas idempoten (aman diulang).
 Setelah langkah 3, periksa bagian **"5. VERIFIKASI"** di dalam berkas itu.
+
+> ⚠️ **Bila login sudah terlanjur gagal dengan "Profil tidak ditemukan"**,
+> jalankan `supabase/perbaiki_kolom_nisn.sql` di SQL Editor. Berkas itu
+> mendefinisikan ulang ketiga fungsi yang rusak. Untuk memastikan
+> penyebabnya, jalankan lebih dulu:
+>
+> ```
+> npm run diagnosa:akun guru <sandi-guru>
+> ```
+>
+> Skrip itu menirukan seluruh urutan login dan menunjuk **langkah mana** yang
+> gagal, beserta kode galat dari server.
 
 > ⚠️ **Migrasi 08 JANGAN dijalankan.** Berkas itu memakai NISN sebagai pengenal
 > unik, dan cara itu sudah ditinggalkan karena terlalu merepotkan. Penggantinya
