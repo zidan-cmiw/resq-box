@@ -109,18 +109,64 @@ function check(name, passed, detail) {
 }
 
 // ── Skenario ──────────────────────────────────────────────────────────────
+//
+// DUA CARA MEMPEROLEH AKUN UJI
+//
+//   A. MEMAKAI AKUN YANG SUDAH ADA (cara yang berlaku sekarang)
+//      Sejak pendaftaran mandiri ditutup, endpoint `/auth/v1/signup` menolak
+//      SEMUA permintaan. Jadi uji ini tidak lagi dapat membuat akunnya
+//      sendiri. Isi empat variabel di .env:
+//
+//          VITE_UJI_A_USERNAME=ujia
+//          VITE_UJI_A_PASSWORD=...
+//          VITE_UJI_B_USERNAME=ujib
+//          VITE_UJI_B_PASSWORD=...
+//
+//      Akunnya dibuat lewat `supabase/siapkan_akun_uji_isolasi.sql`.
+//
+//   B. MENDAFTAR SENDIRI (hanya bila pendaftaran mandiri masih terbuka)
+//      Dipakai sebagai cadangan bila keempat variabel di atas tidak diisi.
+//
+// Uji ini memilih cara A bila variabelnya tersedia, dan cara B bila tidak —
+// sehingga tetap dapat dipakai sebelum maupun sesudah pendaftaran ditutup.
 const runId = randomBytes(3).toString('hex');
-const userA = { username: `ujia${runId}`, password: `RahasiaA!${runId}` };
-const userB = { username: `ujib${runId}`, password: `RahasiaB!${runId}` };
+const akunDariEnv = {
+  A: { username: (env.VITE_UJI_A_USERNAME || '').trim(), password: env.VITE_UJI_A_PASSWORD || '' },
+  B: { username: (env.VITE_UJI_B_USERNAME || '').trim(), password: env.VITE_UJI_B_PASSWORD || '' },
+};
+const pakaiAkunSiap = Boolean(
+  akunDariEnv.A.username && akunDariEnv.A.password &&
+  akunDariEnv.B.username && akunDariEnv.B.password
+);
+
+const userA = pakaiAkunSiap
+  ? akunDariEnv.A
+  : { username: `ujia${runId}`, password: `RahasiaA!${runId}` };
+const userB = pakaiAkunSiap
+  ? akunDariEnv.B
+  : { username: `ujib${runId}`, password: `RahasiaB!${runId}` };
 
 async function makeUser(u) {
   const email = `${u.username}@${EMAIL_DOMAIN}`;
-  await auth.signUp(email, u.password, {
-    username: u.username,
-    name: `Uji ${u.username}`,
-    absent_number: '1',
-    classroom_code: TEST_CLASS,
-  });
+
+  // Cara B: daftarkan sendiri. Hanya dijalankan bila akunnya belum disiapkan;
+  // bila pendaftaran sudah ditutup, hasilnya diabaikan dan login tetap dicoba.
+  if (!pakaiAkunSiap) {
+    const daftar = await auth.signUp(email, u.password, {
+      username: u.username,
+      name: `Uji ${u.username}`,
+      absent_number: '1',
+      classroom_code: TEST_CLASS,
+    });
+    const pesanDaftar = String(
+      daftar.body?.msg || daftar.body?.message || daftar.body?.error_description || ''
+    );
+    if (daftar.status !== 200 && !/already/i.test(pesanDaftar)) {
+      console.log(`   ℹ️  Pendaftaran mandiri ditolak (${daftar.status}: ${pesanDaftar.slice(0, 60)})`);
+      console.log('       Ini NORMAL bila "Allow new users to sign up" sudah dimatikan.');
+    }
+  }
+
   const login = await auth.signIn(email, u.password);
   const token = login.body?.access_token;
   const id = login.body?.user?.id;
@@ -131,21 +177,30 @@ async function main() {
   console.log('\n🔐 RESQ-BOX — Uji Isolasi Data Antar-User');
   console.log(`   Project : ${SUPABASE_URL}`);
   console.log(`   Kelas   : ${TEST_CLASS}`);
+  console.log(`   Akun uji: ${pakaiAkunSiap ? 'dari .env (sudah disiapkan)' : 'didaftarkan sendiri'}`);
   console.log('   ─────────────────────────────────────────────────────');
 
-  // 0. Prasyarat: pastikan bisa daftar & login
+  // 0. Prasyarat: pastikan kedua akun dapat login
   const A = await makeUser(userA);
   if (!A.token) {
-    console.error('\n❌ Tidak bisa mendaftar/login akun uji A.');
-    console.error('   Penyebab umum: "Confirm email" masih menyala, atau kode kelas belum ada.');
-    console.error('   Respons:', JSON.stringify(A.login.body).slice(0, 300));
+    console.error('\n❌ Tidak bisa login akun uji A.');
+    if (!pakaiAkunSiap) {
+      console.error('   Kemungkinan: pendaftaran mandiri SUDAH DITUTUP, sehingga akun');
+      console.error('   tidak dapat dibuat otomatis. Siapkan akunnya lebih dulu:');
+      console.error('       1. Jalankan supabase/siapkan_akun_uji_isolasi.sql');
+      console.error('       2. Isi VITE_UJI_A_USERNAME / _PASSWORD di .env');
+    } else {
+      console.error('   Periksa VITE_UJI_A_USERNAME dan VITE_UJI_A_PASSWORD di .env.');
+    }
+    console.error('   Respons:', JSON.stringify(A.login.body).slice(0, 250));
     process.exit(1);
   }
 
   const B = await makeUser(userB);
   if (!B.token) {
-    console.error('\n❌ Tidak bisa mendaftar/login akun uji B.');
-    console.error('   Respons:', JSON.stringify(B.login.body).slice(0, 300));
+    console.error('\n❌ Tidak bisa login akun uji B.');
+    console.error('   Periksa VITE_UJI_B_USERNAME dan VITE_UJI_B_PASSWORD di .env.');
+    console.error('   Respons:', JSON.stringify(B.login.body).slice(0, 250));
     process.exit(1);
   }
 

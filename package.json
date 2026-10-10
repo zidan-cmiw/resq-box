@@ -23,7 +23,9 @@
     "cek:kolom": "python scripts/audit_kolom_dibuang.py",
     "cek:semua": "npm run cek:keamanan && npm run cek:kebocoran && npm run cek:kolom && npm run cek:pendaftaran",
     "test:pesan-galat": "node scripts/uji_pesan_galat.mjs",
-    "cek:kebocoran": "python scripts/audit_kebocoran.py"
+    "cek:kebocoran": "python scripts/audit_kebocoran.py",
+    "hitung:beban": "python scripts/hitung_beban.py",
+    "uji:beban": "node scripts/uji_beban.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
