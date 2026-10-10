@@ -303,7 +303,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'STRUKTUR BUMI',
         placement: 'center',
         content:
-          'Kamu memulai ekspedisi menembus perut bumi sedalam 6.371 km! Misimu adalah mempelajari struktur interior bumi (kerak, mantel, inti luar, inti dalam) serta dinamika 3 batas lempeng tektonik.',
+          'Kamu memulai ekspedisi menembus perut bumi sedalam 6.371 km! Misimu adalah mempelajari struktur interior bumi (kerak, mantel, inti luar, inti dalam) serta dinamika 3 batas lempeng tektonik.\n\nDi tiga area terakhir — Batas Divergen, Konvergen, dan Transform — layar akan menampilkan penanda status batas lempeng, sehingga kamu dapat menghubungkan yang terlihat di layar dengan materi lempeng tektonik.',
       },
       {
         id: 'l1_controls',
@@ -323,11 +323,23 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
       },
       {
         id: 'l1_tracker',
-        title: 'Radar Bumi & Journey Progress Tracker',
-        badge: 'PELACAK KEDALAMAN',
+        title: 'Radar Bumi & Peta Perjalanan',
+        badge: 'PELACAK & PINDAH AREA',
         placement: 'center',
         content:
-          'Di kanan atas terdapat Radar Bumi yang menyorot lapisan aktifmu. Di bawah layar terdapat bar pelacak 8 area geologis dengan miniatur avatarmu yang meluncur mulus secara real-time!',
+          'Di kanan atas terdapat Radar Bumi yang menyorot lapisan aktifmu.\n\nDi bagian ATAS layar — tepat di bawah bilah kedalaman, tekanan, dan suhu — terdapat peta perjalanan berisi 8 area geologis dengan miniatur avatarmu yang meluncur mengikuti posisimu. Peta ini bukan sekadar hiasan: titik area yang SUDAH PERNAH kamu buka dapat DITEKAN untuk berpindah ke sana tanpa harus berjalan menembus seluruh lapisan.',
+        actionHint:
+          'Coba tekan titik area yang sudah pernah kamu kunjungi. Kamu bisa kembali ke area mana pun yang sudah terbuka, bahkan dari area yang lebih dalam.',
+      },
+      {
+        id: 'l1_suit',
+        title: 'Baju Pelindung dari Teknisi',
+        badge: 'KESELAMATAN EKSPEDISI',
+        placement: 'center',
+        content:
+          'Setiap lapisan bumi punya tekanan dan suhu yang berbeda. Sebelum turun ke lapisan tertentu, kamu WAJIB membeli baju pelindung dari teknisi yang ada di lapisan itu. Bila belum membeli, permainan akan menampilkan peringatan bahaya dan kamu tidak dapat melanjutkan.',
+        actionHint:
+          'Satu baju cukup dibeli SEKALI. Kalau kamu kembali ke lapisan atas lalu turun lagi, baju itu otomatis terpakai tanpa biaya tambahan — jadi kamu tidak akan diminta membeli dua kali.',
       },
       {
         id: 'l1_wordle',
@@ -453,9 +465,9 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         targetSelector: '#tour-teacher-classroom',
         placement: 'bottom',
         content:
-          'Pilih kelas aktif, atau buat kelas baru lebih dulu. Setelah itu tekan [EDIT KELAS] lalu buka tab [+ TAMBAH SISWA] untuk membuatkan akun bagi siswa Bapak/Ibu. Isi nama, nomor absen, username, dan kata sandi sementara — akun itu langsung dapat dipakai siswa untuk masuk, tanpa perlu konfirmasi email.',
+          'Pilih kelas aktif, atau buat kelas baru lebih dulu. Setelah itu tekan [EDIT KELAS] lalu buka tab [+ TAMBAH SISWA] untuk membuatkan akun bagi siswa Bapak/Ibu. Isi nama siswa, username, kata sandi, dan NOMOR ABSEN — akun itu langsung dapat dipakai siswa untuk masuk, tanpa perlu konfirmasi email.\n\nKode kelas tetap ditampilkan, tetapi TIDAK lagi dibagikan kepada siswa untuk mendaftar: pendaftaran mandiri sudah ditutup agar tidak ada akun palsu dan tidak ada siswa yang dapat melihat data siswa lain.',
         actionHint:
-          'Nomor absen wajib diisi dan tidak boleh kembar di dalam satu kelas. Nomor absen dipakai sebagai pengenal siswa, sehingga satu nomor hanya untuk satu siswa.',
+          'Nomor absen WAJIB diisi dan tidak boleh kembar di dalam satu kelas. Pasangan kelas + nomor absen itulah yang menjadi pengenal siswa.',
       },
       {
         id: 'teacher_kpi',
