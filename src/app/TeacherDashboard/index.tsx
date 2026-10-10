@@ -75,7 +75,18 @@ export default function TeacherDashboard() {
   const [newStdName, setNewStdName] = useState('');
   const [newStdAbsent, setNewStdAbsent] = useState('');
   const [newStdUsername, setNewStdUsername] = useState('');
-  const [newStdPassword, setNewStdPassword] = useState('12345');
+  // Kata sandi sementara dimulai KOSONG, bukan terisi nilai contoh.
+  //
+  // Sebelumnya bernilai '12345' — hanya 5 karakter, sedangkan validasi
+  // mensyaratkan minimal 6 karakter (di klien maupun di server). Akibatnya
+  // guru yang membiarkan kolom itu apa adanya akan mendapat penolakan, dan
+  // pada versi sebelumnya penolakan itu bahkan muncul sebagai pesan yang
+  // salah ("Kelas ini bukan kelas yang Anda ampu") karena galat server
+  // diklasifikasikan keliru.
+  //
+  // Kolom kosong memaksa guru mengetik kata sandi sendiri, dan
+  // `placeholder="Minimal 6 karakter"` memberi tahu syaratnya lebih dahulu.
+  const [newStdPassword, setNewStdPassword] = useState('');
   const [addStdError, setAddStdError] = useState('');
   const [addStdSuccess, setAddStdSuccess] = useState('');
 
@@ -298,13 +309,21 @@ export default function TeacherDashboard() {
       setAddStdError('Nama, Username, dan Password wajib diisi!');
       return;
     }
-    // Nomor absen kini WAJIB, bukan lagi opsional. Sebelumnya ia hanya nomor
-    // urut sehingga boleh dikosongkan (diisi '1' otomatis) — tetapi sekarang
-    // ia menjadi pengenal unik siswa bersama kode kelas. Kalau dikosongkan,
-    // semua siswa tanpa nomor akan bertabrakan dan hanya siswa pertama yang
-    // dapat dibuat.
+
     if (!/^[0-9]{1,3}$/.test(newStdAbsent.trim().replace(/^0+(?=\d)/, ''))) {
       setAddStdError('Nomor absen wajib diisi dan harus berupa angka.');
+      return;
+    }
+
+    // Diperiksa di sini supaya guru mendapat jawaban SEKETIKA dengan pesan yang
+    // menyebut kolom yang salah. Tanpa ini, kata sandi 5 karakter baru ditolak
+    // setelah permintaan dikirim ke server — dan pada versi sebelumnya
+    // penolakan itu muncul sebagai "Kelas ini bukan kelas yang Anda ampu",
+    // sehingga guru mencari masalah di tempat yang keliru.
+    if (newStdPassword.length < 6) {
+      setAddStdError(
+        `Kata sandi minimal 6 karakter. Yang diisi baru ${newStdPassword.length} karakter.`
+      );
       return;
     }
 
@@ -326,7 +345,7 @@ export default function TeacherDashboard() {
       setNewStdName('');
       setNewStdAbsent('');
       setNewStdUsername('');
-      setNewStdPassword('12345');
+      setNewStdPassword('');
       setTimeout(() => setAddStdSuccess(''), 2500);
     } else {
       setAddStdError(res.message || 'Gagal menambahkan murid.');
@@ -1226,7 +1245,8 @@ export default function TeacherDashboard() {
                     type="text"
                     value={newStdPassword}
                     onChange={(e) => setNewStdPassword(e.target.value)}
-                    placeholder="12345"
+                    placeholder="Minimal 6 karakter"
+                    minLength={6}
                     className="w-full px-3.5 py-2 rounded-xl bg-amber-50 border-2 border-amber-950 text-amber-950 text-[13px] font-pixel shadow-inner font-semibold"
                   />
                 </div>
@@ -1365,13 +1385,12 @@ export default function TeacherDashboard() {
                   <div className="p-3 bg-white rounded-xl border border-amber-950/20 space-y-2 text-[13px] font-semibold">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-amber-950 font-pixel">Level 1: Penjelajahan Lapisan Bumi (Earth Dive)</span>
-                      <span className={`px-2 py-0.5 rounded font-pixel-title text-[12.5px] font-bold ${
-                        isLv1Done
+                      <span className={`px-2 py-0.5 rounded font-pixel-title text-[12.5px] font-bold ${isLv1Done
                           ? 'bg-emerald-100 text-emerald-800'
                           : sub1 && sub1.score > 0
                             ? 'bg-sky-100 text-sky-800'
                             : 'bg-amber-100 text-amber-800'
-                      }`}>
+                        }`}>
                         {isLv1Done ? 'TUNTAS' : sub1 && sub1.score > 0 ? 'SEDANG DIKERJAKAN' : 'BELUM MULAI'}
                       </span>
                     </div>
@@ -1445,15 +1464,14 @@ export default function TeacherDashboard() {
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-amber-950 font-pixel">Level 3: Simulation Game (Digital Twin Lab)</span>
                       <span
-                        className={`px-2 py-0.5 rounded font-pixel-title text-[12.5px] font-bold ${
-                          isLv3Done
+                        className={`px-2 py-0.5 rounded font-pixel-title text-[12.5px] font-bold ${isLv3Done
                             ? 'bg-emerald-100 text-emerald-800'
                             : isLv3InProgress
                               ? 'bg-sky-100 text-sky-800'
                               : isLv3Active
                                 ? 'bg-purple-100 text-purple-800'
                                 : 'bg-slate-100 text-slate-600'
-                        }`}
+                          }`}
                       >
                         {isLv3Done ? 'TUNTAS' : isLv3InProgress ? 'PROGRES' : isLv3Active ? 'AKTIF DI LAB' : 'TERKUNCI'}
                       </span>
