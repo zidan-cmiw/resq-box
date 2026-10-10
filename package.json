@@ -27,7 +27,8 @@
     "hitung:beban": "python scripts/hitung_beban.py",
     "uji:beban": "node scripts/uji_beban.mjs",
     "test:pakaian": "node scripts/uji_pakaian_teleport.mjs",
-    "cek:panduan": "python scripts/periksa_selector_panduan.py"
+    "cek:panduan": "python scripts/periksa_selector_panduan.py",
+    "test:level-guru": "node scripts/uji_level_guru.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

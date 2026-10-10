@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/teacherStore';
+import { useAuthStore, levelTertinggiYangBoleh } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
 import { toggleFullscreen, isFullscreenActive } from '../../utils/fullscreen';
 import { PixelAvatarRenderer } from '../../components/PixelAvatar/PixelAvatarRenderer';
@@ -50,7 +50,11 @@ export default function Dashboard() {
   };
 
   const handleLevelClick = (targetLevel: number, path: string) => {
-    if (unlockedLevel >= targetLevel) {
+    // Guru dan admin selalu dapat membuka seluruh level. Aturannya diambil
+    // dari satu fungsi bersama supaya TIDAK berbeda dengan penjaga rute di
+    // App.tsx — perbedaan itulah yang sebelumnya membuat kartu level tampak
+    // terbuka tetapi tidak dapat ditekan.
+    if (levelTertinggiYangBoleh(currentUser?.role, unlockedLevel) >= targetLevel) {
       retroAudio.playSelect();
       navigate(path);
     } else {

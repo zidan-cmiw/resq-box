@@ -154,6 +154,41 @@ if (initialStoredUser) {
   initialStoredUser.unlocked_level = initialUnlockedLevel;
 }
 
+/**
+ * Level tertinggi yang boleh dibuka oleh pengguna ini.
+ *
+ * MENGAPA GURU DAN ADMIN SELALU DAPAT SEMUA LEVEL
+ *
+ *   Guru perlu MEMBUKA dan MENGUJI ketiga level untuk demonstrasi di kelas —
+ *   itu memang tujuan fiturnya. Tetapi akun guru dibuat dengan
+ *   `unlocked_level = 1` (nilainya hanya naik ketika siswa menuntaskan level),
+ *   sehingga guru terhalang di Level 2 dan Level 3.
+ *
+ *   Gejalanya menyesatkan: kartu Level 2 dan Level 3 di beranda TAMPAK
+ *   terbuka untuk akun guru (memang disengaja begitu), tetapi menekannya
+ *   tidak terjadi apa-apa — karena dua tempat lain masih memeriksa
+ *   `unlockedLevel` saja:
+ *
+ *       App.tsx        LevelGuard       -> mengalihkan kembali ke beranda
+ *       Dashboard      handleLevelClick -> hanya memainkan suara "terkunci"
+ *
+ *   Perbaikannya dikumpulkan di SATU fungsi ini supaya aturannya tidak dapat
+ *   berbeda antar tempat. Sebelumnya aturan yang sama ditulis ulang di
+ *   beberapa berkas, dan itulah sebabnya tampilan dan perilakunya sempat
+ *   tidak cocok.
+ *
+ *   Guru dan admin tidak kehilangan apa pun: `unlocked_level` mereka tetap
+ *   tidak diubah, dan kemajuan belajar siswa tetap dihitung dari capaian
+ *   siswa itu sendiri, bukan dari peran.
+ */
+export function levelTertinggiYangBoleh(
+  role: string | undefined | null,
+  unlockedLevel: number
+): number {
+  if (role === 'teacher' || role === 'admin') return 3;
+  return unlockedLevel;
+}
+
 export const useAuthStore = create<AuthState>()((set) => ({
   currentUser: initialStoredUser,
   student: getInitialStudent(),

@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AppLayout from './app/AppLayout';
 import Dashboard from './app/Dashboard';
-import { useAuthStore } from './store/teacherStore';
+import { useAuthStore, levelTertinggiYangBoleh } from './store/teacherStore';
 import AppErrorBoundary from './components/AppErrorBoundary';
 import { setMonitoringContext } from './utils/monitoring';
 
@@ -37,8 +37,17 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function LevelGuard({ requiredLevel, children }: { requiredLevel: number; children: React.ReactNode }) {
+  const currentUser = useAuthStore((state) => state.currentUser);
   const unlockedLevel = useAuthStore((state) => state.unlockedLevel);
-  if (unlockedLevel < requiredLevel) {
+
+  // Guru dan admin selalu dapat membuka seluruh level — lihat penjelasan
+  // lengkapnya di `levelTertinggiYangBoleh` (store/teacherStore.ts).
+  //
+  // Sebelumnya pemeriksaan di sini hanya melihat `unlockedLevel`. Akibatnya
+  // guru dengan unlocked_level = 1 terhalang di Level 2 dan Level 3, padahal
+  // kartu levelnya di beranda tampak terbuka — sehingga menekannya tidak
+  // terjadi apa-apa.
+  if (levelTertinggiYangBoleh(currentUser?.role, unlockedLevel) < requiredLevel) {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;
