@@ -126,6 +126,23 @@ def periksa_galat_mentah() -> None:
 # 2. Kolom sensitif pada tabel aplikasi
 # ═══════════════════════════════════════════════════════════════════════════
 def periksa_kolom_sensitif() -> None:
+    """
+    Cari kolom sensitif pada tabel yang dibuat migrasi.
+
+    ⚠️ KETERBATASAN YANG PERLU DIKETAHUI
+      Pemeriksa ini hanya melihat tabel yang DIBUAT oleh berkas migrasi di
+      repositori. Tabel lama yang masih ada di database — tetapi tidak lagi
+      dibuat oleh migrasi mana pun — TIDAK ikut diperiksa.
+
+      Hal itu nyata terjadi pada proyek ini: tabel `students` (peninggalan
+      skema v2) menyimpan kolom `password` bertipe TEXT, dan tabel itu tidak
+      pernah terdeteksi di sini karena migrasinya sudah tidak ada.
+
+      Karena itu pemeriksaan ini BUKAN jaminan. Untuk memastikan keadaan
+      database yang sebenarnya, jalankan
+      `supabase/verifikasi_keamanan_db.sql` di Supabase SQL Editor — berkas
+      itu menanyakan langsung ke katalog PostgreSQL, termasuk tabel lama.
+    """
     mig = ROOT / "supabase" / "migrations"
     sql = "\n".join(p.read_text(encoding="utf-8") for p in sorted(mig.glob("*.sql")))
     # Nama kolom mencurigakan pada tabel yang dibuat migrasi
@@ -143,6 +160,11 @@ def periksa_kolom_sensitif() -> None:
                     0,
                     b[:100],
                 )
+    tabel = re.findall(r"CREATE TABLE IF NOT EXISTS public\.(\w+)", sql)
+    if tabel:
+        LULUS.append(
+            "kolom sensitif diperiksa pada tabel buatan migrasi: " + ", ".join(tabel)
+        )
 
 
 # ═══════════════════════════════════════════════════════════════════════════
