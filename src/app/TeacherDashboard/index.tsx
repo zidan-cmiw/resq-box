@@ -274,14 +274,57 @@ export default function TeacherDashboard() {
     */
   }, [selectedClassCode, classroomsSiap, classrooms]);
 
-  const activeClassObj: ClassroomRecord = classrooms.find((c) => c.code === selectedClassCode) || {
-    id: `cls-fallback`,
-    name: 'Kelas VIII-A',
+  /*
+    OBJEK CADANGAN KELAS — MENGAPA NAMANYA TIDAK BOLEH DIISI KARANGAN
+
+    ═══════════════════════════════════════════════════════════════════════
+    CACAT YANG DILAPORKAN
+    ═══════════════════════════════════════════════════════════════════════
+
+      "Pas belum ada kelas sama sekali kok di dashboard gurunya tulisannya
+       kelas 8 A ya, coba kamu ganti deh biar ga membingungkan."
+
+      Benar. Objek cadangan ini dulu berbunyi:
+
+          || { id: 'cls-fallback', name: 'Kelas VIII-A', code: selectedClassCode, ... }
+
+      Jadi ketika guru BELUM PUNYA KELAS, Dashboard Guru tetap menampilkan
+      nama kelas "Kelas VIII-A" — kelas yang TIDAK ADA dan BUKAN miliknya.
+
+      Ini membingungkan dengan cara yang berbahaya:
+
+        - Guru mengira sudah punya kelas, lalu bingung kenapa tidak bisa
+          menambah murid ("Kelas belum dipilih.")
+        - Guru mengira daftar murid yang kosong itu memang kelasnya
+        - Nama "Kelas VIII-A" juga NAMA BAWAAN, sehingga cocok dengan kelas
+          milik guru LAIN — menambah kesan seolah kelasnya sudah ada
+
+      Persis itulah yang terjadi: dilaporkan "gabisa buat akun", padahal
+      penyebabnya kelasnya memang belum ada.
+
+    CARA MEMPERBAIKI
+
+      Nama cadangan dibuat KOSONG, bukan diisi nama kelas karangan. Seluruh
+      tempat yang menampilkan nama kelas sudah menangani keadaan kosong
+      dengan teks pengganti yang jelas ("Belum ada kelas").
+
+      Kejujuran di sini lebih penting daripada tampilan yang terlihat lengkap:
+      lebih baik guru melihat "Belum ada kelas" dan langsung tahu harus
+      membuat kelas, daripada melihat "Kelas VIII-A" lalu menebak-nebak.
+  */
+  const activeClassObj: ClassroomRecord = classrooms.find(
+    (c) => c.code === selectedClassCode
+  ) || {
+    id: 'cls-kosong',
+    name: '',
     code: selectedClassCode,
     teacher_username: teacherUsername,
     school_name: schoolName,
     created_at: new Date().toISOString(),
   };
+
+  /** Apakah guru ini sudah punya kelas? Dipakai untuk memilih teks tampilan. */
+  const adaKelas = classrooms.length > 0;
 
   // Sync edit class name state when active class changes
   useEffect(() => {
@@ -827,17 +870,49 @@ export default function TeacherDashboard() {
         <div className="pixel-wood-board p-4 sm:p-5 rounded-2xl shadow-[0_6px_0_#231206] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3" style={{ background: '#fef3c7' }}>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="font-pixel-title text-base sm:text-lg text-amber-950 font-bold">
-                {activeClassObj.name}
-              </h2>
-              <span className="px-2.5 py-1 rounded-md bg-emerald-200 text-emerald-950 border-2 border-emerald-800 text-[13.5px] font-pixel-title font-bold">
-                KODE KELAS: {selectedClassCode}
-              </span>
+              {/*
+                BILA GURU BELUM PUNYA KELAS, TULIS APA ADANYA
+
+                Sebelumnya di sini selalu tertulis "Kelas VIII-A" karena objek
+                cadangan mengarang nama itu. Guru yang belum punya kelas jadi
+                mengira kelasnya sudah ada — lalu bingung kenapa tidak bisa
+                menambah murid.
+
+                Sekarang keadaannya dinyatakan terus terang, dan guru diarahkan
+                ke tombol yang harus ditekan.
+              */}
+              {adaKelas ? (
+                <h2 className="font-pixel-title text-base sm:text-lg text-amber-950 font-bold">
+                  {activeClassObj.name}
+                </h2>
+              ) : (
+                <h2 className="font-pixel-title text-base sm:text-lg text-amber-950 font-bold">
+                  Belum ada kelas
+                </h2>
+              )}
+              {adaKelas ? (
+                <span className="px-2.5 py-1 rounded-md bg-emerald-200 text-emerald-950 border-2 border-emerald-800 text-[13.5px] font-pixel-title font-bold">
+                  KODE KELAS: {selectedClassCode}
+                </span>
+              ) : (
+                <span className="px-2.5 py-1 rounded-md bg-amber-200 text-amber-950 border-2 border-amber-800 text-[13.5px] font-pixel-title font-bold">
+                  Buat kelas dulu untuk mulai
+                </span>
+              )}
             </div>
             <p className="text-[14.5px] text-amber-900 font-pixel mt-1 font-bold">
-              Kode kelas hanya untuk menandai kelasmu — siswa <strong>tidak bisa</strong> mendaftar
-              sendiri. Buatkan akun siswamu lewat <strong>EDIT KELAS → + TAMBAH SISWA</strong>:
-              akun langsung aktif, dan dalam satu kelas satu nomor absen hanya untuk satu siswa.
+              {adaKelas ? (
+                <>
+                  Kode kelas hanya untuk menandai kelasmu — siswa <strong>tidak bisa</strong> mendaftar
+                  sendiri. Buatkan akun siswamu lewat <strong>EDIT KELAS → + TAMBAH SISWA</strong>:
+                  akun langsung aktif, dan dalam satu kelas satu nomor absen hanya untuk satu siswa.
+                </>
+              ) : (
+                <>
+                  Tekan <strong>+ BUAT KELAS BARU</strong> di atas untuk membuat kelas pertamamu.
+                  Setelah kelasnya ada, baru kamu bisa membuatkan akun untuk murid-muridmu.
+                </>
+              )}
             </p>
           </div>
 
@@ -891,7 +966,7 @@ export default function TeacherDashboard() {
               {totalStudents} <span className="text-[13px] text-amber-800 font-pixel font-semibold">Siswa</span>
             </div>
             <span className="text-[13.5px] font-pixel-title text-emerald-800 block font-semibold">
-              Kelas: {activeClassObj.name}
+              Kelas: {adaKelas ? activeClassObj.name : 'Belum ada kelas'}
             </span>
           </div>
 
