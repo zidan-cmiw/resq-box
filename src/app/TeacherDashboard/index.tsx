@@ -48,7 +48,59 @@ export default function TeacherDashboard() {
 
   // Classroom State
   const [classrooms, setClassrooms] = useState<ClassroomRecord[]>([]);
-  const [selectedClassCode, setSelectedClassCode] = useState('RESQ-8A');
+
+  /*
+    KODE KELAS YANG DIPILIH — MENGAPA TIDAK BOLEH DITULIS MATI
+
+    ═══════════════════════════════════════════════════════════════════════
+    CACAT YANG DITEMUKAN
+    ═══════════════════════════════════════════════════════════════════════
+
+      Sebelumnya baris ini berbunyi:
+
+          const [selectedClassCode, setSelectedClassCode] = useState('RESQ-8A');
+
+      Nilai 'RESQ-8A' DITULIS MATI di dalam kode. Akibatnya SETIAP guru yang
+      membuka Dashboard Guru LANGSUNG diarahkan ke kelas berkode 'RESQ-8A' —
+      bukan ke kelas miliknya.
+
+      Masalah itu diperparah oleh URUTAN PEMUATAN. Kedua efek ini berjalan
+      bersamaan:
+
+          useEffect 1:  fetchTeacherClassrooms()  -> lambat (jaringan)
+          useEffect 2:  fetchClassroomStudents('RESQ-8A')  -> langsung jalan
+
+      `loadClassData()` TIDAK menunggu daftar kelas selesai dimuat. Jadi ia
+      meminta murid kelas 'RESQ-8A' LEBIH DAHULU, sebelum sempat dikoreksi ke
+      kelas yang benar.
+
+    AKIBAT YANG DILAPORKAN
+
+      "Masuk ke akun guru sama ke akun tyas itu isinya muridnya sama."
+
+      Bila murid-murid itu kebetulan berada di kelas berkode 'RESQ-8A' — atau
+      bila server MENOLAK permintaan itu lalu aplikasi jatuh ke simpanan
+      lokal — kedua guru dapat melihat daftar yang sama.
+
+    CARA MEMPERBAIKI
+
+      Kode kelas tidak lagi ditulis mati, melainkan KOSONG pada awalnya.
+      Daftar murid hanya dimuat setelah:
+
+        1. daftar kelas SELESAI dimuat (`classroomsSiap`), DAN
+        2. kode kelas yang dipilih BENAR-BENAR ada di daftar kelas guru itu.
+
+      Dengan begitu tidak mungkin lagi memuat murid dari kelas yang bukan
+      milik guru yang sedang masuk.
+
+      Perubahan ini juga memperbaiki perilaku yang membingungkan: sebelumnya,
+      guru yang belum punya kelas sama sekali tetap memicu permintaan ke
+      'RESQ-8A' yang akan ditolak server.
+  */
+  const [selectedClassCode, setSelectedClassCode] = useState('');
+
+  /** Apakah daftar kelas guru sudah selesai dimuat? */
+  const [classroomsSiap, setClassroomsSiap] = useState(false);
   const [showNewClassModal, setShowNewClassModal] = useState(false);
   const [newClassName, setNewClassName] = useState('');
 
@@ -104,11 +156,19 @@ export default function TeacherDashboard() {
   // Load classrooms on mount
   useEffect(() => {
     const loadClasses = async () => {
+      setClassroomsSiap(false);
       const clsList = await fetchTeacherClassrooms(teacherUsername);
       setClassrooms(clsList);
-      if (clsList.length > 0 && !clsList.some((c) => c.code === selectedClassCode)) {
-        setSelectedClassCode(clsList[0].code);
+      if (clsList.length > 0) {
+        // Pilih kelas pertama milik guru ini. Nilai lama hanya dipertahankan
+        // bila memang ada di dalam daftar kelas MILIKNYA.
+        setSelectedClassCode((sebelumnya) =>
+          clsList.some((c) => c.code === sebelumnya) ? sebelumnya : clsList[0].code
+        );
+      } else {
+        setSelectedClassCode('');
       }
+      setClassroomsSiap(true);
     };
     loadClasses();
   }, [teacherUsername]);
@@ -122,6 +182,35 @@ export default function TeacherDashboard() {
   };
 
   useEffect(() => {
+    /*
+      MENGAPA PENJAGA INI WAJIB ADA
+
+        Tanpa penjaga ini, efek di bawah berjalan LANGSUNG saat halaman
+        dibuka — dengan `selectedClassCode` yang masih kosong atau masih
+        berisi kode kelas guru LAIN. Daftar murid yang dimuat pun bukan milik
+        guru yang sedang masuk.
+
+        Dua syarat yang harus terpenuhi lebih dahulu:
+
+          1. daftar kelas sudah selesai dimuat, dan
+          2. kode kelas yang dipilih benar-benar ada di daftar kelas guru ini
+
+        Syarat kedua penting: walaupun server sudah menolak permintaan untuk
+        kelas yang bukan milik guru, penjaga di sisi aplikasi mencegah
+        permintaan itu dikirim sama sekali — sehingga tidak ada kesempatan
+        jatuh ke simpanan lokal yang mungkin berisi data kelas lain.
+    */
+    const kelasMilikku = classrooms.some((c) => c.code === selectedClassCode);
+    if (!classroomsSiap || !selectedClassCode || !kelasMilikku) {
+      // Kosongkan supaya data kelas sebelumnya tidak tertinggal di layar
+      // saat berpindah ke kelas lain atau saat daftar kelas masih dimuat.
+      if (classroomsSiap) {
+        setStudents([]);
+        setSubmissions([]);
+      }
+      return;
+    }
+
     loadClassData();
 
     // Subscribe to realtime updates for this classroom
@@ -171,7 +260,19 @@ export default function TeacherDashboard() {
     });
 
     return () => unsubscribe();
-  }, [selectedClassCode]);
+    /*
+      DAFTAR DEPENDENSI — MENGAPA `classroomsSiap` DAN `classrooms` IKUT
+
+        Penjaga di awal efek ini bergantung pada ketiga nilai di bawah.
+        Bila hanya `selectedClassCode` yang dicantumkan, efek ini TIDAK
+        dijalankan ulang ketika daftar kelas akhirnya selesai dimuat —
+        sehingga penjaganya tidak pernah sempat terlewati, dan daftar murid
+        tidak pernah termuat sama sekali.
+
+        `classrooms` ikut dicantumkan karena penjaganya memeriksa apakah kode
+        yang dipilih benar-benar ada di daftar kelas guru ini.
+    */
+  }, [selectedClassCode, classroomsSiap, classrooms]);
 
   const activeClassObj: ClassroomRecord = classrooms.find((c) => c.code === selectedClassCode) || {
     id: `cls-fallback`,
