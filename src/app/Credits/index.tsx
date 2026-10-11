@@ -48,7 +48,7 @@ export default function Credits() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen w-full bg-[#1c0a00] text-amber-950 p-4 md:p-8 flex flex-col items-center justify-center relative font-pixel overflow-hidden select-none">
+    <div className="min-h-screen min-h-[100dvh] w-full bg-[#1c0a00] text-amber-950 p-4 md:p-8 flex flex-col items-center justify-center relative font-pixel overflow-hidden select-none">
 
       {/* ── 1. SUNSET PIXEL ART BACKGROUND SCENE ── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -249,7 +249,7 @@ export default function Credits() {
       </div>
 
       {/* ── 2. WOODEN NOTICE BOARD CONTAINER ── */}
-      <div className="relative z-10 pixel-wood-board p-5 md:p-7 space-y-5 max-h-[92vh] overflow-y-auto" style={{ width: '740px', maxWidth: '94vw' }}>
+      <div className="relative z-10 pixel-wood-board p-5 sm:p-7 space-y-5 w-full max-w-[740px] sm:max-w-[820px] lg:max-w-[940px] max-h-[calc(100dvh-2rem)] overflow-y-auto">
 
         {/* Header */}
         <div className="flex items-center justify-between border-b-3 border-amber-950/30 pb-3.5">

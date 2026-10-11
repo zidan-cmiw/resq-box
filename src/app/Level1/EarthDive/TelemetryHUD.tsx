@@ -29,7 +29,7 @@ export default function TelemetryHUD({
   const formattedDepth = currentDepthKm !== undefined ? currentDepthKm.toLocaleString('id-ID') : null;
 
   return (
-    <div className="bg-slate-950/95 backdrop-blur-md border-2 sm:border-3 border-amber-600/90 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-[0_5px_0_#231206] text-amber-200 font-sans font-bold flex flex-col items-stretch select-none whitespace-nowrap transition-all duration-200 w-auto min-w-[170px] sm:min-w-[195px] max-w-[calc(100vw-24px)]">
+    <div className="bg-slate-950/95 backdrop-blur-md border-2 sm:border-3 border-amber-600/90 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-[0_5px_0_#231206] text-amber-200 font-sans font-bold flex flex-col items-stretch select-none transition-all duration-200 w-auto min-w-[170px] sm:min-w-[195px] max-w-[calc(100vw-24px)]">
       
       {/* Header Pill yang dapat diklik di SEMUA layar (Mobile, Tablet, Desktop) persis seperti tangkapan layar */}
       <button
@@ -56,7 +56,7 @@ export default function TelemetryHUD({
         <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 xl:gap-3 animate-fadeIn pt-1">
           {/* 1. Kedalaman */}
           {formattedDepth !== null && (
-            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-blue-500/70 shrink-0 whitespace-nowrap" title="Kedalaman saat ini">
+            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-blue-500/70 min-w-0 whitespace-normal" title="Kedalaman saat ini">
               <div className="flex items-center gap-1.5">
                 <PixelIcon name="ruler" size={14} className="text-blue-400 shrink-0" />
                 <span className="text-[14.5px] sm:text-[13px] text-blue-300 font-bold tracking-wide">KEDALAMAN</span>
@@ -69,7 +69,7 @@ export default function TelemetryHUD({
 
           {/* 2. Tekanan */}
           {currentPressureGpa !== undefined && (
-            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-rose-500/70 shrink-0 whitespace-nowrap" title="Tekanan interior">
+            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-rose-500/70 min-w-0 whitespace-normal" title="Tekanan interior">
               <div className="flex items-center gap-1.5">
                 <PixelIcon name="earthquake" size={14} className="text-rose-400 shrink-0" />
                 <span className="text-[14.5px] sm:text-[13px] text-rose-300 font-bold tracking-wide">TEKANAN</span>
@@ -82,7 +82,7 @@ export default function TelemetryHUD({
 
           {/* 3. Suhu */}
           {currentTempLabel && (
-            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-amber-500/70 shrink-0 whitespace-nowrap" title="Suhu Interior Bumi">
+            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-amber-500/70 min-w-0 whitespace-normal" title="Suhu Interior Bumi">
               <div className="flex items-center gap-1.5">
                 <PixelIcon name="fire" size={14} className="text-amber-400 shrink-0" />
                 <span className="text-[14.5px] sm:text-[13px] text-amber-300 font-bold tracking-wide">SUHU</span>
@@ -101,7 +101,7 @@ export default function TelemetryHUD({
           )}
 
           {/* 4. Kristal */}
-          <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-cyan-500/70 shrink-0 whitespace-nowrap" title="Kristal geologi terkumpul">
+          <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-cyan-500/70 min-w-0 whitespace-normal" title="Kristal geologi terkumpul">
             <div className="flex items-center gap-1.5">
               <PixelIcon name="crystal" size={14} className="text-cyan-300 shrink-0" />
               <span className="text-[14.5px] sm:text-[13px] text-cyan-300 font-bold tracking-wide">KRISTAL</span>
@@ -113,7 +113,7 @@ export default function TelemetryHUD({
 
           {/* 5. Temuan Geologis Area Ini */}
           {areaDiscoveriesTotal > 0 && (
-            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-amber-500/70 shrink-0 whitespace-nowrap" title="Temuan Geologis Area Ini">
+            <div className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-amber-500/70 min-w-0 whitespace-normal" title="Temuan Geologis Area Ini">
               <div className="flex items-center gap-1.5">
                 <PixelIcon name="search" size={14} className="text-amber-300 shrink-0" />
                 <span className="text-[14.5px] sm:text-[13px] text-amber-300 font-bold tracking-wide">TEMUAN</span>
@@ -126,7 +126,7 @@ export default function TelemetryHUD({
 
           {/* 6. Ketahanan Eksplorasi (HP) */}
           <div
-            className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-rose-500/70 shrink-0 whitespace-nowrap"
+            className="flex items-center justify-between sm:justify-start gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/95 border border-rose-500/70 min-w-0 whitespace-normal"
             title="Ketahanan Eksplorasi (HP)"
           >
             <div className="flex items-center gap-1.5">

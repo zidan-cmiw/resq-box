@@ -7,7 +7,7 @@ export default function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#050813] flex flex-col items-center justify-center text-center px-4 select-none">
+    <div className="min-h-screen min-h-[100dvh] bg-[#050813] flex flex-col items-center justify-center text-center px-4 select-none">
       {/* Pixel Art Stars Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {Array.from({ length: 30 }).map((_, i) => (

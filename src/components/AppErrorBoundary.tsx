@@ -89,7 +89,7 @@ export default class AppErrorBoundary extends Component<Props, State> {
     const recoverable = this.isRecoverable();
 
     return (
-      <div className="fixed inset-0 w-screen h-screen bg-[#1c1917] flex items-center justify-center p-4 sm:p-6 z-[9999] overflow-y-auto">
+      <div className="fixed inset-0 w-screen w-[100dvw] h-screen h-[100dvh] bg-[#1c1917] flex items-center justify-center p-4 sm:p-6 z-[9999] overflow-y-auto">
         <div className="pixel-wood-board max-w-lg w-full p-5 sm:p-7 text-[#3e1f07] text-center">
           <div className="flex justify-center mb-3">
             <PixelIcon name="warning" size={44} />

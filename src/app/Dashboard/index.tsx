@@ -89,7 +89,7 @@ export default function Dashboard() {
   const studentClass = student?.class_name || 'Kelas VIII-A';
 
   return (
-    <div className="relative w-full min-h-screen h-screen safe-area-pad overflow-hidden select-none bg-[#67b2f6] flex flex-col justify-between font-pixel">
+    <div className="relative w-full min-h-screen min-h-[100dvh] h-screen h-[100dvh] safe-area-pad overflow-hidden select-none bg-[#67b2f6] flex flex-col justify-between font-pixel">
 
       {/* ── 1. FULL VIEWPORT CLEAN SCENIC PIXEL ART LANDSCAPE (INSPIRED BY INDONESIAN VOLCANOES) ── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -609,8 +609,7 @@ export default function Dashboard() {
 
         {/* Stack of Authentic 3D Wooden Plank Game Buttons */}
         <div
-          className="flex flex-col items-center gap-3.5"
-          style={{ width: '400px', maxWidth: '92vw' }}
+          className="flex flex-col items-center gap-3.5 w-full max-w-[400px] sm:max-w-[440px] md:max-w-[480px]"
         >
 
           {/* Teacher Command Shortcut Button in Main Menu (HANYA MUNCUL DI AKUN GURU) */}
@@ -761,8 +760,7 @@ export default function Dashboard() {
           onClick={() => setShowGuideModal(false)}
         >
           <div onKeyDown={blokirRambatanTombol()}
-            className="pixel-wood-board p-4 sm:p-6 md:p-7 text-[#260c02] space-y-4 sm:space-y-5 max-h-[92vh] overflow-y-auto font-pixel"
-            style={{ width: '880px', maxWidth: '96vw' }}
+            className="pixel-wood-board p-4 sm:p-6 md:p-7 text-[#260c02] space-y-4 sm:space-y-5 max-h-[calc(100dvh-2rem)] overflow-y-auto font-pixel w-full max-w-[880px] sm:max-w-[920px]"
             onClick={(e) => e.stopPropagation()}
           >
 

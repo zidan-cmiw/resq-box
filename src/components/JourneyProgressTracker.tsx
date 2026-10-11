@@ -127,7 +127,7 @@ const JourneyProgressTracker = forwardRef<
 
     return (
       <div
-        className={`pointer-events-none select-none font-pixel w-[min(96vw,780px)] mx-auto relative ${className}`}
+        className={`pointer-events-none select-none font-pixel mx-auto relative ${className}`}
       >
         {/* Tooltip Hover Info (Mengambang saat kursor diarahkan ke node checkpoint) */}
         {hoveredIndex !== null && areas[hoveredIndex] && (
@@ -222,17 +222,60 @@ const JourneyProgressTracker = forwardRef<
                     )}
                   </div>
 
-                  {/* Label Teks di Bawah Node (Metric) */}
+                  {/*
+                    Label metrik di bawah tiap titik.
+
+                    MASALAH YANG DIPERBAIKI
+
+                      Versi sebelumnya memakai
+                          `absolute left-1/2 -translate-x-1/2 whitespace-nowrap`
+                      sehingga tiap label dipusatkan TEPAT pada titiknya dan
+                      DILARANG membungkus.
+
+                      Akibatnya label titik TERAKHIR ("Transform") memanjang
+                      melewati ujung kanan bar lalu TERPOTONG — persis yang
+                      terlihat pada tangkapan layar dari iPad, tempat tulisan
+                      itu terpotong menjadi "Trans...".
+
+                      Penyebabnya bukan sekadar kurang lebar: tiap titik
+                      berjarak hanya ~97px, sedangkan kata "Divergen",
+                      "Konvergen", dan "Transform" lebih lebar dari itu. Dengan
+                      larangan membungkus, tidak ada cara label dapat muat.
+
+                    CARA MEMPERBAIKINYA
+
+                      Dua perubahan, keduanya perlu:
+
+                      1. Label BOLEH membungkus (tanpa `whitespace-nowrap`)
+                         dan lebarnya dibatasi `w-[88%]`. Tulisan panjang
+                         menjadi dua baris, tidak lagi memanjang ke samping.
+
+                      2. Pergeseran pemusatan DIBATASI pada 44% lebar LABEL
+                         (bukan lebar wadah). Di titik tengah, label tetap
+                         tepat di bawah titiknya karena pergeseran 50%
+                         diperlukan untuk memusatkan. Di titik paling tepi,
+                         pergeseran berhenti di 44% sehingga tepi label yang
+                         jauh mendarat tepat di tepi wadah — tidak keluar.
+
+                     Angka 44% berasal dari: label selebar 88% wadah, dan
+                     separuhnya adalah 44%. Jadi pergeseran maksimal yang masih
+                     membuat label berada di dalam wadah adalah 44%.
+                  */}
                   <span
-                    className={`absolute -bottom-5 sm:-bottom-5.5 left-1/2 -translate-x-1/2 text-[12.5px] sm:text-[13.5px] md:text-[14.5px] whitespace-nowrap font-pixel pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,1)] ${
-                      isCurrent
-                        ? 'text-yellow-300 font-extrabold tracking-wide drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]'
-                        : isCompleted
-                          ? 'text-emerald-300 font-bold'
-                          : 'text-slate-300 font-semibold'
-                    }`}
+                    className="absolute -bottom-5 sm:-bottom-5.5 z-10 w-[88%] text-[11px] sm:text-[12.5px] md:text-[13.5px] leading-tight text-center font-pixel pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,1)]"
+                    style={{ transform: 'translateX(-44%)' }}
                   >
-                    {area.metricLabel}
+                    <span
+                      className={`block ${
+                        isCurrent
+                          ? 'text-yellow-300 font-extrabold tracking-wide drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]'
+                          : isCompleted
+                            ? 'text-emerald-300 font-bold'
+                            : 'text-slate-300 font-semibold'
+                      }`}
+                    >
+                      {area.metricLabel}
+                    </span>
                   </span>
                 </button>
               );

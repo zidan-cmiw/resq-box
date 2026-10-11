@@ -116,7 +116,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#070b18] text-amber-950 p-4 md:p-8 flex flex-col items-center justify-center relative font-pixel overflow-hidden select-none">
+    <div className="min-h-screen min-h-[100dvh] w-full bg-[#070b18] text-amber-950 p-4 pb-24 sm:p-6 sm:pb-28 lg:p-8 flex flex-col items-center justify-center relative font-pixel overflow-x-hidden select-none">
       
       {/* ── 1. NIGHTTIME STARRY RESCUE OBSERVATORY PIXEL BACKGROUND ── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -277,7 +277,7 @@ export default function Profile() {
       </div>
 
       {/* ── 2. MAIN WOODEN NOTICE BOARD CONTAINER ── */}
-      <div className="relative z-10 pixel-wood-board p-5 md:p-7 space-y-5 max-h-[92vh] overflow-y-auto" style={{ width: '680px', maxWidth: '94vw' }}>
+      <div className="relative z-10 pixel-wood-board p-5 sm:p-7 space-y-5 w-full max-w-[680px] sm:max-w-[760px] lg:max-w-[880px] max-h-[calc(100dvh-2rem)] overflow-y-auto">
         
         {/* Header Title with Custom Avatar */}
         <div className="flex items-center justify-between border-b-3 border-amber-950/30 pb-3.5">
@@ -415,13 +415,13 @@ export default function Profile() {
               </span>
             </div>
 
-            <div className="flex gap-2">
+            <div className="grid grid-cols-1 xs:grid-cols-3 gap-2">
               {(['auto', 'on', 'off'] as const).map((m) => (
                 <button
                   key={m}
                   type="button"
                   onClick={() => setDataSaverMode(m)}
-                  className={`flex-1 py-2 rounded-lg border-2 text-[13.5px] font-pixel-title font-bold transition-all ${
+                  className={`py-2.5 sm:py-3 rounded-lg border-2 text-[13.5px] sm:text-[15px] font-pixel-title font-bold transition-all cursor-pointer ${
                     dataSaver.mode === m
                       ? 'bg-amber-700 border-amber-950 text-amber-50'
                       : 'bg-amber-50 border-amber-950/40 text-amber-950 hover:bg-amber-100'
@@ -580,7 +580,7 @@ export default function Profile() {
 
       {/* ── Saved Toast Notification ── */}
       {showSavedToast && (
-        <div className="fixed bottom-6 z-50 bg-emerald-600 text-white font-pixel px-5 py-3 rounded-xl border-3 border-emerald-950 shadow-[0_5px_0_#064e3b] flex items-center gap-3 animate-fade-in">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] w-[calc(100vw-2rem)] max-w-sm justify-center text-center bg-emerald-600 text-white font-pixel px-4 py-3 rounded-xl border-3 border-emerald-950 shadow-[0_5px_0_#064e3b] flex items-center gap-3 animate-fade-in">
           <PixelIcon name="check" size={20} />
           <span className="text-[15px] font-bold">Profil Berhasil Disimpan!</span>
         </div>

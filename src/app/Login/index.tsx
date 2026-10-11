@@ -64,7 +64,7 @@ export default function Login() {
 
 
   return (
-    <div className="min-h-screen w-full bg-[#050813] flex flex-col items-center justify-center p-4 font-pixel select-none relative overflow-hidden">
+    <div className="min-h-screen min-h-[100dvh] w-full bg-[#050813] flex flex-col items-center justify-center p-4 pb-[max(1rem,env(safe-area-inset-bottom))] font-pixel select-none relative overflow-x-hidden">
 
       {/* ── 1. ULTRA-DETAILED 2D PIXEL ART TROPICAL MISTY CLOUD FOREST BACKDROP ── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -181,10 +181,10 @@ export default function Login() {
       </div>
 
       {/* ── 2. PREMIUM 2D PIXEL ART COMMAND SLATE CARD ── */}
-      <div className="relative z-10 w-full max-w-[420px]">
+      <div className="relative z-10 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[520px] xl:max-w-[560px]">
         {/* Outer Wooden Bezel with Pixel Rivets */}
         <div
-          className="relative pixel-wood-board p-5 sm:p-6 rounded-2xl shadow-[0_12px_0_#231206,0_20px_35px_rgba(0,0,0,0.8)] border-4 border-[#3e1f07] space-y-4"
+          className="relative pixel-wood-board p-5 sm:p-6 md:p-7 rounded-2xl shadow-[0_12px_0_#231206,0_20px_35px_rgba(0,0,0,0.8)] border-4 border-[#3e1f07] space-y-4"
           style={{ background: '#fef3c7' }}
         >
           {/* 4 Golden Pixel Corner Rivets */}
@@ -332,7 +332,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2 font-semibold"
+              className="pixel-btn-wood-plank !w-full !min-w-0 !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 mt-2 font-semibold scroll-mb-40"
             >
               <span>{loading ? 'MEMERIKSA...' : role === 'teacher' ? 'BUKA POSKO GURU' : 'MULAI PETUALANGAN'}</span>
             </button>

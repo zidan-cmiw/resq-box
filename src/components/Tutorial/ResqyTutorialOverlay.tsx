@@ -308,7 +308,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
           type="button"
           onClick={handleManualStart}
           onMouseEnter={() => retroAudio.playHover()}
-          className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 bg-[#fef9c3] hover:bg-[#fef08a] text-[#451a03] border-2 sm:border-3 border-[#78350f] rounded-xl sm:rounded-2xl px-2.5 py-1.5 sm:px-3.5 sm:py-2 shadow-[0_3px_0_#451a03,0_8px_16px_rgba(0,0,0,0.4)] flex items-center gap-1.5 sm:gap-2.5 font-pixel-title text-[14.5px] sm:text-[13px] font-bold cursor-pointer transition-all hover:scale-105 active:scale-95 group"
+          className="fixed bottom-20 right-3 sm:bottom-24 sm:right-4 z-40 bg-[#fef9c3] hover:bg-[#fef08a] text-[#451a03] border-2 sm:border-3 border-[#78350f] rounded-xl sm:rounded-2xl px-2.5 py-1.5 sm:px-3.5 sm:py-2 shadow-[0_3px_0_#451a03,0_8px_16px_rgba(0,0,0,0.4)] flex items-center gap-1.5 sm:gap-2.5 font-pixel-title text-[14.5px] sm:text-[13px] font-bold cursor-pointer transition-all hover:scale-105 active:scale-95 group"
           title="Buka Panduan Resqy untuk halaman ini"
         >
           <ResqyMascot size={isMobile ? 22 : 24} className="group-hover:animate-bounce-subtle shrink-0" />
@@ -393,7 +393,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
           >
             {/* Main Parchment Board (Flex Col dengan Scroll Internal Halus) */}
             <div
-              className="relative bg-[#fef9c3] border-3 sm:border-4 md:border-[5px] border-[#78350f] rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 md:p-6 shadow-[0_6px_0_#451a03,0_16px_36px_rgba(0,0,0,0.65)] text-[#291305] flex flex-col justify-between w-full overflow-hidden"
+              className="relative bg-[#fef9c3] border-3 sm:border-4 md:border-[5px] border-[#78350f] rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 md:p-6 shadow-[0_6px_0_#451a03,0_16px_36px_rgba(0,0,0,0.65)] text-[#291305] flex flex-col justify-between w-full overflow-visible"
               style={{ maxHeight: 'inherit' }}
             >
               {/* 1. Header Bar: Maskot + Badge + Judul + Tombol Tutup */}

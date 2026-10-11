@@ -587,7 +587,7 @@ export default function TeacherDashboard() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#3b82f6] text-amber-950 p-3 sm:p-6 md:p-8 flex flex-col font-pixel select-none relative overflow-x-hidden">
+    <div className="min-h-screen min-h-[100dvh] w-full bg-[#3b82f6] text-amber-950 p-3 sm:p-6 md:p-8 flex flex-col font-pixel select-none relative overflow-x-hidden">
 
       {/* ── 1. ULTRA-DETAILED 2D PIXEL ART STRATOVOLCANO & SEA OF CLOUDS BACKDROP ── */}
       <div className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -780,7 +780,7 @@ export default function TeacherDashboard() {
         </div>
 
         {/* ── KPI TELEMETRY CARDS (OVERALL PROGRESS ACROSS ALL LEVELS) ── */}
-        <div id="tour-teacher-kpi" className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        <div id="tour-teacher-kpi" className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {/* Card 1: Total Siswa */}
           <div className="pixel-wood-board p-4 rounded-2xl shadow-[0_4px_0_#231206] space-y-1" style={{ background: '#fef3c7' }}>
             <span className="text-[13.5px] font-pixel-title font-bold text-amber-900 uppercase block">
@@ -882,7 +882,7 @@ export default function TeacherDashboard() {
                   <th className="p-2.5 text-center whitespace-nowrap min-w-[130px]">
                     <span className="whitespace-nowrap">{`LV.\u00A03\u00A0(SIMULASI)`}</span>
                   </th>
-                  <th className="p-2.5 text-center whitespace-nowrap min-w-[130px]">
+                  <th className="p-2.5 text-center whitespace-nowrap min-w-[130px] sticky right-0 z-10 bg-amber-200/95 shadow-[-8px_0_10px_-8px_rgba(0,0,0,0.35)]">
                     <span className="whitespace-nowrap">{`AKSI\u00A0&\u00A0RAPOR`}</span>
                   </th>
                 </tr>
@@ -1040,7 +1040,7 @@ export default function TeacherDashboard() {
                         </td>
 
                         {/* 8. Aksi & Rapor */}
-                        <td className="p-2.5 text-center">
+                        <td className="p-2.5 text-center sticky right-0 z-10 bg-white shadow-[-8px_0_10px_-8px_rgba(0,0,0,0.35)]">
                           <div className="flex items-center justify-center gap-1.5">
                             <button
                               onClick={() => {
@@ -1098,13 +1098,13 @@ export default function TeacherDashboard() {
             </div>
 
             {/* Navigation Tabs inside Manage Modal */}
-            <div className="flex items-center gap-1.5 border-b-2 border-amber-950/20 pb-2">
+            <div className="flex items-center gap-1.5 overflow-x-auto border-b-2 border-amber-950/20 pb-2">
               <button
                 onClick={() => {
                   retroAudio.playHover();
                   setManageTab('rename');
                 }}
-                className={`px-3 py-1.5 rounded-xl border-2 font-pixel-title text-[13.5px] cursor-pointer ${manageTab === 'rename'
+                className={`px-3 py-1.5 rounded-xl border-2 font-pixel-title text-[13.5px] cursor-pointer whitespace-nowrap shrink-0 ${manageTab === 'rename'
                   ? 'bg-amber-400 text-amber-950 border-amber-950 shadow-[0_2px_0_#451a03] font-bold'
                   : 'bg-amber-100 text-amber-900 border-amber-900/40 hover:bg-amber-200'
                   }`}
@@ -1116,7 +1116,7 @@ export default function TeacherDashboard() {
                   retroAudio.playHover();
                   setManageTab('add_student');
                 }}
-                className={`px-3 py-1.5 rounded-xl border-2 font-pixel-title text-[13.5px] cursor-pointer ${manageTab === 'add_student'
+                className={`px-3 py-1.5 rounded-xl border-2 font-pixel-title text-[13.5px] cursor-pointer whitespace-nowrap shrink-0 ${manageTab === 'add_student'
                   ? 'bg-emerald-500 text-slate-950 border-emerald-950 shadow-[0_2px_0_#064e3b] font-bold'
                   : 'bg-amber-100 text-amber-900 border-amber-900/40 hover:bg-amber-200'
                   }`}
@@ -1128,7 +1128,7 @@ export default function TeacherDashboard() {
                   retroAudio.playHover();
                   setManageTab('danger');
                 }}
-                className={`px-3 py-1.5 rounded-xl border-2 font-pixel-title text-[13.5px] cursor-pointer ${manageTab === 'danger'
+                className={`px-3 py-1.5 rounded-xl border-2 font-pixel-title text-[13.5px] cursor-pointer whitespace-nowrap shrink-0 ${manageTab === 'danger'
                   ? 'bg-rose-700 text-white border-rose-950 shadow-[0_2px_0_#4c0519] font-bold'
                   : 'bg-amber-100 text-rose-900 border-amber-900/40 hover:bg-rose-100'
                   }`}

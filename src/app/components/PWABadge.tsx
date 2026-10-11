@@ -32,7 +32,7 @@ export default function PWABadge() {
   if (!offlineReady && !needRefresh) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 z-50 p-4 bg-surface-container-high border border-outline-variant rounded-2xl shadow-xl flex flex-col gap-3 w-72">
+    <div className="fixed top-4 right-4 z-50 p-4 bg-surface-container-high border border-outline-variant rounded-2xl shadow-xl flex flex-col gap-3 w-72 max-w-[calc(100vw-2rem)]">
       <div className="flex items-start gap-3">
         <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
           {needRefresh ? 'system_update' : 'cloud_done'}

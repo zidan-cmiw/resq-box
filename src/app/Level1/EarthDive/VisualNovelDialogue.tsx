@@ -257,7 +257,7 @@ export default function VisualNovelDialogue({
   if (!currentNode) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end p-2 sm:p-4 md:p-6 bg-black/60 backdrop-blur-[2px] select-none animate-fadeIn font-pixel">
+    <div className="fixed inset-0 z-50 flex flex-col justify-end p-2 sm:p-4 md:p-6 bg-black/60 backdrop-blur-[2px] select-none animate-fadeIn font-pixel overflow-y-auto overscroll-contain">
 
       {/* ── HISTORI MODAL (JIKA DIBUKA DARI TOOLBAR) ── */}
       {showHistory && (
@@ -298,7 +298,7 @@ export default function VisualNovelDialogue({
       )}
 
       {/* ── KOTAK UTAMA VISUAL NOVEL DIALOGUE ── */}
-      <div className="relative w-full max-w-5xl mx-auto flex flex-col">
+      <div className="relative w-full max-w-5xl mx-auto flex flex-col min-h-0 max-h-full">
 
         {/* ── BARIS ATAS: KEDUA POTRET KARAKTER DUDUK DI ATAS KOTAK CHAT (TANPA KOTAK BACKGROUND) ── */}
         <div className="flex items-end justify-between px-3 sm:px-8 -mb-1 z-10 pointer-events-none">
@@ -310,7 +310,7 @@ export default function VisualNovelDialogue({
                 : 'opacity-60 scale-95 brightness-75'
               } ${isNpcSpeaking && bounceActive ? 'animate-microBounce' : ''}`}
           >
-            <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 flex items-end justify-center">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex items-end justify-center">
               <canvas
                 ref={npcCanvasRef}
                 width={120}
@@ -330,7 +330,7 @@ export default function VisualNovelDialogue({
             <span className="text-[13.5px] text-slate-400 font-bold mb-0.5 tracking-wider drop-shadow hidden sm:inline">
               {playerName}
             </span>
-            <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 flex items-end justify-center">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex items-end justify-center">
               <canvas
                 ref={playerCanvasRef}
                 width={120}
@@ -345,7 +345,7 @@ export default function VisualNovelDialogue({
         {/* ── KOTAK CHAT DIALOG GELAP ELEGAN (TIDAK GONJRENG, WARNA TENANG & STANDAR) ── */}
         <div
           onClick={handleAdvance}
-          className="relative w-full bg-slate-950/85 border border-slate-700/60 rounded-2xl p-4 sm:p-6 shadow-2xl cursor-pointer backdrop-blur-md min-h-[150px] sm:min-h-[170px] flex flex-col justify-between transition-all hover:border-slate-600"
+          className="relative w-full bg-slate-950/85 border border-slate-700/60 rounded-2xl p-4 sm:p-6 shadow-2xl cursor-pointer backdrop-blur-md min-h-[150px] max-h-[52dvh] sm:max-h-[56dvh] overflow-y-auto overscroll-contain sm:min-h-[170px] flex flex-col justify-between transition-all hover:border-slate-600"
         >
 
           {/* TAG NAMA PEMBICARA (BERSIH & ELEGAN) */}
@@ -370,7 +370,7 @@ export default function VisualNovelDialogue({
 
           {/* AREA TEKS PERCAKAPAN DENGAN TYPEWRITER EFFECT */}
           <div className="flex-1 my-1.5">
-            <p className="text-base sm:text-lg md:text-xl lg:text-[24px] text-slate-100 leading-relaxed sm:leading-relaxed md:leading-loose font-medium select-none tracking-normal">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-100 leading-relaxed sm:leading-relaxed md:leading-relaxed lg:leading-relaxed font-medium select-none tracking-normal">
               &ldquo;{displayedText}&rdquo;
               {isTyping && (
                 <span className="inline-block w-2.5 h-4 ml-1 bg-amber-400 animate-ping align-middle" />

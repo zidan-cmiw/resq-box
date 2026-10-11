@@ -1332,7 +1332,7 @@ export default function EarthDiveGame() {
   const previewConfig = getPreviewMapConfig(hudData.zoneIndex);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen safe-area-pad overflow-hidden bg-black select-none font-pixel">
+    <div className="fixed inset-0 w-screen w-[100dvw] h-screen h-[100dvh] safe-area-pad overflow-x-hidden bg-black select-none font-pixel">
       {/* ── 1. FULLSCREEN RETRO GAME CANVAS ── */}
       <canvas
         ref={canvasRef}
@@ -1410,7 +1410,7 @@ export default function EarthDiveGame() {
             <div className="flex flex-col xl:flex-row items-start xl:items-center gap-1 sm:gap-1.5">
               <div className="bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-amber-200 font-pixel text-[13px] sm:text-[15px] md:text-base font-bold shadow-[0_4px_0_#231206] flex items-center gap-2 whitespace-nowrap">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                <span className="font-bold text-amber-300 uppercase tracking-wider truncate max-w-[180px] sm:max-w-none">
+                <span className="font-bold text-amber-300 uppercase tracking-wider truncate max-w-[120px] xs:max-w-[160px] sm:max-w-[220px] md:max-w-[300px] lg:max-w-none">
                   {hudData.strataName}
                 </span>
               </div>
@@ -1564,14 +1564,14 @@ export default function EarthDiveGame() {
 
       {/* ── 5. DYNAMIC FLOATING INTERACTION PROMPT (BOTTOM CENTER) 100% PERSIS LEVEL 2 ── */}
       {hudData.nearObjectType && !isPaused && (
-        <div className="absolute bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-30 pointer-events-auto select-none animate-bounce w-[min(94vw,860px)] px-2">
+        <div className="absolute bottom-24 sm:bottom-28 md:bottom-32 left-1/2 -translate-x-1/2 z-30 pointer-events-auto select-none animate-bounce w-[min(62vw,580px)] px-2">
           {hudData.nearObjectType === 'portal_down' && (
             <button aria-label="Menyelam lebih dalam"
               onClick={handleDiveClick}
-              className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-[15px] sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans cursor-pointer hover:border-amber-300 active:scale-95 transition-all"
+              className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-extrabold text-[13px] sm:text-sm md:text-base shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-2 sm:gap-3 text-center leading-snug font-sans whitespace-normal break-words cursor-pointer hover:border-amber-300 active:scale-95 transition-all"
             >
               <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-              <span className="uppercase tracking-wide font-black">
+              <span className="uppercase tracking-wide font-black whitespace-normal break-words">
                 {hudData.zoneIndex === 4
                   ? 'TEKAN [E] / KLIK UNTUK MENUJU KE BATAS DIVERGEN'
                   : hudData.zoneIndex === 5
@@ -1588,10 +1588,10 @@ export default function EarthDiveGame() {
           {hudData.nearObjectType === 'portal_up' && (
             <button aria-label="Naik ke permukaan"
               onClick={handleAscendClick}
-              className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-[15px] sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans cursor-pointer hover:border-amber-300 active:scale-95 transition-all"
+              className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-extrabold text-[13px] sm:text-sm md:text-base shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-2 sm:gap-3 text-center leading-snug font-sans whitespace-normal break-words cursor-pointer hover:border-amber-300 active:scale-95 transition-all"
             >
               <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-              <span className="uppercase tracking-wide font-black">
+              <span className="uppercase tracking-wide font-black whitespace-normal break-words">
                 {hudData.zoneIndex === 5
                   ? 'TEKAN [E] / KLIK UNTUK KEMBALI KE INTI DALAM'
                   : hudData.zoneIndex === 6
@@ -1604,27 +1604,27 @@ export default function EarthDiveGame() {
           )}
 
           {hudData.nearObjectType === 'discovery' && (
-            <div className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-[15px] sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans">
+            <div className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-extrabold text-[13px] sm:text-sm md:text-base shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-2 sm:gap-3 text-center leading-snug font-sans whitespace-normal break-words">
               <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-              <span className="uppercase tracking-wide font-black">
+              <span className="uppercase tracking-wide font-black whitespace-normal break-words">
                 TEKAN [E] / KLIK UNTUK MEMERIKSA TEMUAN GEOLOGIS
               </span>
             </div>
           )}
 
           {hudData.nearObjectType === 'npc' && (
-            <div className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-[15px] sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans">
+            <div className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-extrabold text-[13px] sm:text-sm md:text-base shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-2 sm:gap-3 text-center leading-snug font-sans whitespace-normal break-words">
               <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-              <span className="uppercase tracking-wide font-black">
+              <span className="uppercase tracking-wide font-black whitespace-normal break-words">
                 TEKAN [E] / KLIK UNTUK BERBICARA DENGAN {hudData.nearNpcName ? hudData.nearNpcName.toUpperCase() : 'PENELITI'}
               </span>
             </div>
           )}
 
           {hudData.nearObjectType === 'challenge_gate' && (
-            <div className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-[15px] sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug font-sans">
+            <div className="w-full bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-extrabold text-[13px] sm:text-sm md:text-base shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-2 sm:gap-3 text-center leading-snug font-sans whitespace-normal break-words">
               <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-              <span className="uppercase tracking-wide font-black">
+              <span className="uppercase tracking-wide font-black whitespace-normal break-words">
                 TEKAN [E] / KLIK UNTUK MENGHADAPI TANTANGAN GERBANG
               </span>
             </div>
@@ -1653,7 +1653,7 @@ export default function EarthDiveGame() {
           Catatan: pada zona 6 (Batas Konvergen) telemetri memang disembunyikan
           oleh kode, sehingga tracker di posisi ini justru mengisi ruang kosong
           dan tidak bertabrakan dengan tombol kendali lempeng. ── */}
-      <div className="absolute top-14 sm:top-15 left-1/2 -translate-x-1/2 z-10 w-[min(94vw,620px)]">
+      <div className="absolute top-14 sm:top-15 left-1/2 -translate-x-1/2 z-10 w-[min(94vw,620px)] max-w-[calc(100vw-360px)] sm:max-w-[calc(100vw-380px)] lg:max-w-[620px]">
         <JourneyProgressTracker
           ref={journeyTrackerRef}
           totalAreas={8}
@@ -1718,7 +1718,7 @@ export default function EarthDiveGame() {
           {/* A. Left 4-Way D-Pad: Dibuat Ekstra Besar & Digeser ke Kanan Sesuai Permintaan */}
           <div 
             onContextMenu={(e) => e.preventDefault()}
-            className="fixed bottom-8 sm:bottom-10 md:bottom-12 left-8 sm:left-12 md:left-16 z-30 pointer-events-auto select-none flex flex-col items-center touch-none"
+            className="fixed bottom-3 sm:bottom-4 md:bottom-5 left-3 sm:left-5 md:left-6 z-30 pointer-events-auto select-none flex flex-col items-center touch-none"
           >
             {/* Up button */}
             <button
@@ -1726,30 +1726,30 @@ export default function EarthDiveGame() {
               onPointerUp={() => handleMobileBtnUp('up')}
               onPointerLeave={() => handleMobileBtnUp('up')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-15 h-15 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl sm:rounded-3xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-3 border-slate-500/90 text-slate-100 font-bold text-2xl sm:text-3xl md:text-4xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
+              className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-slate-100 font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
               title={hudData.zoneIndex === 7 ? "Bergerak ke Atas (Utara)" : hudData.zoneIndex === 5 ? "Berenang ke Atas" : "Lompat ke Atas"}
             >
               ▲
             </button>
             {/* Left, Center indicator, Right */}
-            <div className="flex items-center gap-2 sm:gap-2.5 my-1.5 sm:my-2 touch-none">
+            <div className="flex items-center gap-1.5 sm:gap-2 my-1 sm:my-1.5 touch-none">
               <button
                 onPointerDown={() => handleMobileBtnDown('left')}
                 onPointerUp={() => handleMobileBtnUp('left')}
                 onPointerLeave={() => handleMobileBtnUp('left')}
                 onContextMenu={(e) => e.preventDefault()}
-                className="touch-control w-15 h-15 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl sm:rounded-3xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-3 border-slate-500/90 text-slate-100 font-bold text-2xl sm:text-3xl md:text-4xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
+                className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-slate-100 font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
                 title="Bergerak ke Kiri"
               >
                 ◀
               </button>
-              <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-slate-700/90 border-2 border-slate-500 shadow-inner" />
+              <div className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-slate-700/90 border-2 border-slate-500 shadow-inner" />
               <button aria-label="Mulai simulasi"
                 onPointerDown={() => handleMobileBtnDown('right')}
                 onPointerUp={() => handleMobileBtnUp('right')}
                 onPointerLeave={() => handleMobileBtnUp('right')}
                 onContextMenu={(e) => e.preventDefault()}
-                className="touch-control w-15 h-15 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl sm:rounded-3xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-3 border-slate-500/90 text-slate-100 font-bold text-2xl sm:text-3xl md:text-4xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
+                className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-slate-100 font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
                 title="Bergerak ke Kanan"
               >
                 ▶
@@ -1761,7 +1761,7 @@ export default function EarthDiveGame() {
               onPointerUp={() => handleMobileBtnUp('down')}
               onPointerLeave={() => handleMobileBtnUp('down')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-15 h-15 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl sm:rounded-3xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-3 border-slate-500/90 text-slate-100 font-bold text-2xl sm:text-3xl md:text-4xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
+              className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-slate-100 font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
               title={hudData.zoneIndex === 7 ? "Bergerak ke Bawah (Selatan)" : hudData.zoneIndex === 5 ? "Berenang ke Bawah / Menyelam" : "Turun / Jongkok"}
             >
               ▼
@@ -1771,7 +1771,7 @@ export default function EarthDiveGame() {
           {/* B. Right Action Buttons: Dibuat Lebih Besar & Dinaikkan di Atas Tombol Panduan Resqy */}
           <div 
             onContextMenu={(e) => e.preventDefault()}
-            className="fixed bottom-16 sm:bottom-20 md:bottom-20 right-4 sm:right-6 md:right-8 z-30 pointer-events-auto select-none flex items-center gap-2.5 sm:gap-3.5 touch-none"
+            className="fixed bottom-3 sm:bottom-4 md:bottom-5 right-3 sm:right-4 md:right-6 z-30 pointer-events-auto select-none flex items-center gap-2 sm:gap-2.5 touch-none"
           >
             {/* Tombol Loncat: Di area transform melompati celah, di area divergent renang naik, di platformer melompat tinggi */}
             <button
@@ -1779,7 +1779,7 @@ export default function EarthDiveGame() {
               onPointerUp={() => handleMobileBtnUp('jump')}
               onPointerLeave={() => handleMobileBtnUp('jump')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-16 h-14 sm:w-20 sm:h-16 md:w-22 md:h-18 rounded-2xl bg-gradient-to-b from-blue-600 to-blue-800 active:from-blue-500 active:to-blue-700 border-2 sm:border-3 border-blue-400 text-blue-50 font-pixel flex flex-col items-center justify-center touch-none shadow-[0_4px_0_#172554,0_8px_16px_rgba(0,0,0,0.5)] active:translate-y-0.5 cursor-pointer transition-transform select-none"
+              className="touch-control w-14 h-12 sm:w-16 sm:h-14 md:w-18 md:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-b from-blue-600 to-blue-800 active:from-blue-500 active:to-blue-700 border-2 sm:border-3 border-blue-400 text-blue-50 font-pixel flex flex-col items-center justify-center touch-none shadow-[0_4px_0_#172554,0_8px_16px_rgba(0,0,0,0.5)] active:translate-y-0.5 cursor-pointer transition-transform select-none"
               title={hudData.zoneIndex === 5 ? "Berenang Naik" : "Lompat"}
             >
               <span className="text-base sm:text-lg md:text-xl font-bold leading-none">▲</span>
@@ -1792,7 +1792,7 @@ export default function EarthDiveGame() {
               onPointerUp={() => handleMobileBtnUp('interact')}
               onPointerLeave={() => handleMobileBtnUp('interact')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-16 h-14 sm:w-20 sm:h-16 md:w-22 md:h-18 rounded-2xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 sm:border-3 border-amber-400 text-amber-50 font-pixel flex flex-col items-center justify-center touch-none shadow-[0_4px_0_#451a03,0_8px_16px_rgba(0,0,0,0.5)] active:translate-y-0.5 cursor-pointer transition-transform select-none"
+              className="touch-control w-14 h-12 sm:w-16 sm:h-14 md:w-18 md:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 sm:border-3 border-amber-400 text-amber-50 font-pixel flex flex-col items-center justify-center touch-none shadow-[0_4px_0_#451a03,0_8px_16px_rgba(0,0,0,0.5)] active:translate-y-0.5 cursor-pointer transition-transform select-none"
               title="Interaksi (E)"
             >
               <span className="text-[15px] sm:text-base md:text-lg font-bold leading-none">[E]</span>

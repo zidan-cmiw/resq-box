@@ -7,7 +7,31 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <!-- Ikon PWA: dulu dirujuk manifest, tetapi berkasnya tidak pernah ada -->
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <!--
+      META VIEWPORT
+
+      `viewport-fit=cover` membuat halaman memakai seluruh layar, termasuk
+      area poni dan lengkung sudut. Penanganan safe area-nya ada di index.css
+      (kelas `.safe-area-pad`).
+
+      `interactive-widget=resizes-content` adalah yang TERPENTING di sini.
+      Tanpa itu, saat papan ketik terbuka di iPad, tinggi halaman TIDAK
+      menyesuaikan — halaman tetap setinggi layar penuh sementara wilayah yang
+      terlihat menyusut menjadi sekitar 460px. Akibatnya kolom password dan
+      tombol "MULAI PETUALANGAN" berada DI BAWAH papan ketik dan tidak dapat
+      dicapai.
+
+      Dengan `resizes-content`, tinggi tata letak ikut menyusut ketika papan
+      ketik muncul, sehingga isi halaman tetap berada di wilayah yang terlihat
+      dan dapat digulir dengan benar.
+
+      Catatan: `user-scalable=no` sengaja DIPERTAHANKAN. Ini aplikasi
+      permainan dengan kendali sentuh; cubit-untuk-zoom akan mengacaukan
+      koordinat sentuhan permainan. Meskipun begitu, `maximum-scale` dan
+      `user-scalable` tidak lagi dipatuhi sebagian peramban modern, sehingga
+      tidak ada salahnya tetap ditulis.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta name="theme-color" content="#0f172a" />
     <meta name="description" content="Platform media pembelajaran IPA interaktif & simulasi mitigasi bencana untuk SMP Kelas 8" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />

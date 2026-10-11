@@ -578,7 +578,7 @@ export default function Workspace() {
   // State rightPanel dihapus karena sekarang game selalu tampil di atas
 
   return (
-    <div className="h-screen w-full safe-area-pad flex flex-col bg-[#fefce8] text-[#1c1917] font-pixel overflow-hidden">
+    <div className="h-screen h-[100dvh] w-full safe-area-pad flex flex-col bg-[#fefce8] text-[#1c1917] font-pixel overflow-hidden">
       {/* ── Retro Header Bar (SS 3 Warm Parchment & Wood Palette) ── */}
       <header className="h-14 bg-[#fef3c7] border-b-4 border-[#78350f] flex items-center px-3 sm:px-4 justify-between shrink-0 shadow-md z-30">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
