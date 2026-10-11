@@ -624,6 +624,48 @@ export default function Workspace() {
             isinya. `min-w-0` mencabut aturan itu, sehingga kartu dapat
             menyusut dan judulnya dipotong dengan elipsis.
           */}
+          {/*
+            KARTU JUDUL MISI — MELEBAR DI HP, TIDAK DI LAPTOP
+
+            ═══════════════════════════════════════════════════════════════
+            MASALAH YANG TERLIHAT PADA TANGKAPAN LAYAR HP (390px)
+            ═══════════════════════════════════════════════════════════════
+
+              Judul misi di bilah atas Workspace terbaca hanya "Ruan..." —
+              terpotong dengan elipsis.
+
+              Diukur langsung di peramban pada 390px:
+
+                  lebar didapat :  25px
+                  lebar dibutuh : 187px
+
+            CARA MEMPERBAIKI
+
+              Ditambahkan `flex-1` sehingga di HP kartunya melebar mengisi
+              ruang yang tersedia, dan judulnya mendapat 57px.
+
+            MENGAPA TIDAK LEBIH BESAR LAGI — DAN MENGAPA INI DISENGAJI
+
+              Ruang yang tersisa memang sempit. Diukur: kelompok tombol kanan
+              (Diorama / WiFi / USB / MULAI) memakai 241px, sedangkan layar
+              hanya 390px.
+
+              Memaksa judul mendapat lebih banyak ruang berarti MENDORONG
+              tombol MULAI keluar layar. Itu jauh lebih merugikan daripada
+              judul yang dipotong, karena MULAI adalah tombol yang menjalankan
+              simulasi.
+
+              Jadi pemotongan judul adalah KOMPROMI YANG BENAR di sini.
+              `truncate` dan `min-w-0` sengaja dipertahankan; komentar asli di
+              kode ini sudah menjelaskan bahwa tanpa keduanya tombol di kanan
+              akan terpotong di HP.
+
+            `sm:flex-none` DIKEMBALIKAN untuk layar lebar
+
+              Di laptop kartu ini tidak perlu melebar (diukur 820px dan 1280px:
+              mendapat 199px, butuh 199px — sudah pas). `flex-1` di sana hanya
+              akan mengubah tata letak yang sudah benar.
+          */}
           <div className="min-w-0 flex-1 sm:flex-none bg-[#fffbeb] border-2 border-[#b45309] px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
             <div className="min-w-0">
               <div className="flex items-center gap-2 min-w-0">
