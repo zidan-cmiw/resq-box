@@ -155,7 +155,78 @@ export default function EarthDiveGame() {
   const signBubbleRef = useRef<HTMLDivElement>(null);
   const [isGateLockedModalOpen, setIsGateLockedModalOpen] = useState(false);
   const [discoveryWarning, setDiscoveryWarning] = useState<{ read: number; total: number } | null>(null);
-  const [isRadarOpen, setIsRadarOpen] = useState(true);
+  /*
+    Radar dimulai TERBUKA di laptop, TERTUTUP di HP.
+
+    MENGAPA
+
+      Di laptop radar berupa panel di pojok yang tidak menghalangi, jadi wajar
+      bila langsung terlihat.
+
+      Di HP radar berupa LEMBAR BAWAH yang MENUTUPI bagian bawah layar. Bila
+      dimulai terbuka, pemain melihat lembar itu lebih dahulu daripada
+      permainannya — dan itu terjadi pada percobaan pertama: lembarnya
+      langsung menutupi layar sebelum pemain menekan apa pun.
+
+      Diukur pada 390px: lembar itu setinggi 311px, yaitu 37% layar. Pemain
+      harus menutupnya lebih dahulu sebelum dapat mulai bermain.
+  */
+  const [isRadarOpen, setIsRadarOpen] = useState<boolean>(
+    () => typeof window === 'undefined' || window.innerWidth >= 640
+  );
+
+  /*
+    APAKAH LAYAR SEMPIT (HP)?
+
+    MENGAPA DIPERLUKAN DI LEVEL 1
+
+      ═══════════════════════════════════════════════════════════════════════
+      MASALAH YANG TERLIHAT PADA TANGKAPAN LAYAR HP (390px)
+      ═══════════════════════════════════════════════════════════════════════
+
+        Diukur langsung di peramban: panel "RADAR BUMI" berukuran 155x159px
+        pada layar selebar 390px — yaitu 40% LEBAR SELURUH LAYAR, di pojok
+        kanan atas.
+
+        Akibatnya, pada tangkapan layar HP terlihat:
+          - tombol MENU dan TELEMETRI bertumpuk dengan panel radar
+          - tombol "PERMUKAAN BUMI" bertabrakan dengan "SIMULASI DIJEDA"
+          - sebagian besar langit di permainan tertutup panel
+
+        Di laptop ukuran itu wajar karena layarnya lebar. Di HP, panel besar
+        di pojok atas mengambil ruang yang seharusnya dipakai untuk bermain.
+
+      ═══════════════════════════════════════════════════════════════════════
+      CARA MEMPERBAIKI — STRUKTUR BERBEDA, BUKAN DIPERKECIL
+      ═══════════════════════════════════════════════════════════════════════
+
+        Di HP, radar TIDAK LAGI berupa panel yang selalu terbuka, melainkan:
+
+            [🌐]   tombol bulat kecil di pojok kanan atas
+
+        Ketika ditekan, diagramnya muncul sebagai LEMBAR BAWAH yang dapat
+        ditutup. Jadi:
+
+            HP     : tombol kecil  ->  lembar bawah berisi diagram
+            Laptop : panel 155px yang selalu terlihat (seperti sebelumnya)
+
+        Ini bukan sekadar mengecilkan CSS: ELEMENNYA memang berbeda antara HP
+        dan laptop, dan yang menentukan adalah lebar layar.
+  */
+  const [layarSempit, setLayarSempit] = useState<boolean>(
+    () => typeof window !== 'undefined' && window.innerWidth < 640
+  );
+
+  useEffect(() => {
+    const periksa = () => setLayarSempit(window.innerWidth < 640);
+    periksa();
+    window.addEventListener('resize', periksa);
+    window.addEventListener('orientationchange', periksa);
+    return () => {
+      window.removeEventListener('resize', periksa);
+      window.removeEventListener('orientationchange', periksa);
+    };
+  }, []);
 
   // Toast notification state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -1342,11 +1413,44 @@ export default function EarthDiveGame() {
         tabIndex={0}
       />
 
-      {/* ── 2. TELEMETRY HUD INDIKATOR (RESPONSIF ZOOM & TABLET) ── */}
-      {/* ── 2. TELEMETRY HUD INDIKATOR (RESPONSIF ZOOM & TABLET) ── */}
-      {/* Sesuai permintaan pengguna: Sembunyikan telemetri di Area Konvergen (zoneIndex === 6) agar tombol kontrol lempeng dapat ditaruh di atas */}
+      {/*
+        ── 2. TELEMETRY HUD INDIKATOR ──────────────────────────────────────
+
+        MENGAPA LETAKNYA BERBEDA ANTARA HP DAN LAPTOP
+
+          Semula telemetri SELALU diposisikan mutlak di TENGAH ATAS:
+
+              fixed top-2.5 left-1/2 -translate-x-1/2
+              max-w-[calc(100vw-300px)]
+
+          `max-w` itu menyisakan 300px untuk tombol-tombol di kiri, yang
+          memang cukup di layar lebar. Tetapi di HP 390px:
+
+              lebar tersedia = 390 - 300 = 90px
+
+          Sembilan puluh piksel JAUH lebih sempit daripada isi telemetri,
+          sehingga isinya meluber keluar dan MENIMPA tombol MENU di kiri serta
+          pil "PERMUKAAN BUMI" di bawahnya. Itulah yang terlihat pada
+          tangkapan layar HP: tulisan bertumpuk.
+
+        CARA MEMPERBAIKI
+
+          Di HP telemetri TIDAK LAGI berada di tengah, melainkan diletakkan
+          sebagai baris tersendiri DI BAWAH baris tombol (lihat `top` yang
+          berbeda). Dengan begitu ia tidak lagi berebut ruang mendatar dengan
+          tombol-tombol itu.
+
+          Nilai `top` dipilih 58px: tinggi baris tombol di HP adalah 44px
+          ditambah jarak 8px dari tepi atas dan 6px pemisah.
+      */}
       {hudData.zoneIndex !== 6 && (
-        <div className="fixed top-2.5 sm:top-3 left-1/2 -translate-x-1/2 pointer-events-auto z-20 max-w-[calc(100vw-300px)] sm:max-w-none">
+        <div
+          className={
+            layarSempit
+              ? 'fixed top-[100px] left-2 right-2 pointer-events-auto z-20'
+              : 'fixed top-2.5 sm:top-3 left-1/2 -translate-x-1/2 pointer-events-auto z-20 max-w-[calc(100vw-300px)] sm:max-w-none'
+          }
+        >
           <TelemetryHUD
             currentDepthKm={hudData.depth}
             currentTempLabel={hudData.tempString}
@@ -1405,8 +1509,36 @@ export default function EarthDiveGame() {
 
             </div>
 
-            {/* Row 2: Current Strata Badge Pill (Seragam untuk seluruh zona) */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center gap-1 sm:gap-1.5">
+            {/*
+              DI HP, PIL INI TURUN KE BAWAH TELEMETRI
+
+              Diukur pada 390px SEBELUM perbaikan:
+
+                  PIL STRATA : y = 58 sampai  93   (x 8 sampai 178)
+                  TELEMETRI  : y = 58 sampai 103   (x 8 sampai 374)
+                  -> BERTUMPUK PERSIS; teksnya saling menimpa
+
+              Sebabnya telemetri diposisikan mutlak dari atas layar, sedangkan
+              pil ini mengalir di bawah baris tombol — keduanya mendarat di
+              ketinggian yang sama.
+
+              Perbaikannya memakai `order` pada wadah HUD sehingga susunannya
+              di HP menjadi:
+
+                  y =  8 - 52   tombol MENU / suara / layar penuh / radar
+                  y = 58 - 103  telemetri
+                  y = 109 - 145 pil nama lapisan
+
+              `order` HANYA berlaku di layar sempit, sehingga urutan di laptop
+              tidak berubah sama sekali.
+
+              MENGAPA TIDAK MEMAKAI `margin-top` SAJA
+                Jarak yang ditulis dengan tangan akan salah bila tinggi
+                telemetri berubah (mis. jumlah chip bertambah). `order`
+                membuat pil ini MENGALIR setelah telemetri, sehingga jaraknya
+                menyesuaikan sendiri.
+            */}
+            <div className={`flex flex-col xl:flex-row items-start xl:items-center gap-1 sm:gap-1.5 `}>
               <div className="bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-amber-200 font-pixel text-[13px] sm:text-[15px] md:text-base font-bold shadow-[0_4px_0_#231206] flex items-center gap-2 whitespace-nowrap">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
                 <span className="font-bold text-amber-300 uppercase tracking-wider truncate max-w-[120px] xs:max-w-[160px] sm:max-w-[220px] md:max-w-[300px] lg:max-w-none">
@@ -1417,33 +1549,51 @@ export default function EarthDiveGame() {
           </div>
 
           {/* TOP RIGHT: PREVIEW MAP BUMI (HANYA AREA 0-4) ATAU KONTROL KONDISI / SIMULASI TEKTONIK (AREA 5-7) */}
-          <div className="pointer-events-auto flex flex-col items-end gap-1 select-none">
+          <div className={`pointer-events-auto flex flex-col items-end gap-1 select-none `}>
             {/* 1. Radar Bumi: Hanya untuk lapisan dalam bumi (Permukaan, Kerak, Mantel, Inti Luar, Inti Dalam: Zone 0-4) */}
             {hudData.zoneIndex < 5 && (
-              <div className="bg-slate-950/90 backdrop-blur-md border-2 sm:border-3 border-[#78350f] rounded-2xl p-1.5 sm:p-2 shadow-[0_6px_0_#231206] flex flex-col items-center transition-all">
+              layarSempit ? (
+                /*
+                  HP: TOMBOL BULAT KECIL
+
+                  Menggantikan panel 155px yang mengambil 40% lebar layar.
+                  Diagramnya dipindah ke lembar bawah (lihat bagian berikutnya).
+                */
                 <button
-                  onClick={() => setIsRadarOpen(!isRadarOpen)}
-                  className="flex items-center justify-between gap-1.5 sm:gap-2 w-full px-1.5 sm:px-2 pb-1 text-[13.5px] sm:text-[13px] font-pixel text-amber-400 hover:text-amber-200 cursor-pointer select-none font-semibold"
-                  title={isRadarOpen ? "Kecilkan Radar" : "Buka Radar"}
+                  onClick={() => setIsRadarOpen(true)}
+                  className="w-11 h-11 rounded-full bg-slate-950/90 backdrop-blur-md border-2 border-[#78350f] shadow-[0_4px_0_#231206] flex items-center justify-center text-amber-400 hover:text-amber-200 cursor-pointer active:translate-y-0.5 transition-all"
+                  title="Buka Radar Bumi"
+                  aria-label="Buka Radar Bumi"
                 >
-                  <span className="flex items-center gap-1 font-bold whitespace-nowrap">
-                    <PixelIcon name="globe" size={13} />
-                    <span className="tracking-wide">RADAR BUMI</span>
-                  </span>
-                  <span className="text-amber-500 hover:text-amber-300 text-[12.5px] sm:text-[13.5px] font-bold ml-1.5">
-                    {isRadarOpen ? '▲' : '▼'}
-                  </span>
+                  <PixelIcon name="globe" size={20} />
                 </button>
-                {isRadarOpen && (
-                  <div className="pt-1.5 border-t border-amber-900/50">
-                    <PixelEarthDiagram
-                      activeLayerId={previewConfig.activeLayerId}
-                      depthPercent={previewConfig.depthPercent}
-                      className="w-28 h-28 sm:w-34 sm:h-34 md:w-38 md:h-38 xl:w-42 xl:h-42"
-                    />
-                  </div>
-                )}
-              </div>
+              ) : (
+                /* LAPTOP: panel penuh yang selalu terlihat, seperti sebelumnya. */
+                <div className="bg-slate-950/90 backdrop-blur-md border-2 sm:border-3 border-[#78350f] rounded-2xl p-1.5 sm:p-2 shadow-[0_6px_0_#231206] flex flex-col items-center transition-all">
+                  <button
+                    onClick={() => setIsRadarOpen(!isRadarOpen)}
+                    className="flex items-center justify-between gap-1.5 sm:gap-2 w-full px-1.5 sm:px-2 pb-1 text-[13.5px] sm:text-[13px] font-pixel text-amber-400 hover:text-amber-200 cursor-pointer select-none font-semibold"
+                    title={isRadarOpen ? "Kecilkan Radar" : "Buka Radar"}
+                  >
+                    <span className="flex items-center gap-1 font-bold whitespace-nowrap">
+                      <PixelIcon name="globe" size={13} />
+                      <span className="tracking-wide">RADAR BUMI</span>
+                    </span>
+                    <span className="text-amber-500 hover:text-amber-300 text-[12.5px] sm:text-[13.5px] font-bold ml-1.5">
+                      {isRadarOpen ? '▲' : '▼'}
+                    </span>
+                  </button>
+                  {isRadarOpen && (
+                    <div className="pt-1.5 border-t border-amber-900/50">
+                      <PixelEarthDiagram
+                        activeLayerId={previewConfig.activeLayerId}
+                        depthPercent={previewConfig.depthPercent}
+                        className="w-28 h-28 sm:w-34 sm:h-34 md:w-38 md:h-38 xl:w-42 xl:h-42"
+                      />
+                    </div>
+                  )}
+                </div>
+              )
             )}
 
             {/* 2. Tombol Pemilih Kondisi & Ulang Animasi untuk Batas Konvergen (Area 7 / Zone Index 6) - DI POJOK KANAN ATAS */}
@@ -2039,6 +2189,73 @@ export default function EarthDiveGame() {
               className="relative z-10 w-full py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-base sm:text-lg border-2 border-yellow-200 shadow-[0_6px_25px_rgba(245,158,11,0.6)] transition-all cursor-pointer hover:scale-[1.02] active:scale-95 tracking-wide"
             >
               MENGERTI, BELI BAJU PELINDUNG DULU
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/*
+        ── LEMBAR BAWAH RADAR (HANYA DI HP) ────────────────────────────────
+
+        MENGAPA LEMBAR BAWAH, BUKAN PANEL SAMPING
+
+          Di HP, panel radar 155px mengambil 40% lebar layar dan menutupi
+          langit di permainan. Karena itu di HP radar menjadi TOMBOL BULAT
+          kecil, dan diagramnya muncul di sini.
+
+          Lembar bawah dipilih karena:
+
+            1. Berada di jangkauan ibu jari — tidak perlu menjangkau pojok
+               atas layar yang sulit dicapai sambil memegang perangkat
+            2. Dapat ditutup dengan menekan latar gelap atau tombol tutup
+            3. Tidak menutupi bagian atas layar tempat HUD dan tombol berada
+
+          Hanya dirender bila `layarSempit` bernilai true, sehingga di laptop
+          bagian ini tidak ada sama sekali — bukan disembunyikan dengan CSS.
+      */}
+      {layarSempit && isRadarOpen && hudData.zoneIndex < 5 && (
+        <div
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end justify-center animate-fade-in"
+          onClick={() => setIsRadarOpen(false)}
+          role="dialog"
+          aria-label="Radar Bumi"
+        >
+          <div
+            className="w-full max-w-md bg-slate-950/98 border-t-4 border-x-4 border-[#78350f] rounded-t-3xl px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_32px_rgba(0,0,0,0.8)] animate-fade-in-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Gagang penunjuk bahwa lembar ini dapat ditutup */}
+            <div className="flex justify-center pb-2">
+              <div className="w-10 h-1.5 rounded-full bg-amber-800/60" />
+            </div>
+
+            <div className="flex items-center justify-between pb-2 border-b border-amber-900/50">
+              <span className="flex items-center gap-1.5 text-[14px] font-pixel text-amber-400 font-bold tracking-wide">
+                <PixelIcon name="globe" size={15} />
+                RADAR BUMI
+              </span>
+              <button
+                onClick={() => setIsRadarOpen(false)}
+                className="w-8 h-8 rounded-lg bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] text-[14px] font-bold flex items-center justify-center cursor-pointer active:translate-y-0.5"
+                aria-label="Tutup radar"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex justify-center pt-3 pb-1">
+              <PixelEarthDiagram
+                activeLayerId={previewConfig.activeLayerId}
+                depthPercent={previewConfig.depthPercent}
+                className="w-40 h-40"
+              />
+            </div>
+
+            <button
+              onClick={() => setIsRadarOpen(false)}
+              className="mt-2 w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-50 border-2 border-[#451a03] font-pixel-title text-[13px] font-bold cursor-pointer active:translate-y-0.5"
+            >
+              TUTUP
             </button>
           </div>
         </div>

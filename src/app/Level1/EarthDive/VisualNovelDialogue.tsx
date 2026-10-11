@@ -399,6 +399,58 @@ export default function VisualNovelDialogue({
             </div>
           )}
 
+          {/*
+            TOMBOL LANJUT — KHUSUS HP
+
+            ═══════════════════════════════════════════════════════════════════
+            MASALAH YANG DITEMUKAN
+            ═══════════════════════════════════════════════════════════════════
+
+              Petunjuk "[Klik / SPASI untuk Lanjut]" memakai kelas
+              `hidden sm:inline`, sehingga TIDAK MUNCUL di layar HP.
+
+              Seluruh kotak dialog memang dapat DITEKAN untuk melanjutkan, dan
+              di laptop itu ditambah petunjuk tulisan. Tetapi di HP tidak ada
+              petunjuk apa pun — pemain hanya melihat teks percakapan tanpa
+              tanda bahwa ia harus menekan sesuatu.
+
+              Pada layar sentuh hal ini lebih buruk daripada di laptop:
+              pengguna HP tidak punya kebiasaan "menekan di mana saja", dan
+              tidak ada kursor yang berubah menjadi tangan sebagai petunjuk.
+
+            CARA MEMPERBAIKI
+
+              Ditambahkan tombol LANJUT yang benar-benar terlihat dan dapat
+              ditekan, diletakkan di BARIS PALING BAWAH dialog supaya:
+
+                1. Berada paling dekat dengan ibu jari
+                2. Berada di bawah teks, bukan di atasnya — sehingga alur
+                   membacanya wajar: nama, teks, lalu tombol
+                3. Tidak memicu dua kali: penekanannya dihentikan agar tidak
+                   diteruskan ke kotak dialog yang juga dapat ditekan
+
+              Hanya dirender di layar sempit. Di laptop petunjuk tulisan sudah
+              cukup dan tombolnya tidak diperlukan.
+
+              Tombol ini disembunyikan bila sedang ada PILIHAN PERCABANGAN,
+              karena pilihannya sendiri sudah menjadi tombol lanjut.
+          */}
+          {(!currentNode?.choices || currentNode.choices.length === 0) && (
+            <div className="flex justify-end pt-2 sm:hidden">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAdvance();
+                }}
+                className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 active:translate-y-0.5 text-amber-50 border-2 border-[#451a03] shadow-[0_3px_0_#231206] font-pixel-title text-[13px] font-bold flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>{isTyping ? 'LEWATI' : 'LANJUT'}</span>
+                <span className="text-[11px]">▶</span>
+              </button>
+            </div>
+          )}
+
           {/* ── TOOLBAR BAWAH ── */}
           <div onKeyDown={blokirRambatanTombol()}
             className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800/80 text-[13px] sm:text-[15px] text-slate-300 font-semibold"

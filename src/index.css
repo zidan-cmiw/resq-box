@@ -720,6 +720,53 @@ input[type='range'] {
   animation: fade-in 0.35s ease-out both;
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   KELAS ANIMASI YANG HILANG — DIPAKAI 37 KALI TETAPI TIDAK PERNAH ADA
+   ══════════════════════════════════════════════════════════════════════════
+
+   MASALAH YANG DITEMUKAN
+
+     Proyek ini memakai `animate-fadeIn` di 37 tempat (seluruh modal Level 1,
+     Level 2, dan Level 3) dan `animate-scaleUp` di satu tempat.
+
+     Keduanya TIDAK PERNAH didefinisikan, dan TIDAK dihasilkan oleh Tailwind
+     — diperiksa langsung pada CSS hasil bangun: kata "fadeIn" muncul 0 kali.
+
+     Nama yang benar di proyek ini memakai tanda hubung: `.animate-fade-in`
+     dan `.animate-fade-in-up`. Jadi selama ini SELURUH modal muncul
+     mendadak tanpa animasi, dan tidak ada yang menyadarinya karena modalnya
+     tetap muncul — hanya tanpa efek.
+
+   MENGAPA DITAMBAHKAN, BUKAN DIGANTI NAMANYA DI 37 TEMPAT
+
+     Menambahkan dua kelas di sini membuat seluruh 37 tempat itu langsung
+     berfungsi. Mengubah 37 tempat berisiko besar: satu yang terlewat berarti
+     satu modal tetap tanpa animasi, dan tidak ada cara mudah memeriksanya.
+
+     Kelas camelCase ini SENGAJA dipertahankan berdampingan dengan yang
+     bertanda hubung, supaya kode yang sudah ada tidak perlu disentuh.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.animate-fadeIn {
+  animation: fade-in 0.35s ease-out both;
+}
+
+.animate-scaleUp {
+  animation: scale-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes scale-up {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .animate-shake {
   animation: shake 0.4s ease-in-out infinite;
 }
