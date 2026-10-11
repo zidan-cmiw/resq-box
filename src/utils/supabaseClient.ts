@@ -560,44 +560,92 @@ export async function createClassroom(
   _teacherUsername: string,
   schoolName: string = 'SMP Negeri 1'
 ): Promise<ClassroomRecord> {
-  const randomSuffix = Math.floor(100 + Math.random() * 900);
-  const code = `RESQ-${name.replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase() || 'CLS'}${randomSuffix}`;
+  const namaKelas = name.trim() || 'Kelas VIII-A';
+
+  /*
+    KODE KELAS DIBUAT OLEH SERVER, BUKAN OLEH KLIEN
+
+    ═══════════════════════════════════════════════════════════════════════
+    CACAT YANG DIPERBAIKI
+    ═══════════════════════════════════════════════════════════════════════
+
+      Sebelumnya klien membuat kodenya sendiri:
+
+          const code = `RESQ-${nama.slice(0,4).toUpperCase()}${Math.floor(100 + Math.random()*900)}`;
+
+      Hanya ada 900 kemungkinan angka per awalan, sedangkan awalan diambil
+      dari 4 huruf pertama NAMA KELAS. Karena 'Kelas VIII-A' adalah nama
+      BAWAAN, semua guru yang tidak mengganti namanya mendapat awalan 'KELA'
+      yang sama. Diukur:
+
+          kelas se-awalan     peluang bentrok
+                 2                 0,11%
+                10                 4,89%
+                20                19,16%
+                30                38,66%
+                50                75,01%
+
+      Dan bila bentrok, klien hanya MENCOBA ULANG SATU KALI. Bila bentrok
+      dua kali, guru TIDAK DAPAT membuat kelas — dan pesan galatnya
+      membingungkan karena berasal dari percobaan pertama.
+
+    CARA MEMPERBAIKI
+
+      Klien TIDAK LAGI mengirim kode. Ia cukup mengirim nama kelas, dan
+      SERVER yang membuat kode yang dijamin belum terpakai.
+
+      Server memakai 6 angka acak (900.000 kemungkinan per awalan, 1000 kali
+      lipat lebih banyak) DAN mengulanginya sampai bebas bentrok, di dalam
+      transaksi yang sama dengan penyisipannya. Jadi tidak ada dua guru yang
+      dapat memperoleh kode sama.
+
+      Dengan begitu pula, percobaan ulang di sisi klien tidak diperlukan lagi
+      — pemulihannya dipindahkan ke server, tempat ia dapat dilakukan dengan
+      andal.
+  */
   const record: ClassroomRecord = {
-    code,
-    name: name.trim() || 'Kelas VIII-A',
+    code: '',
+    name: namaKelas,
     teacher_username: _teacherUsername,
     school_name: schoolName,
     created_at: new Date().toISOString(),
   };
 
   if (!supabase) {
+    // Mode luring: kode dibuat lokal. Tidak ada guru lain di perangkat ini,
+    // jadi bentrok tidak mungkin terjadi.
+    const lokal = `RESQ-${namaKelas.replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase() || 'CLS'}${Math.floor(100000 + Math.random() * 900000)}`;
+    record.code = lokal;
     const list = getLocalClasses();
     list.push(record);
     saveLocalClasses(list);
     return record;
   }
 
-  const { error } = await supabase.rpc('create_my_classroom', {
-    p_code: code,
+  // `p_code` sengaja TIDAK dikirim (undefined) supaya server yang membuatnya.
+  const { data, error } = await supabase.rpc('create_my_classroom', {
     p_name: record.name,
     p_school: schoolName,
   });
 
   if (error) {
     noteError('createClassroom', error);
-    // Kode bentrok → coba sekali lagi dengan angka baru
-    const retryCode = `RESQ-${name.replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase() || 'CLS'}${Math.floor(100 + Math.random() * 900)}`;
-    const { error: retryError } = await supabase.rpc('create_my_classroom', {
-      p_code: retryCode,
-      p_name: record.name,
-      p_school: schoolName,
-    });
-    if (retryError) {
-      noteError('createClassroom:retry', retryError);
-      throw new Error('Gagal membuat kelas di server.');
-    }
-    record.code = retryCode;
+    throw new Error(
+      'Gagal membuat kelas di server: ' + (error.message || 'penyebab tidak diketahui')
+    );
   }
+
+  // Server mengembalikan kode yang benar-benar dipakai. Nilai itulah yang
+  // disimpan — bukan tebakan klien.
+  const kodeDariServer =
+    (data as { code?: string } | null)?.code || '';
+
+  if (!kodeDariServer) {
+    noteError('createClassroom', { message: 'server tidak mengembalikan kode kelas' });
+    throw new Error('Server tidak mengembalikan kode kelas. Kelas mungkin belum dibuat.');
+  }
+
+  record.code = kodeDariServer;
 
   const list = getLocalClasses().filter((c) => c.code !== record.code);
   list.push(record);
