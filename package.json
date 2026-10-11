@@ -21,7 +21,7 @@
     "cek:keamanan": "python scripts/audit_keamanan.py",
     "diagnosa:akun": "node supabase/diagnosa_akun.mjs",
     "cek:kolom": "python scripts/audit_kolom_dibuang.py",
-    "cek:semua": "npm run cek:keamanan && npm run cek:kebocoran && npm run cek:kolom && npm run cek:gerbang-level && npm run cek:safe-area && npm run cek:responsif && npm run cek:tata-letak && npm run cek:panduan && npm run cek:pendaftaran",
+    "cek:semua": "npm run cek:keamanan && npm run cek:akses-publik && npm run cek:kebocoran && npm run cek:kolom && npm run cek:gerbang-level && npm run cek:safe-area && npm run cek:responsif && npm run cek:tata-letak && npm run cek:panduan && npm run cek:pendaftaran",
     "test:pesan-galat": "node scripts/uji_pesan_galat.mjs",
     "cek:kebocoran": "python scripts/audit_kebocoran.py",
     "hitung:beban": "python scripts/hitung_beban.py",
@@ -40,7 +40,8 @@
     "desktop:build": "node scripts/bangun_desktop.mjs",
     "desktop:uji-server": "node scripts/uji_server_desktop.mjs",
     "cek:responsif": "python scripts/periksa_responsif.py",
-    "ganti:dvh": "python scripts/ganti_ke_dvh.py"
+    "ganti:dvh": "python scripts/ganti_ke_dvh.py",
+    "cek:akses-publik": "python scripts/uji_akses_tanpa_login.py"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
