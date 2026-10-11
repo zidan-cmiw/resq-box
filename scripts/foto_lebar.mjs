@@ -37,7 +37,7 @@ const TINGGI = Number(process.argv[5] || Math.round(LEBAR * 2.16));
 
 const RUTE = {
   login: '/login', dashboard: '/', level1: '/level1', level2: '/level2',
-  level3: '/level3', workspace: '/level3', profil: '/profile',
+  level3: '/level3', workspace: '/workspace', profil: '/profile',
   guru: '/teacher', kredit: '/credits',
 };
 

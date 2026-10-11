@@ -59,7 +59,7 @@ const RUTE = {
   level1: '/level1',
   level2: '/level2',
   level3: '/level3',
-  workspace: '/level3',
+  workspace: '/workspace',
   profil: '/profile',
   guru: '/teacher',
   kredit: '/credits',
