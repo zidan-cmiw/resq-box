@@ -581,7 +581,7 @@ export default function Workspace() {
     <div className="h-screen w-full flex flex-col bg-[#fefce8] text-[#1c1917] font-pixel overflow-hidden">
       {/* ── Retro Header Bar (SS 3 Warm Parchment & Wood Palette) ── */}
       <header className="h-14 bg-[#fef3c7] border-b-4 border-[#78350f] flex items-center px-3 sm:px-4 justify-between shrink-0 shadow-md z-30">
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
           <button
             onClick={() => {
               retroAudio.playSelect();
@@ -612,14 +612,27 @@ export default function Workspace() {
           <div className="h-6 w-px bg-[#b45309]/30 hidden sm:block" />
 
           {/* Kotak Info Level (SS 3 Warm Parchment Card) */}
-          <div className="bg-[#fffbeb] border-2 border-[#b45309] px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-[15px] sm:text-base font-extrabold text-[#451a03] font-sans tracking-wide leading-tight">
+          {/*
+            `min-w-0` WAJIB ADA di sini.
+
+            Tanpa itu, kartu ini menolak menyusut: judul misi yang panjang
+            memaksa kartu melebar, sehingga tombol "Diorama WiFi" dan "USB" di
+            kanan terdorong keluar layar dan terpotong di HP.
+
+            Penyebabnya aturan bawaan flexbox: elemen flex memiliki
+            `min-width: auto`, artinya ia tidak boleh mengecil di bawah lebar
+            isinya. `min-w-0` mencabut aturan itu, sehingga kartu dapat
+            menyusut dan judulnya dipotong dengan elipsis.
+          */}
+          <div className="min-w-0 flex-1 sm:flex-none bg-[#fffbeb] border-2 border-[#b45309] px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
+                {/* Judul misi dipotong dengan elipsis alih-alih memaksa lebar */}
+                <h1 className="min-w-0 truncate text-[15px] sm:text-base font-extrabold text-[#451a03] font-sans tracking-wide leading-tight">
                   {activeMission ? activeMission.title : 'Ruang Simulasi Sandbox'}
                 </h1>
                 {activeMission && (
-                  <span className="px-2 py-0.5 rounded text-[14.5px] font-bold bg-[#b45309] text-white font-pixel uppercase shadow-sm">
+                  <span className="shrink-0 px-2 py-0.5 rounded text-[14.5px] font-bold bg-[#b45309] text-white font-pixel uppercase shadow-sm">
                     {activeMission.category === 'proyek' ? `Kasus ${activeMission.level}` : `Level ${activeMission.level}`}
                   </span>
                 )}
@@ -631,7 +644,7 @@ export default function Workspace() {
           </div>
         </div>
 
-        <div id="tour-ws-actions" className="flex items-center gap-1.5 sm:gap-2">
+        <div id="tour-ws-actions" className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Sambungkan Diorama WiFi Button */}
           <div className="relative">
             <button
@@ -794,7 +807,7 @@ export default function Workspace() {
             </div>
 
             {/* Kanan: Telemetri Digital Twin Side Panel (Sesuai Garis Merah SS 3 & Data SS 2) */}
-            <aside id="tour-ws-telemetry" aria-label="Telemetri Digital Twin" className={`w-full md:w-80 md:w-84 xl:w-92 h-full shrink-0 md:border-l-4 md:border-[#78350f] bg-[#fffbeb] shadow-xl overflow-hidden z-20 ${topTabMobile === 'canvas' ? 'hidden md:block' : 'block'}`}>
+            <aside id="tour-ws-telemetry" aria-label="Telemetri Digital Twin" className={`w-full md:w-80 xl:w-92 h-full shrink-0 md:border-l-4 md:border-[#78350f] bg-[#fffbeb] shadow-xl overflow-hidden z-20 ${topTabMobile === 'canvas' ? 'hidden md:block' : 'block'}`}>
               <TelemetrySidePanel />
             </aside>
           </section>

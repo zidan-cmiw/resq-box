@@ -33,7 +33,8 @@
     "android:sync": "npm run build && cap sync android && node scripts/siapkan-aset-android.mjs",
     "android:open": "cap open android",
     "android:build": "npm run android:sync && cap build android",
-    "test:nilai-luring": "node scripts/uji_nilai_luring.mjs"
+    "test:nilai-luring": "node scripts/uji_nilai_luring.mjs",
+    "cek:tata-letak": "python scripts/periksa_tata_letak.py"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
