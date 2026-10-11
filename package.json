@@ -21,7 +21,7 @@
     "cek:keamanan": "python scripts/audit_keamanan.py",
     "diagnosa:akun": "node supabase/diagnosa_akun.mjs",
     "cek:kolom": "python scripts/audit_kolom_dibuang.py",
-    "cek:semua": "npm run cek:keamanan && npm run cek:akses-publik && npm run cek:kebocoran && npm run cek:kolom && npm run cek:gerbang-level && npm run cek:safe-area && npm run cek:responsif && npm run cek:tata-letak && npm run cek:panduan && npm run cek:pendaftaran && npm run test:mode-tamu && npm run test:lingkungan",
+    "cek:semua": "npm run cek:keamanan && npm run cek:akses-publik && npm run cek:kebocoran && npm run cek:kolom && npm run cek:gerbang-level && npm run cek:safe-area && npm run cek:responsif && npm run cek:animasi && npm run cek:petunjuk-hp && npm run cek:tata-letak && npm run cek:panduan && npm run cek:pendaftaran && npm run test:mode-tamu && npm run test:lingkungan",
     "test:pesan-galat": "node scripts/uji_pesan_galat.mjs",
     "cek:kebocoran": "python scripts/audit_kebocoran.py",
     "hitung:beban": "python scripts/hitung_beban.py",
@@ -43,7 +43,8 @@
     "ganti:dvh": "python scripts/ganti_ke_dvh.py",
     "cek:akses-publik": "python scripts/uji_akses_tanpa_login.py",
     "test:mode-tamu": "node scripts/uji_mode_tamu.mjs",
-    "test:lingkungan": "node scripts/uji_lingkungan.mjs"
+    "test:lingkungan": "node scripts/uji_lingkungan.mjs",
+    "cek:petunjuk-hp": "python scripts/periksa_petunjuk_hp.py"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
