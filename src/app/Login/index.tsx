@@ -6,6 +6,29 @@ import PixelIcon from '../../components/PixelIcon';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 
+/**
+ * Alamat unduhan aplikasi.
+ *
+ * MENGAPA DI HALAMAN "RELEASES", BUKAN DI WEBSITE INI
+ *   Berkas .exe berukuran 114 MB, sedangkan layanan hosting website ini
+ *   membatasi 25 MB per berkas. Halaman Releases repositori memang
+ *   disediakan untuk berkas sebesar itu, dan tidak membebani setiap
+ *   pengunjung website dengan unduhan raksasa.
+ *
+ * CARA MENGISI
+ *   Unggah kedua berkas ke satu rilis dengan penanda versi yang sama, lalu
+ *   tautan di bawah akan langsung berfungsi. Bila belum diunggah, tautannya
+ *   akan menghasilkan halaman "not found" — bukan tautan rusak yang diam.
+ */
+const REPO = 'https://github.com/zidan-cmiw/resq-box';
+const PENANDA_RILIS = 'v1.0.0';
+
+export const TAUTAN_UNDUH = {
+  laptop: `${REPO}/releases/download/${PENANDA_RILIS}/RESQ-BOX-Laptop.exe`,
+  android: `${REPO}/releases/download/${PENANDA_RILIS}/RESQ-BOX-Android.apk`,
+  halamanRilis: `${REPO}/releases`,
+} as const;
+
 export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -32,6 +55,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const login = useAuthStore((state) => state.login);
+  const loginAsGuest = useAuthStore((state) => state.loginAsGuest);
 
   // Handle Login Action
   const handleLogin = async (e: React.FormEvent) => {
@@ -60,6 +84,20 @@ export default function Login() {
       retroAudio.playLocked();
       setErrorMsg(res.message || 'Login gagal! Periksa kembali username & password.');
     }
+  };
+
+  /**
+   * Masuk sebagai tamu — mencoba tanpa akun.
+   *
+   * Tidak ada panggilan jaringan sama sekali. Penjaga "tamu tidak menyentuh
+   * database" dipasang di lapisan klien database (`utils/guestMode.ts` lewat
+   * `supabaseClient.ts`), sehingga berlaku untuk seluruh aplikasi sekaligus.
+   */
+  const handleMasukSebagaiTamu = () => {
+    retroAudio.playSelect();
+    loginAsGuest();
+    // Tamu selalu masuk sebagai siswa, jadi tujuannya halaman utama siswa.
+    navigate('/');
   };
 
 
@@ -356,6 +394,96 @@ export default function Login() {
               </div>
             )}
           </form>
+
+          {/*
+            ═══════════════════════════════════════════════════════════════════
+            COBA TANPA LOGIN
+            ═══════════════════════════════════════════════════════════════════
+
+            MENGAPA DI LUAR <form>
+              Tombol apa pun di dalam <form> tanpa `type="button"` akan
+              dianggap tombol kirim dan MEMICU pengiriman formulir. Menaruhnya
+              di luar formulir menghilangkan seluruh risiko itu.
+
+            MENGAPA ADA
+              Ada orang yang hanya ingin MENCOBA — guru yang menilai, orang
+              tua, atau siswa yang belum punya akun. Meminta mereka membuat
+              akun lebih dahulu membuat mereka berhenti sebelum mencoba.
+
+            YANG PERLU DIKETAHUI PENGGUNA
+              Keterangan di bawah tombol menyebutkan dengan jelas bahwa nilai
+              TIDAK tersimpan ke rapor. Tanpa keterangan itu, tamu akan
+              mengira nilainya tercatat, lalu kecewa saat gurunya tidak
+              menemukannya. Kejujuran di sini lebih penting daripada tombol
+              yang terlihat menarik.
+          */}
+          <div className="mt-4 pt-3.5 border-t-2 border-amber-950/25">
+            <button
+              type="button"
+              onClick={handleMasukSebagaiTamu}
+              className="w-full px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-50 text-amber-950 border-2 border-amber-950/60 font-pixel-title text-[13px] sm:text-[14px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-2"
+            >
+              <PixelIcon name="play" size={15} className="shrink-0" />
+              <span>COBA TANPA LOGIN</span>
+            </button>
+            <p className="mt-2 text-[11.5px] sm:text-[12.5px] text-amber-900/90 font-semibold leading-relaxed text-center">
+              Mainkan semua level tanpa akun. Kemajuan <b>tidak tersimpan</b> ke
+              rapor guru dan hanya tersimpan di perangkat ini.
+            </p>
+          </div>
+
+          {/*
+            ═══════════════════════════════════════════════════════════════════
+            UNDUHAN APLIKASI
+            ═══════════════════════════════════════════════════════════════════
+
+            MENGAPA DISEDIAKAN DI HALAMAN MASUK
+              Halaman masuk adalah satu-satunya halaman yang PASTI dilihat
+              setiap orang, baik yang sudah punya akun maupun belum. Menaruh
+              unduhan di sini berarti tidak ada yang perlu mencari.
+
+            MENGAPA PERLU APLIKASI TERPISAH
+              Peramban memblokir koneksi `ws://` (tidak terenkripsi) dari
+              halaman HTTPS. Karena itu diorama ESP32 TIDAK DAPAT tersambung
+              dari website, tetapi DAPAT dari aplikasi. Keterangan ini
+              dituliskan apa adanya supaya tidak ada yang mengira aplikasi
+              hanya sekadar kemasan.
+
+            CATATAN TENTANG ALAMAT UNDUHAN
+              Berkas .exe berukuran 114 MB, melebihi batas 25 MB per berkas
+              pada layanan hosting website ini. Karena itu keduanya
+              ditempatkan di halaman "Releases" repositori, yang memang
+              disediakan untuk berkas besar.
+          */}
+          <div className="mt-4 pt-3.5 border-t-2 border-amber-950/25">
+            <p className="text-[12px] sm:text-[13px] font-bold text-amber-950 mb-2 text-center">
+              Unduh aplikasi untuk diorama fisik
+            </p>
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
+              <a
+                href={TAUTAN_UNDUH.laptop}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-2 rounded-lg bg-sky-100 hover:bg-sky-50 text-sky-950 border-2 border-sky-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
+              >
+                <PixelIcon name="cpu" size={14} className="shrink-0" />
+                <span>LAPTOP (.exe)</span>
+              </a>
+              <a
+                href={TAUTAN_UNDUH.android}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-2 rounded-lg bg-emerald-100 hover:bg-emerald-50 text-emerald-950 border-2 border-emerald-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
+              >
+                <PixelIcon name="phone" size={14} className="shrink-0" />
+                <span>ANDROID (.apk)</span>
+              </a>
+            </div>
+            <p className="mt-2 text-[11.5px] sm:text-[12.5px] text-amber-900/90 font-semibold leading-relaxed text-center">
+              Diperlukan untuk menyambung ke diorama ESP32 saat bermain di
+              website.
+            </p>
+          </div>
 
         </div>
       </div>

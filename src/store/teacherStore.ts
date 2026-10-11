@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { UserAccount } from '../utils/supabaseClient';
 import { syncStudentToCloud, loginUser, updateTeacherProfile } from '../utils/supabaseClient';
+import { nyalakanModeTamu, matikanModeTamu } from '../utils/guestMode';
 
 export interface CustomAvatarConfig {
   skin: 'light' | 'warm' | 'tan' | 'brown' | 'dark' | 'robot';
@@ -53,6 +54,19 @@ interface AuthState {
   
   // Actions
   login: (username: string, password: string, role: 'student' | 'teacher') => Promise<{ success: boolean; message?: string; user?: UserAccount }>;
+  /**
+   * Masuk sebagai TAMU — mencoba tanpa akun.
+   *
+   * Tamu TIDAK menyentuh database sama sekali; penjaganya ada di
+   * `blokirTulisUntukTamu()` di `utils/guestMode.ts`, dipanggil dari
+   * pembungkus klien di `supabaseClient.ts`. Karena penjaganya ada di
+   * lapisan terendah, aturan itu berlaku untuk seluruh aplikasi sekaligus.
+   *
+   * Kemajuan tamu tetap disimpan di perangkat (`localStorage` dengan akhiran
+   * `_guest`), sehingga tamu dapat melanjutkan setelah menutup aplikasi —
+   * tetapi tidak pernah masuk ke rapor guru.
+   */
+  loginAsGuest: () => void;
   setCurrentUser: (user: UserAccount | null) => void;
   logout: () => void;
   updateProfile: (data: Partial<Student>) => void;
@@ -201,6 +215,34 @@ export const useAuthStore = create<AuthState>()((set) => ({
       const user = res.user;
       // Bersihkan progress guest un-scoped agar tidak bocor ke akun baru
       try {
+        // Buang SISA ANTREAN NILAI milik tamu.
+        //
+        // MENGAPA PERLU
+        //   Bila tamu pernah bermain di perangkat ini, lalu siswa sungguhan
+        //   masuk memakai perangkat yang sama, sisa antrean milik tamu masih
+        //   tersimpan. Antrean itu memuat `student_id` "tamu", dan pada
+        //   percobaan pengiriman berikutnya ia akan ikut terkirim — gagal di
+        //   server, tetapi tetap membuang satu percobaan dan mengotori log.
+        //
+        //   Pengantrean baru sudah dihentikan di sumbernya (lihat penjaga
+        //   `sedangModeTamu()` di supabaseClient.ts). Pembersihan ini
+        //   menangani sisa dari sesi yang SUDAH terjadi.
+        const antrean = JSON.parse(
+          localStorage.getItem('resqbox-nilai-belum-terkirim') || '[]'
+        );
+        if (Array.isArray(antrean)) {
+          const tanpaTamu = antrean.filter(
+            (n) => n && n.studentId !== 'tamu'
+          );
+          if (tanpaTamu.length !== antrean.length) {
+            localStorage.setItem(
+              'resqbox-nilai-belum-terkirim',
+              JSON.stringify(tanpaTamu)
+            );
+          }
+        }
+      } catch {}
+      try {
         localStorage.removeItem('resqbox_level2_progress_guest');
         localStorage.removeItem('resqbox_earthdive_progress_guest');
         localStorage.removeItem('resqbox_earthdive_progress');
@@ -338,7 +380,91 @@ export const useAuthStore = create<AuthState>()((set) => ({
     }
   },
 
+  /**
+   * Masuk sebagai tamu.
+   *
+   * ═══════════════════════════════════════════════════════════════════════════
+   * MENGAPA TIDAK LEWAT `login()`
+   * ═══════════════════════════════════════════════════════════════════════════
+   *
+   *   `login()` memanggil `loginUser()` yang menghubungi Supabase Auth.
+   *   Tamu TIDAK BOLEH menyentuh jaringan sama sekali — itulah inti
+   *   permintaannya. Jadi jalurnya dibuat terpisah dan sepenuhnya luring.
+   *
+   * ═══════════════════════════════════════════════════════════════════════════
+   * MENGAPA DIBERI NILAI AWAL YANG LENGKAP
+   * ═══════════════════════════════════════════════════════════════════════════
+   *
+   *   Banyak halaman membaca `currentUser.id`, `student.name`, dan
+   *   `unlockedLevel` tanpa memeriksa apakah nilainya ada. Memberi nilai
+   *   kosong akan membuat halaman-halaman itu gagal. Karena itu tamu diberi
+   *   data contoh yang masuk akal — bukan null.
+   *
+   *   Nomor absen "0" dan kelas "TAMU" dipakai sebagai PENANDA bahwa ini
+   *   tamu, sehingga lapisan lain dapat mengenalinya bila perlu.
+   */
+  loginAsGuest: () => {
+    // Nyalakan penanda SEBELUM apa pun yang lain, supaya penjaga database
+    // sudah aktif sejak saat ini.
+    nyalakanModeTamu();
+
+    const idTamu = 'tamu';
+    const userTamu: UserAccount = {
+      id: idTamu,
+      username: 'tamu',
+      role: 'student',
+      name: 'Petualang Tamu',
+      absent_number: '0',
+      classroom_code: 'TAMU',
+      school_name: 'Mode Coba',
+      avatar_config: DEFAULT_CUSTOM_AVATAR,
+      // Seluruh level terbuka: tujuan mode tamu adalah MENCOBA, jadi tidak
+      // masuk akal bila levelnya terkunci dan tamu tidak dapat melihat apa pun.
+      unlocked_level: 3,
+    };
+
+    const studentTamu: Student = {
+      id: idTamu,
+      name: 'Petualang Tamu',
+      username: 'tamu',
+      classroom_id: 'TAMU',
+      class_name: 'Mode Coba (tanpa akun)',
+      absent_number: '0',
+      school_name: 'Mode Coba',
+      custom_avatar: DEFAULT_CUSTOM_AVATAR,
+      progress: {
+        missionCompletedIds: [],
+        mitigationScores: {},
+      },
+    };
+
+    try {
+      localStorage.setItem('resqbox-current-user', JSON.stringify(userTamu));
+      localStorage.setItem('resqbox-student-profile', JSON.stringify(studentTamu));
+      localStorage.setItem('resqbox-unlocked-level', '3');
+      localStorage.setItem(`resqbox-unlocked-level_${idTamu}`, '3');
+    } catch {
+      // Penyimpanan tidak tersedia — mode tamu tetap berjalan untuk sesi ini.
+    }
+
+    // Pisahkan penyimpanan kemajuan dari akun sungguhan, memakai pola `_guest`
+    // yang sudah dipakai aplikasi ini. Dengan begitu kemajuan tamu tidak
+    // bercampur dengan kemajuan siswa yang memakai perangkat yang sama.
+    import('./missionStore').then(({ useMissionStore }) => {
+      useMissionStore.getState().syncUser('guest');
+    });
+    import('./workspaceStore').then(({ useWorkspaceStore }) => {
+      useWorkspaceStore.getState().syncUser('guest');
+    });
+
+    set({ currentUser: userTamu, student: studentTamu, unlockedLevel: 3 });
+  },
+
   logout: () => {
+    // Matikan mode tamu lebih dahulu, supaya keluar dari mode tamu tidak
+    // meninggalkan penanda yang membuat sesi berikutnya ikut terkunci.
+    matikanModeTamu();
+
     localStorage.removeItem('resqbox-current-user');
     localStorage.removeItem('resqbox-student-profile');
     localStorage.removeItem('resqbox-unlocked-level');

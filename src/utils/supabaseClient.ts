@@ -18,6 +18,7 @@
 import { createClient, SupabaseClient, type Session } from '@supabase/supabase-js';
 import type { CustomAvatarConfig } from '../store/teacherStore';
 import { reportError } from './monitoring';
+import { blokirTulisUntukTamu, sedangModeTamu } from './guestMode';
 
 // ── TIPE PUBLIK (dipertahankan agar komponen lain tidak perlu diubah) ──────
 export interface UserAccount {
@@ -93,13 +94,84 @@ export const isSupabaseConfigured = Boolean(
   supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http') && supabaseAnonKey.length > 20
 );
 
-export const supabase: SupabaseClient | null = isSupabaseConfigured
+/**
+ * Klien mentah. JANGAN dipakai langsung — pakai `supabase` di bawah, yang
+ * sudah dilengkapi penjaga mode tamu.
+ */
+const klienMentah: SupabaseClient | null = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: false,
         storageKey: 'resqbox-auth',
+      },
+    })
+  : null;
+
+/**
+ * Klien Supabase dengan PENJAGA MODE TAMU.
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * MENGAPA `rpc` DIBUNGKUS DI SINI
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ *   Permintaan pemilik proyek: tamu "bener-bener buat main biasa aja", dan
+ *   nilainya "ga masuk ke database".
+ *
+ *   Ada 34 tempat di 9 berkas yang menulis ke database. Menaruh pemeriksaan
+ *   mode tamu di setiap tempat itu rapuh — satu yang terlewat berarti nilai
+ *   tamu masuk ke rapor guru, dan tidak ada yang menyadarinya.
+ *
+ *   Karena itu penjaganya dipasang di SATU tempat yang dilalui SEMUA
+ *   penulisan. Diperiksa lebih dahulu: setiap penulisan ke database di
+ *   seluruh proyek berjalan lewat `supabase.rpc`, tanpa kecuali. Yang
+ *   berbentuk `.delete(` dan `.update(` di berkas lain adalah Map/Set
+ *   JavaScript lokal, bukan database.
+ *
+ *   Dengan pembungkusan ini, aturan "tamu tidak menyentuh database" berlaku
+ *   untuk seluruh aplikasi sekaligus — TERMASUK kode yang ditulis nanti,
+ *   tanpa perlu diingat-ingat lagi.
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * MENGAPA HANYA `rpc` YANG DIBUNGKUS
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ *   `auth` (masuk, keluar, ambil sesi) TIDAK dibungkus, karena tamu tidak
+ *   pernah memanggilnya. Bila dibungkus dan salah, tamu justru tidak dapat
+ *   keluar dari mode tamu.
+ *
+ *   `from(...)` TIDAK dibungkus karena pengambilan data guru memakainya, dan
+ *   tamu tidak dapat membuka Posko Guru. Membungkusnya berisiko memutus
+ *   pembacaan yang sah tanpa manfaat.
+ */
+export const supabase: SupabaseClient | null = klienMentah
+  ? new Proxy(klienMentah, {
+      get(sasaran, sifat, penerima) {
+        if (sifat === 'rpc') {
+          return (nama: string, ...argumen: unknown[]) => {
+            const ditolak = blokirTulisUntukTamu(nama);
+            if (ditolak) {
+              // BENTUK BALIKANNYA DISAMAKAN dengan galat Supabase, supaya
+              // pemanggil yang sudah menangani galat tidak perlu diubah dan
+              // tidak ada yang crash.
+              return Promise.resolve({
+                data: null,
+                error: { message: ditolak.message, code: 'MODE_TAMU', details: '', hint: '' },
+                count: null,
+                status: 403,
+                statusText: 'Forbidden (mode tamu)',
+              });
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return (sasaran.rpc as any)(nama, ...argumen);
+          };
+        }
+
+        const nilai = Reflect.get(sasaran, sifat, penerima);
+        // Metode harus diikat ke klien aslinya, sebab bila tidak, `this` di
+        // dalamnya menunjuk Proxy dan sebagian panggilan internal gagal.
+        return typeof nilai === 'function' ? nilai.bind(sasaran) : nilai;
       },
     })
   : null;
@@ -1043,6 +1115,23 @@ export async function submitLevelProgress(
   }
 
   if (!supabase) return false;
+
+  // ── MODE TAMU: berhenti di sini, jangan mengantre apa pun ─────────────
+  //
+  //  Nilai sudah tersimpan di cache lokal (beberapa baris di atas), sehingga
+  //  tamu tetap melihat hasilnya dan dapat melanjutkan. Yang dihentikan hanya
+  //  perjalanan ke server.
+  //
+  //  MENGAPA HARUS BERHENTI DI SINI, BUKAN CUKUP DIANDALKAN PADA PENJAGA
+  //    Penjaga di lapisan `rpc` sudah menolak `submit_level_result`, jadi
+  //    nilai tamu TIDAK AKAN sampai ke server. Tetapi bila pengantrean tetap
+  //    dijalankan, catatan tamu akan MENUMPUK di perangkat.
+  //
+  //    Akibatnya berbahaya: siswa sungguhan yang memakai perangkat yang sama
+  //    setelah tamu akan mewarisi antrean itu, dan pada percobaan pengiriman
+  //    berikutnya nilai ber-`student_id` "tamu" ikut terkirim. Lebih baik
+  //    dihentikan di sumbernya.
+  if (sedangModeTamu()) return false;
 
   // ── Koalesensi penulisan (write-behind) ────────────────────────────────
   // Satu perjalanan belajar bisa memicu puluhan peristiwa progres. Kita
