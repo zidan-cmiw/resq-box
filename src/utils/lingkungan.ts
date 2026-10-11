@@ -22,17 +22,22 @@
  *      hanya ada bila jembatan Capacitor benar-benar dimuat. Bila tidak ada,
  *      aplikasi Android akan salah dikenali sebagai website.
  *
- *   2. `location.hostname === 'localhost'` — `capacitor.config.ts` memakai
- *      `androidScheme: 'https'`, sehingga WebView Android menyajikan halaman
- *      dari `https://localhost`. Website memakai `resq-box.pages.dev`.
- *      Jadi keduanya berbeda dan dapat dibedakan. TETAPI bila suatu saat
- *      skema itu diubah, cara ini ikut gagal.
+ *   2. Penanda Electron pada user agent — berlaku untuk aplikasi laptop.
  *
- *   3. Penanda Electron — Electron menambahkan "Electron" pada user agent.
- *      Hanya berlaku untuk aplikasi laptop.
- *
- *   4. `navigator.userAgent` memuat "wv" — penanda WebView Android. Berguna
+ *   3. `navigator.userAgent` memuat "wv" — penanda WebView Android. Berguna
  *      sebagai cadangan, tetapi dapat berubah di versi Android mendatang.
+ *
+ *   4. Nama host lokal TANPA port — inilah aplikasi Android.
+ *      `capacitor.config.ts` memakai `androidScheme: 'https'`, sehingga
+ *      WebView Android menyajikan halaman dari `https://localhost` pada port
+ *      bawaan 443 — jadi `location.port` KOSONG.
+ *
+ *      PORT ITU PENTING. Versi pertama hanya memeriksa nama host, sehingga
+ *      `http://localhost:5173` (server pengembangan Vite) ikut dikenali
+ *      sebagai aplikasi. Akibatnya tombol unduh HILANG saat halaman dicoba di
+ *      laptop sendiri, padahal di website tombolnya ada — membingungkan dan
+ *      menyulitkan pengujian. Sekarang port diperiksa: server pengembangan
+ *      dan `vite preview` PUNYA port, aplikasi Android tidak.
  *
  *   Karena itu keempatnya diperiksa berurutan. Bila SALAH SATU menandai
  *   "ini aplikasi", hasilnya dianggap aplikasi. Salah menandai sebagai
@@ -58,19 +63,39 @@ export function sedangDiAplikasi(): boolean {
     }
 
     const lokasi = window.location;
-
-    // 2. Aplikasi Android disajikan dari https://localhost, website tidak.
-    if (lokasi.hostname === 'localhost' || lokasi.hostname === '127.0.0.1') {
-      return true;
-    }
-
     const ua = navigator.userAgent || '';
 
-    // 3. Aplikasi laptop (Electron).
+    // 2. Penanda Electron — aplikasi laptop.
+    //
+    //    DIPERIKSA SEBELUM aturan localhost, karena aplikasi laptop menyajikan
+    //    halamannya dari `http://127.0.0.1:<port acak>`. Tanpa pemeriksaan
+    //    lebih dahulu, nilai `127.0.0.1` saja tidak cukup untuk membedakannya
+    //    dari server pengembangan.
     if (ua.includes('Electron')) return true;
 
-    // 4. Cadangan: WebView Android.
+    // 3. Tanda WebView Android — penanda yang cukup khas.
     if (ua.includes('; wv)') || ua.includes(' wv)')) return true;
+
+    // 4. localhost TANPA port — inilah aplikasi Android.
+    //
+    //    MENGAPA PORT YANG MENJADI PEMBEDANYA
+    //
+    //      Aplikasi Android menyajikan halamannya dari `https://localhost`
+    //      dengan port bawaan 443, sehingga `location.port` KOSONG.
+    //
+    //      Server pengembangan Vite berjalan di `http://localhost:5173`, dan
+    //      `vite preview` di `http://localhost:4173` — keduanya PUNYA port.
+    //
+    //      Sebelumnya aturan ini hanya memeriksa nama host, sehingga
+    //      `localhost:5173` ikut dikenali sebagai aplikasi. Akibatnya tombol
+    //      unduh HILANG saat pengembang mencoba halamannya di laptop sendiri,
+    //      padahal di website tombolnya ada. Itu membingungkan dan menyulitkan
+    //      pengujian.
+    //
+    //    Aplikasi laptop tidak terpengaruh: ia sudah dikenali lewat penanda
+    //    Electron di atas, sehingga portnya tidak perlu diperiksa.
+    const hosLokal = lokasi.hostname === 'localhost' || lokasi.hostname === '127.0.0.1';
+    if (hosLokal && !lokasi.port) return true;
 
     return false;
   } catch {

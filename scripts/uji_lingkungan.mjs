@@ -50,7 +50,7 @@ function uji(nama, hasil, harapan) {
  * #<Object> which has only a getter". Karena itu dipakai
  * `Object.defineProperty`.
  */
-async function denganLingkungan({ hostname, userAgent, capacitor }, fn) {
+async function denganLingkungan({ hostname, port = '', userAgent, capacitor }, fn) {
   const punyaWindow = 'window' in globalThis;
   const punyaNavigator = 'navigator' in globalThis;
   const windowLama = globalThis.window;
@@ -64,8 +64,15 @@ async function denganLingkungan({ hostname, userAgent, capacitor }, fn) {
     });
   };
 
+  const skema = hostname === 'resq-box.pages.dev' ? 'https' : 'http';
+  const hos = port ? `${hostname}:${port}` : hostname;
+
   pasang('window', {
-    location: { hostname, href: `https://${hostname}/` },
+    location: {
+      hostname,
+      port,
+      href: `${skema}://${hos}/`,
+    },
     ...(capacitor ? { Capacitor: capacitor } : {}),
   });
   pasang('navigator', { userAgent });
@@ -131,23 +138,79 @@ console.log('\n  ── Harus dikenali sebagai WEBSITE (tombol unduh TAMPIL) ─
   uji('Capacitor ada tetapi platform "web"', hasil, true);
 }
 
-// ── Kasus yang harus dikenali sebagai APLIKASI ──────────────────────────
-console.log('\n  ── Harus dikenali sebagai APLIKASI (tombol unduh SEMBUNYI) ──');
-
-// Tanda 2: nama host
+// ── SERVER PENGEMBANGAN: harus dianggap WEBSITE ─────────────────────────
+//
+// Ini kasus yang SEBELUMNYA SALAH. Versi pertama hanya memeriksa nama host,
+// sehingga `localhost:5173` dikenali sebagai aplikasi — dan tombol unduh
+// hilang saat halaman dicoba di laptop sendiri, padahal di website ada.
+console.log('\n  ── Server pengembangan di laptop (tombol unduh HARUS tampil) ──');
 {
   const hasil = await denganLingkungan(
-    { hostname: 'localhost', userAgent: UA_ANDROID_WEBVIEW },
-    (m) => m.sedangDiAplikasi()
+    { hostname: 'localhost', port: '5173', userAgent: UA_WEB_DESKTOP },
+    (m) => m.sedangDiWeb()
   );
-  uji('Tanda host: https://localhost (WebView Android)', hasil, true);
+  uji('vite dev di localhost:5173', hasil, true);
 }
 {
   const hasil = await denganLingkungan(
-    { hostname: '127.0.0.1', userAgent: UA_WEB_DESKTOP },
+    { hostname: 'localhost', port: '4173', userAgent: UA_WEB_DESKTOP },
+    (m) => m.sedangDiWeb()
+  );
+  uji('vite preview di localhost:4173', hasil, true);
+}
+{
+  const hasil = await denganLingkungan(
+    { hostname: '127.0.0.1', port: '3000', userAgent: UA_WEB_DESKTOP },
+    (m) => m.sedangDiWeb()
+  );
+  uji('server lain di 127.0.0.1:3000', hasil, true);
+}
+{
+  // Capacitor ADA dan platform 'android' -> tetap aplikasi walau ada port,
+  // karena tanda Capacitor diperiksa lebih dahulu.
+  const hasil = await denganLingkungan(
+    {
+      hostname: 'localhost',
+      port: '5173',
+      userAgent: UA_WEB_DESKTOP,
+      capacitor: { platform: 'android', isNativePlatform: () => true },
+    },
     (m) => m.sedangDiAplikasi()
   );
-  uji('Tanda host: 127.0.0.1 (aplikasi laptop)', hasil, true);
+  uji('Capacitor android menang atas port', hasil, true);
+}
+
+// ── Kasus yang harus dikenali sebagai APLIKASI ──────────────────────────
+console.log('\n  ── Harus dikenali sebagai APLIKASI (tombol unduh SEMBUNYI) ──');
+
+// Tanda 4: nama host lokal TANPA port — inilah aplikasi Android.
+// Server pengembangan PUNYA port, sehingga keduanya kini dapat dibedakan.
+{
+  const hasil = await denganLingkungan(
+    { hostname: 'localhost', port: '', userAgent: UA_ANDROID_WEBVIEW },
+    (m) => m.sedangDiAplikasi()
+  );
+  uji('Tanda host: https://localhost tanpa port (WebView Android)', hasil, true);
+}
+{
+  // Aplikasi Android dikenali dari HOST saja, walaupun penanda "wv" tidak ada.
+  // Ini penting: bila Android mengubah penanda user agent-nya, deteksi tetap
+  // bekerja lewat nama host.
+  const hasil = await denganLingkungan(
+    { hostname: 'localhost', port: '', userAgent: UA_WEB_DESKTOP },
+    (m) => m.sedangDiAplikasi()
+  );
+  uji('localhost tanpa port dikenali walau user agent biasa', hasil, true);
+}
+{
+  // Aplikasi laptop menyajikan halamannya dari http://127.0.0.1:<port acak>,
+  // dan dikenali lewat penanda Electron — BUKAN lewat nama host, karena nama
+  // host itu dipakai juga oleh server pengembangan.
+  const hasil = await denganLingkungan(
+    { hostname: '127.0.0.1', port: '50068', userAgent: UA_ELECTRON },
+    (m) => m.sedangDiAplikasi()
+  );
+  uji('Tanda Electron di 127.0.0.1:50068 (aplikasi laptop)', hasil, true);
 }
 
 // Tanda 3: Electron
