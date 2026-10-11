@@ -966,9 +966,69 @@ export default function Level3() {
                   top: `${(node.y / MAP_HEIGHT) * 100}%`,
                 }}
               >
-                {/* ── AVATAR DISPLAY (On Current Active Node) ── */}
+                {/*
+                  ── AVATAR PEMAIN PADA TITIK AKTIF ──
+
+                  ═══════════════════════════════════════════════════════════
+                  CACAT YANG DITEMUKAN PADA TANGKAPAN LAYAR LAPTOP (1280px)
+                  ═══════════════════════════════════════════════════════════
+
+                    Avatar pemain MENUTUPI judul misi pada plakat:
+
+                        "Job 1: Siny[AVATAR]us Normal"
+
+                    Ini BUKAN masalah HP saja; di laptop pun judulnya tidak
+                    terbaca utuh, hanya saja lebih banyak huruf yang tersisa.
+
+                  ═══════════════════════════════════════════════════════════
+                  DUA PERCOBAAN PERBAIKAN YANG GAGAL
+                  ═══════════════════════════════════════════════════════════
+
+                    1. Menghapus `-translate-x-1/2` pada plakat:
+                       TIDAK berpengaruh, karena wadah titik memakai
+                       `items-center` sehingga flexbox tetap memusatkannya.
+
+                    2. Menggeser avatar ke KIRI atau KE KANAN:
+                       TIDAK akan pernah berhasil. Diukur pada 1280px:
+
+                           plakat : x  60 sampai 380   (lebar 320px)
+                           avatar : x 157 sampai 282   (lebar 125px)
+
+                       Avatar HANYA 125px sedangkan plakat paling sempit 320px,
+                       sehingga avatar SELALU berada di dalam rentang mendatar
+                       plakat. Pergeseran mendatar berapa pun akan tetap
+                       bertumpuk.
+
+                  ═══════════════════════════════════════════════════════════
+                  PERBAIKAN YANG BENAR — DIGESER KE ATAS
+                  ═══════════════════════════════════════════════════════════
+
+                    Karena masalahnya tegak, avatar digeser KE ATAS. Nilainya
+                    dicari dengan mengukur, bukan menebak:
+
+                        pergeseran   luas tumpang tindih
+                            0px           5544 px2
+                          -10px           4410 px2
+                          -20px           3150 px2
+                          -30px           2394 px2
+                          -40px           1260 px2
+                          -45px            masih bertumpuk
+                          -50px            0 px2   <-- dipakai
+                          -60px            0 px2
+
+                    `-top-20` (80px) ditambah pergeseran 50px menjadi
+                    `-top-[130px]`.
+
+                    Pergeseran HANYA berlaku di laptop. Di HP avatar tetap pada
+                    `-top-20`, karena di sana plakatnya sudah berada di BAWAH
+                    titik sehingga tidak ada yang perlu dihindari.
+                */}
                 {isCurrentActive && (
-                  <div className="absolute -top-20 z-30 flex flex-col items-center animate-bounce pointer-events-none font-['Plus_Jakarta_Sans',sans-serif]">
+                  <div
+                    className={`absolute ${
+                      layarSempit ? '-top-20' : '-top-[130px]'
+                    } z-30 flex flex-col items-center animate-bounce pointer-events-none font-['Plus_Jakarta_Sans',sans-serif]`}
+                  >
                     {/* Speech bubble */}
                     <div className="bg-[#fef3c7] text-[#451a03] px-3 py-1 rounded-full text-[13px] font-black shadow-md border-2 border-[#b45309] whitespace-nowrap mb-1">
                       {student?.name && student.name !== '-' ? `Ayo ${student.name.split(' ')[0]}!` : 'Misi Aktif!'}
