@@ -6,7 +6,7 @@ import EarthDiveGame from './EarthDive/EarthDiveGame';
 
 export default function Level1Page() {
   return (
-    <div className="fixed inset-0 w-screen h-screen select-none bg-black overflow-hidden font-pixel">
+    <div className="fixed inset-0 w-screen h-screen safe-area-pad select-none bg-black overflow-hidden font-pixel">
       <EarthDiveGame />
     </div>
   );

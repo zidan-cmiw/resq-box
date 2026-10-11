@@ -103,7 +103,7 @@ export default function PrivacyPage() {
   const { t } = useI18n();
 
   return (
-    <div className="fixed inset-0 w-screen h-screen overflow-y-auto bg-[#0a0e1a] font-pixel">
+    <div className="fixed inset-0 w-screen h-screen safe-area-pad overflow-y-auto bg-[#0a0e1a] font-pixel">
       {/* Latar sederhana agar halaman tetap terasa bagian dari aplikasi */}
       <div className="min-h-full w-full flex flex-col items-center p-4 sm:p-8">
         <div className="w-full max-w-3xl">

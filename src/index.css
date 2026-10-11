@@ -2533,3 +2533,83 @@ html, body {
   transform-origin: 27px 14px;
   animation: wingRight 0.45s ease-in-out infinite;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SAFE AREA — MENGHINDARI PONI, LUBANG KAMERA, DAN LENGKUNG LAYAR
+   ══════════════════════════════════════════════════════════════════════════
+
+   MENGAPA BAGIAN INI ADA
+
+     Dilaporkan dari HP: tombol "Diorama WiFi" di pojok kanan Workspace
+     TERPOTONG, dan status bar HP juga terpotong pada sisi yang sama.
+
+     Penyebabnya: `index.html` memakai `viewport-fit=cover`. Setelan itu
+     membuat halaman MEMAKAI SELURUH LAYAR, termasuk area yang ditempati poni,
+     lubang kamera, dan lengkungan sudut layar. Itu memang disengaja supaya
+     gambar latar dapat memenuhi layar.
+
+     TETAPI tidak ada satu pun aturan `env(safe-area-inset-*)` di proyek ini.
+     Akibatnya tidak ada yang menghindari area tersebut, sehingga tombol dan
+     teks yang berada di tepi layar masuk ke bawah lubang kamera lalu
+     terpotong.
+
+     Pada POCO F7, lubang kameranya berada di TENGAH ATAS saat tegak, dan
+     berpindah ke SISI KANAN saat lanskap — persis tempat tombol "Diorama
+     WiFi" berada. Itu sebabnya masalahnya paling terlihat pada tombol itu.
+
+     Android 15 (API 35) mewajibkan mode "edge-to-edge": konten digambar
+     sampai ke tepi layar. Aplikasi ini menargetkan API 36, jadi keadaan itu
+     berlaku. Tanpa penanganan safe area, masalah ini akan muncul di semua
+     perangkat berponi atau berlubang kamera.
+
+   CARA PAKAI
+
+     Tambahkan kelas `.safe-area-pad` pada kontainer PALING LUAR yang memakai
+     `h-screen` / `w-screen`. Padding akan diwariskan ke elemen di dalamnya,
+     sehingga isi halaman tidak perlu diubah satu per satu.
+
+         <div className="h-screen w-full safe-area-pad ...">
+
+     MENGAPA HANYA PADA KONTAINER TERLUAR
+
+     Menambahkannya pada banyak elemen sekaligus membuat padding bertumpuk
+     dan mendorong tata letak dua kali. Satu tempat paling luar sudah cukup,
+     karena padding diwariskan.
+
+   NILAI CADANGAN
+
+     Setiap `env()` diberi nilai cadangan `0px`. Peramban yang tidak mengenal
+     `env()` akan mengabaikan seluruh deklarasi dan memakai nilai sebelumnya,
+     sehingga tampilan di peramban lama tidak berubah. Di perangkat tanpa
+     poni, semua inset bernilai 0px, jadi tata letaknya juga tidak berubah.
+   ══════════════════════════════════════════════════════════════════════════ */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+/* Keempat sisi — dipakai kontainer terluar halaman. */
+.safe-area-pad {
+  padding-top: var(--safe-top);
+  padding-right: var(--safe-right);
+  padding-bottom: var(--safe-bottom);
+  padding-left: var(--safe-left);
+}
+
+/* Hanya sisi kiri dan kanan — untuk bilah yang tingginya sudah tetap. */
+.safe-area-pad-x {
+  padding-right: var(--safe-right);
+  padding-left: var(--safe-left);
+}
+
+/* Hanya bagian atas — untuk kontainer yang isinya dimulai dari atas. */
+.safe-area-pad-top {
+  padding-top: var(--safe-top);
+}
+
+/* Hanya bagian bawah. */
+.safe-area-pad-bottom {
+  padding-bottom: var(--safe-bottom);
+}

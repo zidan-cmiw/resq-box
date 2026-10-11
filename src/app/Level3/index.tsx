@@ -280,7 +280,7 @@ export default function Level3() {
   const ribbonD = generateExpeditionTrailRibbon(ribbonPoints);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen overflow-hidden select-none bg-[#0c1a2e] font-['Plus_Jakarta_Sans',sans-serif] text-slate-100">
+    <div className="fixed inset-0 w-screen h-screen safe-area-pad overflow-hidden select-none bg-[#0c1a2e] font-['Plus_Jakarta_Sans',sans-serif] text-slate-100">
 
       {/* ── 1. FLOATING MINIMALIST RETRO HUD (No Giant Fixed Header, No Emojis!) ── */}
       {/* Top Left: Back & Title Badge */}

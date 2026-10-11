@@ -92,7 +92,7 @@ export default function Level2() {
 
   return (
     <Level2ErrorBoundary activeUserId={activeUserId}>
-      <div className="fixed inset-0 w-screen h-screen select-none bg-[#1c1917] overflow-hidden font-pixel">
+      <div className="fixed inset-0 w-screen h-screen safe-area-pad select-none bg-[#1c1917] overflow-hidden font-pixel">
         <TectonicGame />
       </div>
     </Level2ErrorBoundary>

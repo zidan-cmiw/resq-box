@@ -922,7 +922,7 @@ export default function TectonicGame() {
   }, [isPaused]);
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#09090b] select-none font-pixel">
+    <div className="relative w-screen h-screen safe-area-pad overflow-hidden bg-[#09090b] select-none font-pixel">
       {/* ── 1. GAME CANVAS ── */}
       <canvas
         ref={canvasRef}

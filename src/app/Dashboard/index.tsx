@@ -89,7 +89,7 @@ export default function Dashboard() {
   const studentClass = student?.class_name || 'Kelas VIII-A';
 
   return (
-    <div className="relative w-full min-h-screen h-screen overflow-hidden select-none bg-[#67b2f6] flex flex-col justify-between font-pixel">
+    <div className="relative w-full min-h-screen h-screen safe-area-pad overflow-hidden select-none bg-[#67b2f6] flex flex-col justify-between font-pixel">
 
       {/* ── 1. FULL VIEWPORT CLEAN SCENIC PIXEL ART LANDSCAPE (INSPIRED BY INDONESIAN VOLCANOES) ── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">

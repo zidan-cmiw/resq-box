@@ -1332,7 +1332,7 @@ export default function EarthDiveGame() {
   const previewConfig = getPreviewMapConfig(hudData.zoneIndex);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-black select-none font-pixel">
+    <div className="fixed inset-0 w-screen h-screen safe-area-pad overflow-hidden bg-black select-none font-pixel">
       {/* ── 1. FULLSCREEN RETRO GAME CANVAS ── */}
       <canvas
         ref={canvasRef}
