@@ -637,7 +637,7 @@ export default function Dashboard() {
             onMouseEnter={() => retroAudio.playHover()}
             className="pixel-btn-wood-plank cursor-pointer"
           >
-            <span>LEVEL 1. EARTH EXPLORER</span>
+            <span>LEVEL 1<span className="hidden sm:inline">. EARTH EXPLORER</span></span>
           </button>
 
           {/* Button 2: Disaster Analyst */}
@@ -648,7 +648,7 @@ export default function Dashboard() {
               onMouseEnter={() => retroAudio.playHover()}
               className="pixel-btn-wood-plank cursor-pointer"
             >
-              <span>LEVEL 2. DISASTER ANALYST</span>
+              <span>LEVEL 2<span className="hidden sm:inline">. DISASTER ANALYST</span></span>
             </button>
           ) : (
             <button
@@ -661,7 +661,7 @@ export default function Dashboard() {
               title="Selesaikan Level 1 Terlebih Dahulu"
             >
               <span className="material-symbols-outlined text-base font-medium">lock</span>
-              <span>LEVEL 2. DISASTER ANALYST</span>
+              <span>LEVEL 2<span className="hidden sm:inline">. DISASTER ANALYST</span></span>
             </button>
           )}
 
@@ -673,7 +673,7 @@ export default function Dashboard() {
               onMouseEnter={() => retroAudio.playHover()}
               className="pixel-btn-wood-plank cursor-pointer"
             >
-              <span>LEVEL 3. SIMULATION GAME</span>
+              <span>LEVEL 3<span className="hidden sm:inline">. SIMULATION GAME</span></span>
             </button>
           ) : (
             <button
@@ -686,7 +686,7 @@ export default function Dashboard() {
               title="Selesaikan Level 2 Terlebih Dahulu"
             >
               <span className="material-symbols-outlined text-base font-medium">lock</span>
-              <span>LEVEL 3. SIMULATION GAME</span>
+              <span>LEVEL 3<span className="hidden sm:inline">. SIMULATION GAME</span></span>
             </button>
           )}
 
