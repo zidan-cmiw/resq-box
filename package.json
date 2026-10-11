@@ -46,7 +46,10 @@
     "test:lingkungan": "node scripts/uji_lingkungan.mjs",
     "cek:petunjuk-hp": "python scripts/periksa_petunjuk_hp.py",
     "cek:izin-guru": "python scripts/periksa_izin_guru.py",
-    "uji:isolasi-guru": "python scripts/uji_isolasi_guru.py"
+    "uji:isolasi-guru": "python scripts/uji_isolasi_guru.py",
+    "guru:buat": "python scripts/kelola_akun_guru.py buat",
+    "guru:periksa": "python scripts/kelola_akun_guru.py periksa",
+    "guru:daftar": "python scripts/kelola_akun_guru.py daftar"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",

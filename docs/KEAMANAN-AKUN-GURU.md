@@ -28,49 +28,131 @@ Guru hanya bisa membuat akun **SISWA**, dan hanya untuk **kelasnya sendiri**
 itu memang pembatasan yang benar, karena kalau ada, satu guru dapat membuat
 akun guru palsu untuk mengintip kelas lain.
 
-### Cara menambah akun guru — lewat Dashboard Supabase
+### Cara menambah akun guru
 
-Peran `teacher` **hanya dapat diberikan lewat `app_metadata`**, dan
-`app_metadata` **hanya dapat ditulis oleh server**. Klien tidak bisa
-mengisinya — ini sudah diuji:
+Peran `teacher` **hanya sah bila berada di `app_metadata`**, dan `app_metadata`
+**hanya dapat ditulis oleh server**. Klien tidak bisa mengisinya — ini sudah
+diuji:
 
 ```
 Pendaftaran mandiri dengan data: {"role": "teacher"}
   -> HTTP 422, ditolak
 ```
 
-Langkah-langkahnya:
+Dan kunci anon juga **tidak dapat** melakukan operasi admin:
 
-1. Buka **Supabase Dashboard** -> proyek `miwfotsnkikozqhvewtw`
-2. Masuk ke **Authentication** -> **Users** -> **Add user**
-3. Isi:
-   - **Email**: `<username>@resqbox.local`
-     (pola email sintetis yang dipakai seluruh aplikasi ini)
-   - **Password**: password guru
-   - **Auto Confirm User**: **NYALA** (wajib, karena tidak ada verifikasi email)
-   - **User Metadata** (bukan App Metadata): `{"name": "Bu Tyas", "username": "buatyas"}`
-   - **App Metadata**: `{"role": "teacher", "username": "buatyas"}`
-4. Simpan.
+```
+Admin API dengan kunci anon  ->  HTTP 403
+{"error_code": "not_admin", "msg": "User not allowed"}
+```
 
-> **Email memakai `@resqbox.local`, bukan email sungguhan.**
-> Guru masuk dengan mengetik **username**-nya saja; aplikasi menambahkan
-> `@resqbox.local` di belakangnya secara otomatis.
+Ada **dua cara**, dan **cara kedua lebih disarankan**.
+
+---
+
+#### Cara 1 (DISARANKAN) — lewat skrip yang sudah disiapkan
+
+```
+python scripts/kelola_akun_guru.py buat buatyas "Bu Tyas" "SMP Negeri 1"
+```
+
+Skrip itu akan:
+
+1. membuat akun dengan `email_confirm: true` (langsung aktif)
+2. menuliskan `role: teacher` ke **`app_metadata`** — tempat yang benar
+3. membuat kata sandi awal yang kuat dan **menampilkannya sekali saja**
+4. **langsung memeriksa hasilnya** dan memberi tahu bila ada yang salah
+
+Skrip memerlukan kunci `service_role`. Bila belum diset, ia akan memintanya
+dan **tidak menampilkannya di layar**.
+
+> ⚠️ **Kunci `service_role` MENEMBUS SELURUH RLS.** Siapa pun yang memilikinya
+> dapat membaca dan mengubah data **semua** guru dan **semua** murid.
+> Jangan menaruhnya di kode, di `.env` yang ikut git, di APK, di `.exe`, atau
+> di website. Bila pernah terlanjur dikirim ke mana pun, **putar ulang**
+> kuncinya di Dashboard → Settings → API → Roll `service_role` key.
+
+Memeriksa akun yang sudah ada:
+
+```
+python scripts/kelola_akun_guru.py periksa buatyas
+python scripts/kelola_akun_guru.py daftar
+```
+
+---
+
+#### Cara 2 — lewat Dashboard Supabase
+
+**Perlu diperhatikan:** Dashboard Supabase versi sekarang hanya menyediakan
+**satu kolom metadata** pada dialog "Add user", yaitu **User Metadata**.
+
+Masalahnya, trigger `handle_new_auth_user` membaca peran dari
+**`raw_app_meta_data`**, bukan `raw_user_meta_data`:
+
+```sql
+v_role := CASE
+  WHEN COALESCE(NEW.raw_app_meta_data ->> 'role', '') IN ('teacher', 'admin')
+  THEN NEW.raw_app_meta_data ->> 'role'
+  ELSE 'student'
+END;
+```
+
+Jadi bila `{"role": "teacher"}` ditaruh di **User Metadata**, hasilnya:
+
+- `raw_user_meta_data.role` = `"teacher"` — **diabaikan** trigger
+- `raw_app_meta_data.role` = kosong → peran menjadi **`student`**
+
+Akibatnya guru itu masuk sebagai siswa. **Karena itu Cara 1 lebih disarankan.**
+
+Bila tetap ingin memakai Dashboard, inilah langkahnya:
+
+1. **Authentication** → **Users** → **Add user**
+2. **Email**: `<username>@resqbox.local`
+3. **Password**: kata sandi guru
+4. **Auto Confirm User**: **NYALA** (wajib — tidak ada verifikasi email)
+5. **User Metadata**: `{"name": "Bu Tyas", "username": "buatyas", "school_name": "SMP Negeri 1"}`
+6. Simpan, lalu **perbaiki perannya** dengan menjalankan SQL ini di
+   **SQL Editor**:
+
+```sql
+-- 1. Pasang peran di app_metadata (ini yang menentukan peran login)
+UPDATE auth.users
+   SET raw_app_meta_data =
+       COALESCE(raw_app_meta_data, '{}'::jsonb)
+       || jsonb_build_object('role', 'teacher', 'username', 'buatyas')
+ WHERE email = 'buatyas@resqbox.local';
+
+-- 2. Samakan peran di profil (dipakai pemeriksaan RLS)
+UPDATE public.profiles
+   SET role = 'teacher'
+ WHERE username = 'buatyas';
+```
+
+7. Verifikasi:
+
+```
+python scripts/kelola_akun_guru.py periksa buatyas
+```
+
+> **Setelah mengubah peran, guru harus MASUK ULANG.** Peran diambil dari
+> `app_metadata` saat token dibuat, jadi token yang lama masih membawa peran
+> yang lama.
 
 ### Urutan yang penting
 
-`app_metadata.role` **harus** `teacher` **sebelum guru itu masuk pertama kali**.
+`app_metadata.role` **harus** sudah `teacher` **sebelum guru itu masuk pertama kali**.
 
 Sebabnya peran diambil dari `app_metadata` saat token dibuat, lewat
 `custom_access_token_hook`. Bila guru masuk lebih dahulu tanpa peran itu, ia
 akan dibuatkan profil sebagai `student`. Perbaikan setelahnya masih mungkin
-(mengubah `app_metadata` lalu meminta guru masuk ulang), tetapi lebih mudah
-dilakukan benar sejak awal.
+(dengan SQL di atas, lalu masuk ulang), tetapi lebih mudah dilakukan benar
+sejak awal.
 
 ### Guru pertama untuk tiap sekolah
 
-Untuk setiap sekolah baru, buat satu akun guru lewat Dashboard. Setelah itu
-guru tersebut membuat kelasnya sendiri **di dalam aplikasi**
-(tombol "BUAT KELAS BARU"), lalu membuat akun murid-muridnya.
+Untuk setiap sekolah baru, buat satu akun guru. Setelah itu guru tersebut
+membuat kelasnya sendiri **di dalam aplikasi** (tombol "BUAT KELAS BARU"),
+lalu membuat akun murid-muridnya.
 
 ---
 
