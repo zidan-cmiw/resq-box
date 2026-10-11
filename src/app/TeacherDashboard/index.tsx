@@ -1291,6 +1291,68 @@ export default function TeacherDashboard() {
                     ⚠ {addStdError}
                   </div>
                 )}
+
+                {/*
+                  GURU BELUM PUNYA KELAS — JELASKAN, JANGAN HANYA MENOLAK
+
+                  ═══════════════════════════════════════════════════════════
+                  MASALAH YANG DILAPORKAN
+                  ═══════════════════════════════════════════════════════════
+
+                    "Ini ku coba buat akun di akun guru yang baru ko gabisa ya,
+                     apa karena usernamenya udah ada"
+
+                    Ternyata BUKAN karena usernamenya sudah ada. Server menolak
+                    dengan "Kelas belum dipilih." — karena `selectedClassCode`
+                    masih kosong, artinya guru itu BELUM PUNYA KELAS.
+
+                  MENGAPA INI TERJADI PADA AKUN GURU BARU
+
+                    Sebelumnya Dashboard Guru selalu membuka kelas 'RESQ-8A'
+                    yang ditulis mati di kode. Guru baru melihat daftar murid
+                    yang sebenarnya milik guru LAIN, dan mengira sudah punya
+                    kelas.
+
+                    Setelah perbaikan, kelas hanya dimuat bila benar-benar
+                    milik guru itu. Jadi guru yang belum membuat kelas kini
+                    melihat keadaan yang SEBENARNYA: belum ada kelas.
+
+                    Itu benar — tetapi sebelumnya tidak pernah dijelaskan,
+                    sehingga pemakainya bingung dan menyangka usernamenya
+                    yang bermasalah.
+
+                  CARA MEMPERBAIKI
+
+                    Ditampilkan penjelasan yang langsung menyebut langkah yang
+                    harus dilakukan, beserta tombol untuk melakukannya.
+                    Lebih baik menjelaskan daripada membiarkan guru menebak.
+                */}
+                {classroomsSiap && classrooms.length === 0 && (
+                  <div className="p-3 rounded-xl bg-amber-100 border-2 border-amber-700">
+                    <p className="text-[13px] text-amber-950 font-pixel font-bold leading-relaxed mb-2">
+                      ⚠ Akun ini <strong>belum punya kelas</strong>. Murid harus
+                      dimasukkan ke sebuah kelas lebih dahulu.
+                    </p>
+                    <p className="text-[12.5px] text-amber-900 font-pixel font-semibold leading-relaxed mb-2.5">
+                      Buat kelas dulu, lalu buka kembali jendela ini untuk
+                      menambahkan murid ke kelas tersebut.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        retroAudio.playSelect();
+                        // Tutup modal "Kelola & Edit Kelas", lalu buka modal
+                        // "Buat Kelas Baru" — supaya guru langsung dibawa ke
+                        // langkah yang harus dilakukannya.
+                        setShowManageClassModal(false);
+                        setShowNewClassModal(true);
+                      }}
+                      className="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white border-2 border-emerald-900 font-pixel-title text-[13px] font-bold cursor-pointer active:translate-y-0.5"
+                    >
+                      + BUAT KELAS SEKARANG
+                    </button>
+                  </div>
+                )}
                 <div>
                   <label htmlFor="f-nama-lengkap-siswa" className="block text-[13.5px] font-pixel-title font-bold text-amber-950 mb-1">
                     NAMA LENGKAP SISWA
