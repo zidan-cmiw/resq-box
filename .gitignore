@@ -28,3 +28,35 @@ dev-dist
 # Python
 __pycache__/
 *.pyc
+
+# ── Android (Capacitor) ────────────────────────────────────────────────────
+# Proyek Android di folder `android/` IKUT disimpan, karena berkas
+# konfigurasinya (mis. AndroidManifest.xml dan pengaturan Gradle) perlu
+# ditinjau dan dapat berubah. Yang TIDAK disimpan adalah hasil bangun dan
+# berkas rahasia.
+android/build/
+android/app/build/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+.capacitor/
+
+# Kunci penanda tangan APK — JANGAN PERNAH disimpan.
+# Siapa pun yang memegangnya dapat menerbitkan pembaruan atas nama aplikasi.
+*.jks
+*.keystore
+keystore.properties
+*.apk
+*.aab
+
+# ── iOS (bila platformnya ditambahkan kelak) ───────────────────────────────
+ios/App/Pods/
+ios/App/build/
+ios/App/public/
+ios/App/App/public/
+ios/App/App/capacitor.config.json
+*.ipa
+
