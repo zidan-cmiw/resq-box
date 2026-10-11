@@ -122,6 +122,29 @@ def main() -> int:
                 if not any(x in baris for x in PUNYA_ACUAN_MENDATAR):
                     catat("fixed bottom tanpa jarak sisi", f, n, isi)
 
+            # ── 5. Ukuran kanvas dari jendela, bukan dari wadah ──────────
+            #
+            # Mengukur kanvas dengan `window.innerWidth`/`innerHeight` lalu
+            # hanya mendengarkan `resize` membuat kanvas TIDAK menyesuaikan
+            # saat panel samping peramban dibuka atau ditutup — di Safari iOS
+            # peristiwa `resize` tidak selalu terkirim untuk perubahan itu.
+            # Akibatnya sebagian layar menjadi HITAM.
+            #
+            # Seluruh logika ukuran kanvas harus memakai `useUkuranKanvas`
+            # (src/hooks/useUkuranKanvas.ts), yang mengukur wadahnya dan
+            # memantau lewat ResizeObserver + orientationchange +
+            # visualViewport.
+            #
+            # CATATAN: versi pertama butir ini juga menandai setiap
+            # `canvas.width = ...`, dan itu menghasilkan EMPAT positif palsu
+            # pada `Merapi3DScene` yang memakai kanvas ukuran TETAP (512x160
+            # dan 1024x1024) untuk tekstur. Kanvas tetap memang tidak perlu
+            # menyesuaikan layar. Karena itu yang diperiksa HANYA ukuran yang
+            # berasal dari jendela.
+            if "window.innerWidth" in baris or "window.innerHeight" in baris:
+                if re.search(r"canvas\.(style\.)?(width|height)", baris):
+                    catat("ukuran kanvas dari jendela", f, n, isi)
+
         # ── 4. Label pelacak misi tanpa batas lebar ──────────────────────
         #
         # Dua cara sebelumnya gagal, dan keduanya karena mencari `className`

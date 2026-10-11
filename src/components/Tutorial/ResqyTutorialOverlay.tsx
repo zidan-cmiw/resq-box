@@ -447,13 +447,36 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
 
               {/* 3. Footer Bar: Tombol di Atas, Indikator Titik Langkah di Bawah (Agar Tombol Tidak Tergeser ke Kanan) */}
               <div className="mt-2.5 pt-2 sm:mt-3 sm:pt-2.5 border-t-2 sm:border-t-3 border-[#b45309]/30 shrink-0 flex flex-col gap-2">
-                {/* A. Baris Tombol Aksi (Penuh dan Lega, Bebas Terpotong) */}
-                <div className="flex items-center justify-between gap-2 sm:gap-3 w-full">
+                {/*
+                  A. Baris Tombol Aksi
+
+                  MENGAPA `flex-wrap` DAN UKURAN YANG MENYESUAIKAN
+
+                    Versi sebelumnya memakai `justify-between` pada wadah yang
+                    TIDAK boleh membungkus, sedangkan KEDUA tombolnya memakai
+                    `shrink-0` + `whitespace-nowrap` — artinya tidak boleh
+                    mengecil DAN tidak boleh turun baris.
+
+                    Pada HP selebar 360px ruang yang tersedia di dalam papan
+                    hanya ~314px, sedangkan "SEBELUMNYA" (~146px) ditambah
+                    "SAYA MENGERTI! ✓" (~209px) beserta jaraknya memerlukan
+                    ~363px. Karena keduanya tidak dapat menyusut, baris itu
+                    MELUBER keluar papan dan tombol kanan TERPOTONG.
+
+                    Perbaikannya:
+                      1. `flex-wrap` — bila tidak muat, tombol turun ke baris
+                         berikutnya, bukan meluber keluar layar
+                      2. ukuran dan jarak diperkecil di layar sempit
+                      3. `whitespace-nowrap` DIPERTAHANKAN pada tombol, karena
+                         label dua kata yang terpotong menjadi dua baris justru
+                         terlihat lebih buruk daripada turun baris
+                */}
+                <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-3 w-full">
                   {currentStepIdx > 0 ? (
                     <button
                       type="button"
                       onClick={handlePrev}
-                      className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-amber-200/90 hover:bg-amber-300 text-[#78350f] border-2 border-[#b45309] font-pixel-title text-[13px] sm:text-[15px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm whitespace-nowrap flex items-center justify-center gap-1 shrink-0"
+                      className="px-2.5 py-1.5 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl bg-amber-200/90 hover:bg-amber-300 text-[#78350f] border-2 border-[#b45309] font-pixel-title text-[11px] sm:text-[15px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm whitespace-nowrap flex items-center justify-center gap-1 shrink-0"
                     >
                       <span>&lt;</span>
                       <span>SEBELUMNYA</span>
@@ -465,7 +488,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                   <button aria-label="Lanjut ke langkah berikutnya"
                     type="button"
                     onClick={handleNext}
-                    className="px-4 py-2 sm:px-6 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-2 sm:border-3 border-[#451a03] shadow-[0_3px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center justify-center gap-1.5 sm:gap-2 transition-all font-bold whitespace-nowrap shrink-0"
+                    className="px-3 py-1.5 sm:px-6 sm:py-2.5 rounded-lg sm:rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-2 sm:border-3 border-[#451a03] shadow-[0_3px_0_#231206] text-[11px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center justify-center gap-1.5 sm:gap-2 transition-all font-bold whitespace-nowrap shrink-0"
                   >
                     <PixelIcon name="check" size={16} className="text-amber-200 shrink-0" />
                     <span>

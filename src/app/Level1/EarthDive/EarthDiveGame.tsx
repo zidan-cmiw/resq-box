@@ -15,6 +15,7 @@ import { SuitMerchantModal } from './SuitMerchantModal';
 import VisualNovelDialogue from './VisualNovelDialogue';
 import { getDialogueTree, type DialogueTree } from './dialogueData';
 import { retroAudio } from '../../../utils/retroAudio';
+import { useUkuranKanvas } from '../../../hooks/useUkuranKanvas';
 import { toggleFullscreen, isFullscreenActive } from '../../../utils/fullscreen';
 import { useAuthStore, getActiveCustomAvatar, type CustomAvatarConfig } from '../../../store/teacherStore';
 import { syncEarthDiveProgress } from './earthDiveSync';
@@ -357,36 +358,34 @@ export default function EarthDiveGame() {
     toggleFullscreen((state) => setIsFullscreen(state));
   };
 
-  // ── CANVAS RESIZE TO FULL VIEWPORT (HIGH-DPI & ZOOM CRISP AWARE) ──
-  // Mendukung window.devicePixelRatio sehingga saat siswa melakukan zoom-in (150%, 200%, 250%)
-  // atau menggunakan layar Retina iPad/Tablet, tampilan kanvas dan teks tetap tajam 100% tanpa buram.
-  const resizeCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
-    const cssW = window.innerWidth;
-    const cssH = window.innerHeight;
-    const pixelW = Math.round(cssW * dpr);
-    const pixelH = Math.round(cssH * dpr);
-
-    if (canvas.width !== pixelW || canvas.height !== pixelH) {
-      canvas.width = pixelW;
-      canvas.height = pixelH;
-      canvas.style.width = `${cssW}px`;
-      canvas.style.height = `${cssH}px`;
-    }
-  }, []);
+  // ── UKURAN KANVAS ────────────────────────────────────────────────────────
+  //
+  //  Seluruh logika ukuran kanvas ada di `useUkuranKanvas`, dipakai bersama
+  //  dengan Level 2. Kait itu mengambil ukuran dari WADAH kanvas (bukan dari
+  //  `window`) dan memantau perubahan lewat empat cara sekaligus, karena
+  //  masing-masing dapat gagal sendiri-sendiri:
+  //
+  //    1. ResizeObserver pada wadah — paling dapat diandalkan
+  //    2. peristiwa resize jendela
+  //    3. orientationchange — putar layar
+  //    4. visualViewport resize & scroll — bilah peramban dan panel samping
+  //
+  //  MENGAPA: dilaporkan dari HP bahwa setelah panel samping peramban dibuka
+  //  lalu ditutup, sebagian layar menjadi HITAM. Di Safari iOS, `resize`
+  //  TIDAK SELALU TERKIRIM untuk perubahan seperti itu, sehingga kanvas tetap
+  //  sebesar ukuran lama sementara wadahnya sudah berubah.
+  //
+  //  Kanvas ini tetap mempertahankan gaya penskalaan tajam (devicePixelRatio)
+  //  supaya teks tidak buram pada layar Retina iPad/tablet.
+  const resizeCanvas = useUkuranKanvas(canvasRef);
 
   useEffect(() => {
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
     const handleFsChange = () => {
       setIsFullscreen(isFullscreenActive());
       resizeCanvas();
     };
     document.addEventListener('fullscreenchange', handleFsChange);
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
       document.removeEventListener('fullscreenchange', handleFsChange);
     };
   }, [resizeCanvas]);

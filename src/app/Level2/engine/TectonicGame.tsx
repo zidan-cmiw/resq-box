@@ -7,6 +7,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUkuranKanvas } from '../../../hooks/useUkuranKanvas';
 import { sifatTombol } from '../../../utils/keyboard';
 import {
   createInitialGameStateL2,
@@ -426,28 +427,24 @@ export default function TectonicGame() {
   };
 
   // ── CANVAS RESIZE HANDLER (DPR & ZOOM CRISP AWARE) ──
-  const resizeCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
-    const cssW = window.innerWidth;
-    const cssH = window.innerHeight;
-    const pixelW = Math.round(cssW * dpr);
-    const pixelH = Math.round(cssH * dpr);
-
-    if (canvas.width !== pixelW || canvas.height !== pixelH) {
-      canvas.width = pixelW;
-      canvas.height = pixelH;
-      canvas.style.width = `${cssW}px`;
-      canvas.style.height = `${cssH}px`;
-    }
-  }, []);
-
-  useEffect(() => {
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    return () => window.removeEventListener('resize', resizeCanvas);
-  }, [resizeCanvas]);
+  // ── UKURAN KANVAS ────────────────────────────────────────────────────────
+  //
+  //  Seluruh logika ada di `useUkuranKanvas`, dipakai bersama dengan Level 1.
+  //
+  //  MENGAPA TIDAK LAGI MEMAKAI window.innerWidth/innerHeight
+  //    Dilaporkan dari HP: setelah panel samping peramban dibuka lalu
+  //    ditutup, sebagian layar permainan menjadi HITAM. Di Safari iOS,
+  //    peristiwa `resize` TIDAK SELALU TERKIRIM untuk perubahan seperti itu,
+  //    sehingga kanvas tetap sebesar ukuran lama sementara wadahnya sudah
+  //    berubah — dan bagian yang tidak tergambar terlihat hitam.
+  //
+  //    Kait itu mengambil ukuran dari WADAH kanvas dan memantau perubahan
+  //    lewat empat cara sekaligus, termasuk `ResizeObserver` yang mengamati
+  //    elemennya langsung dan tidak bergantung peristiwa jendela.
+  //
+  //    Nilai kembaliannya belum diperlukan di sini — kaitnya sudah menangani
+  //    seluruh peristiwa sendiri, termasuk saat layar penuh dinyalakan.
+  useUkuranKanvas(canvasRef);
 
   // ── MAIN GAME LOOP ──
   useEffect(() => {
