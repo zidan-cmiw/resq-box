@@ -72,3 +72,6 @@ dist-electron/
 # yang dibuat ulang setiap kali membangun.
 build/icon.ico
 build/*.blockmap
+
+# Panduan internal - TIDAK diunggah ke GitHub
+docs/
