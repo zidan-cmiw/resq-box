@@ -44,7 +44,9 @@
     "cek:akses-publik": "python scripts/uji_akses_tanpa_login.py",
     "test:mode-tamu": "node scripts/uji_mode_tamu.mjs",
     "test:lingkungan": "node scripts/uji_lingkungan.mjs",
-    "cek:petunjuk-hp": "python scripts/periksa_petunjuk_hp.py"
+    "cek:petunjuk-hp": "python scripts/periksa_petunjuk_hp.py",
+    "cek:izin-guru": "python scripts/periksa_izin_guru.py",
+    "uji:isolasi-guru": "python scripts/uji_isolasi_guru.py"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
