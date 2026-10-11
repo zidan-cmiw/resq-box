@@ -220,11 +220,42 @@ def perintah_periksa(username: str, kunci: str) -> int:
     if status != 200:
         status, hasil = panggil("/auth/v1/admin/users?per_page=200", kunci)
 
+    # ── MENGAPA KEGAGALAN PENCARIAN HARUS DIBEDAKAN DARI "TIDAK DITEMUKAN" ──
+    #
+    # Versi sebelumnya langsung menyimpulkan "akun tidak ditemukan" begitu
+    # daftarnya kosong — TANPA memeriksa apakah pencariannya sendiri berhasil.
+    #
+    # Akibatnya berbahaya: bila kuncinya salah (mis. kunci `anon` tertempel,
+    # bukan `service_role`), pencarian gagal, daftarnya kosong, dan skrip
+    # melaporkan:
+    #
+    #     [X] Akun budi@resqbox.local TIDAK DITEMUKAN
+    #
+    # Padahal akunnya ADA. Guru lalu membuat akun dengan username yang sama,
+    # ditolak server karena sudah ada, dan menjadi bingung.
+    #
+    # Diuji langsung: dengan kunci anon, skrip memang melaporkan
+    # "TIDAK DITEMUKAN" untuk akun yang belum tentu tidak ada.
+    #
+    # Sekarang bila pencariannya GAGAL (status bukan 200), skrip mengatakan
+    # sebenarnya — bahwa ia tidak dapat memeriksa — alih-alih berpura-pura
+    # akunnya tidak ada.
+    if status != 200:
+        print(f"      [X] GAGAL MEMERIKSA (HTTP {status})")
+        print(f"          {json.dumps(hasil)[:200]}")
+        print("")
+        print("          Akun ini BELUM TENTU tidak ada — pemeriksaannya yang gagal.")
+        if status in (401, 403):
+            print("          Penyebab tersering: kunci yang dipakai BUKAN `service_role`.")
+            print("          Ambil dari: Settings -> API -> service_role (secret)")
+        return 1
+
     daftar = hasil.get("users", hasil if isinstance(hasil, list) else [])
     cocok = [u for u in daftar if (u.get("email") or "").lower() == email.lower()]
 
     if not cocok:
-        print(f"      [X] Akun {email} TIDAK DITEMUKAN")
+        print(f"      [v] pemeriksaan berhasil ({len(daftar)} akun diperiksa)")
+        print(f"      [X] Akun {email} TIDAK DITEMUKAN — memang belum ada")
         print("          Buat dengan: python scripts/kelola_akun_guru.py buat " + username)
         return 1
 
