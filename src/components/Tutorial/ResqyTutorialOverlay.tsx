@@ -425,21 +425,49 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
               style={{ maxHeight: 'inherit' }}
             >
               {/* 1. Header Bar: Maskot + Badge + Judul + Tombol Tutup */}
-              <div className="flex items-center justify-between gap-2 pb-2 mb-2 sm:pb-3 sm:mb-2.5 border-b-2 sm:border-b-3 border-[#b45309]/30 shrink-0">
-                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              {/*
+                HEADER RINGKAS DI HP
+
+                ═══════════════════════════════════════════════════════════
+                MASALAH YANG TERLIHAT PADA TANGKAPAN LAYAR HP (390px)
+                ═══════════════════════════════════════════════════════════
+
+                  Judul panduan memakai font piksel (Press Start 2P). Setiap
+                  hurufnya selebar 1em, sehingga judul seperti
+                  "Kuk-kuuk! Selamat Datang di RESQ-BOX!" sangat lebar.
+
+                  Di HP, judul itu hanya mendapat sisa ruang setelah maskot
+                  38px dan jarak 8px, sehingga PECAH menjadi dua baris.
+                  Ditambah ruang bawah untuk tombol, dialognya menjadi
+                  setinggi 390px — hampir separuh layar HP.
+
+                CARA MEMPERBAIKI
+
+                  Jarak, ukuran maskot, dan ukuran huruf judul diperkecil pada
+                  layar sempit. Ini memberi judul sekitar 40px ruang tambahan,
+                  sehingga lebih banyak judul yang muat dalam satu baris dan
+                  dialognya menjadi lebih pendek.
+
+                  Ukuran huruf judul SENGAJA tidak dikecilkan berlebihan:
+                  anak SMP harus tetap dapat membacanya dengan nyaman.
+                  Yang dikurangi lebih dahulu adalah jarak dan maskot, karena
+                  keduanya tidak mengurangi keterbacaan.
+              */}
+              <div className="flex items-center justify-between gap-1.5 sm:gap-2 pb-1.5 mb-1.5 sm:pb-3 sm:mb-2.5 border-b-2 sm:border-b-3 border-[#b45309]/30 shrink-0">
+                <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
                   <div className="shrink-0 drop-shadow-md">
-                    <ResqyMascot size={isMobile ? 38 : 52} talking={true} mood="wise" />
+                    <ResqyMascot size={isMobile ? 30 : 52} talking={true} mood="wise" />
                   </div>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap mb-0.5">
-                      <span className="px-2 py-0.5 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-[12.5px] sm:text-[13px] font-bold tracking-wider shadow-sm">
+                    <div className="flex items-center gap-1 sm:gap-2 flex-wrap mb-0.5">
+                      <span className="px-1.5 sm:px-2 py-0.5 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-[10px] sm:text-[13px] font-bold tracking-wide sm:tracking-wider shadow-sm">
                         {activeStep.badge || 'PANDUAN RESQY'}
                       </span>
-                      <span className="text-[13.5px] sm:text-[13px] text-[#78350f] font-pixel-title font-bold">
+                      <span className="text-[11px] sm:text-[13px] text-[#78350f] font-pixel-title font-bold">
                         ({currentStepIdx + 1}/{tour.steps.length})
                       </span>
                     </div>
-                    <h3 className="font-pixel-title text-[13px] sm:text-base md:text-lg lg:text-xl text-[#2e0e02] font-black leading-tight break-words">
+                    <h3 className="font-pixel-title text-[12px] sm:text-base md:text-lg lg:text-xl text-[#2e0e02] font-black leading-tight break-words">
                       {activeStep.title}
                     </h3>
                   </div>
@@ -457,16 +485,16 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
 
               {/* 2. Isi Narasi Utama & Petunjuk Aksi (Scrollable Internal) */}
               <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain pr-1 custom-scrollbar">
-                <p className="font-pixel text-[13px] sm:text-[15px] md:text-base lg:text-lg leading-relaxed text-[#1a0800] font-extrabold tracking-normal whitespace-pre-line py-1">
+                <p className="font-pixel text-[12.5px] sm:text-[15px] md:text-base lg:text-lg leading-snug sm:leading-relaxed text-[#1a0800] font-extrabold tracking-normal whitespace-pre-line py-0.5 sm:py-1">
                   {activeStep.content}
                 </p>
 
                 {activeStep.actionHint && (
-                  <div className="mt-2 pt-2 sm:mt-2.5 sm:pt-2.5 border-t-2 border-[#b45309]/25 flex items-start gap-2 sm:gap-2.5">
-                    <span className="px-2 py-0.5 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[12.5px] sm:text-[14.5px] font-bold shrink-0 mt-0.5">
+                  <div className="mt-1.5 pt-1.5 sm:mt-2.5 sm:pt-2.5 border-t-2 border-[#b45309]/25 flex items-start gap-1.5 sm:gap-2.5">
+                    <span className="px-1.5 sm:px-2 py-0.5 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[10px] sm:text-[14.5px] font-bold shrink-0 mt-0.5">
                       PETUNJUK AKSI
                     </span>
-                    <p className="font-pixel text-[13px] sm:text-[15px] md:text-base leading-relaxed text-[#2e0e02] font-extrabold italic">
+                    <p className="font-pixel text-[12.5px] sm:text-[15px] md:text-base leading-snug sm:leading-relaxed text-[#2e0e02] font-extrabold italic">
                       {activeStep.actionHint}
                     </p>
                   </div>
