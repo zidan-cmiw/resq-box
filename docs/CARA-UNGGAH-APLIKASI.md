@@ -2,13 +2,34 @@
 
 Halaman masuk website memiliki dua tombol unduh:
 
-| Tombol | Berkas | Ukuran |
+| Tombol | Nama berkas di GitHub | Ukuran |
 |---|---|---|
-**LAPTOP (.exe)** | `RESQ-BOX-Laptop.exe` | ~114 MB |
+**LAPTOP (.exe)** | `RESQ-BOX-Laptop.exe` | ~115 MB |
 **ANDROID (.apk)** | `RESQ-BOX-Android.apk` | ~7 MB |
 
-Tombolnya mengarah ke **halaman Releases** repositori. Berkasnya **harus
-diunggah sekali** agar tombolnya berfungsi. Panduan ini menjelaskan caranya.
+Berkasnya perlu diunggah **sekali** ke halaman Releases agar tombolnya
+berfungsi.
+
+---
+
+## Penanda versi yang dipakai
+
+Website memakai tautan:
+
+```
+https://github.com/zidan-cmiw/resq-box/releases/latest/download/<nama berkas>
+```
+
+Kata **`latest`** berarti **"rilis terbaru"** — jadi penanda versinya
+**bebas**. Kamu boleh memakai `v1.0.0`, `v1.0.1`, `v2.0.0`, atau apa pun.
+
+**Konsekuensinya:** setiap kali ada versi baru, cukup unggah berkasnya
+dengan **nama yang sama** — **tidak perlu mengubah kode website sama
+sekali.**
+
+> **Satu syarat:** rilisnya **jangan** ditandai **"Pre-release"**. GitHub
+> melewati rilis pra-rilis saat mencari yang terbaru, sehingga tombolnya
+> akan menunjuk ke rilis yang salah.
 
 ---
 
@@ -16,10 +37,10 @@ diunggah sekali** agar tombolnya berfungsi. Panduan ini menjelaskan caranya.
 
 | | Batas |
 |---|---|
-Cloudflare Pages (website) | **25 MB per berkas** |
+Cloudflare Pages (website ini) | **25 MB per berkas** |
 GitHub Releases | 2 GB per berkas |
 
-Berkas `.exe` berukuran **114 MB**, jauh melebihi batas website. Halaman
+Berkas `.exe` berukuran **115 MB**, jauh melebihi batas website. Halaman
 Releases memang disediakan GitHub untuk berkas sebesar itu, **dan tidak
 membebani setiap pengunjung website dengan unduhan raksasa.**
 
@@ -27,14 +48,13 @@ membebani setiap pengunjung website dengan unduhan raksasa.**
 
 ## Berkas yang perlu diunggah
 
-| Berkas di komputer | Nama saat diunggah |
+| Berkas di komputer | Ganti nama menjadi |
 |---|---|
 `C:\resqbox-desktop\release\RESQ-BOX-0.0.0-portable.exe` | **`RESQ-BOX-Laptop.exe`** |
 `android\app\build\outputs\apk\debug\app-debug.apk` | **`RESQ-BOX-Android.apk`** |
 
-> **Nama saat diunggah HARUS persis seperti di atas.** Tombol di website
-> mencari nama itu. Bila namanya berbeda, tombolnya menghasilkan halaman
-> "not found".
+> **Nama berkasnya HARUS persis seperti di atas.** Tombol di website mencari
+> nama itu. Bila namanya berbeda, tombolnya menghasilkan halaman "not found".
 
 ---
 
@@ -46,30 +66,29 @@ membebani setiap pengunjung website dengan unduhan raksasa.**
 https://github.com/zidan-cmiw/resq-box/releases
 ```
 
-### 2. Buat rilis baru
+### 2. Klik "Draft a new release"
 
-Klik **"Draft a new release"** (atau **"Create a new release"**).
+### 3. Pilih atau buat penanda versi
 
-### 3. Isi penanda versi
-
-Pada kolom **"Choose a tag"**, ketik:
+Pada kotak **"Select tag"**, ketik:
 
 ```
 v1.0.0
 ```
 
-Lalu klik **"Create new tag: v1.0.0 on publish"** yang muncul.
+Lalu klik pilihan **"Create new tag: v1.0.0 on publish"** yang muncul.
 
-> **Harus `v1.0.0`.** Tombol di website mencari penanda versi itu.
+> Penanda versinya **bebas** — lihat bagian "Penanda versi yang dipakai" di
+> atas. Yang penting adalah **nama berkasnya**.
 
-### 4. Isi judul dan keterangan
+### 4. Isi judul rilis
 
-**Release title:**
 ```
 RESQ-BOX v1.0.0
 ```
 
-**Describe this release:** (bebas, contoh)
+### 5. Isi keterangan (bebas, contoh)
+
 ```
 Aplikasi RESQ-BOX untuk menyambung ke diorama fisik ESP32.
 
@@ -81,9 +100,9 @@ perangkat di jaringan lokal, sehingga diorama tidak dapat tersambung
 langsung dari website.
 ```
 
-### 5. Unggah kedua berkas
+### 6. Unggah kedua berkas
 
-Tarik kedua berkas ke kotak **"Attach binaries by dropping them here or
+Tarik keduanya ke kotak **"Attach binaries by dropping them here or
 selecting them"** di bagian bawah.
 
 **Setelah terunggah, ganti namanya:**
@@ -91,14 +110,19 @@ selecting them"** di bagian bawah.
 - Klik nama berkas → ganti menjadi `RESQ-BOX-Laptop.exe`
 - Klik nama berkas → ganti menjadi `RESQ-BOX-Android.apk`
 
-> Ukuran 114 MB memerlukan waktu unggah beberapa menit, tergantung
-> kecepatan internet. Tunggu sampai bilah kemajuannya selesai.
+> Ukuran 115 MB memerlukan waktu unggah beberapa menit. Tunggu sampai bilah
+> kemajuannya selesai.
 
-### 6. Terbitkan
+### 7. Pastikan TIDAK ditandai "Pre-release"
+
+Pada bagian **"Release label"**, biarkan **None** terpilih. **Jangan** pilih
+**Pre-release**, karena akan membuat tombolnya menunjuk ke rilis yang salah.
+
+### 8. Terbitkan
 
 Klik **"Publish release"**.
 
-### 7. Uji tombolnya
+### 9. Uji tombolnya
 
 Buka `https://resq-box.pages.dev`, lalu klik kedua tombol unduh. Keduanya
 harus langsung mengunduh berkasnya.
@@ -107,10 +131,8 @@ harus langsung mengunduh berkasnya.
 
 ## Bila ada versi baru nanti
 
-Setiap kali ada perbaikan, kedua aplikasi perlu dibangun ulang:
-
 ```powershell
-# 1. Bangun web (dipakai website, APK, dan .exe)
+# 1. Bangun web (dipakai website, APK, dan .exe sekaligus)
 npm run build
 
 # 2. Bangun .exe
@@ -123,13 +145,12 @@ $env:JAVA_HOME = 'C:\Program Files\Android\Android Studio\jbr'
 cd ..
 ```
 
-Lalu **buat rilis baru** dengan penanda versi berikutnya (`v1.0.1`,
-`v1.0.2`, dan seterusnya), dan **perbarui `PENANDA_RILIS`** di
-`src/app/Login/index.tsx` agar tombolnya menunjuk ke versi terbaru.
+Lalu **buat rilis baru** dengan penanda versi berikutnya dan unggah kedua
+berkas dengan **nama yang sama**. **Kode website tidak perlu diubah.**
 
 ---
 
-## Mengapa aplikasi terpisah diperlukan
+## Mengapa aplikasi terpisah memang diperlukan
 
 Ini bukan sekadar kemasan. Peramban **memblokir** koneksi `ws://` (tidak
 terenkripsi) dari halaman yang disajikan lewat HTTPS. Website memakai HTTPS,

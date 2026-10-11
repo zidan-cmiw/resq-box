@@ -15,17 +15,31 @@ import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
  *   disediakan untuk berkas sebesar itu, dan tidak membebani setiap
  *   pengunjung website dengan unduhan raksasa.
  *
- * CARA MENGISI
- *   Unggah kedua berkas ke satu rilis dengan penanda versi yang sama, lalu
- *   tautan di bawah akan langsung berfungsi. Bila belum diunggah, tautannya
- *   akan menghasilkan halaman "not found" — bukan tautan rusak yang diam.
+ * MENGAPA MEMAKAI `latest`, BUKAN PENANDA VERSI TERTENTU
+ *   Tautan `releases/latest/download/<nama>` selalu menunjuk ke rilis
+ *   TERBARU yang tidak ditandai pra-rilis. Dengan begitu, setiap kali ada
+ *   versi baru, cukup unggah berkasnya dengan nama yang sama — dan TIDAK
+ *   perlu mengubah kode ini sama sekali.
+ *
+ *   Versi yang memakai penanda tetap (`releases/download/v1.0.0/...`) akan
+ *   menghasilkan halaman "not found" begitu ada rilis yang lebih baru dan
+ *   rilis lamanya dihapus. Itu mudah terjadi tanpa disadari.
+ *
+ *   Satu syarat: rilisnya TIDAK boleh ditandai "Pre-release", karena GitHub
+ *   melewati rilis pra-rilis saat mencari yang terbaru.
+ *
+ * NAMA BERKAS HARUS PERSIS
+ *   Saat mengunggah ke GitHub Releases, kedua berkas harus dinamai:
+ *       RESQ-BOX-Laptop.exe
+ *       RESQ-BOX-Android.apk
+ *   Tautan di bawah mencari nama itu. Bila namanya berbeda, tombolnya
+ *   menghasilkan halaman "not found".
  */
 const REPO = 'https://github.com/zidan-cmiw/resq-box';
-const PENANDA_RILIS = 'v1.0.0';
 
 export const TAUTAN_UNDUH = {
-  laptop: `${REPO}/releases/download/${PENANDA_RILIS}/RESQ-BOX-Laptop.exe`,
-  android: `${REPO}/releases/download/${PENANDA_RILIS}/RESQ-BOX-Android.apk`,
+  laptop: `${REPO}/releases/latest/download/RESQ-BOX-Laptop.exe`,
+  android: `${REPO}/releases/latest/download/RESQ-BOX-Android.apk`,
   halamanRilis: `${REPO}/releases`,
 } as const;
 
