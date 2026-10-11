@@ -107,6 +107,36 @@ try {
     width: LEBAR, height: TINGGI, deviceScaleFactor: 2, mobile: LEBAR < 700,
   });
 
+// ── SESI GURU ──────────────────────────────────────────────────────────
+  //
+  //  `TeacherGuard` hanya memeriksa `currentUser?.role === 'teacher'`, jadi
+  //  Dashboard Guru dapat diukur dengan menuliskan sesi guru ke localStorage.
+  //  TIDAK ada data murid yang dibuat — halaman akan tampil dengan daftar
+  //  kosong, dan yang diukur adalah TATA LETAKNYA, bukan datanya.
+  if (SEBAGAI === 'guru' || SEBAGAI === 'teacher') {
+    await perintah('Emulation.setDeviceMetricsOverride', {
+      width: LEBAR, height: TINGGI, deviceScaleFactor: 1, mobile: LEBAR < 700,
+    });
+    await perintah('Page.navigate', { url: 'http://localhost:4173/login' });
+    await tunggu(4000);
+
+    const guru = {
+      id: 'guru-uji', username: 'guru', role: 'teacher', name: 'Bu Tyas',
+      absent_number: '', classroom_code: 'GURU', school_name: 'SMP Uji',
+      unlocked_level: 3,
+    };
+    await nilai(`(() => {
+      localStorage.setItem('resqbox-current-user', ${JSON.stringify(JSON.stringify(guru))});
+      localStorage.setItem('resqbox-unlocked-level', '3');
+      const tur = ['login','dashboard_student','dashboard_teacher','profile',
+                   'level1','level2','level3','workspace'];
+      for (const t of tur) for (const u of ['tamu','guest','guru-uji']) {
+        localStorage.setItem('resqbox_tour_completed_' + t + '_' + u, 'true');
+      }
+      return 'sesi guru disiapkan';
+    })()`);
+  }
+
   if (SEBAGAI === 'tamu') {
     await perintah('Page.navigate', { url: 'http://localhost:4173/login' });
     await tunggu(4500);

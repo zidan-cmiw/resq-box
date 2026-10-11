@@ -4,6 +4,7 @@
 // palet warna tenang dan elegan (tidak gonjreng), animasi ketik typewriter, micro-bounce, dan pilihan respons RPG.
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { TombolLanjutHp } from '../../components/TombolLanjutHp';
 import type { DialogueTree, DialogueNode, CharacterProfile, DialogueChoice } from './dialogueData';
 import { CHARACTER_PROFILES } from './dialogueData';
 import { getNpcPortrait, getPlayerPortrait } from './engine/npcSprites';
@@ -436,19 +437,7 @@ export default function VisualNovelDialogue({
               karena pilihannya sendiri sudah menjadi tombol lanjut.
           */}
           {(!currentNode?.choices || currentNode.choices.length === 0) && (
-            <div className="flex justify-end pt-2 sm:hidden">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAdvance();
-                }}
-                className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 active:translate-y-0.5 text-amber-50 border-2 border-[#451a03] shadow-[0_3px_0_#231206] font-pixel-title text-[13px] font-bold flex items-center gap-1.5 cursor-pointer"
-              >
-                <span>{isTyping ? 'LEWATI' : 'LANJUT'}</span>
-                <span className="text-[11px]">▶</span>
-              </button>
-            </div>
+            <TombolLanjutHp onLanjut={handleAdvance} sedangMengetik={isTyping} />
           )}
 
           {/* ── TOOLBAR BAWAH ── */}

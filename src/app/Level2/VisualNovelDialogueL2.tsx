@@ -6,6 +6,7 @@
 // - Animasi ketik typewriter, micro-bounce, auto-play, skip, dan log riwayat dialog resmi
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { TombolLanjutHp } from '../components/TombolLanjutHp';
 import type { DialogueTreeL2, DialogueNodeL2, CharacterProfileL2, DialogueChoiceL2 } from './dialogueDataL2';
 import { CHARACTER_PROFILES_L2 } from './dialogueDataL2';
 import { getNpcPortraitL2, getPlayerPortraitL2 } from './engine/npcSpritesL2';
@@ -411,6 +412,51 @@ export default function VisualNovelDialogueL2({
                 </button>
               ))}
             </div>
+          )}
+
+          {/*
+            TOMBOL LANJUT — KHUSUS HP
+
+            ═══════════════════════════════════════════════════════════════════
+            MASALAH YANG DITEMUKAN PADA TANGKAPAN LAYAR HP (390px)
+            ═══════════════════════════════════════════════════════════════════
+
+              Berkas ini memakai petunjuk "[Klik / SPASI untuk Lanjut]"
+              dengan kelas `hidden sm:inline`, sehingga petunjuk itu TIDAK
+              MUNCUL di layar HP.
+
+              Seluruh kotak dialog memang dapat DITEKAN untuk melanjutkan, dan
+              di laptop itu ditambah petunjuk tulisan. Tetapi di HP tidak ada
+              petunjuk apa pun — pemain hanya melihat teks percakapan tanpa
+              tanda bahwa ia harus menekan sesuatu.
+
+              Pada layar sentuh hal ini lebih buruk daripada di laptop:
+              pengguna HP tidak punya kebiasaan "menekan di mana saja", dan
+              tidak ada kursor yang berubah menjadi tangan sebagai petunjuk.
+
+            CATATAN: MASALAH YANG SAMA SUDAH DIPERBAIKI DI LEVEL 1
+
+              `VisualNovelDialogue.tsx` (Level 1) memakai susunan yang persis
+              sama dan sudah diperbaiki dengan tombol LANJUT. Berkas ini
+              (Level 2) belum tersentuh, sehingga masalahnya masih ada.
+
+            CARA MEMPERBAIKI
+
+              Tombol LANJUT ditambahkan pada posisi yang SAMA seperti di
+              Level 1: di BARIS PALING BAWAH dialog, di sisi kanan, supaya:
+
+                1. Berada paling dekat dengan ibu jari
+                2. Berada di bawah teks, bukan di atasnya — alur membacanya
+                   wajar: nama, teks, lalu tombol
+                3. Penekanannya dihentikan agar tidak diteruskan ke kotak
+                   dialog yang juga dapat ditekan (mencegah maju dua kali)
+
+              Hanya dirender di layar sempit, dan disembunyikan bila sedang
+              ada PILIHAN PERCABANGAN karena pilihannya sendiri sudah menjadi
+              tombol lanjut.
+          */}
+          {(!currentNode?.choices || currentNode.choices.length === 0) && (
+            <TombolLanjutHp onLanjut={handleAdvance} sedangMengetik={isTyping} />
           )}
 
           {/* ── TOOLBAR BAWAH (PERSIS LEVEL 1) ── */}
