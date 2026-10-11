@@ -22,6 +22,70 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    /*
+      PAGAR AGAR BERKAS .gz DI DALAM ASET TIDAK MENGGAGALKAN BUILD
+
+      ═══════════════════════════════════════════════════════════════════════
+      MASALAH YANG PERNAH TERJADI
+      ═══════════════════════════════════════════════════════════════════════
+
+        Build APK gagal dengan:
+
+            :app:mergeDebugAssets FAILED
+            Duplicate resources
+              public/terrain-688.stl
+              public/terrain-688.stl.gz
+
+        Sebabnya `public/` memuat DUA berkas berisi data yang sama:
+
+            terrain-688.stl     3,02 MB  (asli)
+            terrain-688.stl.gz  0,92 MB  (hasil kompresi berkas di atas)
+
+        Di web, kehadiran keduanya memang disengaja: aplikasi memuat `.gz`
+        lebih dahulu (menghemat 2,1 MB), lalu beralih ke `.stl` bila
+        dekompresi tidak didukung. Itu pilihan yang baik untuk web.
+
+        Tetapi di dalam APK keduanya ikut dikemas — 3,9 MB untuk satu model
+        yang sama — dan Gradle menolaknya sebagai sumber kembar.
+
+      ═══════════════════════════════════════════════════════════════════════
+      MENGAPA PAGAR INI ADA DI SINI, BUKAN DI SKRIP
+      ═══════════════════════════════════════════════════════════════════════
+
+        Sudah ada `scripts/siapkan-aset-android.mjs` yang menghapus `.gz` dari
+        aset Android. Skrip itu BENAR, dan tetap dipertahankan.
+
+        Tetapi skrip itu hanya berjalan bila seseorang memakai perintah
+        `npm run android:sync`. Bila ada yang menjalankan `cap sync android`
+        secara langsung — dan itu yang terjadi pada build ini — skrip itu
+        TERLEWAT, `.gz` ikut tersalin, dan build gagal dengan pesan yang
+        tidak menjelaskan apa pun tentang penyebab sebenarnya.
+
+        Memperbaiki masalah lewat sebuah LANGKAH yang harus diingat orang
+        adalah perbaikan yang rapuh: cepat atau lambat akan terlewat lagi.
+
+        Karena itu `.gz` dikecualikan di sini, pada tingkat Gradle, sehingga
+        berlaku untuk SIAPA PUN yang menjalankan build dengan cara apa pun.
+
+      ═══════════════════════════════════════════════════════════════════════
+      MENGAPA `.stl` YANG DIPERTAHANKAN, BUKAN `.gz`
+      ═══════════════════════════════════════════════════════════════════════
+
+        `.stl` adalah berkas ASLI dan selalu dapat dipakai; tidak ada syarat
+        khusus untuk membacanya.
+
+        `.gz` memerlukan `DecompressionStream('gzip')`. Di peramban modern API
+        itu tersedia, tetapi WebView Android versi lama belum tentu punya.
+        Menyimpan berkas yang hanya berguna bila API tertentu ada — sambil
+        menambah 0,92 MB dan menggagalkan build — tidak sepadan.
+
+        Jadi `.stl` dipertahankan, dan model 3D dijamin dapat dimuat di
+        perangkat apa pun.
+    */
+    androidResources {
+        ignoreAssetsPattern = '!*.gz'
+    }
 }
 
 repositories {
