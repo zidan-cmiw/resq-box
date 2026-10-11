@@ -145,17 +145,44 @@ export default function Workspace() {
         });
       };
 
-      ws.onclose = () => {
+      ws.onclose = (ev) => {
         setWsStatus('idle');
-        addLog(`[DIORAMA] Diorama Fisik Terputus.`, 'warn');
+
+        // MENGAPA PESANNYA DIBEDAKAN
+        //
+        // Sebelumnya setiap kegagalan hanya berbunyi "Gagal terhubung", tanpa
+        // menjelaskan sebabnya. Akibatnya penyebab yang sesungguhnya —
+        // Android memblokir ws:// karena kebijakan lalu lintas tidak
+        // terenkripsi — tidak pernah terlihat, dan pencarian masalahnya
+        // mengarah ke WiFi serta HTTPS yang sebenarnya sudah benar.
+        //
+        // Kode penutupan WebSocket membedakan sebabnya dengan jelas, jadi
+        // pesannya dibuat sesuai kode itu.
+        if (ev.code === 1000) {
+          addLog('[DIORAMA] Diorama Fisik Terputus.', 'warn');
+        } else if (ev.code === 1006) {
+          // 1006 = tertutup tanpa alasan yang dikirim server. Ini yang muncul
+          // ketika koneksi ditolak SEBELUM sampai ke server — misalnya
+          // diblokir kebijakan jaringan Android, atau alamat/port salah.
+          addLog(
+            `[DIORAMA] Tidak dapat menjangkau ${wsIp}:81. ` +
+              'Pastikan WiFi DIORAMA_ESP32 tersambung DAN aplikasi ini mengizinkan ' +
+              'koneksi tidak terenkripsi ke 192.168.4.1 (lihat network_security_config.xml). ' +
+              'Bila memakai versi web, jalankan lewat http://localhost.',
+            'error'
+          );
+        } else {
+          addLog(`[DIORAMA] Koneksi ditutup (kode ${ev.code}).`, 'warn');
+        }
+
         wsRef.current = null;
       };
 
-      ws.onerror = (err) => {
-        console.error('WS Error:', err);
+      ws.onerror = () => {
+        // Peristiwa `error` pada WebSocket tidak membawa keterangan apa pun
+        // menurut standar — hanya menandakan ada kegagalan. Keterangan yang
+        // berguna ada pada `onclose`, jadi penanganannya ada di sana.
         setWsStatus('idle');
-        addLog(`[DIORAMA] Gagal terhubung ke Diorama Fisik.`, 'error');
-        ws.close();
       };
 
       wsRef.current = ws;

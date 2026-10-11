@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  KEBJIAKAN KEAMANAN JARINGAN — RESQ-BOX
+  ══════════════════════════════════════════════════════════════════════════
+
+  MENGAPA BERKAS INI ADA
+
+    Sejak Android 9 (API 28), Android MEMBLOKIR lalu lintas jaringan yang
+    tidak terenkripsi (`http://` dan `ws://`) secara bawaan. Aplikasi ini
+    menargetkan Android 16 (API 36), jadi pemblokiran itu berlaku.
+
+    Akibatnya: aplikasi TIDAK DAPAT membuka WebSocket ke diorama ESP32 di
+    `ws://192.168.4.1:81`, walaupun:
+
+      - HP sudah tersambung ke WiFi DIORAMA_ESP32
+      - ESP32 memang menjawab (dibuktikan dengan membuka port 81 di peramban)
+      - `allowMixedContent: true` sudah menyala di capacitor.config.ts
+
+    MENGAPA `allowMixedContent` TIDAK CUKUP
+
+      `allowMixedContent` mengatur WebView (`setMixedContentMode`). Itu hanya
+      SATU dari dua lapisan. Lapisan kedua adalah Android sendiri, dan ia
+      memeriksa kebijakan ini SEBELUM permintaan sampai ke WebView.
+
+      Jadi keduanya diperlukan:
+          capacitor.config.ts  -> allowMixedContent: true      (lapisan WebView)
+          berkas ini           -> cleartext diizinkan          (lapisan Android)
+
+  MENGAPA TIDAK MEMAKAI `android:usesCleartextTraffic="true"` SAJA
+
+    Setelan itu mengizinkan lalu lintas tidak terenkripsi ke SELURUH alamat
+    di internet. Berkas ini jauh lebih sempit: hanya alamat yang memang
+    diperlukan yang diizinkan, dan sisanya tetap terblokir.
+
+  ALAMAT YANG DIIZINKAN — DAN MENGAPA MASING-MASING
+
+    192.168.4.1   Alamat bawaan ESP32 dalam mode Access Point. Ini alamat
+                  yang dipakai aplikasi untuk berbicara dengan diorama.
+                  Bila kamu mengubah AP_IP di firmware, ubah juga di sini.
+
+    127.0.0.1     WebView Capacitor menyajikan halaman aplikasi dari
+                  `https://localhost`. Tanpa ini, pemuatan berkas lokal
+                  dapat ikut terblokir.
+
+    localhost     Sama seperti di atas, dalam bentuk nama.
+
+  YANG TETAP TERBLOKIR
+
+    Seluruh alamat lain. Khususnya: bila suatu saat aplikasi memanggil
+    alamat `http://` di internet, panggilan itu tetap ditolak. Server
+    Supabase memakai `https://`, jadi tidak terpengaruh.
+
+  CATATAN PEMELIHARAAN
+
+    Berkas ini dirujuk dari AndroidManifest.xml lewat
+    `android:networkSecurityConfig`. Bila berkas ini dihapus tanpa mencabut
+    rujukannya, aplikasi akan GAGAL DIBANGUN — itu memang disengaja, supaya
+    kehilangannya tidak lewat begitu saja.
+-->
+<network-security-config>
+
+    <!-- Bawaan untuk seluruh alamat: tetap menolak lalu lintas tidak terenkripsi. -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Pengecualian: hanya alamat perangkat lokal yang diizinkan. -->
+    <domain-config cleartextTrafficPermitted="true">
+
+        <!-- Diorama ESP32 (mode Access Point). -->
+        <domain includeSubdomains="false">192.168.4.1</domain>
+
+        <!-- WebView Capacitor menyajikan halaman dari localhost. -->
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
+
+    </domain-config>
+
+</network-security-config>
