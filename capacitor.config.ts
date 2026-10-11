@@ -34,19 +34,20 @@ import type { CapacitorConfig } from '@capacitor/cli';
  *   menjalankan berkas Windows.
  *
  * ══════════════════════════════════════════════════════════════════════════
- * YANG PERLU DIKETAHUI SEBELUM MEMBANGUN
+ * CATATAN — APLIKASI ANDROID BELUM TENTU CUKUP DI PERANGKAT TERTENTU
  * ══════════════════════════════════════════════════════════════════════════
  *
- *   - Aplikasi ini memuat web dari `dist/` yang sudah dibangun lebih dahulu.
- *     Jadi urutannya: `pnpm run build` lalu `pnpm run android:sync`.
- *   - Membangun APK memerlukan Android Studio (atau JDK + Android SDK).
- *   - `allowMixedContent` membuka akses HTTP tidak terenkripsi di dalam
- *     aplikasi. Itu memang diperlukan untuk berbicara dengan perangkat di
- *     jaringan lokal, tetapi ketahuilah bahwa permukaan risikonya bertambah:
- *     konten dari sumber tidak terenkripsi dapat masuk ke WebView.
- *     Karena jaringan Board bersifat lokal dan tertutup (ESP32 memancarkan
- *     WiFi-nya sendiri tanpa akses internet), risiko itu dapat diterima untuk
- *     keperluan pembelajaran di kelas.
+ *   `allowMixedContent` mengatur lapisan WebView. Tetapi Android juga punya
+ *   lapisan tersendiri: sejak Android 9 (API 28), Android MEMBLOKIR lalu
+ *   lintas tidak terenkripsi secara bawaan. Karena aplikasi ini menargetkan
+ *   API 36, pemblokiran itu berlaku.
+ *
+ *   Karena itu lapisan Android diatur terpisah di
+ *   `android/app/src/main/res/xml/network_security_config.xml`, yang hanya
+ *   mengizinkan lalu lintas tidak terenkripsi ke 192.168.4.1, 127.0.0.1, dan
+ *   localhost — selebihnya tetap diblokir.
+ *
+ *   KEDUANYA diperlukan. Menyalakan salah satu saja tidak cukup.
  */
 const config: CapacitorConfig = {
   appId: 'id.resqbox.app',

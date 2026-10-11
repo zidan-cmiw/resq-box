@@ -35,7 +35,10 @@
     "android:build": "npm run android:sync && cap build android",
     "test:nilai-luring": "node scripts/uji_nilai_luring.mjs",
     "cek:tata-letak": "python scripts/periksa_tata_letak.py",
-    "cek:safe-area": "python scripts/periksa_safe_area.py"
+    "cek:safe-area": "python scripts/periksa_safe_area.py",
+    "desktop": "electron electron/main.cjs",
+    "desktop:build": "node scripts/bangun_desktop.mjs",
+    "desktop:uji-server": "node scripts/uji_server_desktop.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
@@ -71,6 +74,8 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.5.0",
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
@@ -81,5 +86,37 @@
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12",
     "vite-plugin-pwa": "^1.3.0"
+  },
+  "main": "electron/main.cjs",
+  "build": {
+    "appId": "id.resqbox.desktop",
+    "productName": "RESQ-BOX",
+    "directories": {
+      "output": "C:/resqbox-desktop/release",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "C:/resqbox-desktop/icon.ico",
+      "artifactName": "RESQ-BOX-${version}-portable.exe"
+    },
+    "portable": {
+      "artifactName": "RESQ-BOX-${version}-portable.exe",
+      "unicode": true
+    },
+    "compression": "normal",
+    "asar": true
   }
 }

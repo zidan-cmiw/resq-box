@@ -60,3 +60,15 @@ ios/App/App/public/
 ios/App/App/capacitor.config.json
 *.ipa
 
+
+# -- Aplikasi Desktop (Electron) --------------------------------------------
+# Hasil bangun TIDAK disimpan. Berkasnya besar (ratusan MB) dan dapat
+# dihasilkan ulang kapan saja dengan `npm run desktop:build`.
+release/
+out/
+dist-electron/
+
+# Folder resources electron-builder: berisi ikon sementara dan berkas bantu
+# yang dibuat ulang setiap kali membangun.
+build/icon.ico
+build/*.blockmap

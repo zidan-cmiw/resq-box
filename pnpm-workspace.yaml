@@ -1,0 +1,28 @@
+# Setelan pnpm.
+#
+# MENGAPA BERKAS INI ADA
+#
+#   Sejak pnpm 10, skrip pemasangan (postinstall) dependensi TIDAK dijalankan
+#   secara bawaan, sebagai pengaman terhadap paket yang berbahaya. Paket yang
+#   memang memerlukannya harus diizinkan di sini.
+#
+#   Electron MEMERLUKAN skrip pemasangannya: skrip itulah yang mengunduh biner
+#   Electron (~100 MB). Tanpa izin ini, `electron` terpasang sebagai paket
+#   kosong tanpa biner, dan aplikasi tidak dapat dijalankan maupun dibangun.
+#   Gejalanya: folder `node_modules/electron/dist/` tidak ada.
+#
+# MENGAPA TIDAK DI package.json
+#
+#   Sejak pnpm 11, field `pnpm` di package.json TIDAK LAGI DIBACA. Setelannya
+#   berpindah ke berkas ini. Menaruhnya di package.json hanya menghasilkan
+#   peringatan, dan izinnya tidak berpengaruh sama sekali — sehingga biner
+#   Electron tetap tidak terunduh tanpa penjelasan yang jelas.
+#
+# DAFTARNYA SENGAJA SEMPIT
+#
+#   Hanya paket yang benar-benar memerlukan skrip pemasangan. Membiarkan
+#   seluruh dependensi menjalankan skripnya akan membatalkan pengaman yang
+#   disediakan pnpm.
+allowBuilds:
+  electron: true
+  electron-winstaller: true
