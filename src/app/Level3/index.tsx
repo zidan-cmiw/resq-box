@@ -79,6 +79,36 @@ function generateExpeditionTrailRibbon(points: { x: number; y: number }[]): stri
 }
 
 export default function Level3() {
+
+  /*
+    APAKAH LAYAR SEMPIT (HP)?
+
+    Dipakai untuk memilih SUSUNAN YANG BERBEDA antara HP dan laptop pada
+    plakat misi di peta Level 3:
+
+        HP     : plakat di BAWAH titik, tersusun bertumpuk
+        Laptop : plakat di ATAS titik, satu baris mendatar
+
+    Mengapa perlu: di HP ruang di atas titik tidak cukup untuk memuat
+    gelembung sapaan, avatar, DAN plakat sekaligus — diukur pada 390px,
+    avatar berakhir di -32px sedangkan plakat setinggi 60px menempati
+    -56px sampai +4px, sehingga keduanya mustahil tidak bertumpuk.
+  */
+  const [layarSempit, setLayarSempit] = useState<boolean>(
+    () => typeof window !== 'undefined' && window.innerWidth < 640
+  );
+
+  useEffect(() => {
+    const periksa = () => setLayarSempit(window.innerWidth < 640);
+    periksa();
+    window.addEventListener('resize', periksa);
+    window.addEventListener('orientationchange', periksa);
+    return () => {
+      window.removeEventListener('resize', periksa);
+      window.removeEventListener('orientationchange', periksa);
+    };
+  }, []);
+
   const navigate = useNavigate();
   const { completedMissionIds, isUnlocked } = useMissionStore();
   const { projects, createProject, deleteProject, clearDraft } = useWorkspaceStore();
@@ -1007,30 +1037,128 @@ export default function Level3() {
                       handleNodeClick(node);
                     }
                   }}
-                  className={`absolute pointer-events-auto cursor-pointer transition-all duration-200 hover:scale-105 ${node.labelPos === 'top' ? '-top-14' : 'top-20'
-                    }`}
-                >
-                  <div
-                    className={`px-3.5 py-1.5 rounded-xl text-[13px] sm:text-[15px] font-bold flex items-center gap-2 whitespace-nowrap backdrop-blur-md transition-all ${theme.plaque}`}
-                  >
-                    {/* Level Number Badge */}
-                    <span className={`px-2 py-0.5 rounded text-[14.5px] font-black tracking-wider ${theme.badge}`}>
-                      LV.{node.levelNumber}
-                    </span>
+                  /*
+                    POSISI PLAKAT — DI BAWAH TITIK PADA HP, DI ATAS PADA LAPTOP
 
-                    {/* Mission Title */}
-                    <span className="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[13px] sm:text-[15px] tracking-tight text-[#291305]">
+                    ═══════════════════════════════════════════════════════════
+                    MASALAH YANG TERLIHAT SETELAH PERBAIKAN PERTAMA
+                    ═══════════════════════════════════════════════════════════
+
+                      Setelah plakat dibuat bertumpuk, lebarnya sudah muat di
+                      layar 390px. Tetapi avatar pemain TETAP menutupi baris
+                      paling atasnya, sehingga yang terbaca hanya
+                      "LV.1  ...  TIF" — lencana dan penanda AKTIF tertutup.
+
+                      Sebabnya di HP ruang di ATAS titik terlalu sempit untuk
+                      memuat tiga hal sekaligus:
+
+                          -80px  gelembung "Ayo Petualang!" + avatar
+                          -56px  plakat misi
+                            0px  titik misi (tombol 64px)
+
+                      Plakat setinggi 60px pada -56px berarti menempati
+                      -56px sampai +4px, sedangkan avatar berakhir di -32px.
+                      Keduanya MUSTAHIL tidak bertumpuk.
+
+                    CARA MEMPERBAIKI
+
+                      Di HP plakat dipindah ke BAWAH titik, sehingga tidak ada
+                      lagi yang berebut ruang di atas:
+
+                          -80px  gelembung + avatar   (tidak terganggu)
+                            0px  titik misi
+                          +84px  plakat misi bertumpuk
+
+                      Di laptop plakat TETAP di atas seperti semula, karena
+                      layarnya tinggi dan tidak ada masalah ruang.
+
+                      Posisi ditentukan oleh lebar layar (`layarSempit`),
+                      sehingga ini benar-benar struktur yang berbeda — bukan
+                      kelas responsif yang menumpuk dua aturan.
+                  */
+                  className={`absolute pointer-events-auto cursor-pointer transition-all duration-200 hover:scale-105 ${
+                    layarSempit
+                      ? 'top-[84px]'
+                      : node.labelPos === 'top'
+                        ? '-top-14'
+                        : 'top-20'
+                  }`}
+                >
+                  {/*
+                    PLAKAT MISI — BERTUMPUK DI HP, SATU BARIS DI LAPTOP
+
+                    ═══════════════════════════════════════════════════════════
+                    MASALAH YANG TERLIHAT PADA TANGKAPAN LAYAR HP (390px)
+                    ═══════════════════════════════════════════════════════════
+
+                      Plakat ini memakai `whitespace-nowrap`, sehingga seluruh
+                      isinya dipaksa satu baris. Dengan judul seperti
+                      "Job 1: Sinyal Status Normal" ditambah lencana "LV.1"
+                      dan penanda "AKTIF", lebarnya mencapai sekitar 517px
+                      pada layar selebar 390px.
+
+                      Akibatnya pada tangkapan layar HP, judul misi TERPOTONG
+                      di tengah dan tertutup avatar pemain yang berada tepat
+                      di atasnya: yang terbaca hanya
+                      "Job 1: Sin  ...  us Normal".
+
+                    CARA MEMPERBAIKI — STRUKTUR BERBEDA, BUKAN DIPERKECIL
+
+                      Di HP plakatnya menjadi BERTUMPUK:
+
+                          ┌──────────────────────┐
+                          │ LV.1          AKTIF  │
+                          │ Job 1: Sinyal Status │
+                          │ Normal               │
+                          └──────────────────────┘
+
+                      Lencana tingkat dan penanda status berada di baris atas,
+                      sedangkan judul misi mendapat barisnya sendiri sehingga
+                      dapat membungkus.
+
+                      Di laptop strukturnya TIDAK berubah: tetap satu baris
+                      mendatar seperti semula, karena layarnya cukup lebar.
+
+                      `whitespace-nowrap` dihapus HANYA di HP, karena di
+                      laptop ia memang diinginkan agar plakatnya rapi satu
+                      baris.
+                  */}
+                  <div
+                    className={`px-3 py-1.5 sm:px-3.5 rounded-xl text-[13px] sm:text-[15px] font-bold flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2 sm:whitespace-nowrap backdrop-blur-md transition-all max-w-[min(78vw,280px)] sm:max-w-none ${theme.plaque}`}
+                  >
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      {/* Level Number Badge */}
+                      <span className={`px-2 py-0.5 rounded text-[13px] sm:text-[14.5px] font-black tracking-wider shrink-0 ${theme.badge}`}>
+                        LV.{node.levelNumber}
+                      </span>
+
+                      {/* Status — di HP naik ke baris atas, di laptop tetap di kanan */}
+                      <span className="sm:hidden ml-auto shrink-0">
+                        {isCompleted ? (
+                          <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : isCurrentActive ? (
+                          <span className="text-[#b45309] text-[12px] font-black tracking-wider uppercase animate-pulse">AKTIF</span>
+                        ) : null}
+                      </span>
+                    </div>
+
+                    {/* Mission Title — di HP mendapat barisnya sendiri sehingga dapat membungkus */}
+                    <span className="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[12.5px] sm:text-[15px] tracking-tight text-[#291305] leading-snug">
                       {node.mission.title}
                     </span>
 
-                    {/* Status icon */}
-                    {isCompleted ? (
-                      <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : isCurrentActive ? (
-                      <span className="text-[#b45309] text-[13.5px] font-black tracking-wider uppercase animate-pulse">AKTIF</span>
-                    ) : null}
+                    {/* Status — hanya di laptop */}
+                    <span className="hidden sm:inline shrink-0">
+                      {isCompleted ? (
+                        <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : isCurrentActive ? (
+                        <span className="text-[#b45309] text-[13.5px] font-black tracking-wider uppercase animate-pulse">AKTIF</span>
+                      ) : null}
+                    </span>
                   </div>
                 </div>
               </div>
