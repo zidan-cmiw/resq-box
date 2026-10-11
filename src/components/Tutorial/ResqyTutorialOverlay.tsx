@@ -186,8 +186,6 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
 
     const spaceRight = Math.max(0, winW - targetRight - edgePad);
     const spaceLeft = Math.max(0, targetLeft - edgePad);
-    const spaceAbove = Math.max(0, targetTop - edgePad);
-    const spaceBelow = Math.max(0, winH - targetBottom - edgePad);
 
     // ── 1. PENEMPATAN SAMPING (HANYA LAYAR WIDESCREEN >= 1150px DENGAN RUANG >= 480px) ──
     const canSideWidescreen = winW >= 1150;
@@ -237,64 +235,94 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
     const horizClass =
       'fixed left-1/2 -translate-x-1/2 w-[95%] sm:w-[90%] md:w-[86%] max-w-[680px]';
 
-    let placeBelow = spaceBelow >= spaceAbove;
-    if (activeStep?.placement === 'bottom' && spaceBelow >= 180) {
-      placeBelow = true;
-    } else if (activeStep?.placement === 'top' && spaceAbove >= 180) {
-      placeBelow = false;
-    }
+    /*
+      TINGGI MINIMUM DIALOG — MENGAPA INI PERLU
 
-    if (placeBelow) {
-      // Ditaruh di BAWAH elemen target
-      const topPos = Math.max(edgePad, targetBottom + 12);
-      const maxH = Math.max(160, winH - topPos - edgePad);
+      ═══════════════════════════════════════════════════════════════════════
+      CACAT YANG DIPERBAIKI
+      ═══════════════════════════════════════════════════════════════════════
 
-      // Jika sisa ruang bawah sempit (< 180px) dan atas jauh lebih lega:
-      if (maxH < 180 && spaceAbove > maxH) {
-        const bottomOffset = Math.max(edgePad, winH - targetTop + 12);
-        const maxHAbove = Math.max(160, winH - bottomOffset - edgePad);
-        return {
-          containerClass: horizClass,
-          containerStyle: {
-            bottom: `${bottomOffset}px`,
-            maxHeight: `${maxHAbove}px`,
-          } as React.CSSProperties,
-        };
-      }
+        Dilaporkan dari laptop: pada langkah 3 panduan, ISI TEKSNYA HILANG —
+        hanya tersisa celah kosong di antara judul dan tombol.
 
-      return {
-        containerClass: horizClass,
-        containerStyle: {
-          top: `${topPos}px`,
-          maxHeight: `${maxH}px`,
-        } as React.CSSProperties,
-      };
-    } else {
-      // Ditaruh di ATAS elemen target
-      const bottomOffset = Math.max(edgePad, winH - targetTop + 12);
-      const maxH = Math.max(160, winH - bottomOffset - edgePad);
+        Diukur langsung di peramban pada layar 1690x849:
 
-      // Jika sisa ruang atas sempit (< 180px) dan bawah jauh lebih lega:
-      if (maxH < 180 && spaceBelow > maxH) {
-        const topPos = Math.max(edgePad, targetBottom + 12);
-        const maxHBelow = Math.max(160, winH - topPos - edgePad);
-        return {
-          containerClass: horizClass,
-          containerStyle: {
-            top: `${topPos}px`,
-            maxHeight: `${maxHBelow}px`,
-          } as React.CSSProperties,
-        };
-      }
+            Langkah 1:  isi 199px dari 199px  -> teks MUAT
+            Langkah 2:  isi  96px dari  96px  -> teks MUAT
+            Langkah 3:  isi  35px dari  96px  -> TERPOTONG
 
-      return {
-        containerClass: horizClass,
-        containerStyle: {
-          bottom: `${bottomOffset}px`,
-          maxHeight: `${maxH}px`,
-        } as React.CSSProperties,
-      };
-    }
+        Pada langkah 3, dialog hanya mendapat `max-height: 301px`. Dari 301px
+        itu, bagian JUDUL (tetap) dan bagian TOMBOL (tetap) menghabiskan
+        sekitar 200px, sehingga tersisa 35px untuk teks — sedangkan teksnya
+        memerlukan 96px.
+
+        Penyebabnya ada di sini: `Math.max(160, ...)` mengizinkan dialog
+        DIKOMPRES sampai 160px, padahal judul dan tombolnya saja sudah
+        memerlukan lebih dari itu. Bagian isi yang memakai `flex-1` lalu
+        menyusut mendekati nol, dan teksnya hilang dari pandangan.
+
+      ═══════════════════════════════════════════════════════════════════════
+      CARA MEMPERBAIKINYA
+      ═══════════════════════════════════════════════════════════════════════
+
+        1. Tinggi minimum dinaikkan menjadi 420px pada layar yang cukup
+           tinggi, atau 75% tinggi layar pada layar pendek. Dengan begitu
+           judul, isi, dan tombol selalu mendapat ruang yang layak.
+
+        2. Penempatan dipilih berdasarkan mana yang MEMBERI RUANG LEBIH
+           BANYAK, bukan sekadar "bawah bila muat". Dialog yang lebih tinggi
+           daripada sisa ruang di satu sisi akan dicoba di sisi lain.
+
+        3. Posisi tegak selalu dijepit agar dialog tetap berada di dalam
+           layar. Tanpa penjepitan ini, dialog tinggi dapat melewati tepi
+           bawah layar dan tombolnya menjadi tidak terjangkau.
+
+           MENEMPATI SEBAGIAN ELEMEN TARGET ITU WAJAR: sorotan target hanya
+           hiasan, sedangkan teks yang tidak terbaca membuat panduan tidak
+           berguna sama sekali.
+    */
+    const TINGGI_MIN_DIALOG = Math.min(420, Math.round(winH * 0.75));
+
+    // Hitung tinggi yang tersedia bila dialog ditaruh di tiap sisi.
+    const ruangBawah = Math.max(0, winH - (targetBottom + 12) - edgePad);
+    const ruangAtas = Math.max(0, (targetTop - 12) - edgePad);
+
+    const mauDiBawah =
+      activeStep?.placement === 'bottom'
+        ? true
+        : activeStep?.placement === 'top'
+          ? false
+          : ruangBawah >= ruangAtas;
+
+    // Pilih sisi yang memberi ruang lebih banyak BILA sisi pilihan pertama
+    // tidak cukup untuk tinggi minimum.
+    const sisiPilihan =
+      (mauDiBawah ? ruangBawah : ruangAtas) >= TINGGI_MIN_DIALOG
+        ? mauDiBawah
+        : ruangAtas > ruangBawah;
+
+    const pakaiBawah = sisiPilihan;
+    const ruangDiSisiItu = pakaiBawah ? ruangBawah : ruangAtas;
+
+    // Bila kedua sisi sama-sama sempit, pakai hampir seluruh tinggi layar
+    // supaya teksnya tetap terbaca.
+    const tinggiAkhir =
+      ruangDiSisiItu >= TINGGI_MIN_DIALOG
+        ? ruangDiSisiItu
+        : winH - edgePad * 2;
+
+    return {
+      containerClass: horizClass,
+      containerStyle: {
+        top: pakaiBawah
+          ? `${Math.max(edgePad, Math.min(targetBottom + 12, winH - tinggiAkhir - edgePad))}px`
+          : undefined,
+        bottom: pakaiBawah
+          ? undefined
+          : `${Math.max(edgePad, Math.min(winH - targetTop + 12, winH - tinggiAkhir - edgePad))}px`,
+        maxHeight: `${tinggiAkhir}px`,
+      } as React.CSSProperties,
+    };
   };
 
   const isMobile = winSize.width < 640;
