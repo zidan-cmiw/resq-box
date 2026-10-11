@@ -5,6 +5,7 @@ import { retroAudio } from '../../utils/retroAudio';
 import PixelIcon from '../../components/PixelIcon';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
+import { sedangDiWeb } from '../../utils/lingkungan';
 
 /**
  * Alamat unduhan aplikasi.
@@ -448,15 +449,22 @@ export default function Login() {
 
           {/*
             ═══════════════════════════════════════════════════════════════════
-            UNDUHAN APLIKASI
+            UNDUHAN APLIKASI — HANYA DI WEBSITE
             ═══════════════════════════════════════════════════════════════════
 
-            MENGAPA DISEDIAKAN DI HALAMAN MASUK
+            MENGAPA HANYA DI WEBSITE
+              Di dalam aplikasi Android dan aplikasi laptop, tombol ini tidak
+              masuk akal: penggunanya SUDAH memakai aplikasinya. Menawarkan
+              unduhan di dalam aplikasi yang sudah terunduh hanya membingungkan.
+
+              Permintaan pemilik proyek: tombol unduh "cuma di web doang".
+
+            MENGAPA DISEDIAKAN DI HALAMAN MASUK WEBSITE
               Halaman masuk adalah satu-satunya halaman yang PASTI dilihat
               setiap orang, baik yang sudah punya akun maupun belum. Menaruh
               unduhan di sini berarti tidak ada yang perlu mencari.
 
-            MENGAPA PERLU APLIKASI TERPISAH
+            MENGAPA APLIKASI TERPISAH MEMANG DIPERLUKAN
               Peramban memblokir koneksi `ws://` (tidak terenkripsi) dari
               halaman HTTPS. Karena itu diorama ESP32 TIDAK DAPAT tersambung
               dari website, tetapi DAPAT dari aplikasi. Keterangan ini
@@ -464,40 +472,48 @@ export default function Login() {
               hanya sekadar kemasan.
 
             CATATAN TENTANG ALAMAT UNDUHAN
-              Berkas .exe berukuran 114 MB, melebihi batas 25 MB per berkas
+              Berkas .exe berukuran 115 MB, melebihi batas 25 MB per berkas
               pada layanan hosting website ini. Karena itu keduanya
               ditempatkan di halaman "Releases" repositori, yang memang
               disediakan untuk berkas besar.
+
+            PENGENALAN LINGKUNGAN
+              `sedangDiWeb()` memeriksa empat tanda berurutan: jembatan
+              Capacitor, nama host, penanda Electron, dan penanda WebView
+              Android. Bila salah satunya menandai "ini aplikasi", blok ini
+              disembunyikan. Rinciannya ada di `utils/lingkungan.ts`.
           */}
-          <div className="mt-4 pt-3.5 border-t-2 border-amber-950/25">
-            <p className="text-[12px] sm:text-[13px] font-bold text-amber-950 mb-2 text-center">
-              Unduh aplikasi untuk diorama fisik
-            </p>
-            <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
-              <a
-                href={TAUTAN_UNDUH.laptop}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-2 rounded-lg bg-sky-100 hover:bg-sky-50 text-sky-950 border-2 border-sky-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
-              >
-                <PixelIcon name="cpu" size={14} className="shrink-0" />
-                <span>LAPTOP (.exe)</span>
-              </a>
-              <a
-                href={TAUTAN_UNDUH.android}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-2 rounded-lg bg-emerald-100 hover:bg-emerald-50 text-emerald-950 border-2 border-emerald-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
-              >
-                <PixelIcon name="phone" size={14} className="shrink-0" />
-                <span>ANDROID (.apk)</span>
-              </a>
+          {sedangDiWeb() && (
+            <div className="mt-4 pt-3.5 border-t-2 border-amber-950/25">
+              <p className="text-[12px] sm:text-[13px] font-bold text-amber-950 mb-2 text-center">
+                Unduh aplikasi untuk diorama fisik
+              </p>
+              <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
+                <a
+                  href={TAUTAN_UNDUH.laptop}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 rounded-lg bg-sky-100 hover:bg-sky-50 text-sky-950 border-2 border-sky-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
+                >
+                  <PixelIcon name="cpu" size={14} className="shrink-0" />
+                  <span>LAPTOP (.exe)</span>
+                </a>
+                <a
+                  href={TAUTAN_UNDUH.android}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 rounded-lg bg-emerald-100 hover:bg-emerald-50 text-emerald-950 border-2 border-emerald-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
+                >
+                  <PixelIcon name="phone" size={14} className="shrink-0" />
+                  <span>ANDROID (.apk)</span>
+                </a>
+              </div>
+              <p className="mt-2 text-[11.5px] sm:text-[12.5px] text-amber-900/90 font-semibold leading-relaxed text-center">
+                Diperlukan untuk menyambung ke diorama ESP32 saat bermain di
+                website.
+              </p>
             </div>
-            <p className="mt-2 text-[11.5px] sm:text-[12.5px] text-amber-900/90 font-semibold leading-relaxed text-center">
-              Diperlukan untuk menyambung ke diorama ESP32 saat bermain di
-              website.
-            </p>
-          </div>
+          )}
 
         </div>
       </div>
