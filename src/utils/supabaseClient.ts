@@ -1057,6 +1057,14 @@ export async function submitLevelProgress(
     p_client_score: clientScore,
   };
 
+  // Catat lebih dulu bahwa nilai ini BELUM tersimpan di server. Catatan itu
+  // dihapus hanya setelah server benar-benar menerimanya. Dengan begitu, bila
+  // pengiriman gagal — atau aplikasi ditutup sebelum sempat mengirim — nilainya
+  // tetap dapat dikirim menyusul saat jaringan tersedia.
+  const studentId = String(submission.student_id ?? '');
+  const siswaNama = String(submission.student_name ?? '');
+  catatNilaiTertunda(studentId, level, payload, siswaNama);
+
   // Peristiwa penting langsung dikirim: penyelesaian level tidak boleh ditunda.
   const isMilestone = isCompleted || clientScore >= 100;
 
@@ -1066,43 +1074,80 @@ export async function submitLevelProgress(
       clearTimeout(held.timer);
       pendingProgress.delete(level);
     }
-    return sendProgress(payload);
+    const terkirim = await sendProgress(payload, studentId, level);
+    return terkirim;
   }
 
-  return enqueueProgress(level, payload);
+  return enqueueProgress(level, payload, studentId);
 }
 
 // ── Antrean tulis progres (koalesensi per level) ──────────────────────────
 interface PendingProgress {
   payload: Record<string, unknown>;
   timer: ReturnType<typeof setTimeout>;
+  studentId: string;
+  level: number;
 }
 
 const pendingProgress = new Map<number, PendingProgress>();
 const PROGRESS_FLUSH_MS = 5000;
 
-async function sendProgress(payload: Record<string, unknown>): Promise<boolean> {
+/**
+ * Kirim satu payload progres ke server.
+ *
+ * `studentId` dan `level` diberikan supaya catatan "belum terkirim" dapat
+ * dihapus TEPAT setelah server menerimanya. Tanpa itu, catatannya akan terus
+ * dicoba walaupun nilainya sudah tersimpan — dan pengiriman berulang menambah
+ * baris kembar di `level_submissions`, karena fungsi server memakai INSERT
+ * biasa tanpa batasan unik.
+ */
+async function sendProgress(
+  payload: Record<string, unknown>,
+  studentId?: string,
+  level?: number
+): Promise<boolean> {
   if (!supabase) return false;
+
+  // Jaringan sudah diketahui putus: jangan buang waktu dan jangan banjiri
+  // catatan galat. Nilainya sudah tercatat dan akan dikirim saat tersambung.
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    return false;
+  }
+
   const { error } = await supabase.rpc('submit_level_result', payload);
   if (error) {
     noteError('submitLevelProgress', error);
     return false;
   }
+
+  // Server menerimanya: catatan "belum terkirim" tidak diperlukan lagi.
+  if (studentId !== undefined && level !== undefined) {
+    hapusNilaiTertunda(studentId, level);
+  }
   return true;
 }
 
-function enqueueProgress(level: number, payload: Record<string, unknown>): Promise<boolean> {
+function enqueueProgress(
+  level: number,
+  payload: Record<string, unknown>,
+  studentId: string
+): Promise<boolean> {
   const existing = pendingProgress.get(level);
   if (existing) clearTimeout(existing.timer);
 
   return new Promise<boolean>((resolve) => {
     const timer = setTimeout(() => {
       pendingProgress.delete(level);
-      void sendProgress(payload).then(resolve);
+      void sendProgress(payload, studentId, level).then(resolve);
     }, PROGRESS_FLUSH_MS);
 
     // Kirim yang terbaru saja; yang lama sudah ditimpa.
-    pendingProgress.set(level, { payload, timer });
+    //
+    // `studentId` WAJIB dibawa: tanpa itu, catatan "belum terkirim" tidak dapat
+    // dihapus setelah pengiriman berhasil, sehingga nilainya akan dikirim dua
+    // kali — sekali oleh antrean ini, sekali lagi oleh `kirimNilaiTertunda`.
+    // Dua kali kirim berarti dua baris di `level_submissions`.
+    pendingProgress.set(level, { payload, timer, studentId, level });
   });
 }
 
@@ -1110,9 +1155,227 @@ function enqueueProgress(level: number, payload: Record<string, unknown>): Promi
 export function flushPendingProgress(): void {
   for (const [level, pending] of pendingProgress.entries()) {
     clearTimeout(pending.timer);
-    void sendProgress(pending.payload);
+    void sendProgress(pending.payload, pending.studentId, level);
     pendingProgress.delete(level);
   }
+}
+
+/** Level yang saat ini masih menunggu di antrean koalesensi. */
+function levelSedangDiAntrean(): Set<number> {
+  return new Set(pendingProgress.keys());
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ANTRIAN NILAI LURING — nilai yang belum berhasil dikirim ke server
+// ══════════════════════════════════════════════════════════════════════════
+//
+// MENGAPA PERLU
+//
+//   Saat siswa bermain di jaringan WiFi diorama ESP32, perangkat TIDAK punya
+//   akses internet. Nilai tetap tersimpan di perangkat, tetapi pengiriman ke
+//   server gagal.
+//
+//   Sebelum ini, nilai yang gagal itu TIDAK PERNAH dicoba lagi. Lebih buruk:
+//   ketika guru membuka dashboard dalam keadaan daring, fungsi
+//   `fetchClassroomSubmissions` menulis ulang seluruh cache lokal dengan data
+//   dari server — sehingga nilai luring siswa TERTIMPA dan hilang tanpa jejak.
+//
+//   Akibatnya siswa bisa menyelesaikan level dengan benar, tetapi nilainya
+//   tidak pernah muncul di rapor guru.
+//
+// MENGAPA CATATAN TERPISAH, BUKAN PENANDA DI DALAM DATA NILAI
+//
+//   Cara yang tampak lebih sederhana adalah menambahkan kolom penanda
+//   (`terkirim: true/false`) pada setiap baris nilai. Tetapi ada EMPAT tempat
+//   yang menulis ulang daftar nilai lokal dengan menyalin data dari server
+//   (baris 589, 636, 912, dan penggantian per-kelas). Setiap tempat itu harus
+//   ingat mempertahankan penandanya — dan bila satu saja terlewat, nilainya
+//   hilang lagi.
+//
+//   Catatan terpisah tidak dapat terhapus oleh cara apa pun di atas, karena
+//   disimpan pada kunci penyimpanan yang berbeda dan hanya diubah oleh fungsi
+//   di bagian ini.
+//
+// MENGAPA PERLU MEMERIKSA `sudahAdaDiServer`
+//
+//   `submit_level_result` memakai INSERT biasa, bukan upsert, dan tabel
+//   `level_submissions` tidak punya batasan unik pada (student_id,
+//   level_number). Jadi mengirim ulang nilai yang SUDAH ada di server akan
+//   MENAMBAH baris kembar.
+//
+//   Dashboard guru memakai `.find()` untuk mengambil nilai per level —
+//   artinya ia memakai baris yang PERTAMA ditemukan. Baris kembar dapat
+//   membuat guru melihat nilai yang lebih rendah daripada capaian sebenarnya.
+//
+//   Karena itu pengiriman ulang hanya dilakukan untuk nilai yang memang belum
+//   ada di server.
+
+interface NilaiTertunda {
+  /** Kunci pengenal: `<student_id>|<level>`. */
+  kunci: string;
+  studentId: string;
+  level: number;
+  payload: Record<string, unknown>;
+  /** Untuk ditampilkan pada catatan galat, bukan untuk perhitungan nilai. */
+  namaSiswa: string;
+  percobaan: number;
+  waktuSimpan: string;
+}
+
+const KUNCI_NILAI_TERTUNDA = 'resqbox-nilai-belum-terkirim';
+
+function bacaNilaiTertunda(): NilaiTertunda[] {
+  try {
+    const mentah = localStorage.getItem(KUNCI_NILAI_TERTUNDA);
+    if (!mentah) return [];
+    const daftar = JSON.parse(mentah) as NilaiTertunda[];
+    return Array.isArray(daftar) ? daftar : [];
+  } catch {
+    return [];
+  }
+}
+
+function tulisNilaiTertunda(daftar: NilaiTertunda[]): void {
+  try {
+    if (daftar.length === 0) localStorage.removeItem(KUNCI_NILAI_TERTUNDA);
+    else localStorage.setItem(KUNCI_NILAI_TERTUNDA, JSON.stringify(daftar));
+  } catch {
+    /* penyimpanan penuh: abaikan, nilai tetap ada di data nilai biasa */
+  }
+}
+
+/** Catat bahwa sebuah nilai belum berhasil dikirim ke server. */
+function catatNilaiTertunda(
+  studentId: string,
+  level: number,
+  payload: Record<string, unknown>,
+  namaSiswa: string
+): void {
+  const kunci = `${studentId}|${level}`;
+  const daftar = bacaNilaiTertunda();
+  const lama = daftar.find((n) => n.kunci === kunci);
+
+  // Simpan yang TERBARU — capaian selalu bertambah, tidak pernah berkurang.
+  const catatan: NilaiTertunda = {
+    kunci,
+    studentId,
+    level,
+    payload,
+    namaSiswa,
+    percobaan: (lama?.percobaan ?? 0) + 1,
+    waktuSimpan: new Date().toISOString(),
+  };
+
+  const lain = daftar.filter((n) => n.kunci !== kunci);
+  tulisNilaiTertunda([...lain, catatan]);
+}
+
+/** Hapus catatan setelah nilainya benar-benar tersimpan di server. */
+function hapusNilaiTertunda(studentId: string, level: number): void {
+  const kunci = `${studentId}|${level}`;
+  tulisNilaiTertunda(bacaNilaiTertunda().filter((n) => n.kunci !== kunci));
+}
+
+/** Berapa nilai yang masih menunggu terkirim (dipakai dashboard & uji). */
+export function jumlahNilaiTertunda(): number {
+  return bacaNilaiTertunda().length;
+}
+
+/**
+ * Kirim ulang seluruh nilai yang tertunda.
+ *
+ * Dipanggil otomatis saat jaringan kembali tersambung dan saat aplikasi
+ * dibuka. Aman dipanggil berkali-kali: nilai yang sudah ada di server
+ * dilewati, sehingga tidak menambah baris kembar.
+ *
+ * @param submissionsDariServer daftar nilai dari server, bila sudah diketahui.
+ *        Bila tidak diberikan, fungsi ini mengambilnya sendiri.
+ */
+export async function kirimNilaiTertunda(
+  submissionsDariServer?: LevelSubmissionDbRecord[]
+): Promise<{ terkirim: number; gagal: number; dilewati: number }> {
+  const hasil = { terkirim: 0, gagal: 0, dilewati: 0 };
+  const daftar = bacaNilaiTertunda();
+  if (!supabase || daftar.length === 0) return hasil;
+
+  // Ambil daftar nilai server sekali saja, untuk mengetahui mana yang sudah ada.
+  let diServer = submissionsDariServer;
+  if (!diServer) {
+    diServer = [];
+    try {
+      const { data } = await supabase
+        .from('level_submissions')
+        .select('student_id,level_number,score')
+        .limit(1000);
+      diServer = ((data as Partial<LevelSubmissionDbRecord>[]) ?? []).map((r) => ({
+        student_id: String(r.student_id ?? ''),
+        level_number: Number(r.level_number ?? 0),
+        score: Number(r.score ?? 0),
+      })) as LevelSubmissionDbRecord[];
+    } catch {
+      // Tidak dapat membaca server: perlakukan sebagai "belum tahu", dan
+      // JANGAN kirim apa pun supaya tidak menambah baris kembar.
+      return { ...hasil, gagal: daftar.length };
+    }
+  }
+
+  const adaDiServer = new Set(
+    (diServer ?? []).map((s) => `${String(s.student_id)}|${Number(s.level_number)}`)
+  );
+
+  // Level yang saat ini masih menunggu di antrean koalesensi (jendela 5 detik)
+  // DILEWATI. Tanpa ini, nilai yang sama dapat dikirim dua kali: sekali oleh
+  // antrean itu, sekali lagi oleh fungsi ini — dan hasilnya dua baris di
+  // `level_submissions`.
+  const sedangDiAntrean = levelSedangDiAntrean();
+
+  for (const n of daftar) {
+    // Sudah tersimpan di server (mungkin terkirim pada sesi sebelumnya):
+    // cukup hapus catatannya, JANGAN kirim ulang.
+    if (adaDiServer.has(n.kunci)) {
+      hapusNilaiTertunda(n.studentId, n.level);
+      hasil.dilewati += 1;
+      continue;
+    }
+
+    // Sedang menunggu dikirim oleh antrean koalesensi: biarkan antrean itu
+    // yang mengurus, supaya tidak terkirim dua kali.
+    if (sedangDiAntrean.has(n.level)) {
+      hasil.dilewati += 1;
+      continue;
+    }
+
+    if (await sendProgress(n.payload, n.studentId, n.level)) {
+      hapusNilaiTertunda(n.studentId, n.level);
+      hasil.terkirim += 1;
+    } else {
+      // Gagal lagi (mis. jaringan putus di tengah jalan). Catatan DIBIARKAN
+      // supaya dicoba lagi nanti. Jangan menyerah setelah satu percobaan.
+      hasil.gagal += 1;
+    }
+  }
+
+  return hasil;
+}
+
+// ── Pemicu pengiriman ulang ───────────────────────────────────────────────
+//
+// Tiga saat nilai tertunda dicoba kirim:
+//   1. Saat jaringan kembali tersambung  (peristiwa `online`)
+//   2. Saat aplikasi dibuka              (dijalankan sekali di bawah)
+//   3. Saat halaman kembali terlihat     (peristiwa `visibilitychange`)
+//
+// Ketiganya diperlukan: perangkat dapat kehilangan jaringan tanpa memicu
+// `online` (mis. berpindah jaringan WiFi), sehingga mengandalkan satu pemicu
+// saja akan meninggalkan nilai yang tidak pernah terkirim.
+if (typeof window !== 'undefined') {
+  window.addEventListener('online', () => {
+    void kirimNilaiTertunda();
+  });
+
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') void kirimNilaiTertunda();
+  });
 }
 
 // Jangan biarkan progres tertahan hilang saat tab disembunyikan/ditutup.

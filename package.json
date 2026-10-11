@@ -32,7 +32,8 @@
     "cek:gerbang-level": "python scripts/periksa_gerbang_level.py",
     "android:sync": "npm run build && cap sync android",
     "android:open": "cap open android",
-    "android:build": "npm run android:sync && cap build android"
+    "android:build": "npm run android:sync && cap build android",
+    "test:nilai-luring": "node scripts/uji_nilai_luring.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",

@@ -3,12 +3,30 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { initGlobalErrorHandlers, initWebVitals } from './utils/monitoring'
+import { kirimNilaiTertunda } from './utils/supabaseClient'
 
 // ── Observabilitas ────────────────────────────────────────────────────────
 // Tanpa ini, kegagalan yang terjadi di HP siswa tidak pernah sampai ke kita.
 // Keduanya aman dipanggil walau monitoring belum dikonfigurasi (no-op).
 initGlobalErrorHandlers()
 initWebVitals()
+
+// ── Kirim nilai yang tertunda dari sesi luring ────────────────────────────
+//
+// Saat siswa bermain di jaringan WiFi diorama ESP32, perangkat tidak punya
+// akses internet, sehingga pengiriman nilai ke server gagal. Nilainya tetap
+// tercatat di perangkat dan dikirim ulang di sini — saat aplikasi dibuka
+// kembali dalam keadaan tersambung internet.
+//
+// MENGAPA DIBERI JEDA: sesi login perlu dipulihkan lebih dahulu. Bila
+// pengiriman dicoba sebelum sesi siap, server menolaknya sebagai "Harus
+// login" dan percobaan itu sia-sia.
+//
+// Aman dipanggil walau tidak ada nilai tertunda, dan walau sedang luring —
+// dalam keadaan luring fungsi ini berhenti dengan sendirinya.
+setTimeout(() => {
+  void kirimNilaiTertunda()
+}, 3000)
 
 // ── Mobile Game Protection: Disable Long-Press Context Menu & Double-Tap Zoom ──
 if (typeof window !== 'undefined') {
