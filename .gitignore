@@ -75,3 +75,6 @@ build/*.blockmap
 
 # Panduan internal - TIDAK diunggah ke GitHub
 docs/
+
+# Lampiran buku panduan - TIDAK diunggah ke GitHub
+lampiran-buku/
