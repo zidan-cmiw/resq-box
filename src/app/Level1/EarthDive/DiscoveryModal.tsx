@@ -2539,6 +2539,20 @@ function DivergentAnimIllustration({
               0% { stroke-dashoffset: 0; }
               100% { stroke-dashoffset: -30; }
             }
+
+  /* Panah arah pemekaran: mengalir keluar lalu kembali, supaya tidak diam.
+     Dipasang pada grup DI DALAM yang posisinya diatur atribut transform SVG,
+     karena CSS transform akan menimpa atribut transform SVG. */
+  @keyframes divPanahKiri {
+    0%, 100% { transform: translateX(0px); }
+    50% { transform: translateX(-14px); }
+  }
+  @keyframes divPanahKanan {
+    0%, 100% { transform: translateX(0px); }
+    50% { transform: translateX(14px); }
+  }
+  .anim-panah-kiri { animation: divPanahKiri 2.4s ease-in-out infinite; }
+  .anim-panah-kanan { animation: divPanahKanan 2.4s ease-in-out infinite; }
           `}</style>
 
           {/* ── 1. KOLOM AIR SAMUDRA LUAS ── */}
@@ -2672,8 +2686,22 @@ function DivergentAnimIllustration({
                 transition: 'opacity 1.5s ease',
               }}
             >
-              <polygon points="-55,10 -35,0 -35,20" fill="#38bdf8" filter="drop-shadow(0 0 6px #0284c7)" />
-              <rect x="-35" y="6" width="65" height="8" rx="2" fill="#38bdf8" />
+              {/* TIGA panah, bukan satu, dan diberi animasi mengalir keluar supaya
+                  tidak diam - permintaan pemilik proyek.
+
+                  Animasi dipasang pada grup DI DALAM, bukan pada grup ini: CSS
+                  `transform` akan MENIMPA atribut `transform` SVG, sehingga kalau
+                  dipasang di sini panahnya akan melompat ke titik asal. */}
+              {[-20, 0, 20].map((geser, i) => (
+                <g
+                  key={`panah-kiri-${geser}`}
+                  className="anim-panah-kiri"
+                  style={{ animationDelay: `${i * 0.35}s` }}
+                >
+                  <polygon points={`-55,${10 + geser} -35,${geser} -35,${20 + geser}`} fill="#38bdf8" filter="drop-shadow(0 0 6px #0284c7)" />
+                  <rect x="-35" y={6 + geser} width="65" height="8" rx="2" fill="#38bdf8" />
+                </g>
+              ))}
             </g>
           </g>
 
@@ -2729,8 +2757,17 @@ function DivergentAnimIllustration({
                 transition: 'opacity 1.5s ease',
               }}
             >
-              <polygon points="55,10 35,0 35,20" fill="#38bdf8" filter="drop-shadow(0 0 6px #0284c7)" />
-              <rect x="-30" y="6" width="65" height="8" rx="2" fill="#38bdf8" />
+              {/* TIGA panah mengarah ke luar, dianimasikan seperti sisi kiri. */}
+              {[-20, 0, 20].map((geser, i) => (
+                <g
+                  key={`panah-kanan-${geser}`}
+                  className="anim-panah-kanan"
+                  style={{ animationDelay: `${i * 0.35}s` }}
+                >
+                  <polygon points={`55,${10 + geser} 35,${geser} 35,${20 + geser}`} fill="#38bdf8" filter="drop-shadow(0 0 6px #0284c7)" />
+                  <rect x="-30" y={6 + geser} width="65" height="8" rx="2" fill="#38bdf8" />
+                </g>
+              ))}
             </g>
           </g>
         </svg>
