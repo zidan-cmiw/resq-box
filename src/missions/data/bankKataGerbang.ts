@@ -62,6 +62,11 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'LAUTAN', hint: 'Bagian permukaan bumi yang tertutup air asin dan paling luas.' },
       { word: 'TANAH', hint: 'Lapisan paling atas kerak bumi tempat tumbuhan berakar.' },
     ],
+    [
+      { word: 'LEMBAH', hint: 'Bagian permukaan bumi yang lebih rendah di antara dua lereng.' },
+      { word: 'GUNUNG', hint: 'Bentuk permukaan bumi yang menjulang tinggi ke atas.' },
+      { word: 'SUNGAI', hint: 'Alur alami di permukaan bumi tempat air mengalir menuju laut.' },
+    ],
   ],
   1: [
     // Kerak Bumi
@@ -87,6 +92,11 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'SUMATRA', hint: 'Pulau yang tanahnya subur karena abu vulkanik, tetapi juga rawan gempa.' },
       { word: 'GEMPA', hint: 'Peristiwa yang sering terjadi di Indonesia karena lempengnya saling bertumbukan.' },
     ],
+    [
+      { word: 'TEBAL', hint: 'Kerak benua bersifat ... dibandingkan kerak samudra.' },
+      { word: 'SEDIMEN', hint: 'Batuan yang terbentuk dari endapan material di permukaan kerak.' },
+      { word: 'LEMPENG', hint: 'Pecahan besar kerak bumi yang bergerak di atas lapisan yang kental.' },
+    ],
   ],
   2: [
     // Mantel Bumi — sengaja HANYA 2 kata, konsisten di semua varian.
@@ -101,6 +111,10 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     [
       { word: 'SILIKAT', hint: 'Bahan batuan penyusun mantel bumi.' },
       { word: 'PANAS', hint: 'Suhu mantel berkisar 1.000 sampai 3.700 derajat Celsius, artinya mantel sangat...' },
+    ],
+    [
+      { word: 'KENTAL', hint: 'Sifat material mantel: sangat ... sehingga mengalir sangat lambat.' },
+      { word: 'ASTENOSFER', hint: 'Lapisan kental di bagian atas mantel, tepat di bawah kerak bumi.' },
     ],
   ],
   3: [
@@ -120,6 +134,11 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'PANAS', hint: 'Suhu inti luar sekitar 5.000 derajat Celsius, artinya sangat...' },
       { word: 'KUTUB', hint: 'Medan magnet bumi memiliki dua ..., yaitu utara dan selatan.' },
     ],
+    [
+      { word: 'ARUS', hint: 'Logam cair di inti luar membentuk ... listrik yang menghasilkan medan magnet.' },
+      { word: 'LISTRIK', hint: 'Jenis aliran yang timbul dari logam cair yang bergerak di inti luar.' },
+      { word: 'LINDUNG', hint: 'Medan magnet bumi bertugas ... permukaan dari radiasi angkasa.' },
+    ],
   ],
   4: [
     // Inti Dalam — sengaja HANYA 2 kata.
@@ -134,6 +153,10 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     [
       { word: 'BOLA', hint: 'Bentuk inti dalam bumi, terselubung oleh inti luar.' },
       { word: 'PUSAT', hint: 'Letak inti dalam: di ... bumi.' },
+    ],
+    [
+      { word: 'GRAVITASI', hint: 'Gaya yang menarik segala sesuatu menuju pusat bumi.' },
+      { word: 'TERDALAM', hint: 'Inti dalam adalah lapisan yang paling ... di seluruh bumi.' },
     ],
   ],
   5: [
@@ -152,6 +175,11 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'MEMISAH', hint: 'Arti kata divergen: kedua lempeng saling...' },
       { word: 'PUNGGUNG', hint: 'Bentuk dasar samudra yang menjulang di batas divergen: ... tengah samudra.' },
       { word: 'SAMUDRA', hint: 'Batas divergen paling banyak terdapat di dasar...' },
+    ],
+    [
+      { word: 'TERBELAH', hint: 'Daratan Pangea perlahan ... menjadi benua-benua yang kita kenal sekarang.' },
+      { word: 'TENGAH', hint: 'Batas divergen di dasar samudra disebut punggung ... samudra.' },
+      { word: 'LAVA', hint: 'Magma yang sudah mencapai permukaan bumi disebut...' },
     ],
   ],
   6: [
@@ -175,6 +203,10 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'HIMALAYA', hint: 'Pegunungan lipatan tertinggi di dunia, hasil tumbukan dua lempeng BENUA.' },
       { word: 'LIPATAN', hint: 'Bentuk pegunungan dari tumbukan dua lempeng benua, bukan gunung api.' },
     ],
+    [
+      { word: 'TABRAKAN', hint: 'Batas konvergen terjadi karena ... antara dua lempeng tektonik.' },
+      { word: 'TINGGI', hint: 'Tumbukan dua lempeng benua mengangkat daratan menjadi pegunungan yang sangat...' },
+    ],
   ],
   7: [
     // Batas Transform — sengaja HANYA 2 kata.
@@ -189,6 +221,10 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     [
       { word: 'MENDATAR', hint: 'Arah gesekan kedua lempeng pada batas transform: saling bergesekan...' },
       { word: 'PATAHAN', hint: 'Retakan panjang di kerak bumi akibat gesekan mendatar lempeng.' },
+    ],
+    [
+      { word: 'BERGESEK', hint: 'Dua lempeng pada batas transform saling ... mendatar.' },
+      { word: 'PATAH', hint: 'Batuan di sepanjang sesar dapat ... dan melepaskan energi gempa.' },
     ],
   ],
 };
