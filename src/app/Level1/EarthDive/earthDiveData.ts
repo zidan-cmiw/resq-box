@@ -712,9 +712,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-divergent-anim',
       title: 'Temuan 2: Dinamika Batas Divergen',
       shortDesc:
-        'Batas lempeng divergen terbentuk akibat pergerakan lempeng kulit bumi yang saling berlawanan atau saling menjauh. Hal tersebut menyebabkan magma panas naik ke permukaan dan mendesak permukaan bumi, sehingga membentuk lapisan permukaan bumi dan daratan kerak baru.',
+        'Batas lempeng divergen terbentuk akibat pergerakan lempeng kulit bumi yang saling berlawanan atau saling menjauh. ZONA tempat dua lempeng saling menjauh ini disebut batas divergen. Ketika kedua lempeng MEMISAH, terbentuk CELAH dan REKAHAN pada kerak bumi. Dari celah itulah magma panas naik ke permukaan dan mendesak permukaan bumi, sehingga membentuk lapisan permukaan bumi dan daratan kerak baru. Karena kedua sisinya terus bergerak menjauh, dasar laut pun MELEBAR sedikit demi sedikit.',
       fact:
-        'Magma yang terus keluar mendingin dan mengeras di batas divergen, menciptakan pematang tengah samudra (mid-ocean ridge) serta memperluas dasar laut!',
+        'Magma yang berhasil keluar ke permukaan disebut LAVA. Lava yang terus keluar mendingin dan mengeras, menciptakan PUNGGUNG tengah samudra (pematang tengah samudra, atau mid-ocean ridge) serta memperluas dasar laut! Kerak benua seolah MENGAPUNG di atas mantel yang kental, sehingga benua dapat bergerak perlahan walau tidak kita rasakan.',
       iconName: 'zap',
       imageSrc: '/images/geology/divergent.jpg',
       illustrationType: 'divergent-anim',

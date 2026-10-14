@@ -61,7 +61,7 @@ const KATA_BEKU: Record<number, string[]> = {
  * rendah, uji ini gagal dan meminta angkanya diturunkan - supaya sisa pekerjaan
  * tidak pernah terlupakan.
  *
- * Kondisi saat ini (20 dari 107 kata belum diajarkan):
+ * Kondisi saat ini (11 dari 107 kata belum diajarkan):
  *   zona 1 Kerak      0 : SELESAI - LITOSFER, DARATAN, LAUTAN, LEMPENG, SILIKAT,
  *                        SEDIMEN, TANAH, LEMPUNG, LERENG, KERAS, INDONESIA,
  *                        SUMATRA, dan GEMPA sudah ditambahkan ke materi kerak.
@@ -78,7 +78,7 @@ const KATA_BEKU: Record<number, string[]> = {
  *   zona 7 Transform  8 : GESERAN, HORIZONTAL, MENDATAR, PATAH, PATAHAN, REKAH,
  *                        SANANDREAS, TEGANGAN
  */
-const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 8, 6: 4, 7: 7 };
+const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 4, 7: 7 };
 
 /**
  * Batas untuk TTS Level 2. Area 1 tidak punya materi sama sekali, sehingga
