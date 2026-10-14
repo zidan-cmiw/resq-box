@@ -101,20 +101,20 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'FLUIDA', hint: 'Wujud material mantel: bukan padat kaku, melainkan ... sangat kental.', hintLain: ['Sebutan untuk zat yang dapat mengalir, misalnya zat kental di dalam mantel.'] },
     ],
     [
-      { word: 'SILIKAT', hint: 'Bahan batuan penyusun mantel bumi.', hintLain: ['Senyawa yang banyak menyusun batuan mantel, mengandung silikon dan oksigen.'] },
+      { word: 'ARUS', hint: 'Aliran panas yang terbentuk di dalam mantel karena pemanasan dari bawah.', hintLain: ['Yang mengalir dan berputar di dalam mantel, menjadi tenaga penggerak lempeng.'] },
       { word: 'PANAS', hint: 'Suhu mantel berkisar 1.000 sampai 3.700 derajat Celsius, artinya mantel sangat...', hintLain: ['Keadaan suhu di dalam mantel yang mencapai ribuan derajat Celsius.'] },
     ],
     [
       { word: 'KENTAL', hint: 'Sifat material mantel: sangat ... sehingga mengalir sangat lambat.', hintLain: ['Sifat zat yang mengalir lambat karena partikelnya rapat, seperti material mantel.'] },
-      { word: 'ASTENOSFER', hint: 'Lapisan kental di bagian atas mantel, tepat di bawah kerak bumi.', hintLain: ['Bagian paling atas mantel yang paling liat, tempat lempeng bergerak di atasnya.'] },
+      { word: 'BERPUTAR', hint: 'Gerakan aliran panas mantel yang berbalik arah membentuk lingkaran.', hintLain: ['Sifat gerak aliran panas mantel: naik lalu turun kembali membentuk lingkaran.'] },
     ],
     [
-      { word: 'MELELEH', hint: 'Yang terjadi pada batuan bila suhunya melampaui titik leburnya.', hintLain: ['Perubahan wujud batuan menjadi zat alir karena suhunya sangat tinggi.'] },
-      { word: 'SIRKULASI', hint: 'Nama lain perputaran aliran panas yang membentuk sel di dalam mantel.', hintLain: ['Gerakan berputar aliran zat kental di dalam mantel, dari bawah ke atas lalu kembali turun.'] },
+      { word: 'MENDIDIH', hint: 'Keadaan air di dalam panci saat dipanaskan, dipakai sebagai perumpamaan arus mantel.', hintLain: ['Perumpamaan arus mantel: seperti air panas yang menggelegak di panci.'] },
+      { word: 'PANCI', hint: 'Wadah tempat air direbus, dipakai sebagai perumpamaan arus konveksi mantel.', hintLain: ['Perkakas dapur untuk merebus air, menjadi perumpamaan sel konveksi.'] },
     ],
     [
-      { word: 'KONDUKSI', hint: 'Perpindahan panas melalui sebuah zat tanpa memindahkan zatnya sendiri.', hintLain: ['Cara panas merambat melalui sebuah benda tanpa benda itu ikut berpindah.'] },
-      { word: 'GEOTERMAL', hint: 'Sebutan bagi energi panas yang berasal dari dalam bumi.', hintLain: ['Istilah bagi panas bumi yang dimanfaatkan sebagai pembangkit listrik.'] },
+      { word: 'LEMPENG', hint: 'Bagian kerak bumi yang digerakkan oleh arus panas di dalam mantel.', hintLain: ['Kepingan kerak bumi; arus mantel menjadi mesin penggeraknya.'] },
+      { word: 'PENGGERAK', hint: 'Peran arus konveksi mantel bagi pergerakan lempeng bumi: sebagai mesin ...', hintLain: ['Peran arus mantel: menjadi mesin yang menggerakkan lempeng bumi.'] },
     ],
   ],
   3: [
@@ -126,26 +126,26 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     ],
     [
       { word: 'BESI', hint: 'Logam utama penyusun inti bumi, bersama nikel.', hintLain: ['Logam yang paling banyak menyusun pusat bumi, bersama nikel.'] },
-      { word: 'LELEHAN', hint: 'Inti luar berupa ... logam, karena suhunya melampaui titik leleh besi.', hintLain: ['Logam yang telah berubah menjadi zat alir karena panas.'] },
-      { word: 'KOMPAS', hint: 'Alat penunjuk arah yang bekerja karena memanfaatkan medan magnet bumi.', hintLain: ['Alat navigasi berjarum yang selalu menunjuk ke arah utara dan selatan.'] },
+      { word: 'PUTARAN', hint: 'Gerakan berulang aliran logam cair di inti luar yang membangkitkan magnet.', hintLain: ['Gerak berulang logam cair inti luar; inilah yang menimbulkan medan magnet.'] },
+      { word: 'EKSTREM', hint: 'Sifat panas di inti luar yang membuat logam besi dan nikel meleleh.', hintLain: ['Sifat suhu inti luar yang melampaui titik leleh besi dan nikel.'] },
     ],
     [
       { word: 'LOGAM', hint: 'Inti bumi tersusun dari ... besi dan nikel, bukan batuan.', hintLain: ['Bahan penghantar panas dan listrik yang baik, seperti besi dan nikel.'] },
       { word: 'PANAS', hint: 'Suhu inti luar sekitar 5.000 derajat Celsius, artinya sangat...', hintLain: ['Keadaan suhu di inti luar yang mencapai sekitar 5.000 derajat Celsius.'] },
-      { word: 'KUTUB', hint: 'Medan magnet bumi memiliki dua ..., yaitu utara dan selatan.', hintLain: ['Sebutan bagi ujung utara dan ujung selatan sebuah magnet.'] },
+      { word: 'DINAMO', hint: 'Alat pembangkit listrik; perputaran logam inti luar bekerja seperti ini.', hintLain: ['Perumpamaan bagi kerja inti luar: seperti ... raksasa yang berputar.'] },
     ],
     [
-      { word: 'ARUS', hint: 'Logam cair di inti luar membentuk ... listrik yang menghasilkan medan magnet.', hintLain: ['Aliran listrik yang timbul dari logam yang bergerak di inti luar.'] },
-      { word: 'LISTRIK', hint: 'Jenis aliran yang timbul dari logam cair yang bergerak di inti luar.', hintLain: ['Aliran energi yang muncul dari logam yang bergerak, dan membangkitkan magnet.'] },
+      { word: 'RAKSASA', hint: 'Ukuran dinamo yang menggambarkan besarnya medan magnet bumi.', hintLain: ['Sifat dinamo yang dibentuk oleh inti luar bumi: sangat besar.'] },
+      { word: 'MATAHARI', hint: 'Bintang yang radiasinya dibelokkan oleh medan magnet bumi.', hintLain: ['Sumber badai radiasi yang ditahan oleh medan magnet bumi.'] },
       { word: 'LINDUNG', hint: 'Medan magnet bumi bertugas ... permukaan dari radiasi angkasa.', hintLain: ['Tugas medan magnet bumi: menahan radiasi angkasa agar tidak sampai ke permukaan.'] },
     ],
     [
       { word: 'MEDAN', hint: 'Wilayah yang dipengaruhi sebuah gaya, misalnya gaya magnet bumi.', hintLain: ['Ruang di sekitar magnet yang masih terpengaruh gaya tariknya.'] },
-      { word: 'GEODYNAMO', hint: 'Mekanisme perputaran logam di inti luar yang membangkitkan magnet bumi.', hintLain: ['Cara kerja perputaran logam panas di inti luar sehingga bumi memiliki magnet.'] },
+      { word: 'BADAI', hint: 'Sebutan bagi gangguan radiasi hebat yang datang dari matahari.', hintLain: ['Gangguan radiasi matahari yang dibelokkan medan magnet bumi.'] },
       { word: 'PERISAI', hint: 'Sebutan bagi medan magnet bumi karena melindungi dari radiasi angkasa.', hintLain: ['Sebutan bagi pelindung alami bumi dari radiasi angkasa.'] },
     ],
     [
-      { word: 'LEBUR', hint: 'Hancur menjadi zat alir karena panas yang sangat tinggi.', hintLain: ['Peristiwa berubahnya logam menjadi zat alir akibat panas yang sangat tinggi.'] },
+      { word: 'RADIASI', hint: 'Pancaran berbahaya dari angkasa yang dilindungi medan magnet bumi.', hintLain: ['Pancaran berbahaya matahari yang dibelokkan oleh medan magnet bumi.'] },
       { word: 'CAIR', hint: 'Wujud logam di inti luar, berbeda dengan inti dalam yang padat.', hintLain: ['Wujud zat yang mengalir dan tidak mempertahankan bentuknya.'] },
       { word: 'SUHU', hint: 'Besaran yang mencapai 5.000 derajat Celsius di inti luar bumi.', hintLain: ['Besaran yang diukur dengan termometer dan menyatakan derajat panas.'] },
     ],
@@ -153,7 +153,7 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
   4: [
     // Inti Dalam — sengaja HANYA 2 kata.
     [
-      { word: 'INTIDALAM', hint: 'Lapisan terdalam planet bumi pada kedalaman 6.371 kilometer.', hintLain: ['Bagian paling tengah bumi, berupa bola logam di kedalaman 6.371 km.'] },
+      { word: 'KRISTAL', hint: 'Bentuk susunan logam besi dan nikel di inti dalam.', hintLain: ['Susunan atom logam yang teratur rapat di inti dalam.'] },
       { word: 'PADAT', hint: 'Inti dalam berbentuk sangat ... karena tekanan yang sangat besar dari segala arah.', hintLain: ['Sifat zat yang partikelnya rapat dan tidak dapat mengalir, seperti lapisan terdalam bumi.'] },
     ],
     [
@@ -166,15 +166,15 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     ],
     [
       { word: 'GRAVITASI', hint: 'Gaya yang menarik segala sesuatu menuju pusat bumi.', hintLain: ['Gaya tarik bumi yang membuat benda jatuh ke bawah.'] },
-      { word: 'TERDALAM', hint: 'Inti dalam adalah lapisan yang paling ... di seluruh bumi.', hintLain: ['Kedudukan lapisan yang paling jauh dari permukaan bumi.'] },
+      { word: 'ATOM', hint: 'Bagian terkecil penyusun besi yang dikunci rapat oleh tekanan di inti dalam.', hintLain: ['Bagian terkecil penyusun logam; di inti dalam terkuci rapat oleh tekanan.'] },
     ],
     [
       { word: 'INTI', hint: 'Bagian paling tengah dari sesuatu, misalnya bagian terdalam bumi.', hintLain: ['Bagian paling tengah, misalnya pada buah atau pada bumi.'] },
-      { word: 'PADUAN', hint: 'Campuran dua logam atau lebih, seperti besi dan nikel di pusat bumi.', hintLain: ['Hasil pencampuran beberapa logam, misalnya besi dengan nikel.'] },
+      { word: 'NOL', hint: 'Nilai gravitasi tepat di pusat bumi, karena tarikan dari segala arah saling meniadakan.', hintLain: ['Nilai gaya tarik di titik pusat bumi: karena saling meniadakan.'] },
     ],
     [
       { word: 'NIKEL', hint: 'Logam penyusun inti bumi yang berpasangan dengan besi.', hintLain: ['Logam berwarna keperakan yang menyertai besi di pusat bumi.'] },
-      { word: 'MAMPAT', hint: 'Keadaan zat yang partikelnya sangat rapat karena tekanan yang besar.', hintLain: ['Keadaan zat yang partikelnya terdesak sangat rapat oleh tekanan besar.'] },
+      { word: 'DAHSYAT', hint: 'Sifat tekanan di inti dalam yang membuat besi tetap padat.', hintLain: ['Sifat tekanan dari seluruh bumi yang mengunci besi tetap padat.'] },
     ],
   ],
   5: [
