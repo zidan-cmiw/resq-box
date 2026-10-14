@@ -83,24 +83,84 @@ for (let r = 0; r < MAP_ROWS; r++) {
 export const EVACUATION_GATE: [number, number] = [40, 48];
 
 export const NPC_SPAWN_POINTS: [number, number][] = [];
-const possibleSpawns: [number, number][] = [];
-// Cari semua GRASS tile di area desa (row 12..38, col 0..50)
-for (let r = 12; r < MAP_ROWS - 10; r++) {
-  for (let c = 0; c < MAP_COLS - 20; c++) {
-    if (MAP_DATA[r][c] === TILE.GRASS) {
-      possibleSpawns.push([r, c]);
-    }
-  }
-}
-possibleSpawns.sort(() => Math.random() - 0.5);
-// Spawn lebih banyak NPC karena map lebih besar
-for (let i = 0; i < 50; i++) {
-  if (possibleSpawns[i]) NPC_SPAWN_POINTS.push(possibleSpawns[i]);
-}
-
 export const GATE_POSITION: [number, number] = [40, 48];
 
 // Tile yang bisa dilewati NPC (tenda tidak bisa dilewati, hanya safe_zone/rumput di tengah)
 export const WALKABLE_TILES: TileType[] = [
   TILE.GRASS, TILE.PATH, TILE.DIRT_ROAD, TILE.SAFE_ZONE, TILE.BRIDGE, TILE.FARM,
 ];
+
+// ══════════════════════════════════════════════════════════════════════════
+// TITIK AWAL WARGA
+// ══════════════════════════════════════════════════════════════════════════
+//
+// Diletakkan di AKHIR berkas karena pemeriksaan "dapat dilewati" memakai
+// WALKABLE_TILES yang baru didefinisikan di atas.
+//
+// Sebelumnya titik awal warga dikocok acak:
+//     possibleSpawns.sort(() => Math.random() - 0.5);
+//
+// Dua masalah pada cara itu:
+//
+//   1. Pengocokan dengan pembanding acak itu BIAS, dan hasilnya BERUBAH setiap
+//      kali halaman dimuat - sehingga perilaku warga tidak dapat diulang maupun
+//      diuji dengan andal.
+//   2. Petak yang terpilih bisa berada di kantong yang TERPUTUS dari titik
+//      kumpul. Warga di sana mustahil mengungsi: ia berdiri diam atau
+//      berputar-putar, dan tampak "ngaco" tanpa sebab yang jelas.
+//
+// Sekarang hanya petak yang terbukti tersambung ke titik kumpul yang dipakai,
+// dengan penelusuran sederhana (BFS) dan urutan yang TETAP.
+const petakTersambungKeTitikKumpul = (() => {
+  const bisaDilewati = (r: number, c: number) => {
+    const t = MAP_DATA[r][c] as TileType;
+    // Gerbang IKUT dianggap dapat dilewati.
+    //
+    // `TILE.GATE` sengaja tidak ada di WALKABLE_TILES karena penelusur jalur
+    // menanganinya terpisah lewat parameter `gateOpen`. Akibatnya gerbang adalah
+    // satu-satunya penghubung desa ke titik kumpul, dan penelusuran yang tidak
+    // mengikutkannya akan berhenti di situ - tidak menemukan satu petak pun.
+    //
+    // Yang diperiksa di sini adalah keterjangkauan SAAT GERBANG TERBUKA, yaitu
+    // keadaan evakuasi yang sebenarnya.
+    return WALKABLE_TILES.includes(t) || t === TILE.GATE;
+  };
+
+  const terlihat = new Set<string>();
+  const antre: [number, number][] = [];
+  for (const [r, c] of SAFE_ZONE_TILES) {
+    terlihat.add(`${r},${c}`);
+    antre.push([r, c]);
+  }
+
+  while (antre.length > 0) {
+    const [r, c] = antre.pop() as [number, number];
+    for (const [dr, dc] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+      const nr = r + dr;
+      const nc = c + dc;
+      if (nr < 0 || nc < 0 || nr >= MAP_ROWS || nc >= MAP_COLS) continue;
+      const kunci = `${nr},${nc}`;
+      if (terlihat.has(kunci) || !bisaDilewati(nr, nc)) continue;
+      terlihat.add(kunci);
+      antre.push([nr, nc]);
+    }
+  }
+  return terlihat;
+})();
+
+const kandidatTitikAwal: [number, number][] = [];
+for (let r = 12; r < MAP_ROWS - 10; r++) {
+  for (let c = 0; c < MAP_COLS - 20; c++) {
+    if (MAP_DATA[r][c] === TILE.GRASS && petakTersambungKeTitikKumpul.has(`${r},${c}`)) {
+      kandidatTitikAwal.push([r, c]);
+    }
+  }
+}
+
+// Sebarkan merata dengan langkah tetap - bukan acak - supaya hasilnya sama
+// setiap kali halaman dimuat.
+const JUMLAH_WARGA = 50;
+const langkahSebar = Math.max(1, Math.floor(kandidatTitikAwal.length / JUMLAH_WARGA));
+for (let i = 0; i < JUMLAH_WARGA && i * langkahSebar < kandidatTitikAwal.length; i++) {
+  NPC_SPAWN_POINTS.push(kandidatTitikAwal[i * langkahSebar]);
+}

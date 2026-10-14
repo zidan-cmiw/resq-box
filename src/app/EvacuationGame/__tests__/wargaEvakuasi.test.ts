@@ -161,18 +161,7 @@ describe('warga evakuasi — saat darurat dan gerbang TERBUKA', () => {
     periksaKewajaran(sekarang, 'akhir evakuasi');
   });
 
-  test('warga yang sudah aman tetap berada di sekitar titik kumpul', {
-    // BELUM SELESAI - jangan dihapus.
-    //
-    // Masih reproducible: ada warga berstatus "aman" padahal berada puluhan
-    // petak dari titik kumpul terdekat (terukur 42,8 petak).
-    //
-    // Perbaikan yang sudah dilakukan (posisi IKUT dipindahkan ke titik kumpul
-    // saat tiba) terbukti benar pada jalur kedatangan normal - terukur jarak
-    // 0,0 petak tepat saat warga menjadi "aman". Jadi masih ada JALUR LAIN
-    // menuju keadaan "aman" yang belum ditemukan.
-    todo: 'masih ada warga berstatus aman pada jarak 40+ petak dari titik kumpul',
-  }, () => {
+  test('warga yang sudah aman tetap berada di sekitar titik kumpul', () => {
     const npc = jalankan(createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH)), 6000, true, true);
     const radiusWajar = 12; // petak
 
@@ -219,14 +208,7 @@ describe('warga evakuasi — saat gerbang TERTUTUP lalu dibuka', () => {
     );
   });
 
-  test('warga yang benar-benar terputus TIDAK berputar-putar tanpa henti', {
-    // BELUM SELESAI - jangan dihapus.
-    //
-    // Warga yang wilayahnya terputus masih berganti keadaan antara blocked dan
-    // panic, jadi jeda yang ditambahkan hanya memperlambat putarannya, belum
-    // menghentikannya.
-    todo: 'warga terputus masih berganti keadaan antara blocked dan panic',
-  }, () => {
+  test('warga yang benar-benar terputus TIDAK berputar-putar tanpa henti', () => {
     // Warga yang wilayahnya terputus tidak dapat menemukan jalur. Ia tidak boleh
     // berputar panic -> blocked -> panic setiap beberapa bingkai: selain membuang
     // puluhan pencarian A* tiap percobaan, di layar ia tampak mondar-mandir tanpa
