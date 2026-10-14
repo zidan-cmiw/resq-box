@@ -771,7 +771,7 @@ function renderIllustration(
           <img
             src="/images.jpg"
             alt="Lima tahap perpecahan benua: dari Pangea sampai tujuh benua seperti sekarang"
-            className="max-w-full max-h-full object-contain"
+            className="w-full h-full object-cover"
           />
         </div>
       );
