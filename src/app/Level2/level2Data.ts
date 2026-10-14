@@ -283,7 +283,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-volcano-status',
         title: 'Temuan 1: 4 Tingkat Status Aktivitas Gunung Api & MAGMA Indonesia',
         shortDesc:
-          'PVMBG menetapkan 4 status gunung api: Level I (Normal - hijau), Level II (Waspada - kuning), Level III (Siaga - oranye), dan Level IV (Awas - merah). Pantau info resmi lewat aplikasi MAGMA Indonesia.',
+          'PVMBG menetapkan 4 status gunung api: Level I (Normal - hijau), Level II (Waspada - kuning), Level III (Siaga - oranye), dan Level IV (Awas - merah). Pantau info resmi lewat aplikasi MAGMA Indonesia. Di pos pengamatan, petugas memantau gunung dengan beberapa alat. SEISMOGRAF merekam getaran atau gempa tremor di dalam gunung. Alat lain mengukur DEFORMASI, yaitu perubahan bentuk tubuh gunung yang mengembung karena magma naik ke bawah kawah. Petugas juga memeriksa GAS vulkanik yang keluar dari kawah, karena gas beracun berbahaya bagi warga. Pengamatan kadang terhambat KABUT tebal yang menutupi puncak, sehingga petugas mengandalkan kamera pemantau.',
         fact:
           'Pada Level IV (AWAS), letusan utama sedang atau segera terjadi. Warga di Kawasan Rawan Bencana III (KRB III) wajib segera evakuasi mandiri!',
         iconName: 'mountain',
