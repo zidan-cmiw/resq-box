@@ -150,6 +150,15 @@ export default function Wordle({
           classroom_code: student?.classroom_id || 'RESQ-8A',
           level_number: 1,
           score: 100,
+          // Kedua bidang ini WAJIB dikirim, sama seperti dua pemanggil Level 1
+          // lainnya (CoreChallengeModal dan earthDiveSync).
+          //
+          // Server memaksa nilai menjadi 0 bila `missions` kosong DAN skor klien
+          // di bawah 100. Sebelumnya laporan ini tidak mengirim keduanya,
+          // sehingga hanya selamat karena skornya KEBETULAN tepat 100 - dan akan
+          // diam-diam tercatat 0 bila skornya kelak diubah.
+          missions: 8,
+          isCompleted: true,
           details: {
             questions_solved: questions.length,
             words: questions.map((q) => q.word),
