@@ -289,9 +289,17 @@ export function renderConvergentLandMode(
   // 3. Tekstur, warna gradien, arus konveksi, dan gelembung pijar 100% SAMA PERSIS dan MENYATU
   // 4. Bebas garis pembatas/sekat seolah satu fluida magma cair murni
   // ══════════════════════════════════════════════════════════════════════
+  // Lapisan mantel & magma TIDAK digambar pada kondisi DARATAN.
+  //
+  // Koreksi dosen: tumbukan dua lempeng BENUA tidak menghasilkan subduksi, jadi
+  // penampangnya cukup memperlihatkan kerak yang terlipat menjadi pegunungan -
+  // tanpa lapisan mantel dan tanpa kantung magma di perut gunungnya.
+  const GAMBAR_MANTEL_KONVERGEN = false;
+
   ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(-800, h);
+  if (GAMBAR_MANTEL_KONVERGEN) {
+    ctx.beginPath();
+    ctx.moveTo(-800, h);
   ctx.lineTo(-800, getConvergentMantleY(-800, p, 'land'));
   for (let mx = -800; mx <= w + 400; mx += 3) {
     ctx.lineTo(mx, getConvergentMantleY(mx, p, 'land'));
@@ -355,6 +363,7 @@ export function renderConvergentLandMode(
   ctx.stroke();
 
   ctx.restore();
+  }
 
   // ══════════════════════════════════════════════════════════════════════
   // LAYER 2: LAPISAN TANAH & BATUAN PADAT LITOSFER BAWAH (SOLID KONTINU)
@@ -474,6 +483,24 @@ export function renderConvergentLandMode(
     ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
   }
   ctx.stroke();
+  ctx.restore();
+
+  // Tubuh pegunungan digambar PADAT, menutup rongga tempat kantung magma dulu
+  // berada. Tanpa ini, melewati Layer 1 meninggalkan LUBANG HITAM di perut
+  // gunung - sudah dibuktikan lewat pemotretan halaman uji pada putaran lalu.
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(-800, h);
+  for (let x = -800; x <= w + 400; x += 4) {
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+  }
+  ctx.lineTo(w + 400, h);
+  ctx.closePath();
+  const batuanPadatGrad = ctx.createLinearGradient(0, 220, 0, h);
+  batuanPadatGrad.addColorStop(0, '#57534e');
+  batuanPadatGrad.addColorStop(1, '#292524');
+  ctx.fillStyle = batuanPadatGrad;
+  ctx.fill();
   ctx.restore();
 
   // ══════════════════════════════════════════════════════════════════════
