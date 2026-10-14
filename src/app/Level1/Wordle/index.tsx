@@ -4,6 +4,9 @@ import { useAuthStore } from '../../../store/teacherStore';
 import { retroAudio } from '../../../utils/retroAudio';
 import PixelTrophy from '../../../components/PixelTrophy';
 import { submitLevelProgress } from '../../../utils/supabaseClient';
+// Bank kata beserta petunjuknya. Dipisah ke modul tersendiri supaya dapat diuji
+// otomatis — termasuk pemeriksaan bahwa petunjuknya tidak membocorkan jawaban.
+import { WORD_BANK } from './kataWordle';
 
 function seededRandom(seed: number) {
   let t = seed + 0x6d2b79f5;
@@ -11,20 +14,6 @@ function seededRandom(seed: number) {
   t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 }
-
-const WORD_BANK = [
-  { word: 'GEMPA', hint: 'Getaran di permukaan bumi akibat pelepasan energi lempeng tektonik.' },
-  { word: 'MAGMA', hint: 'Batuan cair pijar yang sangat panas di dalam mantel bumi.' },
-  { word: 'SESAR', hint: 'Patahan pada kerak bumi yang menjadi pusat gempa tektonik dangkal.' },
-  { word: 'KERAK', hint: 'Lapisan bumi paling luar yang keras tempat manusia berpijak.' },
-  { word: 'KRATER', hint: 'Lubang kawah di puncak gunung berapi tempat magma dan gas keluar saat erupsi.' },
-  { word: 'EROSI', hint: 'Proses pengikisan tanah atau lereng gunung yang memicu longsor.' },
-  { word: 'PANAS', hint: 'Energi termal ekstrem dari dalam bumi (geotermal) & erupsi magma.' },
-  { word: 'RETAK', hint: 'Kondisi rekahan tanah atau dinding bangunan akibat guncangan gempa.' },
-  { word: 'SUSUL', hint: 'Gempa susulan adalah gempa skala lebih kecil setelah gempa utama.' },
-  { word: 'PUSAT', hint: 'Titik asal terjadinya gelombang gempa bumi di bawah tanah (hiposentrum).' },
-  { word: 'JALUR', hint: 'Jalur evakuasi aman yang wajib diikuti warga saat terjadi bencana.' },
-];
 
 const MAX_GUESSES = 3;
 
@@ -506,9 +495,9 @@ export default function Wordle({
           COBA LAGI lalu menjawab benar pada percobaan pertama — gerbangnya jadi
           tidak menguji apa pun, dan nilainya tidak bermakna.
 
-          Sekarang siswa hanya diminta mengulang tanpa diberi kunci. Petunjuk
-          pengganti yang benar bukan jawabannya, melainkan meminta siswa membaca
-          ulang materinya. */}
+          Sekarang siswa hanya diminta mengulang tanpa diberi kunci, dan sebagai
+          gantinya ia diberi PETUNJUK materi di bawah ini. Petunjuk itu sendiri
+          dijamin tidak memuat jawabannya — lihat `__tests__/kataWordle.test.ts`. */}
       {gameState === 'lost' && (
         <div className="w-full py-3 px-4 sm:py-3.5 sm:px-5 bg-rose-100 border-3 border-rose-700 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow text-left">
           <div>
@@ -516,8 +505,20 @@ export default function Wordle({
               KESEMPATAN HABIS!
             </span>
             <span className="text-[13px] sm:text-[15px] text-rose-800 font-bold">
-              Kata rahasianya belum terbuka. Pelajari kembali materinya, lalu pecahkan ulang kata ini.
+              Kata rahasianya belum terbuka. Baca petunjuk di bawah, lalu pecahkan ulang kata yang sama.
             </span>
+            {/* PETUNJUK, BUKAN JAWABAN.
+                Inilah bantuan yang benar bagi siswa yang kehabisan kesempatan:
+                ia tetap harus berpikir untuk menemukan katanya. Sebelumnya
+                petunjuk ini sudah ada di data tetapi tidak pernah ditampilkan,
+                sehingga siswa yang gagal tidak mendapat arahan apa pun — dan
+                satu-satunya "bantuan" yang ada justru kunci jawabannya. */}
+            {currentHint && (
+              <span className="mt-2 block text-[13px] sm:text-[14.5px] text-rose-950 bg-rose-50 border-2 border-rose-300 rounded-xl px-3 py-2 text-left font-bold">
+                <strong className="font-pixel-title">PETUNJUK: </strong>
+                {currentHint}
+              </span>
+            )}
           </div>
           <button
             onClick={handleRetryCurrent}
