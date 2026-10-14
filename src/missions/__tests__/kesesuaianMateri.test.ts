@@ -61,7 +61,7 @@ const KATA_BEKU: Record<number, string[]> = {
  * rendah, uji ini gagal dan meminta angkanya diturunkan - supaya sisa pekerjaan
  * tidak pernah terlupakan.
  *
- * Kondisi saat ini (24 dari 107 kata belum diajarkan):
+ * Kondisi saat ini (20 dari 107 kata belum diajarkan):
  *   zona 1 Kerak      0 : SELESAI - LITOSFER, DARATAN, LAUTAN, LEMPENG, SILIKAT,
  *                        SEDIMEN, TANAH, LEMPUNG, LERENG, KERAS, INDONESIA,
  *                        SUMATRA, dan GEMPA sudah ditambahkan ke materi kerak.
@@ -69,14 +69,16 @@ const KATA_BEKU: Record<number, string[]> = {
  *                        SILIKAT, dan SIRKULASI sudah dijelaskan di materi mantel.
  *   zona 3 Inti Luar  0 : SELESAI - LEBUR, LELEHAN, GEODYNAMO, KOMPAS, dan KUTUB
  *                        sudah dijelaskan di materi inti luar.
- *   zona 4 Inti Dalam 4 : INTIDALAM, MAMPAT, PADUAN, TERDALAM
+ *   zona 4 Inti Dalam 0 : SELESAI - TERDALAM, PADUAN, dan MAMPAT sudah dijelaskan
+ *                        di materi inti dalam; INTIDALAM terpenuhi lewat kalimat
+ *                        "inti dalam", karena perbandingan mengabaikan spasi.
  *   zona 5 Divergen   8 : CELAH, LAVA, MELEBAR, MEMISAH, MENGAPUNG, PUNGGUNG,
  *                        REKAHAN, ZONA
  *   zona 6 Konvergen  4 : DANGKAL, MENDEKAT, TABRAKAN, TINGGI
  *   zona 7 Transform  8 : GESERAN, HORIZONTAL, MENDATAR, PATAH, PATAHAN, REKAH,
  *                        SANANDREAS, TEGANGAN
  */
-const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 4, 5: 8, 6: 4, 7: 8 };
+const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 8, 6: 4, 7: 7 };
 
 /**
  * Batas untuk TTS Level 2. Area 1 tidak punya materi sama sekali, sehingga
@@ -120,7 +122,16 @@ function materiArea(area: number): string {
 
 /** Jawaban yang teksnya TIDAK muncul di materi. */
 function belumDiajarkan(daftarJawaban: string[], materi: string): string[] {
-  return daftarJawaban.filter((k) => !materi.includes(k.toUpperCase()));
+  // Jawaban Wordle selalu SATU kata, sedangkan materi menuliskannya sebagai dua
+  // kata yang wajar. Contohnya jawaban INTIDALAM, sedangkan materi menulis
+  // "inti dalam". Karena itu perbandingan dilakukan DUA KALI: apa adanya, dan
+  // dengan seluruh spasi dihapus. Materi tetap ditulis dengan bahasa Indonesia
+  // yang benar, tanpa dipaksa memakai kata gabungan yang aneh.
+  const materiRapat = materi.replace(/\s+/g, '');
+  return daftarJawaban.filter((k) => {
+    const kata = k.toUpperCase();
+    return !materi.includes(kata) && !materiRapat.includes(kata);
+  });
 }
 
 describe('jawaban beku — tidak boleh ada jawaban baru', () => {

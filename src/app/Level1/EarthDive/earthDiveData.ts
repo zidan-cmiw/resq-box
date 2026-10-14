@@ -301,7 +301,7 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-inti-dalam',
       title: 'Bola Besi Padat Sepanas Permukaan Matahari',
       shortDesc:
-        'Inti dalam terletak di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari kristal logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi dahsyat di pusat bumi mencegahnya meleleh.',
+        'Inti dalam adalah lapisan TERDALAM di bumi. Letaknya di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari PADUAN logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi yang amat dahsyat di pusat bumi. Tekanan sebesar itu membuat atom-atom besi menjadi MAMPAT, terpadatkan sangat rapat, sehingga tidak dapat meleleh walaupun suhunya sangat tinggi.',
       fact: 'Meskipun lebih panas daripada inti luar yang meleleh, inti dalam BUKANLAH cairan melainkan benar-benar padat. Apa yang mencegah logam meleleh? Hal ini disebabkan oleh tekanan luar biasa yang dialaminya!',
       iconName: 'trophy',
       imageSrc: '/images/geology/inner_core.jpg',
@@ -664,7 +664,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-inti-dalam',
       title: 'Inti Dalam: Bola Besi Padat',
       shortDesc:
-        'Inti dalam terletak di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari kristal logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi dahsyat di pusat bumi mencegahnya meleleh.',
+        'Inti dalam adalah lapisan TERDALAM di bumi. Letaknya di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari PADUAN logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi yang amat dahsyat di pusat bumi. Tekanan sebesar itu membuat atom-atom besi menjadi MAMPAT, terpadatkan sangat rapat, sehingga tidak dapat meleleh walaupun suhunya sangat tinggi.',
       fact:
         'Meskipun sangat panas, inti dalam tetap berwujud PADAT! Tekanan luar biasa dahsyat dari seluruh bumi mengunci atom besi begitu rapat sehingga tidak bisa meleleh.',
       iconName: 'trophy',
