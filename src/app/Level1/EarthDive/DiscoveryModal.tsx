@@ -618,6 +618,16 @@ function MantleConvectionHalfEarth() {
             {/* Jalur sel konveksi, dipakai ulang oleh <mpath> panah berjalan */}
             <path id="jalurSelKiri" d={elips(150, 222, 78, 86, false)} />
             <path id="jalurSelKanan" d={elips(410, 222, 78, 86, true)} />
+
+            {/* PEMOTONG SEL KONVEKSI.
+                Sel konveksi adalah aliran DI DALAM mantel, sehingga tidak boleh
+                menembus pita litosfer maupun keluar ke langit. Sebelumnya
+                bulatannya memang keluar dari bumi karena tidak dipotong sama
+                sekali. Dengan pemotong ini, ukuran dan posisi sel sebebas apa
+                pun tidak akan pernah bisa bocor keluar mantel. */}
+            <clipPath id="konvKlipMantel">
+              <path d={badanBumi} />
+            </clipPath>
           </defs>
 
           {/* LANGIT — latar, bukan lapisan bumi */}
@@ -645,12 +655,20 @@ function MantleConvectionHalfEarth() {
             strokeLinecap="round"
           />
 
-          {/* LEMPENG MENUNJAM (Slab Pull) di kiri & kanan */}
-          <path d={`M 78 258 Q 96 316 116 356`} fill="none" stroke="#1c7a3c" strokeWidth="13" strokeLinecap="round" />
-          <path d={`M 482 258 Q 464 316 444 356`} fill="none" stroke="#1c7a3c" strokeWidth="13" strokeLinecap="round" />
+          {/* LEMPENG MENUNJAM (Slab Pull) di kiri & kanan.
+              Pangkalnya dimulai TEPAT di lengkung permukaan (y=180 pada x=78).
+              Sebelumnya kedua batang ini mulai di y=258, yaitu sekitar 76 px di
+              bawah permukaan, sehingga terlihat melayang terlepas di dalam
+              mantel alih-alih menyambung dari kerak bumi. */}
+          <path d={`M 78 180 Q 92 300 112 356`} fill="none" stroke="#1c7a3c" strokeWidth="13" strokeLinecap="round" />
+          <path d={`M 482 180 Q 468 300 448 356`} fill="none" stroke="#1c7a3c" strokeWidth="13" strokeLinecap="round" />
 
-          {/* ── SEL KONVEKSI: jalur + dash mengalir + panah yang berjalan ── */}
-          <g opacity={dim('rising')}>
+          {/* ── SEL KONVEKSI: jalur + dash mengalir + panah yang berjalan ──
+              Dipotong dengan `konvKlipMantel` supaya bulatannya TIDAK PERNAH
+              keluar dari mantel. Sebelumnya bulatan ini menembus pita litosfer
+              hijau dan masuk ke langit biru, sehingga terlihat seperti cincin
+              yang melayang di luar bumi. */}
+          <g clipPath="url(#konvKlipMantel)" opacity={dim('rising')}>
             <path d={elips(150, 222, 78, 86, false)} fill="none" stroke="#c2410c" strokeWidth="2.5" opacity="0.55" />
             <path d={elips(150, 222, 78, 86, false)} fill="none" stroke="#7f1d1d" strokeWidth="3" strokeLinecap="round" className="konv-alir" />
             {panahBerjalan('jalurSelKiri', 5, 6, '#7f1d1d', '#fed7aa')}
