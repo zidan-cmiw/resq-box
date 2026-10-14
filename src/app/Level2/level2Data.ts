@@ -428,7 +428,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-ash',
         title: 'Temuan 1: Penanganan Abu Vulkanik & Pembersihan Atap Rumah',
         shortDesc:
-          'Endapan debu vulkanik tebal di atap rumah wajib dibersihkan secara gotong royong agar atap tidak ambruk akibat beban abu yang sangat berat (terutama saat basah terkena hujan). Selain itu, hindari mengendarai motor atau mobil dengan kecepatan tinggi di jalanan berabu karena jalan sangat licin dan partikel abu menyumbat serta merusak mesin kendaraan.',
+          'Endapan debu vulkanik tebal di atap rumah wajib dibersihkan secara gotong royong agar atap tidak ambruk akibat beban abu yang sangat berat (terutama saat basah terkena hujan). Selain itu, hindari mengendarai motor atau mobil dengan kecepatan tinggi di jalanan berabu karena jalan sangat licin dan partikel abu menyumbat serta merusak mesin kendaraan. Setelah petugas menyatakan wilayah sudah AMAN, warga yang rumahnya rusak tinggal sementara di BARAK pengungsian. Di sana BANTUAN LOGISTIK seperti makanan, selimut, dan air bersih disalurkan setiap hari. Kelompok yang perlu didahulukan, misalnya LANSIA dan anak-anak, didata oleh petugas. Jadwal pembagian bantuan dan informasi penting ditempel di PAPAN pengumuman barak agar semua warga mengetahuinya.',
         fact:
           'Buku Saku BNPB menegaskan: Bersihkan atap dari timbunan debu vulkanik karena beratnya bisa merobohkan dan merusak atap rumah atau bangunan. Kurangi paparan abu dan hindari berkendara di jalan berabu!',
         iconName: 'shield',
@@ -439,7 +439,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-sanitation',
         title: 'Temuan 2: Kesehatan, Sanitasi & Perlindungan Air Minum',
         shortDesc:
-          'Abu vulkanik mengandung pecahan kaca silika tajam mikroskopis yang dapat merusak jaringan paru-paru dan melukai kornea mata. Selalu kenakan masker dan kacamata tertutup saat beraktivitas. Jika mata terkena debu, basuh dengan air mengalir dan jangan pernah mengucek mata. Pastikan seluruh tandon dan sumber air minum ditutup rapat agar tidak tercemar gas asam dan belerang beracun.',
+          'Abu vulkanik mengandung pecahan kaca silika tajam mikroskopis yang dapat merusak jaringan paru-paru dan melukai kornea mata. Selalu kenakan masker dan kacamata tertutup saat beraktivitas. Jika mata terkena debu, basuh dengan air mengalir dan jangan pernah mengucek mata. Pastikan seluruh tandon dan sumber air minum ditutup rapat agar tidak tercemar gas asam dan belerang beracun. Di barak pengungsian, jaga kebersihan air dan sanitasi agar tidak menimbulkan penyakit. Warga yang luka atau mengalami TRAUMA akibat bencana segera ditangani oleh tim MEDIS.',
         fact:
           'Air minum yang terpapar abu vulkanik dapat mengalami penurunan pH drastis (sangat asam) dan terkontaminasi senyawa belerang berbahaya. Tutup tandon air rapat-rapat dan gunakan air bersih higienis di posko pengungsian!',
         iconName: 'heart',
