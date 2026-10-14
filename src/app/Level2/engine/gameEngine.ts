@@ -3108,6 +3108,13 @@ export function updateGameEngineL2(
           state.nearInteractablePrompt = 'Kamu sudah menyelesaikan evaluasi ini! Silakan lanjut ke area selanjutnya';
         } else {
           // Periksa apakah semua temuan edukasi di area ini telah dibaca
+          //
+          // PENTING: area yang TIDAK disebut di sini akan mendapat requiredKeys
+          // kosong, sehingga totalCount = 0 dan gerbangnya terbuka TANPA membaca
+          // materi apa pun. Itu terjadi pada area 4 (Simulasi Erupsi Merapi) yang
+          // sebenarnya punya dua materi - jadi siswa dapat melewatinya tanpa
+          // membaca. Bila menambah area baru, daftarkan di sini juga.
+          // Ada uji otomatis yang memastikan setiap area BERMATERI terdaftar.
           let requiredKeys: string[] = [];
           if (state.zone.id === 'area-mitigasi-gempa' || state.currentAreaIndex === 0) {
             requiredKeys = ['l2_q_disc_prep', 'l2_q_disc_action'];
@@ -3115,6 +3122,8 @@ export function updateGameEngineL2(
             requiredKeys = ['disc-post-safety', 'disc-post-coordination'];
           } else if (state.zone.id === 'area-pos-pengamatan-merapi' || state.currentAreaIndex === 3) {
             requiredKeys = ['disc-volcano-status', 'disc-volcano-response'];
+          } else if (state.zone.id === 'area-simulasi-merapi' || state.currentAreaIndex === 4) {
+            requiredKeys = ['disc-volcano-sim-signs', 'disc-volcano-sim-evac'];
           } else if (state.zone.id === 'area-barak-pengungsian' || state.currentAreaIndex === 5) {
             requiredKeys = ['disc-post-ash', 'disc-post-sanitation', 'disc-post-pyroclastic'];
           }
