@@ -172,9 +172,22 @@ export default function TutorialBlok({ workspace, userId, onSelesai }: Props) {
     const wadahRect = wadah.getBoundingClientRect();
 
     if (langkah.tunjuk === 'toolbox') {
-      // Panel toolbox digambar Blockly di sisi kiri area kanvas. Lebarnya
-      // mengikuti tema (± 200px); diukur dari wadah agar tetap benar saat
-      // ukuran layar berubah.
+      // Utamakan elemen toolbox yang BENAR-BENAR ada di DOM, supaya panahnya
+      // menunjuk panel yang sesungguhnya - bukan kotak perkiraan.
+      const elToolbox = document.querySelector('.blocklyToolboxDiv') as HTMLElement | null;
+      if (elToolbox) {
+        const r = elToolbox.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) {
+          return {
+            x: r.left - wadahRect.left,
+            y: r.top - wadahRect.top,
+            lebar: r.width,
+            tinggi: r.height,
+          };
+        }
+      }
+
+      // Cadangan bila toolbox tidak ditemukan: perkirakan dari lebar wadah.
       const lebar = Math.min(220, wadahRect.width * 0.32);
       return { x: 0, y: 0, lebar, tinggi: wadahRect.height };
     }
@@ -287,8 +300,15 @@ export default function TutorialBlok({ workspace, userId, onSelesai }: Props) {
 
   if (!aktif) return null;
 
-  // Panah diletakkan di sisi kiri kotak target, menunjuk ke kanan.
-  const panahKiri = kotak ? Math.max(0, kotak.x - 46) : 0;
+  // Panah diletakkan di sisi kotak target.
+  //
+  // Untuk blok (program & lampu), panah ada di sisi KIRI kotak dan menunjuk ke
+  // KANAN. Tetapi untuk panel toolbox, kotaknya menempel di tepi paling kiri
+  // layar - sehingga panah di sisi kirinya jatuh DI LUAR layar dan tidak pernah
+  // terlihat. Karena itu untuk toolbox panah diletakkan di sisi KANAN panel dan
+  // menunjuk ke KIRI, tepat mengarah ke panelnya.
+  const panahDiKiri = langkah.tunjuk !== 'toolbox';
+  const panahKiri = kotak ? (panahDiKiri ? Math.max(0, kotak.x - 46) : kotak.x + kotak.lebar + 10) : 0;
   const panahAtas = kotak ? kotak.y + kotak.tinggi / 2 - 16 : 0;
 
   return (
@@ -321,7 +341,9 @@ export default function TutorialBlok({ workspace, userId, onSelesai }: Props) {
           className="absolute flex items-center transition-all duration-500 ease-out"
           style={{ left: panahKiri, top: panahAtas }}
         >
-          <span className="text-3xl text-amber-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] animate-pulse">➤</span>
+          <span className="text-3xl text-amber-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] animate-pulse">
+            {panahDiKiri ? '➤' : '◀'}
+          </span>
         </div>
       )}
 
