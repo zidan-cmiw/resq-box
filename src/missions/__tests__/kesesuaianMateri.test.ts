@@ -75,8 +75,19 @@ const KATA_BEKU: Record<number, string[]> = {
  */
 const BATAS_ZONA: Record<number, number> = { 1: 13, 2: 6, 3: 5, 4: 4, 5: 8, 6: 4, 7: 8 };
 
-/** Batas untuk TTS Level 2. Area 1 tidak punya materi sama sekali. */
-const BATAS_AREA: Record<number, number> = { 0: 0, 1: 12, 2: 0, 3: 0, 4: 0, 5: 0 };
+/**
+ * Batas untuk TTS Level 2. Area 1 tidak punya materi sama sekali, sehingga
+ * kedua belas jawabannya memang tidak punya acuan.
+ *
+ * Kondisi saat ini (36 dari 60 jawaban belum diajarkan; area 1 tidak dihitung):
+ *   area 0 Mitigasi    7 : BANGUNAN, LATIHAN, PERSIAPAN, PETUGAS, RENCANA, RINGAN, UPAYA
+ *   area 2 Evakuasi    7 : AMBULANS, BERKUMPUL, KEHADIRAN, LAPANGAN, PETUGAS, POSKO, RERUNTUHAN
+ *   area 3 Pos Merapi  4 : DEFORMASI, GAS, KABUT, SEISMOGRAF
+ *   area 4 Erupsi     10 : BAHAYA, GEMURUH, KRATER, LAHAR, LEDAKAN, MENGUNGSI, MENURUN,
+ *                         PERINGATAN, PIROKLASTIK, SUMBER
+ *   area 5 Barak       8 : AMAN, BANTUAN, BARAK, LANSIA, LOGISTIK, MEDIS, PAPAN, TRAUMA
+ */
+const BATAS_AREA: Record<number, number> = { 0: 7, 1: 12, 2: 7, 3: 4, 4: 10, 5: 8 };
 
 const besar = (s: unknown) => String(s ?? '').toUpperCase();
 
@@ -196,4 +207,40 @@ describe('kesesuaian materi — Level 2 (TTS) per area', () => {
       }
     });
   }
+});
+
+/**
+ * SET JAWABAN TTS YANG DISEPAKATI — dibekukan.
+ *
+ * Diambil dari set ASLI sebelum pekerjaan penyelarasan materi (commit 522730b).
+ * Sama seperti bank kata: jangan menambah atau mengganti jawaban tanpa keputusan
+ * pemilik proyek. Yang boleh ditambah hanyalah VARIASI KALIMAT petunjuknya.
+ */
+const JAWABAN_TTS_BEKU: Record<number, string[]> = {
+  0: ['BANGUNAN', 'BERLINDUNG', 'EVAKUASI', 'GEMPA', 'LATIHAN', 'MERUNDUK', 'PERSIAPAN', 'PETUGAS', 'RENCANA', 'RINGAN', 'SIAGA', 'UPAYA'],
+  1: ['BANGKU', 'BERTAHAN', 'GETARAN', 'JENDELA', 'KEPALA', 'KORIDOR', 'LAPANGAN', 'MENJAUH', 'MENUNDUK', 'TANGAN', 'TANGGA', 'TERTIB'],
+  2: ['AMBULANS', 'BERKUMPUL', 'BMKG', 'KEHADIRAN', 'KORBAN', 'LAPANGAN', 'MEDIS', 'PETUGAS', 'POSKO', 'RERUNTUHAN', 'SELAMAT', 'SUSULAN'],
+  3: ['AWAS', 'DEFORMASI', 'GAS', 'KABUT', 'MAGMA', 'MASKER', 'PANTAU', 'PVMBG', 'SEISMOGRAF', 'SIAGA', 'STATUS', 'WASPADA'],
+  4: ['BAHAYA', 'ERUPSI', 'GEMURUH', 'KRATER', 'LAHAR', 'LEDAKAN', 'MENGUNGSI', 'MENURUN', 'PERINGATAN', 'PIROKLASTIK', 'SUMBER', 'TUTUP'],
+  5: ['AMAN', 'ATAP', 'BANTUAN', 'BARAK', 'LANSIA', 'LOGISTIK', 'MEDIS', 'PAPAN', 'PENGUNGSI', 'SANITASI', 'TANDON', 'TRAUMA'],
+};
+
+describe('jawaban beku — TTS tidak boleh punya jawaban baru', () => {
+  test('set jawaban tiap area sama persis dengan set yang disepakati', () => {
+    for (const area of Object.keys(JAWABAN_TTS_BEKU).map(Number)) {
+      const sekarang = [...new Set(varianTTS(area).flatMap((g) => g.clues.map((c) => c.answer)))].sort();
+      const beku = [...JAWABAN_TTS_BEKU[area]].sort();
+
+      const tambahan2 = sekarang.filter((k) => !beku.includes(k));
+      const hilang = beku.filter((k) => !sekarang.includes(k));
+
+      assert.deepEqual(
+        tambahan2,
+        [],
+        `area ${area} memakai JAWABAN BARU: ${tambahan2.join(', ')}\n` +
+          '  Pemilik proyek memutuskan jawabannya TETAP seperti semula; yang ditambah hanya VARIASI KALIMAT petunjuknya.',
+      );
+      assert.deepEqual(hilang, [], `area ${area} kehilangan jawaban: ${hilang.join(', ')}`);
+    }
+  });
 });
