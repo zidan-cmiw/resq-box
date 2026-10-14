@@ -1,0 +1,280 @@
+// ── bankTTS.test.ts ──────────────────────────────────────────────────────────
+// Uji bank grid Teka-Teki Silang Level 2.
+//
+// MENGAPA UJI INI PALING PENTING DI LEVEL 2
+//
+//   Sebuah TTS dapat terlihat benar di layar padahal MUSTAHIL DISELESAIKAN.
+//   Penyebabnya satu: dua kata yang bersilangan berbagi satu kotak, sehingga
+//   hurufnya wajib sama. Kalau tidak sama, siswa akan mengisi dan selalu salah
+//   — tanpa pesan error apa pun, dan tanpa tahu mengapa.
+//
+//   Karena itu `periksaGrid` dijalankan atas SELURUH grid di dalam bank, dan
+//   setiap masalah dilaporkan dengan nama grid serta koordinat kotaknya supaya
+//   penulisnya langsung tahu bagian mana yang harus diperbaiki.
+//
+// Jalankan: npm run test
+
+import { test, describe } from 'node:test';
+import assert from 'node:assert/strict';
+import { varianTTS, periksaGrid, undiGridTTS } from '../bankTTS.ts';
+
+/** Seluruh area yang seharusnya ada di bank. */
+const AREA = [0, 1, 2, 3, 5];
+
+/** Jalankan validator atas seluruh bank, kumpulkan kegagalannya. */
+function semuaMasalah(): string[] {
+  const keluhan: string[] = [];
+  for (const area of AREA) {
+    varianTTS(area).forEach((grid, i) => {
+      for (const m of periksaGrid(grid)) {
+        keluhan.push(`area ${area} varian ${i}: ${m}`);
+      }
+    });
+  }
+  return keluhan;
+}
+
+/**
+ * Area yang variannya MASIH DITULIS.
+ *
+ * Daftar ini HARUS menyusut seiring varian baru ditambahkan. Ada uji terpisah
+ * di bawah yang menolak area yang sudah punya cukup varian tetapi masih
+ * terdaftar di sini — sehingga daftar ini tidak bisa menjadi alasan permanen
+ * untuk melewati aturan keadilan.
+ */
+const AREA_MENUNGGU_VARIAN = [1, 2, 3, 5];
+
+describe('bank TTS — setiap grid WAJIB dapat diselesaikan', () => {
+  test('tidak ada satu pun grid yang mustahil diisi', () => {
+    assert.deepEqual(semuaMasalah(), [], `grid bermasalah:\n  ${semuaMasalah().join('\n  ')}`);
+  });
+
+  test('validator benar-benar menangkap titik potong yang tidak cocok', () => {
+    // Uji atas validatornya sendiri. Kalau validator ini tidak bekerja, seluruh
+    // pemeriksaan di atas menjadi tidak berarti.
+    const rusak = {
+      rows: 5,
+      cols: 5,
+      clues: [
+        {
+          id: 'x1',
+          number: 1,
+          direction: 'across' as const,
+          answer: 'BENAR',
+          clue: 'kata mendatar',
+          startRow: 0,
+          startCol: 0,
+        },
+        {
+          // Berbagi kotak (0,1) dengan BENAR. BENAR[1] = 'E', tetapi kata ini
+          // dimulai dengan 'A' -> harus dilaporkan sebagai bentrok.
+          id: 'x2',
+          number: 2,
+          direction: 'down' as const,
+          answer: 'AMAN',
+          clue: 'kata menurun',
+          startRow: 0,
+          startCol: 1,
+        },
+      ],
+    };
+    const masalah = periksaGrid(rusak);
+    assert.ok(
+      masalah.some((m) => m.includes('BENTROK')),
+      `validator tidak menangkap bentrok titik potong: ${JSON.stringify(masalah)}`,
+    );
+  });
+
+  test('validator menerima grid yang titik potongnya cocok', () => {
+    const benar = {
+      rows: 5,
+      cols: 5,
+      clues: [
+        {
+          id: 'y1',
+          number: 1,
+          direction: 'across' as const,
+          answer: 'BENAR',
+          clue: 'kata mendatar',
+          startRow: 0,
+          startCol: 0,
+        },
+        {
+          // BENAR[1] = 'E', dan kata ini dimulai dengan 'E' -> cocok.
+          id: 'y2',
+          number: 2,
+          direction: 'down' as const,
+          answer: 'ENAK',
+          clue: 'kata menurun',
+          startRow: 0,
+          startCol: 1,
+        },
+      ],
+    };
+    assert.deepEqual(periksaGrid(benar), [], 'grid yang sah justru ditolak');
+  });
+
+  test('validator menangkap huruf yang jatuh di luar batas grid', () => {
+    const keluar = {
+      rows: 3,
+      cols: 3,
+      clues: [
+        {
+          id: 'z1',
+          number: 1,
+          direction: 'across' as const,
+          answer: 'PANJANGSEKALI',
+          clue: 'terlalu panjang untuk grid 3 kolom',
+          startRow: 0,
+          startCol: 0,
+        },
+      ],
+    };
+    assert.ok(
+      periksaGrid(keluar).some((m) => m.includes('luar batas')),
+      'validator tidak menangkap huruf di luar batas grid',
+    );
+  });
+});
+
+describe('bank TTS — keabsahan isi', () => {
+  test('seluruh area tersedia di bank', () => {
+    const hilang = AREA.filter((a) => varianTTS(a).length === 0);
+    assert.deepEqual(hilang, [], `area tanpa grid: ${hilang.join(', ')}`);
+  });
+
+  test('setiap area punya minimal 2 varian supaya benar-benar dapat diundi', () => {
+    // Kalau hanya ada satu varian, seluruh siswa tetap mendapat teka-teki yang
+    // sama dan pengundian ini tidak ada gunanya.
+    const kurang = AREA.filter(
+      (a) => !AREA_MENUNGGU_VARIAN.includes(a) && varianTTS(a).length < 2,
+    ).map((a) => `area ${a} (${varianTTS(a).length} varian)`);
+    assert.deepEqual(kurang, [], `varian kurang: ${kurang.join(', ')}`);
+  });
+
+  test('daftar area yang menunggu varian tidak boleh basi', () => {
+    // Begitu sebuah area sudah punya >= 2 varian, ia WAJIB dikeluarkan dari
+    // daftar penunggu. Tanpa uji ini, daftar itu bisa dipakai selamanya untuk
+    // menghindari aturan keadilan.
+    const sudahCukup = AREA_MENUNGGU_VARIAN.filter((a) => varianTTS(a).length >= 2);
+    assert.deepEqual(
+      sudahCukup,
+      [],
+      `area ini sudah punya >= 2 varian, keluarkan dari AREA_MENUNGGU_VARIAN: ${sudahCukup.join(', ')}`,
+    );
+  });
+
+  test('JUMLAH KATA seragam di semua varian satu area (aturan keadilan beban)', () => {
+    const tidakSeragam: string[] = [];
+    for (const a of AREA) {
+      const jumlah = varianTTS(a).map((g) => g.clues.length);
+      if (new Set(jumlah).size > 1) {
+        tidakSeragam.push(`area ${a} (${jumlah.join(' kata, ')} kata)`);
+      }
+    }
+    assert.deepEqual(tidakSeragam, [], `beban tidak adil antar-varian: ${tidakSeragam.join('; ')}`);
+  });
+
+  test('setiap jawaban berupa huruf kapital A-Z dan cukup panjang', () => {
+    const salah: string[] = [];
+    for (const a of AREA) {
+      varianTTS(a).forEach((g, i) => {
+        for (const c of g.clues) {
+          if (!/^[A-Z]+$/.test(c.answer)) salah.push(`area ${a}.${i} "${c.answer}" bukan A-Z`);
+          if (c.answer.length < 3) salah.push(`area ${a}.${i} "${c.answer}" terlalu pendek`);
+        }
+      });
+    }
+    assert.deepEqual(salah, [], `jawaban bermasalah: ${salah.join('; ')}`);
+  });
+
+  test('setiap petunjuk cukup panjang untuk menuntun', () => {
+    const pendek: string[] = [];
+    for (const a of AREA) {
+      varianTTS(a).forEach((g, i) => {
+        for (const c of g.clues) {
+          if (c.clue.trim().length < 40) pendek.push(`area ${a}.${i} "${c.answer}"`);
+        }
+      });
+    }
+    assert.deepEqual(pendek, [], `petunjuk terlalu pendek: ${pendek.join('; ')}`);
+  });
+
+  test('ukuran grid wajar dan setiap kata muat di dalamnya', () => {
+    const aneh: string[] = [];
+    for (const a of AREA) {
+      varianTTS(a).forEach((g, i) => {
+        if (g.rows < 3 || g.cols < 3) aneh.push(`area ${a}.${i} ukuran ${g.rows}x${g.cols}`);
+        const terpanjang = Math.max(...g.clues.map((c) => c.answer.length));
+        if (terpanjang > Math.max(g.rows, g.cols)) {
+          aneh.push(`area ${a}.${i} kata terpanjang ${terpanjang} lebih panjang dari grid`);
+        }
+      });
+    }
+    assert.deepEqual(aneh, [], `ukuran grid bermasalah: ${aneh.join('; ')}`);
+  });
+
+  test('tidak ada jawaban yang diulang antar-varian pada area yang sama', () => {
+    // Kalau diulang, dua siswa bisa mengisi kata yang sama walau gridnya berbeda.
+    const ulang: string[] = [];
+    for (const a of AREA) {
+      const semua = varianTTS(a).flatMap((g) => g.clues.map((c) => c.answer));
+      const ganda = [...new Set(semua.filter((x, i) => semua.indexOf(x) !== i))];
+      if (ganda.length > 0) ulang.push(`area ${a} (${ganda.join(', ')})`);
+    }
+    assert.deepEqual(ulang, [], `jawaban diulang antar-varian: ${ulang.join('; ')}`);
+  });
+});
+
+describe('undian grid TTS — berbeda antar-siswa, tetap bagi satu siswa', () => {
+  test('hasilnya TETAP bila diundi ulang untuk siswa yang sama', () => {
+    for (const a of AREA) {
+      const pertama = JSON.stringify(undiGridTTS(a, 'siswa-1'));
+      const kedua = JSON.stringify(undiGridTTS(a, 'siswa-1'));
+      assert.equal(pertama, kedua, `area ${a}: undian berubah untuk siswa yang sama`);
+    }
+  });
+
+  test('hasilnya selalu salah satu grid yang sah dari area itu', () => {
+    for (const a of AREA) {
+      const sah = new Set(varianTTS(a).map((g) => JSON.stringify(g)));
+      for (const u of ['a', 'b', 'siswa-1', 'siswa-2', 'guru-1']) {
+        const hasil = undiGridTTS(a, u);
+        assert.ok(hasil !== null, `area ${a}: undian menghasilkan null`);
+        assert.ok(sah.has(JSON.stringify(hasil)), `area ${a}: undian di luar bank`);
+      }
+    }
+  });
+
+  test('siswa berbeda mendapat grid yang berbeda', () => {
+    const kurangBervariasi: string[] = [];
+    for (const a of AREA) {
+      // Area yang variannya masih ditulis belum bisa bervariasi. Dijaga oleh uji
+      // "daftar area yang menunggu varian tidak boleh basi" di atas.
+      if (AREA_MENUNGGU_VARIAN.includes(a)) continue;
+      const terpakai = new Set(
+        Array.from({ length: 100 }, (_, i) => JSON.stringify(undiGridTTS(a, `siswa-${i}`))),
+      );
+      if (terpakai.size < 2) kurangBervariasi.push(`area ${a} (hanya ${terpakai.size} grid terpakai)`);
+    }
+    assert.deepEqual(kurangBervariasi, [], `undian tidak bervariasi: ${kurangBervariasi.join('; ')}`);
+  });
+
+  test('setiap varian yang ada benar-benar mungkin terundi', () => {
+    const tidakTerpakai: string[] = [];
+    for (const a of AREA) {
+      const terpakai = new Set(
+        Array.from({ length: 300 }, (_, i) => JSON.stringify(undiGridTTS(a, `siswa-${i}`))),
+      );
+      const total = varianTTS(a).length;
+      if (terpakai.size < total) {
+        tidakTerpakai.push(`area ${a} (${terpakai.size} dari ${total} varian terpakai)`);
+      }
+    }
+    assert.deepEqual(tidakTerpakai, [], `ada varian yang tak pernah terundi: ${tidakTerpakai.join('; ')}`);
+  });
+
+  test('area yang tidak ada di bank tetap memberi grid cadangan, bukan null', () => {
+    assert.ok(undiGridTTS(99, 'siswa-1') !== null, 'area tak dikenal menghasilkan null');
+  });
+});

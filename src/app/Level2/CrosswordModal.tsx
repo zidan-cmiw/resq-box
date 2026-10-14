@@ -3,236 +3,34 @@
 // Area 1: Mitigasi Gempa Bumi & Area 2: Mitigasi Erupsi Merapi
 // Evaluasi akhir zona sebelum gerbang terbuka menuju area berikutnya atau kelulusan level
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import PixelIcon from '../../components/PixelIcon';
 import { retroAudio } from '../../utils/retroAudio';
 
+// Bank grid TTS: tiap area punya beberapa varian, dan satu varian diundi per
+// siswa supaya seluruh angkatan tidak mengisi teka-teki yang sama persis.
+import { undiGridTTS, type ClueTTS } from './bankTTS';
+
 interface CrosswordModalProps {
   areaIndex?: number;
+  /** Id siswa. Dipakai untuk mengundi grid, supaya tiap siswa dapat teka-teki berbeda. */
+  userId?: string;
   onSuccess: () => void;
   onClose: () => void;
 }
 
-interface ClueItem {
-  id: string;
-  number: number;
-  direction: 'across' | 'down';
-  answer: string;
-  clue: string;
-  startRow: number;
-  startCol: number;
-}
+export default function CrosswordModal({ areaIndex = 0, userId = 'guest', onSuccess, onClose }: CrosswordModalProps) {
+  // Grid DIUNDI per siswa (lihat bankTTS.ts). Hasilnya berbeda antar-siswa,
+  // tetapi tetap sama bila siswa yang sama membuka ulang area ini — sehingga
+  // tidak ada yang bisa "mengundi ulang" dengan me-refresh halaman.
+  //
+  // Sebelumnya clues/rows/cols ditulis tetap dalam rantai ternary di sini,
+  // sehingga seluruh siswa di seluruh angkatan mengisi teka-teki yang sama.
+  const gridTerpilih = useMemo(() => undiGridTTS(areaIndex, userId), [areaIndex, userId]);
 
-// ── CLUES AREA 1: MITIGASI GEMPA BUMI & KESIAPSIAGAAN (SMP KELAS 8) ──
-// Soal dirancang ramah anak SMP, diambil murni dari penjelasan para NPC di ruang kelas 8A:
-// - Pak Surya & Dito: Merunduk, Berlindung di bawah meja, Bertahan
-// - Siti (Ketua OSIS): Evakuasi tertib lewat tangga darurat menuju titik kumpul
-// - Rian & Bu Rahma: Getaran gempa bumi di ruang kelas
-// - Bu Rahma: Tas Siaga Bencana 72 Jam
-const CLUES_AREA_1: ClueItem[] = [
-  {
-    id: 'c1',
-    number: 1,
-    direction: 'across',
-    answer: 'BERLINDUNG',
-    clue: 'Masuk ke bawah meja saat terjadi gempa untuk ... dari material yang jatuh.',
-    startRow: 1,
-    startCol: 1,
-  },
-  {
-    id: 'c2',
-    number: 2,
-    direction: 'down',
-    answer: 'EVAKUASI',
-    clue: 'Penyelamatan diri dengan berjalan tertib lewat tangga darurat menuju titik kumpul di lapangan sekolah.',
-    startRow: 1,
-    startCol: 2,
-  },
-  {
-    id: 'c3',
-    number: 3,
-    direction: 'down',
-    answer: 'GEMPA',
-    clue: 'Peristiwa getaran atau guncangan tanah mendadak yang kita simulasikan cara penyelamatannya di kelas.',
-    startRow: 1,
-    startCol: 10,
-  },
-  {
-    id: 'c4',
-    number: 4,
-    direction: 'across',
-    answer: 'SIAGA',
-    clue: 'Tas darurat 72 jam yang diajarkan Bu Rahma berisi makanan, air, dan obat disebut Tas ... Bencana.',
-    startRow: 7,
-    startCol: 2,
-  },
-];
-
-// ── CLUES AREA 2: MITIGASI ERUPSI MERAPI & STATUS PVMBG ──
-const CLUES_AREA_2: ClueItem[] = [
-  {
-    id: 'c1',
-    number: 1,
-    direction: 'across',
-    answer: 'PVMBG',
-    clue: 'Pusat Vulkanologi dan Mitigasi Bencana Geologi, lembaga resmi pemerintah pemantau aktivitas gunung api.',
-    startRow: 1,
-    startCol: 1,
-  },
-  {
-    id: 'c2',
-    number: 2,
-    direction: 'down',
-    answer: 'MERAPI',
-    clue: 'Salah satu gunung api tipe stratovolcano paling aktif di Indonesia di perbatasan Yogyakarta dan Jawa Tengah.',
-    startRow: 1,
-    startCol: 3,
-  },
-  {
-    id: 'c3',
-    number: 3,
-    direction: 'across',
-    answer: 'TANAH',
-    clue: 'Lapisan permukaan bumi tempat kita berpijak, yang getarannya direkam alat seismograf di pos pemantauan gunung api.',
-    startRow: 4,
-    startCol: 2,
-  },
-  {
-    id: 'c4',
-    number: 4,
-    direction: 'down',
-    answer: 'AWAS',
-    clue: 'Tingkat status aktivitas gunung api tertinggi (Level IV) yang menandakan letusan utama sedang atau segera terjadi.',
-    startRow: 4,
-    startCol: 5,
-  },
-];
-
-// ── CLUES AREA 3: PASCABENCANA, TITIK KUMPUL & PENANGANAN MEDIS ──
-const CLUES_AREA_3: ClueItem[] = [
-  {
-    id: 'c1',
-    number: 1,
-    direction: 'across',
-    answer: 'SUSULAN',
-    clue: 'Getaran gempa bumi berikutnya yang berpotensi terjadi beberapa menit hingga beberapa hari setelah gempa utama.',
-    startRow: 1,
-    startCol: 1,
-  },
-  {
-    id: 'c2',
-    number: 2,
-    direction: 'down',
-    answer: 'LAPANGAN',
-    clue: 'Area terbuka luas yang paling aman dijadikan titik kumpul warga sekolah karena terbebas dari bahaya reruntuhan bangunan.',
-    startRow: 1,
-    startCol: 5,
-  },
-  {
-    id: 'c3',
-    number: 3,
-    direction: 'across',
-    answer: 'BMKG',
-    clue: 'Lembaga resmi pemerintah yang berwenang menyiarkan informasi gempa bumi dan peringatan dini tsunami di Indonesia.',
-    startRow: 6,
-    startCol: 2,
-  },
-  {
-    id: 'c4',
-    number: 4,
-    direction: 'down',
-    answer: 'MEDIS',
-    clue: 'Bantuan pertolongan pertama (P3K) dan perawatan kesehatan yang diberikan kepada korban luka atau syok di posko darurat.',
-    startRow: 6,
-    startCol: 3,
-  },
-];
-
-// ── CLUES AREA 4: PRABENCANA ERUPSI MERAPI (STATUS PVMBG & KESIAPSIAGAAN KRB) ──
-const CLUES_AREA_4: ClueItem[] = [
-  {
-    id: 'c1',
-    number: 1,
-    direction: 'across',
-    answer: 'MAGMA',
-    clue: 'Batuan cair pijar bersuhu ribuan derajat di perut bumi, sekaligus nama aplikasi resmi pemantauan gunung api di Indonesia.',
-    startRow: 1,
-    startCol: 1,
-  },
-  {
-    id: 'c2',
-    number: 2,
-    direction: 'down',
-    answer: 'MASKER',
-    clue: 'Alat pelindung pernapasan wajib disiapkan untuk menyaring partikel abu silika tajam agar tidak merusak paru-paru.',
-    startRow: 1,
-    startCol: 1,
-  },
-  {
-    id: 'c3',
-    number: 3,
-    direction: 'down',
-    answer: 'AWAS',
-    clue: 'Tingkat status aktivitas gunung api tertinggi (Level IV) yang menandakan letusan utama berpeluang besar segera terjadi.',
-    startRow: 1,
-    startCol: 5,
-  },
-  {
-    id: 'c4',
-    number: 4,
-    direction: 'across',
-    answer: 'SIAGA',
-    clue: 'Tingkat status gunung api Level III yang menunjukkan peningkatan aktivitas seismik secara nyata dan letusan dapat segera menyusul.',
-    startRow: 4,
-    startCol: 5,
-  },
-];
-
-// ── CLUES AREA 6: PASCABENCANA ERUPSI MERAPI (BARAK PENGUNGSIAN & BAHAYA SEKUNDER) ──
-const CLUES_AREA_6: ClueItem[] = [
-  {
-    id: 'c1',
-    number: 1,
-    direction: 'across',
-    answer: 'BARAK',
-    clue: 'Tempat penampungan pengungsian terpadu yang aman bagi warga terdampak erupsi, dilengkapi posko medis dan logistik.',
-    startRow: 1,
-    startCol: 1,
-  },
-  {
-    id: 'c2',
-    number: 2,
-    direction: 'down',
-    answer: 'ATAP',
-    clue: 'Bagian bangunan rumah yang wajib dibersihkan dari timbunan abu vulkanik tebal secara gotong royong agar tidak ambruk akibat beban berat.',
-    startRow: 1,
-    startCol: 2,
-  },
-  {
-    id: 'c3',
-    number: 3,
-    direction: 'across',
-    answer: 'PAPAN',
-    // Catatan: harus 5 huruf berpola _A_A_ agar huruf silang dengan ATAP (kolom 2) dan AMAN (kolom 4) tetap cocok.
-    clue: 'Papan panjang beralas kain yang dipakai petugas untuk mengusung korban luka ke posko medis (tandu darurat).',
-    startRow: 3,
-    startCol: 1,
-  },
-  {
-    id: 'c4',
-    number: 4,
-    direction: 'down',
-    answer: 'AMAN',
-    clue: 'Kondisi keselamatan warga di barak pengungsian Zona KRB I yang terbebas dari ancaman awan panas dan guguran lava.',
-    startRow: 1,
-    startCol: 4,
-  },
-];
-
-export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: CrosswordModalProps) {
-  const clues = areaIndex === 5 ? CLUES_AREA_6 : areaIndex === 3 ? CLUES_AREA_4 : areaIndex === 2 ? CLUES_AREA_3 : areaIndex === 1 ? CLUES_AREA_2 : CLUES_AREA_1;
-  const rows = areaIndex === 5 ? 6 : areaIndex === 3 ? 8 : areaIndex === 2 ? 11 : areaIndex === 1 ? 9 : 10;
-  const cols = areaIndex === 5 ? 7 : areaIndex === 3 ? 11 : areaIndex === 2 ? 8 : areaIndex === 1 ? 8 : 12;
+  const clues = useMemo(() => gridTerpilih?.clues ?? [], [gridTerpilih]);
+  const rows = gridTerpilih?.rows ?? 10;
+  const cols = gridTerpilih?.cols ?? 12;
   const initialClue = clues[0];
 
   // Cell data map: "r-c" -> { char, isFixed, clueNumber, activeIn: [] }
@@ -323,7 +121,7 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
   }, [activeClueId, selectedCell, isCompleted, clues]);
 
   // Select Clue
-  const handleSelectClue = (clue: ClueItem) => {
+  const handleSelectClue = (clue: ClueTTS) => {
     retroAudio.playSelect();
     setActiveClueId(clue.id);
     setSelectedCell({ r: clue.startRow, c: clue.startCol });

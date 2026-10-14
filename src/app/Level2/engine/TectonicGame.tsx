@@ -1583,6 +1583,7 @@ export default function TectonicGame() {
       {showCrossword && !isCurrentGateUnlocked() && (
         <CrosswordModal
           areaIndex={currentAreaIndex}
+          userId={activeUserId}
           onSuccess={handleCrosswordSuccess}
           onClose={() => setShowCrossword(false)}
         />
