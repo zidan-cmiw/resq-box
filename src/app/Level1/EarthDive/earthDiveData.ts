@@ -546,9 +546,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-crust-compare',
       title: 'Perbedaan Kerak Benua & Samudra',
       shortDesc:
-        'Kerak bumi adalah lapisan paling luar tempat tinggal kita, dengan kedalaman 0–100 km dan suhu 25°C–500°C. Lapisan padat ini terdiri dari Kerak Benua setebal 30–100 km dari batuan granit ringan (SiAl), serta Kerak Samudra setebal 5–15 km dari batuan basal yang lebih padat dan berat (SiMa).',
+        'Kerak bumi adalah lapisan paling luar bumi dan tempat kita tinggal, dengan kedalaman 0–100 km dan suhu 25°C–500°C. Lapisan ini amat KERAS karena tersusun dari batuan padat, bukan zat alir. Kerak bumi bersama bagian paling atas mantel disebut LITOSFER, yaitu LEMPENG raksasa yang bergerak sangat perlahan. Ada dua jenis kerak. Pertama, kerak benua: berada di bawah DARATAN, tebal 30–100 km, tersusun dari batuan granit yang lebih ringan, dan banyak mengandung SILIKAT. Permukaannya tidak rata: ada LERENG gunung, TANAH di lembah, dan endapan SEDIMEN dari batuan yang lapuk. Batuan yang lapuk dan hancur itulah yang menjadi LEMPUNG, bahan dasar pembuatan batu bata. Kedua, kerak samudra: berada di bawah LAUTAN, hanya setebal 5–15 km, tersusun dari batuan basal yang lebih padat dan berat (SiMa).',
       fact:
-        'Kerak benua tebalnya sampai 100 km dan terbuat dari granit. Kerak samudra tipis (5–15 km), tapi terbuat dari basal yang lebih padat dan berat!',
+        'Kerak benua tebalnya sampai 100 km dan terbuat dari granit, sedangkan kerak samudra tipis (5–15 km) tetapi terbuat dari basal yang lebih padat dan berat. Karena lempeng kerak bumi terus bergerak dan saling bergesekan, INDONESIA menjadi salah satu negara paling rawan GEMPA. Salah satu contohnya di sepanjang pantai barat SUMATRA, tempat dua lempeng bertemu dan sering menimbulkan gempa serta tsunami.',
       iconName: 'mountain',
       imageSrc: '/images/geology/crust.jpg',
       illustrationType: 'crust',
