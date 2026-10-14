@@ -37,12 +37,12 @@ function semuaMasalah(): string[] {
 /**
  * Area yang variannya MASIH DITULIS.
  *
- * Daftar ini HARUS menyusut seiring varian baru ditambahkan. Ada uji terpisah
- * di bawah yang menolak area yang sudah punya cukup varian tetapi masih
- * terdaftar di sini — sehingga daftar ini tidak bisa menjadi alasan permanen
- * untuk melewati aturan keadilan.
+ * Sudah KOSONG: seluruh lima area kini punya tiga varian grid. Bila kelak ada
+ * area baru yang variannya belum lengkap, daftarkan di sini — dan uji di bawah
+ * akan menolak area yang sudah cukup varian tetapi masih terdaftar, sehingga
+ * daftar ini tidak bisa menjadi alasan permanen untuk melewati aturan keadilan.
  */
-const AREA_MENUNGGU_VARIAN = [1, 2, 3, 5];
+const AREA_MENUNGGU_VARIAN: number[] = [];
 
 describe('bank TTS — setiap grid WAJIB dapat diselesaikan', () => {
   test('tidak ada satu pun grid yang mustahil diisi', () => {
