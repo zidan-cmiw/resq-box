@@ -1325,10 +1325,10 @@ export const PROF_SARAH_REVIEW_DIALOGUE: DialogueTree = {
 // DULU dialog ini berjudul "TEMUAN GEOLOGIS 2: BATUAN MANTEL & TEKANAN", dan
 // mengajarkan bahwa batuan mantel tetap PADAT karena tekanan yang dahsyat.
 // Materi itu sudah dibuang atas koreksi dosen IPA: material mantel BUKAN batuan
-// padat, melainkan fluida sangat kental. Dialog ini juga masih memanggil
-// `triggerDiscoveryModal: 5`, yaitu entri katalog yang sudah dihapus - dan
+// padat, melainkan fluida sangat kental. Dialog ini DULU juga memanggil entri katalog nomor 5 yang sudah dihapus - dan
 // karena fungsi pengambilnya jatuh ke cadangan, yang terbuka justru materi zona
-// Batas Divergen (Pangea).
+// Batas Divergen (Pangea). Pemicu itu kini sudah dibuang, dan dijaga oleh
+// __tests__/pemicuMateri.test.ts.
 //
 // Area mantel kini hanya punya SATU materi, yaitu arus konveksi pada NPC Zahra.
 // Karena itu pembukaan materi di sini DIHAPUS, dan Lintang menjadi penguat
@@ -1407,9 +1407,17 @@ export const DR_DANANG_REVIEW_DIALOGUE: DialogueTree = {
     open_modal: {
       id: 'open_modal',
       speakerId: 'dr_danang',
-      text: 'Silakan pelajari kembali ya!',
+      text: 'Materi arus konveksi dari Zahra itulah kuncinya. Kalau perlu, buka lagi lewat daftar temuanmu ya!',
       expression: 'happy',
-      triggerDiscoveryModal: 5,
+      // Pemicu materi SENGAJA TIDAK DIPAKAI DI SINI.
+      //
+      // Dulu node ini memanggil id 5, yaitu entri katalog yang SUDAH DIHAPUS.
+      // Karena pengambil materi jatuh ke cadangan (EARTH_STRATA_DATA[5]), yang
+      // terbuka justru materi zona Batas Divergen (Pangea) - padahal pemain
+      // sedang berada di zona Mantel. Zona Mantel hanya punya SATU materi,
+      // yaitu arus konveksi pada NPC Zahra, jadi tidak ada yang perlu dibuka
+      // lagi dari sini.
+      // Dijaga oleh src/app/Level1/EarthDive/__tests__/pemicuMateri.test.ts
     },
     done: {
       id: 'done',
