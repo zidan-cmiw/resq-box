@@ -54,7 +54,7 @@ export function getPlayerSheet(
     zoneId === 'divergent' ? 'diver_suit' : null
   );
 
-  let envMode: 'smp' | 'diver' | 'miner' | 'hazard_mantle' | 'hazard_outer' | 'hazard_inner' | 'normal' = 'normal';
+  let envMode: 'smp' | 'diver' | 'miner' | 'hazard_mantle' | 'hazard_outer' | 'hazard_inner' | 'normal';
   if (isClassroom) {
     envMode = 'smp';
   } else if (effectiveSuit === 'diver_suit' || zoneId === 'divergent') {

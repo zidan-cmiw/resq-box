@@ -97,7 +97,7 @@ export const getActiveCustomAvatar = (): CustomAvatarConfig => {
       const parsed = JSON.parse(u);
       if (parsed?.avatar_config) return parsed.avatar_config;
     }
-  } catch {}
+  } catch { /* diabaikan: konfigurasi avatar rusak → pakai avatar bawaan */ }
   return DEFAULT_CUSTOM_AVATAR;
 };
 
@@ -111,7 +111,7 @@ const getInitialStudent = (): Student | null => {
         if (!parsed.custom_avatar) parsed.custom_avatar = DEFAULT_CUSTOM_AVATAR;
         savedProfile = parsed;
       }
-    } catch {}
+    } catch { /* diabaikan: profil siswa tersimpan rusak → pakai data pengguna aktif */ }
   }
 
   const storedUser = getStoredUser();
@@ -157,12 +157,12 @@ const getInitialUnlockedLevel = (user: UserAccount | null): number => {
         if (!isNaN(parsedByUser) && parsedByUser >= 1) return Math.min(3, parsedByUser);
       }
     }
-  } catch {}
+  } catch { /* diabaikan: level tersimpan tidak terbaca → mulai dari level 1 */ }
   return 1;
 };
 
 const initialStoredUser = getStoredUser();
-let initialUnlockedLevel = getInitialUnlockedLevel(initialStoredUser);
+const initialUnlockedLevel = getInitialUnlockedLevel(initialStoredUser);
 
 if (initialStoredUser) {
   initialStoredUser.unlocked_level = initialUnlockedLevel;
@@ -241,7 +241,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
             );
           }
         }
-      } catch {}
+      } catch { /* diabaikan: antrean nilai rusak → tidak ada yang perlu dibersihkan */ }
       try {
         localStorage.removeItem('resqbox_level2_progress_guest');
         localStorage.removeItem('resqbox_earthdive_progress_guest');
@@ -250,7 +250,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
         localStorage.removeItem('resqbox_workspace_guest');
         localStorage.removeItem('resqbox-mission-storage');
         localStorage.removeItem('resqbox-workspace-v2');
-      } catch {}
+      } catch { /* diabaikan: sebagian kunci tamu gagal dihapus, sisa tetap dibersihkan */ }
 
       if (user.role === 'student') {
         const studentObj: Student = {
@@ -278,7 +278,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
         localStorage.setItem('resqbox-unlocked-level', level.toString());
         try {
           localStorage.removeItem('resqbox_earthdive_progress');
-        } catch {}
+        } catch { /* diabaikan: tidak ada kunci progres lama untuk dihapus */ }
 
         // Sinkronisasi store Level 3 & Workspace Blockly khusus untuk akun ini
         import('./missionStore').then(({ useMissionStore }) => {
@@ -338,7 +338,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
         localStorage.setItem('resqbox-unlocked-level', level.toString());
         try {
           localStorage.removeItem('resqbox_earthdive_progress');
-        } catch {}
+        } catch { /* diabaikan: penghapusan progres lama tidak wajib berhasil */ }
 
         import('./missionStore').then(({ useMissionStore }) => {
           useMissionStore.getState().syncUser(user.id);
@@ -367,7 +367,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
         localStorage.removeItem('resqbox_workspace_guest');
         localStorage.removeItem('resqbox-mission-storage');
         localStorage.removeItem('resqbox-workspace-v2');
-      } catch {}
+      } catch { /* diabaikan: pembersihan kunci tamu bersifat best-effort */ }
 
       import('./missionStore').then(({ useMissionStore }) => {
         useMissionStore.getState().syncUser('guest');
@@ -476,7 +476,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
       localStorage.removeItem('resqbox_workspace_guest');
       localStorage.removeItem('resqbox-mission-storage');
       localStorage.removeItem('resqbox-workspace-v2');
-    } catch {}
+    } catch { /* diabaikan: pembersihan kunci saat keluar tidak wajib berhasil */ }
 
     import('./missionStore').then(({ useMissionStore }) => {
       useMissionStore.getState().syncUser('guest');
@@ -575,7 +575,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
         updatedUser = { ...updatedUser, unlocked_level: newLevel };
         try {
           localStorage.setItem('resqbox-current-user', JSON.stringify(updatedUser));
-        } catch {}
+        } catch { /* diabaikan: kuota penuh, level tetap tersimpan di kunci utama */ }
       }
 
       // Sinkronkan level baru ke cloud

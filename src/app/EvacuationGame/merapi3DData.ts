@@ -18,7 +18,7 @@ import * as THREE from 'three';
 export const PEAK_X = -25.28;
 export const PEAK_Z = -47.0;
 
-// Jalur Alur Lahar Lembah Kawah Utama (Kali Gendol, Kali Kuning, Kali Boyong) untuk Awan Panas
+// Jalur Alur Lembah Kawah Utama (Kali Gendol, Kali Kuning, Kali Boyong) untuk Lava & Awan Panas
 export const LAVA_STREAM_GENDOL = [
   new THREE.Vector3(-25.28, 0, -47.0),
   new THREE.Vector3(-20.0, 0, -35.0),

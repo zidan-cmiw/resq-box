@@ -225,7 +225,11 @@ const JourneyProgressTracker = forwardRef<
                   {/*
                     Label metrik di bawah tiap titik.
 
-                    MASALAH YANG DIPERBAIKI
+                    MASALAH YANG DIPERBAIKI (LAMA — SUDAH TIDAK BERLAKU)
+
+                    Catatan: penjelasan di bawah ini adalah perbaikan lama yang
+                    ternyata BELUM menyelesaikan masalahnya. Penjelasan masalah
+                    sebenarnya ada di bagian akhir blok komentar ini.
 
                       Versi sebelumnya memakai
                           `absolute left-1/2 -translate-x-1/2 whitespace-nowrap`
@@ -260,24 +264,74 @@ const JourneyProgressTracker = forwardRef<
                      Angka 44% berasal dari: label selebar 88% wadah, dan
                      separuhnya adalah 44%. Jadi pergeseran maksimal yang masih
                      membuat label berada di dalam wadah adalah 44%.
+
+                    MASALAH SEBENARNYA (dilaporkan dosen pembimbing)
+
+                      Perbaikan di atas TIDAK menyelesaikan masalah, karena
+                      `w-[88%]` diukur terhadap KOTAK TOMBOL, bukan terhadap
+                      bar. Tombol itu `absolute` dan lebarnya mengikuti isinya
+                      (lingkaran 28px), sehingga 88% dari 28px ≈ 25px.
+
+                      Akibatnya setiap label membungkus PER HURUF menjadi kolom
+                      huruf vertikal, dan kolom-kolom itu saling menumpuk dengan
+                      label titik tetangganya — terlihat seperti tumpukan teks
+                      yang tidak terbaca.
+
+                      Di Level 2 masalahnya paling parah, karena label metriknya
+                      panjang: "Zona Aman KRB I", "Status AWAS", "Area Aman".
+
+                    CARA MEMPERBAIKINYA (sekarang)
+
+                      1. Label DIPINDAHKAN KE LAPISAN TERPISAH (blok 2b di
+                         bawah), sehingga kotak acuan lebarnya adalah TRACK BAR
+                         — bukan tombol titik. Lebarnya disetel
+                         `100/totalAreas %`, yang sama persis dengan jarak antar
+                         titik, jadi label mengisi satu kolom dan tidak mungkin
+                         menumpuk dengan tetangganya, berapa pun lebar layarnya.
+                      2. Teks dipaksa SATU baris lalu dipotong dengan "…"
+                         (`truncate`). Nama lengkapnya tetap dapat dibaca lewat
+                         tooltip `title` pada tombol titiknya.
+                      3. Label disembunyikan di bawah breakpoint `md`. Di layar
+                         sempit tidak ada cara enam–delapan label muat; yang
+                         tetap tampil adalah lencana area aktif di atas avatar.
                   */}
-                  <span
-                    className="absolute -bottom-5 sm:-bottom-5.5 z-10 w-[88%] text-[11px] sm:text-[12.5px] md:text-[13.5px] leading-tight text-center font-pixel pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,1)]"
-                    style={{ transform: 'translateX(-44%)' }}
-                  >
-                    <span
-                      className={`block ${
-                        isCurrent
-                          ? 'text-yellow-300 font-extrabold tracking-wide drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]'
-                          : isCompleted
-                            ? 'text-emerald-300 font-bold'
-                            : 'text-slate-300 font-semibold'
-                      }`}
-                    >
-                      {area.metricLabel}
-                    </span>
-                  </span>
                 </button>
+              );
+            })}
+
+            {/*
+              2b. LABEL METRIK PER TITIK — LAPISAN TERPISAH.
+
+              Label ini SENGAJA tidak lagi dirender di dalam tombol titiknya.
+              Di dalam tombol, persentase lebar diukur terhadap tombol (yang
+              lebarnya hanya mengikuti lingkaran 28px), sehingga label
+              membungkus per huruf dan saling menumpuk.
+
+              Di lapisan ini, kotak acuannya adalah TRACK BAR itu sendiri.
+              Karena itu `width: 100/totalAreas %` sama persis dengan jarak
+              antar titik: label mengisi satu "kolom" tanpa pernah menumpuk
+              dengan tetangganya, berapa pun lebar layarnya.
+            */}
+            {areas.map((area, idx) => {
+              const isCompleted = idx < currentAreaIndex;
+              const isCurrent = idx === currentAreaIndex;
+              return (
+                <span
+                  key={`label-${area.id}`}
+                  className={`hidden md:block absolute -bottom-5 z-10 -translate-x-1/2 truncate text-[12.5px] leading-tight text-center font-pixel pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,1)] ${
+                    isCurrent
+                      ? 'text-yellow-300 font-extrabold tracking-wide'
+                      : isCompleted
+                        ? 'text-emerald-300 font-bold'
+                        : 'text-slate-300 font-semibold'
+                  }`}
+                  style={{
+                    left: `${((idx + 0.5) / totalAreas) * 100}%`,
+                    width: `${100 / totalAreas}%`,
+                  }}
+                >
+                  {area.metricLabel}
+                </span>
               );
             })}
 

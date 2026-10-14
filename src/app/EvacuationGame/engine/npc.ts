@@ -122,10 +122,10 @@ export function updateNPCs(
         // Pick a new random walkable tile in the village from the precomputed list
         if (WALKABLE_VILLAGE_TILES.length > 0) {
           const randTile = WALKABLE_VILLAGE_TILES[Math.floor(Math.random() * WALKABLE_VILLAGE_TILES.length)];
-          let targetR = randTile[0];
-          let targetC = randTile[1];
+          const targetR = randTile[0];
+          const targetC = randTile[1];
           
-          let newPath = findPath(Math.round(n.row), Math.round(n.col), targetR, targetC, gateOpen);
+          const newPath = findPath(Math.round(n.row), Math.round(n.col), targetR, targetC, gateOpen);
           if (newPath.length > 0) {
             return { ...n, path: newPath, pathIndex: 1, wanderTimer: 0 };
           }

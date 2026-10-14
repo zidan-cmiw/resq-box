@@ -13,7 +13,7 @@ export const TILE = {
   MUSHOLA: 6,    // Mushola/langgar desa
   SAFE_ZONE: 7,  // Titik kumpul (zona aman — lapangan terbuka)
   GATE: 8,       // Gerbang evakuasi (jembatan kayu)
-  LAVA: 9,       // Aliran lahar/lava
+  LAVA: 9,       // Aliran lava / awan panas
   DIRT_ROAD: 10, // Jalan tanah/berbatu
   RIVER: 11,     // Sungai
   BRIDGE: 12,    // Jembatan kayu

@@ -368,7 +368,7 @@ export default function Merapi3DScene() {
             if (distToPeak < 6.5) {
               colTemp.setRGB(0.12, 0.08, 0.08); // Kawah Dalam
             } else if (distToPeak < 13.0) {
-              colTemp.setRGB(0.92, 0.32, 0.08); // Bibir Kawah Lahar Pijar
+              colTemp.setRGB(0.92, 0.32, 0.08); // Bibir Kawah Pijar
             } else if (distToPeak < 35.0 || vy > 2.0) {
               const angle = Math.atan2(vz - PEAK_Z, vx - PEAK_X);
               const ridgeStripe = Math.sin(angle * 14.0);
@@ -2606,7 +2606,7 @@ export default function Merapi3DScene() {
 
           for (let r = 0; r < rings; r++) {
             const t = r / tubularSegments; // 0: hulu kawah, 1: ujung terdepan
-            let cr = 0, cg = 0, cb = 0;
+            let cr: number, cg: number, cb: number;
 
             if (t > 0.80) {
               // 1. Merah Pijar Panas Membara ke Kuning Keemasan di ujung depan
@@ -2835,7 +2835,7 @@ export default function Merapi3DScene() {
             }
 
             const turb = track.turbidity[i];
-            // Transisi warna: Biru Jernih (0.01, 0.52, 0.78) -> Cokelat Lumpur Lahar Keruh (0.42, 0.30, 0.18)
+            // Transisi warna: Biru Jernih (0.01, 0.52, 0.78) -> Cokelat Lumpur Vulkanik Keruh (0.42, 0.30, 0.18)
             const cr = 0.01 + turb * (0.42 - 0.01);
             const cg = 0.52 + turb * (0.30 - 0.52);
             const cb = 0.78 + turb * (0.18 - 0.78);
@@ -4220,16 +4220,16 @@ export default function Merapi3DScene() {
 
       for (let i = 0; i < 75; i++) {
         const group = new THREE.Group();
-        let role: NpcRole = 'adult';
-        let bodyGeom = adultBodyGeom;
-        let headGeom = adultHeadGeom;
-        let bodyMat = adultBodyMats[i % adultBodyMats.length];
+        let role: NpcRole;
+        let bodyGeom: THREE.CylinderGeometry;
+        let headGeom: THREE.SphereGeometry;
+        let bodyMat: THREE.MeshStandardMaterial;
         let headMat = civilianHeadMat;
-        let baseSpeed = 0.0035 + ((i * 7) % 5) * 0.0003;
+        let baseSpeed: number;
         let isIndoor = false;
         let indoorBuilding: RegisteredBuilding | null = null;
-        let fromNode = 0;
-        let toNode = 0;
+        let fromNode: number;
+        let toNode: number;
         const progress = (i * 0.137) % 1.0;
 
         // Distribusi variasi lajur samping (Lateral Offset) agar TIDAK PERNAH SEBARIS LURUS (Conga-Line Free!)
@@ -4668,7 +4668,7 @@ export default function Merapi3DScene() {
             if (lavaStreamsGroupRef.current) {
               lavaStreamsGroupRef.current.visible = true;
             }
-            const stageText = 'PASCA-ERUPSI EFUSIF: ENDAPAN LAVA PIJAR & LAHAR';
+            const stageText = 'PASCA-ERUPSI EFUSIF: ENDAPAN LAVA PIJAR & MATERIAL VULKANIK';
             eruptionStageTextRef.current = stageText;
             setEruptionStageText(stageText);
           }
@@ -4993,7 +4993,7 @@ export default function Merapi3DScene() {
 
                 // ── MAKIN JAUH MAKIN NGILANG (DISPERSI & FADE-OUT BERTINGKAT) ──
                 // 1. Fading berdasarkan kemajuan lereng (pProg)
-                let progressFade = 1.0;
+                let progressFade: number;
                 if (pProg <= 0.22) {
                   progressFade = 1.0; // Lereng atas/kawah: pekat maksimal
                 } else if (pProg <= 0.52) {
@@ -5115,15 +5115,15 @@ export default function Merapi3DScene() {
             }
           }
 
-          // ── TAHAP 6: LAHAR DINGIN & EVAKUASI TOTAL (14.0s <= eTime) ──
+          // ── TAHAP 6: AWAN PANAS & EVAKUASI TOTAL (14.0s <= eTime) ──
           if (eTime >= 14.0) {
-            const stageName = 'LAHAR DINGIN & EVAKUASI TOTAL';
+            const stageName = 'AWAN PANAS & EVAKUASI TOTAL';
             if (eruptionStageTextRef.current !== stageName) {
               eruptionStageTextRef.current = stageName;
               setEruptionStageText(stageName);
             }
 
-            // Air sungai Kali Gendol, Kali Kuning, Kali Boyong berubah jadi lumpur pekat lahar dingin
+            // Air sungai Kali Gendol, Kali Kuning, Kali Boyong berubah keruh tersapu material vulkanik
             registeredRivers.forEach((track) => {
               if (track.firstContactSlice === -1) {
                 track.firstContactSlice = 0;
@@ -5267,13 +5267,27 @@ export default function Merapi3DScene() {
 
       if (isDisaster && currentEvacCmd === 'NONE') {
         // BENCANA AKTIF TETAPI BELUM ADA BLOK EVAKUASI DARI USER:
-        // Warga PANIK KEBINGUNGAN! Mereka hanya lari-lari panik tanpa tujuan evakuasi
-        baseSpeedMultiplier = effectiveSeismic === 3 ? 0.6 : 1.85;
-        npcStepRate = 14;
+        // Warga PANIK KEBINGUNGAN — berlarian tanpa tujuan evakuasi.
+        //
+        // KECEPATAN DIBEDAKAN PER TINGKAT GEMPA.
+        // Sebelumnya gempa RINGAN dan SEDANG sama-sama memakai 1.85, sehingga
+        // gerak warga terlihat identik pada kedua tingkat itu (dan itu yang
+        // dikritik: "kok sama aja pas normal, gempa sedang, gempa besar").
+        // Logika barunya mengikuti kemampuan manusia sungguhan:
+        //   ringan (1) — masih dapat berlari cepat
+        //   sedang (2) — langkah mulai terhambat
+        //   besar  (3) — hampir tidak dapat bergerak; banyak yang tiarap
+        baseSpeedMultiplier = effectiveSeismic === 3 ? 0.55 : effectiveSeismic === 2 ? 1.45 : 1.85;
+        npcStepRate = effectiveSeismic === 3 ? 9 : effectiveSeismic === 2 ? 12 : 14;
       } else if (currentEvacCmd !== 'NONE') {
-        // BLOK EVAKUASI AKTIF DARI USER:
-        // Warga bergerak teratur dan sigap sesuai perintah blok
-        baseSpeedMultiplier = currentEvacCmd === 'LUAR_MAP' ? 2.6 : 2.1;
+        // BLOK EVAKUASI AKTIF DARI USER: warga bergerak teratur sesuai perintah.
+        //
+        // Namun gempa yang kuat MEMBATASI kecepatan lari mereka. Sebelumnya
+        // semua tingkat gempa memakai 2.1x, sehingga saat gempa besar pun
+        // warga terlihat sama gesitnya seperti kondisi aman.
+        const kecepatanEvakuasi = currentEvacCmd === 'LUAR_MAP' ? 2.6 : 2.1;
+        const batasGempa = effectiveSeismic === 3 ? 1.1 : effectiveSeismic === 2 ? 1.8 : kecepatanEvakuasi;
+        baseSpeedMultiplier = Math.min(kecepatanEvakuasi, batasGempa);
         npcStepRate = 15;
       } else if (isRouteLingkar || isRouteLapangan || isRouteSungai) {
         baseSpeedMultiplier = 1.9;
@@ -5556,8 +5570,25 @@ export default function Merapi3DScene() {
           npc.headMesh.position.y = npc.role === 'student' ? 0.48 : 0.60;
         }
 
+        // ── KECEPATAN LANGKAH PER WARGA: DIPENGARUHI JARAK DARI KAWAH ──
+        //
+        // Kekuatan guncangan meredam seiring jarak dengan rumus yang sama
+        // seperti goyangan badan: `1 / (1 + 0.018 * jarak)`.
+        //
+        // Sebelumnya rumus itu HANYA dipakai untuk goyangan badan, sedangkan
+        // kecepatan langkah seluruh warga memakai satu pengali yang sama persis.
+        // Akibatnya warga di kaki kawah dan warga di dataran selatan bergerak
+        // identik — kerumunan terlihat seperti satu kesatuan yang kaku.
+        //
+        // Sekarang warga yang lebih dekat puncak merasakan guncangan lebih kuat
+        // sehingga langkahnya lebih tergesa (hingga ~1,18x), sedangkan yang
+        // jauh di selatan bergerak lebih tenang (~0,82x).
+        const jarakKeKawah = Math.hypot(posX - PEAK_X, posZ - PEAK_Z);
+        const atenuasiKawah = 1 / (1 + 0.018 * jarakKeKawah);
+        const pengaliKepanikan = effectiveSeismic > 0 ? 0.82 + 0.36 * atenuasiKawah : 1.0;
+
         // ── PERGERAKAN JALAN & ROUTING DI PERSIMPANGAN (ORGANIK & ANTI-CONGA-LINE) ──
-        npc.progress += npc.baseSpeed * npcSpeedMultiplier;
+        npc.progress += npc.baseSpeed * npcSpeedMultiplier * pengaliKepanikan;
         if (npc.progress >= 1.0) {
           npc.progress = 0;
           npc.fromNode = npc.toNode;
@@ -5598,7 +5629,7 @@ export default function Merapi3DScene() {
             const scored = choices.map((nbrId) => {
               const n = NODE_MAP.get(nbrId);
               if (!n) return { id: nbrId, score: -999 };
-              let s = (n.z - currNode.z) * 2.5 + personalBias + (Math.random() - 0.5) * 2.0;
+              const s = (n.z - currNode.z) * 2.5 + personalBias + (Math.random() - 0.5) * 2.0;
               return { id: nbrId, score: s };
             });
             scored.sort((a, b) => b.score - a.score);
@@ -5619,7 +5650,7 @@ export default function Merapi3DScene() {
             const scored = choices.map((nbrId) => {
               const n = NODE_MAP.get(nbrId);
               if (!n) return { id: nbrId, score: -999 };
-              let s = (n.z - currNode.z) * 4.0 + personalBias + (Math.random() - 0.5) * 2.0;
+              const s = (n.z - currNode.z) * 4.0 + personalBias + (Math.random() - 0.5) * 2.0;
               return { id: nbrId, score: s };
             });
             scored.sort((a, b) => b.score - a.score);
@@ -5629,7 +5660,7 @@ export default function Merapi3DScene() {
             const scored = choices.map((nbrId) => {
               const n = NODE_MAP.get(nbrId);
               if (!n) return { id: nbrId, score: -999 };
-              let s = Math.abs(n.x) * 2.5 + (n.z - currNode.z) * 0.8 + personalBias + (Math.random() - 0.5) * 2.0;
+              const s = Math.abs(n.x) * 2.5 + (n.z - currNode.z) * 0.8 + personalBias + (Math.random() - 0.5) * 2.0;
               return { id: nbrId, score: s };
             });
             scored.sort((a, b) => b.score - a.score);
@@ -5639,7 +5670,7 @@ export default function Merapi3DScene() {
             const scored = choices.map((nbrId) => {
               const n = NODE_MAP.get(nbrId);
               if (!n) return { id: nbrId, score: -999 };
-              let s = Math.abs(n.x) * 1.6 + (n.z - currNode.z) * 2.2 + personalBias + (Math.random() - 0.5) * 1.5;
+              const s = Math.abs(n.x) * 1.6 + (n.z - currNode.z) * 2.2 + personalBias + (Math.random() - 0.5) * 1.5;
               return { id: nbrId, score: s };
             });
             scored.sort((a, b) => b.score - a.score);

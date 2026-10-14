@@ -18,7 +18,7 @@ export function getActiveUserId(): string {
       const user = JSON.parse(raw);
       if (user?.id) return user.id;
     }
-  } catch {}
+  } catch { /* diabaikan: data pengguna rusak/tidak ada → anggap guest */ }
   return 'guest';
 }
 
@@ -41,7 +41,7 @@ export function loadWorkspaceForUser(userId?: string): {
         projects: Array.isArray(parsed.projects) ? parsed.projects : [],
       };
     }
-  } catch {}
+  } catch { /* diabaikan: workspace tersimpan tidak valid → mulai dari kosong */ }
   return { drafts: {}, projects: [] };
 }
 
@@ -56,7 +56,7 @@ export function saveWorkspaceForUser(
   try {
     const key = getUserWorkspaceKey(userId);
     localStorage.setItem(key, JSON.stringify(data));
-  } catch {}
+  } catch { /* diabaikan: gagal menyimpan tidak menghentikan permainan */ }
 }
 
 interface WorkspaceState {

@@ -92,8 +92,8 @@ const CLUES_AREA_2: ClueItem[] = [
     id: 'c3',
     number: 3,
     direction: 'across',
-    answer: 'LAHAR',
-    clue: 'Aliran material vulkanik (batu, kerikil, pasir, debu) yang terbawa hujan deras menuruni alur lembah sungai.',
+    answer: 'TANAH',
+    clue: 'Lapisan permukaan bumi tempat kita berpijak, yang getarannya direkam alat seismograf di pos pemantauan gunung api.',
     startRow: 4,
     startCol: 2,
   },
@@ -212,8 +212,9 @@ const CLUES_AREA_6: ClueItem[] = [
     id: 'c3',
     number: 3,
     direction: 'across',
-    answer: 'LAHAR',
-    clue: 'Aliran endapan material vulkanik dingin yang meluap di sungai berhulu Merapi saat hujan lebat turun (bahaya sekunder).',
+    answer: 'PAPAN',
+    // Catatan: harus 5 huruf berpola _A_A_ agar huruf silang dengan ATAP (kolom 2) dan AMAN (kolom 4) tetap cocok.
+    clue: 'Papan panjang beralas kain yang dipakai petugas untuk mengusung korban luka ke posko medis (tandu darurat).',
     startRow: 3,
     startCol: 1,
   },
@@ -350,7 +351,11 @@ export default function CrosswordModal({ areaIndex = 0, onSuccess, onClose }: Cr
       setIsCompleted(true);
       setValidationError(null);
     } else {
-      retroAudio.playError?.() ?? retroAudio.playHover();
+      // playError() tidak mengembalikan nilai, sehingga `??` versi lama selalu
+      // melanjutkan ke playHover(). Keduanya tetap dipanggil supaya bunyi yang
+      // terdengar persis sama seperti sebelumnya.
+      if (retroAudio.playError) retroAudio.playError();
+      retroAudio.playHover();
       setValidationError('Masih ada huruf yang belum tepat! Periksa kembali petunjuknya.');
     }
   };

@@ -567,7 +567,7 @@ export default function Level3() {
                 <circle cx="3720" cy="75" r="28" fill="#f97316" opacity="0.25" />
               </g>
 
-              {/* Volcanic Gullies & Distant Lava Veins (Alur Lahar Kali Gendol) */}
+              {/* Volcanic Gullies & Distant Lava Veins (Alur Kali Gendol) */}
               <path
                 d="M 3680,155 Q 3540,310 3320,510 T 3080,720"
                 fill="none"
@@ -813,14 +813,14 @@ export default function Level3() {
               <rect x="-66" y="114" width="11" height="6" fill="#475569" rx="1" />
             </g>
 
-            {/* 8. Rambu Bahaya Lahar Dingin & Sensor EWS (X: 3410, Y: 420) - Tanpa Teks */}
-            <g id="landmark_lahar_sign_ews" transform="translate(3410, 420)">
+            {/* 8. Rambu Bahaya Awan Panas & Sensor EWS (X: 3410, Y: 420) - Tanpa Teks */}
+            <g id="landmark_pyroclastic_sign_ews" transform="translate(3410, 420)">
               {/* Tiang Rambu Baja Hitam-Kuning */}
               <rect x="-3" y="40" width="6" height="86" fill="#0f172a" rx="1" />
               <rect x="-3" y="60" width="6" height="8" fill="#facc15" />
               <rect x="-3" y="80" width="6" height="8" fill="#facc15" />
               <rect x="-3" y="100" width="6" height="8" fill="#facc15" />
-              {/* Papan Rambu Peringatan Segitiga Kuning Lahar Dingin */}
+              {/* Papan Rambu Peringatan Segitiga Kuning Awan Panas */}
               <polygon points="0,0 -36,40 36,40" fill="#facc15" stroke="#0f172a" strokeWidth="2.5" />
               {/* Ikon Tanda Seru Bahaya */}
               <rect x="-2" y="14" width="4" height="14" fill="#0f172a" rx="1" />
@@ -1056,17 +1056,30 @@ export default function Level3() {
 
                   {/* Inner Tactical Core */}
                   <div className={`relative w-11 h-11 rounded-xl flex items-center justify-center border border-white/20 shadow-inner ${theme.core}`}>
-                    {isLevelUnlocked ? (
-                      <span className="font-['Plus_Jakarta_Sans',sans-serif] font-black text-xl tracking-tight text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]">
-                        {node.levelNumber}
-                      </span>
-                    ) : (
-                      <svg className="w-5 h-5 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor" fillOpacity="0.2" />
+                    {/*
+                      NOMOR LEVEL SELALU TAMPIL (1–20) — juga saat masih terkunci.
+
+                      Sebelumnya nomor diganti ikon gembok begitu misi terkunci,
+                      sehingga di awal permainan siswa hanya melihat deretan
+                      gembok tanpa tahu ADA BERAPA misi yang menunggu. Sekarang
+                      nomornya tetap terlihat, dan status terkunci ditandai
+                      gembok kecil di sudut (lihat di bawah). Inilah yang
+                      memancing rasa penasaran: "level 14 itu apa ya?".
+                    */}
+                    <span className="font-['Plus_Jakarta_Sans',sans-serif] font-black text-xl tracking-tight text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]">
+                      {node.levelNumber}
+                    </span>
+                  </div>
+
+                  {/* Gembok kecil di sudut kanan-bawah: penanda misi masih terkunci */}
+                  {!isLevelUnlocked && (
+                    <span className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-lg bg-stone-800/95 border-2 border-stone-500 flex items-center justify-center shadow-md">
+                      <svg className="w-3.5 h-3.5 text-stone-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor" fillOpacity="0.25" />
                         <path d="M8 11V7a4 4 0 018 0v4" />
                       </svg>
-                    )}
-                  </div>
+                    </span>
+                  )}
 
                   {/* 3 Golden Stars on top if completed */}
                   {isCompleted && (
@@ -1089,7 +1102,7 @@ export default function Level3() {
                 <div
                   role="button"
                   tabIndex={0}
-                  aria-label={`Buka materi ${node.sectorTitle}`}
+                  aria-label={`Buka level ${node.levelNumber}: ${node.mission.title} (${node.sectorTitle})`}
                   onClick={() => handleNodeClick(node)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -1204,10 +1217,20 @@ export default function Level3() {
                       </span>
                     </div>
 
-                    {/* Mission Title — di HP mendapat barisnya sendiri sehingga dapat membungkus */}
-                    <span className="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[12.5px] sm:text-[15px] tracking-tight text-[#291305] leading-snug">
-                      {node.mission.title}
-                    </span>
+                    {/*
+                      JUDUL MISI SENGAJA TIDAK LAGI DITAMPILKAN DI PETA.
+
+                      Sebelumnya setiap titik membawa plakat berisi judul
+                      lengkap misinya ("Job 1: Sinyal Status Normal", dst.).
+                      Dua puluh judul panjang yang berjejer di sepanjang jalur
+                      membuat peta terlihat bertumpuk dan justru menghilangkan
+                      rasa penasaran — semua isi misi terbaca sebelum dibuka.
+
+                      Sekarang yang tampil hanya nomor levelnya. Judul misi
+                      baru muncul setelah titiknya ditekan (modal misi), dan
+                      nama lengkapnya tetap dapat dibaca lewat tooltip pada
+                      tombol titiknya.
+                    */}
 
                     {/* Status — hanya di laptop */}
                     <span className="hidden sm:inline shrink-0">
@@ -1567,7 +1590,7 @@ export default function Level3() {
               value={newProjectName}
               onChange={(e) => setNewProjectName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCreateNewProject()}
-              placeholder="Contoh: Alarm Banjir Lahar Kali Kuning..."
+              placeholder="Contoh: Alarm Awan Panas Kali Kuning..."
               className="w-full px-4 py-3 rounded-xl bg-white border-2 border-amber-900/40 text-[#1a0800] text-[15px] sm:text-base font-bold outline-none focus:ring-2 focus:ring-amber-600 shadow-inner"
             />
             <div className="flex gap-3 pt-1">

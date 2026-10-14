@@ -11,6 +11,7 @@ import { retroAudio } from '../../../utils/retroAudio';
 import { createInitialNpcsL2, updateNpcsL2, CLASSROOM_STUDENTS_L2, type NpcStateL2 } from './npcManagerL2';
 import { DIALOGUE_TREES_L2, type DialogueTreeL2 } from '../dialogueDataL2';
 import { LEVEL2_AREAS } from '../level2Data';
+import { hasDiscovery, normalizeDiscoveryIds } from './legacyIds';
 
 // ============================================================================
 // PENGATURAN GETARAN GEMPA AREA 2 (RUANG KELAS)
@@ -327,7 +328,7 @@ export function saveLevel2Progress(state: GameStateL2, userId?: string): void {
       pgaRoomQuizSolved: !!state.pgaRoomQuizSolved,
     };
     localStorage.setItem(key, JSON.stringify(data));
-  } catch { }
+  } catch { /* diabaikan: gagal menyimpan progres tidak menghentikan permainan */ }
 }
 
 export function loadLevel2Progress(userId?: string): SavedLevel2Progress | null {
@@ -347,7 +348,7 @@ export function clearLevel2Progress(userId?: string): void {
   try {
     const key = getLevel2StorageKey(userId);
     localStorage.removeItem(key);
-  } catch { }
+  } catch { /* diabaikan: tidak ada progres tersimpan yang perlu dihapus */ }
 }
 
 export function createInitialGameStateL2(userId?: string): GameStateL2 {
@@ -383,7 +384,7 @@ export function createInitialGameStateL2(userId?: string): GameStateL2 {
     zone,
     animTick: 0,
     collectedCrystals: new Set<string>((saved?.collectedCrystals || []).slice(0, TOTAL_CRYSTALS_L2)),
-    discoveredPoints: new Set<string>(saved?.discoveredPoints || []),
+    discoveredPoints: new Set<string>(normalizeDiscoveryIds(saved?.discoveredPoints || [])),
     unlockedGates: new Set<string>(saved?.unlockedGates || []),
     npcs: createInitialNpcsL2(currentAreaIndex),
     activeDialogueTree: null,
@@ -2257,8 +2258,8 @@ export function getNpcDialogueTreeL2(state: GameStateL2, npc: NpcStateL2): Dialo
       }
       const hasAsh = state.discoveredPoints.has('disc-post-ash');
       const hasSanitation = state.discoveredPoints.has('disc-post-sanitation');
-      const hasLahar = state.discoveredPoints.has('disc-post-lahar');
-      if (!hasAsh || !hasSanitation || !hasLahar) {
+      const hasPyroclastic = hasDiscovery(state.discoveredPoints, 'disc-post-pyroclastic');
+      if (!hasAsh || !hasSanitation || !hasPyroclastic) {
         return {
           id: 'satria_shelter_reminder',
           title: 'Kesiapan Evaluasi Akhir bersama Bu Tyas',
@@ -2268,7 +2269,7 @@ export function getNpcDialogueTreeL2(state: GameStateL2, npc: NpcStateL2): Dialo
             remind_1: {
               id: 'remind_1',
               speakerId: 'bu_tyas',
-              text: 'Laporan posko menunjukkan kamu belum menyelesaikan seluruh pembelajaran pemulihan pascabencana!\n\nSilakan pelajari penanganan abu vulkanik bersama Zidane, sanitasi & kesehatan bersama Zahra, dan waspada lahar dingin bersama Lintang sebelum menempuh evaluasi akhir Teka-Teki Silang!',
+              text: 'Laporan posko menunjukkan kamu belum menyelesaikan seluruh pembelajaran pemulihan pascabencana!\n\nSilakan pelajari penanganan abu vulkanik bersama Zidane, sanitasi & kesehatan bersama Zahra, dan waspada awan panas guguran bersama Lintang sebelum menempuh evaluasi akhir Teka-Teki Silang!',
               expression: 'serious',
             },
           },
@@ -3115,7 +3116,7 @@ export function updateGameEngineL2(
           } else if (state.zone.id === 'area-pos-pengamatan-merapi' || state.currentAreaIndex === 3) {
             requiredKeys = ['disc-volcano-status', 'disc-volcano-response'];
           } else if (state.zone.id === 'area-barak-pengungsian' || state.currentAreaIndex === 5) {
-            requiredKeys = ['disc-post-ash', 'disc-post-sanitation', 'disc-post-lahar'];
+            requiredKeys = ['disc-post-ash', 'disc-post-sanitation', 'disc-post-pyroclastic'];
           }
 
           let readCount = 0;
@@ -3125,7 +3126,7 @@ export function updateGameEngineL2(
               readCount++;
             } else if (key === 'l2_q_disc_action' && (state.discoveredPoints.has('l2_q_disc_action') || state.discoveredPoints.has('disc-earthquake-action'))) {
               readCount++;
-            } else if (state.discoveredPoints.has(key)) {
+            } else if (hasDiscovery(state.discoveredPoints, key)) {
               readCount++;
             }
           }
@@ -3322,7 +3323,7 @@ export function updateGameEngineL2(
               retroAudio.playWin();
               state.isAreaCompleted = true;
               state.activeSignText =
-                '[PASCABENCANA ERUPSI TUNTAS! ★★★★★]\n"Selamat Taruna! Seluruh materi pemulihan pascabencana, tata tertib barak pengungsian, sanitasi air bersih, penanganan abu vulkanik, hingga peringatan bahaya sekunder lahar dingin telah kamu kuasai secara paripurna!"';
+                '[PASCABENCANA ERUPSI TUNTAS! ★★★★★]\n"Selamat Taruna! Seluruh materi pemulihan pascabencana, tata tertib barak pengungsian, sanitasi air bersih, penanganan abu vulkanik, hingga peringatan bahaya sekunder awan panas guguran telah kamu kuasai secara paripurna!"';
               saveLevel2Progress(state, state.userId);
             }
           } else {

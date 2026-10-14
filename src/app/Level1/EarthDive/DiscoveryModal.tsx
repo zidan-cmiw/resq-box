@@ -447,419 +447,275 @@ function CrustComparisonIllustration() {
   );
 }
 
-// ══════════════════════════════════════════════════════════════════════════
-// 2. ILUSTRASI REALISTIK ARUS KONVEKSI MANTEL BUMI (SMP KELAS 8)
-// ══════════════════════════════════════════════════════════════════════════
-function MantleConvectionIllustration() {
+
+/**
+ * ILUSTRASI KONVEKSI MANTEL — POTONGAN MELINTANG BUMI.
+ *
+ * Digambar mengikuti gambar referensi dosen:
+ *
+ *   langit biru di atas, lalu PERMUKAAN BUMI berupa lengkung litosfer hijau
+ *   yang menebal di kiri-kanan tempat lempeng menunjam (Slab Pull). Di tengah
+ *   lengkungan terdapat punggung bukit dengan dua panah merah saling menjauh
+ *   (Ridge Push). Di bawahnya, mantel jingga berisi DUA SEL KONVEKSI, lalu
+ *   inti luar merah dan inti dalam gelap di tengah bawah.
+ *
+ * ARAH ALIR DITUNJUKKAN OLEH PANAH YANG BENAR-BENAR BERGERAK
+ *
+ *   Tiap sel konveksi digambar sebagai satu jalur tertutup. Di atas jalur itu
+ *   diletakkan beberapa panah kecil yang digerakkan dengan `<animateMotion>`
+ *   dan `rotate="auto"`, sehingga:
+ *
+ *     - panahnya benar-benar BERJALAN menyusuri jalur (bukan diam), dan
+ *     - arah hadap panah otomatis menyesuaikan lengkung jalurnya.
+ *
+ *   Ditambah garis putus-putus yang dash-nya mengalir, sehingga arah putaran
+ *   terbaca dua kali: dari panah yang berjalan dan dari aliran dash-nya.
+ *
+ *   Sel KIRI berputar berlawanan jarum jam (naik di sisi kanan/dekat tengah),
+ *   sel KANAN adalah cerminnya — sehingga keduanya naik di tengah dan turun di
+ *   kedua tepi, sesuai kaidah konveksi mantel.
+ */
+function MantleConvectionHalfEarth() {
   const [activeFeature, setActiveFeature] = useState<'rising' | 'sinking' | 'plates' | 'core' | null>(null);
 
   const featureDetails = {
     rising: {
-      title: 'ARUS PANAS NAIK (MANTLE PLUME)',
-      desc: 'Magma di dasar mantel dipanaskan inti bumi hingga 3.700°C. Karena panas, magma memuai, massa jenisnya berkurang (lebih ringan), lalu perlahan mengapung naik ke atas.',
+      title: 'ARUS PANAS NAIK DI TENGAH',
+      desc: 'Material mantel yang menyentuh inti bumi menjadi sangat panas. Karena panas, materialnya memuai, massa jenisnya berkurang, lalu perlahan naik ke atas — persis seperti adonan kental yang dipanaskan dari bawah. Perhatikan panahnya bergerak naik di bagian tengah.',
       color: '#f97316',
     },
     plates: {
-      title: 'MESIN PENGGERAK LEMPENG TEKTONIK',
-      desc: 'Saat magma panas mencapai dasar kerak bumi, alirannya berbelok ke samping seperti ban berjalan (conveyor belt), menyeret lempeng benua dan samudra bergerak memisah atau bertubrukan.',
+      title: 'TENAGA PENGGERAK LEMPENG',
+      desc: 'Saat material panas mencapai dasar litosfer, alirannya berbelok ke samping. Dorongan di punggung bukit samudra (Ridge Push) dan tarikan lempeng yang menunjam (Slab Pull) membuat lempeng bergerak menjauh atau bertumbukan.',
       color: '#fbbf24',
     },
     sinking: {
-      title: 'ARUS DINGIN TENGGELAM (SUBDUKSI)',
-      desc: 'Di dekat permukaan kerak, magma melepas kalornya dan mendingin. Batuan yang mendingin menjadi lebih padat dan berat, sehingga tenggelam kembali ke dasar mantel.',
+      title: 'ARUS DINGIN TURUN DI TEPI',
+      desc: 'Di tepi, material mantel melepas kalornya dan mendingin. Material yang mendingin menjadi lebih rapat, sehingga tenggelam kembali ke dasar mantel dan melengkapi siklusnya. Panah di kedua tepi bergerak turun.',
       color: '#38bdf8',
     },
     core: {
-      title: 'PEMANAS DARI INTI BUMI (3.700°C)',
-      desc: 'Suhu dahsyat dari inti bumi (3.700°C – 5.000°C) memanaskan dasar mantel tanpa henti, menjaga putaran siklus konveksi ini terus bekerja selama miliaran tahun.',
+      title: 'PEMANAS DARI INTI BUMI',
+      desc: 'Suhu inti bumi (3.700°C – 5.000°C) memanaskan dasar mantel tanpa henti. Panas inilah yang menjaga siklus konveksi tetap bekerja selama miliaran tahun.',
       color: '#ef4444',
     },
   };
 
+  // ── Geometri (mengikuti proporsi gambar referensi) ────────────────────────
+  const CX = 280;
+  const DASAR = 400; // sisi bawah potongan
+  // Lengkung permukaan bumi: potongan lingkaran berjari-jari besar, sehingga
+  // terlihat seperti busur permukaan planet — bukan kubah kecil.
+  const R_BUMI = 320;
+  const Y_BUSUR = 237; // ketinggian ujung busur di tepi kiri & kanan
+  const Y_PUNCAK = 110; // ketinggian puncak busur
+
+  // Inti bumi
+  const CORE_RX = 145;
+  const CORE_RY = 130;
+  const INNER_RX = 85;
+  const INNER_RY = 75;
+
+  /** Jalur busur permukaan bumi dari tepi kiri ke tepi kanan. */
+  const busurPermukaan = `M ${CX - 255} ${Y_BUSUR} A ${R_BUMI} ${R_BUMI} 0 0 1 ${CX + 255} ${Y_BUSUR}`;
+
+  /** Badan bumi: daerah di bawah busur permukaan sampai dasar potongan. */
+  const badanBumi = `${busurPermukaan} L ${CX + 255} ${DASAR} L ${CX - 255} ${DASAR} Z`;
+
+  /** Kubah inti: sisi datar di dasar potongan, lengkung ke atas. */
+  const kubah = (rx: number, ry: number) =>
+    `M ${CX - rx} ${DASAR} A ${rx} ${ry} 0 0 1 ${CX + rx} ${DASAR} Z`;
+
+  /**
+   * Jalur sel konveksi sebagai lingkaran tertutup dengan arah gambar eksplisit.
+   * `searahJarum = false` -> berlawanan jarum jam (dipakai sel kiri).
+   */
+  const elips = (cx: number, cy: number, rx: number, ry: number, searahJarum: boolean) => {
+    const sweep = searahJarum ? 1 : 0;
+    return (
+      `M ${cx + rx} ${cy} ` +
+      `A ${rx} ${ry} 0 1 ${sweep} ${cx - rx} ${cy} ` +
+      `A ${rx} ${ry} 0 1 ${sweep} ${cx + rx} ${cy} Z`
+    );
+  };
+
+  const dim = (feature: string) => (activeFeature === null || activeFeature === feature ? 1 : 0.28);
+
+  /** Panah kecil yang berjalan menyusuri sebuah jalur. */
+  const panahBerjalan = (idJalur: string, jumlah: number, durasi: number, warna: string, warnaGaris: string) =>
+    Array.from({ length: jumlah }, (_, i) => (
+      <polygon
+        key={`${idJalur}-${i}`}
+        points="-7,-4.5 7,0 -7,4.5"
+        fill={warna}
+        stroke={warnaGaris}
+        strokeWidth="0.9"
+      >
+        {/* `begin` negatif membuat panah sudah tersebar merata sejak awal,
+            bukan menumpuk di titik start lalu baru menyebar. */}
+        <animateMotion
+          dur={`${durasi}s`}
+          repeatCount="indefinite"
+          rotate="auto"
+          begin={`${-(i * durasi) / jumlah}s`}
+        >
+          <mpath xlinkHref={`#${idJalur}`} />
+        </animateMotion>
+      </polygon>
+    ));
+
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-between select-none">
-      {/* Interactive Quick Select Filter Pills at Top */}
+      {/* Tombol pilih fitur */}
       <div className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 py-2 bg-[#1c1917]/90 border-b border-[#78350f]/60 z-10 overflow-x-auto text-[13px] sm:text-[15px] font-semibold">
-        <button
-          onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
-          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
-            activeFeature === 'rising'
-              ? 'bg-orange-500 text-slate-950 shadow'
-              : 'bg-orange-950/60 text-orange-200 border border-orange-700/50 hover:bg-orange-900/60'
-          }`}
-        >
-          1. Arus Panas Naik
-        </button>
-        <button
-          onClick={() => setActiveFeature(activeFeature === 'plates' ? null : 'plates')}
-          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
-            activeFeature === 'plates'
-              ? 'bg-amber-400 text-slate-950 shadow'
-              : 'bg-amber-950/60 text-amber-200 border border-amber-700/50 hover:bg-amber-900/60'
-          }`}
-        >
-          2. Gerak Lempeng
-        </button>
-        <button
-          onClick={() => setActiveFeature(activeFeature === 'sinking' ? null : 'sinking')}
-          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
-            activeFeature === 'sinking'
-              ? 'bg-sky-400 text-slate-950 shadow'
-              : 'bg-sky-950/60 text-sky-200 border border-sky-700/50 hover:bg-sky-900/60'
-          }`}
-        >
-          3. Arus Dingin Turun
-        </button>
-        <button
-          onClick={() => setActiveFeature(activeFeature === 'core' ? null : 'core')}
-          className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
-            activeFeature === 'core'
-              ? 'bg-red-500 text-slate-950 shadow'
-              : 'bg-red-950/60 text-red-200 border border-red-700/50 hover:bg-red-900/60'
-          }`}
-        >
-          4. Pemanas Inti
-        </button>
+        {([
+          ['rising', '1. Arus Panas Naik', 'bg-orange-500', 'bg-orange-950/60 text-orange-200 border-orange-700/50'],
+          ['plates', '2. Gerak Lempeng', 'bg-amber-400', 'bg-amber-950/60 text-amber-200 border-amber-700/50'],
+          ['sinking', '3. Arus Dingin Turun', 'bg-sky-400', 'bg-sky-950/60 text-sky-200 border-sky-700/50'],
+          ['core', '4. Pemanas Inti', 'bg-red-500', 'bg-red-950/60 text-red-200 border-red-700/50'],
+        ] as const).map(([key, label, on, off]) => (
+          <button
+            key={key}
+            onClick={() => setActiveFeature(activeFeature === key ? null : key)}
+            className={`px-3 py-1.5 rounded-full font-bold cursor-pointer transition-colors ${
+              activeFeature === key ? `${on} text-slate-950 shadow` : `${off} border hover:brightness-125`
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      {/* SVG Canvas Illustration */}
+      {/* Kanvas ilustrasi */}
       <div className="relative w-full flex-1 flex items-center justify-center overflow-hidden">
-        <svg viewBox="0 0 540 240" className="w-full h-full object-contain" shapeRendering="geometricPrecision">
+        <svg viewBox="0 0 560 400" className="w-full h-full object-contain" shapeRendering="geometricPrecision">
           <style>{`
-            @keyframes convectiveFlowCCW {
-              0% { stroke-dashoffset: 160; }
-              100% { stroke-dashoffset: 0; }
-            }
-            @keyframes convectiveFlowCW {
-              0% { stroke-dashoffset: 0; }
-              100% { stroke-dashoffset: 160; }
-            }
-            @keyframes upwellingStream {
-              0% { stroke-dashoffset: 80; }
-              100% { stroke-dashoffset: 0; }
-            }
-            @keyframes arrowPulse {
-              0%, 100% { opacity: 0.88; transform: scale(1); }
-              50% { opacity: 1; transform: scale(1.12); }
-            }
-            @keyframes pulseHeat {
-              0%, 100% { opacity: 0.8; transform: scaleY(0.97); }
-              50% { opacity: 1; transform: scaleY(1.03); }
-            }
-            .anim-flow-ccw { stroke-dasharray: 22 14; animation: convectiveFlowCCW 2.6s linear infinite; }
-            .anim-flow-cw { stroke-dasharray: 22 14; animation: convectiveFlowCW 2.6s linear infinite; }
-            .anim-upwelling-flow { stroke-dasharray: 18 12; animation: upwellingStream 1.6s linear infinite; }
-            .anim-arrow-pulse { animation: arrowPulse 2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-            .anim-core-heat { animation: pulseHeat 3s ease-in-out infinite; transform-origin: 270px 225px; }
+            @keyframes alirMaju { 0% { stroke-dashoffset: 150; } 100% { stroke-dashoffset: 0; } }
+            @keyframes heatGlow { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+            .konv-alir { stroke-dasharray: 16 11; animation: alirMaju 2.6s linear infinite; }
+            .konv-inti { animation: heatGlow 3s ease-in-out infinite; }
           `}</style>
 
           <defs>
-            <linearGradient id="mantleBgFluid" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#1a0503" />
-              <stop offset="35%" stopColor="#3d0905" />
-              <stop offset="70%" stopColor="#7c1d06" />
-              <stop offset="100%" stopColor="#c2410c" />
+            <linearGradient id="konvLangit" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#2b9fd8" />
+              <stop offset="100%" stopColor="#8ed0ee" />
             </linearGradient>
-
-            <linearGradient id="upwellingPlume" x1="0%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="#facc15" />
-              <stop offset="40%" stopColor="#f97316" />
-              <stop offset="85%" stopColor="#ef4444" />
-              <stop offset="100%" stopColor="#fef08a" />
+            <linearGradient id="konvMantel" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#fcd9b6" />
+              <stop offset="45%" stopColor="#f8b878" />
+              <stop offset="100%" stopColor="#f0932f" />
             </linearGradient>
-
-            <linearGradient id="downwellingCool" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#38bdf8" />
-              <stop offset="45%" stopColor="#0284c7" />
-              <stop offset="80%" stopColor="#1e3a8a" />
-              <stop offset="100%" stopColor="#3b0704" />
+            <linearGradient id="konvIntiLuar" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#f0501e" />
+              <stop offset="100%" stopColor="#e02b10" />
             </linearGradient>
-
-            <radialGradient id="centralPlumeBulge" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#fde047" stopOpacity="0.8" />
-              <stop offset="50%" stopColor="#ea580c" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#ea580c" stopOpacity="0" />
+            <radialGradient id="konvIntiDalam" cx="50%" cy="20%" r="90%">
+              <stop offset="0%" stopColor="#3a2013" />
+              <stop offset="100%" stopColor="#1a0d07" />
             </radialGradient>
+
+            {/* Jalur sel konveksi, dipakai ulang oleh <mpath> panah berjalan */}
+            <path id="jalurSelKiri" d={elips(150, 222, 78, 86, false)} />
+            <path id="jalurSelKanan" d={elips(410, 222, 78, 86, true)} />
           </defs>
 
-          {/* Latar Belakang Fluida Mantel Astinosfer */}
-          <rect x="0" y="0" width="540" height="240" fill="url(#mantleBgFluid)" />
+          {/* LANGIT — latar, bukan lapisan bumi */}
+          <rect x="0" y="0" width="560" height="400" fill="url(#konvLangit)" />
 
-          {/* ══════════════════════════════════════════════════════════════════
-              ATAS: LEMPENG TEKTONIK BERGERAK (CRUST / LITHOSPHERE SLABS)
-              ══════════════════════════════════════════════════════════════════ */}
-          {/* Panah Indikator Arah Gerak Lempeng */}
-          {/* Lempeng Kiri Bergerak Menjauh ke Kiri */}
-          <g>
-            <line x1="120" y1="8" x2="60" y2="8" stroke="#fbbf24" strokeWidth="2.5" />
-            <polygon points="50,8 62,3 62,13" fill="#fbbf24" />
-            <text x="135" y="11" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif">
-              GERAK KE KIRI
-            </text>
+          {/* BADAN BUMI (mantel) */}
+          <path d={badanBumi} fill="url(#konvMantel)" />
+
+          {/* LITOSFER — pita hijau menebal mengikuti lengkung permukaan */}
+          <path
+            d={busurPermukaan}
+            fill="none"
+            stroke="#1c7a3c"
+            strokeWidth="16"
+            strokeLinecap="round"
+          />
+          {/* Punggung bukit di tengah: gundukan kecil TEPAT di atas lengkung
+              permukaan, supaya terbaca sebagai bagian kerak bumi — bukan garis
+              hijau yang melayang di dalam mantel. */}
+          <path
+            d={`M ${CX - 35} ${Y_PUNCAK + 2} Q ${CX} ${Y_PUNCAK - 22} ${CX + 35} ${Y_PUNCAK + 2}`}
+            fill="none"
+            stroke="#1c7a3c"
+            strokeWidth="14"
+            strokeLinecap="round"
+          />
+
+          {/* LEMPENG MENUNJAM (Slab Pull) di kiri & kanan */}
+          <path d={`M 78 258 Q 96 316 116 356`} fill="none" stroke="#1c7a3c" strokeWidth="13" strokeLinecap="round" />
+          <path d={`M 482 258 Q 464 316 444 356`} fill="none" stroke="#1c7a3c" strokeWidth="13" strokeLinecap="round" />
+
+          {/* ── SEL KONVEKSI: jalur + dash mengalir + panah yang berjalan ── */}
+          <g opacity={dim('rising')}>
+            <path d={elips(150, 222, 78, 86, false)} fill="none" stroke="#c2410c" strokeWidth="2.5" opacity="0.55" />
+            <path d={elips(150, 222, 78, 86, false)} fill="none" stroke="#7f1d1d" strokeWidth="3" strokeLinecap="round" className="konv-alir" />
+            {panahBerjalan('jalurSelKiri', 5, 6, '#7f1d1d', '#fed7aa')}
+
+            <path d={elips(410, 222, 78, 86, true)} fill="none" stroke="#c2410c" strokeWidth="2.5" opacity="0.55" />
+            <path d={elips(410, 222, 78, 86, true)} fill="none" stroke="#7f1d1d" strokeWidth="3" strokeLinecap="round" className="konv-alir" />
+            {panahBerjalan('jalurSelKanan', 5, 6, '#7f1d1d', '#fed7aa')}
           </g>
 
-          {/* Lempeng Kanan Bergerak Menjauh ke Kanan */}
-          <g>
-            <line x1="420" y1="8" x2="480" y2="8" stroke="#fbbf24" strokeWidth="2.5" />
-            <polygon points="490,8 478,3 478,13" fill="#fbbf24" />
-            <text x="405" y="11" fill="#fef08a" fontSize="8.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="end">
-              GERAK KE KANAN
-            </text>
+          {/* INTI LUAR */}
+          <path d={kubah(CORE_RX, CORE_RY)} fill="url(#konvIntiLuar)" opacity={dim('core') * 0.3 + 0.7} />
+          {/* INTI DALAM */}
+          <path d={kubah(INNER_RX, INNER_RY)} fill="url(#konvIntiDalam)" />
+          <path d={kubah(INNER_RX, INNER_RY)} fill="none" stroke="#fbbf24" strokeWidth="1.6" opacity="0.6" className="konv-inti" />
+
+          {/* ── RIDGE PUSH: dua panah merah saling menjauh di puncak ── */}
+          <g opacity={dim('plates')}>
+            <polygon points="252,138 252,124 214,124 214,116 190,131 214,146 214,138" fill="#c81e1e" stroke="#7f1d1d" strokeWidth="1" />
+            <polygon points="308,138 308,124 346,124 346,116 370,131 346,146 346,138" fill="#c81e1e" stroke="#7f1d1d" strokeWidth="1" />
           </g>
 
-          {/* 1. Lempeng Benua Kiri (y: 16 - 38) */}
-          <g
-            className="cursor-pointer"
-            onClick={() => setActiveFeature(activeFeature === 'plates' ? null : 'plates')}
-          >
-            <rect x="15" y="16" width="180" height="22" rx="3" fill="#78350f" stroke="#92400e" strokeWidth="1" />
-            <rect x="15" y="16" width="180" height="4" rx="2" fill="#15803d" />
-            <text x="105" y="31" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
-              LEMPENG BENUA A
-            </text>
-          </g>
+          {/* ── LABEL (gaya mengikuti referensi: teks langsung, tanpa kotak) ── */}
+          <g fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="700">
+            {/* Lithosphere — dengan garis penunjuk putus-putus ke pita hijau */}
+            <text x="34" y="60" fill="#0f5132" fontSize="14">Lithosphere</text>
+            <path d="M 96 66 L 132 96" fill="none" stroke="#0f5132" strokeWidth="1.4" strokeDasharray="4 3" />
 
-          {/* 2. Celah Retakan Tengah (Mid-Ocean Ridge / Rift) tempat Magma Menerobos */}
-          <g>
-            <polygon points="255,16 270,36 285,16" fill="#ea580c" />
-            <polygon points="262,16 270,30 278,16" fill="#fef08a" />
-            {/* Kolom air samudra di atas retakan */}
-            <rect x="202" y="16" width="136" height="7" fill="#0284c7" fillOpacity="0.85" />
-            <line x1="202" y1="16" x2="338" y2="16" stroke="#38bdf8" strokeWidth="1.5" />
-            {/* Lempeng samudra tipis membentang di celah */}
-            <rect x="202" y="23" width="136" height="15" fill="#1e293b" />
-            <text x="270" y="34" fill="#7dd3fc" fontSize="8" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
-              LEMPENG SAMUDRA
-            </text>
-          </g>
+            {/* Ridge Push */}
+            <text x="240" y="96" fill="#0f7a3a" fontSize="14" textAnchor="middle">Ridge Push</text>
 
-          {/* 3. Lempeng Benua Kanan (y: 16 - 38) */}
-          <g
-            className="cursor-pointer"
-            onClick={() => setActiveFeature(activeFeature === 'plates' ? null : 'plates')}
-          >
-            <rect x="345" y="16" width="180" height="22" rx="3" fill="#78350f" stroke="#92400e" strokeWidth="1" />
-            <rect x="345" y="16" width="180" height="4" rx="2" fill="#15803d" />
-            <text x="435" y="31" fill="#fef08a" fontSize="9.5" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
-              LEMPENG BENUA B
-            </text>
-          </g>
+            {/* Slab Pull — tegak di sisi kiri */}
+            <text x="58" y="290" fill="#0f7a3a" fontSize="14" transform="rotate(-78 58 290)">Slab Pull</text>
 
-          {/* ══════════════════════════════════════════════════════════════════
-              TENGAH: SIKLUS SIRKULASI ARUS KONVEKSI (STREAMLINES & PLUMES)
-              ══════════════════════════════════════════════════════════════════ */}
+            {/* Mantle */}
+            <text x="280" y="176" fill="#ffffff" fontSize="14" textAnchor="middle">Mantle</text>
 
-          {/* Pendaran Panas Kolom Tengah (Upwelling Hotspot Glow) */}
-          <circle cx="270" cy="120" r="75" fill="url(#centralPlumeBulge)" />
+            {/* Convection Cell ×2 */}
+            <text x="150" y="218" fill="#5b2607" fontSize="14" textAnchor="middle">Convection</text>
+            <text x="150" y="236" fill="#5b2607" fontSize="14" textAnchor="middle">Cell</text>
+            <text x="410" y="218" fill="#5b2607" fontSize="14" textAnchor="middle">Convection</text>
+            <text x="410" y="236" fill="#5b2607" fontSize="14" textAnchor="middle">Cell</text>
 
-          {/* ── ARUS PANAS NAIK (TENGAH) ── */}
-          <g
-            className="cursor-pointer"
-            onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
-          >
-            {/* Jalur Panas Memancar Naik */}
-            <path
-              d="M 270,215 Q 266,130 255,50"
-              stroke="url(#upwellingPlume)"
-              strokeWidth="9"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.9"
-            />
-            <path
-              d="M 270,215 Q 274,130 285,50"
-              stroke="url(#upwellingPlume)"
-              strokeWidth="9"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.9"
-            />
-            {/* Inti Pijar Tengah Solid */}
-            <path
-              d="M 270,215 L 270,45"
-              stroke="#fef08a"
-              strokeWidth="4.5"
-              strokeLinecap="round"
-              fill="none"
-            />
-            {/* Animasi Arus Panas Mengalir Naik */}
-            <path
-              d="M 270,215 L 270,45"
-              stroke="#ffffff"
-              strokeWidth="3"
-              strokeLinecap="round"
-              fill="none"
-              className="anim-upwelling-flow"
-            />
-
-            {/* Anak Panah Naik Jelas & Menonjol (3 Tingkat) */}
-            <g className="anim-arrow-pulse">
-              <polygon points="270,40 258,56 282,56" fill="#ffffff" stroke="#451a03" strokeWidth="1.2" />
-              <polygon points="270,110 259,126 281,126" fill="#ffffff" stroke="#78350f" strokeWidth="1" />
-              <polygon points="270,170 260,185 280,185" fill="#fef08a" stroke="#78350f" strokeWidth="1" />
-            </g>
-          </g>
-
-          {/* ── SEL KONVEKSI KIRI (BERPUTAR BERLAWANAN ARAH JARUM JAM / CCW) ── */}
-          <g
-            className="cursor-pointer"
-            onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
-          >
-            {/* Loop Sirkulasi Streamline Kiri Solid */}
-            <path
-              d="M 260,60 C 190,56 120,60 80,85 C 45,115 45,165 75,190 C 110,210 185,212 255,205"
-              fill="none"
-              stroke="#f97316"
-              strokeWidth="5"
-              opacity="0.9"
-            />
-            {/* Overlay Animasi Aliran Sirkulasi CCW */}
-            <path
-              d="M 260,60 C 190,56 120,60 80,85 C 45,115 45,165 75,190 C 110,210 185,212 255,205"
-              fill="none"
-              stroke="#fef08a"
-              strokeWidth="2.5"
-              className="anim-flow-ccw"
-            />
-
-            {/* Aliran Horisontal Menyeret Lempeng Kiri */}
-            <path
-              d="M 255,52 Q 180,50 100,54"
-              fill="none"
-              stroke="#f59e0b"
-              strokeWidth="3.5"
-            />
-
-            {/* Anak Panah Sirkulasi Kiri Jelas & Menonjol */}
-            {/* 1. Atas: Aliran ke kiri menyeret lempeng */}
-            <polygon points="120,54 136,46 136,62" fill="#fbbf24" stroke="#451a03" strokeWidth="1" />
-            <polygon points="195,52 211,44 211,60" fill="#fef08a" stroke="#451a03" strokeWidth="1" />
-
-            {/* 2. Samping: Aliran turun */}
-            <polygon points="52,148 44,132 60,132" fill="#38bdf8" stroke="#0c2340" strokeWidth="1" />
-
-            {/* 3. Bawah: Aliran kembali ke tengah pemanas */}
-            <polygon points="150,208 134,200 134,216" fill="#ea580c" stroke="#451a03" strokeWidth="1" />
-            <polygon points="215,206 199,198 199,214" fill="#f97316" stroke="#451a03" strokeWidth="1" />
-          </g>
-
-          {/* ── ARUS DINGIN TURUN KIRI (SLAB SUBDUKSI) ── */}
-          <g
-            className="cursor-pointer"
-            onClick={() => setActiveFeature(activeFeature === 'sinking' ? null : 'sinking')}
-          >
-            <path
-              d="M 68,75 Q 50,130 70,185"
-              stroke="url(#downwellingCool)"
-              strokeWidth="9"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.85"
-            />
-            {/* Anak Panah Turun Kiri Sangat Jelas */}
-            <polygon points="70,186 60,170 78,170" fill="#38bdf8" stroke="#0c2340" strokeWidth="1" />
-            <polygon points="60,122 52,106 68,106" fill="#7dd3fc" stroke="#0c2340" strokeWidth="1" />
-          </g>
-
-          {/* ── SEL KONVEKSI KANAN (BERPUTAR SEARAH JARUM JAM / CW) ── */}
-          <g
-            className="cursor-pointer"
-            onClick={() => setActiveFeature(activeFeature === 'rising' ? null : 'rising')}
-          >
-            {/* Loop Sirkulasi Streamline Kanan Solid */}
-            <path
-              d="M 280,60 C 350,56 420,60 460,85 C 495,115 495,165 465,190 C 430,210 355,212 285,205"
-              fill="none"
-              stroke="#f97316"
-              strokeWidth="5"
-              opacity="0.9"
-            />
-            {/* Overlay Animasi Aliran Sirkulasi CW */}
-            <path
-              d="M 280,60 C 350,56 420,60 460,85 C 495,115 495,165 465,190 C 430,210 355,212 285,205"
-              fill="none"
-              stroke="#fef08a"
-              strokeWidth="2.5"
-              className="anim-flow-cw"
-            />
-
-            {/* Aliran Horisontal Menyeret Lempeng Kanan */}
-            <path
-              d="M 285,52 Q 360,50 440,54"
-              fill="none"
-              stroke="#f59e0b"
-              strokeWidth="3.5"
-            />
-
-            {/* Anak Panah Sirkulasi Kanan Jelas & Menonjol */}
-            {/* 1. Atas: Aliran ke kanan menyeret lempeng */}
-            <polygon points="345,52 329,44 329,60" fill="#fef08a" stroke="#451a03" strokeWidth="1" />
-            <polygon points="420,54 404,46 404,62" fill="#fbbf24" stroke="#451a03" strokeWidth="1" />
-
-            {/* 2. Samping: Aliran turun */}
-            <polygon points="488,148 480,132 496,132" fill="#38bdf8" stroke="#0c2340" strokeWidth="1" />
-
-            {/* 3. Bawah: Aliran kembali ke tengah pemanas */}
-            <polygon points="390,208 406,200 406,216" fill="#ea580c" stroke="#451a03" strokeWidth="1" />
-            <polygon points="325,206 341,198 341,214" fill="#f97316" stroke="#451a03" strokeWidth="1" />
-          </g>
-
-          {/* ── ARUS DINGIN TURUN KANAN (SLAB SUBDUKSI) ── */}
-          <g
-            className="cursor-pointer"
-            onClick={() => setActiveFeature(activeFeature === 'sinking' ? null : 'sinking')}
-          >
-            <path
-              d="M 472,75 Q 490,130 470,185"
-              stroke="url(#downwellingCool)"
-              strokeWidth="9"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.85"
-            />
-            {/* Anak Panah Turun Kanan Sangat Jelas */}
-            <polygon points="470,186 462,170 480,170" fill="#38bdf8" stroke="#0c2340" strokeWidth="1" />
-            <polygon points="480,122 472,106 488,106" fill="#7dd3fc" stroke="#0c2340" strokeWidth="1" />
-          </g>
-
-          {/* ══════════════════════════════════════════════════════════════════
-              BAWAH: BATAS INTI LUAR - MANTEL (CORE-MANTLE BOUNDARY / SUMBER PANAS 3.700°C)
-              ══════════════════════════════════════════════════════════════════ */}
-          <g
-            className="cursor-pointer anim-core-heat"
-            onClick={() => setActiveFeature(activeFeature === 'core' ? null : 'core')}
-          >
-            <rect x="0" y="215" width="540" height="25" fill="#ea580c" />
-            <rect x="0" y="225" width="540" height="15" fill="#fef08a" />
-            <line x1="0" y1="215" x2="540" y2="215" stroke="#ffffff" strokeWidth="2" />
-            <text x="270" y="235" fill="#450a0a" fontSize="10" fontWeight="bold" fontFamily="'Plus Jakarta Sans', sans-serif" textAnchor="middle">
-              SUMBER PANAS: INTI BUMI (SUHU 3.700°C – 5.000°C)
-            </text>
+            {/* Inti Luar & Inti Dalam */}
+            <text x="280" y="316" fill="#ffffff" fontSize="15" textAnchor="middle">Outer core</text>
+            <text x="280" y="368" fill="#ffffff" fontSize="15" textAnchor="middle">Inner core</text>
           </g>
         </svg>
       </div>
 
-      {/* Interactive Tooltip & Status Bar (Rapi & Tidak Menutupi Gambar) */}
-      <div className="w-full bg-[#1c1917]/95 border-t border-[#78350f] px-3.5 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 min-h-[50px]">
-        {activeFeature ? (
-          <div className="flex items-center gap-2.5 w-full animate-fadeIn">
-            <span
-              className="px-2.5 py-1 rounded text-[13px] sm:text-[15px] font-bold shrink-0 text-slate-900 shadow"
-              style={{ backgroundColor: featureDetails[activeFeature].color }}
-            >
-              {featureDetails[activeFeature].title}
-            </span>
-            <p className="text-[15px] sm:text-base text-amber-100 font-medium leading-relaxed">
-              {featureDetails[activeFeature].desc}
-            </p>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center gap-2 w-full text-center text-[13px] sm:text-[15px] text-amber-200/90 font-medium">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping inline-block" />
-            <span>Pilih tombol di atas atau ketuk bagian siklus konveksi untuk penjelasannya!</span>
-          </div>
-        )}
-      </div>
+      {/* Kartu penjelasan fitur aktif */}
+      {activeFeature ? (
+        <div
+          className="w-full px-3 sm:px-4 py-2.5 border-t-2 font-pixel text-[13px] sm:text-[14.5px] leading-relaxed"
+          style={{ background: '#1c1917', borderColor: featureDetails[activeFeature].color }}
+        >
+          <p className="font-black tracking-wide mb-0.5" style={{ color: featureDetails[activeFeature].color }}>
+            {featureDetails[activeFeature].title}
+          </p>
+          <p className="text-amber-100/90">{featureDetails[activeFeature].desc}</p>
+        </div>
+      ) : (
+        <p className="w-full px-3 py-2 text-center font-pixel text-[12.5px] sm:text-[13.5px] text-amber-200/80 bg-[#1c1917] border-t-2 border-[#78350f]">
+          Perhatikan panah yang berjalan menyusuri dua sel konveksi: naik di tengah, lalu turun di kedua tepi.
+        </p>
+      )}
     </div>
   );
 }
@@ -1343,123 +1199,10 @@ function renderIllustration(
       );
 
     // ══════════════════════════════════════════════════════════════════════════
-    // ── 3A. ARUS KONVEKSI PANAS MANTEL BUMI (TERMAL 1.000°C - 3.700°C & 20 LEMPENG) ──
+    // ── 3A. ARUS KONVEKSI PANAS MANTEL BUMI (BUMI SETENGAH LINGKARAN, 2 SEL) ──
     // ══════════════════════════════════════════════════════════════════════════
     case 'mantle-convection':
-      return <MantleConvectionIllustration />;
-
-    // ══════════════════════════════════════════════════════════════════════════
-    // ── 3B. BATUAN BRIDGMANITE & TEKANAN EKSTREM (860 KM DEPTH, SILIKAT PADAT SEPERTI BETON) ──
-    // ══════════════════════════════════════════════════════════════════════════
-    case 'bridgmanite':
-      return (
-        <svg viewBox="0 0 540 240" className="w-full h-full object-contain" shapeRendering="crispEdges">
-          <style>{`
-            @keyframes crystalPulse {
-              0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 4px #f97316); }
-              50% { opacity: 1; filter: drop-shadow(0 0 12px #fef08a); }
-            }
-            @keyframes pressurePush {
-              0%, 100% { transform: scale(1); }
-              50% { transform: scale(0.97); }
-            }
-            .anim-crystal-glow { animation: crystalPulse 3.2s ease-in-out infinite; }
-            .anim-pressure-box { animation: pressurePush 2.8s ease-in-out infinite; transform-origin: 270px 120px; }
-          `}</style>
-
-          {/* Kanvas Latar Belakang Gelap Total Mantel Bawah */}
-          <rect x="0" y="0" width="540" height="240" fill="#0c0403" />
-
-          <defs>
-            <linearGradient id="bridgmaniteFaceA" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#7c2d12" />
-              <stop offset="50%" stopColor="#991b1b" />
-              <stop offset="100%" stopColor="#450a0a" />
-            </linearGradient>
-            <linearGradient id="bridgmaniteFaceTop" x1="0%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="#b45309" />
-              <stop offset="100%" stopColor="#d97706" />
-            </linearGradient>
-            <linearGradient id="bridgmaniteFacetGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#ea580c" />
-              <stop offset="50%" stopColor="#fef08a" />
-              <stop offset="100%" stopColor="#f97316" />
-            </linearGradient>
-          </defs>
-
-          {/* Rekahan Fissure Dinding Mantel dengan Urat Lava Magma Membara */}
-          <path d="M 0,35 Q 80,45 150,20 Q 220,5 280,30 Q 360,15 540,40" stroke="#7f1d1d" strokeWidth="8" fill="none" />
-          <path d="M 0,35 Q 80,45 150,20 Q 220,5 280,30 Q 360,15 540,40" stroke="#ea580c" strokeWidth="2" fill="none" />
-          <path d="M 0,205 Q 120,195 240,215 Q 360,200 540,210" stroke="#7f1d1d" strokeWidth="10" fill="none" />
-          <path d="M 0,205 Q 120,195 240,215 Q 360,200 540,210" stroke="#f97316" strokeWidth="3" fill="none" />
-
-          {/* ══════════════════════════════════════════════════════════════════════════
-              PUSAT: MONOLIT KRISTAL BRIDGMANITE KUBIK (STRUKTUR PEROVSKITE PADAT SEPERTI BETON)
-              ══════════════════════════════════════════════════════════════════════════ */}
-          <g className="anim-pressure-box">
-            {/* Monolit Kubus Bridgmanite Besar di Tengah */}
-            <g className="anim-crystal-glow" transform="translate(200, 60)">
-              {/* Sisi Atas Kubus (Isometric Top Face) */}
-              <polygon points="70,0 140,28 70,56 0,28" fill="url(#bridgmaniteFaceTop)" stroke="#fef08a" strokeWidth="1.5" />
-
-              {/* Sisi Depan Kiri Kubus */}
-              <polygon points="0,28 70,56 70,126 0,98" fill="url(#bridgmaniteFaceA)" stroke="#f97316" strokeWidth="1" />
-
-              {/* Sisi Depan Kanan Kubus */}
-              <polygon points="70,56 140,28 140,98 70,126" fill="#450a0a" stroke="#ea580c" strokeWidth="1" />
-
-              {/* Urat Fissure Silikat Bercahaya Emas di Muka Kubus */}
-              <line x1="20" y1="42" x2="55" y2="92" stroke="#fef08a" strokeWidth="2" />
-              <line x1="55" y1="92" x2="68" y2="120" stroke="#f97316" strokeWidth="1.5" />
-              <line x1="85" y1="48" x2="120" y2="82" stroke="#fef08a" strokeWidth="2" />
-
-              {/* Balok Kubik Pendamping Kiri (Ferropericlase) */}
-              <polygon points="-30,60 10,45 10,75 -30,90" fill="#290b06" stroke="#c2410c" strokeWidth="1" />
-              <polygon points="-30,60 10,45 25,32 -15,47" fill="#78350f" />
-
-              {/* Balok Kubik Pendamping Kanan */}
-              <polygon points="130,75 170,60 170,95 130,110" fill="#3f1207" stroke="#ea580c" strokeWidth="1" />
-              <polygon points="130,75 170,60 155,48 115,63" fill="#92400e" />
-
-              {/* Label Formula Kimia di Kubus */}
-              <rect x="15" y="62" width="110" height="26" rx="4" fill="#1c0a02" stroke="#facc15" strokeWidth="2" />
-              <text x="70" y="80" fill="#fef08a" fontSize="9.5" fontFamily="'Press Start 2P'" textAnchor="middle">(Mg,Fe)SiO3</text>
-            </g>
-          </g>
-
-          {/* ══════════════════════════════════════════════════════════════════════════
-              VEKTOR TEKANAN EKSTREM: HIMPITAN JUTAAN ATMOSFER DARI SEGALA ARAH
-              ══════════════════════════════════════════════════════════════════════════ */}
-          {/* Tekanan dari Atas (Beban Seluruh Lapisan Bumi di Atasnya) */}
-          <g>
-            <line x1="270" y1="12" x2="270" y2="44" stroke="#ef4444" strokeWidth="4" />
-            <polygon points="270,54 262,40 278,40" fill="#ef4444" />
-            <line x1="220" y1="18" x2="220" y2="44" stroke="#f97316" strokeWidth="3" />
-            <polygon points="220,52 214,40 226,40" fill="#f97316" />
-            <line x1="320" y1="18" x2="320" y2="44" stroke="#f97316" strokeWidth="3" />
-            <polygon points="320,52 314,40 326,40" fill="#f97316" />
-          </g>
-
-          {/* Tekanan dari Bawah */}
-          <g>
-            <line x1="270" y1="228" x2="270" y2="198" stroke="#ef4444" strokeWidth="4" />
-            <polygon points="270,188 262,202 278,202" fill="#ef4444" />
-          </g>
-
-          {/* Tekanan dari Kiri */}
-          <g>
-            <line x1="80" y1="120" x2="135" y2="120" stroke="#ef4444" strokeWidth="4" />
-            <polygon points="147,120 133,112 133,128" fill="#ef4444" />
-          </g>
-
-          {/* Tekanan dari Kanan */}
-          <g>
-            <line x1="460" y1="120" x2="405" y2="120" stroke="#ef4444" strokeWidth="4" />
-            <polygon points="393,120 407,112 407,128" fill="#ef4444" />
-          </g>
-
-        </svg>
-      );
+      return <MantleConvectionHalfEarth />;
 
     // ── 3. MANTEL BUMI (660 - 2.900 KM / 1.800 MIL) ────────────────────────────
     // Lapisan tertebal: Batuan padat kental, Mantle Plume termal raksasa, dan batas D''
@@ -1519,7 +1262,7 @@ function renderIllustration(
           </g>
 
           <g transform="translate(15, 84)">
-            <text x="0" y="0" fill="#fed7aa" fontSize="10.5" fontWeight="500" fontFamily="sans-serif">Batuan padat mengalir kental (arus konveksi lambat)</text>
+            <text x="0" y="0" fill="#fed7aa" fontSize="10.5" fontWeight="500" fontFamily="sans-serif">Material fluida kental seperti adonan (mengalir sangat lambat)</text>
           </g>
 
           <g transform="translate(305, 42)">

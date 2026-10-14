@@ -18,7 +18,7 @@ export function getActiveUserId(): string {
       const profile = JSON.parse(profileRaw);
       if (profile?.id) return profile.id;
     }
-  } catch {}
+  } catch { /* diabaikan: sesi pengguna tidak terbaca → anggap guest */ }
   return 'guest';
 }
 
@@ -41,7 +41,7 @@ export function loadMissionsForUser(userId?: string): string[] {
         const u = JSON.parse(rawUser);
         if (u.id && u.id !== targetId) candidateKeys.push(`resqbox_missions_${u.id}`);
         if (u.username) candidateKeys.push(`resqbox_missions_${u.username}`);
-      } catch {}
+      } catch { /* diabaikan: data pengguna aktif tidak valid, lanjut ke kunci berikutnya */ }
     }
 
     let bestMissions: string[] = [];
@@ -58,7 +58,7 @@ export function loadMissionsForUser(userId?: string): string[] {
       }
     }
     return bestMissions;
-  } catch {}
+  } catch { /* diabaikan: localStorage tidak tersedia → tidak ada misi tersimpan */ }
   return [];
 }
 
@@ -75,9 +75,9 @@ export function saveMissionsForUser(userId: string | undefined, missionIds: stri
         const u = JSON.parse(rawUser);
         if (u.id && u.id !== targetId) localStorage.setItem(`resqbox_missions_${u.id}`, data);
         if (u.username) localStorage.setItem(`resqbox_missions_${u.username}`, data);
-      } catch {}
+      } catch { /* diabaikan: data pengguna aktif tidak valid, simpan ke kunci utama saja */ }
     }
-  } catch {}
+  } catch { /* diabaikan: gagal menyimpan misi tidak menghentikan permainan */ }
 }
 
 interface MissionState {

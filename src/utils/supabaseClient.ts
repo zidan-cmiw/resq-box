@@ -1438,7 +1438,6 @@ export async function kirimNilaiTertunda(
   // Ambil daftar nilai server sekali saja, untuk mengetahui mana yang sudah ada.
   let diServer = submissionsDariServer;
   if (!diServer) {
-    diServer = [];
     try {
       const { data } = await supabase
         .from('level_submissions')

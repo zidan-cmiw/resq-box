@@ -393,7 +393,7 @@ export default function TeacherDashboard() {
         const isLv1Done = (sub1 && sub1.score >= 100) || Boolean(sub1?.details?.is_completed);
         const isLv2Done = (sub2 && sub2.score >= 100) || Boolean(sub2?.details?.is_completed);
 
-        let studentActiveLevel = 1;
+        let studentActiveLevel: number;
         if (isLv2Done || (s.unlocked_level >= 3 && isLv1Done) || Boolean(sub3)) {
           studentActiveLevel = 3;
         } else if (isLv1Done || (s.unlocked_level >= 2 && !sub1)) {
@@ -1095,7 +1095,7 @@ export default function TeacherDashboard() {
                     const isLv3Unlocked = isLv2Done || s.unlocked_level >= 3;
 
                     // Hitung level aktif murid yang sesungguhnya:
-                    let studentActiveLevel = 1;
+                    let studentActiveLevel: number;
                     if (isLv2Done || (s.unlocked_level >= 3 && isLv1Done)) {
                       studentActiveLevel = 3;
                     } else if (isLv1Done || (s.unlocked_level >= 2 && !sub1)) {

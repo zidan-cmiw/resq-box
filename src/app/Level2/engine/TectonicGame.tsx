@@ -23,6 +23,7 @@ import {
   getNpcDialogueTreeL2,
   type GameStateL2,
 } from './gameEngine';
+import { hasDiscovery } from './legacyIds';
 import { TOTAL_CRYSTALS_L2 } from './zones';
 import { renderTectonicGameL2 } from './renderer';
 import {
@@ -75,6 +76,13 @@ export default function TectonicGame() {
     return saved?.currentAreaIndex ?? 0;
   });
   const activeArea = LEVEL2_AREAS[currentAreaIndex] || LEVEL2_AREAS[0];
+
+  // CATATAN: dulu di sini ada pengundian bank soal untuk modal pilihan ganda.
+  // Pengundian itu DIHAPUS karena modalnya tidak pernah muncul: state
+  // `pendingMiniChallenge` tidak pernah disetel `true` oleh mesin game mana pun.
+  // Gerbang tantangan Level 2 seluruhnya membuka TEKA-TEKI SILANG
+  // (`state.pendingCrossword = true`), bukan pilihan ganda. Menyimpan
+  // pengundian itu di sini berarti memelihara jalur yang tidak pernah dicapai.
 
   // Sound & Fullscreen
   const [soundOn, setSoundOn] = useState(() => retroAudio.isEnabled());
@@ -262,7 +270,7 @@ export default function TectonicGame() {
             setActiveDialogueTree(tree);
             try {
               localStorage.setItem(seenKey, 'true');
-            } catch { }
+            } catch { /* diabaikan: penanda briefing area 1 gagal disimpan, briefing tetap tampil */ }
           }
         }, 650);
         return () => window.clearTimeout(timer);
@@ -277,7 +285,7 @@ export default function TectonicGame() {
             setActiveDialogueTree(tree);
             try {
               localStorage.setItem(seenKey, 'true');
-            } catch { }
+            } catch { /* diabaikan: penanda briefing area 2 gagal disimpan, briefing tetap tampil */ }
           }
         }, 650);
         return () => window.clearTimeout(timer);
@@ -292,7 +300,7 @@ export default function TectonicGame() {
             setActiveDialogueTree(tree);
             try {
               localStorage.setItem(seenKey, 'true');
-            } catch { }
+            } catch { /* diabaikan: penanda briefing area 3 gagal disimpan, briefing tetap tampil */ }
           }
         }, 650);
         return () => window.clearTimeout(timer);
@@ -307,7 +315,7 @@ export default function TectonicGame() {
             setActiveDialogueTree(tree);
             try {
               localStorage.setItem(seenKey, 'true');
-            } catch { }
+            } catch { /* diabaikan: penanda briefing area 4 gagal disimpan, briefing tetap tampil */ }
           }
         }, 650);
         return () => window.clearTimeout(timer);
@@ -325,7 +333,7 @@ export default function TectonicGame() {
             setActiveDialogueTree(tree);
             try {
               localStorage.setItem(seenKey, 'true');
-            } catch { }
+            } catch { /* diabaikan: penanda briefing area 6 gagal disimpan, briefing tetap tampil */ }
           }
         }, 650);
         return () => window.clearTimeout(timer);
@@ -407,7 +415,7 @@ export default function TectonicGame() {
       try {
         localStorage.removeItem(`resqbox_l2_mascot_area0_seen_${activeUserId}`);
         localStorage.removeItem(`resqbox_l2_mascot_area1_seen_${activeUserId}`);
-      } catch { }
+      } catch { /* diabaikan: penanda briefing gagal dihapus saat reset, tetap dimuat ulang halaman */ }
       window.location.reload();
     };
     return () => {
@@ -528,9 +536,9 @@ export default function TectonicGame() {
           if (state.discoveredPoints.has('disc-volcano-status')) readInArea++;
           if (state.discoveredPoints.has('disc-volcano-response')) readInArea++;
         } else if (state.currentAreaIndex === 5) {
-          if (state.discoveredPoints.has('disc-post-ash')) readInArea++;
-          if (state.discoveredPoints.has('disc-post-sanitation')) readInArea++;
-          if (state.discoveredPoints.has('disc-post-lahar')) readInArea++;
+          if (hasDiscovery(state.discoveredPoints, 'disc-post-ash')) readInArea++;
+          if (hasDiscovery(state.discoveredPoints, 'disc-post-sanitation')) readInArea++;
+          if (hasDiscovery(state.discoveredPoints, 'disc-post-pyroclastic')) readInArea++;
         } else {
           const currentAreaObj = LEVEL2_AREAS[state.currentAreaIndex] || LEVEL2_AREAS[0];
           readInArea = currentAreaObj.discoveries.filter((d) => state.discoveredPoints.has(d.id)).length;
@@ -1172,8 +1180,23 @@ export default function TectonicGame() {
         )}
       </div>
 
-      {/* ── 2.8 REAL-TIME JOURNEY PROGRESS TRACKER (Level 2: 6 Area Mitigasi) ── */}
-      <div className="absolute bottom-9 sm:bottom-10 lg:bottom-9 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+      {/* ── 2.8 REAL-TIME JOURNEY PROGRESS TRACKER (Level 2: 6 Area Mitigasi) ──
+          Posisi dan LEBARNYA disamakan dengan Level 1 (`EarthDiveGame.tsx`).
+
+          MENGAPA DIPERBAIKI
+
+            Pembungkus di sini sebelumnya hanya berisi
+            `absolute bottom-9 ... pointer-events-none` TANPA lebar apa pun.
+            Komponen `JourneyProgressTracker` tidak punya lebar bawaan — ia
+            mengikuti lebar pembungkusnya. Tanpa lebar, ia menyusut mengikuti
+            isinya sendiri, sehingga bar-nya menjadi sangat sempit dan label
+            metrik tiap titik saling menumpuk.
+
+            Jadi penyebabnya BUKAN komponen trackernya (Level 1 memakai
+            komponen yang sama dan tampil benar), melainkan pembungkus ini
+            yang tidak memberi lebar. Posisinya juga dipindah ke atas agar
+            sama seperti Level 1. ── */}
+      <div className="absolute top-14 sm:top-15 left-1/2 -translate-x-1/2 z-10 w-[min(94vw,620px)] max-w-[calc(100vw-360px)] sm:max-w-[calc(100vw-380px)] lg:max-w-[620px]">
         <JourneyProgressTracker
           ref={journeyTrackerRef}
           totalAreas={6}
@@ -1190,11 +1213,15 @@ export default function TectonicGame() {
         <span>[E] Interaksi</span>
       </div>
 
-      {/* ── 4. FLOATING INTERACTION HINT (BOTTOM CENTER PERSIS LEVEL 1) ── */}
+      {/* ── 4. FLOATING INTERACTION HINT (RINGKAS) ──────────────────────────
+          Sebelumnya kotak ini selebar 860px dengan huruf sampai `md:text-xl`
+          dan padding tebal, sehingga menutupi karakter pemain di bagian
+          tengah-bawah layar. Sekarang dibuat ringkas: lebar maksimum 620px,
+          huruf lebih kecil, padding dan ikon lebih tipis. */}
       {nearInteractablePrompt && !isPaused && (
-        <div className="absolute bottom-28 sm:bottom-32 left-1/2 -translate-x-1/2 pointer-events-auto z-30 select-none animate-bounce w-[min(94vw,860px)] px-2">
-          <div className="bg-slate-950/98 text-amber-100 border-[3.5px] border-amber-400 px-5 sm:px-8 py-3.5 sm:py-4 rounded-3xl font-extrabold text-[15px] sm:text-base md:text-xl shadow-[0_12px_36px_rgba(0,0,0,0.95)] backdrop-blur-md flex items-center justify-center gap-3 sm:gap-4 text-center leading-snug">
-            <PixelIcon name="broadcast" size={24} className="text-amber-400 shrink-0 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+        <div className="absolute bottom-24 sm:bottom-28 left-1/2 -translate-x-1/2 pointer-events-auto z-30 select-none w-[min(86vw,620px)] px-2">
+          <div className="bg-slate-950/95 text-amber-100 border-2 border-amber-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl font-bold text-[12.5px] sm:text-[13.5px] shadow-[0_8px_22px_rgba(0,0,0,0.9)] backdrop-blur-md flex items-center justify-center gap-2 text-center leading-snug">
+            <PixelIcon name="broadcast" size={16} className="text-amber-400 shrink-0" />
             <span className="uppercase tracking-wide font-black">{nearInteractablePrompt}</span>
           </div>
         </div>
@@ -1463,9 +1490,9 @@ export default function TectonicGame() {
                 if (state.discoveredPoints.has('disc-volcano-status')) readInArea++;
                 if (state.discoveredPoints.has('disc-volcano-response')) readInArea++;
               } else if (currentAreaIndex === 5) {
-                if (state.discoveredPoints.has('disc-post-ash')) readInArea++;
-                if (state.discoveredPoints.has('disc-post-sanitation')) readInArea++;
-                if (state.discoveredPoints.has('disc-post-lahar')) readInArea++;
+                if (hasDiscovery(state.discoveredPoints, 'disc-post-ash')) readInArea++;
+                if (hasDiscovery(state.discoveredPoints, 'disc-post-sanitation')) readInArea++;
+                if (hasDiscovery(state.discoveredPoints, 'disc-post-pyroclastic')) readInArea++;
               } else {
                 readInArea = activeArea.discoveries.filter((d) => state.discoveredPoints.has(d.id)).length;
               }
@@ -1524,7 +1551,7 @@ export default function TectonicGame() {
               } else if (currentAreaIndex === 5) {
                 if (activeDiscoveryIndex === 0) gameStateRef.current.discoveredPoints.add('disc-post-ash');
                 if (activeDiscoveryIndex === 1) gameStateRef.current.discoveredPoints.add('disc-post-sanitation');
-                if (activeDiscoveryIndex === 2) gameStateRef.current.discoveredPoints.add('disc-post-lahar');
+                if (activeDiscoveryIndex === 2) gameStateRef.current.discoveredPoints.add('disc-post-pyroclastic');
               }
               saveLevel2Progress(gameStateRef.current, activeUserId);
 
@@ -1539,9 +1566,9 @@ export default function TectonicGame() {
                 if (gameStateRef.current.discoveredPoints.has('disc-volcano-status')) readInArea++;
                 if (gameStateRef.current.discoveredPoints.has('disc-volcano-response')) readInArea++;
               } else if (currentAreaIndex === 5) {
-                if (gameStateRef.current.discoveredPoints.has('disc-post-ash')) readInArea++;
-                if (gameStateRef.current.discoveredPoints.has('disc-post-sanitation')) readInArea++;
-                if (gameStateRef.current.discoveredPoints.has('disc-post-lahar')) readInArea++;
+                if (hasDiscovery(gameStateRef.current.discoveredPoints, 'disc-post-ash')) readInArea++;
+                if (hasDiscovery(gameStateRef.current.discoveredPoints, 'disc-post-sanitation')) readInArea++;
+                if (hasDiscovery(gameStateRef.current.discoveredPoints, 'disc-post-pyroclastic')) readInArea++;
               } else {
                 readInArea = activeArea.discoveries.filter((d) => gameStateRef.current!.discoveredPoints.has(d.id)).length;
               }
@@ -1561,7 +1588,13 @@ export default function TectonicGame() {
         />
       )}
 
-      {/* ── 8. MINI CHALLENGE GERBANG EVALUASI (AREA 2) ── */}
+      {/* ── 8. MINI CHALLENGE GERBANG EVALUASI (AREA 2) ──
+          Dibiarkan apa adanya. Perlu diketahui: modal ini TIDAK PERNAH MUNCUL,
+          karena `state.pendingMiniChallenge` tidak pernah disetel `true` oleh
+          mesin game. Evaluasi tiap area Level 2 sebenarnya adalah TEKA-TEKI
+          SILANG (`CrosswordModal`), yang dibuka lewat `state.pendingCrossword`.
+          Dipertahankan hanya agar bila kelak pilihan ganda dihidupkan lagi,
+          jalurnya sudah tersedia. */}
       {showMiniChallenge && activeArea.challenge && (
         <MiniChallengeModal
           challenge={activeArea.challenge}

@@ -6,7 +6,7 @@ import PixelTrophy from '../../../components/PixelTrophy';
 import { submitLevelProgress } from '../../../utils/supabaseClient';
 
 function seededRandom(seed: number) {
-  let t = (seed += 0x6d2b79f5);
+  let t = seed + 0x6d2b79f5;
   t = Math.imul(t ^ (t >>> 15), t | 1);
   t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -17,7 +17,7 @@ const WORD_BANK = [
   { word: 'MAGMA', hint: 'Batuan cair pijar yang sangat panas di dalam mantel bumi.' },
   { word: 'SESAR', hint: 'Patahan pada kerak bumi yang menjadi pusat gempa tektonik dangkal.' },
   { word: 'KERAK', hint: 'Lapisan bumi paling luar yang keras tempat manusia berpijak.' },
-  { word: 'LAHAR', hint: 'Aliran material vulkanik dari gunung berapi yang bercampur air hujan.' },
+  { word: 'KRATER', hint: 'Lubang kawah di puncak gunung berapi tempat magma dan gas keluar saat erupsi.' },
   { word: 'EROSI', hint: 'Proses pengikisan tanah atau lereng gunung yang memicu longsor.' },
   { word: 'PANAS', hint: 'Energi termal ekstrem dari dalam bumi (geotermal) & erupsi magma.' },
   { word: 'RETAK', hint: 'Kondisi rekahan tanah atau dinding bangunan akibat guncangan gempa.' },

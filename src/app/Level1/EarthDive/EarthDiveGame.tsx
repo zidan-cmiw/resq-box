@@ -7,7 +7,6 @@ import {
   type DiscoveryPoint,
 } from './earthDiveData';
 import TelemetryHUD from './TelemetryHUD';
-import PlateBoundaryStatus from './PlateBoundaryStatus';
 import PixelEarthDiagram from '../PixelEarthDiagram';
 import DiscoveryModal from './DiscoveryModal';
 import CoreChallengeModal from './CoreChallengeModal';
@@ -49,49 +48,22 @@ import {
   type GameState,
 } from './engine/gameEngine';
 import { getZone, ZONES, TILE, type MapObject } from './engine/zones';
+// Mesin undian berbenih yang sama dipakai bank soal dan kata gerbang, supaya
+// sifat "berbeda antar-siswa namun tetap bagi siswa yang sama" berlaku di
+// kedua tempat tanpa menulis ulang logikanya.
+import { undiKataGerbang } from '../../../missions/data/bankKataGerbang';
 import { getGameScale } from './engine/renderer';
 import { setMobileButton, resetInputKeys } from './engine/player';
 
-// ── SOAL EVALUASI SEISMIK GERBANG AKHIR ZONA (GABUNGAN & LEBIH MENANTANG) ──────
-const ZONE_GATE_QUESTIONS: Record<number, { word: string; hint: string }[]> = {
-  0: [ // Surface Gate
-    { word: 'KERAK', hint: 'Lapisan paling luar bumi tempat kita tinggal dan paling tipis.' },
-    { word: 'BENUA', hint: 'Daratan luas tempat kita hidup di atas permukaan bumi.' },
-    { word: 'BATUAN', hint: 'Benda padat alami yang menyusun lapisan kerak bumi.' },
-  ],
-  1: [ // Crust / Kerak Bumi Gate (Sesuai materi Dr. Gea & Prof. Andini)
-    { word: 'KERAK', hint: 'Lapisan paling luar bumi tempat kita tinggal, dan merupakan lapisan yang paling tipis.' },
-    { word: 'BENUA', hint: 'Jenis kerak bumi di bawah daratan yang memiliki ketebalan mencapai 100 kilometer.' },
-    { word: 'SAMUDRA', hint: 'Jenis kerak bumi di bawah lautan yang tipis (5-15 km), tetapi lebih padat dan berat.' },
-  ],
-  2: [ // Mantle Gate (Sesuai materi SMP Kelas 8: Mantel, Panas, Konveksi)
-    { word: 'MANTEL', hint: 'Lapisan di bawah kerak bumi yang merupakan lapisan paling tebal (2.900 km).' },
-    { word: 'KONVEKSI', hint: 'Arus perputaran panas di dalam mantel yang menggerakkan lempeng bumi.' },
-  ],
-  3: [ // Outer Core Gate (Sesuai materi SMP Kelas 8: Logam, Cair, Magnet)
-    { word: 'NIKEL', hint: 'Bahan yang menjadi penyusun utama lapisan inti bumi adalah besi dan...' },
-    { word: 'CAIRAN', hint: 'Inti luar bumi wujudnya berupa...' },
-    { word: 'MAGNET', hint: 'Lapisan inti bumi luar menghasilkan medan... yang melindungi bumi dari radiasi matahari.' },
-  ],
-  4: [ // Inner Core Gate (Sesuai materi SMP Kelas 8: Padat, Tekanan, Pusat)
-    { word: 'INTIDALAM', hint: 'Lapisan terdalam planet bumi pada kedalaman 6.371 kilometer.' },
-    { word: 'PADAT', hint: 'Inti dalam berbentuk sangat ... karena tekanan yang sangat besar dari segala arah.' },
-  ],
-  5: [ // Batas Divergen Gate (Sesuai materi SMP Kelas 8: Pangea, Menjauh, Magma)
-    { word: 'PANGEA', hint: 'Nama superbenua raksasa purba yang dulunya menyatukan seluruh daratan bumi.' },
-    { word: 'MENJAUH', hint: 'Arah pergerakan dua lempeng tektonik pada batas divergen saling...' },
-    { word: 'MAGMA', hint: 'Batuan cair panas dari mantel bumi yang menerobos naik mengisi celah rekahan lempeng.' },
-  ],
-  6: [ // Batas Konvergen Gate (Sesuai materi SMP Kelas 8: Subduksi, Palung, Merapi)
-    { word: 'PALUNG', hint: 'Jurang sempit yang sangat dalam di dasar samudra akibat penunjaman lempeng.' },
-    { word: 'MERAPI', hint: 'Contoh gunung berapi aktif di Indonesia yang terbentuk dari jalur subduksi lempeng.' },
-  ],
-  7: [ // Batas Transform Gate (Sesuai materi SMP Kelas 8: Transform, San Andreas, Sismograf)
-    { word: 'TRANSFORM', hint: 'Batas lempeng tektonik di mana dua lempeng saling bergesekan mendatar berlawanan arah.' },
-    { word: 'SANANDREAS', hint: 'Patahan mendatar terkenal di California yang membentang sepanjang 1.200 kilometer.' }
-  ],
-};
-
+// ── KATA GERBANG SEISMIK LEVEL 1 ─────────────────────────────────────────────
+// Bank varian kata gerbang beserta fungsi pengundiannya kini berada di
+// src/missions/data/bankKataGerbang.ts.
+//
+// Dipisah ke modul data supaya dapat diuji otomatis tanpa merender React —
+// termasuk pemeriksaan bahwa JUMLAH KATA per zona seragam di semua variannya.
+// Aturan itu bukan kerapian belaka: `targetCount` gerbang mengikuti jumlah kata
+// varian yang terundi, sehingga varian berisi 4 kata akan jauh lebih berat
+// daripada varian berisi 2 kata, dan bebannya menjadi tidak adil.
 interface ActiveChallengeState {
   strata: EarthStrata;
   isGate: boolean;
@@ -245,6 +217,17 @@ export default function EarthDiveGame() {
     zoneIndex: number;
     nearObjectType: 'npc' | 'crystal' | 'discovery' | 'portal_down' | 'portal_up' | 'info_sign' | 'challenge_gate' | null;
     nearNpcName?: string | null;
+    /**
+     * Sedang ada animasi perpindahan antar-lapisan (banner "MEMASUKI LAPISAN"
+     * / "KEMBALI KE LAPISAN" di tengah layar).
+     *
+     * Dipakai untuk MENYEMBUNYIKAN kartu ajakan berinteraksi. Sebelumnya kartu
+     * itu muncul bersamaan dengan banner, sehingga kalimat "TEKAN [E] / KLIK
+     * UNTUK TURUN MENUJU LAPISAN SELANJUTNYA" menumpuk dengan banner di tengah
+     * layar dan terasa mengganggu — padahal pemain baru saja tiba dan belum
+     * perlu menekan apa pun.
+     */
+    isTransitioning: boolean;
     areaDiscoveriesRead: number;
     areaDiscoveriesTotal: number;
   }>({
@@ -259,6 +242,7 @@ export default function EarthDiveGame() {
     zoneIndex: 0,
     nearObjectType: null,
     nearNpcName: null,
+    isTransitioning: false,
     areaDiscoveriesRead: 0,
     areaDiscoveriesTotal: 0,
   });
@@ -332,7 +316,7 @@ export default function EarthDiveGame() {
         let hasReadLintang = false;
         try {
           hasReadLintang = localStorage.getItem(`resqbox_read_ic_disc2_${activeUserId}`) === 'true';
-        } catch {}
+        } catch { /* diabaikan: penanda bacaan belum ada → anggap belum dibaca */ }
         if (!hasReadLintang && newGame.discoveredPoints.has('ic_disc2')) {
           newGame.discoveredPoints.delete('ic_disc2');
           newGame.discoveredPoints.delete('disc_9');
@@ -359,7 +343,7 @@ export default function EarthDiveGame() {
         let hasReadLintang = false;
         try {
           hasReadLintang = localStorage.getItem(`resqbox_read_ic_disc2_${activeUserId}`) === 'true';
-        } catch {}
+        } catch { /* diabaikan: penanda bacaan tidak terbaca → anggap belum dibaca */ }
         if (!hasReadLintang && activeGame.discoveredPoints.has('ic_disc2')) {
           activeGame.discoveredPoints.delete('ic_disc2');
           activeGame.discoveredPoints.delete('disc_9');
@@ -385,7 +369,7 @@ export default function EarthDiveGame() {
       localStorage.removeItem(`resqbox_mascot_transform_seen_${activeUserId}`);
       localStorage.removeItem(`resqbox_mascot_transform_session_${activeUserId}`);
       localStorage.removeItem('resqbox_earthdive_progress');
-    } catch { }
+    } catch { /* diabaikan: sebagian kunci progres gagal dihapus, permainan tetap direset */ }
 
     const freshGame = createGameState(activeUserId);
     freshGame.userId = activeUserId;
@@ -848,7 +832,7 @@ export default function EarthDiveGame() {
 
         // Update HUD data
         const zone = getZone(game.currentZone);
-        let strataData = null;
+        let strataData: (typeof EARTH_STRATA_DATA)[number] | null;
         if (zone.id === 'surface') strataData = null;
         else if (zone.id === 'crust') strataData = EARTH_STRATA_DATA.find((s) => s.id === 'litosfer') || null;
         else if (zone.id === 'mantle') strataData = EARTH_STRATA_DATA.find((s) => s.id === 'astenosfer') || null;
@@ -900,6 +884,7 @@ export default function EarthDiveGame() {
           zoneIndex: game.currentZone,
           nearObjectType: game.nearObject?.type ?? null,
           nearNpcName,
+          isTransitioning: Boolean(game.isTransitioning),
         });
       }
 
@@ -944,43 +929,43 @@ export default function EarthDiveGame() {
         game.completedChallenges.add('crust_challenge');
         try {
           localStorage.setItem('crust_challenge_solved', 'true');
-        } catch { }
+        } catch { /* diabaikan: capaian tantangan tetap tersimpan di state permainan */ }
       } else if (game.currentZone === 2 || targetGateId === 'mantle_challenge') {
         game.unlockedGates.add('mantle_challenge');
         game.completedChallenges.add('mantle_challenge');
         try {
           localStorage.setItem('mantle_challenge_solved', 'true');
-        } catch { }
+        } catch { /* diabaikan: capaian tantangan tetap tersimpan di state permainan */ }
       } else if (game.currentZone === 3 || targetGateId === 'oc_challenge') {
         game.unlockedGates.add('oc_challenge');
         game.completedChallenges.add('oc_challenge');
         try {
           localStorage.setItem('oc_challenge_solved', 'true');
-        } catch { }
+        } catch { /* diabaikan: capaian tantangan tetap tersimpan di state permainan */ }
       } else if (game.currentZone === 4 || targetGateId === 'ic_challenge') {
         game.unlockedGates.add('ic_challenge');
         game.completedChallenges.add('ic_challenge');
         try {
           localStorage.setItem('ic_challenge_solved', 'true');
-        } catch { }
+        } catch { /* diabaikan: capaian tantangan tetap tersimpan di state permainan */ }
       } else if (game.currentZone === 5 || targetGateId === 'divergent_challenge') {
         game.unlockedGates.add('divergent_challenge');
         game.completedChallenges.add('divergent_challenge');
         try {
           localStorage.setItem('divergent_challenge_solved', 'true');
-        } catch { }
+        } catch { /* diabaikan: capaian tantangan tetap tersimpan di state permainan */ }
       } else if (game.currentZone === 6 || targetGateId === 'convergent_challenge') {
         game.unlockedGates.add('convergent_challenge');
         game.completedChallenges.add('convergent_challenge');
         try {
           localStorage.setItem('convergent_challenge_solved', 'true');
-        } catch { }
+        } catch { /* diabaikan: capaian tantangan tetap tersimpan di state permainan */ }
       } else if (game.currentZone === 7 || targetGateId === 'transform_challenge') {
         game.unlockedGates.add('transform_challenge');
         game.completedChallenges.add('transform_challenge');
         try {
           localStorage.setItem('transform_challenge_solved', 'true');
-        } catch { }
+        } catch { /* diabaikan: capaian tantangan tetap tersimpan di state permainan */ }
       }
 
       // Hanya zona pamungkas Level 1 (Area 8) yang memicu pop-up kemenangan Level 1
@@ -1217,7 +1202,7 @@ export default function EarthDiveGame() {
           game.discoveredPoints.add('disc_9');
           try {
             localStorage.setItem(`resqbox_read_ic_disc2_${activeUserId}`, 'true');
-          } catch {}
+          } catch { /* diabaikan: penanda bacaan gagal disimpan, temuan tetap tercatat di sesi ini */ }
         } else if (discoveryIndex === 15) {
           game.discoveredPoints.add('trans_seismo');
           game.discoveredPoints.add('trans_disc1');
@@ -1290,7 +1275,10 @@ export default function EarthDiveGame() {
                 : isMantle
                   ? 'TANTANGAN PENELITI: MANTEL BUMI'
                   : 'TANTANGAN PENELITI: KERAK BUMI';
-      const words = ZONE_GATE_QUESTIONS[zoneIdx] || ZONE_GATE_QUESTIONS[1];
+      // Kata gerbang DIUNDI per siswa (lihat `undiKataGerbang`), sehingga kata
+      // yang harus dipecahkan berbeda antar-siswa namun tetap sama bila siswa
+      // yang sama membuka ulang zona ini.
+      const words = undiKataGerbang(zoneIdx, activeUserId);
       setActiveChallenge({
         strata,
         isGate: true,
@@ -1712,7 +1700,7 @@ export default function EarthDiveGame() {
       )}
 
       {/* ── 5. DYNAMIC FLOATING INTERACTION PROMPT (BOTTOM CENTER) 100% PERSIS LEVEL 2 ── */}
-      {hudData.nearObjectType && !isPaused && (
+      {hudData.nearObjectType && !isPaused && !hudData.isTransitioning && (
         <div className="absolute bottom-24 sm:bottom-28 md:bottom-32 left-1/2 -translate-x-1/2 z-30 pointer-events-auto select-none animate-bounce w-[min(62vw,580px)] px-2">
           {hudData.nearObjectType === 'portal_down' && (
             <button aria-label="Menyelam lebih dalam"
@@ -1821,21 +1809,16 @@ export default function EarthDiveGame() {
         />
       </div>
 
-      {/* ── 5.9 KETERANGAN GERAK LEMPENG (hanya di zona batas lempeng) ──
-          Diletakkan tepat di bawah tracker, di ATAS area animasi.
+      {/* ── 5.9 KETERANGAN GERAK LEMPENG — DIHAPUS ──
+          Sebelumnya di sini ada bilah keterangan (`PlateBoundaryStatus`) yang
+          muncul di zona Batas Divergen, Konvergen, dan Transform untuk
+          menjelaskan lempeng mana yang sedang menjauh / menunjam / bergeser.
 
-          Alasan penempatan: animasi lempeng berlangsung di bagian tengah
-          layar, dan kartu ajakan berinteraksi ada di bawah. Keterangan yang
-          ditaruh di bawah akan saling menutupi dengan keduanya, sehingga
-          siswa tidak dapat membaca sambil melihat animasinya.
-
-          `pointer-events-none` supaya bilah ini tidak menghalangi klik ke
-          canvas di belakangnya. */}
-      {!isPaused && (
-        <div className="absolute top-[7.5rem] sm:top-[8.25rem] left-1/2 -translate-x-1/2 z-10 w-[min(94vw,520px)] pointer-events-none">
-          <PlateBoundaryStatus zoneIndex={hudData.zoneIndex} />
-        </div>
-      )}
+          Bilah itu DIHAPUS atas arahan dosen pembimbing: ukurannya besar dan
+          posisinya di tengah-atas layar, sehingga menutupi animasi lempeng
+          serta karakter pemain di ketiga zona tersebut. Penjelasan gerak
+          lempeng kini disampaikan lewat NPC dan modal materi, bukan bilah
+          yang menutupi pandangan. */}
 
       {/* ── 6. DISCREET KEYBOARD CONTROLS GUIDE (Desktop Bottom) ── */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[12.5px] font-pixel text-slate-300 pointer-events-none z-10 select-none font-semibold">
@@ -2268,4 +2251,4 @@ export default function EarthDiveGame() {
       />
     </div>
   );
-}
+}
