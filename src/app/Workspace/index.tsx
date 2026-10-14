@@ -35,7 +35,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import BlockEditor from './BlockEditor';
 import MissionPanel from './MissionPanel';
 import TelemetrySidePanel from './TelemetrySidePanel';
-import ConsoleOutput from './ConsoleOutput';
+
 import { MISSIONS } from '../../missions/data/missions';
 import { retroAudio } from '../../utils/retroAudio';
 import { useMissionStore } from '../../store/missionStore';
@@ -104,7 +104,6 @@ export default function Workspace() {
   // ── Responsive Layout Mobile/Tablet States ──────────────────────
   const [showMissionPanel, setShowMissionPanel] = useState(() => (typeof window !== 'undefined' ? window.innerWidth >= 1024 : true));
   const [topTabMobile, setTopTabMobile] = useState<'canvas' | 'telemetry'>('canvas');
-  const [bottomTabMobile, setBottomTabMobile] = useState<'editor' | 'console'>('editor');
 
   // ── WebSocket Hardware Integration ─────────────────────────────
   const [showWsModal, setShowWsModal] = useState(false);
@@ -692,7 +691,9 @@ export default function Workspace() {
             <button
               onClick={() => {
                 retroAudio.playSelect();
-                wsStatus === 'connected' ? disconnectMaket() : setShowWsModal(!showWsModal);
+                // Sambung/putus diorama: perilaku sama seperti bentuk ternary sebelumnya
+                if (wsStatus === 'connected') disconnectMaket();
+                else setShowWsModal(!showWsModal);
               }}
               className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[14.5px] font-bold transition-all shadow-sm ${wsStatus === 'connected'
                 ? 'bg-[#f0fdf4] text-[#15803d] border-[#16a34a]'
@@ -856,35 +857,16 @@ export default function Workspace() {
 
           {/* BOTTOM: Blockly Workspace & Right Activity Console */}
           <section className="flex-1 flex overflow-hidden relative isolate bg-[#fefce8] z-0">
-            {/* Mobile Tab Switcher for Bottom Section */}
-            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[13.5px] font-pixel font-semibold">
-              <button
-                onClick={() => setBottomTabMobile('editor')}
-                className={`px-2 py-0.5 rounded font-bold transition-all ${
-                  bottomTabMobile === 'editor' ? 'bg-[#b45309] text-white shadow-xs' : 'text-[#78350f]'
-                }`}
-              >
-                BALOK
-              </button>
-              <button
-                onClick={() => setBottomTabMobile('console')}
-                className={`px-2 py-0.5 rounded font-bold transition-all ${
-                  bottomTabMobile === 'console' ? 'bg-[#b45309] text-white shadow-xs' : 'text-[#78350f]'
-                }`}
-              >
-                KONSOL
-              </button>
-            </div>
-
-            {/* Blockly Editor */}
-            <div id="tour-ws-editor" className={`flex-1 overflow-hidden relative isolate ${bottomTabMobile === 'console' ? 'hidden md:block' : 'block'}`}>
+            {/* Blockly Editor — kini memakai SELURUH lebar bagian bawah.
+                Panel "LOG AKTIVITAS" di sebelah kanan sudah DIHAPUS atas
+                arahan dosen pembimbing: panel itu memakan 320px lebar layar
+                dan isinya hanya catatan teknis (bukan materi belajar).
+                Karena panel itu hilang, pemilih tab "BALOK / KONSOL" di layar
+                kecil ikut dihapus — kini tinggal satu panel, jadi tidak ada
+                yang perlu dipilih. */}
+            <div id="tour-ws-editor" className="flex-1 overflow-hidden relative isolate block">
               <BlockEditor />
             </div>
-
-            {/* Right Activity Console Panel */}
-            <aside aria-label="Monitor Aktivitas" className={`w-full md:w-80 shrink-0 md:border-l-4 md:border-[#78350f] overflow-hidden flex flex-col bg-[#fffbeb] shadow-lg ${bottomTabMobile === 'editor' ? 'hidden md:flex' : 'flex'}`}>
-              <ConsoleOutput />
-            </aside>
           </section>
         </div>
       </main>

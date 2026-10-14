@@ -21,37 +21,6 @@ export function defineCoreBlocks() {
     return `#include <Arduino.h>\n\nvoid setup() {\n  Serial.begin(115200);\n${setup}}\n\nvoid loop() {\n${loop}}\n`;
   };
 
-  // ── 2. Lampu Peringatan ──────────────────────────────────────
-  Blockly.Blocks['resq_led'] = {
-    init() {
-      this.appendDummyInput()
-        .appendField('Lampu')
-        .appendField(new Blockly.FieldDropdown([
-          ['Bahaya', 'Bahaya'], ['Aman', 'Aman'], ['Info', 'Info'], ['Bawaan', 'Bawaan'],
-        ]), 'COLOR')
-        .appendField(new Blockly.FieldDropdown([
-          ['Nyala', 'HIGH'], ['Mati', 'LOW'],
-        ]), 'STATE');
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour('#0D9488');
-      this.setTooltip('Nyalakan atau matikan lampu peringatan sesuai status bahaya.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_led'] = function (block: Blockly.Block) {
-    const color = block.getFieldValue('COLOR');
-    const state = block.getFieldValue('STATE');
-    const isHigh = state === 'HIGH';
-    if (color === 'Bahaya') {
-      return isHigh ? `setRGBColor("red");\nredLED_ON(); // Lampu Bahaya Nyala\n` : `rgbOFF();\nredLED_OFF(); // Lampu Bahaya Mati\n`;
-    } else if (color === 'Aman') {
-      return isHigh ? `setRGBColor("green"); // Lampu Aman Nyala\n` : `rgbOFF(); // Lampu Aman Mati\n`;
-    } else if (color === 'Info') {
-      return isHigh ? `setRGBColor("blue"); // Lampu Info Nyala\n` : `rgbOFF(); // Lampu Info Mati\n`;
-    } else {
-      return isHigh ? `setRGBColor("yellow"); // Lampu Bawaan Nyala\n` : `rgbOFF(); // Lampu Bawaan Mati\n`;
-    }
-  };
 
   // ── 3. Sirine Peringatan ─────────────────────────────────────
   Blockly.Blocks['resq_buzzer'] = {
@@ -71,19 +40,6 @@ export function defineCoreBlocks() {
     return `buzzerON();\ndelay(${ms});\nbuzzerOFF();\n`;
   };
 
-  // ── 4. Sirine Berhenti ───────────────────────────────────────
-  Blockly.Blocks['resq_buzzer_stop'] = {
-    init() {
-      this.appendDummyInput().appendField('Sirine Berhenti');
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour('#0D9488');
-      this.setTooltip('Hentikan bunyi sirine peringatan.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_buzzer_stop'] = function () {
-    return `buzzerOFF();\n`;
-  };
 
   Blockly.Blocks['resq_sirine_stop'] = {
     init() {
@@ -98,44 +54,6 @@ export function defineCoreBlocks() {
     return `buzzerOFF();\n`;
   };
 
-
-  // ── 5. Kipas Ventilasi ───────────────────────────────────────
-  Blockly.Blocks['resq_motor'] = {
-    init() {
-      this.appendDummyInput()
-        .appendField('Kipas Ventilasi')
-        .appendField(new Blockly.FieldDropdown([
-          ['Mati', '0'], ['Pelan', '85'], ['Sedang', '170'], ['Kencang', '255'],
-        ]), 'SPEED');
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour('#7C3AED');
-      this.setTooltip('Atur kecepatan kipas ventilasi untuk sirkulasi udara saat evakuasi.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_motor'] = function (block: Blockly.Block) {
-    const spd = block.getFieldValue('SPEED');
-    if (spd === '0') return `motorStop();\n`;
-    return `motorStartKick(${spd});\n`;
-  };
-
-  // ── 6. Pintu Evakuasi ────────────────────────────────────────
-  Blockly.Blocks['resq_servo'] = {
-    init() {
-      this.appendDummyInput()
-        .appendField('Pintu Evakuasi')
-        .appendField(new Blockly.FieldDropdown([
-          ['Tertutup', '0'], ['Setengah', '90'], ['Terbuka', '180'],
-        ]), 'POS');
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour('#7C3AED');
-      this.setTooltip('Buka atau tutup pintu evakuasi darurat.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_servo'] = function (block: Blockly.Block) {
-    return `// Pintu Evakuasi (pin 9)\nservo_9.write(${block.getFieldValue('POS')});\n`;
-  };
 
   // ── 7. Jeda Sebentar ─────────────────────────────────────────
   Blockly.Blocks['resq_tunggu'] = {
@@ -156,50 +74,6 @@ export function defineCoreBlocks() {
     return `delay(${ms});\n`;
   };
 
-  // ── 8. Laporkan ke Monitor ───────────────────────────────────
-  Blockly.Blocks['resq_tampil'] = {
-    init() {
-      this.appendValueInput('VALUE').setCheck(null).appendField('Laporkan ke Monitor');
-      this.setInputsInline(true);
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour('#fd761a');
-      this.setTooltip('Tampilkan informasi di monitor aktivitas.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_tampil'] = function (block: Blockly.Block) {
-    const val = arduinoGenerator.valueToCode(block, 'VALUE', 0) || '""';
-    return `Serial.println(${val});\n`;
-  };
-
-
-
-
-  // ── 12. Tombol Darurat 1 ─────────────────────────────────────
-  Blockly.Blocks['resq_tombol_1'] = {
-    init() {
-      this.appendDummyInput().appendField('Tombol Darurat 1 ditekan?');
-      this.setOutput(true, 'Boolean');
-      this.setColour('#2563EB');
-      this.setTooltip('Mendeteksi apakah tombol darurat pertama sedang ditekan.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_tombol_1'] = function () {
-    return [`digitalRead(2) == HIGH`, 0];
-  };
-
-  // ── 13. Tombol Darurat 2 ─────────────────────────────────────
-  Blockly.Blocks['resq_tombol_2'] = {
-    init() {
-      this.appendDummyInput().appendField('Tombol Darurat 2 ditekan?');
-      this.setOutput(true, 'Boolean');
-      this.setColour('#2563EB');
-      this.setTooltip('Mendeteksi apakah tombol darurat kedua sedang ditekan.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_tombol_2'] = function () {
-    return [`digitalRead(3) == HIGH`, 0];
-  };
 
   // ── 14. Jika Kondisi...Lakukan ───────────────────────────────
   Blockly.Blocks['resq_jika'] = {
@@ -376,72 +250,6 @@ export function defineCoreBlocks() {
     return `// Alarm Evakuasi ${n}x\nfor (int _a = 0; _a < ${n}; _a++) {\n  setRGBColor("red");\n  redLED_ON();\n  buzzerON();\n  delay(350);\n  rgbOFF();\n  redLED_OFF();\n  buzzerOFF();\n  delay(200);\n}\n`;
   };
 
-  // ── 24. Lampu Berkedip ───────────────────────────────────────
-  Blockly.Blocks['resq_led_kedip'] = {
-    init() {
-      this.appendDummyInput()
-        .appendField('Lampu')
-        .appendField(new Blockly.FieldDropdown([
-          ['Bahaya', 'Bahaya'], ['Aman', 'Aman'], ['Info', 'Info'], ['Bawaan', 'Bawaan'],
-        ]), 'COLOR')
-        .appendField('berkedip')
-        .appendField(new Blockly.FieldNumber(3, 1, 20), 'KALI')
-        .appendField('kali');
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour('#0D9488');
-      this.setTooltip('Membuat lampu peringatan berkedip beberapa kali.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_led_kedip'] = function (block: Blockly.Block) {
-    const color = block.getFieldValue('COLOR');
-    const n = block.getFieldValue('KALI');
-    if (color === 'Bahaya') {
-      return `// Lampu Bahaya kedip ${n}x\nfor (int _k = 0; _k < ${n}; _k++) {\n  setRGBColor("red");\n  redLED_ON();\n  delay(400);\n  rgbOFF();\n  redLED_OFF();\n  delay(400);\n}\n`;
-    } else if (color === 'Aman') {
-      return `// Lampu Aman kedip ${n}x\nfor (int _k = 0; _k < ${n}; _k++) {\n  setRGBColor("green");\n  delay(400);\n  rgbOFF();\n  delay(400);\n}\n`;
-    } else if (color === 'Info') {
-      return `// Lampu Info kedip ${n}x\nfor (int _k = 0; _k < ${n}; _k++) {\n  setRGBColor("blue");\n  delay(400);\n  rgbOFF();\n  delay(400);\n}\n`;
-    } else {
-      return `// Lampu Bawaan kedip ${n}x\nfor (int _k = 0; _k < ${n}; _k++) {\n  setRGBColor("yellow");\n  delay(400);\n  rgbOFF();\n  delay(400);\n}\n`;
-    }
-  };
-
-  // ── 25. Matikan Semua Lampu ──────────────────────────────────
-  Blockly.Blocks['resq_semua_led_mati'] = {
-    init() {
-      this.appendDummyInput().appendField('Matikan Semua Lampu');
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour('#0D9488');
-      this.setTooltip('Matikan semua lampu peringatan sekaligus.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_semua_led_mati'] = function () {
-    return `rgbOFF();\nredLED_OFF();\n`;
-  };
-
-  // ── 26. Sirine Nada ──────────────────────────────────────────
-  Blockly.Blocks['resq_buzzer_nada'] = {
-    init() {
-      this.appendDummyInput()
-        .appendField('Sirine Nada')
-        .appendField(new Blockly.FieldDropdown([
-          ['Darurat', '3000'], ['Peringatan', '1500'], ['Info', '500'],
-        ]), 'FREQ')
-        .appendField('selama')
-        .appendField(new Blockly.FieldNumber(500, 100), 'MS')
-        .appendField('ms');
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour('#0D9488');
-      this.setTooltip('Mainkan sirine dengan nada tertentu sesuai tingkat bahaya.');
-    },
-  };
-  arduinoGenerator.forBlock['resq_buzzer_nada'] = function (block: Blockly.Block) {
-    const ms = block.getFieldValue('MS');
-    return `buzzerON();\ndelay(${ms});\nbuzzerOFF();\n`;
-  };
 
 
 
@@ -655,7 +463,7 @@ export function defineCoreBlocks() {
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour('#7C3AED');
-      this.setTooltip('Arahkan warga segera menjauhi bantaran aliran sungai untuk menghindari bahaya lahar dingin.');
+      this.setTooltip('Arahkan warga segera menjauhi bantaran aliran sungai untuk menghindari bahaya awan panas yang menyusuri lembah sungai.');
     },
   };
   arduinoGenerator.forBlock['resq_evak_jauhi_sungai'] = function () {

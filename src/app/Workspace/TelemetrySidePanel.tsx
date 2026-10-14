@@ -71,7 +71,7 @@ export default function TelemetrySidePanel() {
       ctx.lineWidth = 2;
 
       for (let x = 0; x < width; x++) {
-        let wave = 0;
+        let wave: number;
         if (seismicLevel === 0) {
           wave = Math.sin((x + offset) * 0.15) * 1.5 + (Math.random() - 0.5) * 1.2;
         } else if (seismicLevel === 1) {

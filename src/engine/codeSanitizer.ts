@@ -16,7 +16,7 @@ const DANGEROUS_PATTERNS = [
   /\bsessionStorage\b/i,
   /\bindexedDB\b/i,
   /\bopenDatabase\b/i,
-  /\bimport\s*[\(\{]/i,
+  /\bimport\s*[({]/i,
   /\brequire\s*\(/i,
   /\blocation\b/i,
   /\bnavigator\b/i,

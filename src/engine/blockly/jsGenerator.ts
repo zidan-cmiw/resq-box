@@ -1,10 +1,6 @@
 import * as Blockly from 'blockly';
 import { javascriptGenerator } from 'blockly/javascript';
 
-const LED_PINS: Record<string, string> = { Bahaya: '10', Aman: '11', Info: '12', Bawaan: '13' };
-const MOTOR_LABELS: Record<string, string> = { '0': 'Mati', '85': 'Pelan', '170': 'Sedang', '255': 'Kencang' };
-const SERVO_LABELS: Record<string, string> = { '0': 'Tertutup', '90': 'Setengah', '180': 'Terbuka' };
-
 // ── resq_program ────────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_program'] = function(block: Blockly.Block) {
   const setup = javascriptGenerator.statementToCode(block, 'SETUP');
@@ -21,14 +17,6 @@ ${loop}
 `;
 };
 
-// ── resq_led ────────────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_led'] = function(block: Blockly.Block) {
-  const color = block.getFieldValue('COLOR');
-  const pin = LED_PINS[color] || '13';
-  const state = block.getFieldValue('STATE');
-  const stateLabel = state === 'HIGH' ? 'menyala' : 'mati';
-  return `await api.setPin('${pin}', '${state}');\nawait api.print('Lampu ${color} ${stateLabel}', 'success');\n`;
-};
 
 // ── resq_buzzer ─────────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_buzzer'] = function(block: Blockly.Block) {
@@ -36,30 +24,12 @@ javascriptGenerator.forBlock['resq_buzzer'] = function(block: Blockly.Block) {
   return `await api.setBuzzer(true);\nawait api.print('Sirine berbunyi selama ${ms}ms', 'info');\nawait api.delay(${ms});\nawait api.setBuzzer(false);\nawait api.print('Sirine berhenti', 'info');\n`;
 };
 
-// ── resq_buzzer_stop ────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_buzzer_stop'] = function() {
-  return `await api.setBuzzer(false);\nawait api.print('Sirine berhenti', 'warn');\n`;
-};
 
 // ── resq_sirine_stop ────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_sirine_stop'] = function() {
   return `await api.setBuzzer(false);\nawait api.print('Sirine Peringatan dimatikan', 'info');\n`;
 };
 
-
-// ── resq_motor ──────────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_motor'] = function(block: Blockly.Block) {
-  const speed = block.getFieldValue('SPEED');
-  const label = MOTOR_LABELS[speed] || speed;
-  return `await api.print('Kipas Ventilasi ${label}', 'info');\n`;
-};
-
-// ── resq_servo ──────────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_servo'] = function(block: Blockly.Block) {
-  const pos = block.getFieldValue('POS');
-  const label = SERVO_LABELS[pos] || pos;
-  return `await api.print('Pintu Evakuasi ${label}', 'info');\n`;
-};
 
 // ── resq_tunggu ─────────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_tunggu'] = function(block: Blockly.Block) {
@@ -68,24 +38,6 @@ javascriptGenerator.forBlock['resq_tunggu'] = function(block: Blockly.Block) {
   return `await api.delay(${ms});\n`;
 };
 
-// ── resq_tampil ─────────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_tampil'] = function(block: Blockly.Block) {
-  const val = javascriptGenerator.valueToCode(block, 'VALUE', 0) || '""';
-  return `await api.print(String(${val}), 'info');\n`;
-};
-
-
-
-
-// ── resq_tombol_1 ───────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_tombol_1'] = function() {
-  return [`api.getPin('D2')`, 0];
-};
-
-// ── resq_tombol_2 ───────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_tombol_2'] = function() {
-  return [`api.getPin('D3')`, 0];
-};
 
 // ── resq_jika ───────────────────────────────────────────────────
 javascriptGenerator.forBlock['resq_jika'] = function(block: Blockly.Block) {
@@ -164,28 +116,6 @@ javascriptGenerator.forBlock['resq_alarm_darurat'] = function(block: Blockly.Blo
   return code;
 };
 
-// ── resq_led_kedip ──────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_led_kedip'] = function(block: Blockly.Block) {
-  const color = block.getFieldValue('COLOR');
-  const n = parseInt(block.getFieldValue('KALI') || '3');
-  const LED_PINS: Record<string, string> = { Bahaya: '10', Aman: '11', Info: '12', Bawaan: '13' };
-  const pin = LED_PINS[color] || '13';
-  return `for (let _k = 0; _k < ${n}; _k++) {\n  await api.setPin('${pin}', 'HIGH');\n  await api.print('Lampu ${color} menyala (' + (_k+1) + '/${n})', 'success');\n  await api.delay(400);\n  await api.setPin('${pin}', 'LOW');\n  await api.delay(400);\n}\n`;
-};
-
-// ── resq_semua_led_mati ─────────────────────────────────────────
-javascriptGenerator.forBlock['resq_semua_led_mati'] = function() {
-  return `await api.setPin('10', 'LOW');\nawait api.setPin('11', 'LOW');\nawait api.setPin('12', 'LOW');\nawait api.setPin('13', 'LOW');\nawait api.print('Semua lampu dimatikan', 'warn');\n`;
-};
-
-// ── resq_buzzer_nada ────────────────────────────────────────────
-javascriptGenerator.forBlock['resq_buzzer_nada'] = function(block: Blockly.Block) {
-  const freqMap: Record<string, string> = { '3000': 'Darurat', '1500': 'Peringatan', '500': 'Info' };
-  const freq = block.getFieldValue('FREQ');
-  const ms = block.getFieldValue('MS');
-  const label = freqMap[freq] || freq;
-  return `await api.print('Sirine nada ${label} selama ${ms}ms', 'info');\nawait api.delay(${ms});\n`;
-};
 
 
 // ── resq_tipe_gempa ─────────────────────────────────────────────

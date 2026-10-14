@@ -66,7 +66,9 @@ describe('kamus i18n', () => {
   test('teks tidak memuat emoji bawaan sistem operasi', () => {
     // Proyek ini memakai standar "Zero OS Emoji"; simbol teks monokrom
     // (bintang, centang, panah) tetap diizinkan.
-    const emojiRe = /[\u{1F000}-\u{1FAFF}\u{FE0F}\u{20E3}]/u;
+    // Ditulis sebagai pilihan (alternatif), bukan satu kelas karakter, karena
+    // variasi selector U+FE0F dan keycap U+20E3 adalah tanda penggabung.
+    const emojiRe = /[\u{1F000}-\u{1FAFF}]|\u{FE0F}|\u{20E3}/u;
     const ada = [...entries.entries()]
       .filter(([, v]) => emojiRe.test(v))
       .map(([k]) => k);

@@ -37,7 +37,7 @@ class ArduinoGenerator extends Blockly.CodeGenerator {
     const _this = this as any;
     const definitions = [];
     if (_this.definitions_) {
-      for (let name in _this.definitions_) {
+      for (const name in _this.definitions_) {
         definitions.push(_this.definitions_[name]);
       }
     }

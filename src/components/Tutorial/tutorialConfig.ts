@@ -405,7 +405,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'SEKTOR MISI',
         placement: 'center',
         content:
-          'Terdapat 20 Misi Studi Kasus dalam 4 sektor pembelajaran mitigasi:\n• Sektor 1: Pengenalan Peringatan Dini (EWS) & Deteksi Tanda Bahaya Bencana\n• Sektor 2: Kesiapsiagaan Gempa Bumi (Ringan, Sedang, Kuat)\n• Sektor 3: Mitigasi Erupsi Efusif (Lelehan Lava & Alur Lahar Dingin)\n• Sektor 4: Mitigasi Erupsi Eksplosif (Awan Panas) & Tantangan Terpadu Penyelamatan.',
+          'Terdapat 20 Misi Studi Kasus dalam 4 sektor pembelajaran mitigasi:\n• Sektor 1: Pengenalan Peringatan Dini (EWS) & Deteksi Tanda Bahaya Bencana\n• Sektor 2: Kesiapsiagaan Gempa Bumi (Ringan, Sedang, Kuat)\n• Sektor 3: Mitigasi Erupsi Efusif (Lelehan Lava & Alur Awan Panas)\n• Sektor 4: Mitigasi Erupsi Eksplosif (Awan Panas) & Tantangan Terpadu Penyelamatan.',
       },
       {
         id: 'l3_blockly',
@@ -520,7 +520,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         targetSelector: '#tour-ws-canvas',
         placement: 'bottom',
         content:
-          'Area di atas adalah simulasi 3D bentang alam Gunung Merapi dan desa di lerengnya! Saat simulasi berjalan, kamu bisa mengamati getaran gempa bumi, asap erupsi, lelehan lahar, serta gerakan warga desa saat menyelamatkan diri.',
+          'Area di atas adalah simulasi 3D bentang alam Gunung Merapi dan desa di lerengnya! Saat simulasi berjalan, kamu bisa mengamati getaran gempa bumi, asap erupsi, guguran awan panas, serta gerakan warga desa saat menyelamatkan diri.',
       },
       {
         id: 'ws_telemetry',

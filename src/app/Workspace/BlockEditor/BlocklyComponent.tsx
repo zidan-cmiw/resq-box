@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Blockly from 'blockly/core';
 import 'blockly/blocks'; // Import default blocks
 import { ResqTheme } from '../../../engine/blockly/theme';
@@ -6,6 +6,8 @@ import { arduinoGenerator } from '../../../engine/blockly/arduinoGenerator';
 import { javascriptGenerator } from '../../../engine/blockly/jsGenerator';
 import { defineCoreBlocks } from '../../../engine/blockly/blocks/core';
 import { useWorkspaceStore } from '../../../store/workspaceStore';
+import { useAuthStore } from '../../../store/teacherStore';
+import TutorialBlok from '../TutorialBlok';
 
 // Initialize our custom blocks
 defineCoreBlocks();
@@ -119,6 +121,15 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
   const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null);
   const { getActiveDraft, saveDraft } = useWorkspaceStore();
 
+  // Akun aktif — dipakai tutorial blok agar penanda "sudah pernah" tersimpan
+  // per siswa, bukan tercampur antar-akun di perangkat yang sama.
+  const userId = useAuthStore((s) => s.currentUser?.id || 'guest');
+
+  // Instance workspace disimpan di state (bukan hanya di ref) supaya tutorial
+  // blok ikut ter-render begitu Blockly selesai di-inject. Dari ref saja,
+  // komponen tidak akan render ulang saat workspace baru tersedia.
+  const [workspaceSiap, setWorkspaceSiap] = useState<Blockly.WorkspaceSvg | null>(null);
+
   useEffect(() => {
     if (!blocklyDiv.current) return;
 
@@ -220,6 +231,12 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
     };
     syncCode();
 
+    // Beri tahu tutorial bahwa workspace sudah siap DAN blok program bawaan
+    // sudah ada di kanvas (draft lama dimuat, atau blok `resq_program` baru
+    // dibuat di atas). Tanpa ini, tutorial tidak dapat menemukan blok yang
+    // harus ditunjuknya.
+    setWorkspaceSiap(workspaceRef.current);
+
     return () => {
       if (workspaceRef.current) {
         workspaceRef.current.dispose();
@@ -266,6 +283,14 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
           ref={blocklyDiv} 
           className="absolute inset-0 w-full"
         />
+
+        {/* TUTORIAL BLOK BERPANAH — muncul sekali di awal, hanya untuk siswa
+            yang belum pernah menuntaskannya (dan setelah Panduan Resqy halaman
+            ini selesai, agar tidak ada dua panduan sekaligus).
+
+            `workspaceSiap` diisi setelah `Blockly.inject` berjalan; tutorial
+            memerlukannya untuk membaca posisi blok aslinya. */}
+        <TutorialBlok key={userId} workspace={workspaceSiap} userId={userId} />
       </div>
     </div>
   );
