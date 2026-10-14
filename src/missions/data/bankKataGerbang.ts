@@ -236,7 +236,7 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'SAMUDRA', hint: 'Batas divergen paling banyak terdapat di dasar...', hintLain: ['Batas divergen paling banyak ditemukan di dasar lautan luas.'] },
     ],
     [
-      { word: 'TERBELAH', hint: 'Daratan Pangea perlahan ... menjadi benua-benua yang kita kenal sekarang.', hintLain: ['Daratan Pangea perlahan terpecah menjadi benua yang kita kenal sekarang.'] },
+      { word: 'TERBELAH', hint: 'Daratan Pangea perlahan ... menjadi benua-benua yang kita kenal sekarang.', hintLain: ['Benua yang kita kenal sekarang dahulu menyatu, lalu saling melepaskan diri.'] },
       { word: 'TENGAH', hint: 'Batas divergen di dasar samudra disebut punggung ... samudra.', hintLain: ['Batas divergen di dasar laut disebut punggung ... laut.'] },
       { word: 'LAVA', hint: 'Magma yang sudah mencapai permukaan bumi disebut...', hintLain: ['Zat cair panas dari dalam bumi yang sudah keluar ke permukaan.'] },
     ],
@@ -274,7 +274,7 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     ],
     [
       { word: 'TABRAKAN', hint: 'Batas konvergen terjadi karena ... antara dua lempeng tektonik.', hintLain: ['Peristiwa benturan antara dua lempeng yang membentuk batas konvergen.'] },
-      { word: 'TINGGI', hint: 'Tumbukan dua lempeng benua mengangkat daratan menjadi pegunungan yang sangat...', hintLain: ['Tumbukan dua lempeng daratan mengangkat daratan menjadi pegunungan yang sangat menjulang.'] },
+      { word: 'TINGGI', hint: 'Tumbukan dua lempeng benua mengangkat daratan menjadi pegunungan yang sangat...', hintLain: ['Akibat benturan dua lempeng daratan, tanah terangkat sampai menjulang ke langit.'] },
     ],
     [
       { word: 'GUNUNG', hint: 'Bentuk permukaan bumi yang menjulang tinggi dan sering berbentuk kerucut.', hintLain: ['Bentang alam menjulang yang sering berbentuk kerucut dan dapat meletus.'] },
@@ -282,7 +282,7 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     ],
     [
       { word: 'DANGKAL', hint: 'Sifat gempa yang pusatnya dekat permukaan, sehingga getarannya kuat.', hintLain: ['Sifat gempa yang pusatnya dekat permukaan bumi; getarannya terasa kuat.'] },
-      { word: 'MENDEKAT', hint: 'Arah gerak dua lempeng pada batas konvergen, yaitu saling...', hintLain: ['Arah gerak dua lempeng pada batas konvergen: saling merapat.'] },
+      { word: 'MENDEKAT', hint: 'Arah gerak dua lempeng pada batas konvergen, yaitu saling...', hintLain: ['Pada batas konvergen, kedua lempeng bergerak saling menghampiri.'] },
     ],
   ],
   7: [
@@ -292,7 +292,7 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'SANANDREAS', hint: 'Patahan mendatar terkenal di California yang membentang sepanjang 1.200 kilometer.', hintLain: ['Patahan mendatar di California yang panjangnya sekitar 1.200 kilometer.'] },
     ],
     [
-      { word: 'GESERAN', hint: 'Jenis pergerakan lempeng pada batas transform: ... mendatar.', hintLain: ['Jenis pergerakan lempeng pada batas transform, arahnya mendatar.'] },
+      { word: 'GESERAN', hint: 'Jenis pergerakan lempeng pada batas transform: ... mendatar.', hintLain: ['Pada batas transform, lempeng bergerak menyamping sejajar permukaan bumi.'] },
       { word: 'SESAR', hint: 'Nama lain patahan mendatar tempat dua lempeng bergesekan menyamping.', hintLain: ['Sebutan lain bagi patahan mendatar, tempat dua lempeng bergesekan menyamping.'] },
     ],
     [
@@ -300,8 +300,8 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'PATAHAN', hint: 'Retakan panjang di kerak bumi akibat gesekan mendatar lempeng.', hintLain: ['Retakan panjang di kerak akibat dua lempeng bergesekan menyamping.'] },
     ],
     [
-      { word: 'BERGESEK', hint: 'Dua lempeng pada batas transform saling ... mendatar.', hintLain: ['Dua lempeng pada batas transform saling menggosok secara mendatar.'] },
-      { word: 'PATAH', hint: 'Batuan di sepanjang sesar dapat ... dan melepaskan energi gempa.', hintLain: ['Batuan di sepanjang sesar dapat retak dan melepaskan energi gempa.'] },
+      { word: 'BERGESEK', hint: 'Dua lempeng pada batas transform saling ... mendatar.', hintLain: ['Kedua lempeng bersentuhan dan saling menggosok menyamping di batas transform.'] },
+      { word: 'PATAH', hint: 'Batuan di sepanjang sesar dapat ... dan melepaskan energi gempa.', hintLain: ['Ketika batuan di sepanjang sesar tak kuat lagi menahan, energi gempa terlepas.'] },
     ],
     [
       { word: 'HORIZONTAL', hint: 'Arah gesekan kedua lempeng pada batas transform, yaitu mendatar.', hintLain: ['Arah gesekan kedua lempeng pada batas transform: sejajar permukaan bumi.'] },

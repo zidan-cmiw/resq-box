@@ -9,7 +9,7 @@ import { retroAudio } from '../../utils/retroAudio';
 
 // Bank grid TTS: tiap area punya beberapa varian, dan satu varian diundi per
 // siswa supaya seluruh angkatan tidak mengisi teka-teki yang sama persis.
-import { undiGridTTS, type ClueTTS } from './bankTTS';
+import { undiGridTTS, petunjukTTSUntuk, type ClueTTS } from './bankTTS';
 
 interface CrosswordModalProps {
   areaIndex?: number;
@@ -26,7 +26,20 @@ export default function CrosswordModal({ areaIndex = 0, userId = 'guest', onSucc
   //
   // Sebelumnya clues/rows/cols ditulis tetap dalam rantai ternary di sini,
   // sehingga seluruh siswa di seluruh angkatan mengisi teka-teki yang sama.
-  const gridTerpilih = useMemo(() => undiGridTTS(areaIndex, userId), [areaIndex, userId]);
+  // Grid DAN redaksi petunjuknya diundi per siswa: dua siswa yang kebetulan
+  // mendapat kata yang sama tetap membaca kalimat soal yang berbeda, sehingga
+  // menyalin jawaban tidak lagi berguna - sementara kuncinya tetap sama.
+  const gridTerpilih = useMemo(() => {
+    const grid = undiGridTTS(areaIndex, userId);
+    if (!grid) return null;
+    return {
+      ...grid,
+      clues: grid.clues.map((c) => ({
+        ...c,
+        clue: petunjukTTSUntuk(c, areaIndex, userId ?? 'guest'),
+      })),
+    };
+  }, [areaIndex, userId]);
 
   const clues = useMemo(() => gridTerpilih?.clues ?? [], [gridTerpilih]);
   const rows = gridTerpilih?.rows ?? 10;
