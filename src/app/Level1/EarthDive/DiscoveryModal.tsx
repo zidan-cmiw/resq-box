@@ -1654,9 +1654,11 @@ function renderIllustration(
           {/* INTI LUAR CAIR MEMBARA (MOLTEN FE-NI AT 5.000°C - DINAMO GENERATOR) */}
           <circle cx="330" cy="120" r="62" fill="#ea580c" stroke="#f59e0b" strokeWidth="3" />
 
-          {/* Pusaran Arus Putaran Dinamo di Inti Luar */}
-          <ellipse cx="330" cy="94" rx="28" ry="11" fill="none" stroke="#fef08a" strokeWidth="3" className="anim-dynamo-spin" />
-          <ellipse cx="330" cy="146" rx="28" ry="11" fill="none" stroke="#fef08a" strokeWidth="3" className="anim-dynamo-spin" />
+          {/* Pusaran Arus Putaran Dinamo di Inti Luar — SATU SAJA, DI TENGAH.
+              Sebelumnya ada DUA pusaran (satu di atas, satu di bawah). Atas
+              permintaan pemilik proyek dijadikan satu, tepat di tengah, supaya
+              terbaca sebagai satu aliran logam yang berputar di inti luar. */}
+          <ellipse cx="330" cy="120" rx="34" ry="13" fill="none" stroke="#fef08a" strokeWidth="3.5" className="anim-dynamo-spin" />
 
           {/* INTI DALAM PADAT KRISTALIN DI PUSAT */}
           <circle cx="330" cy="120" r="26" fill="#fef08a" stroke="#ffffff" strokeWidth="2" />
@@ -1664,14 +1666,44 @@ function renderIllustration(
             INTI
           </text>
 
-          {/* ── GARIS GAYA MEDAN MAGNETIK BUMI (DIPOLAR MAGNETIC FIELD LOOPS) ── */}
-          {/* Loop Utama Luar */}
-          <path d="M 330,28 C 170,-45 170,285 330,212" fill="none" stroke="#38bdf8" strokeWidth="2.5" className="anim-mag-field" />
-          <path d="M 330,28 C 490,-45 490,285 330,212" fill="none" stroke="#38bdf8" strokeWidth="2.5" className="anim-mag-field" />
-
-          {/* Loop Dalam Sekunder */}
-          <path d="M 330,52 C 215,8 215,232 330,188" fill="none" stroke="#818cf8" strokeWidth="2" />
-          <path d="M 330,52 C 445,8 445,232 330,188" fill="none" stroke="#818cf8" strokeWidth="2" />
+          {/* ── GARIS GAYA MEDAN MAGNETIK BUMI (DIPOLAR MAGNETIC FIELD LOOPS) ──
+              Diperbanyak mengikuti gambar referensi dosen: banyak garis melengkung
+              dari kutub utara kembali ke kutub selatan, makin ke luar makin lebar.
+              Warnanya tetap biru. */}
+          {Array.from({ length: 5 }).map((_, k) => {
+            // Titik lengkung terjauh WAJIB berada di LUAR bola bumi.
+            //
+            // Bola bumi berjari-jari 88 dengan pusat x=330, jadi tepinya di
+            // x=242. Kalau lengkungnya lebih dalam dari itu (mis. 258), garis
+            // medannya akan MENEMBUS badan bumi dan terbaca seperti jaring di
+            // dalam planet - bukan melengkung di luarnya seperti gambar dosen.
+            const bx = 232 - k * 36; // 232, 196, 160, 124, 88 - semuanya di luar
+            const h = 150 + k * 20; // tinggi lengkung
+            const sy = 34 + k * 4; // mulai di permukaan kutub utara
+            const ey = 206 - k * 4; // kembali di permukaan kutub selatan
+            const tebal = 2.4 - k * 0.18;
+            const pudar = 0.9 - k * 0.07;
+            return (
+              <g key={`mag-${k}`}>
+                <path
+                  d={`M 330,${sy} C ${bx},${120 - h} ${bx},${120 + h} 330,${ey}`}
+                  fill="none"
+                  stroke="#38bdf8"
+                  strokeWidth={tebal}
+                  opacity={pudar}
+                  className="anim-mag-field"
+                />
+                <path
+                  d={`M 330,${sy} C ${660 - bx},${120 - h} ${660 - bx},${120 + h} 330,${ey}`}
+                  fill="none"
+                  stroke="#38bdf8"
+                  strokeWidth={tebal}
+                  opacity={pudar}
+                  className="anim-mag-field"
+                />
+              </g>
+            );
+          })}
 
           {/* Cahaya Aurora di Kutub Magnetik */}
           <ellipse cx="330" cy="34" rx="16" ry="4" fill="#34d399" opacity="0.85" />
