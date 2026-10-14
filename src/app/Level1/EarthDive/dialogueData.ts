@@ -1320,61 +1320,62 @@ export const PROF_SARAH_REVIEW_DIALOGUE: DialogueTree = {
   },
 };
 
-// ── POHON DIALOG: LINTANG (TEMUAN GEOLOGIS 2: BATUAN MANTEL & TEKANAN) ──
+// ── POHON DIALOG: LINTANG (PENGUATAN WUJUD MATERIAL MANTEL) ──
+//
+// DULU dialog ini berjudul "TEMUAN GEOLOGIS 2: BATUAN MANTEL & TEKANAN", dan
+// mengajarkan bahwa batuan mantel tetap PADAT karena tekanan yang dahsyat.
+// Materi itu sudah dibuang atas koreksi dosen IPA: material mantel BUKAN batuan
+// padat, melainkan fluida sangat kental. Dialog ini juga masih memanggil
+// `triggerDiscoveryModal: 5`, yaitu entri katalog yang sudah dihapus - dan
+// karena fungsi pengambilnya jatuh ke cadangan, yang terbuka justru materi zona
+// Batas Divergen (Pangea).
+//
+// Area mantel kini hanya punya SATU materi, yaitu arus konveksi pada NPC Zahra.
+// Karena itu pembukaan materi di sini DIHAPUS, dan Lintang menjadi penguat
+// materi biasa yang tidak menandai temuan apa pun.
 export const DR_DANANG_DIALOGUE: DialogueTree = {
   id: 'dr_danang_dialogue',
-  title: 'Peneliti Batuan Mantel Bumi bersama Lintang',
+  title: 'Mengobrol dengan Lintang tentang Wujud Material Mantel',
   npcSpeakerId: 'dr_danang',
   startNodeId: 'start',
   nodes: {
     start: {
       id: 'start',
       speakerId: 'dr_danang',
-      text: 'Halo! Bertemu kembali dengan saya, Lintang. Apakah kamu ingin menganalisis secara ilmiah kenapa batuan di dasar mantel tetap kokoh meski suhunya ribuan derajat?',
+      text: 'Halo, aku Lintang! Kamu sudah membaca materi arus konveksi dari Zahra, kan? Aku ingin memastikan satu hal yang paling sering keliru.',
       expression: 'happy',
       choices: [
         {
-          id: 'open_direct',
-          text: 'Tentu Lintang, saya mau menganalisis datanya!',
-          nextNodeId: 'open_discovery',
-          discoveryIdToMark: 'mantle_disc2',
+          id: 'tanya',
+          text: 'Memangnya apa yang sering keliru, Lintang?',
+          nextNodeId: 'wujud',
         },
         {
-          id: 'brief_first',
-          text: 'Kenapa batuannya tidak mencair, Lintang?',
-          nextNodeId: 'explain_brief',
-          discoveryIdToMark: 'mantle_disc2',
+          id: 'sudah_baca',
+          text: 'Sudah, aku sudah membacanya.',
+          nextNodeId: 'wujud',
         },
       ],
     },
-    explain_brief: {
-      id: 'explain_brief',
+    wujud: {
+      id: 'wujud',
       speakerId: 'dr_danang',
-      text: 'Secara analitis, ini karena tekanan litostatik luar biasa dahsyat dari seluruh massa lapisan bumi di atasnya! Tekanan super tinggi tersebut memaksa atom-atom batuan tetap terikat padat.',
+      text: 'Banyak orang mengira mantel bumi itu batuan padat yang kaku. Padahal tidak. Materialnya berwujud fluida sangat kental seperti adonan - tidak padat kaku, dan juga tidak encer seperti air.',
       expression: 'normal',
-      nextNodeId: 'open_prompt',
+      nextNodeId: 'alir',
     },
-    open_prompt: {
-      id: 'open_prompt',
+    alir: {
+      id: 'alir',
       speakerId: 'dr_danang',
-      text: 'Mari kita buka lembar data ilmiahnya agar kamu bisa menelaah struktur batuan mantel ini!',
-      expression: 'happy',
-      choices: [
-        {
-          id: 'open_now',
- text: 'Buka Materi Batuan Mantel ',
-          nextNodeId: 'open_discovery',
-          discoveryIdToMark: 'mantle_disc2',
-        },
-      ],
+      text: 'Karena sangat kental, mantel hanya mampu mengalir beberapa sentimeter per tahun. Tetapi justru aliran yang sangat lambat itulah yang menyeret lempeng di atasnya.',
+      expression: 'normal',
+      nextNodeId: 'penutup',
     },
-    open_discovery: {
-      id: 'open_discovery',
+    penutup: {
+      id: 'penutup',
       speakerId: 'dr_danang',
-      text: 'Silakan pelajari secara komprehensif ya. Ingat korelasi antara tekanan dahsyat yang menahan batuan tetap padat!',
+      text: 'Ingat ya: mantel itu fluida kental, bukan batuan padat. Sekarang lanjutkan perjalananmu ke kanan untuk menghadapi gerbang tantangan!',
       expression: 'happy',
-      discoveryIdToMark: 'mantle_disc2',
-      triggerDiscoveryModal: 5,
     },
   },
 };

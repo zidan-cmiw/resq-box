@@ -559,7 +559,11 @@ export default function EarthDiveGame() {
               dialogueId = 'dr_danang_review_dialogue';
             }
           } else if (dialogueId === 'komandan_surya_dialogue' || dialogueId === 'z2_bu_tyas_dialogue') {
-            const hasDiscoveries = game.discoveredPoints.has('mantle_disc1') && game.discoveredPoints.has('mantle_disc2');
+            // Area mantel hanya punya SATU materi (arus konveksi), sehingga
+            // syaratnya cukup mantle_disc1. Kalau mantle_disc2 masih ikut
+            // disyaratkan, gerbang ini TIDAK AKAN PERNAH terbuka karena materi
+            // yang menghasilkannya sudah dihapus.
+            const hasDiscoveries = game.discoveredPoints.has('mantle_disc1');
             const isUnlocked = game.unlockedGates.has('mantle_challenge');
             if (isUnlocked) {
               dialogueId = 'komandan_surya_unlocked_dialogue';
@@ -720,7 +724,11 @@ export default function EarthDiveGame() {
             const tree = getDialogueTree(dialogueId);
             if (tree) setActiveDialogue(tree);
           } else if (game.currentZone === 2) {
-            const hasDiscoveries = game.discoveredPoints.has('mantle_disc1') && game.discoveredPoints.has('mantle_disc2');
+            // Area mantel hanya punya SATU materi (arus konveksi), sehingga
+            // syaratnya cukup mantle_disc1. Kalau mantle_disc2 masih ikut
+            // disyaratkan, gerbang ini TIDAK AKAN PERNAH terbuka karena materi
+            // yang menghasilkannya sudah dihapus.
+            const hasDiscoveries = game.discoveredPoints.has('mantle_disc1');
             const isUnlocked = game.unlockedGates.has('mantle_challenge');
             let dialogueId = 'komandan_surya_ready_dialogue';
             if (isUnlocked) dialogueId = 'komandan_surya_unlocked_dialogue';

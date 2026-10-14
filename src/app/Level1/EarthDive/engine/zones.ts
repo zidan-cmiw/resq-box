@@ -416,10 +416,19 @@ function buildMantle(): ZoneConfig {
         npcType: 'lintang',
         name: 'Lintang',
         dialogueId: 'z2_lintang_dialogue',
-        hasMaterial: true,
-        isDiscoveryNpc: true,
-        discoveryId: 5,
-        discoveryKey: 'mantle_disc2',
+        // LINTANG TIDAK LAGI MEMBAWA MATERI — area mantel kini hanya punya SATU
+        // materi, yaitu arus konveksi pada NPC Zahra (discoveryId 4).
+        //
+        // Sebelumnya Lintang memakai discoveryId 5. Entri katalog nomor 5 sudah
+        // dihapus, dan karena fungsi pengambilnya JATUH KE CADANGAN
+        // (`EARTH_STRATA_DATA[5]`), yang muncul justru materi zona Batas
+        // Divergen (Pangea) — materi yang salah tempat, tanpa error apa pun.
+        //
+        // Kedua flag WAJIB dihapus bersamaan:
+        //   `isDiscoveryNpc` -> dipakai menghitung jumlah materi di zona ini
+        //   `hasMaterial`    -> dipakai menampilkan lencana materi pada NPC
+        // Kalau hanya salah satu yang dihapus, jumlah materi dan lencananya
+        // menjadi tidak cocok.
       },
     },
     {

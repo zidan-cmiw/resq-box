@@ -241,8 +241,10 @@ export function createInitialNpcs(zoneIndex: number): Map<string, NpcState> {
       stateTimer: 75,
       isTalking: false,
       animFrame: 0,
-      hasMaterial: true,
-      discoveryKey: 'mantle_disc2',
+      // Lintang tidak lagi membawa materi. Area mantel kini hanya punya satu
+      // materi (arus konveksi pada Zahra), dan lencana materi pada NPC dibaca
+      // dari flag ini. Penjelasan lengkapnya ada di zones.ts.
+      hasMaterial: false,
     };
     map.set(lintang.id, lintang);
     map.set('npc_danang', lintang);
