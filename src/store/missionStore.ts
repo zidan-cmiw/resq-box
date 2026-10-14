@@ -1,6 +1,13 @@
 import { create } from 'zustand';
 import { MISSIONS, CATEGORIES, type MissionCategory } from '../missions/data/missions';
 import { useAuthStore, levelTertinggiYangBoleh } from './teacherStore';
+import {
+  kunciMisi,
+  kunciYangBolehDibaca,
+  pilihTerpanjang,
+  saringIdMisi,
+  type PenggunaAktif,
+} from './misiKunci';
 
 type ValidationStatus = 'idle' | 'checking' | 'pass' | 'fail';
 
@@ -23,7 +30,23 @@ export function getActiveUserId(): string {
 }
 
 function getUserMissionKey(userId?: string): string {
-  return `resqbox_missions_${userId || 'guest'}`;
+  return kunciMisi(userId || 'guest');
+}
+
+/** Pengguna yang sedang aktif di peramban ini, bila ada. */
+function bacaPenggunaAktif(): PenggunaAktif | null {
+  try {
+    const raw = localStorage.getItem('resqbox-current-user');
+    if (!raw) return null;
+    const u = JSON.parse(raw);
+    if (!u || typeof u !== 'object') return null;
+    return {
+      id: typeof u.id === 'string' ? u.id : undefined,
+      username: typeof u.username === 'string' ? u.username : undefined,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export function loadMissionsForUser(userId?: string): string[] {
@@ -31,33 +54,25 @@ export function loadMissionsForUser(userId?: string): string[] {
   try {
     const validIds = new Set(MISSIONS.map((m) => m.id));
     const targetId = userId || getActiveUserId();
-    const candidateKeys = [
-      `resqbox_missions_${targetId}`,
-    ];
 
-    const rawUser = localStorage.getItem('resqbox-current-user');
-    if (rawUser) {
+    // Hanya kunci MILIK PENGGUNA YANG DIMINTA.
+    //
+    // Sebelumnya kunci pengguna yang sedang login juga ikut dikumpulkan, lalu
+    // yang dipilih adalah daftar TERPANJANG. Gabungan keduanya berbahaya: bila
+    // guru membuka progres siswa B sementara yang login siswa A, dan A lebih
+    // banyak menyelesaikan misi, progres A terbaca sebagai progres B.
+    const candidateKeys = kunciYangBolehDibaca(targetId, bacaPenggunaAktif());
+
+    const kandidat = candidateKeys.map((kunci) => {
+      const raw = localStorage.getItem(kunci);
+      if (!raw) return [];
       try {
-        const u = JSON.parse(rawUser);
-        if (u.id && u.id !== targetId) candidateKeys.push(`resqbox_missions_${u.id}`);
-        if (u.username) candidateKeys.push(`resqbox_missions_${u.username}`);
-      } catch { /* diabaikan: data pengguna aktif tidak valid, lanjut ke kunci berikutnya */ }
-    }
-
-    let bestMissions: string[] = [];
-    for (const key of candidateKeys) {
-      const raw = localStorage.getItem(key);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          const filtered = parsed.filter((id) => validIds.has(id));
-          if (filtered.length > bestMissions.length) {
-            bestMissions = filtered;
-          }
-        }
+        return saringIdMisi(JSON.parse(raw), validIds);
+      } catch {
+        return [];
       }
-    }
-    return bestMissions;
+    });
+    return pilihTerpanjang(kandidat);
   } catch { /* diabaikan: localStorage tidak tersedia → tidak ada misi tersimpan */ }
   return [];
 }
@@ -69,13 +84,13 @@ export function saveMissionsForUser(userId: string | undefined, missionIds: stri
     const data = JSON.stringify(missionIds);
     localStorage.setItem(getUserMissionKey(targetId), data);
 
-    const rawUser = localStorage.getItem('resqbox-current-user');
-    if (rawUser) {
-      try {
-        const u = JSON.parse(rawUser);
-        if (u.id && u.id !== targetId) localStorage.setItem(`resqbox_missions_${u.id}`, data);
-        if (u.username) localStorage.setItem(`resqbox_missions_${u.username}`, data);
-      } catch { /* diabaikan: data pengguna aktif tidak valid, simpan ke kunci utama saja */ }
+    // Hanya menulis ke kunci milik pengguna yang diminta.
+    //
+    // Sebelumnya kunci pengguna yang sedang login JUGA ditimpa. Jadi menyimpan
+    // progres siswa B sementara siswa A sedang login akan MENGHAPUS progres A -
+    // kerusakan data, bukan sekadar salah baca.
+    for (const kunci of kunciYangBolehDibaca(targetId, bacaPenggunaAktif())) {
+      localStorage.setItem(kunci, data);
     }
   } catch { /* diabaikan: gagal menyimpan misi tidak menghentikan permainan */ }
 }
