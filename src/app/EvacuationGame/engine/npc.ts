@@ -2,8 +2,8 @@
 // Kelas NPC — warga desa yang akan bergerak otomatis menuju
 // Titik Kumpul saat kondisi darurat terpicu (lampu merah / sirine).
 
-import { findPath } from './pathfinder';
-import { SAFE_ZONE_TILES, MAP_DATA, MAP_ROWS, MAP_COLS, TILE } from '../mapData';
+import { findPath } from './pathfinder.ts';
+import { SAFE_ZONE_TILES, MAP_DATA, MAP_ROWS, MAP_COLS, TILE } from '../mapData.ts';
 
 const WALKABLE_VILLAGE_TILES: [number, number][] = [];
 for (let r = 0; r < MAP_ROWS; r++) {
@@ -168,37 +168,66 @@ export function updateNPCs(
       if (n.panicTimer > 0) {
         return { ...n, panicTimer: n.panicTimer - 1 };
       }
-      // Find nearest safe zone (Euclidean distance) to reduce A* calls
+      // Saat gerbang masih tertutup, TIDAK ADA jalur yang mungkin. Pencarian A*
+      // pun pasti gagal - dan sebelumnya inilah yang terjadi: setiap warga
+      // mencoba 32 titik kumpul setiap bingkai. Dengan 50 warga pada 60 bingkai
+      // per detik, itu puluhan ribu pencarian sia-sia per detik, dan membuat
+      // simulasi tersendat.
+      if (!gateOpen) {
+        return { ...n, state: 'blocked' as NPCState, path: [], pathIndex: 0, panicTimer: 120 };
+      }
+
+      // Cari titik kumpul yang BENAR-BENAR dapat dijangkau.
+      //
+      // Sebelumnya hanya SATU titik kumpul yang dicoba, yaitu yang terdekat
+      // menurut JARAK GARIS LURUS. Kedekatan garis lurus tidak menjamin ada
+      // jalurnya - bisa terhalang bangunan. Bila titik itu ternyata tidak
+      // terjangkau, warga berputar selamanya: blocked -> panic -> blocked,
+      // meskipun masih ada 31 titik kumpul lain yang dapat dicapai.
+      //
+      // Sekarang titik kumpul diurutkan dari yang terdekat, lalu dicoba satu per
+      // satu sampai ada yang menghasilkan jalur.
       let bestPath: [number, number][] = [];
       if (SAFE_ZONE_TILES.length > 0) {
-        let closestSafeTile = SAFE_ZONE_TILES[0];
-        let minDist = Infinity;
-        for (const [sr, sc] of SAFE_ZONE_TILES) {
-          const dr = sr - n.row;
-          const dc = sc - n.col;
-          const dist = dr * dr + dc * dc;
-          if (dist < minDist) {
-            minDist = dist;
-            closestSafeTile = [sr, sc];
+        const terurut = [...SAFE_ZONE_TILES].sort((a, b) => {
+          const da = (a[0] - n.row) ** 2 + (a[1] - n.col) ** 2;
+          const db = (b[0] - n.row) ** 2 + (b[1] - n.col) ** 2;
+          return da - db;
+        });
+
+        for (const [sr, sc] of terurut) {
+          const path = findPath(Math.round(n.row), Math.round(n.col), sr, sc, gateOpen);
+          if (path.length > 0) {
+            bestPath = path;
+            break;
           }
-        }
-        
-        const path = findPath(Math.round(n.row), Math.round(n.col), closestSafeTile[0], closestSafeTile[1], gateOpen);
-        if (path.length > 0) {
-          bestPath = path;
         }
       }
 
       if (bestPath.length === 0) {
-        // Gate is closed — NPC is blocked
-        return { ...n, state: 'blocked' as NPCState, path: [], pathIndex: 0 };
+        // Tidak ada satu pun titik kumpul yang terjangkau. Berdiri menunggu
+        // dengan jeda panjang sebelum mencoba lagi (lihat penanganan 'blocked').
+        return { ...n, state: 'blocked' as NPCState, path: [], pathIndex: 0, panicTimer: 120 };
       }
       return { ...n, state: 'moving' as NPCState, path: bestPath, pathIndex: 1 };
     }
 
     if (n.state === 'blocked') {
-      // Re-attempt if gate opens
+      // Coba lagi bila gerbang dibuka - tetapi dengan JEDA, bukan tiap 5 bingkai.
+      //
+      // Warga yang wilayahnya benar-benar terputus dari titik kumpul (ada di peta
+      // ini) tidak akan pernah menemukan jalur. Dengan jeda 5 bingkai ia berputar
+      // panic -> blocked -> panic tanpa henti, dan setiap percobaan menjalankan
+      // puluhan pencarian A*. Selain membuang tenaga, ia tampak "ngaco" di layar
+      // karena terus mondar-mandir.
+      //
+      // Jeda lebih panjang membuatnya berdiri menunggu dengan tenang, sambil tetap
+      // mencoba lagi secara berkala - sehingga bila jalannya kelak terbuka, ia
+      // tetap dapat bergerak.
       if (gateOpen) {
+        if (n.panicTimer > 0) {
+          return { ...n, panicTimer: n.panicTimer - 1 };
+        }
         return { ...n, state: 'panic' as NPCState, panicTimer: 5 };
       }
       return n;
@@ -208,9 +237,17 @@ export function updateNPCs(
       if (n.pathIndex >= n.path.length) {
         // Arrived at Safe Zone! Pick a random safe zone tile to spread out into.
         const randomSafeTile = SAFE_ZONE_TILES[Math.floor(Math.random() * SAFE_ZONE_TILES.length)];
-        return { 
-          ...n, 
+        return {
+          ...n,
           state: 'safe' as NPCState,
+          // Posisi IKUT dipindahkan ke titik kumpul yang dipilih.
+          //
+          // Sebelumnya hanya `spawnRow/spawnCol` yang diubah sementara `row/col`
+          // dibiarkan di tempat semula. Akibatnya warga berstatus AMAN padahal
+          // masih puluhan petak dari titik kumpul, lalu merangkak kembali dengan
+          // kecepatan sangat lambat (0.015 petak/bingkai).
+          row: randomSafeTile[0],
+          col: randomSafeTile[1],
           spawnRow: randomSafeTile[0],
           spawnCol: randomSafeTile[1],
           targetRow: randomSafeTile[0] + (Math.random() - 0.5),

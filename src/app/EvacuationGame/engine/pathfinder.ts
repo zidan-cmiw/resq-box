@@ -2,8 +2,8 @@
 // Implementasi algoritma A* (A-Star) untuk menemukan jalur terpendek
 // dari posisi NPC menuju Titik Kumpul (safe zone).
 
-import type { TileType } from '../mapData';
-import { MAP_DATA, MAP_ROWS, MAP_COLS, WALKABLE_TILES, TILE } from '../mapData';
+import type { TileType } from '../mapData.ts';
+import { MAP_DATA, MAP_ROWS, MAP_COLS, WALKABLE_TILES, TILE } from '../mapData.ts';
 
 interface Node {
   row: number;
