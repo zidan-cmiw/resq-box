@@ -515,14 +515,19 @@ export function renderConvergentLandMode(
   const slabReachX = contactX + 260 + Math.round(p * 45);
 
   // 5A. Tubuh Lempeng Benua Kiri (Batuan Granit, Sedimen & Batuan Dasar Menunjam)
+  // Lempeng kiri TIDAK lagi menukik ke bawah. Koreksi dosen: tumbukan dua
+  // lempeng BENUA tidak menghasilkan subduksi, jadi tidak ada lempeng yang
+  // menunjam. Sebelumnya bentuknya mengikuti getSubductingPlateTopY yang turun
+  // curam. Sekarang mengikuti PERMUKAAN TANAH dengan tebal tetap, sehingga
+  // lempengnya hanya terlipat naik mengikuti pegunungan.
   ctx.beginPath();
   ctx.moveTo(-800, baseY);
   for (let x = -800; x <= slabReachX; x += 4) {
-    ctx.lineTo(x, getSubductingPlateTopY(x, p));
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
   }
-  ctx.lineTo(slabReachX, getSubductingPlateTopY(slabReachX, p) + plateThick);
+  ctx.lineTo(slabReachX, getConvergentTerrainElevation(slabReachX, p, 'land') + plateThick);
   for (let x = slabReachX; x >= -800; x -= 4) {
-    ctx.lineTo(x, getSubductingPlateTopY(x, p) + plateThick);
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land') + plateThick);
   }
   ctx.closePath();
 
