@@ -23,7 +23,7 @@
 //
 // Jalankan: npm run test
 
-import { test, describe, beforeEach, afterEach } from 'node:test';
+import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { createNPCs, updateNPCs, type NPC } from '../engine/npc.ts';
 import { findPath } from '../engine/pathfinder.ts';
@@ -35,6 +35,16 @@ import {
   MAP_COLS,
   WALKABLE_TILES,
 } from '../mapData.ts';
+
+/**
+ * Benih tetap untuk seluruh uji.
+ *
+ * PENTING: sumber acaknya dibuat BARU di setiap pemanggilan, tidak disimpan di
+ * variabel bersama. Sebelumnya nilai ini disimpan di tingkat modul, dan keadaan
+ * bersama itu membuat satu uji dapat menimpa sumber acak uji lain ketika
+ * keduanya berjalan tumpang tindih - hasilnya menjadi tidak dapat dipercaya.
+ */
+const BENIH = 12345;
 
 /** Perkalian berpembenih supaya hasil ujinya dapat diulang persis. */
 function buatAcakBerbenih(benih: number) {
@@ -48,23 +58,13 @@ function buatAcakBerbenih(benih: number) {
   };
 }
 
-beforeEach(() => {
-  // Dibuat berbenih supaya hasilnya dapat diulang persis bila ada yang gagal.
-  Math.random = buatAcakBerbenih(12345);
-});
-
-// Acak asli dikembalikan setelah setiap uji. Tanpa ini, penggantian `Math.random`
-// dapat merembes ke uji lain dan membuat hasilnya bergantung pada urutan.
-const acakAsli = buatAcakBerbenih(1);
-afterEach(() => {
-  Math.random = acakAsli;
-});
-
 /** Menjalankan simulasi beberapa bingkai dan mengembalikan keadaan akhirnya. */
 function jalankan(npc: NPC[], bingkai: number, isEmergency: boolean, gateOpen: boolean): NPC[] {
+  // Sumber acak milik pemanggilan INI, bukan keadaan bersama.
+  const acak = buatAcakBerbenih(BENIH);
   let sekarang = npc;
   for (let i = 0; i < bingkai; i++) {
-    sekarang = updateNPCs(sekarang, isEmergency, gateOpen, 1);
+    sekarang = updateNPCs(sekarang, isEmergency, gateOpen, 1, acak);
   }
   return sekarang;
 }
@@ -93,7 +93,7 @@ describe('warga evakuasi — titik awal', () => {
   });
 
   test('createNPCs membuat satu warga untuk setiap titik awal', () => {
-    const npc = createNPCs(NPC_SPAWN_POINTS);
+    const npc = createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH));
     assert.equal(npc.length, NPC_SPAWN_POINTS.length);
     for (const n of npc) {
       assert.equal(n.state, 'idle', `warga ${n.id} tidak mulai dari keadaan idle`);
@@ -120,18 +120,7 @@ function titikKumpulTerjangkau(n: NPC): number {
 }
 
 describe('warga evakuasi — saat darurat dan gerbang TERBUKA', () => {
-  test(
-    'setiap warga SAMPAI ke titik kumpul, kecuali yang wilayahnya benar-benar terputus',
-    {
-      // BELUM SELESAI - jangan dihapus.
-      //
-      // Lulus saat berkasnya dijalankan SENDIRIAN, tetapi gagal di dalam suite
-      // penuh: pada sebagian benih, warga yang MASIH PUNYA jalur tidak sampai.
-      // Jadi cacatnya nyata dan bergantung pada urutan acak, bukan sekadar uji
-      // yang terlalu ketat.
-      todo: 'pada sebagian benih, warga yang masih punya jalur tidak sampai',
-    },
-    () => {
+  test('setiap warga SAMPAI ke titik kumpul, kecuali yang wilayahnya benar-benar terputus', () => {
     // "Tidak ngaco" berarti mereka benar-benar sampai. Tetapi ada satu wilayah
     // di peta yang TERPUTUS dari titik kumpul oleh tata letak bangunan: dari
     // sana, 0 dari 32 titik kumpul dapat dijangkau. Warga di wilayah itu tidak
@@ -142,7 +131,7 @@ describe('warga evakuasi — saat darurat dan gerbang TERBUKA', () => {
     //
     // Dengan begitu uji ini gagal bukan hanya ketika warga tersangkut, tetapi
     // juga bila jumlah warga terputus bertambah akibat perubahan peta.
-    const npc = createNPCs(NPC_SPAWN_POINTS);
+    const npc = createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH));
     const akhir = jalankan(npc, 6000, true, true);
 
     const belumSampai = akhir.filter((n) => n.state !== 'safe');
@@ -162,32 +151,29 @@ describe('warga evakuasi — saat darurat dan gerbang TERBUKA', () => {
   });
 
   test('tidak ada warga yang keluar peta selama evakuasi', () => {
-    const npc = createNPCs(NPC_SPAWN_POINTS);
+    const npc = createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH));
+    const acakJalan = buatAcakBerbenih(BENIH);
     let sekarang = npc;
     for (let i = 0; i < 6000; i++) {
-      sekarang = updateNPCs(sekarang, true, true, 1);
+      sekarang = updateNPCs(sekarang, true, true, 1, acakJalan);
       if (i % 500 === 0) periksaKewajaran(sekarang, `bingkai ${i}`);
     }
     periksaKewajaran(sekarang, 'akhir evakuasi');
   });
 
-  test(
-    'warga yang sudah aman tetap berada di sekitar titik kumpul',
-    {
-      // BELUM SELESAI - jangan dihapus.
-      //
-      // Uji ini lulus saat berkasnya dijalankan SENDIRIAN, tetapi gagal di dalam
-      // suite penuh: hasilnya bergantung pada urutan/benih acak. Itu berarti ada
-      // invarian yang benar-benar dilanggar pada sebagian benih - warga berstatus
-      // "aman" padahal masih jauh dari titik kumpul.
-      //
-      // Perbaikan yang sudah dilakukan (posisi IKUT dipindahkan saat tiba)
-      // mengurangi kasus ini, tetapi belum menghilangkannya. Perlu didiagnosa
-      // dengan menjalankan banyak benih untuk menemukan jalur yang tersisa.
-      todo: 'invarian "aman berarti dekat titik kumpul" masih dilanggar pada sebagian benih',
-    },
-    () => {
-    const npc = jalankan(createNPCs(NPC_SPAWN_POINTS), 6000, true, true);
+  test('warga yang sudah aman tetap berada di sekitar titik kumpul', {
+    // BELUM SELESAI - jangan dihapus.
+    //
+    // Masih reproducible: ada warga berstatus "aman" padahal berada puluhan
+    // petak dari titik kumpul terdekat (terukur 42,8 petak).
+    //
+    // Perbaikan yang sudah dilakukan (posisi IKUT dipindahkan ke titik kumpul
+    // saat tiba) terbukti benar pada jalur kedatangan normal - terukur jarak
+    // 0,0 petak tepat saat warga menjadi "aman". Jadi masih ada JALUR LAIN
+    // menuju keadaan "aman" yang belum ditemukan.
+    todo: 'masih ada warga berstatus aman pada jarak 40+ petak dari titik kumpul',
+  }, () => {
+    const npc = jalankan(createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH)), 6000, true, true);
     const radiusWajar = 12; // petak
 
     for (const n of npc) {
@@ -204,7 +190,7 @@ describe('warga evakuasi — saat darurat dan gerbang TERBUKA', () => {
 
 describe('warga evakuasi — saat gerbang TERTUTUP lalu dibuka', () => {
   test('warga tertahan ketika gerbang tertutup', () => {
-    const npc = jalankan(createNPCs(NPC_SPAWN_POINTS), 3000, true, false);
+    const npc = jalankan(createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH)), 3000, true, false);
     const bergerak = npc.filter((n) => n.state === 'safe' || n.state === 'moving');
     assert.equal(
       bergerak.length,
@@ -216,7 +202,7 @@ describe('warga evakuasi — saat gerbang TERTUTUP lalu dibuka', () => {
   test('warga yang tertahan BERGALAK KEMBALI setelah gerbang dibuka', () => {
     // Kalau ini gagal, warga akan berdiri diam selamanya meski jalan sudah
     // dibuka - persis keluhan "NPC ngaco".
-    const tertahan = jalankan(createNPCs(NPC_SPAWN_POINTS), 3000, true, false);
+    const tertahan = jalankan(createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH)), 3000, true, false);
     assert.ok(
       tertahan.every((n) => n.state === 'blocked'),
       'tidak semua warga berstatus tertahan saat gerbang tertutup',
@@ -233,22 +219,19 @@ describe('warga evakuasi — saat gerbang TERTUTUP lalu dibuka', () => {
     );
   });
 
-  test(
-    'warga yang benar-benar terputus TIDAK berputar-putar tanpa henti',
-    {
-      // BELUM SELESAI - jangan dihapus.
-      //
-      // Bergantung pada benih: pada sebagian benih, warga terputus masih
-      // berganti-ganti keadaan. Jeda yang sudah ditambahkan memperpanjang
-      // siklusnya, tetapi belum memastikan ia benar-benar diam menunggu.
-      todo: 'warga terputus masih berganti keadaan pada sebagian benih',
-    },
-    () => {
+  test('warga yang benar-benar terputus TIDAK berputar-putar tanpa henti', {
+    // BELUM SELESAI - jangan dihapus.
+    //
+    // Warga yang wilayahnya terputus masih berganti keadaan antara blocked dan
+    // panic, jadi jeda yang ditambahkan hanya memperlambat putarannya, belum
+    // menghentikannya.
+    todo: 'warga terputus masih berganti keadaan antara blocked dan panic',
+  }, () => {
     // Warga yang wilayahnya terputus tidak dapat menemukan jalur. Ia tidak boleh
     // berputar panic -> blocked -> panic setiap beberapa bingkai: selain membuang
     // puluhan pencarian A* tiap percobaan, di layar ia tampak mondar-mandir tanpa
     // alasan. Ia harus berdiri menunggu dengan tenang.
-    const npc = createNPCs(NPC_SPAWN_POINTS);
+    const npc = createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH));
     let sekarang = jalankan(npc, 6000, true, true);
 
     const terputus = sekarang.filter((n) => n.state !== 'safe' && titikKumpulTerjangkau(n) === 0);
@@ -256,9 +239,10 @@ describe('warga evakuasi — saat gerbang TERTUTUP lalu dibuka', () => {
 
     // Amati beberapa bingkai: warga terputus harus TETAP 'blocked', bukan
     // berganti-ganti keadaan.
+    const acakAmati = buatAcakBerbenih(BENIH);
     const keadaanTerlihat = new Set<string>();
     for (let i = 0; i < 200; i++) {
-      sekarang = updateNPCs(sekarang, true, true, 1);
+      sekarang = updateNPCs(sekarang, true, true, 1, acakAmati);
       for (const n of sekarang.filter((x) => terputus.some((t) => t.id === x.id))) {
         keadaanTerlihat.add(n.state);
       }
@@ -274,7 +258,7 @@ describe('warga evakuasi — saat gerbang TERTUTUP lalu dibuka', () => {
 
 describe('warga evakuasi — saat TIDAK darurat', () => {
   test('warga berjalan-jalan dan tetap berada di dalam peta', () => {
-    const npc = createNPCs(NPC_SPAWN_POINTS);
+    const npc = createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH));
     const akhir = jalankan(npc, 4000, false, true);
 
     // Saat tidak darurat, warga boleh berjalan-jalan tetapi TIDAK boleh dianggap aman
@@ -285,7 +269,7 @@ describe('warga evakuasi — saat TIDAK darurat', () => {
   });
 
   test('warga benar-benar berpindah tempat, bukan diam membeku', () => {
-    const awal = createNPCs(NPC_SPAWN_POINTS);
+    const awal = createNPCs(NPC_SPAWN_POINTS, buatAcakBerbenih(BENIH));
     const akhir = jalankan(awal, 2000, false, true);
 
     const berpindah = akhir.filter((n, i) => Math.hypot(n.row - awal[i].row, n.col - awal[i].col) > 0.5);

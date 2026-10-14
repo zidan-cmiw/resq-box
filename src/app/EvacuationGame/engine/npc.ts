@@ -42,21 +42,34 @@ const NPC_COLORS = [
   '#22d3ee', '#e879f9',
 ];
 
-export function createNPCs(spawnPoints: [number, number][]): NPC[] {
+/**
+ * Sumber acak dapat DISUNTIKKAN, dengan bawaan acak sungguhan.
+ *
+ * Ini penting untuk pengujian: sebelumnya uji terpaksa mengganti `Math.random`
+ * global, dan penggantian global itu membuat hasil uji saling memengaruhi antar
+ * uji sehingga tidak dapat dipercaya. Dengan penyuntikan, setiap uji memakai
+ * sumber acaknya sendiri dan hasilnya benar-benar dapat diulang.
+ */
+export type SumberAcak = () => number;
+
+export function createNPCs(
+  spawnPoints: [number, number][],
+  acak: SumberAcak = Math.random,
+): NPC[] {
   return spawnPoints.map(([row, col], i) => ({
     id: i,
     row, col,
     spawnRow: row, spawnCol: col,
-    targetRow: row + (Math.random() - 0.5), 
-    targetCol: col + (Math.random() - 0.5),
+    targetRow: row + (acak() - 0.5), 
+    targetCol: col + (acak() - 0.5),
     path: [], pathIndex: 0,
     state: 'idle' as NPCState,
     color: NPC_COLORS[i % NPC_COLORS.length],
-    panicTimer: Math.floor(Math.random() * 60) + 10,
-    wanderTimer: Math.floor(Math.random() * 60),
+    panicTimer: Math.floor(acak() * 60) + 10,
+    wanderTimer: Math.floor(acak() * 60),
     currentEmote: null,
     emoteTimer: 0,
-    emoteCooldown: Math.floor(Math.random() * 120),
+    emoteCooldown: Math.floor(acak() * 120),
   }));
 }
 
@@ -65,6 +78,7 @@ export function updateNPCs(
   isEmergency: boolean,
   gateOpen: boolean,
   _dt: number,
+  acak: SumberAcak = Math.random,
 ): NPC[] {
   return npcs.map((npc) => {
     // --- Emote Logic ---
@@ -76,7 +90,7 @@ export function updateNPCs(
       newEmoteTimer--;
       if (newEmoteTimer <= 0) {
         newEmote = null;
-        newEmoteCooldown = 120 + Math.random() * 180; // wait 2-5 seconds
+        newEmoteCooldown = 120 + acak() * 180; // wait 2-5 seconds
       }
     } else {
       newEmoteCooldown--;
@@ -84,11 +98,11 @@ export function updateNPCs(
         // Trigger a new emote!
         newEmoteTimer = 90; // show for 1.5 seconds
         if (npc.state === 'idle' || npc.state === 'safe') {
-          newEmote = Math.random() > 0.5 ? 'happy' : 'chat';
+          newEmote = acak() > 0.5 ? 'happy' : 'chat';
         } else if (npc.state === 'panic' || npc.state === 'moving') {
-          newEmote = Math.random() > 0.5 ? 'panic' : 'alert';
+          newEmote = acak() > 0.5 ? 'panic' : 'alert';
         } else if (npc.state === 'blocked') {
-          newEmote = Math.random() > 0.5 ? 'angry' : 'blocked';
+          newEmote = acak() > 0.5 ? 'angry' : 'blocked';
         }
       }
     }
@@ -104,7 +118,7 @@ export function updateNPCs(
       if (n.path && n.path.length > 0) {
         if (n.pathIndex >= n.path.length) {
           // Arrived at wander destination, wait a bit before moving again
-          return { ...n, path: [], wanderTimer: 120 + Math.random() * 180 };
+          return { ...n, path: [], wanderTimer: 120 + acak() * 180 };
         }
 
         const [tr, tc] = n.path[n.pathIndex];
@@ -121,7 +135,7 @@ export function updateNPCs(
       } else {
         // Pick a new random walkable tile in the village from the precomputed list
         if (WALKABLE_VILLAGE_TILES.length > 0) {
-          const randTile = WALKABLE_VILLAGE_TILES[Math.floor(Math.random() * WALKABLE_VILLAGE_TILES.length)];
+          const randTile = WALKABLE_VILLAGE_TILES[Math.floor(acak() * WALKABLE_VILLAGE_TILES.length)];
           const targetR = randTile[0];
           const targetC = randTile[1];
           
@@ -151,9 +165,9 @@ export function updateNPCs(
         // Pick random target inside their designated safe zone tile
         return {
           ...n,
-          targetRow: n.spawnRow + (Math.random() - 0.5) * 1.5,
-          targetCol: n.spawnCol + (Math.random() - 0.5) * 1.5,
-          wanderTimer: 30 + Math.random() * 90
+          targetRow: n.spawnRow + (acak() - 0.5) * 1.5,
+          targetCol: n.spawnCol + (acak() - 0.5) * 1.5,
+          wanderTimer: 30 + acak() * 90
         };
       }
     }
@@ -236,7 +250,7 @@ export function updateNPCs(
     if (n.state === 'moving') {
       if (n.pathIndex >= n.path.length) {
         // Arrived at Safe Zone! Pick a random safe zone tile to spread out into.
-        const randomSafeTile = SAFE_ZONE_TILES[Math.floor(Math.random() * SAFE_ZONE_TILES.length)];
+        const randomSafeTile = SAFE_ZONE_TILES[Math.floor(acak() * SAFE_ZONE_TILES.length)];
         return {
           ...n,
           state: 'safe' as NPCState,
@@ -250,8 +264,8 @@ export function updateNPCs(
           col: randomSafeTile[1],
           spawnRow: randomSafeTile[0],
           spawnCol: randomSafeTile[1],
-          targetRow: randomSafeTile[0] + (Math.random() - 0.5),
-          targetCol: randomSafeTile[1] + (Math.random() - 0.5),
+          targetRow: randomSafeTile[0] + (acak() - 0.5),
+          targetCol: randomSafeTile[1] + (acak() - 0.5),
           wanderTimer: 0
         };
       }
