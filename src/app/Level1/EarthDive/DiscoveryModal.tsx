@@ -61,7 +61,7 @@ export default function DiscoveryModal({
         </div>
 
         {/* ── VISUAL ILLUSTRATION AREA (2D PIXEL ART SCIENTIFIC DIAGRAM) ── */}
-        <div className="w-full h-[400px] sm:h-[460px] md:h-[520px] bg-[#0c0a09] border-3 sm:border-4 border-[#78350f] rounded-xl sm:rounded-2xl overflow-hidden relative mb-4 sm:mb-5 flex items-center justify-center shadow-inner">
+        <div className="w-full h-[400px] sm:h-[460px] md:h-[520px] overflow-y-auto bg-[#0c0a09] border-3 sm:border-4 border-[#78350f] rounded-xl sm:rounded-2xl overflow-hidden relative mb-4 sm:mb-5 flex items-center justify-center shadow-inner">
           {renderIllustration(discovery.illustrationType, isSimulating, handleSimulate, selectedLandform, setSelectedLandform)}
         </div>
 
@@ -767,11 +767,11 @@ function renderIllustration(
       // Gambar ini dipilih karena cocok dengan penjelasan bertahap pada materi
       // Pangea di earthDiveData. Berkasnya: public/images.jpg
       return (
-        <div className="w-full h-full flex items-center justify-center bg-[#0b1220] rounded-lg overflow-hidden">
+        <div className="w-full flex justify-start bg-[#0b1220] rounded-lg">
           <img
             src="/images.jpg"
             alt="Lima tahap perpecahan benua: dari Pangea sampai tujuh benua seperti sekarang"
-            className="w-full h-full object-cover"
+            className="w-full h-auto object-contain"
           />
         </div>
       );
