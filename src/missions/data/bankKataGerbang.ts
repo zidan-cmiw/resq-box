@@ -57,78 +57,37 @@ export interface KataGerbang {
 }
 
 /** Bank varian: indeks zona -> daftar varian -> daftar kata. */
-export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
-  0: [
-    // Permukaan Bumi
-    [
-      { word: 'KERAK', hint: 'Lapisan paling luar bumi tempat kita tinggal dan paling tipis.', hintLain: ['Bagian terluar bumi yang paling tipis, tempat kita berpijak.'] },
-      { word: 'BENUA', hint: 'Daratan luas tempat kita hidup di atas permukaan bumi.', hintLain: ['Daratan yang sangat luas dan terpisah oleh lautan.'] },
-      { word: 'BATUAN', hint: 'Benda padat alami yang menyusun lapisan kerak bumi.', hintLain: ['Bahan padat alami pembentuk kerak, misalnya granit dan basal.'] },
-    ],
-    [
-      { word: 'LITOSFER', hint: 'Nama lain lapisan batuan paling luar bumi, tempat seluruh kehidupan berlangsung.', hintLain: ['Lapisan kaku terluar bumi, gabungan kerak dengan bagian atas mantel.'] },
-      { word: 'DARATAN', hint: 'Bagian permukaan bumi yang tidak tertutup air.', hintLain: ['Bagian permukaan bumi yang kering dan tidak tergenang.'] },
-      { word: 'MINERAL', hint: 'Bahan padat alami pembentuk batuan, misalnya kuarsa dan feldspar.', hintLain: ['Zat padat alami penyusun batuan, contohnya kuarsa.'] },
-    ],
-    [
-      { word: 'PERMUKAAN', hint: 'Bagian bumi yang paling atas, tempat kita berpijak dan bernapas.', hintLain: ['Bagian teratas bumi yang dapat kita lihat dan pijak.'] },
-      { word: 'LAUTAN', hint: 'Bagian permukaan bumi yang tertutup air asin dan paling luas.', hintLain: ['Wilayah bumi yang tergenang air asin dan paling luas.'] },
-      { word: 'TANAH', hint: 'Lapisan paling atas kerak bumi tempat tumbuhan berakar.', hintLain: ['Lapisan gembur di permukaan tempat akar tumbuhan menancap.'] },
-    ],
-    [
-      { word: 'LEMBAH', hint: 'Bagian permukaan bumi yang lebih rendah di antara dua lereng.', hintLain: ['Wilayah rendah di antara dua lereng gunung.'] },
-      { word: 'GUNUNG', hint: 'Bentuk permukaan bumi yang menjulang tinggi ke atas.', hintLain: ['Bentang alam yang menjulang tinggi dan sering berbentuk kerucut.'] },
-      { word: 'SUNGAI', hint: 'Alur alami di permukaan bumi tempat air mengalir menuju laut.', hintLain: ['Aliran air alami di daratan yang bermuara ke laut.'] },
-    ],
-    [
-      { word: 'PEGUNUNGAN', hint: 'Bentang alam yang tersusun dari rangkaian gunung berderet memanjang.', hintLain: ['Kumpulan gunung yang berderet memanjang di satu wilayah.'] },
-      { word: 'DATARAN', hint: 'Wilayah permukaan bumi yang relatif rata dan terbentang luas.', hintLain: ['Wilayah bumi yang permukaannya rata dan luas.'] },
-      { word: 'PANTAI', hint: 'Bagian permukaan bumi yang menjadi batas antara daratan dan laut.', hintLain: ['Wilayah pertemuan antara daratan dengan laut, berpasir atau berbatu.'] },
-    ],
-    [
-      { word: 'BUKIT', hint: 'Bentang alam yang lebih rendah daripada gunung, namun lebih tinggi daripada dataran.', hintLain: ['Bentang alam yang menjulang, tetapi lebih rendah daripada gunung.'] },
-      { word: 'JURANG', hint: 'Bagian permukaan bumi yang sangat dalam dan curam, biasanya di pegunungan.', hintLain: ['Lembah sangat dalam dengan dinding curam, biasanya di daerah pegunungan.'] },
-      { word: 'PULAU', hint: 'Daratan yang dikelilingi air dan terpisah dari daratan utama.', hintLain: ['Daratan yang seluruh sisinya dikelilingi air.'] },
-    ],
-  ],
+export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
   1: [
-    // Kerak Bumi
+    // Kerak Bumi.
+    //
+    // SELURUH kata di zona ini diambil dari materi zona Kerak Bumi sendiri:
+    // kerak, lapisan, luar, padat, suhu, kerak benua (granit, ringan, SiAl),
+    // kerak samudra (basal, tipis, berat, SiMa), dan tebal.
     [
-      { word: 'KERAK', hint: 'Lapisan paling luar bumi tempat kita tinggal, dan merupakan lapisan yang paling tipis.', hintLain: ['Bagian terluar bumi yang paling tipis, tempat kita berpijak.'] },
-      { word: 'BENUA', hint: 'Jenis kerak bumi di bawah daratan yang memiliki ketebalan mencapai 100 kilometer.', hintLain: ['Daratan yang sangat luas; kerak bumi di bawahnya paling tebal, sampai 100 km.'] },
-      { word: 'SAMUDRA', hint: 'Jenis kerak bumi di bawah lautan yang tipis (5-15 km), tetapi lebih padat dan berat.', hintLain: ['Lautan yang sangat luas; kerak di bawahnya hanya 5-15 km tetapi lebih berat.'] },
+      { word: 'KERAK', hint: 'Lapisan paling luar bumi tempat kita tinggal, dan paling tipis.', hintLain: ['Bagian terluar bumi yang menjadi tempat berpijak seluruh makhluk hidup.'] },
+      { word: 'BENUA', hint: 'Jenis kerak bumi di bawah daratan, tebalnya sampai 100 kilometer.', hintLain: ['Kerak di bawah daratan; paling tebal di antara kedua jenis kerak.'] },
+      { word: 'SAMUDRA', hint: 'Jenis kerak bumi di bawah lautan yang tipis (5-15 km), tetapi lebih padat dan berat.', hintLain: ['Kerak di bawah lautan; hanya 5-15 km tetapi paling berat.'] },
     ],
     [
-      { word: 'LITOSFER', hint: 'Lapisan batuan paling luar bumi, tersusun dari kerak dan bagian atas mantel.', hintLain: ['Lapisan kaku terluar bumi, gabungan kerak dengan bagian atas mantel.'] },
-      { word: 'DARATAN', hint: 'Wilayah kerak bumi yang letaknya lebih tinggi daripada permukaan laut.', hintLain: ['Bagian permukaan bumi yang kering dan tidak tertutup air.'] },
-      { word: 'LAUTAN', hint: 'Wilayah kerak bumi yang tertutup air, keraknya lebih tipis tetapi lebih berat.', hintLain: ['Bagian bumi yang tergenang air asin dan menutupi sebagian besar permukaannya.'] },
+      { word: 'GRANIT', hint: 'Batuan penyusun kerak benua, berwarna terang dan lebih ringan.', hintLain: ['Batuan pembentuk kerak di bawah daratan, bersifat ringan.'] },
+      { word: 'BASAL', hint: 'Batuan penyusun kerak samudra, berwarna gelap dan lebih padat.', hintLain: ['Batuan pembentuk kerak di bawah lautan, bersifat padat dan berat.'] },
+      { word: 'TIPIS', hint: 'Kerak samudra bersifat ... dibandingkan kerak benua.', hintLain: ['Sifat kerak di bawah lautan: hanya 5-15 kilometer tebalnya.'] },
     ],
     [
-      { word: 'TIPIS', hint: 'Kerak samudra bersifat ... dibandingkan kerak benua.', hintLain: ['Sifat kerak di bawah lautan jika dibandingkan kerak di bawah daratan.'] },
-      { word: 'GRANIT', hint: 'Batuan penyusun utama kerak benua, berwarna lebih terang dan lebih ringan.', hintLain: ['Jenis batuan yang mendominasi kerak di bawah daratan; warnanya terang.'] },
-      { word: 'BASAL', hint: 'Batuan penyusun utama kerak samudra, berwarna gelap dan lebih padat.', hintLain: ['Jenis batuan yang mendominasi kerak di bawah lautan; warnanya gelap.'] },
+      { word: 'TEBAL', hint: 'Kerak benua bersifat ... dibandingkan kerak samudra.', hintLain: ['Sifat kerak di bawah daratan: mencapai 30-100 kilometer.'] },
+      { word: 'PADAT', hint: 'Sifat lapisan kerak bumi yang tersusun dari batuan.', hintLain: ['Sifat lapisan terluar bumi karena terbuat dari batuan, bukan zat alir.'] },
+      { word: 'BERAT', hint: 'Sifat kerak samudra selain lebih padat, dibandingkan kerak benua.', hintLain: ['Sifat kerak di bawah lautan yang membuatnya tenggelam lebih dalam.'] },
     ],
     [
-      // Pengetahuan lokal Indonesia — materi yang diminta dosen IPA saat validasi
-      // (Indonesia berada di pertemuan lempeng, sehingga rawan gempa).
-      { word: 'INDONESIA', hint: 'Negara yang terletak di pertemuan Lempeng Indo-Australia, Eurasia, dan Pasifik.', hintLain: ['Negara kita, berada di titik pertemuan tiga lempeng besar sehingga rawan gempa.'] },
-      { word: 'SUMATRA', hint: 'Pulau yang tanahnya subur karena abu vulkanik, tetapi juga rawan gempa.', hintLain: ['Pulau di barat negara kita; tanahnya subur, tetapi sering diguncang gempa.'] },
-      { word: 'GEMPA', hint: 'Peristiwa yang sering terjadi di Indonesia karena lempengnya saling bertumbukan.', hintLain: ['Getaran yang menjalar di permukaan bumi akibat lempeng yang bertumbukan.'] },
+      { word: 'LAPISAN', hint: 'Kerak bumi disebut sebagai ... paling luar dari bumi.', hintLain: ['Sebutan bagi kerak: bagian teratas yang menyusun tubuh bumi.'] },
+      { word: 'SUHU', hint: 'Besaran yang berkisar 25 sampai 500 derajat Celsius di kerak bumi.', hintLain: ['Besaran yang diukur termometer; di kerak bumi nilainya 25-500 derajat.'] },
+      { word: 'LUAR', hint: 'Kedudukan kerak bumi: lapisan paling ... dari bumi.', hintLain: ['Kedudukan kerak dibandingkan seluruh lapisan bumi lainnya.'] },
     ],
     [
-      { word: 'TEBAL', hint: 'Kerak benua bersifat ... dibandingkan kerak samudra.', hintLain: ['Sifat kerak di bawah daratan jika dibandingkan kerak di bawah lautan.'] },
-      { word: 'SEDIMEN', hint: 'Batuan yang terbentuk dari endapan material di permukaan kerak.', hintLain: ['Endapan yang mengeras lapis demi lapis di permukaan bumi.'] },
-      { word: 'LEMPENG', hint: 'Pecahan besar kerak bumi yang bergerak di atas lapisan yang kental.', hintLain: ['Potongan raksasa kerak bumi yang saling bergerak dan bertumbukan.'] },
-    ],
-    [
-      { word: 'KERAS', hint: 'Sifat lapisan paling luar bumi yang membuat kita dapat berpijak di atasnya.', hintLain: ['Sifat batuan di permukaan sehingga kita dapat berdiri di atasnya.'] },
-      { word: 'SILIKAT', hint: 'Senyawa pembentuk batuan yang banyak menyusun lapisan padat bumi.', hintLain: ['Senyawa batuan yang mengandung silikon dan oksigen, banyak menyusun bumi.'] },
-      { word: 'BATU', hint: 'Benda padat alami yang menyusun lapisan kerak bumi.', hintLain: ['Bahan padat alami pembentuk kerak, misalnya granit dan basal.'] },
-    ],
-    [
-      { word: 'LERENG', hint: 'Sisi miring sebuah gunung atau bukit, dari kaki sampai ke puncaknya.', hintLain: ['Bagian miring gunung yang menghubungkan kaki dengan puncaknya.'] },
-      { word: 'TANAH', hint: 'Lapisan paling atas kerak bumi tempat tumbuhan tumbuh dan berakar.', hintLain: ['Lapisan gembur di permukaan tempat akar tumbuhan menancap.'] },
-      { word: 'LEMPUNG', hint: 'Jenis tanah yang lengket dan kedap air, sering dipakai membuat kerajinan.', hintLain: ['Jenis tanah yang liat dan sulit dilalui air; bahan dasar gerabah.'] },
+      { word: 'RINGAN', hint: 'Sifat batuan granit penyusun kerak benua, selain berwarna terang.', hintLain: ['Sifat granit yang membuat kerak benua mengapung di atas kerak samudra.'] },
+      { word: 'SIAL', hint: 'Nama lain kerak benua berdasarkan unsur penyusunnya: silika dan aluminium.', hintLain: ['Sebutan kerak benua dari dua unsur pembentuknya, silika dan aluminium.'] },
+      { word: 'SIMA', hint: 'Nama lain kerak samudra berdasarkan unsur penyusunnya: silika dan magnesium.', hintLain: ['Sebutan kerak samudra dari dua unsur pembentuknya, silika dan magnesium.'] },
     ],
   ],
   2: [
@@ -281,8 +240,8 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'PEGUNUNGAN', hint: 'Rangkaian gunung berderet memanjang, seperti hasil tumbukan lempeng.', hintLain: ['Kumpulan gunung yang berderet, terbentuk dari tumbukan lempeng.'] },
     ],
     [
-      { word: 'DANGKAL', hint: 'Sifat gempa yang pusatnya dekat permukaan, sehingga getarannya kuat.', hintLain: ['Sifat gempa yang pusatnya dekat permukaan bumi; getarannya terasa kuat.'] },
-      { word: 'MENDEKAT', hint: 'Arah gerak dua lempeng pada batas konvergen, yaitu saling...', hintLain: ['Pada batas konvergen, kedua lempeng bergerak saling menghampiri.'] },
+      { word: 'INDONESIA', hint: 'Negara kepulauan yang terbentuk dari jalur subduksi lempeng aktif.', hintLain: ['Kepulauan yang lahir dari tumbukan lempeng, sehingga rawan gempa dan tsunami.'] },
+      { word: 'GEMPA', hint: 'Getaran yang ditimbulkan oleh tumbukan dua lempeng kulit bumi.', hintLain: ['Getaran kuat akibat lempeng yang saling bertumbukan, dapat memicu tsunami.'] },
     ],
   ],
   7: [

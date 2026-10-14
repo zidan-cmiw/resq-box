@@ -29,7 +29,12 @@ import {
 import { ZONES } from '../../app/Level1/EarthDive/engine/zones.ts';
 
 /**
- * Seluruh zona Level 1, DITURUNKAN dari data zonanya, bukan ditulis tangan.
+ * Seluruh zona Level 1 yang PUNYA GERBANG, diturunkan dari data zonanya.
+ *
+ * Zona 0 (Permukaan Bumi) SENGAJA tidak ikut: ia titik awal Level 1 dan tidak
+ * punya gerbang sama sekali - rantai syarat gerbang di EarthDiveGame dimulai
+ * dari zona 1. Karena itu bank kata untuk zona 0 tidak akan pernah terpakai dan
+ * sudah dihapus.
  *
  * Daftar yang ditulis tangan adalah cara bug ini masuk sejak awal: kalau ada zona
  * baru ditambahkan, daftar itu tidak ikut bertambah, sehingga zona tersebut tidak
@@ -37,7 +42,7 @@ import { ZONES } from '../../app/Level1/EarthDive/engine/zones.ts';
  * `undiKataGerbang` memakai zona 1 sebagai cadangan, zona yang lupa didaftarkan
  * akan diam-diam memakai kata zona 1, tanpa error apa pun.
  */
-const ZONA = ZONES.map((_, i) => i);
+const ZONA = ZONES.map((_, i) => i).slice(1);
 
 /** Seluruh kalimat petunjuk milik satu kata: yang utama dan seluruh variasinya. */
 function semuaPetunjuk(kata: KataGerbang): string[] {
@@ -147,7 +152,7 @@ describe('bank kata gerbang — keabsahan isi', () => {
     // Inilah penjaga yang menutup celah itu. Tanpa ini, zona baru yang belum
     // diisi katanya akan DIAM-DIAM memakai kata zona 1, karena undiKataGerbang
     // memakai zona 1 sebagai cadangan.
-    const hilang = ZONES.map((z, i) => ({ i, id: z.id }))
+    const hilang = ZONES.map((z, i) => ({ i, id: z.id })).filter(({ i }) => i !== 0)
       .filter(({ i }) => varianZona(i).length === 0)
       .map(({ i, id }) => `zona ${i} (${id})`);
 
@@ -352,11 +357,12 @@ describe('materi wajib dari validasi dosen IPA — di format yang benar-benar di
   });
 
   test('ada pengetahuan lokal Indonesia (lempeng & kerawanan gempa)', () => {
-    assert.ok(semuaKata.includes('INDONESIA'), 'kata INDONESIA tidak ada di bank kata gerbang');
-    assert.ok(
-      /INDO-AUSTRALIA/i.test(seluruhTeks),
-      'petunjuk yang menyebut Lempeng Indo-Australia tidak ditemukan',
-    );
+    // Materi dosen ini disimpan di zona Konvergen, karena materi zona itulah yang
+    // benar-benar menyebut Indonesia dan gempa (jalur subduksi Kepulauan
+    // Indonesia, gempa dan tsunami Aceh 2004) - bukan di zona Kerak.
+    const kata = varianZona(6).flat().map((k) => k.word);
+    assert.ok(kata.includes('INDONESIA'), 'materi dosen tentang Indonesia hilang dari bank');
+    assert.ok(kata.includes('GEMPA'), 'materi dosen tentang kerawanan gempa hilang dari bank');
   });
 
   test('ada materi mantel sebagai fluida kental, bukan batuan padat', () => {
