@@ -494,11 +494,11 @@ export function VolcanoStatusIllustration() {
 // ═════════════════════════════════════════════════════════════════════════════
 // SUB-KOMPONEN: PETA ZONASI KRB MERAPI & PROTOKOL APD (AREA 4 TEMUAN 2)
 // Sesuai Arahan Pengguna:
-// - 4 Tab: APD, Awan Panas, Lahar Hujan, dan Zonasi KRB Merapi
+// - 4 Tab: APD, Awan Panas, Awan Panas di Lembah Sungai, dan Zonasi KRB Merapi
 // - Gambar kiri disesuaikan dengan materi:
 //   * Tab APD: Ilustrasi Masker N95, Kacamata Goggle, dan Baju Panjang
 //   * Tab Awan Panas: Ilustrasi Gunung Merapi & Wedhus Gembel bergulung
-//   * Tab Lahar Hujan: Ilustrasi Alur Lembah Sungai Lahar & Sirine EWS
+//   * Tab Awan Panas di Lembah Sungai: Ilustrasi Alur Lembah Sungai & Sirine EWS
 //   * Tab Zonasi KRB: Peta Resmi Merapi '1.webp' secara statis permanen
 // - Gambar kiri dapat diklik untuk membuka modal tampilan penuh (lightbox fullscreen)
 // - Panel materi di sebelah kanan dapat di-scroll (overflow-y-auto) dengan rapi
@@ -508,17 +508,17 @@ export function VolcanoStatusIllustration() {
 // ═════════════════════════════════════════════════════════════════════════════
 // SUB-KOMPONEN: PETA ZONASI KRB MERAPI & PROTOKOL APD (AREA 4 TEMUAN 2)
 // Sesuai Arahan Pengguna:
-// - 4 Tab: APD, Awan Panas, Lahar Hujan, dan Zonasi KRB Merapi
+// - 4 Tab: APD, Awan Panas, Awan Panas di Lembah Sungai, dan Zonasi KRB Merapi
 // - Gambar kiri disesuaikan dengan materi:
 //   * Tab APD: Ilustrasi Masker N95, Kacamata Goggle, dan Baju Panjang
 //   * Tab Awan Panas: Ilustrasi Gunung Merapi & Wedhus Gembel bergulung
-//   * Tab Lahar Hujan: Ilustrasi Alur Lembah Sungai Lahar & Sirine EWS
+//   * Tab Awan Panas di Lembah Sungai: Ilustrasi Alur Lembah Sungai & Sirine EWS
 //   * Tab Zonasi KRB: Peta Resmi Merapi '1.webp' secara statis permanen
 // - Gambar kiri dapat diklik untuk membuka modal tampilan penuh (lightbox fullscreen)
 // - Panel materi di sebelah kanan dapat di-scroll (overflow-y-auto) dengan rapi
 // ═════════════════════════════════════════════════════════════════════════════
 export function VolcanoResponseIllustration() {
-  const [activeTab, setActiveTab] = useState<'apd' | 'awanpanas' | 'lahar' | 'krb'>('apd');
+  const [activeTab, setActiveTab] = useState<'apd' | 'awanpanas' | 'awanpanas2' | 'krb'>('apd');
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
@@ -590,35 +590,35 @@ export function VolcanoResponseIllustration() {
       sourceText: 'Dokumentasi Erupsi Merapi (Kompas.com)',
       sourceShort: 'Kompas.com',
     },
-    lahar: {
-      title: 'BANJIR LAHAR HUJAN (LAHAR DINGIN)',
-      subtitle: 'Sediment Gravity Flow — Bahaya Sekunder Pasca-Erupsi',
-      badge: '3. ANCAMAN LAHAR HUJAN',
-      color: '#38bdf8',
-      border: '#7dd3fc',
-      bgHeader: 'bg-blue-950/90',
-      borderHeader: 'border-blue-500',
-      titleColor: 'text-blue-300',
+    awanpanas2: {
+      title: 'AWAN PANAS GUGURAN DI LEMBAH SUNGAI',
+      subtitle: 'Aliran Piroklastik Menyusuri Alur Kali — Bahaya Susulan Pasca-Erupsi',
+      badge: '3. AWAN PANAS DI LEMBAH SUNGAI',
+      color: '#f97316',
+      border: '#fed7aa',
+      bgHeader: 'bg-orange-950/90',
+      borderHeader: 'border-orange-500',
+      titleColor: 'text-orange-300',
       points: [
         {
-          title: '• MEKANISME LAHAR HUJAN:',
-          desc: 'Jutaan meter kubik material endapan abu, pasir, dan batu besar di puncak Merapi tersapu oleh curah hujan lebat di hulu, bercampur menjadi bubur lumpur pekat dengan massa jenis tinggi.',
+          title: '• MEKANISME AWAN PANAS DI LEMBAH:',
+          desc: 'Guguran kubah lava di puncak Merapi membentuk awan panas: campuran gas panas, abu, dan batu pijar bersuhu 300-700 °C yang meluncur deras mengikuti alur lembah sungai.',
         },
         {
-          title: '• ANCAMAN BANTARAN SUNGAI:',
-          desc: 'Lahar menerjang alur sungai (Kali Gendol, Krasak, Boyong, Bebeng, Woro) dengan kecepatan 40 - 60 km/jam, mampu mengikis tebing, menjebol sabo dam, dan menghancurkan jembatan.',
+          title: '• ANCAMAN ALUR SUNGAI:',
+          desc: 'Awan panas menyusuri alur sungai (Kali Gendol, Krasak, Boyong, Bebeng, Woro) dengan kecepatan tinggi, mampu mengikis tebing, melampaui sabo dam, dan menghancurkan jembatan.',
         },
         {
           title: '• SIRINE SISTEM PERINGATAN DINI (EWS):',
-          desc: 'Sensor getaran telemetri di hulu akan membunyikan sirine EWS otomatis di sepanjang bantaran sungai saat lahar melintas. Jika sirine berbunyi, segera lari ke tempat tinggi!',
+          desc: 'Sensor getaran dan suhu telemetri di hulu akan membunyikan sirine EWS otomatis di sepanjang alur sungai saat awan panas terdeteksi. Jika sirine berbunyi, segera lari ke tempat tinggi!',
         },
       ],
-      actionLabel: 'PROTOKOL BANTARAN SUNGAI:',
+      actionLabel: 'PROTOKOL LEMBAH SUNGAI:',
       actionText:
-        'DILARANG menonton lahar di atas jembatan! Jauhi sempadan dan tebing sungai minimal 300 - 500 meter saat mendung di hulu!',
-      sourceUrl: 'https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang',
-      sourceText: 'Dokumentasi Banjir Lahar Dingin (Detikcom)',
-      sourceShort: 'Detikcom',
+        'DILARANG menonton awan panas di atas jembatan! Jauhi sempadan dan tebing sungai minimal 300 - 500 meter dan jangan pernah mendekat saat gunung terlihat mengeluarkan guguran!',
+      sourceUrl: 'https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif',
+      sourceText: 'Dokumentasi Awan Panas Merapi (Kompas.com)',
+      sourceShort: 'Kompas.com',
     },
     krb: {
       title: 'PETA KAWASAN RAWAN BENCANA (KRB)',
@@ -640,7 +640,7 @@ export function VolcanoResponseIllustration() {
         },
         {
           title: '• KRB I (ZONA HIJAU - LEMBAH & SUNGAI):',
-          desc: 'Kawasan di sepanjang sempadan sungai yang rawan terjang banjir lahar hujan dan perluasan luapan air. Jaga jarak aman minimal 300 meter dari sungai saat hujan di puncak.',
+          desc: 'Kawasan di sepanjang sempadan sungai yang rawan terlanda aliran awan panas guguran dan perluasan sebaran material vulkanik. Jaga jarak aman minimal 300 meter dari alur sungai.',
         },
       ],
       actionLabel: 'PEDOMAN TANGGAP ZONA:',
@@ -655,7 +655,7 @@ export function VolcanoResponseIllustration() {
   const currentTab = tabData[activeTab];
 
   // Helper untuk merender visual (baik di dalam preview maupun di modal fullscreen)
-  const renderVisualContent = (tabKey: 'apd' | 'awanpanas' | 'lahar' | 'krb', isExpanded: boolean = false) => {
+  const renderVisualContent = (tabKey: 'apd' | 'awanpanas' | 'awanpanas2' | 'krb', isExpanded: boolean = false) => {
     switch (tabKey) {
       case 'apd':
         return (
@@ -761,29 +761,29 @@ export function VolcanoResponseIllustration() {
           </div>
         );
 
-      case 'lahar':
+      case 'awanpanas2':
         return (
           <div className="w-full h-full flex items-center justify-center relative">
             <img
-              src="/lahar_dingin.jpg"
-              alt="Banjir Lahar Hujan Dingin Kali Gendol & Woro Merapi"
+              src="/wedhus_gembel.jpg"
+              alt="Awan Panas Guguran Menyusuri Lembah Sungai Merapi"
               className={`w-full h-full object-cover rounded-none ${isExpanded ? 'max-h-[75vh]' : ''}`}
             />
             {!isExpanded && (
-              <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-sky-400 text-sky-300 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-md">
-                <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping" />
-                <span>● ALIRAN LAHAR HUJAN DINGIN (ALUR SUNGAI)</span>
+              <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-orange-400 text-orange-300 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-md">
+                <span className="w-2 h-2 rounded-full bg-orange-400 animate-ping" />
+                <span>● ALIRAN AWAN PANAS DI LEMBAH SUNGAI</span>
               </div>
             )}
             <a
-              href="https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang"
+              href="https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif"
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-sky-400/80 hover:border-sky-300 text-sky-300 hover:text-sky-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
-              title="Buka sumber dokumentasi: Detikcom"
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-orange-400/80 hover:border-orange-300 text-orange-300 hover:text-orange-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
+              title="Buka sumber dokumentasi: Kompas.com"
             >
-              <span>Sumber: Detikcom ↗</span>
+              <span>Sumber: Kompas.com ↗</span>
             </a>
           </div>
         );
@@ -940,14 +940,14 @@ export function VolcanoResponseIllustration() {
         <button
           onClick={() => {
             retroAudio.playSelect();
-            setActiveTab('lahar');
+            setActiveTab('awanpanas2');
           }}
-          className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'lahar'
-            ? 'bg-blue-600 text-white border-blue-300 font-bold shadow-md scale-[1.02]'
-            : 'bg-slate-900 text-blue-300 border-slate-700 hover:border-blue-500'
+          className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'awanpanas2'
+            ? 'bg-orange-600 text-white border-orange-300 font-bold shadow-md scale-[1.02]'
+            : 'bg-slate-900 text-orange-300 border-slate-700 hover:border-orange-500'
             }`}
         >
-          3. ANCAMAN LAHAR HUJAN
+          3. AWAN PANAS DI LEMBAH SUNGAI
         </button>
         <button
           onClick={() => {
@@ -1515,36 +1515,36 @@ export function VolcanoPostSanitationIllustration() {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// SUB-KOMPONEN 17: PASCABENCANA ERUPSI — BAHAYA SEKUNDER LAHAR DINGIN & EWS
+// SUB-KOMPONEN 17: PASCABENCANA ERUPSI — BAHAYA SEKUNDER AWAN PANAS GUGURAN & EWS
 // ═════════════════════════════════════════════════════════════════════════════
 
 // ═════════════════════════════════════════════════════════════════════════════
-// SUB-KOMPONEN 17: PASCABENCANA ERUPSI — BAHAYA SEKUNDER LAHAR DINGIN & EWS
+// SUB-KOMPONEN 17: PASCABENCANA ERUPSI — BAHAYA SEKUNDER AWAN PANAS GUGURAN & EWS
 // ═════════════════════════════════════════════════════════════════════════════
-export function VolcanoPostLaharIllustration() {
-  const [activeTab, setActiveTab] = useState<'lahar' | 'sungai' | 'ews'>('lahar');
+export function VolcanoPostPyroclasticIllustration() {
+  const [activeTab, setActiveTab] = useState<'mekanisme' | 'sungai' | 'ews'>('mekanisme');
 
   const tabDetails = {
-    lahar: {
-      title: 'MEKANISME & UNSUR PEMBENTUK BANJIR LAHAR DINGIN',
+    mekanisme: {
+      title: 'MEKANISME AWAN PANAS GUGURAN MENYUSURI LEMBAH',
       badge: 'BAHAYA SEKUNDER PASCA-ERUPSI',
-      color: '#059669',
-      desc: 'Banjir lahar dingin (lahar hujan) adalah aliran suspensi pekat antara air hujan berintensitas tinggi dengan jutaan meter kubik material vulkanik lepas (pasir, kerikil, dan bongkahan batu andesit) yang menumpuk di kawah puncak Merapi. Slurry pekat ini meluncur dengan kecepatan 40–60 km/jam menerjang lembah sungai dengan daya hancur hidrolik masif.',
-      keyTakeaway: 'Kekuatan lahar dingin bukan sekadar air banjir, melainkan "bubur beton cair alami" bermassa jenis 1,8–2,2 ton/m³ yang mampu menggerus tanggul dan menghancurkan jembatan seketika.',
+      color: '#ea580c',
+      desc: 'Awan panas guguran (wedhus gembel) adalah guguran gas panas, abu, dan material vulkanik bersuhu 300-700 °C dari kubah lava puncak Merapi. Massa panas ini meluncur deras menuruni lereng dan mengikuti alur lembah sungai dengan kecepatan tinggi sehingga mampu menghancurkan jembatan dan sabo dam di jalurnya.',
+      keyTakeaway: 'Kekuatan awan panas bukan sekadar abu panas, melainkan aliran gas dan batu pijar bersuhu ratusan derajat yang menyapu semua yang dilewatinya. Satu-satunya cara selamat adalah menjauh dari alur lembah sungai sebelum awan panas meluncur!',
     },
     sungai: {
-      title: 'ZONA BAHAYA BANTARAN SUNGAI & FUNGSI SABO DAM',
+      title: 'ZONA BAHAYA ALUR SUNGAI & FUNGSI SABO DAM',
       badge: 'ZONASI KRB I — RADIUS AMAN SUNGAI',
       color: '#dc2626',
-      desc: 'BNPB & PVMBG menetapkan sempadan sungai berhulu di Merapi (Kali Boyong, Kali Krasak, Kali Gendol, Kali Woro) sebagai Zona Merah lahar. Bangunan Sabo Dam Kementerian PUPR berfungsi menahan laju jutaan kubik batu dan pasir besar di hulu, sementara air lumpur disaring perlahan agar tidak meluap ke permukiman.',
-      keyTakeaway: 'DILARANG KERAS menonton lahar di atas jembatan atau berada di bantaran sungai saat mendung di hulu! Segera evakuasi tegak lurus ke dataran tinggi minimal 500 meter dari bibir sungai.',
+      desc: 'BNPB & PVMBG menetapkan sempadan sungai berhulu di Merapi (Kali Boyong, Kali Krasak, Kali Gendol, Kali Woro) sebagai Zona Merah awan panas, karena alur sungai menjadi jalur luncur guguran. Bangunan Sabo Dam Kementerian PUPR di hulu hanya mampu memperlambat sebagian material, sehingga warga tetap wajib menjauh dari sempadan sungai.',
+      keyTakeaway: 'DILARANG KERAS menonton awan panas di atas jembatan atau berada di bantaran sungai! Segera evakuasi tegak lurus ke dataran tinggi minimal 500 meter dari bibir sungai.',
     },
     ews: {
-      title: 'JARINGAN TELEMETRI SISTEM PERINGATAN DINI (EWS LAHAR)',
+      title: 'JARINGAN TELEMETRI SISTEM PERINGATAN DINI (EWS AWAN PANAS)',
       badge: 'TEKNOLOGI MITIGASI TELEMETRI REAL-TIME',
       color: '#2563eb',
-      desc: 'Mitigasi bahaya sekunder lahar didukung jejaring telemetri terpadu: Stasiun Penakar Hujan Otomatis (ARR) di puncak, Sensor Seismik Getaran Aliran di hulu jurang sungai, serta Menara Sirine EWS bertenaga surya di pemukiman warga yang berbunyi kencang (>110 dB) untuk evakuasi mandiri.',
-      keyTakeaway: 'Ketika sirine EWS meraung atau terdeteksi hujan lebat di puncak, warga memiliki waktu tanggap darurat (Golden Time) sekitar 10–20 menit untuk menyelamatkan diri ke tempat tinggi.',
+      desc: 'Mitigasi bahaya sekunder awan panas didukung jejaring telemetri terpadu: Stasiun Penakar Hujan Otomatis (ARR) di puncak, Sensor Seismik Getaran Aliran di hulu jurang sungai, serta Menara Sirine EWS bertenaga surya di pemukiman warga yang berbunyi kencang (>110 dB) untuk evakuasi mandiri.',
+      keyTakeaway: 'Ketika sirine EWS meraung atau terdeteksi getaran guguran di puncak, warga memiliki waktu tanggap darurat (Golden Time) sekitar 10-20 menit untuk menyelamatkan diri ke tempat tinggi.',
     },
   };
 
@@ -1554,7 +1554,7 @@ export function VolcanoPostLaharIllustration() {
       <div className="w-full flex items-center justify-between px-2 pb-2 border-b border-slate-700/80">
         <span className="text-[13px] sm:text-[15px] font-black text-emerald-400 flex items-center gap-2 tracking-wide font-sans">
           <PixelIcon name="mountain" size={16} />
-          BAHAYA SEKUNDER ERUPSI: BANJIR LAHAR DINGIN
+          BAHAYA SEKUNDER ERUPSI: AWAN PANAS GUGURAN
         </span>
         <span className="text-[14px] sm:text-[13px] text-amber-300/90 font-bold bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-500/30">
           MONITORING BNPB, PVMBG &amp; BALAI SABO PUPR
@@ -1587,8 +1587,8 @@ export function VolcanoPostLaharIllustration() {
               <stop offset="100%" stopColor="#92400e" />
             </linearGradient>
 
-            {/* Aliran Bubur Lahar Dingin (Debris Slurry Flow) */}
-            <linearGradient id="laharMudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            {/* Aliran Gas Panas & Material Vulkanik (Pyroclastic Density Current) */}
+            <linearGradient id="pyroclasticMudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#451a03" />
               <stop offset="40%" stopColor="#78350f" />
               <stop offset="75%" stopColor="#92400e" />
@@ -1644,78 +1644,78 @@ export function VolcanoPostLaharIllustration() {
           <rect x="0" y="185" width="540" height="40" fill="#0f172a" opacity="0.4" />
 
           {/* ═══════════════════════════════════════════════════════════════════ */}
-          {/* TAB 1: MEKANISME BANJIR LAHAR DINGIN & SABO DAM                   */}
+          {/* TAB 1: MEKANISME AWAN PANAS GUGURAN MENYUSURI LEMBAH            */}
           {/* ═══════════════════════════════════════════════════════════════════ */}
-          {activeTab === 'lahar' && (
+          {activeTab === 'mekanisme' && (
             <g>
-              {/* Sisi Kiri: Foto Nyata Banjir Lahar Dingin Merapi (Alur Sungai Kali Gendol/Woro) */}
+              {/* Sisi Kiri: Foto Nyata Awan Panas Guguran Merapi (Alur Sungai Kali Gendol/Woro) */}
               <g transform="translate(12, 10)">
-                <clipPath id="laharPostPhotoClip">
+                <clipPath id="pyroclasticPostPhotoClip">
                   <rect x="0" y="0" width="214" height="205" rx="10" />
                 </clipPath>
-                <rect x="0" y="0" width="214" height="205" rx="10" fill="#0f172a" stroke="#059669" strokeWidth="1.8" />
+                <rect x="0" y="0" width="214" height="205" rx="10" fill="#0f172a" stroke="#ea580c" strokeWidth="1.8" />
                 <image
-                  href="/lahar_dingin.jpg"
+                  href="/wedhus_gembel.jpg"
                   x="0"
                   y="0"
                   width="214"
                   height="205"
                   preserveAspectRatio="xMidYMid slice"
-                  clipPath="url(#laharPostPhotoClip)"
+                  clipPath="url(#pyroclasticPostPhotoClip)"
                 />
-                <rect x="0" y="0" width="214" height="205" rx="10" fill="none" stroke="#059669" strokeWidth="1.8" />
+                <rect x="0" y="0" width="214" height="205" rx="10" fill="none" stroke="#ea580c" strokeWidth="1.8" />
 
                 {/* Badge Keterangan Foto di Bawah */}
                 <g transform="translate(8, 146)">
-                  <rect x="0" y="0" width="198" height="52" rx="6" fill="#0f172a" fillOpacity="0.94" stroke="#34d399" strokeWidth="1.2" />
-                  <text x="99" y="13" fill="#a7f3d0" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-                    BANJIR LAHAR DINGIN MERAPI
+                  <rect x="0" y="0" width="198" height="52" rx="6" fill="#0f172a" fillOpacity="0.94" stroke="#fdba74" strokeWidth="1.2" />
+                  <text x="99" y="13" fill="#fed7aa" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
+                    AWAN PANAS GUGURAN MERAPI
                   </text>
                   <text x="99" y="24" fill="#f1f5f9" fontSize="6.8" textAnchor="middle" fontFamily="sans-serif">
-                    Aliran Debris Lumpur &amp; Batu Andesit
+                    Gas Panas &amp; Material Vulkanik Menyusuri Lembah
                   </text>
-                  <text x="99" y="33" fill="#38bdf8" fontSize="6.2" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-                    Kecepatan Arus: 40 — 60 km/jam
+                  <text x="99" y="33" fill="#fdba74" fontSize="6.2" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
+                    Suhu 300 — 700 °C
                   </text>
-                  <a href="https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang" target="_blank" rel="noopener noreferrer">
+                  <a href="https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif" target="_blank" rel="noopener noreferrer">
                     <text x="99" y="44" fill="#fbbf24" fontSize="6" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif" textDecoration="underline" cursor="pointer">
-                      Sumber: Detikcom ↗
+                      Sumber: Kompas.com ↗
                     </text>
                   </a>
                 </g>
               </g>
 
-              {/* SISI KANAN: PANEL EDUKASI MODERN UNSUR LAHAR */}
+              {/* SISI KANAN: PANEL EDUKASI MODERN UNSUR AWAN PANAS */}
               <g transform="translate(236, 10)">
                 {/* Background Card Kaca */}
-                <rect x="0" y="0" width="294" height="205" rx="10" fill="#0f172a" fillOpacity="0.94" stroke="#059669" strokeWidth="1.8" />
-                <rect x="1" y="1" width="292" height="32" rx="9" fill="#064e3b" />
+                <rect x="0" y="0" width="294" height="205" rx="10" fill="#0f172a" fillOpacity="0.94" stroke="#ea580c" strokeWidth="1.8" />
+                <rect x="1" y="1" width="292" height="32" rx="9" fill="#7c2d12" />
 
-                <text x="147" y="21" fill="#ecfdf5" fontSize="10.5" fontWeight="900" textAnchor="middle" fontFamily="sans-serif">
-                  UNSUR &amp; PROSES TERJADINYA LAHAR
+                <text x="147" y="21" fill="#ffedd5" fontSize="10.5" fontWeight="900" textAnchor="middle" fontFamily="sans-serif">
+                  UNSUR &amp; PROSES TERJADINYA AWAN PANAS
                 </text>
 
-                {/* Point 1: Hujan Deras */}
+                {/* Point 1: Runtuhnya Kubah Lava */}
                 <g transform="translate(10, 40)">
                   <rect x="0" y="0" width="274" height="36" rx="6" fill="#1e293b" stroke="#334155" strokeWidth="1" />
                   <rect x="6" y="6" width="24" height="24" rx="4" fill="#0284c7" />
-                  {/* Ikon 2D Pixel: Hujan Ekstrem */}
+                  {/* Ikon 2D Pixel: Guguran Kubah Lava */}
                   <g transform="translate(11, 10)">
                     <rect x="3" y="1" width="8" height="2" fill="#cbd5e1" />
                     <rect x="1" y="3" width="12" height="4" fill="#94a3b8" />
-                    <rect x="2" y="8" width="1.5" height="4" fill="#38bdf8" />
-                    <rect x="6" y="9" width="1.5" height="4" fill="#38bdf8" />
-                    <rect x="10" y="8" width="1.5" height="4" fill="#38bdf8" />
+                    <rect x="2" y="8" width="1.5" height="4" fill="#fb923c" />
+                    <rect x="6" y="9" width="1.5" height="4" fill="#fb923c" />
+                    <rect x="10" y="8" width="1.5" height="4" fill="#fb923c" />
                   </g>
-                  <text x="36" y="16" fill="#38bdf8" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
-                    1. Hujan Ekstrem di Hulu (&gt;50 mm/jam)
+                  <text x="36" y="16" fill="#fdba74" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
+                    1. Runtuhnya Kubah Lava di Puncak
                   </text>
                   <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
-                    Memicu likuifaksi &amp; menggerus timbunan material di lereng.
+                    Massa lava panas ambruk lalu meluncur menuruni lereng.
                   </text>
                 </g>
 
-                {/* Point 2: Jutaan m3 Endapan */}
+                {/* Point 2: Gas Panas & Material Vulkanik */}
                 <g transform="translate(10, 81)">
                   <rect x="0" y="0" width="274" height="36" rx="6" fill="#1e293b" stroke="#334155" strokeWidth="1" />
                   <rect x="6" y="6" width="24" height="24" rx="4" fill="#d97706" />
@@ -1727,18 +1727,18 @@ export function VolcanoPostLaharIllustration() {
                     <rect x="6" y="4" width="2" height="5" fill="#ea580c" />
                   </g>
                   <text x="36" y="16" fill="#fde047" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
-                    2. Endapan Pasir, Kerikil &amp; Tefra Kawah
+                    2. Gas Panas, Abu &amp; Batu Pijar
                   </text>
                   <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
-                    Jutaan m³ material sisa erupsi mencair jadi bubur kental.
+                    Campuran gas dan material vulkanik bersuhu 300-700 °C.
                   </text>
                 </g>
 
-                {/* Point 3: Batu Andesit Masif */}
+                {/* Point 3: Meluncur Menyusuri Lembah Sungai */}
                 <g transform="translate(10, 122)">
                   <rect x="0" y="0" width="274" height="36" rx="6" fill="#1e293b" stroke="#334155" strokeWidth="1" />
                   <rect x="6" y="6" width="24" height="24" rx="4" fill="#dc2626" />
-                  {/* Ikon 2D Pixel: Batu Andesit Raksasa */}
+                  {/* Ikon 2D Pixel: Alur Lembah Sungai */}
                   <g transform="translate(11, 10)">
                     <rect x="3" y="2" width="8" height="3" fill="#94a3b8" />
                     <rect x="1" y="5" width="12" height="6" fill="#64748b" />
@@ -1747,21 +1747,21 @@ export function VolcanoPostLaharIllustration() {
                     <rect x="8" y="7" width="3" height="3" fill="#1e293b" />
                   </g>
                   <text x="36" y="16" fill="#fca5a5" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
-                    3. Batu Andesit Raksasa Terbawa Arus
+                    3. Meluncur Menyusuri Lembah Sungai
                   </text>
                   <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
-                    Daya dorong hidrolik tinggi menyeret batu sebesar mobil!
+                    Mengikuti alur kali (Gendol, Kuning, Boyong) dengan kecepatan tinggi!
                   </text>
                 </g>
 
                 {/* Stat Chip Bottom */}
                 <g transform="translate(10, 164)">
-                  <rect x="0" y="0" width="274" height="32" rx="6" fill="#042f2e" stroke="#10b981" strokeWidth="1.2" />
-                  <text x="137" y="14" fill="#a7f3d0" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-                    DENSITAS SLURRY: 1,8 — 2,2 TON/M³
+                  <rect x="0" y="0" width="274" height="32" rx="6" fill="#431407" stroke="#ea580c" strokeWidth="1.2" />
+                  <text x="137" y="14" fill="#fed7aa" fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
+                    SUHU 300 — 700 °C, KECEPATAN TINGGI
                   </text>
                   <text x="137" y="25" fill="#ffffff" fontSize="7.5" textAnchor="middle" fontFamily="sans-serif">
-                    Mampu meruntuhkan jembatan beton &amp; menyapu bibir sungai!
+                    Mampu meruntuhkan jembatan beton &amp; menyapu apa pun di alurnya!
                   </text>
                 </g>
               </g>
@@ -1776,7 +1776,7 @@ export function VolcanoPostLaharIllustration() {
               {/* Sisi Kiri: Penampang Lembah Sungai V-Shape & Dataran Tinggi */}
               {/* Tebing Kiri & Jurang Sungai */}
               <polygon points="10,85 70,85 100,165 10,165" fill="#334155" stroke="#1e293b" strokeWidth="1.5" />
-              {/* Dasar Sungai & Alur Lahar Dingin */}
+              {/* Dasar Sungai & Alur Awan Panas */}
               <rect x="100" y="152" width="70" height="20" fill="#451a03" />
               <path d="M 100 156 Q 135 164 170 156 L 170 172 L 100 172 Z" fill="#78350f" />
               <line x1="100" y1="154" x2="170" y2="154" stroke="#facc15" strokeWidth="1.5" strokeDasharray="3 3" />
@@ -1815,7 +1815,7 @@ export function VolcanoPostLaharIllustration() {
                 Radius Bahaya: &lt; 300 - 500 Meter
               </text>
 
-              {/* Rambu Peringatan Lahar Segitiga Kuning */}
+              {/* Rambu Peringatan Awan Panas Segitiga Kuning */}
               <polygon points="45,115 30,140 60,140" fill="#facc15" stroke="#0f172a" strokeWidth="1.5" />
               <text x="45" y="136" fill="#0f172a" fontSize="14" fontWeight="black" textAnchor="middle">!</text>
 
@@ -1859,7 +1859,7 @@ export function VolcanoPostLaharIllustration() {
                     Dilarang Beraktivitas di Dasar Sungai
                   </text>
                   <text x="42" y="30" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
-                    Tinggalkan tambang pasir seketika saat langit hulu puncak mendung pekat!
+                    Tinggalkan alur sungai seketika saat terlihat guguran di puncak atau sirine berbunyi!
                   </text>
                 </g>
 
@@ -1889,7 +1889,7 @@ export function VolcanoPostLaharIllustration() {
           )}
 
           {/* ═══════════════════════════════════════════════════════════════════ */}
-          {/* TAB 3: EARLY WARNING SYSTEM (EWS LAHAR TELEMETRI)                 */}
+          {/* TAB 3: EARLY WARNING SYSTEM (EWS AWAN PANAS TELEMETRI)            */}
           {/* ═══════════════════════════════════════════════════════════════════ */}
           {activeTab === 'ews' && (
             <g>
@@ -1905,12 +1905,12 @@ export function VolcanoPostLaharIllustration() {
                 &gt;50 mm/jam
               </text>
 
-              {/* Stasiun 2: Seismometer Getaran Lahar di Hulu Jurang */}
+              {/* Stasiun 2: Seismometer Getaran Awan Panas di Hulu Jurang */}
               <rect x="20" y="80" width="60" height="42" rx="5" fill="#0f172a" stroke="#d97706" strokeWidth="1.5" />
               <text x="50" y="92" fill="#facc15" fontSize="7" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
                 SENSOR GETARAN
               </text>
-              {/* Gelombang Seismik Lahar (10-30 Hz) */}
+              {/* Gelombang Seismik Awan Panas (10-30 Hz) */}
               <path d="M 28 106 L 34 100 L 40 112 L 46 98 L 52 110 L 58 102 L 64 106 L 72 106" stroke="#fbbf24" strokeWidth="1.5" fill="none" />
               <text x="50" y="117" fill="#fef08a" fontSize="6.5" textAnchor="middle" fontFamily="sans-serif">
                 Tremor Aliran Batu
@@ -1991,7 +1991,7 @@ export function VolcanoPostLaharIllustration() {
                   <rect x="6" y="6" width="24" height="24" rx="4" fill="#0284c7" />
                   <text x="18" y="22" fill="#ffffff" fontSize="12" textAnchor="middle">2</text>
                   <text x="36" y="16" fill="#60a5fa" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
-                    Sensor Seismik Akustik Aliran Lahar
+                    Sensor Seismik Akustik Aliran Awan Panas
                   </text>
                   <text x="36" y="28" fill="#cbd5e1" fontSize="7.8" fontFamily="sans-serif">
                     Mendeteksi getaran frekuensi rendah tubrukan batu andesit di dasar sungai.
@@ -2018,7 +2018,7 @@ export function VolcanoPostLaharIllustration() {
                     GOLDEN TIME EVAKUASI: 10 — 20 MENIT
                   </text>
                   <text x="137" y="25" fill="#ffffff" fontSize="7.5" textAnchor="middle" fontFamily="sans-serif">
-                    Waktu krusial warga untuk lari menjauh sebelum lahar menerjang jembatan.
+                    Waktu krusial warga untuk lari menjauh sebelum awan panas menerjang jembatan.
                   </text>
                 </g>
               </g>
@@ -2041,15 +2041,15 @@ export function VolcanoPostLaharIllustration() {
               {tabDetails[activeTab].title}
             </h4>
           </div>
-          {activeTab === 'lahar' && (
+          {activeTab === 'mekanisme' && (
             <a
-              href="https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang"
+              href="https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif"
               target="_blank"
               rel="noopener noreferrer"
               className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-amber-300 hover:text-amber-200 text-[13.5px] font-sans font-bold flex items-center gap-1 transition-all"
-              title="Kunjungi sumber dokumentasi Detikcom"
+              title="Kunjungi sumber dokumentasi Kompas.com"
             >
-              <span>Sumber: Detikcom</span>
+              <span>Sumber: Kompas.com</span>
               <span>↗</span>
             </a>
           )}
@@ -2071,14 +2071,14 @@ export function VolcanoPostLaharIllustration() {
       {/* 3 Interactive Tab Control Buttons */}
       <div className="w-full grid grid-cols-1 xs:grid-cols-3 gap-2 sm:gap-2.5 pt-1">
         <button
-          onClick={() => setActiveTab('lahar')}
-          className={`px-3 py-2.5 rounded-xl border-2 text-[14.5px] sm:text-[13px] font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'lahar'
-            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 border-emerald-300 font-black shadow-emerald-900/40 scale-[1.02]'
-            : 'bg-slate-800/90 text-emerald-300 border-slate-700 hover:border-emerald-500/60 hover:bg-slate-800'
+          onClick={() => setActiveTab('mekanisme')}
+          className={`px-3 py-2.5 rounded-xl border-2 text-[14.5px] sm:text-[13px] font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'mekanisme'
+            ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 border-orange-300 font-black shadow-orange-900/40 scale-[1.02]'
+            : 'bg-slate-800/90 text-orange-300 border-slate-700 hover:border-orange-500/60 hover:bg-slate-800'
             }`}
         >
           <PixelIcon name="wave" size={14} className="shrink-0" />
-          <span>1. MEKANISME LAHAR</span>
+          <span>1. MEKANISME AWAN PANAS</span>
         </button>
 
         <button

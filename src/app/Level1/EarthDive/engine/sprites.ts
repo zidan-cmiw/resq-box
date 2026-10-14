@@ -57,7 +57,7 @@ export function drawZoneBackground(
       ctx.fillRect(c2X + 42, 60, 32, 8);
 
       // 2. SILUET MAJESTIK GUNUNG MERAPI (STRATOVOLCANO CONE, YOGYAKARTA)
-      // Karakteristik: Kerucut vulkanik asimetris, kubah lava aktif, alur lahar piroklastik,
+      // Karakteristik: Kerucut vulkanik asimetris, kubah lava aktif, alur piroklastik,
       // kepulan asap solfatara putih terus menerus, lereng berhutan tropis lebat (ZERO SNOW).
       const farP = camX * 0.07;
       const farSpan = 1400;
@@ -135,7 +135,7 @@ export function drawZoneBackground(
         ctx.arc(summitX + 2, summitY + 6, 14, Math.PI * 0.9, Math.PI * 2.1);
         ctx.fill();
 
-        // E. Jurang Piroklastik & Alur Lahar (Gendol, Opak & Kaliurang Ravines)
+        // E. Jurang Piroklastik & Alur Lembah (Gendol, Opak & Kaliurang Ravines)
         ctx.fillStyle = '#1e293b';
         const ravines = [
           [summitX - 10, summitY + 12, summitX - 35, h * 0.42, 6],
@@ -598,7 +598,7 @@ export function drawZoneBackground(
         if (m.type === 'pickaxe') {
           // Animasi ayunan beliung (Pickaxe Swing Animation)
           const swingFrame = (frame + m.cycleOffset) % 28;
-          let pickAngle = 0;
+          let pickAngle: number;
           let hitSpark = false;
 
           if (swingFrame < 14) {
@@ -796,7 +796,7 @@ export function drawZoneBackground(
         }
       }
 
-      // 4. Percikan Pijar Lahar & Debu Vulkanik Mengambang (Floating Embers & Volcanic Ash)
+      // 4. Percikan Pijar & Debu Vulkanik Mengambang (Floating Embers & Volcanic Ash)
       for (let eb = 0; eb < 24; eb++) {
         const seedEb = (eb * 79 + 31);
         const ex = ((seedEb * 43 - camX * 0.12) % w + w) % w;

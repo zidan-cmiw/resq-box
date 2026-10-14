@@ -1,7 +1,19 @@
 export interface MissionValidation {
   requiredBlocks?: string[];
   codeContains?: string[];
-  ancestorConstraints?: Record<string, string>;
+  /**
+   * WAJIB diisi untuk SETIAP misi — bukan lagi opsional.
+   *
+   * Memetakan "tipe blok anak" ke "tipe blok induk" yang harus membungkusnya,
+   * mis. `{ resq_sirine_ews: 'resq_program' }` berarti blok sirine harus
+   * tersambung DI DALAM blok program, bukan sekadar ada di kanvas.
+   *
+   * `validationEngine.ts` menolak misi yang tidak mencantumkannya, dan blok
+   * yang diminta tetapi belum punya aturan sendiri otomatis diwajibkan berada
+   * di dalam `resq_program`. Tanpa aturan ini, siswa dapat menjatuhkan blok
+   * terlepas dari program dan tetap dinyatakan lulus.
+   */
+  ancestorConstraints: Record<string, string>;
 }
 
 export interface MissionStep {
@@ -676,26 +688,26 @@ export const MISSIONS: Mission[] = [
     id: 'job_15',
     category: 'gunung',
     level: 15,
-    title: 'Job 15: Bahaya Lahar Dingin di Lembah Sungai: Menjauhi Aliran Sungai',
+    title: 'Job 15: Awan Panas Menyusuri Lembah Sungai: Menjauhi Aliran Sungai',
     icon: 'volcano',
-    scenario: 'Hujan lebat di puncak membawa jutaan meter kubik material vulkanik menjadi banjir lahar dingin di sungai! Warga di bantaran kali terancam. Bunyikan sirine EWS, susun blok evakuasi menjauh dari wilayah sungai, dan tampilkan pengumuman bahaya!',
+    scenario: 'Awan panas (wedhus gembel) meluncur deras menuruni lembah Kali Gendol, Kali Kuning, dan Kali Boyong! Warga di sekitar alur sungai terancam. Bunyikan sirine EWS, susun blok evakuasi menjauh dari wilayah sungai, dan tampilkan pengumuman bahaya!',
     objective: 'Bunyikan sirine EWS, arahkan warga menjauhi wilayah sungai, dan tampilkan peringatan di layar.',
     hint: "Buka Kategori 'Peringatan & EWS' (Sirine EWS), Kategori 'Aksi & Evakuasi' (Evakuasi Menjauh dari Wilayah Sungai), dan Kategori 'Sistem' (Layar Informasi).",
     steps: [
       {
-        title: 'Banjir Lahar Hujan',
-        description: 'Lahar dingin membawa batu besar dan pasir pekat melalui Kali Gendol, Kali Kuning, dan Kali Boyong. Warga wajib segera naik ke bukit yang lebih tinggi!',
+        title: 'Awan Panas di Lembah Sungai',
+        description: 'Awan panas guguran adalah gas dan material vulkanik panas bersuhu 300-700 °C yang meluncur cepat menyusuri lembah Kali Gendol, Kali Kuning, dan Kali Boyong. Warga wajib segera naik ke bukit yang lebih tinggi!',
         icon: 'school',
         tip: null,
       },
       {
         title: 'Kirim Peringatan & Evakuasi',
-        description: "1. Buka Kategori Peringatan & EWS ➔ ambil blok 'Bunyikan Sirine EWS selama [3] detik'.\n2. Buka Kategori Aksi & Evakuasi ➔ ambil blok 'Evakuasi Menjauh dari Wilayah Sungai'.\n3. Buka Kategori Sistem ➔ ambil blok 'Tampilkan di Layar Informasi', lalu ketik: 'BAHAYA LAHAR DINGIN - KOSONGKAN SUNGAI'.",
+        description: "1. Buka Kategori Peringatan & EWS ➔ ambil blok 'Bunyikan Sirine EWS selama [3] detik'.\n2. Buka Kategori Aksi & Evakuasi ➔ ambil blok 'Evakuasi Menjauh dari Wilayah Sungai'.\n3. Buka Kategori Sistem ➔ ambil blok 'Tampilkan di Layar Informasi', lalu ketik: 'BAHAYA AWAN PANAS - KOSONGKAN SUNGAI'.",
         icon: 'inventory_2',
         tip: null,
       },
       {
-        title: 'Amati Aliran Sungai & Gerakan Warga',
+        title: 'Amati Alur Sungai & Gerakan Warga',
         description: "Pasang ketiga blok ke dalam 'Mulai Saat Dihidupkan' (Kategori Sistem). Tekan MULAI dan saksikan warga di lembah sungai segera bergeser menjauh ke daratan tinggi!",
         icon: 'extension',
         tip: null,
@@ -723,15 +735,15 @@ export const MISSIONS: Mission[] = [
     id: 'job_16',
     category: 'proyek',
     level: 16,
-    title: 'Job 16: Jalur Evakuasi: Menjauhi Lembah Sungai Rawan Lahar',
+    title: 'Job 16: Jalur Evakuasi: Menjauhi Lembah Sungai Rawan Awan Panas',
     icon: 'emoji_objects',
-    scenario: 'Lembah sungai terancam banjir lahar dingin dan awan panas. Siswa wajib mengarahkan rute evakuasi menjauhi alur lembah sungai dan mengumumkan instruksi keselamatan ke warga!',
+    scenario: 'Lembah sungai terancam aliran awan panas guguran. Siswa wajib mengarahkan rute evakuasi menjauhi alur lembah sungai dan mengumumkan instruksi keselamatan ke warga!',
     objective: "Arahkan evakuasi warga menjauhi wilayah alur lembah sungai dan tampilkan pesan rute aman di layar.",
     hint: "Buka Kategori 'Aksi & Evakuasi' (ungu) ➔ ambil 'Evakuasi Menjauhi Wilayah Alur Lembah Sungai', lalu buka Kategori 'Sistem' (oranye) ➔ ambil 'Tampilkan di Layar Informasi'.",
     steps: [
       {
-        title: 'Ujian Navigasi Bahaya Lahar',
-        description: 'Rute lembah sungai tampak dekat namun sangat mematikan saat lahar menerjang. Arahkan warga menjauhi alur sungai!',
+        title: 'Ujian Navigasi Bahaya Awan Panas',
+        description: 'Rute lembah sungai tampak dekat namun sangat mematikan saat awan panas menerjang. Arahkan warga menjauhi alur sungai!',
         icon: 'school',
         tip: null,
       },
@@ -743,7 +755,7 @@ export const MISSIONS: Mission[] = [
       },
       {
         title: 'Beri Pengumuman',
-        description: "Pada blok layar ketik pesan: 'JAUHI LEMBAH SUNGAI - RAWAN LAHAR'. Pasang kedua blok ini ke dalam 'Mulai Saat Dihidupkan' (Kategori Sistem).",
+        description: "Pada blok layar ketik pesan: 'JAUHI LEMBAH SUNGAI - RAWAN AWAN PANAS'. Pasang kedua blok ini ke dalam 'Mulai Saat Dihidupkan' (Kategori Sistem).",
         icon: 'extension',
         tip: null,
       },

@@ -19,7 +19,6 @@ export interface DiscoveryPoint {
   | 'convergent'
   | 'transform'
   | 'mantle-convection'
-  | 'bridgmanite'
   | 'molten-metal'
   | 'inner-core-center'
   | 'pangea-drift'
@@ -59,7 +58,7 @@ export interface EarthStrata {
   pressureRange: string;
   pressureGpa: number;
   composition: string;
-  stateOfMatter: 'Padat Kaku' | 'Semi-Cair Plastis' | 'Padat Berdensitas Tinggi' | 'Cair Logam' | 'Padat Kristalin';
+  stateOfMatter: 'Padat Kaku' | 'Semi-Cair Plastis' | 'Fluida Kental (Adonan)' | 'Cair Logam' | 'Padat Kristalin';
   badgeId: string;
   badgeName: string;
   badgeIcon: string;
@@ -191,8 +190,8 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
     tempCelsius: 2800,
     pressureRange: '24 GPa – 136 GPa',
     pressureGpa: 90,
-    composition: 'Batuan Padat Lebih Berat & Padat dari Kerak (Mengalir Kental)',
-    stateOfMatter: 'Padat Berdensitas Tinggi',
+    composition: 'Batuan Silikat Panas Berwujud Fluida Kental (Mengalir Sangat Lambat)',
+    stateOfMatter: 'Fluida Kental (Adonan)',
     badgeId: 'mantle-explorer',
     badgeName: 'Mantle Explorer',
     badgeIcon: 'earthquake',
@@ -206,23 +205,23 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-mantel-bawah',
       title: 'Lapisan Tertebal Bumi & Arus Konveksi Panas',
       shortDesc:
-        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, karakteristiknya tersusun dari batuan padat panas yang mengalir lambat akibat arus konveksi, menjadi mesin penggerak lempeng bumi.',
-      fact: 'Meskipun padat, batuan mantel mengalir seperti cairan sangat kental dan bergerak lambat akibat arus konveksi panas! Tepi luarnya bersuhu >1.000°C dan bagian terdalamnya mencapai >3.700°C. Ilmuwan meneliti komposisinya melalui batuan beku lempeng hasil pendinginan magma.',
+        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, materialnya berwujud FLUIDA KENTAL seperti adonan: bukan batuan padat yang kaku, dan tidak mengalir seperti air. Karena kentalnya, ia hanya mampu mengalir sangat lambat — namun justru dialah mesin penggerak lempeng bumi.',
+      fact: 'Material mantel berwujud FLUIDA KENTAL seperti adonan, bukan batuan padat yang kaku dan bukan pula cairan encer. Karena sangat kental, ia mengalir sangat lambat — hanya beberapa sentimeter per tahun — karena didorong arus konveksi panas dari inti bumi. Tepi luarnya bersuhu >1.000°C dan bagian terdalamnya >3.700°C.',
       iconName: 'earthquake',
       imageSrc: '/images/geology/mantle.jpg',
       illustrationType: 'deep-mantle',
     },
     challenge: {
       id: 'chall-mantel-bawah',
-      question: 'Bagaimanakah karakteristik fisik batuan di lapisan Mantel Bumi dan penyebab pergerakannya?',
+      question: 'Bagaimanakah karakteristik material di lapisan Mantel Bumi, dan apa penyebab pergerakannya?',
       options: [
-        { id: 'a', text: 'Batuannya padat namun mengalir lambat seperti cairan kental akibat arus panas yang kuat (konveksi) dengan suhu 1.000°C hingga 3.700°C.', isCorrect: true },
-        { id: 'b', text: 'Batuannya berupa logam cair encer seperti air dengan suhu selalu dingin di bawah 0°C.', isCorrect: false },
+        { id: 'a', text: 'Materialnya berwujud fluida kental seperti adonan — tidak padat kaku dan tidak encer — sehingga mengalir sangat lambat karena arus konveksi panas bersuhu 1.000°C hingga 3.700°C.', isCorrect: true },
+        { id: 'b', text: 'Materialnya berupa logam cair encer seperti air dengan suhu selalu dingin di bawah 0°C.', isCorrect: false },
         { id: 'c', text: 'Merupakan lapisan tertipis yang diam membeku tanpa perpindahan energi panas apapun.', isCorrect: false },
-        { id: 'd', text: 'Batuannya berupa pasir kering yang bergerak karena ditiup angin bawah tanah.', isCorrect: false },
+        { id: 'd', text: 'Materialnya berupa pasir kering yang bergerak karena ditiup angin bawah tanah.', isCorrect: false },
       ],
-      explanation: 'Mantel adalah lapisan tertebal (2.900 km / 1.800 mil). Batuan padatnya mengalir kental karena arus konveksi panas dari interior bumi, bersuhu 1.000°C di tepi luar hingga >3.700°C di bagian dalam.',
-      siagaClue: 'Ingat istilah "arus konveksi panas", sifat "cairan sangat kental bergerak lambat", dan suhu 1.000°C - 3.700°C!',
+      explanation: 'Mantel adalah lapisan tertebal (2.900 km / 1.800 mil). Materialnya berwujud fluida kental seperti adonan — tidak padat kaku, tidak encer — sehingga mengalir sangat lambat karena arus konveksi panas dari interior bumi, bersuhu 1.000°C di tepi luar hingga >3.700°C di bagian dalam.',
+      siagaClue: 'Ingat istilah "fluida kental seperti adonan", "arus konveksi panas", dan suhu 1.000°C - 3.700°C!',
     },
   },
 
@@ -605,7 +604,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-mantel-bawah',
       title: 'Arus Panas Mantel Bumi (Konveksi)',
       shortDesc:
-        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, karakteristiknya tersusun dari batuan padat panas yang mengalir lambat akibat arus konveksi, menjadi mesin penggerak lempeng bumi.',
+        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, materialnya berwujud fluida kental seperti adonan sehingga mengalir sangat lambat dan menjadi mesin penggerak lempeng bumi.',
       fact:
         'Arus panas yang berputar di dalam mantel disebut arus konveksi, bekerja seperti air mendidih di panci. Arus inilah yang menjadi mesin penggerak lempeng bumi di permukaan!',
       iconName: 'volcano',
@@ -615,21 +614,12 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
     strata: EARTH_STRATA_DATA[1] || EARTH_STRATA_DATA[0],
   },
 
-  // 5: Zona Mantel Bumi — Titik 2: Batuan Mantel & Tekanan Dahsyat
-  5: {
-    discovery: {
-      id: 'disc-bridgmanite',
-      title: 'Batuan Mantel & Tekanan Dahsyat',
-      shortDesc:
-        'Batuan mantel terletak pada kedalaman 660–2.900 km dengan suhu mencapai 3.700°C. Karakteristik batuannya tetap kokoh dan berwujud padat karena ditekan oleh gaya gravitasi dahsyat dari seluruh lapisan di atasnya, sehingga batuan tidak mencair encer.',
-      fact:
-        'Tekanan besar di mantel mengunci butiran batuan agar tetap padat dan kokoh. Batuan ini sangat kuat menopang seluruh lapisan kerak bumi di atasnya!',
-      iconName: 'mountain',
-      imageSrc: '/images/geology/mantle.jpg',
-      illustrationType: 'bridgmanite',
-    },
-    strata: EARTH_STRATA_DATA[1] || EARTH_STRATA_DATA[0],
-  },
+  // Catatan: dahulu ada titik temuan ke-5 di zona mantel berjudul
+  // "Batuan Mantel & Tekanan Dahsyat" (ilustrasi 'bridgmanite') yang
+  // menegaskan bahwa batuan mantel tetap PADAT dan kokoh. Materi itu DIHAPUS
+  // atas arahan dosen IPA: mantel tidak diajarkan sebagai batuan padat,
+  // melainkan material fluida kental seperti adonan. Id `disc-bridgmanite`
+  // tidak dirujuk oleh logika gerbang mana pun, jadi penghapusan ini aman.
 
   // 6: Zona Inti Luar — Logam Cair Meleleh (Suhu 5.000°C)
   6: {

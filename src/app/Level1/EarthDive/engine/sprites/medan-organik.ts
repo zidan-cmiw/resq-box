@@ -376,7 +376,7 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
       ctx.fillRect(x, gY + 65 + faultWave, sw, 3);
 
     } else if (zone.id === 'mantle') {
-      // ── MANTEL BAWAH BUMI: BATUAN SILIKAT BRIDGMANITE & SUNGAI MAGMA KENTAL ──
+      // ── MANTEL BAWAH BUMI: FLUIDA SILIKAT KENTAL & SUNGAI MAGMA ──
       const magmaLevel = 360;
       const inBasin = (x >= 310 && x <= 635) || (x >= 770 && x <= 1075);
 
@@ -407,7 +407,7 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
         ctx.fillRect(x, magmaLevel, 2, 1);
 
       } else {
-        // Tebing batuan silikat Bridgmanite & Ferropericlase padat dan kokoh seperti beton
+        // Tebing silikat kental yang mengalir sangat lambat (bukan batuan padat kaku)
         ctx.fillStyle = '#0c0201';
         ctx.fillRect(x, gY + 24, sw, h - (gY + 24)); // Batuan dalam terkompresi jutaan atmosfer
 
@@ -429,7 +429,7 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
           ctx.fillRect(x, gY - 1, sw, 1);
         }
 
-        // Bintik kristal mineral silikat Bridgmanite berkilau di bawah tekanan
+        // Bintik mineral silikat berkilau di dalam fluida kental
         if ((seed % 15) === 0) {
           ctx.fillStyle = '#f87171';
           ctx.fillRect(x, gY + 4 + (seed % 14), 2, 2);
@@ -528,7 +528,7 @@ export function renderOrganicZoneTerrain(ctx: CanvasRenderingContext2D, zone: Zo
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(x, metalLevel, sw, 1);
 
-        // Percikan lahar pijar di permukaan samudra magma
+        // Percikan pijar magma di permukaan samudra magma
         if ((seed % 29) === 0) {
           ctx.fillStyle = '#fb923c';
           ctx.fillRect(x, metalLevel - 1, 2, 2);
@@ -928,7 +928,7 @@ export function renderZoneStructures(ctx: CanvasRenderingContext2D, zone: ZoneCo
           ctx.closePath();
           ctx.fill();
 
-          // Riak kontak lahar menyala di permukaan magma
+          // Riak kontak magma menyala di permukaan magma
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(plat.x1 - 6, magmaLevel, 6, 2);
           ctx.fillRect(plat.x2, magmaLevel, 6, 2);
@@ -1428,7 +1428,7 @@ export function renderOrganicDivergentTerrain(
     }
     ctx.closePath();
 
-    // Gradasi Termal: Bagian atas batuan padat beku gelap, bagian bawah gradasi menyatu ke magma
+    // Gradasi Termal: Bagian atas fluida kental yang mendingin dan menggelap, bagian bawah menyatu ke magma
     const crustGrad = ctx.createLinearGradient(0, floorY, 0, floorY + crustH + 3);
     crustGrad.addColorStop(0.00, `rgba(15, 23, 42, ${cool})`);          // Atas: #0f172a batuan basal padat utuh
     crustGrad.addColorStop(0.22, `rgba(30, 41, 59, ${cool})`);          // #1e293b batuan lempeng beku

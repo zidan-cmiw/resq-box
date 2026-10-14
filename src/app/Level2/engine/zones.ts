@@ -519,7 +519,7 @@ export function buildArea6ShelterRecovery(): ZoneConfigL2 {
     { id: 'land_s6_1_tents', x: 350, y: 360, w: 450, h: 120, label: 'TENDA PLETON BPBD & TANDON AIR BERSIH TERTUTUP' },
     { id: 'land_s6_2_medis', x: 800, y: 360, w: 450, h: 120, label: 'POSKO MEDIS PMI & PENANGANAN SANITASI' },
     { id: 'land_s6_3_dapur', x: 1250, y: 360, w: 400, h: 120, label: 'DAPUR UMUM TAGANA & LOGISTIK MAKANAN' },
-    { id: 'land_s6_4_pemukiman', x: 1650, y: 360, w: 550, h: 120, label: 'PEMUKIMAN ATAP ABU & BANTARAN SUNGAI LAHAR DINGIN' },
+    { id: 'land_s6_4_pemukiman', x: 1650, y: 360, w: 550, h: 120, label: 'PEMUKIMAN ATAP ABU & BANTARAN SUNGAI AWAN PANAS' },
   ];
 
   const chasmHazards: ChasmHazard[] = [];
@@ -579,7 +579,7 @@ export function buildArea6ShelterRecovery(): ZoneConfigL2 {
   return {
     id: 'area-barak-pengungsian',
     name: 'Barak Pengungsian & Pemulihan',
-    subtitle: 'Pascabencana Erupsi: Barak Terpadu, Penanganan Abu & Waspada Lahar',
+    subtitle: 'Pascabencana Erupsi: Barak Terpadu, Penanganan Abu & Waspada Awan Panas',
     groundProfile,
     platforms,
     landSections,

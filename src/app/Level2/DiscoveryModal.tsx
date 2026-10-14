@@ -3,12 +3,12 @@ import type { DiscoveryPointL2 } from './level2Data';
 import { retroAudio } from '../../utils/retroAudio';
 import PixelIcon from '../../components/PixelIcon';
 import { EarthquakePrepIllustration, EarthquakeActionIllustration, EarthquakePostSafetyIllustration, EarthquakePostCoordinationIllustration } from './ilustrasi/gempa';
-import { VolcanoStatusIllustration, VolcanoResponseIllustration, VolcanoPostAshIllustration, VolcanoPostSanitationIllustration, VolcanoPostLaharIllustration } from './ilustrasi/gunung-api';
+import { VolcanoStatusIllustration, VolcanoResponseIllustration, VolcanoPostAshIllustration, VolcanoPostSanitationIllustration, VolcanoPostPyroclasticIllustration } from './ilustrasi/gunung-api';
 import { PangeaIllustration, ConvergentSubductionIllustration, CONVERGENT_LANDFORMS_DATA, ConvergentLandformsIllustration, MegathrustIllustration, SeismographPlatesIllustration, TRANSFORM_POINTS_DATA, TransformSanAndreasIllustration } from './ilustrasi/lempeng';
 
 // Ekspor ulang agar pemakai lama tetap bekerja tanpa perubahan
 export { EarthquakePrepIllustration, EarthquakeActionIllustration, EarthquakePostSafetyIllustration, EarthquakePostCoordinationIllustration } from './ilustrasi/gempa';
-export { VolcanoStatusIllustration, VolcanoResponseIllustration, VolcanoPostAshIllustration, VolcanoPostSanitationIllustration, VolcanoPostLaharIllustration } from './ilustrasi/gunung-api';
+export { VolcanoStatusIllustration, VolcanoResponseIllustration, VolcanoPostAshIllustration, VolcanoPostSanitationIllustration, VolcanoPostPyroclasticIllustration } from './ilustrasi/gunung-api';
 export { PangeaIllustration, ConvergentSubductionIllustration, CONVERGENT_LANDFORMS_DATA, ConvergentLandformsIllustration, TrenchIllustration, FoldedMountainsIllustration, VolcanoIllustration, MegathrustIllustration, SeismographPlatesIllustration, TRANSFORM_POINTS_DATA, TransformSanAndreasIllustration } from './ilustrasi/lempeng';
 
 interface DiscoveryModalProps {
@@ -717,7 +717,7 @@ function renderIllustration(
       return <VolcanoStatusIllustration />;
 
     // ═════════════════════════════════════════════════════════════════════════
-    // 12. MITIGASI ERUPSI: PROTOKOL EVAKUASI, MASKER & ANCAMAN LAHAR
+    // 12. MITIGASI ERUPSI: PROTOKOL EVAKUASI, MASKER & ANCAMAN AWAN PANAS
     // ═════════════════════════════════════════════════════════════════════════
     case 'volcano-response':
       return <VolcanoResponseIllustration />;
@@ -747,10 +747,10 @@ function renderIllustration(
       return <VolcanoPostSanitationIllustration />;
 
     // ═════════════════════════════════════════════════════════════════════════
-    // 17. PASCABENCANA ERUPSI: BAHAYA SEKUNDER LAHAR DINGIN & EWS SUNGAI
+    // 17. PASCABENCANA ERUPSI: BAHAYA SEKUNDER AWAN PANAS GUGURAN & EWS SUNGAI
     // ═════════════════════════════════════════════════════════════════════════
-    case 'volcano-post-lahar':
-      return <VolcanoPostLaharIllustration />;
+    case 'volcano-post-pyroclastic':
+      return <VolcanoPostPyroclasticIllustration />;
 
     default:
       return null;

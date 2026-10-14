@@ -2385,7 +2385,7 @@ export function TransformSanAndreasIllustration() {
 
     const tick = (now: number) => {
       const elapsed = (now - startTime) % totalCycle;
-      let s = 0;
+      let s: number;
       if (elapsed < 1200) {
         s = 0;
       } else if (elapsed < 3200) {

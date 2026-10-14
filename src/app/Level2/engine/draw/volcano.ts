@@ -375,11 +375,11 @@ export function drawEffusiveDownstreamRiver(
   //   dengan punggungan bukit depan yang menyambung ke lantai desa (Y: 276..360)
   // - Map 3 (Sangat jauh): Pita sungai kecil ~8px di lembah kejauhan (Y: 248..256),
   //   dengan perbukitan depan yang menyambung solid ke lantai desa (Y: 254..360)
-  let riverTopY = 286;
-  let riverBotY = 332;
-  let riverWaveFreq = 0.007;
-  let riverWaveAmp = 6;
-  let parallaxSpeed = 0.16;
+  let riverTopY: number;
+  let riverBotY: number;
+  let riverWaveFreq: number;
+  let riverWaveAmp: number;
+  let parallaxSpeed: number;
 
   if (subMap === 1) {
     riverTopY = 286;
@@ -581,8 +581,8 @@ export function drawEffusiveDownstreamRiver(
       ctx.fillStyle = '#451a03';
       ctx.fillRect(realX - 1.5, nearY - 6, 3, 8);
 
-      let c1 = wither > 0.6 ? '#713f12' : wither > 0.3 ? '#854d0e' : '#14532d';
-      let c2 = wither > 0.6 ? '#a16207' : wither > 0.3 ? '#ca8a04' : '#16a34a';
+      const c1 = wither > 0.6 ? '#713f12' : wither > 0.3 ? '#854d0e' : '#14532d';
+      const c2 = wither > 0.6 ? '#a16207' : wither > 0.3 ? '#ca8a04' : '#16a34a';
 
       // Tier 1
       ctx.fillStyle = c1;

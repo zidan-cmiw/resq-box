@@ -1500,7 +1500,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       joko_v_3: {
         id: 'joko_v_3',
         speakerId: 'lintang',
-        text: 'Wilayah dibagi menjadi KRB I (potensi lahar hujan di lembah sungai), KRB II (ancaman awan panas dan lontaran batu pijar), dan KRB III (zona paling berbahaya dekat puncak yang dilarang untuk hunian tetap)!',
+        text: 'Wilayah dibagi menjadi KRB I (potensi aliran awan panas guguran di lembah sungai), KRB II (ancaman awan panas dan lontaran batu pijar), dan KRB III (zona paling berbahaya dekat puncak yang dilarang untuk hunian tetap)!',
         expression: 'serious',
         choices: [
           {
@@ -1814,14 +1814,14 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       resqy_b6_2: {
         id: 'resqy_b6_2',
         speakerId: 'resqy',
-        text: 'Meskipun bahaya primer awan panas telah terlewati, fase pascabencana menghadirkan tantangan baru yang krusial: penanganan timbunan abu vulkanik di atap rumah, sanitasi air bersih, dan ancaman bahaya sekunder banjir lahar dingin!',
+        text: 'Meskipun bahaya primer awan panas telah terlewati, fase pascabencana menghadirkan tantangan baru yang krusial: penanganan timbunan abu vulkanik di atap rumah, sanitasi air bersih, dan ancaman bahaya sekunder awan panas guguran yang menyusuri lembah sungai!',
         expression: 'serious',
         nextNodeId: 'resqy_b6_3',
       },
       resqy_b6_3: {
         id: 'resqy_b6_3',
         speakerId: 'resqy',
- text: 'Ayo temui Zidane di pos penanganan abu dan barak, Zahra di posko medis sanitasi, Ican di posko logistik, dan Lintang di posko lahar hujan untuk mempelajari seluruh modul bertanda kaca pembesar sebelum menempuh evaluasi akhir bersama Bu Tyas!',
+ text: 'Ayo temui Zidane di pos penanganan abu dan barak, Zahra di posko medis sanitasi, Ican di posko logistik, dan Lintang di posko awan panas untuk mempelajari seluruh modul bertanda kaca pembesar sebelum menempuh evaluasi akhir bersama Bu Tyas!',
         expression: 'normal',
         choices: [
           {
@@ -1831,7 +1831,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
           },
           {
             id: 'c2',
-            text: 'Mengapa bahaya sekunder lahar dingin dan abu vulkanik tetap sangat mematikan pasca-erupsi?',
+            text: 'Mengapa bahaya sekunder awan panas guguran dan abu vulkanik tetap sangat mematikan pasca-erupsi?',
             nextNodeId: 'resqy_b6_explain',
           },
         ],
@@ -1845,7 +1845,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       resqy_b6_explain: {
         id: 'resqy_b6_explain',
         speakerId: 'resqy',
-        text: 'Karena abu vulkanik basah di atap sangat berat dan berpotensi merobohkan rumah! Selain itu, jutaan kubik endapan vulkanik di puncak dapat tersapu hujan lebat menjadi lahar dingin yang meluap di sungai. Pelajari selengkapnya dari rekan-rekan tim di barak!',
+        text: 'Karena abu vulkanik basah di atap sangat berat dan berpotensi merobohkan rumah! Selain itu, awan panas guguran dapat meluncur kembali menyusuri lembah sungai dan menghancurkan jembatan di alurnya. Pelajari selengkapnya dari rekan-rekan tim di barak!',
         expression: 'thinking',
       },
     },
@@ -1975,37 +1975,37 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       alisa_s_teach: {
         id: 'alisa_s_teach',
         speakerId: 'zahra',
- text: 'Keren banget pemahamanmu! Tanda kaca pembesar di poskoku sudah tersimpan. Sekarang temui Lintang untuk materi ancaman lahar dingin ya!',
+ text: 'Keren banget pemahamanmu! Tanda kaca pembesar di poskoku sudah tersimpan. Sekarang temui Lintang untuk materi ancaman awan panas guguran ya!',
         expression: 'happy',
       },
     },
   },
 
-  // 4. DIALOG LINTANG (BAHAYA SEKUNDER LAHAR DINGIN)
+  // 4. DIALOG LINTANG (BAHAYA SEKUNDER AWAN PANAS GUGURAN)
   pak_slamet_dialogue: {
     id: 'pak_slamet_dialogue',
-    title: 'Kewaspadaan Bahaya Sekunder Lahar Dingin bersama Lintang',
+    title: 'Kewaspadaan Bahaya Sekunder Awan Panas Guguran bersama Lintang',
     startNodeId: 'slamet_1',
     npcSpeakerId: 'lintang',
     nodes: {
       slamet_1: {
         id: 'slamet_1',
         speakerId: 'lintang',
-        text: 'Salam tangguh penjelajah! Meskipun erupsi eksplosif telah reda, analisis geomorfologi lereng menunjukkan ancaman bahaya sekunder yang tak kalah mematikan: banjir lahar dingin!',
+        text: 'Salam tangguh penjelajah! Meskipun erupsi eksplosif telah reda, analisis geomorfologi lereng menunjukkan ancaman bahaya sekunder yang tak kalah mematikan: awan panas guguran yang menyusuri lembah sungai!',
         expression: 'normal',
         nextNodeId: 'slamet_2',
       },
       slamet_2: {
         id: 'slamet_2',
         speakerId: 'lintang',
-        text: 'Jutaan meter kubik material vulkanik lepas menumpuk di hulu sungai. Curah hujan tinggi di puncak akan mencairkan endapan tersebut menjadi aliran debris berkepadatan tinggi yang sanggup meremukkan jembatan!',
+        text: 'Gas dan material vulkanik panas bersuhu 300-700 °C masih tersimpan di lereng puncak. Guguran awan panas dapat meluncur deras menuruni alur sungai (Kali Gendol, Kuning, Boyong) dan meremukkan jembatan di alurnya!',
         expression: 'serious',
         choices: [
           {
             id: 'c1',
-            text: 'Bolehkah saya mempelajari modul bahaya sekunder lahar dingin dan sensor EWS sungai ini, Lintang?',
+            text: 'Bolehkah saya mempelajari modul bahaya sekunder awan panas guguran dan sensor EWS sungai ini, Lintang?',
             triggerDiscoveryModal: 2,
-            discoveryIdToMark: 'disc-post-lahar',
+            discoveryIdToMark: 'disc-post-pyroclastic',
             nextNodeId: 'slamet_teach',
           },
           {
@@ -2018,7 +2018,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       slamet_river_info: {
         id: 'slamet_river_info',
         speakerId: 'lintang',
-        text: 'Segera evakuasi menjauhi bantaran sungai minimal 300-500 meter ke elevasi yang lebih tinggi! Dilarang keras menonton aliran lahar di atas jembatan.',
+        text: 'Segera evakuasi menjauhi bantaran sungai minimal 300-500 meter ke elevasi yang lebih tinggi! Dilarang keras menonton aliran awan panas di atas jembatan.',
         expression: 'serious',
         nextNodeId: 'slamet_river_next',
       },
@@ -2030,9 +2030,9 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
         choices: [
           {
             id: 'c1',
-            text: 'Baik Lintang, buka modul bahaya sekunder lahar dingin sekarang!',
+            text: 'Baik Lintang, buka modul bahaya sekunder awan panas guguran sekarang!',
             triggerDiscoveryModal: 2,
-            discoveryIdToMark: 'disc-post-lahar',
+            discoveryIdToMark: 'disc-post-pyroclastic',
             nextNodeId: 'slamet_teach',
           },
         ],
@@ -2128,7 +2128,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       satria_sh_tts: {
         id: 'satria_sh_tts',
         speakerId: 'bu_tyas',
-        text: 'Bagus sekali! Gunakan seluruh pengetahuanmu tentang pembersihan atap, sanitasi air tertutup, dan bahaya sekunder lahar dingin. Tuntaskan teka-teki penutup ini!',
+        text: 'Bagus sekali! Gunakan seluruh pengetahuanmu tentang pembersihan atap, sanitasi air tertutup, dan bahaya sekunder awan panas guguran. Tuntaskan teka-teki penutup ini!',
         expression: 'happy',
       },
       satria_sh_wait: {

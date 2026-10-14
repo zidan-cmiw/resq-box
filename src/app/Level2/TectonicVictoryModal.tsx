@@ -148,7 +148,7 @@ export default function TectonicVictoryModal({
                 PEMULIHAN AKHIR
               </span>
               <span className="text-[12px] font-pixel text-teal-800 block mt-0.5 font-semibold">
-                Barak &amp; Bahaya Lahar
+                Barak &amp; Bahaya Awan Panas
               </span>
             </div>
           </div>
@@ -168,7 +168,7 @@ export default function TectonicVictoryModal({
             JEMBATAN MISI TARUNA RESQ:
           </span>
           <p className="font-pixel text-[13px] leading-relaxed text-amber-100 italic font-semibold">
-            &ldquo;Selamat Chief Disaster Analyst! Kamu telah menuntaskan seluruh kurikulum mitigasi bencana geologis secara paripurna: kesiapsiagaan gempa 72 jam, simulasi refleks Drop-Cover-Hold On, tanggap darurat erupsi Merapi di KRB III, tata tertib barak pengungsian, sanitasi air bersih, gotong royong pembersihan atap, hingga kewaspadaan bahaya sekunder lahar dingin. Kapsul evakuasi akhir RESQ-BOX telah mengorbitkan hasil penelitianmu ke pusat komando. Akses menuju Level 3 kini telah TERBUKA PENUH!&rdquo;
+            &ldquo;Selamat Chief Disaster Analyst! Kamu telah menuntaskan seluruh kurikulum mitigasi bencana geologis secara paripurna: kesiapsiagaan gempa 72 jam, simulasi refleks Drop-Cover-Hold On, tanggap darurat erupsi Merapi di KRB III, tata tertib barak pengungsian, sanitasi air bersih, gotong royong pembersihan atap, hingga kewaspadaan bahaya sekunder awan panas guguran. Kapsul evakuasi akhir RESQ-BOX telah mengorbitkan hasil penelitianmu ke pusat komando. Akses menuju Level 3 kini telah TERBUKA PENUH!&rdquo;
           </p>
         </div>
 

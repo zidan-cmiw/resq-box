@@ -657,7 +657,7 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
     map.set('l2_shelter_npc_warga_dani', ican);
     map.set('l2_shelter_npc_mbah_joyo', ican);
 
-    // 5. Lintang (Menganalisis Bahaya Sekunder Lahar Hujan & Sensor EWS Sungai)
+    // 5. Lintang (Menganalisis Bahaya Sekunder Awan Panas & Sensor EWS Sungai)
     const lintang: NpcStateL2 = {
       id: 'l2_shelter_npc_lintang',
       type: 'lintang',
@@ -674,7 +674,7 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
       animFrame: 0,
       isNearPlayer: false,
       hasMaterial: true,
-      discoveryKey: 'disc-post-lahar',
+      discoveryKey: 'disc-post-pyroclastic',
     };
     map.set(lintang.id, lintang);
     map.set('l2_shelter_npc_pak_slamet', lintang);

@@ -23,7 +23,7 @@ export function drawStudentCharacter(
   const sheet = getPlayerSheet(avatarConfig, zoneId);
 
   // Hitung frame sprite berdasarkan pose
-  let srcX = 0;
+  let srcX: number;
   if (!onGround) {
     srcX = vy < 0 ? 5 * PLAYER_FRAME_W : 6 * PLAYER_FRAME_W; // Melompat / Jatuh
   } else if (isWalking) {

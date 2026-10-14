@@ -1083,7 +1083,7 @@ export function drawVolcanoFailedOverlay(
 
 // ══════════════════════════════════════════════════════════════════════════
 // 8. ATMOSPHERE & GROUND: AREA 6 PASCABENCANA ERUPSI MERAPI
-//    (BARAK PENGUNGSIAN TERPADU, POSKO MEDIS, TANDON AIR & BAHAYA LAHAR)
+//    (BARAK PENGUNGSIAN TERPADU, POSKO MEDIS, TANDON AIR & BAHAYA AWAN PANAS)
 // ══════════════════════════════════════════════════════════════════════════
 
 // A. LANTAI KOMPLEKS BARAK PENGUNGSIAN (RUMPUT LERENG, JALUR SETAPAK ASPAL & SANDBAGS)
@@ -1292,7 +1292,7 @@ export function drawShelterRecoveryAtmosphere(
   ctx.closePath();
   ctx.fill();
 
-  // Guratan Lembah Alur Sungai Lahar Persis Area 5
+  // Guratan Lembah Alur Sungai Persis Area 5
   ctx.strokeStyle = '#334155';
   ctx.lineWidth = 1.8;
   ctx.beginPath();
@@ -1391,7 +1391,7 @@ export function drawShelterRecoveryAtmosphere(
   }
 
   // ════════════════════════════════════════════════════════════════════════
-  // 4. STRUKTUR SPESIFIK AREA 6 DI DUNIA NYATA (SHELTER, POSKO, TANDON & LAHAR)
+  // 4. STRUKTUR SPESIFIK AREA 6 DI DUNIA NYATA (SHELTER, POSKO, TANDON & AWAN PANAS)
   // ════════════════════════════════════════════════════════════════════════
 
   // ── 4.1. SPANDUK SELAMAT DATANG BARAK PENGUNGSIAN TERPADU (x: 140 - 240) ──
@@ -1865,25 +1865,25 @@ export function drawShelterRecoveryAtmosphere(
     ctx.restore();
   }
 
-  // ── 4.7. RAMBU PERINGATAN BAHAYA BANJIR LAHAR DINGIN BNPB (x: 1880 - 1940) ──
-  const laharSignX = 1910;
-  if (laharSignX + 80 > camX && laharSignX - 80 < camX + viewW) {
+  // ── 4.7. RAMBU PERINGATAN BAHAYA AWAN PANAS BNPB (x: 1880 - 1940) ──
+  const pyroclasticSignX = 1910;
+  if (pyroclasticSignX + 80 > camX && pyroclasticSignX - 80 < camX + viewW) {
     ctx.save();
     // Tiang Rambu Baja Hitam-Kuning
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(laharSignX - 3, 270, 6, 86);
+    ctx.fillRect(pyroclasticSignX - 3, 270, 6, 86);
     // Garis Loreng Hitam-Kuning di Tiang
     ctx.fillStyle = '#facc15';
-    ctx.fillRect(laharSignX - 3, 290, 6, 8);
-    ctx.fillRect(laharSignX - 3, 310, 6, 8);
-    ctx.fillRect(laharSignX - 3, 330, 6, 8);
+    ctx.fillRect(pyroclasticSignX - 3, 290, 6, 8);
+    ctx.fillRect(pyroclasticSignX - 3, 310, 6, 8);
+    ctx.fillRect(pyroclasticSignX - 3, 330, 6, 8);
 
-    // Papan Rambu Peringatan Segitiga Kuning Lahar Dingin
+    // Papan Rambu Peringatan Segitiga Kuning Awan Panas
     ctx.fillStyle = '#facc15';
     ctx.beginPath();
-    ctx.moveTo(laharSignX, 230);
-    ctx.lineTo(laharSignX - 36, 270);
-    ctx.lineTo(laharSignX + 36, 270);
+    ctx.moveTo(pyroclasticSignX, 230);
+    ctx.lineTo(pyroclasticSignX - 36, 270);
+    ctx.lineTo(pyroclasticSignX + 36, 270);
     ctx.closePath();
     ctx.fill();
     ctx.strokeStyle = '#0f172a';
@@ -1892,20 +1892,20 @@ export function drawShelterRecoveryAtmosphere(
 
     // Ikon Tanda Seru Bahaya
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(laharSignX - 2, 244, 4, 14);
-    ctx.fillRect(laharSignX - 2, 262, 4, 4);
+    ctx.fillRect(pyroclasticSignX - 2, 244, 4, 14);
+    ctx.fillRect(pyroclasticSignX - 2, 262, 4, 4);
 
-    // Papan Tambahan Bawah: "AWAS LAHAR HUJAN DARI HULU MERAPI" (Kotak Pas & Font Jelas)
-    const laharBoardW = 144;
-    const laharBoardH = 30;
-    const laharBoardX = laharSignX - laharBoardW / 2;
-    const laharBoardY = 270;
+    // Papan Tambahan Bawah: "AWAS AWAN PANAS DARI HULU MERAPI" (Kotak Pas & Font Jelas)
+    const pyroclasticBoardW = 144;
+    const pyroclasticBoardH = 30;
+    const pyroclasticBoardX = pyroclasticSignX - pyroclasticBoardW / 2;
+    const pyroclasticBoardY = 270;
     drawRoundedBadgeL2(
       ctx,
-      laharBoardX,
-      laharBoardY,
-      laharBoardW,
-      laharBoardH,
+      pyroclasticBoardX,
+      pyroclasticBoardY,
+      pyroclasticBoardW,
+      pyroclasticBoardH,
       5,
       '#dc2626',
       '#ffffff',
@@ -1915,19 +1915,19 @@ export function drawShelterRecoveryAtmosphere(
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
     ctx.font = '900 10px "Plus Jakarta Sans", sans-serif';
-    ctx.fillText('AWAS LAHAR HUJAN', laharSignX, laharBoardY + 10);
+    ctx.fillText('AWAS AWAN PANAS', pyroclasticSignX, pyroclasticBoardY + 10);
     ctx.fillStyle = '#fef08a';
     ctx.font = 'bold 8.5px "Plus Jakarta Sans", sans-serif';
-    ctx.fillText('HULU SUNGAI MERAPI', laharSignX, laharBoardY + 21);
+    ctx.fillText('HULU SUNGAI MERAPI', pyroclasticSignX, pyroclasticBoardY + 21);
 
     // Sensor EWS Sirene di Puncak Tiang
     ctx.fillStyle = '#3b82f6';
-    ctx.fillRect(laharSignX - 8, 222, 16, 8);
+    ctx.fillRect(pyroclasticSignX - 8, 222, 16, 8);
     // Lampu Strobo EWS
     const isSireneFlash = Math.floor(animTick / 10) % 2 === 0;
     ctx.fillStyle = isSireneFlash ? '#ef4444' : '#f59e0b';
     ctx.beginPath();
-    ctx.arc(laharSignX, 218, 4, 0, Math.PI * 2);
+    ctx.arc(pyroclasticSignX, 218, 4, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.restore();

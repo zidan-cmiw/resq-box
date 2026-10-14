@@ -207,7 +207,7 @@ export function drawMerapiPrabencanaAtmosphere(
   ctx.closePath();
   ctx.fill();
 
-  // Guratan Lembah Alur Sungai Lahar Merapi (Gendol & Krasak)
+  // Guratan Lembah Alur Sungai Merapi (Gendol & Krasak) — jalur luncur awan panas
   ctx.strokeStyle = '#1e293b';
   ctx.lineWidth = 3;
   ctx.beginPath();
@@ -1018,10 +1018,10 @@ export function drawVolcanoSimulationGround(
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 6.5px "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('HILIR SUNGAI LAHAR', signX, floorY - 34);
+      ctx.fillText('HILIR SUNGAI AWAN PANAS', signX, floorY - 34);
       ctx.fillStyle = '#93c5fd';
       ctx.font = 'bold 5.5px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText('ZONA ALIRAN LAVA & LAHAR', signX, floorY - 27);
+      ctx.fillText('ZONA ALIRAN LAVA & AWAN PANAS', signX, floorY - 27);
     }
   }
 
@@ -1232,7 +1232,7 @@ export function drawVolcanoSimulationAtmosphere(
     ctx.stroke();
   }
 
-  // Guratan Lembah Alur Sungai Lahar (Warna Slate Alami Serasi Area 6)
+  // Guratan Lembah Alur Sungai (Warna Slate Alami Serasi Area 6)
   ctx.strokeStyle = '#334155';
   ctx.lineWidth = 3 * mountainScale;
   ctx.beginPath();

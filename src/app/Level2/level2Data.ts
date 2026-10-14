@@ -19,7 +19,7 @@ export interface DiscoveryPointL2 {
   | 'volcano-response'
   | 'volcano-post-ash'
   | 'volcano-post-sanitation'
-  | 'volcano-post-lahar'
+  | 'volcano-post-pyroclastic'
   | 'wegener-pangea'
   | 'twin-mountains'
   | 'divergent-anim'
@@ -294,7 +294,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-volcano-response',
         title: 'Temuan 2: Zonasi KRB Merapi & APD Pelindung Abu Vulkanik',
         shortDesc:
-          'Kawasan Merapi dibagi 3 zona resmi: KRB III (zona merah lereng puncak rawan awan panas), KRB II (lereng tengah siap evakuasi mandiri), dan KRB I (bantaran sungai rawan banjir lahar). Warga wajib menyiapkan APD masker N95, kacamata goggle, dan baju tertutup.',
+          'Kawasan Merapi dibagi 3 zona resmi: KRB III (zona merah lereng puncak rawan awan panas), KRB II (lereng tengah siap evakuasi mandiri), dan KRB I (bantaran sungai rawan aliran awan panas guguran). Warga wajib menyiapkan APD masker N95, kacamata goggle, dan baju tertutup.',
         fact:
           'KRB III adalah zona larangan hunian tetap karena selalu terancam awan panas (wedhus gembel). Saat status Awas (Level IV), seluruh warga di KRB III wajib segera dievakuasi total!',
         iconName: 'shield',
@@ -411,7 +411,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
     id: 'area-barak-pengungsian',
     index: 5,
     name: 'Barak Pengungsian & Pemulihan',
-    subtitle: 'Pascabencana Erupsi: Barak Terpadu, Penanganan Abu & Waspada Lahar',
+    subtitle: 'Pascabencana Erupsi: Barak Terpadu, Penanganan Abu & Waspada Awan Panas',
     location: 'Barak Pengungsian Terpadu (Zona Aman KRB I / Dataran Rendah)',
     boundaryType: 'mitigasi-erupsi',
     badgeId: 'volcano-recovery-master',
@@ -445,16 +445,16 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         iconName: 'heart',
         illustrationType: 'volcano-post-sanitation',
       },
-      // Temuan 3: Waspada Bahaya Sekunder: Aliran Banjir Lahar Dingin
+      // Temuan 3: Waspada Bahaya Sekunder: Awan Panas Guguran di Lembah Sungai
       {
-        id: 'disc-post-lahar',
-        title: 'Temuan 3: Bahaya Sekunder — Waspada Banjir Lahar Dingin',
+        id: 'disc-post-pyroclastic',
+        title: 'Temuan 3: Bahaya Sekunder — Waspada Awan Panas Guguran di Lembah Sungai',
         shortDesc:
-          'Bahaya letusan gunung api belum berakhir saat erupsi reda! Jutaan meter kubik material pasir, kerikil, dan bongkahan batu vulkanik yang mengendap di lereng puncak dapat tersapu hujan lebat menjadi banjir lahar dingin (lahar hujan) yang meluap menerjang bantaran sungai yang berhulu di Merapi.',
+          'Bahaya letusan gunung api belum berakhir saat erupsi reda! Awan panas guguran (wedhus gembel) berisi gas dan material vulkanik panas bersuhu 300-700 °C dapat meluncur deras menyusuri lembah sungai yang berhulu di Merapi, menghancurkan jembatan dan sabo dam di alurnya.',
         fact:
-          'BNPB mengimbau masyarakat untuk menjauhi lembah dan bantaran sungai yang berhulu di puncak gunung berapi saat musim hujan, serta mematuhi sirene Early Warning System (EWS) banjir lahar dingin!',
+          'BNPB & PVMBG mengimbau masyarakat untuk menjauhi lembah dan bantaran sungai yang berhulu di puncak gunung berapi, serta mematuhi sirene Early Warning System (EWS) sungai yang memantau getaran dan aliran awan panas!',
         iconName: 'mountain',
-        illustrationType: 'volcano-post-lahar',
+        illustrationType: 'volcano-post-pyroclastic',
       },
     ],
     challenge: {
@@ -465,7 +465,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
       options: [
         {
           id: 'a',
-          text: 'Membersihkan timbunan abu di atap rumah agar tidak roboh, menutup sumber air minum, memakai masker, dan menjauhi bantaran sungai saat hujan lebat karena ancaman lahar dingin.',
+          text: 'Membersihkan timbunan abu di atap rumah agar tidak roboh, menutup sumber air minum, memakai masker, dan menjauhi alur sungai karena ancaman awan panas guguran di lembah sungai.',
           isCorrect: true,
         },
         {
@@ -485,9 +485,9 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         },
       ],
       explanation:
-        'Sempurna! Protokol pascabencana resmi BNPB meliputi pembersihan atap rumah dari beban berat abu, perlindungan sumber air minum dari belerang, penggunaan masker pelindung silika, dan kewaspadaan terhadap banjir lahar dingin di daerah aliran sungai!',
+        'Sempurna! Protokol pascabencana resmi BNPB meliputi pembersihan atap rumah dari beban berat abu, perlindungan sumber air minum dari belerang, penggunaan masker pelindung silika, dan kewaspadaan terhadap awan panas guguran yang menyusuri lembah sungai!',
       siagaClue:
-        'Pascabencana Erupsi = "Bersihkan atap gotong royong, tutup tandon air minum, pakai masker, dan jauhi sungai saat hujan (waspada lahar dingin)!"',
+        'Pascabencana Erupsi = "Bersihkan atap gotong royong, tutup tandon air minum, pakai masker, dan jauhi lembah sungai (waspada awan panas guguran)!"',
     },
   },
 ];

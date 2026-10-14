@@ -334,7 +334,7 @@ function drawPosPengamatanInterior(
   ctx.closePath();
   ctx.fill();
 
-  // Guratan Lembah Alur Sungai Lahar Merapi (Gendol & Krasak)
+  // Guratan Lembah Alur Sungai Merapi (Gendol & Krasak) — jalur luncur awan panas
   ctx.strokeStyle = '#1e293b';
   ctx.lineWidth = 2.5;
   ctx.beginPath();

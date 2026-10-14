@@ -336,7 +336,7 @@ function buildCrust(): ZoneConfig {
 
 // ══════════════════════════════════════════════════════════════════════════
 // ══════════════════════════════════════════════════════════════════════════
-// ZONA 2: MANTEL BUMI (Labirin Silikat Bridgmanite & Sungai Magma Kental)
+// ZONA 2: MANTEL BUMI (Fluida Silikat Kental & Sungai Magma)
 // ══════════════════════════════════════════════════════════════════════════
 function buildMantle(): ZoneConfig {
   // Kontur tanah dengan teras batuan silikat datar untuk tumpuan presisi seluruh objek
@@ -348,7 +348,7 @@ function buildMantle(): ZoneConfig {
     [300, 320],    // Teras Datar Silikat 1: menampung Zahra (px=240)
     [330, 410],    // Tebing patahan curam turun ke Danau Magma 1
     [610, 410],    // Dasar Danau Magma 1 (penampung pilar parkour 1, 2, 3)
-    [640, 320],    // Tebing naik ke Pulau Bridgmanite Tengah (Lintang)
+    [640, 320],    // Tebing naik ke Dataran Silikat Kental Tengah (Lintang)
     [760, 320],    // Teras Datar Tengah: menampung Lintang (px=700)
     [790, 410],    // Tebing patahan curam turun ke Danau Magma 2
     [1050, 410],   // Dasar Danau Magma 2 (penampung pilar parkour 4, 5, 6)
@@ -371,7 +371,7 @@ function buildMantle(): ZoneConfig {
   const ceilingProfile = interpolateProfile(ceilingPoints);
   const tiles = generateTilesFromProfiles(groundProfile, ceilingProfile);
 
-  // Pilar struktur mineral silikat masif (Bridgmanite & Basalt Pillars) melintasi danau magma
+  // Pilar struktur mineral silikat (Basalt Pillars) melintasi danau magma
   const platforms: Platform[] = [
     // Sektor Parkour 1: Melintasi Danau Magma Barat
     { x1: 340, x2: 405, y: 345, h: 14, type: 'basalt_pillar' },
