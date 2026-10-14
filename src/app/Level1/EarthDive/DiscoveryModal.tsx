@@ -504,9 +504,19 @@ function MantleConvectionHalfEarth() {
   // ── Geometri (mengikuti proporsi gambar referensi) ────────────────────────
   const CX = 280;
   const DASAR = 400; // sisi bawah potongan
-  // Lengkung permukaan bumi: potongan lingkaran berjari-jari besar, sehingga
-  // terlihat seperti busur permukaan planet — bukan kubah kecil.
-  const R_BUMI = 320;
+  // Lengkung permukaan bumi MEMENUHI SELURUH LEBAR gambar (x = 0 sampai 560),
+  // bukan berhenti 25px di dalam tepi.
+  //
+  // Sebelumnya busurnya hanya membentang x=25..535, sehingga di kedua tepi
+  // tersisa celah sempit tempat LANGIT terlihat sampai ke bawah - langit di
+  // bawah garis tanah, yang terbaca sebagai gambar yang belum penuh. Sekarang
+  // sisi bumi tepat berada di tepi gambar, sehingga potongannya terbaca
+  // melanjut ke luar bidang.
+  //
+  // Jari-jari disesuaikan supaya puncak busur tetap di ketinggian yang sama:
+  //   R = (a^2 + s^2) / (2s), dengan a = 280 (setengah lebar) dan s = 127.
+  const LEBAR = 560;
+  const R_BUMI = 372.2;
   const Y_BUSUR = 237; // ketinggian ujung busur di tepi kiri & kanan
   const Y_PUNCAK = 110; // ketinggian puncak busur
 
@@ -516,11 +526,11 @@ function MantleConvectionHalfEarth() {
   const INNER_RX = 85;
   const INNER_RY = 75;
 
-  /** Jalur busur permukaan bumi dari tepi kiri ke tepi kanan. */
-  const busurPermukaan = `M ${CX - 255} ${Y_BUSUR} A ${R_BUMI} ${R_BUMI} 0 0 1 ${CX + 255} ${Y_BUSUR}`;
+  /** Jalur busur permukaan bumi, dari tepi kiri sampai tepi kanan gambar. */
+  const busurPermukaan = `M 0 ${Y_BUSUR} A ${R_BUMI} ${R_BUMI} 0 0 1 ${LEBAR} ${Y_BUSUR}`;
 
   /** Badan bumi: daerah di bawah busur permukaan sampai dasar potongan. */
-  const badanBumi = `${busurPermukaan} L ${CX + 255} ${DASAR} L ${CX - 255} ${DASAR} Z`;
+  const badanBumi = `${busurPermukaan} L ${LEBAR} ${DASAR} L 0 ${DASAR} Z`;
 
   /** Kubah inti: sisi datar di dasar potongan, lengkung ke atas. */
   const kubah = (rx: number, ry: number) =>

@@ -35,15 +35,16 @@ import { join } from 'node:path';
 // ── Konstanta & rumus: disalin dari MantleConvectionHalfEarth ──────────────
 const CX = 280;
 const DASAR = 400; // sisi bawah potongan
-const R_BUMI = 320;
+const LEBAR = 560; // busur permukaan memenuhi seluruh lebar
+const R_BUMI = 372.2;
 const Y_BUSUR = 237; // ketinggian ujung busur di tepi kiri & kanan
 const CORE_RX = 145;
 const CORE_RY = 130;
 const INNER_RX = 85;
 const INNER_RY = 75;
 
-const busurPermukaan = `M ${CX - 255} ${Y_BUSUR} A ${R_BUMI} ${R_BUMI} 0 0 1 ${CX + 255} ${Y_BUSUR}`;
-const badanBumi = `${busurPermukaan} L ${CX + 255} ${DASAR} L ${CX - 255} ${DASAR} Z`;
+const busurPermukaan = `M 0 ${Y_BUSUR} A ${R_BUMI} ${R_BUMI} 0 0 1 ${LEBAR} ${Y_BUSUR}`;
+const badanBumi = `${busurPermukaan} L ${LEBAR} ${DASAR} L 0 ${DASAR} Z`;
 const kubah = (rx, ry) => `M ${CX - rx} ${DASAR} A ${rx} ${ry} 0 0 1 ${CX + rx} ${DASAR} Z`;
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" width="560" height="400">

@@ -51,7 +51,7 @@ import { getZone, ZONES, TILE, type MapObject } from './engine/zones';
 // Mesin undian berbenih yang sama dipakai bank soal dan kata gerbang, supaya
 // sifat "berbeda antar-siswa namun tetap bagi siswa yang sama" berlaku di
 // kedua tempat tanpa menulis ulang logikanya.
-import { undiKataGerbang } from '../../../missions/data/bankKataGerbang';
+import { undiKataGerbang, petunjukUntuk } from '../../../missions/data/bankKataGerbang';
 import { getGameScale } from './engine/renderer';
 import { setMobileButton, resetInputKeys } from './engine/player';
 
@@ -1283,10 +1283,16 @@ export default function EarthDiveGame() {
                 : isMantle
                   ? 'TANTANGAN PENELITI: MANTEL BUMI'
                   : 'TANTANGAN PENELITI: KERAK BUMI';
-      // Kata gerbang DIUNDI per siswa (lihat `undiKataGerbang`), sehingga kata
-      // yang harus dipecahkan berbeda antar-siswa namun tetap sama bila siswa
-      // yang sama membuka ulang zona ini.
-      const words = undiKataGerbang(zoneIdx, activeUserId);
+      // Kata DAN redaksi petunjuknya diundi per siswa (lihat `undiKataGerbang`
+      // dan `petunjukUntuk`), sehingga:
+      //   - kata yang harus dipecahkan berbeda antar-siswa,
+      //   - kalimat soalnya pun berbeda walaupun katanya kebetulan sama, dan
+      //   - keduanya TETAP bila siswa yang sama membuka ulang zona ini, supaya
+      //     tidak ada yang bisa mengundi ulang dengan menyegarkan halaman.
+      const words = undiKataGerbang(zoneIdx, activeUserId).map((kata, i) => ({
+        ...kata,
+        hint: petunjukUntuk(kata, zoneIdx, i, activeUserId),
+      }));
       setActiveChallenge({
         strata,
         isGate: true,

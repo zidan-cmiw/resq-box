@@ -19,7 +19,13 @@
 
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { ZONE_GATE_BANK, varianZona, undiKataGerbang } from '../data/bankKataGerbang.ts';
+import {
+  ZONE_GATE_BANK,
+  varianZona,
+  undiKataGerbang,
+  petunjukUntuk,
+  type KataGerbang,
+} from '../data/bankKataGerbang.ts';
 import { ZONES } from '../../app/Level1/EarthDive/engine/zones.ts';
 
 /**
@@ -32,6 +38,104 @@ import { ZONES } from '../../app/Level1/EarthDive/engine/zones.ts';
  * akan diam-diam memakai kata zona 1, tanpa error apa pun.
  */
 const ZONA = ZONES.map((_, i) => i);
+
+/** Seluruh kalimat petunjuk milik satu kata: yang utama dan seluruh variasinya. */
+function semuaPetunjuk(kata: KataGerbang): string[] {
+  return [kata.hint, ...(kata.hintLain ?? [])];
+}
+
+describe('bank kata gerbang — variasi redaksi petunjuk', () => {
+  test('zona 2 (mantel) punya variasi redaksi untuk SETIAP katanya', () => {
+    // Zona contoh: memastikan mekanismenya benar-benar terisi, bukan sekadar ada
+    // di dalam tipe.
+    for (const varian of varianZona(2)) {
+      for (const kata of varian) {
+        assert.ok(
+          (kata.hintLain ?? []).length > 0,
+          `kata "${kata.word}" di zona 2 belum punya variasi redaksi`,
+        );
+      }
+    }
+  });
+
+  test('SETIAP kalimat variasi tetap tidak memuat kata jawabannya', () => {
+    // Aturan yang sama seperti petunjuk utama. Variasi redaksi tidak boleh
+    // menjadi celah kebocoran jawaban.
+    const bocor: string[] = [];
+    for (const zona of ZONA) {
+      for (const varian of varianZona(zona)) {
+        for (const kata of varian) {
+          for (const kalimat of semuaPetunjuk(kata)) {
+            if (kalimat.toUpperCase().includes(kata.word.toUpperCase())) {
+              bocor.push(`zona ${zona} "${kata.word}": ${kalimat.slice(0, 45)}...`);
+            }
+          }
+        }
+      }
+    }
+    assert.deepEqual(bocor, [], `kalimat petunjuk yang membocorkan jawabannya:\n  ${bocor.join('\n  ')}`);
+  });
+
+  test('SETIAP kalimat variasi cukup panjang untuk menuntun', () => {
+    for (const zona of ZONA) {
+      for (const varian of varianZona(zona)) {
+        for (const kata of varian) {
+          for (const kalimat of semuaPetunjuk(kata)) {
+            assert.ok(
+              kalimat.trim().length >= 25,
+              `variasi petunjuk "${kata.word}" terlalu pendek: "${kalimat}"`,
+            );
+          }
+        }
+      }
+    }
+  });
+});
+
+describe('bank kata gerbang — petunjuk diundi per siswa', () => {
+  test('kalimat yang dipilih selalu milik kata itu sendiri', () => {
+    for (const zona of ZONA) {
+      for (const varian of varianZona(zona)) {
+        for (const kata of varian) {
+          for (const siswa of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
+            const dipilih = petunjukUntuk(kata, zona, 0, siswa);
+            assert.ok(
+              semuaPetunjuk(kata).includes(dipilih),
+              `petunjuk untuk "${kata.word}" bukan salah satu kalimat miliknya`,
+            );
+          }
+        }
+      }
+    }
+  });
+
+  test('TETAP bagi siswa yang sama — tidak bisa diundi ulang dengan menyegarkan', () => {
+    for (const zona of ZONA) {
+      for (const varian of varianZona(zona)) {
+        for (const kata of varian) {
+          assert.equal(
+            petunjukUntuk(kata, zona, 0, 'siswa-tetap'),
+            petunjukUntuk(kata, zona, 0, 'siswa-tetap'),
+          );
+        }
+      }
+    }
+  });
+
+  test('BERBEDA antar-siswa, sehingga menyalin jawaban tidak lagi berguna', () => {
+    // Diperiksa pada kalimat yang MEMANG punya variasi, yaitu zona 2.
+    let adaPerbedaan = false;
+    for (const varian of varianZona(2)) {
+      for (const kata of varian) {
+        const kalimat = new Set(
+          Array.from({ length: 40 }, (_, i) => petunjukUntuk(kata, 2, 0, `siswa-${i}`)),
+        );
+        if (kalimat.size > 1) adaPerbedaan = true;
+      }
+    }
+    assert.ok(adaPerbedaan, 'tidak ada satu pun kata yang redaksinya berbeda antar-siswa');
+  });
+});
 
 describe('bank kata gerbang — keabsahan isi', () => {
   test('seluruh 8 zona Level 1 tersedia', () => {

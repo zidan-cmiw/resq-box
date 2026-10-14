@@ -40,7 +40,20 @@ import { benihDari, pilihBerbenih } from '../engine/undianBerbenih.ts';
 
 export interface KataGerbang {
   word: string;
+  /** Petunjuk utama. */
   hint: string;
+  /**
+   * Petunjuk ALTERNATIF untuk jawaban yang SAMA.
+   *
+   * Gunanya: dua siswa yang kebetulan mendapat kata yang sama tetap membaca
+   * kalimat soal yang BERBEDA, sementara jawabannya tidak berubah. Dengan begitu
+   * menyalin jawaban dari teman tidak lagi berguna, karena kalimat soalnya tidak
+   * sama - tetapi materi dan kuncinya tetap sama persis.
+   *
+   * Setiap kalimat di sini WAJIB tetap memenuhi aturan yang sama seperti `hint`:
+   * tidak boleh memuat kata jawabannya sendiri.
+   */
+  hintLain?: string[];
 }
 
 /** Bank varian: indeks zona -> daftar varian -> daftar kata. */
@@ -121,28 +134,28 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
   2: [
     // Mantel Bumi — sengaja HANYA 2 kata, konsisten di semua varian.
     [
-      { word: 'MANTEL', hint: 'Lapisan di bawah kerak bumi yang merupakan lapisan paling tebal (2.900 km).' },
-      { word: 'KONVEKSI', hint: 'Arus perputaran panas di dalam mantel yang menggerakkan lempeng bumi.' },
+      { word: 'MANTEL', hint: 'Lapisan di bawah kerak bumi yang merupakan lapisan paling tebal (2.900 km).', hintLain: ['Lapisan tertebal di dalam bumi, letaknya tepat di bawah kerak.'] },
+      { word: 'KONVEKSI', hint: 'Arus perputaran panas di dalam mantel yang menggerakkan lempeng bumi.', hintLain: ['Perpindahan panas yang berputar membentuk sel, dan menjadi tenaga penggerak lempeng.'] },
     ],
     [
-      { word: 'ADONAN', hint: 'Material mantel paling mirip benda kental ini, sehingga dapat mengalir sangat lambat.' },
-      { word: 'FLUIDA', hint: 'Wujud material mantel: bukan padat kaku, melainkan ... sangat kental.' },
+      { word: 'ADONAN', hint: 'Material mantel paling mirip benda kental ini, sehingga dapat mengalir sangat lambat.', hintLain: ['Material mantel diibaratkan seperti campuran tepung dan air yang kental ini.'] },
+      { word: 'FLUIDA', hint: 'Wujud material mantel: bukan padat kaku, melainkan ... sangat kental.', hintLain: ['Sebutan untuk zat yang dapat mengalir, misalnya zat kental di dalam mantel.'] },
     ],
     [
-      { word: 'SILIKAT', hint: 'Bahan batuan penyusun mantel bumi.' },
-      { word: 'PANAS', hint: 'Suhu mantel berkisar 1.000 sampai 3.700 derajat Celsius, artinya mantel sangat...' },
+      { word: 'SILIKAT', hint: 'Bahan batuan penyusun mantel bumi.', hintLain: ['Senyawa yang banyak menyusun batuan mantel, mengandung silikon dan oksigen.'] },
+      { word: 'PANAS', hint: 'Suhu mantel berkisar 1.000 sampai 3.700 derajat Celsius, artinya mantel sangat...', hintLain: ['Keadaan suhu di dalam mantel yang mencapai ribuan derajat Celsius.'] },
     ],
     [
-      { word: 'KENTAL', hint: 'Sifat material mantel: sangat ... sehingga mengalir sangat lambat.' },
-      { word: 'ASTENOSFER', hint: 'Lapisan kental di bagian atas mantel, tepat di bawah kerak bumi.' },
+      { word: 'KENTAL', hint: 'Sifat material mantel: sangat ... sehingga mengalir sangat lambat.', hintLain: ['Sifat zat yang mengalir lambat karena partikelnya rapat, seperti material mantel.'] },
+      { word: 'ASTENOSFER', hint: 'Lapisan kental di bagian atas mantel, tepat di bawah kerak bumi.', hintLain: ['Bagian paling atas mantel yang paling liat, tempat lempeng bergerak di atasnya.'] },
     ],
     [
-      { word: 'MELELEH', hint: 'Yang terjadi pada batuan bila suhunya melampaui titik leburnya.' },
-      { word: 'SIRKULASI', hint: 'Nama lain perputaran aliran panas yang membentuk sel di dalam mantel.' },
+      { word: 'MELELEH', hint: 'Yang terjadi pada batuan bila suhunya melampaui titik leburnya.', hintLain: ['Perubahan wujud batuan menjadi zat alir karena suhunya sangat tinggi.'] },
+      { word: 'SIRKULASI', hint: 'Nama lain perputaran aliran panas yang membentuk sel di dalam mantel.', hintLain: ['Gerakan berputar aliran zat kental di dalam mantel, dari bawah ke atas lalu kembali turun.'] },
     ],
     [
-      { word: 'KONDUKSI', hint: 'Perpindahan panas melalui sebuah zat tanpa memindahkan zatnya sendiri.' },
-      { word: 'GEOTERMAL', hint: 'Sebutan bagi energi panas yang berasal dari dalam bumi.' },
+      { word: 'KONDUKSI', hint: 'Perpindahan panas melalui sebuah zat tanpa memindahkan zatnya sendiri.', hintLain: ['Cara panas merambat melalui sebuah benda tanpa benda itu ikut berpindah.'] },
+      { word: 'GEOTERMAL', hint: 'Sebutan bagi energi panas yang berasal dari dalam bumi.', hintLain: ['Istilah bagi panas bumi yang dimanfaatkan sebagai pembangkit listrik.'] },
     ],
   ],
   3: [
@@ -304,6 +317,34 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
 /** Seluruh varian milik satu zona (kosong bila zona tidak ada di bank). */
 export function varianZona(zoneIdx: number): KataGerbang[][] {
   return ZONE_GATE_BANK[zoneIdx] ?? [];
+}
+
+/**
+ * Petunjuk yang dibaca seorang siswa untuk satu kata.
+ *
+ * Kalimatnya dipilih dari `hint` dan `hintLain` memakai mesin berbenih yang
+ * sama dengan pengundian kata, sehingga:
+ *
+ *   - BERBEDA antar-siswa - dua siswa yang kebetulan mendapat kata yang sama
+ *     tetap membaca kalimat soal yang berbeda,
+ *   - TETAP bagi siswa yang sama - menyegarkan halaman tidak mengubah kalimatnya,
+ *     jadi tidak ada yang bisa mengundi ulang sampai mendapat kalimat termudah,
+ *   - JAWABANNYA TIDAK BERUBAH - hanya redaksinya yang berbeda.
+ */
+export function petunjukUntuk(
+  kata: KataGerbang,
+  zona: number,
+  indeksKata: number,
+  userId: string,
+): string {
+  const pilihan = [kata.hint, ...(kata.hintLain ?? [])];
+  if (pilihan.length <= 1) return kata.hint;
+
+  const dipilih = pilihBerbenih(
+    pilihan,
+    benihDari(`${userId}|petunjuk|${zona}|${indeksKata}|${kata.word}`),
+  );
+  return dipilih ?? kata.hint;
 }
 
 /**
