@@ -356,9 +356,9 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-volcano-sim-signs',
         title: 'Temuan 1: Urutan Tanda Alam Erupsi & Status PVMBG',
         shortDesc:
-          'Erupsi gunung api diawali oleh gempa tremor dan asap putih (WASPADA), disusul asap kelabu pekat, satwa panik turun gunung, dan tumbuhan layu akibat panas tanah (SIAGA), hingga muntahan magma dan dentuman dahsyat (AWAS).',
+          'Erupsi gunung api tidak datang tiba-tiba. Sebelumnya ada tanda-tanda alam yang berurutan. Mula-mula muncul gempa tremor dan asap putih dari KRATER di puncak (status WASPADA), lalu PVMBG memberi PERINGATAN kepada warga. Selanjutnya asap berubah kelabu pekat, terdengar GEMURUH, satwa panik MENURUN dari gunung, dan tumbuhan layu akibat panas tanah (status SIAGA). Puncaknya terjadi LEDAKAN yang menyemburkan muntahan magma (status AWAS). SUMBER bahaya seperti awan panas PIROKLASTIK dan LAHAR mengancam lereng gunung.',
         fact:
-          'Hewan liar memiliki kepekaan insting terhadap gelombang mikro seismik dan perubahan suhu tanah sehingga selalu bermigrasi menjauhi puncak sebelum letusan terjadi.',
+          'Hewan liar memiliki kepekaan insting terhadap gelombang mikro seismik dan perubahan suhu tanah sehingga selalu bermigrasi menjauhi puncak sebelum letusan terjadi. Tanda-tanda alam inilah yang menjadi peringatan dini bagi warga agar segera menjauh dari BAHAYA.',
         iconName: 'mountain',
         illustrationType: 'volcano-status',
       },
@@ -366,7 +366,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-volcano-sim-evac',
         title: 'Temuan 2: Protokol Evakuasi Mandiri & Penggunaan APD',
         shortDesc:
-          'Saat status SIAGA, siapkan tas siaga dan kenakan masker serta kacamata tertutup untuk menyaring abu vulkanik. Saat status AWAS, segera tinggalkan zona KRB III menggunakan kendaraan evakuasi menuju Tempat Evakuasi Akhir (TEA).',
+          'Saat status SIAGA, siapkan tas siaga dan kenakan masker serta kacamata tertutup untuk menyaring abu vulkanik. Saat status AWAS, segera MENGUNGSI dan tinggalkan zona KRB III menggunakan kendaraan evakuasi menuju Tempat Evakuasi Akhir (TEA).',
         fact:
           'Abu vulkanik sangat tajam seperti pecahan kaca mikroskopis. Jangan pernah mengucek mata yang terkena abu dan segera gunakan air mengalir.',
         iconName: 'shield',
