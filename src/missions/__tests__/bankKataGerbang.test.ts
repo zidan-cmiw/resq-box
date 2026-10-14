@@ -20,14 +20,49 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { ZONE_GATE_BANK, varianZona, undiKataGerbang } from '../data/bankKataGerbang.ts';
+import { ZONES } from '../../app/Level1/EarthDive/engine/zones.ts';
 
-/** Seluruh zona yang seharusnya ada di bank (Level 1 punya 8 zona). */
-const ZONA = [0, 1, 2, 3, 4, 5, 6, 7];
+/**
+ * Seluruh zona Level 1, DITURUNKAN dari data zonanya, bukan ditulis tangan.
+ *
+ * Daftar yang ditulis tangan adalah cara bug ini masuk sejak awal: kalau ada zona
+ * baru ditambahkan, daftar itu tidak ikut bertambah, sehingga zona tersebut tidak
+ * pernah diuji - dan justru zona itulah yang paling perlu diuji. Karena
+ * `undiKataGerbang` memakai zona 1 sebagai cadangan, zona yang lupa didaftarkan
+ * akan diam-diam memakai kata zona 1, tanpa error apa pun.
+ */
+const ZONA = ZONES.map((_, i) => i);
 
 describe('bank kata gerbang — keabsahan isi', () => {
   test('seluruh 8 zona Level 1 tersedia', () => {
     const hilang = ZONA.filter((z) => varianZona(z).length === 0);
     assert.deepEqual(hilang, [], `zona tanpa varian: ${hilang.join(', ')}`);
+  });
+
+  test('SETIAP zona Level 1 punya varian — tidak ada yang jatuh ke cadangan', () => {
+    // Inilah penjaga yang menutup celah itu. Tanpa ini, zona baru yang belum
+    // diisi katanya akan DIAM-DIAM memakai kata zona 1, karena undiKataGerbang
+    // memakai zona 1 sebagai cadangan.
+    const hilang = ZONES.map((z, i) => ({ i, id: z.id }))
+      .filter(({ i }) => varianZona(i).length === 0)
+      .map(({ i, id }) => `zona ${i} (${id})`);
+
+    assert.deepEqual(
+      hilang,
+      [],
+      `zona tanpa varian kata — gerbangnya akan diam-diam memakai kata zona lain:\n  ${hilang.join('\n  ')}`,
+    );
+  });
+
+  test('bank tidak menyimpan kunci zona yang bukan zona Level 1', () => {
+    // Kebalikannya: kunci di luar jangkauan berarti varian yang tidak akan pernah
+    // terundi, jadi sia-sia ditulis.
+    const jumlahZona = ZONES.length;
+    const berlebih = Object.keys(ZONE_GATE_BANK)
+      .map(Number)
+      .filter((z) => z < 0 || z >= jumlahZona);
+
+    assert.deepEqual(berlebih, [], `kunci zona di luar jangkauan: ${berlebih.join(', ')}`);
   });
 
   test('setiap zona punya minimal 2 varian supaya benar-benar dapat diundi', () => {
