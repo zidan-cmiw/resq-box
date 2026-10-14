@@ -447,7 +447,7 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-transform-sanandreas',
       title: 'Batas Transform',
       shortDesc:
-        'Batas lempeng sesar atau transform adalah batas lempeng yang menyebabkan terjadinya gerakan lempeng kulit bumi yang sejajar. Hal ini terjadi apabila lempengan bumi bergesek dalam posisi yang sama datar, sejajar, dan selalu bergerak.',
+        'Batas lempeng sesar atau transform adalah batas lempeng yang menyebabkan terjadinya gerakan lempeng kulit bumi yang sejajar. Hal ini terjadi apabila lempengan bumi bergesek dalam posisi yang sama datar, sejajar, dan selalu bergerak. Karena bergerak sejajar, arah geraknya HORIZONTAL dan saling MENDATAR, bukan saling menjauh atau saling bertumbukan. Gesekan yang terus-menerus membuat batuan di sepanjang sesar menjadi TEGANGAN. Ketika batuan sudah tidak kuat lagi menahan tegangan itu, batuan akan PATAH lalu bergeser. Batuan yang REKAH dan PATAHAN inilah yang kita sebut sesar, dan GESERAN mendadak di sepanjang sesar itulah yang menimbulkan gempa bumi.',
       fact:
         'Sesar San Andreas di Kalifornia bergeser sekitar 2 inci (5 cm) per tahun, memicu gempa dangkal saat energi gesekan batuan terlepas!',
       iconName: 'compass',
@@ -792,7 +792,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-transform-sanandreas',
       title: 'Batas Transform',
       shortDesc:
-        'Batas lempeng sesar atau transform adalah batas lempeng yang menyebabkan terjadinya gerakan lempeng kulit bumi yang sejajar. Hal ini terjadi apabila lempengan bumi bergesek dalam posisi yang sama datar, sejajar, dan selalu bergerak.',
+        'Batas lempeng sesar atau transform adalah batas lempeng yang menyebabkan terjadinya gerakan lempeng kulit bumi yang sejajar. Hal ini terjadi apabila lempengan bumi bergesek dalam posisi yang sama datar, sejajar, dan selalu bergerak. Karena bergerak sejajar, arah geraknya HORIZONTAL dan saling MENDATAR, bukan saling menjauh atau saling bertumbukan. Gesekan yang terus-menerus membuat batuan di sepanjang sesar menjadi TEGANGAN. Ketika batuan sudah tidak kuat lagi menahan tegangan itu, batuan akan PATAH lalu bergeser. Batuan yang REKAH dan PATAHAN inilah yang kita sebut sesar, dan GESERAN mendadak di sepanjang sesar itulah yang menimbulkan gempa bumi.',
       fact:
         'Sesar San Andreas di Kalifornia bergeser sekitar 2 inci (5 cm) per tahun, memicu gempa dangkal saat energi gesekan batuan terlepas!',
       iconName: 'compass',
