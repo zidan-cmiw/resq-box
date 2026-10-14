@@ -210,7 +210,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-safety',
         title: 'Prosedur Keselamatan & Medis Pascabencana',
         shortDesc:
-          'Setelah getaran gempa berhenti, keselamatan tetap menjadi prioritas utama. Waspadai bahaya gempa susulan (aftershock), hindari mendekati bangunan yang retak, dan prioritaskan pertolongan pertama (P3K) bagi korban yang terluka.',
+          'Setelah getaran gempa berhenti, keselamatan tetap menjadi prioritas utama. Waspadai bahaya gempa susulan (aftershock) dan hindari mendekati bangunan yang retak atau RERUNTUHAN bangunan yang masih bisa roboh. Prioritaskan pertolongan pertama (P3K) bagi korban yang terluka, lalu hubungi AMBULANS atau tim medis bila lukanya cukup berat. Para PETUGAS dan guru mengarahkan warga agar tetap tenang dan tidak panik.',
         fact:
           'BNPB menginstruksikan warga untuk tetap berada di tempat terbuka jauh dari tiang, kabel listrik, dan pohon, serta memeriksa potensi korsleting listrik atau kebocoran gas sebelum meninggalkan area.',
         iconName: 'shield',
@@ -220,7 +220,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-coordination',
         title: 'Manajemen Titik Kumpul & Komunikasi Resmi',
         shortDesc:
-          'Di titik kumpul (assembly point), koordinator bencana dan guru melakukan presensi menyeluruh untuk memastikan tidak ada siswa yang tertinggal di dalam gedung. Dengarkan instruksi resmi dari BMKG atau BPBD dan hindari menyebarkan isu hoaks.',
+          'Di titik kumpul (assembly point) yang biasanya berupa LAPANGAN terbuka, koordinator bencana dan guru melakukan presensi menyeluruh untuk memastikan tidak ada siswa yang tertinggal di dalam gedung. Seluruh warga diminta BERKUMPUL di tempat itu dan tidak berpencar. Hasil KEHADIRAN dicatat, lalu dilaporkan ke POSKO utama. Dengarkan instruksi resmi dari BMKG atau BPBD dan hindari menyebarkan isu hoaks.',
         fact:
           'Jangan pernah kembali masuk ke dalam gedung sekolah yang retak untuk mengambil barang yang tertinggal hingga tim ahli menyatakan struktur bangunan sudah aman.',
         iconName: 'clipboard',

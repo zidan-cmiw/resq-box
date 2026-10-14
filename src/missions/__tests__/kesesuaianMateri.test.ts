@@ -84,15 +84,15 @@ const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
  * Batas untuk TTS Level 2. Area 1 tidak punya materi sama sekali, sehingga
  * kedua belas jawabannya memang tidak punya acuan.
  *
- * Kondisi saat ini (7 dari 60 jawaban belum diajarkan; area 1 tidak dihitung):
+ * Kondisi saat ini (0 dari 60 jawaban belum diajarkan; area 1 tidak dihitung):
   area 0 Mitigasi Gempa Bumi            0 : SELESAI
   area 1 tanpa materi: 12 jawaban tidak punya acuan
-  area 2 Lapangan Evakuasi Sekolah (Pasca Gempa Besar) 7 : AMBULANS, BERKUMPUL, KEHADIRAN, LAPANGAN, PETUGAS, POSKO, RERUNTUHAN
+  area 2 Lapangan Evakuasi Sekolah (Pasca Gempa Besar) 0 : SELESAI
   area 3 Pos Pengamatan Merapi          0 : SELESAI
   area 4 Simulasi Erupsi Merapi         0 : SELESAI
   area 5 Barak Pengungsian & Pemulihan  0 : SELESAI
  */
-const BATAS_AREA: Record<number, number> = { 0: 0, 1: 12, 2: 7, 3: 0, 4: 0, 5: 0 };
+const BATAS_AREA: Record<number, number> = { 0: 0, 1: 12, 2: 0, 3: 0, 4: 0, 5: 0 };
 
 const besar = (s: unknown) => String(s ?? '').toUpperCase();
 
