@@ -61,11 +61,12 @@ const KATA_BEKU: Record<number, string[]> = {
  * rendah, uji ini gagal dan meminta angkanya diturunkan - supaya sisa pekerjaan
  * tidak pernah terlupakan.
  *
- * Kondisi saat ini (35 dari 107 kata belum diajarkan):
+ * Kondisi saat ini (29 dari 107 kata belum diajarkan):
  *   zona 1 Kerak      0 : SELESAI - LITOSFER, DARATAN, LAUTAN, LEMPENG, SILIKAT,
  *                        SEDIMEN, TANAH, LEMPUNG, LERENG, KERAS, INDONESIA,
  *                        SUMATRA, dan GEMPA sudah ditambahkan ke materi kerak.
- *   zona 2 Mantel     6 : ASTENOSFER, GEOTERMAL, KONDUKSI, MELELEH, SILIKAT, SIRKULASI
+ *   zona 2 Mantel     0 : SELESAI - ASTENOSFER, GEOTERMAL, KONDUKSI, MELELEH,
+ *                        SILIKAT, dan SIRKULASI sudah dijelaskan di materi mantel.
  *   zona 3 Inti Luar  5 : GEODYNAMO, KOMPAS, KUTUB, LEBUR, LELEHAN
  *   zona 4 Inti Dalam 4 : INTIDALAM, MAMPAT, PADUAN, TERDALAM
  *   zona 5 Divergen   8 : CELAH, LAVA, MELEBAR, MEMISAH, MENGAPUNG, PUNGGUNG,
@@ -74,7 +75,7 @@ const KATA_BEKU: Record<number, string[]> = {
  *   zona 7 Transform  8 : GESERAN, HORIZONTAL, MENDATAR, PATAH, PATAHAN, REKAH,
  *                        SANANDREAS, TEGANGAN
  */
-const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 6, 3: 5, 4: 4, 5: 8, 6: 4, 7: 8 };
+const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 5, 4: 4, 5: 8, 6: 4, 7: 8 };
 
 /**
  * Batas untuk TTS Level 2. Area 1 tidak punya materi sama sekali, sehingga

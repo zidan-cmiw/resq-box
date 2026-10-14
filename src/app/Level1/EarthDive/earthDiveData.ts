@@ -609,9 +609,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-mantel-bawah',
       title: 'Arus Panas Mantel Bumi (Konveksi)',
       shortDesc:
-        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, materialnya berwujud fluida kental seperti adonan sehingga mengalir sangat lambat dan menjadi mesin penggerak lempeng bumi.',
+        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, materialnya berwujud fluida kental seperti adonan sehingga mengalir sangat lambat. Batuan mantel kaya SILIKAT, yaitu senyawa penyusun batuan yang paling banyak terdapat di bumi. Bagian paling atas mantel yang lunak dan lentur disebut ASTENOSFER; di lapisan inilah lempeng kerak bumi seolah mengapung dan bergerak perlahan. Panas yang berasal dari dalam bumi disebut panas GEOTERMAL. Panas itu berpindah dengan dua cara. Cara pertama KONDUKSI, yaitu hantaran panas melalui persentuhan langsung antarbatuan. Cara kedua konveksi, yaitu aliran panas yang naik lalu turun kembali. Di bagian atas mantel, batuan yang sangat panas dapat MELELEH sebagian dan berubah menjadi magma. Aliran panas yang naik-turun itu disebut arus konveksi, yaitu SIRKULASI panas yang menjadi mesin penggerak lempeng bumi.',
       fact:
-        'Arus panas yang berputar di dalam mantel disebut arus konveksi, bekerja seperti air mendidih di panci. Arus inilah yang menjadi mesin penggerak lempeng bumi di permukaan!',
+        'Arus panas yang berputar di dalam mantel disebut arus konveksi, bekerja seperti air mendidih di panci. SIRKULASI inilah yang menjadi mesin penggerak lempeng bumi di permukaan!',
       iconName: 'volcano',
       imageSrc: '/images/geology/mantle.jpg',
       illustrationType: 'mantle-convection',
