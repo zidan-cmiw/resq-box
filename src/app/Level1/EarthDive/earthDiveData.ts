@@ -744,7 +744,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-convergent-subduction',
       title: 'Temuan 1: Dinamika Batas Konvergen',
       shortDesc:
-        'Batas konvergen terjadi akibat dua lempeng kulit bumi saling bertumbukan, sehingga salah satu lempeng tertekuk dan masuk ke bawah bagian lempeng lainnya. Gerakan dahsyat ini menimbulkan getaran gempa bumi yang sangat kuat dan dapat memicu tsunami, seperti gempa dan tsunami Aceh pada 26 Desember 2004.',
+        'Batas konvergen adalah ZONA TABRAKAN antara dua lempeng tektonik. Batas ini terjadi ketika dua lempeng kulit bumi saling MENDEKAT lalu bertumbukan, sehingga salah satu lempeng tertekuk dan masuk ke bawah bagian lempeng lainnya. Gerakan dahsyat ini menimbulkan getaran gempa bumi yang sangat kuat, termasuk gempa DANGKAL yang terasa di dekat palung, dan dapat memicu tsunami, seperti gempa dan tsunami Aceh pada 26 Desember 2004.',
       fact:
         'Batas konvergen terbagi menjadi 3 jenis. Subduksi: lempeng samudra menunjam ke bawah lempeng benua, membentuk deretan gunung api aktif dan palung laut. Contohnya di Indonesia: Gunung Merapi, Semeru, Bromo, Sinabung, dan Krakatau, serta Palung Jawa di dasar samudra. Kolisi: dua lempeng benua bertumbukan dan tidak saling menunjam, melainkan terlipat membentuk pegunungan. Contohnya Pegunungan Himalaya (tumbukan lempeng India dengan Eurasia) dan Pegunungan Ural. Obduksi: lempeng benua menunjam di bawah samudra.',
       iconName: 'convergent',
@@ -760,7 +760,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-convergent-landforms',
       title: 'Temuan 2: Tiga Bentang Alam Hasil Tumbukan Lempeng',
       shortDesc:
-        'Tumbukan lempeng konvergen menghasilkan 3 bentang alam utama di bumi: (1) Palung Laut Dalam, (2) Pegunungan Lipatan, dan (3) Busur Gunung Berapi aktif.',
+        'Tumbukan lempeng konvergen menghasilkan 3 bentang alam utama di bumi: (1) Palung Laut Dalam, (2) Pegunungan Lipatan, yaitu rangkaian pegunungan yang menjulang TINGGI, dan (3) Busur Gunung Berapi aktif.',
       fact:
         'Kepulauan Indonesia terbentuk dari jalur subduksi lempeng aktif, melahirkan Palung Jawa di dasar samudra serta deretan gunung berapi aktif seperti Gunung Merapi, Semeru, Bromo, Sinabung, dan Krakatau. Sementara Pegunungan Himalaya terbentuk dari tumbukan dua lempeng benua, yaitu lempeng India dan lempeng Eurasia, tanpa proses penunjaman.',
       iconName: 'volcano',
