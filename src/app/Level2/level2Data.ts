@@ -86,7 +86,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-earthquake-prep',
         title: 'Temuan 1: Kesiapsiagaan & Tas Siaga Bencana (72 Jam)',
         shortDesc:
-          'Kesiapsiagaan dimulai sebelum gempa terjadi: mengenali denah darurat, menata perabot berat agar tidak roboh, serta menyiapkan Tas Siaga Bencana (Survival Kit 72 Jam) yang memuat 4 kebutuhan vital: Air Minum & Ransum Makanan Darurat, Kotak P3K, Senter & Peluit SAR, serta Dokumen Penting (KK, KTP, Ijazah, Akta Lahir) & Uang Tunai dalam kantong ziplock anti-air.',
+          'Kesiapsiagaan dimulai sebelum gempa terjadi. Ada beberapa UPAYA yang dapat kita lakukan. Pertama, PERSIAPAN sejak jauh sebelum gempa: mengenali denah darurat dan menata perabot berat agar tidak roboh. Pilih juga perabot yang RINGAN untuk dipasang di dinding, supaya tidak membahayakan bila jatuh. Kedua, menyusun RENCANA evakuasi bersama keluarga, lalu mengikuti LATIHAN atau simulasi gempa secara berkala. Ketiga, memastikan BANGUNAN rumah dan sekolah cukup kuat. Keempat, menyiapkan Tas Siaga Bencana (Survival Kit 72 Jam) yang memuat 4 kebutuhan vital: Air Minum & Ransum Makanan Darurat, Kotak P3K, Senter & Peluit SAR, serta Dokumen Penting (KK, KTP, Ijazah, Akta Lahir) & Uang Tunai dalam kantong ziplock anti-air. Saat gempa benar-benar terjadi, ikuti arahan PETUGAS yang bertugas.',
         fact:
           'Tas Siaga Bencana wajib diletakkan di tempat strategis yang mudah dijangkau saat evakuasi darurat, berisi air minum, makanan tahan lama, P3K, senter, peluit, serta fotokopi dokumen penting (KK, KTP, ijazah, akta lahir) dan uang tunai secukupnya!',
         iconName: 'shield',
