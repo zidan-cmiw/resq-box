@@ -1694,7 +1694,10 @@ function renderIllustration(
             {/* Latar Belakang Ruang Kedalaman Inti Bumi */}
             <rect x="0" y="0" width="540" height="240" fill="#1f0a02" />
 
-            {/* Lapisan Batas Inti Luar Cair di Atas dan Bawah (Lehmann Discontinuity) */}
+            {/* Pita batas inti luar di sisi atas dan bawah potongan.
+                Tulisan "DISKONTINUITAS LEHMANN" sengaja DIHAPUS: istilah itu
+                terlalu tinggi untuk siswa SMP. Pitanya sendiri tetap ada karena
+                membantu membaca batas lapisan. */}
             <rect x="0" y="0" width="540" height="32" fill="#7c1d06" />
             <rect x="0" y="208" width="540" height="32" fill="#7c1d06" />
             <line x1="0" y1="32" x2="540" y2="32" stroke="#f59e0b" strokeWidth="2" />
@@ -1705,10 +1708,6 @@ function renderIllustration(
             <line x1="380" y1="16" x2="530" y2="16" stroke="#fbbf24" strokeWidth="1.5" />
             <line x1="20" y1="224" x2="180" y2="224" stroke="#fbbf24" strokeWidth="1.5" />
             <line x1="360" y1="224" x2="520" y2="224" stroke="#fbbf24" strokeWidth="1.5" />
-
-            {/* Label Batas Diskontinuitas Lehmann */}
-            <rect x="150" y="5" width="240" height="24" rx="4" fill="#450a0a" stroke="#f97316" strokeWidth="1.5" />
-            <text x="270" y="21" fill="#fef08a" fontSize="11" fontWeight="800" fontFamily="'Plus Jakarta Sans', sans-serif" letterSpacing="0.5" textAnchor="middle">DISKONTINUITAS LEHMANN</text>
 
             {/* ── BOLA BESI PADAT DI PUSAT (SOLID Fe-Ni INNER CORE) ── */}
             {/* Cincin Radiasi Cahaya Panas 6.000°C (Sepanas Matahari) */}

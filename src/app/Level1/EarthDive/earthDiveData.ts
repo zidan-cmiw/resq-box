@@ -253,8 +253,8 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-inti-luar',
       title: 'Lautan Logam Meleleh pada Suhu 5.000°C',
       shortDesc:
-        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang meleleh karena panas ekstrem. Perputaran aliran logam cair ini menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
-      fact: 'Suhu 5.000°C di inti luar jauh melampaui titik leleh logam besi dan nikel! Akibatnya, inti luar bukanlah batuan padat seperti kerak atau mantel, melainkan logam cair meleleh yang terus berputar membentuk medan magnet bumi.',
+        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang meleleh karena panas ekstrem. Perputaran aliran logam cair ini membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron dari atomnya, atau disebut ionisasi. Lepasnya elektron membuat muncul arus listrik yang mengalir di dalam inti luar. Arus listrik inilah yang akhirnya menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
+      fact: 'Suhu 5.000°C di inti luar jauh melampaui titik leleh logam besi dan nikel! Akibatnya, inti luar bukanlah batuan padat seperti kerak atau mantel, melainkan logam cair yang terus berputar. Perputaran itu membuat atom besi dan nikel bergesekan, lalu terionisasi dan menimbulkan arus listrik. Barulah dari arus listrik itu terbentuk medan magnet bumi.',
       iconName: 'shield',
       imageSrc: '/images/geology/outer_core.jpg',
       illustrationType: 'molten-metal',
@@ -643,9 +643,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-geodynamo',
       title: 'Medan Magnet Pelindung Bumi',
       shortDesc:
-        'Terletak di lapisan inti luar pada kedalaman 2.900–5.150 km dengan suhu 4.000°C–5.000°C. Karakteristik perputaran aliran logam cair yang terus mengalir berfungsi seperti dinamo raksasa, menghasilkan medan magnet pelindung yang menjaga bumi dari badai radiasi matahari.',
+        'Terletak di lapisan inti luar pada kedalaman 2.900–5.150 km dengan suhu 4.000°C–5.000°C. Perputaran aliran logam cair membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron (ionisasi), sehingga muncul arus listrik yang terus mengalir. Arus listrik inilah yang bekerja seperti dinamo raksasa dan menghasilkan medan magnet pelindung yang menjaga bumi dari badai radiasi matahari. Jadi urutannya: atom bergesekan, terionisasi, timbul arus listrik, barulah muncul medan magnet.',
       fact:
-        'Medan magnet ini menjadi perisai utama bumi! Perisai ini membelokkan radiasi berbahaya dari badai matahari sehingga kehidupan di bumi tetap terlindungi dengan aman.',
+        'Ingat urutannya: atom besi dan nikel bergesekan, terjadi ionisasi, muncul arus listrik, barulah terbentuk medan magnet. Medan magnet ini menjadi perisai utama bumi! Perisai ini membelokkan radiasi berbahaya dari badai matahari sehingga kehidupan di bumi tetap terlindungi dengan aman.',
       iconName: 'shield',
       imageSrc: '/images/geology/outer_core.jpg',
       illustrationType: 'geodynamo',
@@ -741,7 +741,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       shortDesc:
         'Batas konvergen terjadi akibat dua lempeng kulit bumi saling bertumbukan, sehingga salah satu lempeng tertekuk dan masuk ke bawah bagian lempeng lainnya. Gerakan dahsyat ini menimbulkan getaran gempa bumi yang sangat kuat dan dapat memicu tsunami, seperti gempa dan tsunami Aceh pada 26 Desember 2004.',
       fact:
-        'Batas konvergen terbagi menjadi 3 jenis: Subduksi (membentuk deretan gunung api aktif seperti gunung Merapi & palung laut), Kolisi (tumbukan benua vs benua pembentuk Pegunungan Himalaya & Ural), dan Obduksi (lempeng benua menunjam di bawah samudra).',
+        'Batas konvergen terbagi menjadi 3 jenis. Subduksi: lempeng samudra menunjam ke bawah lempeng benua, membentuk deretan gunung api aktif dan palung laut. Contohnya di Indonesia: Gunung Merapi, Semeru, Bromo, Sinabung, dan Krakatau, serta Palung Jawa di dasar samudra. Kolisi: dua lempeng benua bertumbukan dan tidak saling menunjam, melainkan terlipat membentuk pegunungan. Contohnya Pegunungan Himalaya (tumbukan lempeng India dengan Eurasia) dan Pegunungan Ural. Obduksi: lempeng benua menunjam di bawah samudra.',
       iconName: 'convergent',
       imageSrc: '/images/geology/convergent.jpg',
       illustrationType: 'convergent-subduction',
@@ -757,7 +757,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       shortDesc:
         'Tumbukan lempeng konvergen menghasilkan 3 bentang alam utama di bumi: (1) Palung Laut Dalam, (2) Pegunungan Lipatan, dan (3) Busur Gunung Berapi aktif.',
       fact:
-        'Kepulauan Indonesia terbentuk dari jalur subduksi lempeng aktif, melahirkan Palung Jawa di dasar samudra serta deretan gunung berapi aktif seperti Gunung Merapi.',
+        'Kepulauan Indonesia terbentuk dari jalur subduksi lempeng aktif, melahirkan Palung Jawa di dasar samudra serta deretan gunung berapi aktif seperti Gunung Merapi, Semeru, Bromo, Sinabung, dan Krakatau. Sementara Pegunungan Himalaya terbentuk dari tumbukan dua lempeng benua, yaitu lempeng India dan lempeng Eurasia, tanpa proses penunjaman.',
       iconName: 'volcano',
       imageSrc: '/images/geology/convergent.jpg',
       illustrationType: 'convergent-landforms',
