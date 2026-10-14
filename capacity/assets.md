@@ -167,14 +167,31 @@ Grep atas `src/**/*.ts(x)`, `src/index.css`, dan `index.html` untuk tiap nama �
 | **A** | `images (1).jpg` | sama | 25,827 | tidak dirujuk → hapus |
 | **A** | `images (1).jpeg` | sama | 25,827 | tidak dirujuk → hapus |
 | **B** | `images.jpeg` | `1199C994FB78CFA10F7CEF1C04D33B85` | 85,163 | **dirujuk** — `DiscoveryModal.tsx:5243` dan `:6588` |
-| **B** | `lahar_dingin.jpg` | sama | 85,163 | **dirujuk** — `DiscoveryModal.tsx:5248` |
+| **B** | `lahar_dingin.jpg` | sama | 85,163 | ~~dirujuk~~ → **sudah DIHAPUS** (materi lahar dingin dibuang dari kurikulum) |
 | **C** | `frames/f_6.jpg` | `9361063061FED434CE17987C96D901DB` | 334,071 | tidak dirujuk |
 | **C** | `frames/page_2.jpg` | sama | 334,071 | tidak dirujuk |
 
-Grup A: 3 berkas byte-identik, hanya 1 yang dipakai → **hapus 2 berkas (51,654 B)**.
-Grup B: 2 berkas byte-identik, **keduanya** dirujuk (untuk animasi transformasi
-`images.jpeg` → `lahar_dingin.jpg` di `DiscoveryModal.tsx:5243-5248`) → **jangan hapus
-berkasnya**, tapi sadari bahwa ini mengunduh 85 KB dua kali untuk isi yang sama;
+> **Status terkini (setelah pembersihan).** Tabel di atas adalah potret `public/`
+> pada saat analisis dilakukan. Sejak itu:
+>
+> - `wedhus_gembel.jpg` — **tetap dipakai**; `images (1).jpeg` sudah dihapus
+>   (byte-identik dengannya, dulu dipakai sebagai cadangan `onError`).
+> - `lahar_dingin.jpg` dan `images.jpeg` — **sudah dihapus**, bersama seluruh
+>   materi lahar dingin. Foto awan panas kini hanya `wedhus_gembel.jpg`.
+> - `favicon.svg`, `icons.svg`, `logo.jpg`, `uji-board-ipad.html` — **sudah
+>   dihapus** (tidak pernah dirujuk).
+> - `public/images/` (folder kosong) — **sudah dihapus**.
+> - Nomor baris `DiscoveryModal.tsx:52xx` di tabel itu sudah **tidak berlaku**:
+>   berkas itu sudah dipecah dan direstrukturisasi.
+>
+> Jadi bagian "tidak dirujuk → hapus" di tabel ini **sudah dikerjakan**; yang
+> tersisa hanyalah keputusan soal `frames/` (Grup C).
+
+Grup A: 3 berkas byte-identik, hanya 1 yang dipakai → **hapus 2 berkas (51,654 B)**. *(Sudah dikerjakan.)*
+Grup B: 2 berkas byte-identik, dahulu **keduanya** dirujuk (untuk animasi transformasi
+`images.jpeg` → `lahar_dingin.jpg`). **Keduanya kini sudah tidak ada** — materi
+lahar dingin dibuang, dan animasi transformasi itu ikut dihapus. Pelajarannya tetap
+berlaku untuk aset lain: mengunduh 85 KB dua kali untuk isi yang sama itu sia-sia;
 cukup satu berkas dan dua rujukan ke URL yang sama.
 Grup C: terbukti duplikat di dalam folder yang memang akan dihapus.
 

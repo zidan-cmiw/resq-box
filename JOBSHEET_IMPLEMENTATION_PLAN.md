@@ -1,4 +1,33 @@
 # RANCANGAN IMPLEMENTASI JOBSHEET & STUDI KASUS MITIGASI BENCANA (ACTION LAB LEVEL 3)
+
+> [!WARNING]
+> **DOKUMEN INI SUDAH TIDAK BERLAKU (SUPERSEDED) — JANGAN DIPAKAI SEBAGAI ACUAN.**
+>
+> Rancangan ini dibuat sebelum kurikulum Level 3 dipangkas dan distandardisasi.
+> Yang berubah sejak itu:
+>
+> - Rancangan ini memuat **50 job** (4 kategori: 10 + 15 + 15 + 10). Yang
+>   **benar-benar diterapkan hanya 20 misi**, terbagi 4 sektor × 5 misi
+>   (`job_01`–`job_20`) — lihat `src/missions/data/missions.ts`.
+> - Rancangan ini memakai blok **`resq_jalur_evakuasi`** ("Tentukan Jalur
+>   Evakuasi Warga"). Blok itu **sudah dihapus** dari toolbox, generator, dan
+>   mesin validasi.
+> - Sebagian studi kasus di sini bertema **banjir lahar dingin**. Materi itu
+>   **sudah dibuang seluruhnya** dari kurikulum (batasan "Zero Banjir Lahar
+>   Dingin"); bahaya sekunder lembah sungai kini diajarkan sebagai **awan panas
+>   guguran**. Rinciannya di "Catatan Revisi" pada `progress_report.md`.
+> - Daftar kategori pada rancangan ini (10/15/15/10) juga berbeda dari
+>   `CATEGORIES` yang berlaku (5/5/5/5).
+>
+> Acuan yang berlaku untuk Level 3 adalah `src/missions/data/missions.ts`,
+> `src/app/Workspace/BlockEditor/BlocklyComponent.tsx` (toolbox), dan
+> `LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md`.
+>
+> **Catatan bahaya:** ada naskah generator lama `scripts/build_missions.py` yang
+> menulis ulang `missions.ts` mengikuti rancangan 50 job ini. Berkas itu **sudah
+> dihapus** justru karena menjalankannya akan menimpa 20 misi terkurasi,
+> memasukkan kembali teks lahar, dan menggagalkan type-check.
+
 **Platform: RESQ-BOX — Gamifikasi Pembelajaran Mitigasi Bencana & IoT Embedded**  
 **Referensi Format: `Jobshet LIDM NEW 22.pdf` | Program Hardware: `Yo.ino` (ESP32)**  
 **Jenjang Sasaran: SMP / MTs (Kelas VII - VIII) — Mata Pelajaran IPA Terpadu & Informatika (Kurikulum Merdeka)**

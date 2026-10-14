@@ -12,8 +12,7 @@
 #   2. Build produksi — `vite build` (memblokir)
 #   3. Uji unit       — redact (privasi) & dataSaver (memblokir)
 #   4. Validasi SQL   — sintaks PostgreSQL + variabel PL/pgSQL (memblokir)
-#   5. ESLint         — hanya pelaporan, TIDAK memblokir
-#      (masih ada ~260 temuan lama; jadikan memblokir setelah dibersihkan)
+#   5. ESLint         — `eslint .` (memblokir; 0 galat, 129 peringatan)
 # ──────────────────────────────────────────────────────────────────────────
 
 name: CI
@@ -79,10 +78,16 @@ jobs:
       - name: Validasi sintaks & variabel SQL
         run: npm run test:sql
 
-      # ── 5. ESLint (pelaporan saja) ───────────────────────────────────────
-      - name: ESLint (tidak memblokir)
+      # ── 5. ESLint (MEMBLOKIR) ────────────────────────────────────────────
+      # Sebelumnya langkah ini `continue-on-error: true` karena masih ada
+      # ~260 temuan lama. Kini 0 GALAT, sehingga layak memblokir.
+      #
+      # Sisa 129 PERINGATAN sengaja dibiarkan sebagai peringatan, bukan
+      # dinaikkan menjadi galat — alasannya tertulis di `eslint.config.js`
+      # (terutama keluarga aturan react-hooks v7 yang menandai pola wajar
+      # engine game canvas/Three.js). `eslint .` hanya gagal bila ada galat.
+      - name: ESLint
         run: npm run lint
-        continue-on-error: true
 
       # Simpan hasil build sebagai artefak agar bisa diperiksa manual bila gagal.
       - name: Simpan artefak build

@@ -98,5 +98,8 @@
 - **Zero OS Emoji Standard**: Dilarang menggunakan emoji bawaan OS. Wajib menggunakan ikon SVG 2D Pixel Art via `PixelIcon.tsx` (`shapeRendering="crispEdges"`).
 - **Tipografi Pixel Berjenjang**: `'Press Start 2P'` (heading/tombol kayu), `'Pixelify Sans'` (body text/form), `'JetBrains Mono'` (kode/PIN).
 - **Dual Storage & Offline-First**: Cloud Supabase + fallback LocalStorage/BroadcastChannel (PWA Offline-Ready).
-- **Kredensial Default**: Guru (`guru` / `guru123`), Demo Juri unlock Level 3 (`demo` / `demo123`).
+- **Kredensial Guru**: **TIDAK dicatat di repositori ini** (repo bersifat publik).
+  Akun guru dibuat dan kata sandinya diputar lewat
+  `scripts/kelola_akun_guru.py` — prosedurnya ada di `docs/KEAMANAN-AKUN-GURU.md`
+  (dokumen internal, tidak diunggah).
 - **Dual Hardware Feedback Loop**: Web Serial API (USB) & WebSocket (WiFi ESP32).

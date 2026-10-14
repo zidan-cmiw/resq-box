@@ -880,7 +880,7 @@ sequenceDiagram
     Joyo-->>Player: Syukur sesepuh dusun atas keselamatan warga
     
     Player->>Slamet: Tekan [E] / Tap Bicara dengan Pak Slamet
-    Slamet-->>Player: Edukasi bahaya lahar dingin di sungai saat hujan & EWS -> Buka Temuan 3 (disc-post-lahar)
+    Slamet-->>Player: Edukasi bahaya awan panas guguran yang menyusuri lembah sungai & EWS -> Buka Temuan 3 (disc-post-pyroclastic)
     
     Player->>Satria: Bicara dengan Komandan Satria
     alt Temuan 1, 2, atau 3 belum dibaca
@@ -888,7 +888,7 @@ sequenceDiagram
     else Ketiga modul temuan telah lengkap dipelajari
         Satria-->>Player: Berikan tantangan evaluasi Teka-Teki Silang akhir (TTS)
         Satria->>Crossword: Buka Teka-Teki Silang Pascabencana
-        Player->>Crossword: Jawab BARAK, ATAP, LAHAR, AMAN
+        Player->>Crossword: Jawab BARAK, ATAP, PAPAN, AMAN
         Crossword-->>Engine: Kunci jawaban 100% cocok! Buka l2_gate_shelter_recovery
     end
 
@@ -908,7 +908,7 @@ sequenceDiagram
   - Posko medis PMI dengan tabung oksigen dan kotak masker N95 di `x: 880-1040`.
   - Dapur umum Tagana dengan kuali sup berasap hangat dan karung beras di `x: 1300-1460`.
   - Rumah warga beratap abu vulkanik tebal dan tangga bambu gotong royong di `x: 1650-1840`.
-  - Rambu peringatan bahaya lahar dingin BNPB dan tiang sirine EWS di `x: 1880-1940`.
+  - Rambu peringatan bahaya awan panas BNPB dan tiang sirine EWS di `x: 1880-1940`.
   - Kapsul Evakuasi Akhir RESQ-BOX berbalut titanium emas di `x: 2130`.
 - [x] **Ekosistem NPC & Dialog Terintegrasi**:
   - Robot Resqy menyapa otomatis (`resqy_briefing_area6`).
@@ -916,10 +916,10 @@ sequenceDiagram
   - Dani berbagi cerita evakuasi.
   - dr. Alisa memicu Temuan 2 (`disc-post-sanitation`).
   - Mbah Joyo menyampaikan rasa syukur sesepuh desa.
-  - Pak Slamet memicu Temuan 3 (`disc-post-lahar`).
+  - Pak Slamet memicu Temuan 3 (`disc-post-pyroclastic`).
   - Komandan Satria memvalidasi 3 modul sebelum mengizinkan pengerjaan TTS.
 - [x] **Teka-Teki Silang (TTS) Pascabencana Erupsi**:
-  - Menjawab 4 kata kunci: `BARAK` (1 Mendatar), `ATAP` (2 Menurun), `LAHAR` (3 Mendatar), `AMAN` (4 Menurun).
+  - Menjawab 4 kata kunci: `BARAK` (1 Mendatar), `ATAP` (2 Menurun), `PAPAN` (3 Mendatar), `AMAN` (4 Menurun).
   - Validasi matriks huruf tanpa error, membuka gerbang `l2_gate_shelter_recovery`.
 - [x] **Penuntasan Level 2 & Modal Kemenangan Paripurna**:
   - Menaiki kapsul evakuasi akhir memicu kelulusan 100% Level 2.
@@ -3536,6 +3536,331 @@ Status: **100% SUKSES (0 error)**.
 - [x] **Preserved Distance Dispersal**: Awan panas tetap memudar dan hilang total di ujung bawah sebelum memasuki desa.
 - [x] **TypeScript Clean**: `npx tsc -b` exit code 0.
 - [x] **Production Build Clean**: `npm run build` exit code 0.
+
+---
+
+## 79. Panduan Pengujian & Verifikasi Tata Letak HP/Tablet, Isolasi Data Antar-Guru, Kode Kelas Unik, dan Pembangunan Ulang APK + `.exe`
+
+### A. Tujuan & Skenario Pengujian
+
+1. **Verifikasi Tata Letak HP & Tablet (360–1032px)**
+   - Memastikan tidak ada **gulir mendatar** dan tidak ada **tombol keluar layar** di seluruh layar, pada empat lebar: 360px, 390px, 820px (iPad Air tegak), dan 1024px.
+   - Memastikan susunan HP memang **berbeda** dari laptop, bukan versi kecilnya.
+
+2. **Verifikasi Isolasi Data Antar-Guru**
+   - Memastikan guru A **tidak dapat** membaca data murid guru B, baik melalui tabel maupun melalui fungsi RPC.
+   - Memastikan data murid guru B **tidak muncul** di Dashboard Guru A.
+
+3. **Verifikasi Kode Kelas Unik**
+   - Memastikan setiap guru memperoleh kode kelas yang **berbeda**, walaupun nama kelasnya sama.
+
+4. **Verifikasi APK & `.exe` Memuat Build Terbaru**
+   - Memastikan berkas APK dan `.exe` yang diunggah benar-benar memuat hasil bangun web terbaru, **byte demi byte**.
+
+5. **Verifikasi `ws://` Diblokir dari Halaman HTTPS**
+   - Mengukur **apakah** dan **kapan** peramban memblokir sambungan ke hardware, untuk menjawab pertanyaan teknis mengenai *middleware translator*.
+
+---
+
+### B. Cara Menjalankan Seluruh Pengujian
+
+Seluruh alat sudah tersedia di folder `scripts/`. **Tidak ada yang perlu dipasang.**
+
+#### 1. Pengukuran Tata Letak
+
+```bash
+# Ukur satu halaman pada satu lebar
+node scripts/ukur_lebar.mjs 390 dashboard tamu
+
+# Ambil tangkapan layar
+node scripts/foto_lebar.mjs 390 dashboard tamu
+
+# Cari tumpang tindih HUD Level 1
+node scripts/ukur_hud_level1.mjs 390 844
+
+# Ukur plakat misi Level 3
+node scripts/ukur_plakat_level3.mjs 1280 800
+
+# Ukur bilah atas Workspace
+node scripts/ukur_bilah_workspace.mjs 390 844
+```
+
+> **Penting.** Alat ini memakai **Chrome DevTools Protocol**, bukan opsi `--window-size`. Chrome headless **mengabaikan** lebar di bawah **504px**, sehingga pengukuran "390px" dengan cara lama sebenarnya mengukur halaman berlebar 504px yang dipotong. Inilah sebabnya masalah tata letak HP tidak pernah terdeteksi sebelumnya.
+
+Alat ukur juga menyiapkan **sesi tamu** dan **menandai seluruh panduan selesai** sebelum mengukur. Tanpa itu, panduan akan muncul sendiri (`autoStart = true`) dan **menutupi halaman** — sehingga yang terukur adalah lapisan panduannya, bukan halamannya.
+
+Mode sesi yang tersedia: `tamu` (siswa) dan `guru` (guru).
+
+#### 2. Pemeriksa Kode
+
+```bash
+python scripts/periksa_animasi.py            # kelas animasi dipakai tetapi tidak ada
+python scripts/periksa_petunjuk_hp.py        # petunjuk hilang di layar sempit
+python scripts/periksa_izin_guru.py          # fungsi guru memeriksa kepemilikan kelas
+python scripts/periksa_kesegaran_apk_exe.py  # APK & .exe memuat build terbaru
+python scripts/uji_akses_tanpa_login.py      # tabel terlindungi
+```
+
+#### 3. Uji Keamanan dari Luar
+
+```bash
+python scripts/uji_isolasi_guru.py       # menembak REST API memakai kunci PUBLIK saja
+python scripts/bukti_pisah_guru.py guru:SandiGuru tyas:SandiTyas
+node scripts/uji_blokir_ws.mjs https://resq-box.pages.dev/workspace
+```
+
+#### 4. Alat Bantu Operasional
+
+```bash
+# Membuat akun guru (meminta kunci service_role lewat getpass)
+python scripts/kelola_akun_guru.py buat budi "Pak Budi" "SMP Negeri 2"
+python scripts/kelola_akun_guru.py periksa budi
+python scripts/kelola_akun_guru.py daftar
+
+# Menelusuri keadaan guru & kelas
+python scripts/diagnosa_guru_kelas.py
+
+# Mengunggah berkas ke GitHub Release
+python scripts/unggah_rilis.py v1.0.0 <token>
+```
+
+---
+
+### C. Hasil Pengujian
+
+#### 1. Sapuan Tata Letak — 30 Halaman-Lebar
+
+8–9 layar diuji pada empat lebar:
+
+| Lebar | Hasil |
+|---|---|
+| 360px | **SEMUA BERSIH** |
+| 390px | **SEMUA BERSIH** |
+| 820px (iPad Air tegak) | **SEMUA BERSIH** |
+| 1024px | **SEMUA BERSIH** |
+
+**Tidak ada gulir mendatar** dan **tidak ada tombol keluar layar** di satu pun layar, termasuk Dashboard Guru.
+
+> Angka **820px** penting karena berada **di bawah** breakpoint `md` (768px), sehingga susunan tablet tidak pernah mendapat aturan `md:`. Ini pernah membuat masalah di iPad terlewat.
+
+**Catatan pada Level 3:** alat ukur melaporkan 35 elemen "keluar layar", tetapi itu adalah **titik-titik misi pada peta** yang memang dirancang dapat digeser mendatar dan leluhurnya memotongnya. **Bukan masalah.**
+
+#### 2. Verifikasi Tumpang Tindih HUD Level 1
+
+Diukur sebelum dan sesudah perbaikan pada 390px:
+
+| Kotak | Sebelum | Sesudah |
+|---|---|---|
+| TOMBOL MENU | y = 8–52 | y = 8–52 |
+| PIL STRATA | y = **58–93** | y = 58–93 |
+| TELEMETRI | y = **58–103** ← bertumpuk | y = **100–145** |
+| TOMBOL RADAR | y = 8–52 | y = 8–52 |
+
+**Hasil akhir: tidak ada tumpang tindih pada 360px, 390px, 820px, dan 1024px.**
+
+#### 3. Verifikasi Tinggi Dialog Panduan Resqy
+
+| Lebar | Sebelum | Sesudah |
+|---|---|---|
+| 390px | 46% layar | **38%** |
+| 360px | ±55% | **46%** |
+| 820px | — | 38% |
+
+Isi tetap muat pada ketiganya.
+
+#### 4. Verifikasi Judul Bilah Workspace
+
+| Lebar | Lebar didapat | Lebar dibutuh | Terpotong |
+|---|---|---|---|
+| 390px | 57px (sebelumnya 25px) | 187px | ya — **disengaja** |
+| 820px | 199px | 199px | tidak |
+| 1280px | 199px | 199px | tidak |
+
+> **Pemotongan judul di HP disengaja.** Kelompok tombol kanan (Diorama / WiFi / USB / MULAI) memakai 241px sedangkan layar hanya 390px. Memaksa judul mendapat lebih banyak ruang akan **mendorong tombol MULAI keluar layar**, dan MULAI adalah tombol yang menjalankan simulasi.
+
+#### 5. Verifikasi Isolasi Data Antar-Guru
+
+**Uji dari luar tanpa login** memakai kunci `anon` yang sama dengan peramban:
+
+| Yang diuji | Hasil |
+|---|---|
+| Baca `profiles` tanpa login | HTTP 401 ditolak |
+| Baca `level_submissions` tanpa login | HTTP 401 ditolak |
+| Baca `classrooms` tanpa login | HTTP 401 ditolak |
+| Baca `rate_limits` tanpa login | HTTP 401 ditolak |
+| Panggil 13 fungsi privat tanpa login | ditolak semua |
+| Naikkan peran sendiri jadi admin | HTTP 401 ditolak |
+| Pendaftaran mandiri sebagai guru | HTTP 422 ditolak |
+| Admin API dengan kunci `anon` | **HTTP 403 `not_admin`** |
+
+**Pemeriksaan izin tiap fungsi guru:** **12 dari 12 aman, 0 perlu diperiksa.**
+
+**Uji silang antar-guru** memakai `scripts/bukti_pisah_guru.py`. Skrip itu masuk sebagai **kedua** guru memakai kunci **publik** saja, memanggil fungsi yang sama dengan Dashboard Guru, lalu **menguji silang**: guru A mencoba membaca kelas milik guru B — dan itu **HARUS DITOLAK**.
+
+> **Hanya bila uji silang itu ditolak, isolasi dapat dikatakan bekerja.**
+
+#### 6. Verifikasi Kebocoran Kode Kelas (Sebelum Migrasi 11)
+
+```
+class_code_info('RESQ-8A')  ->  {"found": true, "name": "Kelas VIII-A"}
+class_code_info('RESQ-8B')  ->  {"found": true, "name": "Kelas VIII-B"}
+```
+
+Dari **21 tebakan**, **2 langsung berhasil**. Datanya lolos **tanpa login**.
+
+**Yang bocor:** keberadaan kelas, nama kelas, nama sekolah.
+**Yang TIDAK bocor:** data murid — RLS tetap menolak (HTTP 401).
+
+**Diperbaiki** oleh migrasi 11 yang menghapus kedua fungsi itu. Keduanya **tidak dipanggil sama sekali** oleh aplikasi.
+
+#### 7. Verifikasi Pemblokiran `ws://` dari Halaman HTTPS
+
+| Halaman | Percobaan ke `ws://192.168.4.1:81` | Artinya |
+|---|---|---|
+| HTTP lokal (`http://127.0.0.1`) | gagal setelah **5004 ms** | Permintaan **sampai ke jaringan**; TCP timeout karena perangkat tidak ada |
+| HTTPS asli (`https://resq-box.pages.dev`) | gagal dalam **0 ms** | **DIBLOKIR** sebelum dicoba |
+
+**0 milidetik vs 5 detik.** Kalau perangkatnya sekadar tidak ada, butuh 5 detik. **0 ms berarti peramban menolak sebelum menyentuh jaringan.**
+
+**Kesimpulan.** Peramban memblokir sambungan `ws://` dari halaman HTTPS **sebelum** percobaan dilakukan, sehingga tidak ada yang dapat "diterjemahkan" — permintaan tidak pernah keluar dari peramban.
+
+#### 8. Verifikasi Build APK Setelah Pagar Gradle
+
+Build dijalankan **DENGAN `.gz` MASIH ADA** di aset Android — sengaja, supaya pagarnya benar-benar teruji dan bukan sekadar terlihat benar:
+
+```
+BUILD SUCCESSFUL in 17s
+```
+
+Isi APK diperiksa langsung dengan membaca berkas zip-nya:
+
+| Isi | Hasil |
+|---|---|
+| Berkas `.gz` di dalam APK | **0** (dikecualikan) |
+| `terrain-688.stl` | **ADA** (dipertahankan) |
+| `index.html` | ADA |
+| Berkas web | 51 |
+| Total berkas | 487 |
+| Ukuran APK | 6,93 MB |
+
+#### 9. Verifikasi Kesegaran APK & `.exe`
+
+**Sebelum dibangun ulang** — inilah bukti bahwa berkasnya memang usang:
+
+| | APK | EXE |
+|---|---|---|
+| Sama persis | 28 | 29 |
+| **BERBEDA** | **2** | **2** |
+| **TIDAK ADA** | **17** | **16** |
+
+**Sesudah dibangun ulang:**
+
+| | APK | EXE |
+|---|---|---|
+| Sama persis | 46 | 47 |
+| **BERMASALAH** | **0** | **0** |
+
+> APK **46** dan bukan 47 karena `terrain-688.stl.gz` sengaja dikecualikan oleh pagar Gradle — memang disengaja.
+
+**Yang membuat ini sulit terlihat:** Vite memberi **HASH pada nama berkas JS**. Begitu isinya berubah, namanya ikut berubah, sehingga APK lama tetap menunjuk nama lama.
+
+---
+
+### D. Hasil Build Verifikasi Terkini
+
+#### 1. Perintah & Keluaran
+
+```bash
+$ npx tsc -b
+# exit code 0 — 0 error
+
+$ npx vite build
+✓ built in 0.92s
+```
+
+#### 2. Matriks Checklist Verifikasi
+
+**Tata Letak HP & Tablet**
+
+- [x] **Tanpa Gulir Mendatar** — 4 lebar × 8–9 layar, semuanya bersih.
+- [x] **Tanpa Tombol Keluar Layar** — termasuk Dashboard Guru.
+- [x] **Tumpang Tindih HUD = 0** — pada 360px, 390px, 820px, 1024px.
+- [x] **Susunan Berbeda antara HP & Laptop** — plakat misi Level 3, radar Level 1, tombol level Dashboard, panduan Resqy, kartu Siap Offline, bilah Workspace.
+- [x] **Tombol LANJUT Ada di Dialog Cerita** — Level 1 dan Level 2, terverifikasi visual.
+- [x] **Komponen Bersama Dipakai** — `TombolLanjutHp.tsx` dipakai Level 1 dan Level 2.
+
+**Keamanan & Data**
+
+- [x] **Isolasi Antar-Guru** — 12 dari 12 fungsi guru memeriksa kepemilikan kelas.
+- [x] **Tanpa Login Tertutup** — 6 tabel terlindungi, 0 terbuka.
+- [x] **Kunci `anon` Tidak Dapat Admin** — HTTP 403 `not_admin`.
+- [x] **Pendaftaran Mandiri Tertutup** — HTTP 422.
+- [x] **Kode Kelas Unik** — dibuat server, 900.000 kemungkinan + pengulangan.
+- [x] **Pencacahan Kode Kelas Ditutup** — migrasi 11.
+
+**Pemeriksa Kode (semuanya terbukti dapat gagal)**
+
+- [x] `periksa_animasi.py` — 14/14 terdefinisi. Dicabut → **36 terdeteksi**.
+- [x] `periksa_petunjuk_hp.py` — 0 petunjuk hilang. Dirusak → **1 terdeteksi**.
+- [x] `periksa_izin_guru.py` — 12 aman. Dirusak → **terdeteksi**.
+- [x] `periksa_kesegaran_apk_exe.py` — 0 bermasalah. Membuktikan **17 + 16 berkas tertinggal**.
+
+**Build & Rilis**
+
+- [x] **TypeScript Clean** — `npx tsc -b` exit code 0.
+- [x] **Production Build Clean** — `npx vite build` exit code 0.
+- [x] **Build APK** — BERHASIL dengan `.gz` masih ada.
+- [x] **Kesegaran APK** — 46 sama persis, 0 bermasalah.
+- [x] **Kesegaran EXE** — 47 sama persis, 0 bermasalah.
+- [x] **Ukuran di Server** — cocok persis dengan berkas lokal.
+- [x] **Tautan Unduh** — magic bytes `PK` (APK) dan `MZ` (`.exe`) benar.
+- [x] **Rilis `v1.0.0`** — draft `False`, prerelease `False`.
+- [x] **`.exe` Dijalankan** — proses hidup setelah 8 detik.
+- [x] **Pengerasan `.exe`** — `nodeIntegration: false`, `contextIsolation: true`, `sandbox: true`, `webSecurity: true`, bind `127.0.0.1` — semuanya utuh di dalam `app.asar`.
+
+**Uji Perangkat Lunak yang Ada**
+
+- [x] `uji_lingkungan` — 18/18
+- [x] `uji_mode_tamu` — 27/27
+- [x] `uji_nilai_luring` — 22/22
+- [x] `uji_level_guru` — 18/18
+- [x] `uji_pakaian_teleport` — 31/31
+- [x] `uji_server_desktop` — 21/21
+- [x] `uji_pesan_galat` — 10/10
+
+---
+
+### E. Yang BELUM Diuji — Harus Dicoba di Perangkat Asli
+
+Bagian ini dicatat dengan jujur supaya tidak dianggap sudah selesai:
+
+| Yang belum diuji | Kendalanya |
+|---|---|
+| **Sambungan ke ESP32 lewat WebSocket** | Chrome headless **tidak dapat membuka WebSocket sama sekali** — sudah dibuktikan dengan uji kontrol. **Wajib** dicoba di HP/laptop asli dengan Board sungguhan. |
+| **Aplikasi Android sungguhan** | Belum pernah dipasang dan dijalankan di HP asli. |
+| **Aplikasi Laptop tersambung ke Board** | `.exe` sudah diuji **berjalan**, tetapi belum diuji **tersambung ke diorama**. |
+| **Mode Tamu sampai selesai** | Belum diuji end-to-end: apakah nilai tamu benar-benar tidak masuk rapor guru. |
+| **Isolasi guru lewat uji silang antar-akun** | `bukti_pisah_guru.py` sudah disiapkan, tetapi **memerlukan kata sandi akun guru** untuk dijalankan. |
+
+---
+
+### F. Catatan Kesalahan Pengukuran yang Ditemukan Sendiri
+
+Seluruh kesalahan berikut ditemukan **pada diri sendiri**, dan diperbaiki:
+
+| Kesalahan | Akibatnya | Perbaikan |
+|---|---|---|
+| **28 positif palsu** dari ornamen SVG latar | Hasil pengukuran menyesatkan | Hanya periksa tombol, tautan, kolom isi, teks |
+| **Mengukur lapisan panduan**, bukan halamannya | Dashboard dilaporkan "100% muat" padahal tertutup panduan | Siapkan sesi tamu + tandai panduan selesai |
+| **`transform` ditimpa animasi `animate-bounce`** | Uji pergeseran avatar tampak "tidak berpengaruh" untuk SEMUA nilai | Uji memakai properti `top` |
+| **Basis offset berkas `.asar` salah** | `index.html` dilaporkan "tidak ada" padahal ada | Memakai hash SHA256 dari metadata asar |
+| **Rute `workspace` salah dipetakan** ke `/level3` | Mengukur peta Level 3, bukan Workspace | Diperbaiki menjadi `/workspace` |
+| **Pencarian menyimpulkan tombol "Validasi Misi" tidak ada** | Kesimpulan salah — tombolnya ADA di `MissionPanel.tsx` baris 215 | Diperiksa ulang; pelajaran: **bukti langsung lebih dapat dipercaya daripada pencarian yang gagal** |
+| **`periksa_izin_guru.py` melaporkan 5 positif palsu** | Pemeriksa tidak dapat dipercaya | Mengenali fungsi murni & fungsi terbatas-diri |
+| **Skrip akun guru melaporkan "akun tidak ditemukan"** padahal pencariannya yang gagal | Guru dapat membuat akun duplikat | Membedakan gagal-periksa dari tidak-ditemukan |
+| **Commit menghapus `docs/` tetapi `.gitignore` tidak ikut di-stage** | Aturan belum aktif | Diuji langsung: buat berkas di `docs/`, periksa apakah git mengabaikannya |
+
+> **Pelajaran utama.** Hampir setiap pemeriksaan pada percobaan pertama menghasilkan positif palsu atau negatif palsu. Karena itu **setiap pemeriksa dibuktikan dapat gagal** sebelum hasilnya dipercaya, dan **"sudah ditulis" tidak sama dengan "sudah berlaku"**.
 
 
 

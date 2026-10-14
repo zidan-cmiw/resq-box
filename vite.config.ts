@@ -13,9 +13,12 @@ export default defineConfig({
         // panjang — memperbarui kode level TIDAK memaksa siswa mengunduh
         // ulang library pihak ketiga.
         //
-        // Catatan: paket yang sudah tidak dipakai (xyflow, lucide-react)
-        // entrinya dihapus, karena @xyflow/react dan page-flip sudah tidak
-        // diimpor apa pun. @dnd-kit dipertahankan karena masih dipakai.
+        // Catatan: seluruh paket yang tidak lagi diimpor kode sudah DIBUANG
+        // dari `package.json` (xyflow, dnd-kit, lucide-react, page-flip,
+        // react-pageflip, motion, clsx, tailwind-merge, workbox-window).
+        // Karena itu tidak ada lagi entri manualChunks untuknya — sebelumnya
+        // ada cabang 'dnd-vendor', 'icons', dan 'chart-vendor' yang tidak
+        // pernah menghasilkan chunk apa pun.
         manualChunks(id: string) {
           if (!id.includes('node_modules')) return;
 
@@ -29,14 +32,6 @@ export default defineConfig({
           // Klien database & autentikasi.
           if (id.includes('node_modules/@supabase') || id.includes('node_modules/supabase'))
             return 'supabase-vendor';
-
-          // Grafik & ikon serbaguna.
-          if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-'))
-            return 'chart-vendor';
-          if (id.includes('node_modules/lucide-react')) return 'icons';
-
-          // Tarik-seret.
-          if (id.includes('node_modules/@dnd-kit')) return 'dnd-vendor';
 
           // Inti React — paling stabil, paling sering dipakai ulang.
           if (

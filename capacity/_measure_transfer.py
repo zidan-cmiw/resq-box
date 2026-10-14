@@ -66,7 +66,6 @@ on_demand = [
     "radar_bumi_lengkap.jpg",
     "1.webp",
     "images.jpeg",
-    "lahar_dingin.jpg",
     "wedhus_gembel.jpg",
 ]
 od_raw = od_wire = 0

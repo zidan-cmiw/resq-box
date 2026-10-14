@@ -179,7 +179,7 @@ RESQ-BOX menghadirkan ekosistem pembelajaran IPA terpadu:
 ### 5.4 Level 3: Simulation Game (Action Lab & Digital Twin)
 | Fitur | Deskripsi |
 |---|---|
-| **Mission Center** | 22 misi bertingkat dengan narasi skenario darurat nyata (Gempa, Banjir Lahar, Erupsi) |
+| **Mission Center** | 20 misi bertingkat dalam 4 sektor tematik, dengan narasi skenario darurat nyata (Gempa Bumi & Erupsi Merapi) |
 | **Action Lab (Blockly)** | Antarmuka blok visual berbahasa Indonesia ramah anak (contoh: *"Jika Sensor Getaran Mendeteksi Gempa" ➔ "Bunyikan Sirine & Buka Pintu Evakuasi"*). Siswa fokus pada logika mitigasi, bukan coding teknis. |
 | **Sensor Panel** | Slider interaktif untuk mensimulasikan kondisi lingkungan (Skala MMI gempa, status aktivitas vulkanik) |
 | **Evacuation Digital Twin** | Peta simulasi 2D di mana karakter warga (NPC) bergerak mencari tempat aman berdasarkan aksi yang diatur siswa |
@@ -213,7 +213,7 @@ RESQ-BOX menghadirkan ekosistem pembelajaran IPA terpadu:
 | **Filter Kelas & Level Dinamis** | Menyaring siswa berdasarkan kelas (Kelas 8A, Kelas 8B) serta filter level aktif (`SEMUA`, `LV.1`, `LV.2`, `LV.3`) secara *real-time*. |
 | **Pencarian Cepat & Ekspor CSV** | Pencarian siswa instan berdasarkan nama atau nomor absen, serta fitur unduh rekap nilai format CSV lengkap dengan status dan nilai numerik per level. |
 | **Cetak Rapor Belajar Geologi & Mitigasi** | Fitur cetak lembar rapor hasil belajar individual siswa lengkap dengan capaian lapisan bumi, dinamika lempeng tektonik, perolehan kristal, kata kunci sains, dan evaluasi guru. |
-| **Kredensial Guru Resmi** | Akses cepat dengan username `guru` dan password `guru123`. |
+| **Kredensial Guru Resmi** | Akun guru dibuat oleh admin sekolah lewat `scripts/kelola_akun_guru.py`. Kata sandi dibuat acak dan **tidak dicatat di repositori ini**. |
 
 ### 5.7 Sistem Autentikasi, Registrasi & Profil Siswa
 | Fitur Autentikasi | Spesifikasi Fungsional |
@@ -364,9 +364,31 @@ RESQ-BOX/
 |---|---|---|
 | **v1.0** | Fondasi (Vite + React + Blockly + Dashboard) | ✅ Selesai |
 | **v2.0** | Modul Pembelajaran (Level 1-3) + Gamifikasi + Lock System | ✅ Selesai |
-| **v3.0** | **Pixel Quest Edition** — redesign visual, optimasi performa, polish | 🔄 Sedang berjalan |
-| **v3.1** | Integrasi hardware Smart Education Board + Web Serial API | 📋 Direncanakan |
-| **v3.2** | Admin Panel guru + laporan progress siswa | 📋 Direncanakan |
+| **v3.0** | **Pixel Quest Edition** — redesign visual, optimasi performa, polish | ✅ Selesai |
+| **v3.1** | Integrasi hardware Smart Education Board + Web Serial API | ✅ Selesai |
+| **v3.2** | Admin Panel guru + laporan progress siswa | ✅ Selesai |
+| **v3.3** | **Keamanan & Skala** — Supabase Auth + RLS ketat, kapasitas >1000 pemain, observabilitas produksi | ✅ Selesai |
+| **v3.4** | **Aplikasi Laptop & HP** — Electron `.exe`, Android `.apk`, rilis GitHub, tombol unduh di website | ✅ Selesai |
+| **v3.5** | **Tata Letak HP & Tablet (360–1032px)** — struktur berbeda per perangkat, bukan versi kecil laptop | ✅ Selesai |
+| **v3.6** | **Isolasi Multi-Tenant** — isolasi data antar-guru, kode kelas unik, penutupan pencacahan kode kelas | ✅ Selesai |
+| **v3.7** | **Buku Panduan Cetak** — Bab VI Aplikasi Laptop & HP untuk guru awam, daftar gambar & perbaikan halaman | 🔄 Sedang berjalan |
+| **v4.0** | Mode multi-sekolah penuh + panel admin pusat | 📋 Direncanakan |
+
+### Prioritas v3.5 — Tata Letak HP & Tablet
+
+1. **[P0] Alat ukur yang sahih** — `Emulation.setDeviceMetricsOverride`, karena Chrome headless mengabaikan lebar di bawah 504px
+2. **[P0] Susunan berbeda, bukan CSS diperkecil** — plakat misi Level 3, radar Level 1, tombol level Dashboard
+3. **[P0] Tumpang tindih HUD = 0** — diverifikasi pada 360px, 390px, 820px, dan 1024px
+4. **[P1] Tombol LANJUT untuk dialog cerita di HP** — dijadikan komponen bersama (`TombolLanjutHp.tsx`) agar bug tidak terulang dua kali
+5. **[P1] Pemeriksa kode yang terbukti dapat gagal** — animasi, petunjuk tersembunyi, izin guru, kesegaran APK/`.exe`
+
+### Prioritas v3.6 — Isolasi Multi-Tenant
+
+1. **[P0] Isolasi data antar-guru** — dijaga tiga lapis: pemilik kelas di tabel, kebijakan RLS, dan pemeriksaan di dalam fungsi RPC
+2. **[P0] Kode kelas dijamin unik** — dibuat **server**, bukan klien; 900.000 kemungkinan + pengulangan di dalam transaksi
+3. **[P0] Pencacahan kode kelas ditutup** — `class_code_info` dan `class_exists` dihapus (migrasi 11), karena keduanya tidak dipakai aplikasi
+4. **[P1] Alur membuat akun guru** — `scripts/kelola_akun_guru.py`, karena Dashboard Supabase **tidak menyediakan** kolom App Metadata
+5. **[P1] Dashboard Guru tidak lagi menampilkan murid guru lain** — kode kelas tidak lagi ditulis mati, dan daftar murid hanya dimuat bila kelas itu benar-benar milik guru yang masuk
 
 ### Prioritas v3.0
 
@@ -1360,3 +1382,31 @@ Bagian ini merekam seluruh instruksi, evaluasi, dan keputusan teknis yang telah 
       4. **Proteksi Sentuh Mobile/Tablet**: Menambahkan proteksi `touch-action: manipulation`, `user-select: none`, `-webkit-touch-callout: none` pada kontrol analog virtual dan seluruh container game untuk menonaktifkan context menu popup dan double-tap zoom.
       5. **Atribusi Sumber Gambar Interaktif**: Menyematkan badge klikable `📷 Sumber: ... ↗` langsung pada pojok visual gambar, panel kanan informasi sains, modal Lightbox fullscreen, serta diagram penampang aliran lahar `VolcanoPostLaharIllustration`.
       6. **Verifikasi Build**: `npx tsc -b` sukses 0 error, `npm run build` sukses 100% dalam 4.40 detik (32 entri precache valid).
+96. **Tata Letak HP & Tablet Tingkat B, Isolasi Multi-Tenant Antar-Guru, Jaminan Kode Kelas Unik, dan Pembangunan Ulang APK + `.exe` (12 Oktober 2026)**:
+    - **Instruksi Pengguna**:
+      - *"aku tuh mau tampilan di android atau di hp tuh dibikin responsif... jadi dibikin beda divnya gitu"* — meminta susunan HP **berbeda**, bukan versi kecil laptop.
+      - *"tiap guru itu data data para muridnya beda beda gitu, kayak di classroom kan gitu juga kan"* — meminta **isolasi data antar-guru** karena RESQ-BOX akan dipakai di banyak sekolah.
+      - Ditambah kemudian: *"apk sama exe nya perlu diperbarui ga"*, *"kenapa https mu nembak ke ws?"*, *"buku panduannya buat orang awam, jangan pake bahasa yang sulit"*, dan *"jangan pake bayangkan bayangkan gituuu"*.
+    - **Keputusan Desain**:
+      1. **Pendekatan Tingkat B disepakati.** Elemen **disusun ulang dengan struktur/DOM berbeda** antara HP dan laptop, mencakup **seluruh layar** pada rentang **360–1032px** (HP dan tablet). Bukan sekadar mengecilkan CSS.
+      2. **Alat ukur lama dinyatakan TIDAK SAH dan diganti.** Chrome headless **mengabaikan** `--window-size` di bawah **504px**, sehingga setiap pengukuran "390px" sebelumnya sebenarnya mengukur halaman berlebar 504px yang dipotong. Diganti memakai **`Emulation.setDeviceMetricsOverride`** dari Chrome DevTools Protocol.
+      3. **Setiap pemeriksa wajib dibuktikan dapat gagal** sebelum hasilnya dipercaya. Aturan ini ditetapkan karena hampir setiap pemeriksaan pada percobaan pertama menghasilkan positif palsu.
+      4. **Kode kelas dibuat SERVER, bukan klien.** Aturan pembuatan kode tidak boleh ada di dua tempat, karena jaminan keunikannya ada di server (`PRIMARY KEY`) sedangkan pembuatannya ada di klien — keduanya tidak pernah berbicara.
+      5. **Kejujuran tampilan diutamakan.** Bila guru belum punya kelas, Dashboard menulis **"Belum ada kelas"** alih-alih mengarang nama kelas.
+      6. **Tombol unduh hanya di website**, tidak ditampilkan di dalam aplikasi.
+    - **Hasil Implementasi & Verifikasi**:
+      1. **Tata Letak HP & Tablet** — **30 halaman-lebar** diperiksa (8–9 layar × 4 lebar: 360px, 390px, 820px, 1024px): **SEMUA BERSIH**, tanpa gulir mendatar dan tanpa tombol keluar layar. Angka **820px** penting karena berada **di bawah** breakpoint `md` (768px).
+      2. **Susunan yang Benar-Benar Berbeda** — plakat misi Level 3 (HP: bawah titik & bertumpuk; laptop: atas titik & satu baris), radar Level 1 (HP: tombol 44px → lembar bawah; laptop: panel 155px), tombol level Dashboard (HP: `LEVEL 2`; laptop: `LEVEL 2. DISASTER ANALYST`), panduan Resqy, kartu Siap Offline, dan bilah Workspace.
+      3. **Tumpang Tindih HUD Level 1 = 0** — telemetri semula bertumpuk persis dengan pil strata (`y = 58–103` vs `y = 58–93`) karena `max-w-[calc(100vw-300px)]` hanya menyisakan 90px pada HP 390px.
+      4. **Tiga Cacat Senyap Ditemukan** — (a) **37 kelas animasi** (`animate-fadeIn`) **tidak pernah ada**, sehingga seluruh modal muncul tanpa animasi; (b) bug **muncul dua kali** karena kode **disalin**, bukan dipakai bersama; (c) petunjuk `hidden sm:inline` hilang di HP. Ketiganya diperbaiki, dan dua pemeriksa baru dibuat.
+      5. **Isolasi Multi-Tenant** — dijaga **tiga lapis**: pemilik kelas di tabel (`classrooms.teacher_username`, dengan `code` sebagai `PRIMARY KEY`), kebijakan RLS (`can_read_student`), dan pemeriksaan di dalam fungsi RPC. **12 dari 12 fungsi guru aman.**
+      6. **Cacat Isolasi yang Ditemukan** — Dashboard Guru **menampilkan murid kelas guru LAIN** karena kode kelas `'RESQ-8A'` **ditulis mati** dan daftar murid dimuat **sebelum** daftar kelas selesai diambil. Bila server menolak, aplikasi **jatuh ke simpanan lokal** dan tetap menampilkan data.
+      7. **Kode Kelas Dijamin Unik** — semula hanya **900 kemungkinan per awalan** dengan peluang bentrok **75% pada 50 kelas se-awalan**; kini dibuat server dengan **900.000 kemungkinan** + pengulangan di dalam transaksi.
+      8. **Pencacahan Kode Kelas Ditutup** — `class_code_info` dan `class_exists` dapat dicacah **tanpa login** (2 dari 21 tebakan berhasil), dan **dihapus** oleh migrasi 11 karena keduanya tidak dipakai aplikasi.
+      9. **Pagar Gradle untuk Aset `.gz`** — build APK gagal karena `terrain-688.stl` dan `.gz` dianggap kembar. Diperbaiki dengan `androidResources.ignoreAssetsPattern = '!*.gz'` di tingkat Gradle, bukan dengan langkah yang harus diingat orang.
+      10. **APK & `.exe` Dibangun Ulang dan Diunggah** — terbukti sebelumnya **17 dan 16 berkas tertinggal** (Vite memberi hash pada nama berkas JS). Sesudahnya **46/46** dan **47/47** sama persis, ukuran di server cocok, dan tautan unduh mengembalikan magic bytes yang benar.
+      11. **Buku Panduan** — disusun **[`lampiran-buku/BAB-VI-APLIKASI.md`](./lampiran-buku/BAB-VI-APLIKASI.md)** berisi Bab VI (Aplikasi Laptop & HP), daftar perbaikan 14 baris per halaman, teks siap-tempel alur login & pengelolaan kelas, serta **13 gambar** beserta keterangannya. Ditulis dengan bahasa sehari-hari, **0 istilah teknis**, **0 poin butir**, **0 kutipan**, dan **0 frasa "bayangkan"**.
+      12. **`docs/` dan `lampiran-buku/` Dikeluarkan dari GitHub** atas permintaan pengguna. Diperiksa lebih dahulu bahwa **`docs/` tidak pernah ikut ke website** (`dist/docs` tidak ada, `publicDir` default `"public"`, Cloudflare hanya meng-upload `dist/`).
+      13. **Verifikasi Build**: `npx tsc -b` 0 error; `npx vite build` sukses; `uji_lingkungan` 18/18; `uji_mode_tamu` 27/27; `uji_nilai_luring` 22/22; `uji_level_guru` 18/18; `uji_pakaian_teleport` 31/31; `uji_server_desktop` 21/21; `uji_pesan_galat` 10/10.
+    - **Eksekusi Uji Pemblokiran Hardware**: Diukur dengan `scripts/uji_blokir_ws.mjs` — dari halaman **HTTPS**, sambungan `ws://` gagal dalam **0 ms** (diblokir sebelum dicoba), sedangkan dari halaman **HTTP lokal** gagal setelah **5004 ms** (TCP timeout, permintaan memang dikirim). **0 ms vs 5 detik** membuktikan pemblokirannya terjadi di dalam peramban, bukan di jaringan.
+    - **Belum Diuji (dicatat jujur)**: sambungan ke ESP32 lewat WebSocket, aplikasi Android di HP asli, aplikasi Laptop tersambung ke Board, Mode Tamu end-to-end, dan uji silang isolasi antar-akun guru (memerlukan kata sandi akun guru). Chrome headless **tidak dapat membuka WebSocket sama sekali**, sehingga uji sambungan **wajib** dilakukan di perangkat asli.

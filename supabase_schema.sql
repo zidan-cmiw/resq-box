@@ -1,6 +1,31 @@
 -- ══════════════════════════════════════════════════════════════════════════
--- RESQ-BOX Supabase Schema v2 — Security Hardened
--- Jalankan ini di Supabase SQL Editor (Settings > SQL Editor)
+-- ⚠️⚠️  BERKAS LAMA (LEGACY v2) — JANGAN DIJALANKAN LAGI  ⚠️⚠️
+-- ══════════════════════════════════════════════════════════════════════════
+--
+--   Berkas ini adalah skema LAMA (v2) sebelum migrasi ke Supabase Auth.
+--   Skema yang BERLAKU sekarang ada di  supabase/migrations/01..12.
+--
+--   MENGAPA TIDAK BOLEH DIJALANKAN:
+--
+--     1. Membuat tabel `user_accounts` dengan kolom kata sandi sendiri,
+--        padahal sekarang autentikasi ditangani Supabase Auth dan akses ke
+--        tabel itu sudah DICABUT total.
+--     2. Mendefinisikan `verify_login`, `register_student_account`,
+--        `register_teacher_account`, `create_student_by_teacher`, dan
+--        `rpc_upsert_student`, lalu di baris paling bawah memberikan
+--        `GRANT EXECUTE ... TO anon` untuk semuanya. Itu PERSIS rancangan
+--        berbahaya yang sudah ditutup migrasi 01, 02, dan 04 — siapa pun
+--        pemegang kunci `anon` dapat memakainya.
+--     3. Membuka kembali pendaftaran mandiri, yang sekarang sudah ditutup.
+--
+--   Berkas ini disimpan HANYA sebagai rujukan sejarah, agar
+--   `supabase/migrations/00_prepare_legacy.sql` dapat dipahami. Isi kata
+--   sandi contohnya sudah dihapus.
+--
+--   Bila ingin menghapusnya sepenuhnya, aman: tidak ada satu pun berkas di
+--   repositori ini yang merujuknya, dan CI tidak menjalankannya.
+-- ══════════════════════════════════════════════════════════════════════════
+-- RESQ-BOX Supabase Schema v2 — Security Hardened (ARSIP)
 -- ══════════════════════════════════════════════════════════════════════════
 
 -- 0. Aktifkan extension untuk password hashing
@@ -436,12 +461,21 @@ END;
 $$;
 
 -- 8. Seed data (password di-hash)
+--
+-- CATATAN KEAMANAN: kata sandi contoh yang dulu tertulis di sini sudah
+-- DIHAPUS, karena repositori ini bersifat publik. Nilai di bawah adalah
+-- penanda dan BUKAN kata sandi yang berfungsi.
+--
+-- Pada skema lama, akun guru dan akun demo memang memakai kata sandi contoh
+-- tersebut. Karena itu keduanya WAJIB sudah diputar di database produksi.
+-- Prosedurnya: docs/KEAMANAN-AKUN-GURU.md, dan alatnya
+-- `python scripts/kelola_akun_guru.py ganti-sandi <username>`.
 INSERT INTO user_accounts (username, password, role, name, school_name)
-VALUES ('guru', crypt('guru123', gen_salt('bf')), 'teacher', 'Bapak Guru IPA', 'SMP Negeri 1')
+VALUES ('guru', crypt('<KATA-SANDI-SUDAH-DIHAPUS>', gen_salt('bf')), 'teacher', 'Bapak Guru IPA', 'SMP Negeri 1')
 ON CONFLICT (username) DO NOTHING;
 
 INSERT INTO user_accounts (username, password, role, name, absent_number, classroom_code, school_name, unlocked_level)
-VALUES ('demo', crypt('demo123', gen_salt('bf')), 'student', 'Taruna Demo (Semua Level Terbuka)', '99', 'RESQ-8A', 'SMP Negeri 1 (Demo Testing)', 3)
+VALUES ('demo', crypt('<KATA-SANDI-SUDAH-DIHAPUS>', gen_salt('bf')), 'student', 'Taruna Demo (Semua Level Terbuka)', '99', 'RESQ-8A', 'SMP Negeri 1 (Demo Testing)', 3)
 ON CONFLICT (username) DO NOTHING;
 
 INSERT INTO classrooms (code, name, teacher_username, school_name)

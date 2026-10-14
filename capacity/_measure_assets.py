@@ -26,7 +26,6 @@ TARGETS = [
     "images.jpeg",
     "images (1).jpg",
     "wedhus_gembel.jpg",
-    "lahar_dingin.jpg",
     "frames/f_0.jpg",
     "frames/f_3.jpg",
     "frames/f_6.jpg",

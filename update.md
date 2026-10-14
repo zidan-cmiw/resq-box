@@ -45,7 +45,7 @@ Catatan perjalanan pengembangan aplikasi web RESQ-BOX.
   - Perbaikan sinkronisasi data siswa di **Posko Guru (`/teacher`)**: data siswa baru kelas 8B langsung tampil secara *real-time* di tabel daftar siswa kelas yang bersangkutan.
 - **Pembersihan Akun Demo & Standarisasi Akses Guru**:
   - Akun demo lama (`std-budi`, `std-siti`) dibersihkan secara otomatis saat inisialisasi agar data kelas bersih.
-  - Kredensial akun resmi Guru distandarisasi ke username `guru` dan password `guru123`.
+  - Kredensial akun resmi Guru memakai username `guru`, dengan kata sandi acak dari skrip akun (tidak dicatat di repositori).
 - **Fitur Ganti Password Siswa Mandiri**:
   - Menambahkan formulir dan mekanisme ganti password mandiri bagi siswa pada modal **Pengaturan Profil Siswa (`/profile`)**.
   - Password baru langsung tersimpan ke Supabase dan localStorage dengan notifikasi audio retro dan konfirmasi visual.

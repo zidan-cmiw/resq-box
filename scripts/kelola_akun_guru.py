@@ -59,6 +59,11 @@ CARA MENJALANKAN
 
     python scripts/kelola_akun_guru.py daftar
 
+  Putar (ganti) kata sandi guru — dipakai bila kata sandi lama pernah
+  tersebar, misalnya karena tercatat di dokumen yang terunggah:
+
+    python scripts/kelola_akun_guru.py ganti-sandi buatyas
+
   Kunci dibaca dari variabel lingkungan SUPABASE_SERVICE_ROLE_KEY.
   Bila belum diset, skrip akan memintanya (tanpa menampilkannya di layar).
 """
@@ -337,7 +342,65 @@ def perintah_daftar(kunci: str) -> int:
     return 0
 
 
+def perintah_ganti_sandi(username: str, kunci: str) -> int:
+    """Putar (rotate) kata sandi akun guru lewat Admin API.
+
+    Dipakai bila kata sandi lama pernah tersebar — misalnya karena tercatat
+    di dokumen yang ikut terunggah ke repositori publik, atau karena
+    dicurigai diketahui orang lain.
+
+    Kata sandi baru dibuat acak dan ditampilkan SEKALI saja. Kata sandi lama
+    langsung tidak berlaku, jadi pastikan sudah tersampaikan ke guru.
+    """
+    email = f"{username.lower()}@{domain_email()}"
+    status, hasil = panggil("/auth/v1/admin/users?per_page=500", kunci)
+    if status != 200:
+        print(f"  [X] GAGAL membaca daftar akun (HTTP {status}): {json.dumps(hasil)[:200]}")
+        return 1
+
+    daftar = hasil.get("users", [])
+    cocok = [u for u in daftar if (u.get("email") or "").lower() == email.lower()]
+    if not cocok:
+        print(f"  [X] Akun {email} tidak ditemukan.")
+        print("      Periksa dengan: python scripts/kelola_akun_guru.py daftar")
+        return 1
+
+    uid = cocok[0]["id"]
+    sandi = kata_sandi_acak()
+
+    status2, hasil2 = panggil(f"/auth/v1/admin/users/{uid}", kunci, "PUT", {"password": sandi})
+    if status2 != 200:
+        print(f"  [X] GAGAL mengganti kata sandi (HTTP {status2}): {json.dumps(hasil2)[:200]}")
+        return 1
+
+    print("")
+    print("  ┌────────────────────────────────────────────────────────────┐")
+    print("  │  KATA SANDI BARU — CATAT SEKARANG, TIDAK DITAMPILKAN LAGI  │")
+    print("  └────────────────────────────────────────────────────────────┘")
+    print(f"      username : {username.lower()}")
+    print(f"      password : {sandi}")
+    print("")
+    print("      [v] Kata sandi lama TIDAK berlaku lagi.")
+    print("      Sampaikan ke guru, lalu minta ia menggantinya sendiri di /profile.")
+    return 0
+
+
+def _pakai_utf8() -> None:
+    """Paksa keluaran UTF-8.
+
+    Konsol Windows secara bawaan memakai cp1252, yang TIDAK dapat
+    menampilkan karakter kotak (═) pada docstring modul ini. Tanpa ini,
+    `print(__doc__)` gagal dengan UnicodeEncodeError — jadi menjalankan
+    skrip tanpa argumen justru menampilkan traceback, bukan bantuan.
+    """
+    for aliran in (sys.stdout, sys.stderr):
+        if hasattr(aliran, "reconfigure"):
+            aliran.reconfigure(encoding="utf-8", errors="replace")
+
+
 def main() -> int:
+    _pakai_utf8()
+
     if len(sys.argv) < 2:
         print(__doc__)
         return 2
@@ -360,6 +423,12 @@ def main() -> int:
 
     if perintah == "daftar":
         return perintah_daftar(kunci)
+
+    if perintah in ("ganti-sandi", "gantisandi", "putar-sandi"):
+        if len(sys.argv) < 3:
+            print("  Pemakaian: ganti-sandi <username>")
+            return 2
+        return perintah_ganti_sandi(sys.argv[2], kunci)
 
     print(__doc__)
     return 2

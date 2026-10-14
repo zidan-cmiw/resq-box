@@ -739,7 +739,7 @@ Tetap disediakan untuk preferensi guru atau kondisi ruang terang:
 1. **Daytime Volcano Scene (Beranda)**:
    - Gradien langit siang (`#1e3a8a` ke `#fde047`)
    - Matahari pixel berdenyut (`animate-pulse`)
-   - Gunung api utama dengan lahar merah-kuning berdenyut (`#ef4444` & `#fde047`)
+   - Gunung api utama dengan aliran lava merah-kuning berdenyut (`#ef4444` & `#fde047`)
    - Partikel asap kawah mengepul bertahap (`anim-pixel-smoke-1`, `2`, `3`)
    - Awan pixel melayang perlahan (`anim-pixel-cloud`)
 2. **Nighttime Starry Rescue Camp (Profil Siswa)**:
@@ -818,7 +818,7 @@ Tetap disediakan untuk preferensi guru atau kondisi ruang terang:
 | Halaman Profil Siswa dengan style pixel | Dibuat dengan tema Nighttime Starry Rescue Camp & form papan kayu | ✅ Diterapkan |
 | Update Tim di Credits (Ichsan Abror, Zidane, Zahra, Lintang, Ibu Rizki) | Formasi resmi diterapkan di halaman Credits dengan tema Sunset Mountain | ✅ Diterapkan |
 | Hapus seluruh header atas di Profile, Settings, dan semua halaman | Menghapus topbar di `AppLayout.tsx`, seluruh halaman menjadi full-screen game viewport | ✅ Diterapkan |
-| Hapus akun-akun demo, buat kredensial resmi Guru | Akun demo dihapus otomatis, kredensial guru resmi distandarisasi ke `guru` / `guru123` | ✅ Diterapkan |
+| Hapus akun-akun demo, buat kredensial resmi Guru | Akun demo dihapus otomatis, kredensial guru resmi memakai username `guru` dengan kata sandi acak dari skrip akun — **kata sandi tidak dicatat di repositori** | ✅ Diterapkan |
 | Tambah fitur Ganti Password Siswa | Formulir ganti password mandiri ditambahkan di modal Profil Siswa | ✅ Diterapkan |
 | Buat background Login pixel 2D bergerak sesuai foto referensi | Dibuat latar belakang Hutan Hujan Tropis Berkabut (*Tropical Misty Cloud Forest*) lengkap dengan kabut lembah, sinar matahari (*god-rays*), dan partikel embun | ✅ Diterapkan |
 | Ganti semua emotikon di Login dengan style pixel 2D | Mengembangkan komponen `PixelIcon` SVG 2D pixel murni, menggantikan semua emoji OS | ✅ Diterapkan |

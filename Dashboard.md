@@ -23,15 +23,79 @@ tags:
 
 | Dokumen | Deskripsi & Isi Utama | Status / Versi |
 | :--- | :--- | :---: |
-| 📋 **[[PRD]]** | **Product Requirement Document**: Spesifikasi teknis komprehensif, arsitektur sistem, skema kurikulum SMP Kelas 8, dan 95 rekam milestone pengembangan. | `v3.33 (Aktif)` |
-| 📈 **[[progress_report]]** | **Laporan Progres Lengkap**: Dokumentasi teknis terperinci per fitur — **Bab 110–117: audit menyeluruh, pengerasan keamanan (Supabase Auth + RLS ketat), kapasitas >1000 pemain, observabilitas produksi, dan pembesaran tipografi**; Bab 109: Sinkronisasi Blok Arduino ↔ Firmware ESP32. | `v4.0 (Update)` |
-| 🎨 **[[design]]** | **Design System & Visual Guidelines**: Pedoman warna pixel art, tipografi retro 8-bit, prinsip visual game, dan panduan antarmuka responsif. | `v2.0` |
-| 🧭 **[[walkthrough]]** | **Walkthrough & Panduan Pengujian**: Panduan verifikasi fitur, pengujian kurikulum 2 pertemuan, LKPD PjBL, 20 tugas mandiri, dan build produksi. | `v3.33 (Update)` |
+| 📋 **[[PRD]]** | **Product Requirement Document**: Spesifikasi teknis komprehensif, arsitektur sistem, skema kurikulum SMP Kelas 8, dan **96 rekam milestone** pengembangan. | `v3.36 (Aktif)` |
+| 📈 **[[progress_report]]** | **Laporan Progres Lengkap**: Dokumentasi teknis terperinci per fitur — **Bab 97–102: tata letak HP & tablet (Tingkat B), tiga cacat senyap, isolasi multi-tenant antar-guru, kode kelas unik, pagar Gradle, pembangunan ulang APK + `.exe`, dan buku panduan**; Bab 110–117: audit menyeluruh, pengerasan keamanan (Supabase Auth + RLS ketat), kapasitas >1000 pemain, observabilitas produksi. | `v4.1 (Update)` |
+| 🎨 **[[design]]** | **Design System & Visual Guidelines**: Pedoman warna pixel art, tipografi retro 8-bit, prinsip visual game, dan panduan antarmuka responsif. | `v2.1` |
+| 🧭 **[[walkthrough]]** | **Walkthrough & Panduan Pengujian**: Panduan verifikasi fitur, pengujian kurikulum 2 pertemuan, LKPD PjBL, 20 tugas mandiri, dan build produksi — **Bab 79: panduan pengujian tata letak HP/tablet, isolasi antar-guru, kode kelas unik, dan pembangunan ulang APK + `.exe`**. | `v3.34 (Update)` |
 | 📚 **[[LKPD_PJBL_RESQ_BOX_5_KELOMPOK|LKPD_PJBL_RESQ_BOX_5_KELOMPOK.md]]** | **Panduan Implementasi 2 Pertemuan & LKPD PjBL**: Skenario KBM sekolah mitra 2 pertemuan, 20 tugas mandiri individu Level 3 ringkas beserta kunci blok, dan 5 studi kasus kelompok PjBL. | `v1.0 (Resmi)` |
 | 📖 **[[Readme]]** | **Dokumentasi Umum Repositori**: Gambaran umum proyek, arsitektur teknologi, lisensi, dan profil anggota tim pengembang LIDM 2026. | `v2.5` |
 | 🤖 **[[agent]]** | **Pedoman Agentic AI Coding**: Konteks arsitektur, boundary pengerjaan, dan panduan bagi asisten pengembang AI. | `v1.0` |
 | 📝 **[[update]]** | **Catatan Ringkas Pembaruan**: Catatan log pembaruan fitur cepat lintas modul. | `v1.5` |
 | 🎛️ **[[header]]** | **Spesifikasi Header & Telemetri**: Dokumentasi tata letak header retro indikator telemetri. | `v1.0` |
+
+---
+
+## 📱 Sorotan Pembaruan Terkini: Tata Letak HP & Tablet Tingkat B, Isolasi Multi-Tenant Antar-Guru, Kode Kelas Unik, dan Pembangunan Ulang APK + `.exe` (Bab 97–102)
+
+> [!IMPORTANT]
+> **Perubahan arsitektur tata letak & data.** Tata letak dirombak agar HP dan laptop memakai **susunan yang benar-benar berbeda**, bukan versi kecil satu sama lain. Di sisi data, **isolasi antar-guru** diverifikasi menyeluruh dan **kode kelas** kini dijamin unik oleh server. Rincian lengkap: **[[progress_report#97. Tata Letak Khusus HP & Tablet (360–1032px) — Tingkat B: Susunan Berbeda, Bukan Versi Kecil Laptop|progress_report.md (Bab 97)]]** dan **[[progress_report#99. Isolasi Data Antar-Guru, Penutupan Pencacahan Kode Kelas & Jaminan Kode Kelas Unik|progress_report.md (Bab 99)]]**.
+
+### 1. Tata Letak HP & Tablet — Terverifikasi **30 Halaman-Lebar BERSIH**
+
+- **Pendekatan Tingkat B.** Elemen **disusun ulang dengan struktur berbeda** antara HP dan laptop pada rentang **360–1032px**, sesuai permintaan pemilik proyek: *"dibikin beda divnya"*.
+- **Hasil sapuan akhir**, 8–9 layar × 4 lebar (360px, 390px, 820px, 1024px): **semuanya bersih** — tanpa gulir mendatar dan tanpa tombol keluar layar, termasuk Dashboard Guru.
+- **Angka 820px penting** karena berada **di bawah** breakpoint `md` (768px), sehingga susunan tablet tidak pernah mendapat aturan `md:`. Inilah sebabnya masalah di iPad pernah terlewat.
+
+### 2. Susunan yang Benar-Benar Berbeda antara HP dan Laptop
+
+| Layar | HP | Laptop |
+|---|---|---|
+| Plakat misi Level 3 | Di **bawah** titik, bertumpuk | Di **atas** titik, satu baris |
+| Radar Level 1 | Tombol bulat 44px → lembar bawah | Panel 155px selalu terlihat |
+| Dashboard | `LEVEL 2` | `LEVEL 2. DISASTER ANALYST` |
+| Panduan Resqy | Header ringkas, maskot 30px | Header penuh, maskot 52px |
+| Kartu Siap Offline | Bawah layar | Kanan atas |
+| Bilah Workspace | Tab **PETA 3D / TELEMETRI** | Peta + panel berdampingan |
+
+### 3. Alat Ukur Lama Dinyatakan **TIDAK SAH** dan Diganti
+
+- **Chrome headless mengabaikan lebar di bawah 504px.** Setiap pengukuran "390px" sebelumnya sebenarnya mengukur halaman berlebar **504px yang dipotong** — inilah sebabnya masalah tata letak HP tidak pernah terdeteksi.
+- Diganti memakai **`Emulation.setDeviceMetricsOverride`** dari Chrome DevTools Protocol. Lima alat ukur baru dibuat, dan **semuanya memakai protokol yang sama**.
+
+### 4. Keamanan & Isolasi Multi-Tenant — **12 dari 12 Fungsi Guru AMAN**
+
+- **Isolasi data antar-guru dijaga TIGA lapis.** (a) Pemilik kelas di tabel `classrooms`, dengan `code` sebagai `PRIMARY KEY` sehingga mustahil ada dua guru berkode kelas sama; (b) kebijakan RLS melalui `can_read_student()`; (c) pemeriksaan kepemilikan di dalam setiap fungsi RPC, karena fungsi `SECURITY DEFINER` **melewati** RLS.
+- **Diuji dari LUAR memakai kunci publik** yang sama dengan peramban: 4 tabel sensitif **HTTP 401**, 13 fungsi privat **ditolak semua**, naikkan peran **HTTP 401**, pendaftaran mandiri **HTTP 422**, dan Admin API dengan kunci `anon` **HTTP 403 `not_admin`**.
+- **Cacat isolasi yang ditemukan dan diperbaiki.** Dashboard Guru sempat **menampilkan murid kelas guru LAIN** karena kode kelas `'RESQ-8A'` **ditulis mati** di kode, dan daftar murid dimuat **sebelum** daftar kelas selesai diambil. Bila server menolak, aplikasi **jatuh ke simpanan lokal** dan tetap menampilkan data.
+- **Kode kelas kini dijamin unik.** Sebelumnya hanya **900 kemungkinan per awalan**, dengan peluang bentrok **75% pada 50 kelas se-awalan**. Kini dibuat **server** dengan **900.000 kemungkinan** + pengulangan di dalam transaksi yang sama dengan penyisipannya.
+- **Pencacahan kode kelas ditutup.** `class_code_info` dan `class_exists` dapat dicacah **tanpa login** (2 dari 21 tebakan langsung berhasil), lalu **dihapus** oleh migrasi 11 karena keduanya tidak dipakai aplikasi.
+
+### 5. Aplikasi Laptop & HP — Rilis `v1.0.0` Diperbarui
+
+- **Pagar Gradle untuk aset `.gz`.** Build APK sempat gagal karena `terrain-688.stl` dan `.gz` dianggap kembar. Diperbaiki di **tingkat Gradle** (`androidResources.ignoreAssetsPattern = '!*.gz'`), bukan dengan langkah yang harus diingat orang. **Dibuktikan bekerja** dengan `.gz` sengaja dibiarkan ada saat build.
+- **APK & `.exe` dibangun ulang.** Terbukti sebelumnya **17 dan 16 berkas tertinggal** — karena Vite memberi **hash pada nama berkas JS**, sehingga berkas lama tetap menunjuk nama lama. Sesudahnya **46/46** dan **47/47** sama persis byte demi byte.
+- **Terunggah dan terverifikasi:** APK **6,93 MB**, `.exe` **114,83 MB**; ukuran di server cocok persis; tautan unduh mengembalikan magic bytes `PK` dan `MZ` yang benar; rilis `v1.0.0` **bukan** draft dan **bukan** prerelease.
+- **`.exe` sudah diuji berjalan**, dan pengerasan keamanannya utuh di dalam `app.asar`: `nodeIntegration: false`, `contextIsolation: true`, `sandbox: true`, `webSecurity: true`, bind `127.0.0.1`.
+
+### 6. Tiga Cacat Senyap yang Ditemukan Akibat Audit Tata Letak
+
+1. **37 kelas animasi tidak pernah ada.** `animate-fadeIn` dipakai di 37 tempat — seluruh modal Level 1–3 — tetapi **tidak pernah didefinisikan** dan **tidak dihasilkan Tailwind**. Diperiksa langsung pada CSS hasil bangun: kata `fadeIn` muncul **0 kali**. Akibatnya seluruh modal muncul **mendadak tanpa animasi**, dan tidak ada yang menyadarinya karena modalnya tetap muncul.
+2. **Bug muncul dua kali karena kode disalin.** Level 1 dan Level 2 adalah **salinan** satu sama lain, sehingga perbaikan di Level 1 **tidak ikut** memperbaiki Level 2. Diperbaiki dengan menjadikannya **satu komponen bersama** (`TombolLanjutHp.tsx`).
+3. **Petunjuk hilang di layar sempit.** Petunjuk `[Klik / SPASI untuk Lanjut]` memakai `hidden sm:inline`, sehingga tidak pernah muncul di HP. Dibuat pemeriksa yang membedakan **disembunyikan dengan pengganti** (bukan masalah) dan **tanpa pengganti** (masalah).
+
+### 7. Buku Panduan Cetak — Bab VI Aplikasi Laptop & HP
+
+- Disusun **[`lampiran-buku/BAB-VI-APLIKASI.md`](./lampiran-buku/BAB-VI-APLIKASI.md)** berisi Bab VI lengkap (A–G), **daftar perbaikan 14 baris per halaman**, teks siap-tempel **alur login** & **pengelolaan kelas**, serta **13 gambar** beserta keterangannya.
+- **Bahasa untuk orang awam:** **0 istilah teknis**, **0 poin butir**, **0 kutipan**, **0 kotak centang**, dan **0 frasa "bayangkan"**. Tabel dikurangi dari 20 menjadi **7**.
+- **Ditemukan bahwa buku kontradiksi sendiri:** halaman 29 menulis `resq-box.vercel.app` (alamat lama) sedangkan halaman 30 menulis `resq-box.pages.dev` (alamat benar).
+- **Satu kesimpulan pemeriksaan ternyata SALAH.** Pencarian menyimpulkan tombol "Validasi Misi" tidak ada — padahal tombol **`VALIDASI MISI!`** **memang ada** di `MissionPanel.tsx` baris 215. Pencariannya yang gagal. **Pelajaran: bukti langsung lebih dapat dipercaya daripada pencarian yang gagal.**
+
+### 8. Pengeluaran `docs/` dan `lampiran-buku/` dari GitHub
+
+- **Diperiksa lebih dahulu:** `docs/` **tidak pernah** ikut ke website. `dist/docs` tidak ada, `publicDir` di `vite.config.ts` tidak diset sehingga memakai default `"public"`, dan Cloudflare Pages hanya meng-upload `dist/`.
+- **Namun repo berstatus PUBLIC**, sehingga isinya dapat dibaca lewat GitHub. Dikeluarkan dengan `git rm -r --cached` + `.gitignore`; **berkasnya tetap ada di komputer**.
+- **Cacat yang ditemukan saat verifikasi:** commit pertama menghapus `docs/` dari pelacakan dan menulis aturan ke `.gitignore`, **tetapi berkas `.gitignore`-nya sendiri tidak ikut di-stage** sehingga aturannya belum aktif. Ditemukan dengan **menguji langsung**. **Pelajaran: "sudah ditulis" tidak sama dengan "sudah berlaku".**
+- **Batasannya dicatat jujur.** Isi `docs/` yang **sudah** ter-push sebelumnya **masih ada di riwayat commit** dan masih dapat dibaca. Menghapusnya dari riwayat memerlukan penulisan ulang riwayat git + force push — **belum dilakukan**.
 
 ---
 
@@ -101,7 +165,7 @@ Lihat **[[progress_report#Bab 117: Ringkasan Capaian Sesi — Status Keamanan Te
    - Menautkan sumber otentik pada gambar materi erupsi:
      - *Wedhus Gembel*: [Kompas.com](https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif).
      - *Peta KRB Merapi*: [syawal88.wordpress.com](https://syawal88.wordpress.com/2010/11/17/dapatkah-gunung-mati-menjadi-gunung-aktif/).
-     - *Banjir Lahar Dingin*: [Detikcom](https://news.detik.com/berita/d-7301571/4-fakta-banjir-lahar-dingin-semeru-yang-tewaskan-3-orang).
+     - ~~*Banjir Lahar Dingin*: Detikcom~~ — **gambar ini sudah dihapus** bersama seluruh materi lahar dingin (lihat Catatan Revisi di `progress_report.md`). Foto awan panas kini memakai `wedhus_gembel.jpg`.
    - Dilengkapi badge sumber klikable langsung pada container gambar, panel teks materi, dan modal Lightbox fullscreen.
 
 ---
@@ -124,7 +188,7 @@ Lihat **[[progress_report#Bab 117: Ringkasan Capaian Sesi — Status Keamanan Te
 3. **🎯 4 Batasan Pedagogis & Teknis yang Ditegakkan Mutlak**:
    - **Zero Etnosains**: Dihapus total dari materi dan tugas (hanya mengadopsi struktur sintaks LKPD).
    - **Zero Sensor Fisik**: Mengeliminasi istilah sensor analog hardware; alat peraga mengacu pada aktuator LED RGB, sirine EWS, dan display maket diorama.
-   - **Zero Banjir Lahar Dingin**: Materi mitigasi murni fokus pada Gempa Bumi dan Erupsi Merapi.
+   - **Zero Banjir Lahar Dingin**: Materi mitigasi murni fokus pada Gempa Bumi dan Erupsi Merapi. **Kini ditegakkan penuh di kode**: 0 kemunculan istilah lahar di `src/`. Bahaya sekunder di lembah sungai tetap diajarkan — sebagai **awan panas guguran** yang menyusuri alur sungai, bukan banjir lahar.
    - **Bahasa Ramah Anak SMP Kelas 8**: Kalimat lugas, mudah dipahami, tanpa istilah asing rumit.
    - **100% Selaras Toolbox Blockly**: Hanya menggunakan 19 blok resmi di toolbox Level 3 (`INITIAL_TOOLBOX`).
 4. **🔍 Peningkatan Readability & Keterbacaan Modal UI**:
@@ -173,7 +237,7 @@ Lihat **[[progress_report#Bab 117: Ringkasan Capaian Sesi — Status Keamanan Te
    - Menggantikan deskripsi usang puzzle drag-and-drop dengan 6 Pos Mitigasi Kebencanaan: Ruang Kelas (SOP 72 Jam TSB), Drill Gempa (Drop-Cover-Hold On), Lapangan Evakuasi (Titik Kumpul), Pos PGA Merapi (Seismograf & Status PVMBG), Simulasi Erupsi (KRB I–III saat AWAS), dan Barak Pengungsian BNPB.
    - Evaluasi **TTS Crossword Mitigasi** Bu Tyas, M.Pd. sebagai syarat kelulusan ke Level 3.
 4. **🎮 Penyelarasan Penuh Tahap 3 (Simulation Game / Action Lab)**:
-   - Memetakan 20 Misi Studi Kasus dalam 4 Sektor Tematik (EWS & Sensor, Gempa 3-Tingkat, Erupsi Efusif Lahar Sungai, dan Erupsi Eksplosif Awan Panas).
+   - Memetakan 20 Misi Studi Kasus dalam 4 Sektor Tematik (Fondasi EWS & Seismik, Mitigasi Gempa Sekolah & Rumah, Vulkanologi & Erupsi Merapi, dan Jalur Evakuasi & Grand Challenge).
    - Menjelaskan Visual Block Coding ramah anak, Digital Twin 3D Merapi dengan observasi 20 detik dan tombol *Reset Kondisi*, serta sinkronisasi otomatis ke Posko Guru (`/teacher`) dan diorama fisik ESP32.
 5. **🎯 Tombol Kontekstual Pintar**:
    - Tombol aksi di bawah modal otomatis beradaptasi dengan tab aktif dan status unlock level pemain (`unlockedLevel`).
@@ -269,10 +333,10 @@ Lihat **[[progress_report#Bab 117: Ringkasan Capaian Sesi — Status Keamanan Te
    - Saat 20 detik habis, **hanya aktivitas fisika bencananya yang mereda** (getaran tanah/kamera berhenti, semburan kolom kawah dan lontaran bom berhenti, hardware mist/motor/gempa dinonaktifkan).
    - **Kondisi lingkungan dan dampak bencana tetap dipertahankan**:
      - *Gempa*: Rekahan aspal jalan tetap menganga, bangunan roboh/amblas tetap hancur beserta puing-puingnya, tiang listrik tetap miring/tumbang.
-     - *Erupsi Eksplosif*: Awan panas (*wedhus gembel*) tetap menyelimuti lereng dan lembah sungai (Kali Gendol, Kali Kuning, Boyong), bangunan tetap hangus berjelaga hitam, pohon tetap arang tanpa daun, air sungai tetap keruh berlumpur lahar dingin.
-     - *Erupsi Efusif*: Lidah aliran lelehan lava pijar tetap membeku/membara di lereng kawah & hulu sungai, sungai tetap berwarna lahar, pepohonan tetap terbakar.
+     - *Erupsi Eksplosif*: Awan panas (*wedhus gembel*) tetap menyelimuti lereng dan lembah sungai (Kali Gendol, Kali Kuning, Boyong), bangunan tetap hangus berjelaga hitam, pohon tetap arang tanpa daun, air sungai tetap keruh oleh material vulkanik.
+     - *Erupsi Efusif*: Lidah aliran lelehan lava pijar tetap membeku/membara di lereng kawah & hulu sungai, sungai tetap keruh oleh endapan material vulkanik, pepohonan tetap terbakar.
      - *Warga / NPC*: Tetap bertahan di zona aman hasil evakuasi (lapangan terbuka / barak KRB I / luar peta).
-     - Label status informatif: `PASCA-GEMPA: DAMPAK KERUSAKAN BANGUNAN & JALAN`, `PASCA-ERUPSI EKSPLOSIF: DAMPAK AWAN PANAS & ABU VULKANIK`, atau `PASCA-ERUPSI EFUSIF: ENDAPAN LAVA PIJAR & LAHAR`.
+     - Label status informatif: `PASCA-GEMPA: DAMPAK KERUSAKAN BANGUNAN & JALAN`, `PASCA-ERUPSI EKSPLOSIF: DAMPAK AWAN PANAS & ABU VULKANIK`, atau `PASCA-ERUPSI EFUSIF: ENDAPAN LAVA PIJAR & MATERIAL VULKANIK`.
 4. **↺ Tombol "Reset Kondisi" pada Toolbar Pojok Kanan Atas Peta 3D**:
    - Ditambahkan tepat pada toolbar diorama: `[ Garis KRB ] [ Reset View ] [ Gedein Peta ] [ Reset Kondisi ]`.
    - Berkedip lembut (*pulse animation*) dengan aksen warna rose saat peta mendeteksi kerusakan pasca-bencana.
@@ -298,10 +362,10 @@ Lihat **[[progress_report#Bab 117: Ringkasan Capaian Sesi — Status Keamanan Te
 3. **🗺️ Peta Level 3 Dipangkas Menjadi Tepat 20 Level**:
    - Menghapus 30 level ekstra (Level 21–50) sehingga pas **20 level bertingkat** sesuai 4 sektor tematik kurikulum SMP Kelas 8 (Sektor 1: EWS & Sensor; Sektor 2: Gempa Bumi; Sektor 3: Erupsi Efusif & Lahar; Sektor 4: Erupsi Eksplosif & Awan Panas).
    - Lebar kanvas disesuaikan `4650px` dengan scrollbar horizontal responsif, indikator `TUNTAS: 0 / 20`, dan tiang bendera finish di ujung Level 20.
-2. **🛡️ Konseptualisasi & Integrasi Rute "Jalur Lingkar Utama (Bebas Lahar)"**:
-   - Lembah alur sungai (Kali Gendol/Kuning) adalah *death trap* lahar dingin dan awan panas.
-   - **Jalur Lingkar Utama** adalah jaringan jalan evakuasi lingkar di punggung bukit (*ridge*) yang bebas dari ancaman lahar karena berada di elevasi tinggi di atas tebing sungai, menghubungkan lereng atas langsung ke Barak Pengungsian KRB I di selatan.
-   - Terkoneksi dinamis ke blok Blockly `resq_jalur_evakuasi`, `resq_posko`, dan `resq_sirine_ews`.
+2. **🛡️ Konseptualisasi & Integrasi Rute "Jalur Lingkar Utama (Bebas Awan Panas)"**:
+   - Lembah alur sungai (Kali Gendol/Kuning) adalah *death trap* karena awan panas (*wedhus gembel*) meluncur deras menuruni alur sungai.
+   - **Jalur Lingkar Utama** adalah jaringan jalan evakuasi lingkar di punggung bukit (*ridge*) yang bebas dari ancaman awan panas karena berada di elevasi tinggi di atas tebing sungai, menghubungkan lereng atas langsung ke Barak Pengungsian KRB I di selatan.
+   - Terkoneksi dinamis ke blok Blockly `resq_evak_jauhi_sungai`, `resq_evak_krb`, dan `resq_sirine_ews`.
 3. **🚶 Eliminasi Total "Conga-Line" (Multi-Lane Lateral Spreading)**:
    - Menghitung vektor normal tegak lurus sumbu jalan: NPC tidak lagi berjalan di satu garis tengah tipis, melainkan menyebar melintang di lebar jalan ($-0.65$ s/d $+0.65$) di trotoar kiri, bahu jalan, tengah jalan, dan trotoar kanan.
    - Tiap individu memiliki `walkPhase` dan kecepatan unik sehingga langkah kaki tidak sinkron serempak seperti robot.

@@ -26,7 +26,7 @@ Dokumen ini merekam secara komprehensif seluruh percakapan, instruksi pengguna, 
 | 17 | **Fase 1 — Critical Logic & UI Fixes**: Mencegah HTML Injection di cetak rapor, memperbaiki skor palsu Level 2 di dashboard guru, mengintegrasikan submission cloud Level 2 & Level 3, serta membuat halaman 404 pixel art. | Mengimplementasikan `escapeHtml()`, cloud submission pada puzzle mitigasi dan mision store, serta membuat rute 404. | `src/app/TeacherDashboard/index.tsx`, `src/app/Level2/PuzzleBoard.tsx`, `src/store/missionStore.ts`, `src/app/NotFound/index.tsx`, `src/App.tsx` |
 | 18 | **Fase 2 — Security Hardening & Safe Execution**: Password hashing di PostgreSQL via `pgcrypto` & RPC server-side, restriksi RLS dengan operasi lewat RPC functions, perkuatan blacklist `codeSanitizer.ts`, timeout 60 detik pada simulator Blockly, dan rate limiting di backend API. | Memperbarui skema database Supabase v2, `supabaseClient.ts`, `codeSanitizer.ts`, `Workspace/index.tsx`, dan `backend/routes/api.php`. | `supabase_schema.sql`, `src/utils/supabaseClient.ts`, `src/engine/codeSanitizer.ts`, `src/app/Workspace/index.tsx`, `backend/routes/api.php` |
 | 19 | **Refinement Diagram Irisan Bumi (PixelEarthDiagram)**: Menjadikan permukaan bumi belahan bawah (benua hijau & samudra) interaktif/dapat diklik sebagai bagian dari Kerak Bumi, membenahi posisi 3D bola Inti Bumi agar pas bersarang ke dalam soket lubang inti, serta menghapus garis putus-putus/seam yang mengganggu di atas permukaan bumi. | Memperbarui tata letak geometri SVG, highlight keliling penuh, soket cavity inti dalam, dan merapikan garis batas ekuator. | `src/app/Level1/PixelEarthDiagram.tsx` |
-| 20 | **Akun Demo Penguji Khusus (Semua Level Terbuka)**: Membuat akun siswa khusus `demo` / `demo123` yang memiliki status `unlocked_level = 3` secara otomatis untuk mempermudah evaluasi juri/penguji tanpa harus menyelesaikan Level 1 dan 2 terlebih dahulu. Akun siswa lainnya tetap normal (terkunci berurutan). Menambahkan tombol quick auto-fill pada form login. | Memperbarui `supabaseClient.ts`, `teacherStore.ts`, `supabase_schema.sql`, dan menambahkan kartu auto-fill di `Login/index.tsx`. | `src/utils/supabaseClient.ts`, `src/store/teacherStore.ts`, `supabase_schema.sql`, `src/app/Login/index.tsx` |
+| 20 | **Akun Demo Penguji Khusus (Semua Level Terbuka)**: Membuat akun siswa khusus `demo` dengan status `unlocked_level = 3` secara otomatis untuk mempermudah evaluasi juri/penguji tanpa harus menyelesaikan Level 1 dan 2 terlebih dahulu. Akun siswa lainnya tetap normal (terkunci berurutan). Menambahkan tombol quick auto-fill pada form login. *(Catatan keamanan: kata sandi akun demo dan akun guru tidak dicatat di repositori ini, dan keduanya sudah diputar.)* | Memperbarui `supabaseClient.ts`, `teacherStore.ts`, `supabase_schema.sql`, dan menambahkan kartu auto-fill di `Login/index.tsx`. | `src/utils/supabaseClient.ts`, `src/store/teacherStore.ts`, `supabase_schema.sql`, `src/app/Login/index.tsx` |
 | 21 | **Animasi Buka Buku 3D Realistis, Perbaikan Hitbox Irisan Bumi, Efek Ngetik (Typewriter) & Preservasi Halaman 1**: Mengembalikan tampilan Halaman 1 ke layout kartu terpusat asli (pertanyaan pemantik, tombol pilihan tahu/ingin tahu, dan kuis uji urutan), membetulkan hitbox seluruh lapisan irisan bumi (kerak samudra, kerak benua, mantel, inti, dan kavitas soket), mengaktifkan kembali animasi mengetik retro (*PixelTypewriter*), serta memadukannya dengan efek pembalik halaman 3D. | Memperbarui `StrukturBumi.tsx`, `PixelEarthExploded.tsx`, `PixelEarthDiagram.tsx`, `PixelTypewriter.tsx`, dan `src/index.css`. | `src/app/Level1/StrukturBumi.tsx`, `src/app/Level1/PixelEarthExploded.tsx`, `src/app/Level1/PixelEarthDiagram.tsx`, `src/components/PixelTypewriter.tsx`, `src/index.css` |
 | 22 | **Integrasi Library PageFlip & Penyesuaian Style 2D Pixel Art**: Mengintegrasikan library `page-flip` (StPageFlip) untuk mekanika lekukan fisik lembaran kertas bolak-balik dengan drag sudut lembaran, sekaligus mengadaptasi 100% komponen visualnya ke estetika Retro 2D Pixel Art (gauge tabung persegi bergaris takik 8-bit, bingkai kayu tebal, tekstur perkamen retro, custom pixel scrollbars, dan aksen sudut lipat `◢`). | Menyesuaikan `StrukturBumi.tsx`, `src/index.css`, dan types `page-flip.d.ts`. | `src/app/Level1/StrukturBumi.tsx`, `src/index.css`, `src/types/page-flip.d.ts` |
 | 23 | **Transformasi Gamifikasi Level 1 — EARTH DIVE (Vertical Adventure Descent)**: Merombak Level 1 menjadi game petualangan vertikal penjelajahan bumi dari Permukaan (0 km) menembus Litosfer, Astenosfer, Mantel Bawah, Inti Luar hingga Inti Dalam (6.371 km). Dilengkapi HUD telemetri live (kedalaman, suhu, tekanan, stamina suit), titik temuan sains (Discovery Point) dengan ilustrasi SVG pixel, gerbang evaluasi mini-challenge per lapisan dengan panduan maskot Siaga, sistem reward 5 Geo-Crystals & 4 Earth Badges, serta Core Synthesis Challenge yang menghubungkan panas interior bumi dengan pelepasan gempa dan letusan Merapi untuk membuka Level 2. | Membuat modul modular `EarthDiveGame.tsx`, `TelemetryHUD.tsx`, `DiscoveryModal.tsx`, `MiniChallengeModal.tsx`, `CoreChallengeModal.tsx`, `earthDiveData.ts`, dan memperbarui `src/app/Level1/index.tsx`. | `src/app/Level1/EarthDive/*`, `src/app/Level1/index.tsx`, `src/utils/retroAudio.ts` |
@@ -5393,7 +5393,7 @@ P10 indeks skala | 6 | siap skala besar |
 ## Catatan Revisi — Perubahan yang Membatalkan Entri Lama
 
 Entri di atas adalah catatan riwayat dan **sengaja tidak diubah**, supaya apa yang
-dikerjakan pada masanya tetap terekam apa adanya. Namun dua hal berikut sudah
+dikerjakan pada masanya tetap terekam apa adanya. Namun tiga hal berikut sudah
 tidak berlaku lagi, sehingga perlu dicatat di sini:
 
 ### 1. Direktori `backend/` (Laravel) sudah DIHAPUS
@@ -5426,3 +5426,927 @@ SELECT public.admin_set_unlocked_level('demo', 3);
 ```
 
 Akun `demo` sendiri tetap ada dan tetap dapat dipakai untuk pengujian juri.
+
+### 3. Seluruh materi "bahaya sekunder" diganti menjadi AWAN PANAS
+
+Entri 68, 72, 73, dan 78 menyebut **banjir lahar dingin / lahar hujan** sebagai
+"bahaya sekunder" pasca-erupsi, lengkap dengan foto nyata dan tab ilustrasi
+tersendiri. Materi itu **sudah dihapus seluruhnya** dari aplikasi.
+
+**Alasannya:** batasan kurikulum pada Entri 94 berbunyi *"Batasan Mutlak: zero
+etnosains, zero sensor fisik, **zero banjir lahar dingin** (hanya Gempa Bumi dan
+Erupsi Merapi)"*. Pada saat itu batasan tersebut **belum ditegakkan di kode** —
+masih ada 190 kemunculan istilah lahar di 23 berkas `src/`, termasuk satu misi
+ganda, dua jawaban TTS, satu kata Wordle, satu tab ilustrasi, papan rambu di
+kanvas, dan satu tahap simulasi 3D. Sekarang batasan itu **benar-benar berlaku:
+0 kemunculan di `src/`**.
+
+**Materi penggantinya bukan penghapusan begitu saja.** Bahaya sekunder tetap
+diajarkan, tetapi memakai **awan panas guguran (*wedhus gembel*) yang menyusuri
+lembah sungai** — yang secara ilmiah memang benar dan justru menjadi alasan
+mengapa warga wajib menjauh dari alur sungai. Karena itu blok
+`resq_evak_jauhi_sungai` tetap ada dan tetap tepat penggunaannya; hanya alasan
+ilmiahnya yang diperbaiki.
+
+Yang berubah:
+
+| Bagian | Sebelum | Sesudah |
+|---|---|---|
+| Misi Level 3 | Job 15 & 16 tentang banjir lahar dingin | Job 15 & 16 tentang awan panas menyusuri lembah (**tetap 20 misi**) |
+| TTS Area 2 | `LAHAR` | `TANAH` |
+| TTS Area 6 | `LAHAR` | `PAPAN` |
+| Wordle Level 1 | `LAHAR` | `KRATER` |
+| Temuan 3 Area 6 | Foto & tab "banjir lahar dingin" | Tab "awan panas guguran" + foto `wedhus_gembel.jpg` |
+| Tahap simulasi 3D | `LAHAR DINGIN & EVAKUASI TOTAL` | `AWAN PANAS & EVAKUASI TOTAL` |
+| Rambu kanvas | `AWAS LAHAR HUJAN` | `AWAS AWAN PANAS` |
+| Aset | `public/lahar_dingin.jpg` | dihapus (tidak lagi dirujuk) |
+
+**Id temuan yang sudah tersimpan tidak hilang.** Id lama `disc-post-lahar` sudah
+tersimpan di `localStorage` siswa yang pernah memainkan Area 6. Agar progres
+mereka tidak hangus, id lama tetap dibaca dan diperlakukan sama dengan id baru
+`disc-post-pyroclastic` — lihat `src/app/Level2/engine/legacyIds.ts`.
+
+**Ikut dibersihkan:** `scripts/build_missions.py` (generator 50 job yang sudah
+usang, masih memuat teks lahar, dan akan menimpa 20 misi terkurasi bila
+dijalankan) serta `scripts/pecah_discovery_modal.py` (codemod sekali pakai yang
+menunjuk komponen yang sudah diganti nama).
+
+---
+
+## 97. Tata Letak Khusus HP & Tablet (360–1032px) — Tingkat B: Susunan Berbeda, Bukan Versi Kecil Laptop
+
+### Tanggal: 12 Oktober 2026
+- **Status Modul**: Selesai Penuh (`Production Ready`) & Teruji Bersih (`npx tsc -b` 0 Error, `npx vite build` sukses)
+- **Rentang Commit**: `439cbbc` → `e62c2c0`
+- **Komponen Kunci yang Terlibat**:
+  - [`src/app/Dashboard/index.tsx`](./src/app/Dashboard/index.tsx)
+  - [`src/app/components/PWABadge.tsx`](./src/app/components/PWABadge.tsx)
+  - [`src/components/Tutorial/ResqyTutorialOverlay.tsx`](./src/components/Tutorial/ResqyTutorialOverlay.tsx)
+  - [`src/app/Level1/EarthDive/EarthDiveGame.tsx`](./src/app/Level1/EarthDive/EarthDiveGame.tsx)
+  - [`src/app/Level3/index.tsx`](./src/app/Level3/index.tsx)
+  - [`src/app/Workspace/index.tsx`](./src/app/Workspace/index.tsx)
+
+#### 1. Permintaan Pengguna
+
+Pengguna meminta tata letak HP dibuat **nyaman untuk pengguna HP**, bukan sekadar versi kecil dari tata letak laptop. Pengguna secara eksplisit menyarankan **"dibikin beda div-nya"** antara HP dan laptop. Diputuskan memakai **pendekatan Tingkat B**, yaitu elemen disusun ulang dengan struktur berbeda, dan disepakati mencakup **seluruh layar** pada rentang **360–1032px** (HP dan tablet).
+
+#### 2. Hambatan Awal: Alat Ukur Sebelumnya TIDAK SAH
+
+Seluruh pemeriksaan tata letak sebelumnya memakai Chrome headless dengan opsi `--window-size`. **Opsi itu DIABAIKAN di bawah 504px.** Artinya setiap pengukuran yang diklaim "390px" sebenarnya mengukur halaman berlebar **504px yang dipotong**.
+
+Inilah sebabnya masalah tata letak HP selama ini tidak pernah terdeteksi: **yang diukur bukan lebar HP.**
+
+Diperbaiki dengan membuat alat ukur baru yang memakai **`Emulation.setDeviceMetricsOverride`** dari Chrome DevTools Protocol — satu-satunya cara yang dapat dipercaya untuk lebar di bawah 504px:
+
+| Skrip | Fungsi |
+|---|---|
+| [`scripts/ukur_lebar.mjs`](./scripts/ukur_lebar.mjs) | Mengukur tata letak pada lebar layar tertentu |
+| [`scripts/foto_lebar.mjs`](./scripts/foto_lebar.mjs) | Mengambil tangkapan layar pada lebar tertentu |
+| [`scripts/ukur_hud_level1.mjs`](./scripts/ukur_hud_level1.mjs) | Mencari tumpang tindih kotak HUD Level 1 |
+| [`scripts/ukur_plakat_level3.mjs`](./scripts/ukur_plakat_level3.mjs) | Mengukur plakat misi & avatar Level 3 |
+| [`scripts/ukur_bilah_workspace.mjs`](./scripts/ukur_bilah_workspace.mjs) | Mengukur bilah atas Workspace |
+
+##### A. Dua Kesalahan pada Versi Pertama Alat Ukur (dan Perbaikannya)
+
+**Kesalahan 1 — Positif palsu 28 temuan.** Versi pertama melaporkan **setiap** elemen yang lebih lebar dari layar. Pada halaman login hasilnya 28 temuan, hampir semuanya **ornamen SVG latar** yang memang sengaja lebih besar dan terpotong. Diperbaiki: kini hanya tombol, tautan, kolom isi, dan teks yang diperiksa, dan dilaporkan pula apakah leluhurnya memotong. **Positif palsu: 0.**
+
+**Kesalahan 2 — Mengukur lapisan panduan, bukan halamannya.** `ResqyTutorialOverlay` memiliki `autoStart = true`, sehingga pada kunjungan pertama panduan **muncul sendiri dan menutupi seluruh layar**. Pengukuran pertama melaporkan Dashboard *"100% muat, 0 masalah"* — padahal yang terukur adalah lapisan panduannya. Diperbaiki: alat ukur kini menyiapkan **sesi tamu** dan **menandai seluruh panduan selesai** sebelum mengukur, memakai kunci `resqbox_tour_completed_<tur>_<userId>`.
+
+#### 3. Perbaikan per Layar
+
+##### A. Dashboard Siswa — Tombol Level Terpotong
+
+**Gejala.** Label `LEVEL 2. DISASTER ANALYST` terpotong di HP.
+
+**Penyebab terukur.** Kelas `.pixel-btn-wood-plank` memakai font piksel (1em per huruf) dengan `white-space: nowrap` dan `overflow: hidden`, sedangkan lebarnya `max-width: 90vw`. Pada HP 360px: tombol = 324px, sedangkan teks 25 huruf × 13px ≈ 325px.
+
+**Perbaikan Tingkat B.** Label dipisah menjadi dua bagian, bukan CSS diperkecil:
+
+```jsx
+<span>LEVEL 2<span className="hidden sm:inline">. DISASTER ANALYST</span></span>
+```
+
+| Perangkat | Tampilan |
+|---|---|
+| HP | `LEVEL 2` |
+| Laptop | `LEVEL 2. DISASTER ANALYST` (tidak berubah) |
+
+Diterapkan pada 5 tempat (tombol level 1, 2, 3 di dua cabang kondisi).
+
+##### B. Kartu "Siap Offline" Menutupi Layar HP
+
+**Terukur pada 390px.** [`src/app/components/PWABadge.tsx`](./src/app/components/PWABadge.tsx) memakai `w-72` (288px) dengan `top-4 right-4`, sehingga lebarnya **74% layar** dan tingginya 186px (**22% layar**) — menutupi judul "RESQ-BOX" dan tombol menu.
+
+**Perbaikan.** Pada HP kartu dipindah ke **bawah layar** (`bottom-4 left-4 right-4`), jarak/ikon/teks diperkecil pada breakpoint `sm` ke bawah. Alasan pemilihan letak: bagian atas layar adalah tempat judul dan navigasi yang paling sering dipakai.
+
+##### C. Dialog Panduan Resqy Terlalu Tinggi di HP
+
+**Terukur.** Dialog panduan setinggi **46% layar HP** dan judulnya pecah dua baris.
+
+**Perbaikan.** Jarak, ukuran maskot (38px → 30px), dan ukuran huruf diperkecil pada layar sempit. Ukuran huruf isi **sengaja tidak dikecilkan berlebihan** karena anak SMP harus tetap nyaman membacanya; yang dikurangi lebih dahulu adalah jarak dan maskot.
+
+| Lebar | Sebelum | Sesudah |
+|---|---|---|
+| 390px | 46% layar | **38%** |
+| 360px | ±55% | **46%** |
+| 820px | — | 38% |
+
+Isi tetap muat pada ketiganya.
+
+##### D. Level 1 — Panel Radar Mengambil 40% Lebar Layar
+
+**Terukur pada 390px.** Panel "RADAR BUMI" berukuran **155×159px**, yaitu **40% lebar seluruh layar**, di pojok kanan atas. Akibatnya tombol MENU dan TELEMETRI bertumpuk dengannya, dan langit permainan tertutup.
+
+**Perbaikan Tingkat B.** Struktur berbeda antara HP dan laptop, ditentukan oleh pendeteksi `layarSempit` (`window.innerWidth < 640`):
+
+| Perangkat | Radar |
+|---|---|
+| HP | Tombol bulat **44px** → ditekan membuka **lembar bawah** berisi diagram |
+| Laptop | Panel 155px yang selalu terlihat (tidak berubah) |
+
+Radar juga **dimulai tertutup di HP**. Sebelumnya ia dimulai terbuka, dan pada percobaan pertama lembar setinggi 311px (**37% layar**) langsung menutupi permainan sebelum pemain menekan apa pun.
+
+**Temuan kejujuran.** Dua percobaan perbaikan sebelumnya **GAGAL** karena nilai jarak ditebak dan `order` dipasang pada wadah yang salah — malah menambah tumpang tindih menjadi 2. Yang berhasil adalah setelah membuat `scripts/ukur_hud_level1.mjs` yang mengukur kotak HUD secara tepat.
+
+##### E. Level 1 — Telemetri Bertumpuk dengan Pil Strata
+
+**Terukur pada 390px sebelum perbaikan:**
+
+```
+PIL STRATA : y = 58 sampai  93
+TELEMETRI  : y = 58 sampai 103   -> BERTUMPUK PERSIS
+```
+
+**Penyebab.** Telemetri memakai `max-w-[calc(100vw-300px)]`, yang pada HP 390px hanya menyisakan **90px** — jauh lebih sempit daripada isinya (366px) — sehingga isinya meluber dan menimpa tombol di kiri.
+
+**Perbaikan.** Di HP telemetri tidak lagi di tengah (mutlak) melainkan menjadi baris tersendiri pada `top-[100px]`, yaitu di bawah pil strata.
+
+**Hasil terukur, tidak ada tumpang tindih pada 360px, 390px, 820px, dan 1024px:**
+
+```
+TOMBOL MENU  : y =   8 sampai  52
+PIL STRATA   : y =  58 sampai  93
+TELEMETRI    : y = 100 sampai 145
+TOMBOL RADAR : y =   8 sampai  52
+```
+
+##### F. Level 1 — Tidak Ada Tombol LANJUT di Dialog Cerita
+
+**Penyebab.** Petunjuk `[Klik / SPASI untuk Lanjut]` memakai kelas `hidden sm:inline`, sehingga **tidak muncul di HP**. Kotak dialog memang dapat ditekan, tetapi di layar sentuh tidak ada petunjuk apa pun, dan tidak ada kursor yang berubah menjadi tangan sebagai tanda.
+
+**Perbaikan.** Tombol **LANJUT** ditambahkan, hanya dirender di layar sempit (`sm:hidden`), diletakkan di baris paling bawah dialog. Percobaan pertama salah menaruhnya **di atas teks**; diperbaiki agar urutannya nama, teks, lalu tombol.
+
+##### G. Level 3 — Plakat Misi Terpotong dan Tertutup Avatar
+
+**Terukur.** Plakat memakai `whitespace-nowrap`, sehingga lebarnya mencapai **±517px** pada layar 390px. Judulnya terbaca `Job 1: Sin[AVATAR]us Normal`.
+
+**Perbaikan Tingkat B:**
+
+| Perangkat | Susunan plakat | Posisi |
+|---|---|---|
+| HP | **Bertumpuk** (lencana+status di atas, judul di bawah) | Di **bawah** titik, `top-[84px]` |
+| Laptop | Satu baris mendatar | Di **atas** titik (tidak berubah) |
+
+Posisi tegak **harus** berbeda karena di HP ruang di atas titik tidak cukup untuk memuat tiga hal sekaligus:
+
+```
+-80px  gelembung "Ayo Petualang!" + avatar
+-56px  plakat misi (tinggi 60px, menempati -56px sampai +4px)
+   0px  titik misi (tombol 64px)
+```
+
+Avatar berakhir di -32px sedangkan plakat mulai di -56px, sehingga keduanya **mustahil tidak bertumpuk**.
+
+##### H. Workspace — Tombol "Ruan…" Terpotong
+
+**Terukur pada 390px.** Kartu judul misi hanya mendapat **25px** sedangkan butuhnya 187px, karena tidak memiliki `flex-1` pada layar di bawah 640px. Ditambahkan `flex-1` khusus layar sempit, judulnya kini mendapat **57px**.
+
+**Mengapa tidak lebih besar lagi — dan mengapa ini disengaja.** Kelompok tombol kanan (Diorama / WiFi / USB / MULAI) memakai **241px** sedangkan layar hanya 390px. Memaksa judul mendapat lebih banyak ruang akan **mendorong tombol MULAI keluar layar**, dan MULAI adalah tombol yang menjalankan simulasi. Jadi pemotongan judul adalah **kompromi yang benar**; `truncate` dan `min-w-0` sengaja dipertahankan.
+
+#### 4. Hasil Sapuan Akhir Seluruh Layar
+
+Diperiksa **30 halaman-lebar** (8–9 layar × 4 lebar):
+
+| Lebar | Hasil |
+|---|---|
+| 360px | **SEMUA BERSIH** |
+| 390px | **SEMUA BERSIH** |
+| 820px (iPad Air tegak) | **SEMUA BERSIH** |
+| 1024px | **SEMUA BERSIH** |
+
+Tidak ada gulir mendatar dan tidak ada tombol keluar layar di satu pun layar, termasuk Dashboard Guru. Angka 820px penting karena berada **di bawah** breakpoint `md` (768px), sehingga susunan tablet tidak pernah mendapat aturan `md:`.
+
+#### 5. Susunan yang Benar-Benar Berbeda antara HP dan Laptop
+
+| Layar | HP | Laptop |
+|---|---|---|
+| Plakat misi Level 3 | Di **bawah** titik, bertumpuk | Di **atas** titik, satu baris |
+| Radar Level 1 | Tombol bulat 44px → lembar bawah | Panel 155px selalu terlihat |
+| Dashboard | `LEVEL 2` | `LEVEL 2. DISASTER ANALYST` |
+| Panduan Resqy | Header ringkas, maskot 30px | Header penuh, maskot 52px |
+| Kartu Siap Offline | Bawah layar | Kanan atas |
+| Bilah Workspace | Tab **PETA 3D / TELEMETRI** | Peta + panel berdampingan |
+
+Ini DOM yang berbeda, bukan CSS yang diperkecil.
+
+#### 6. Verifikasi
+
+| Pemeriksaan | Hasil |
+|---|---|
+| `npx tsc -b` | 0 error |
+| `npx vite build` | sukses |
+| `uji_lingkungan` | 18/18 |
+| `uji_mode_tamu` | 27/27 |
+| `uji_nilai_luring` | 22/22 |
+| `uji_level_guru` | 18/18 |
+| `uji_pakaian_teleport` | 31/31 |
+| `uji_server_desktop` | 21/21 |
+| `uji_pesan_galat` | 10/10 |
+| Tumpang tindih HUD | **0** pada 360 / 390 / 820 / 1024px |
+| Positif palsu alat ukur | **0** |
+
+---
+
+## 98. Tiga Cacat Senyap yang Ditemukan Akibat Audit Tata Letak HP
+
+### Tanggal: 12 Oktober 2026
+- **Status Modul**: Selesai Penuh (`Production Ready`) & Teruji Bersih
+- **Rentang Commit**: `47301a0`, `080c1bc`, `8397ef3`
+- **Komponen Kunci yang Terlibat**:
+  - [`src/index.css`](./src/index.css)
+  - [`src/app/Level1/EarthDive/VisualNovelDialogue.tsx`](./src/app/Level1/EarthDive/VisualNovelDialogue.tsx)
+  - [`src/app/Level2/VisualNovelDialogueL2.tsx`](./src/app/Level2/VisualNovelDialogueL2.tsx)
+  - [`src/app/components/TombolLanjutHp.tsx`](./src/app/components/TombolLanjutHp.tsx) **(baru)**
+  - [`scripts/periksa_animasi.py`](./scripts/periksa_animasi.py) **(baru)**
+  - [`scripts/periksa_petunjuk_hp.py`](./scripts/periksa_petunjuk_hp.py) **(baru)**
+
+Ketiga cacat di bawah ini **ditemukan secara tidak sengaja** saat memeriksa tata letak HP. Ketiganya bersifat **senyap**: kode tetap berjalan, dan tidak ada satu pun galat yang muncul. Karena itu tidak ada yang menyadarinya selama ini.
+
+#### 1. Cacat 1 — 37 Kelas Animasi Tidak Pernah Ada
+
+**Temuan.** Proyek ini memakai `animate-fadeIn` di **37 tempat** — seluruh modal di Level 1, Level 2, dan Level 3 — tetapi kelas itu **tidak pernah didefinisikan** dan **tidak dihasilkan Tailwind**.
+
+**Bukti.** Diperiksa langsung pada CSS hasil bangun: kata `fadeIn` muncul **0 kali**. Nama yang benar di proyek ini memakai tanda hubung (`.animate-fade-in` dan `.animate-fade-in-up`).
+
+**Akibat.** SELURUH modal muncul **mendadak tanpa animasi**. Tidak ada yang menyadarinya karena modalnya tetap muncul; yang hilang hanya efeknya, dan itu tidak terlihat sebagai kerusakan.
+
+**Perbaikan.** Ditambahkan `.animate-fadeIn` dan `.animate-scaleUp` di [`src/index.css`](./src/index.css). Menambahkan dua kelas membuat seluruh 37 tempat langsung berfungsi; mengubah 37 tempat berisiko satu terlewat tanpa ketahuan. Kelas camelCase **sengaja dipertahankan berdampingan** dengan yang bertanda hubung supaya kode yang sudah ada tidak perlu disentuh.
+
+**Pemeriksa baru.** [`scripts/periksa_animasi.py`](./scripts/periksa_animasi.py) memastikan hal ini tidak terulang. **Dibuktikan dapat gagal:** definisi dicabut → terdeteksi 36 tempat. Setelah dikembalikan → 0.
+
+#### 2. Cacat 2 — Kode Disalin, Bukan Dipakai Bersama (Bug Muncul Dua Kali)
+
+**Temuan.** `VisualNovelDialogue.tsx` (Level 1) dan `VisualNovelDialogueL2.tsx` (Level 2) adalah **SALINAN satu sama lain**. Ketika masalah petunjuk tersembunyi diperbaiki di Level 1, **Level 2 TIDAK ikut terperbaiki** — karena perbaikannya hanya ditulis di satu salinan.
+
+**Akibat.** Dialog cerita Level 2 tetap tanpa tombol LANJUT di HP.
+
+**Perbaikan.** Tombol LANJUT dijadikan **satu komponen bersama**: [`src/app/components/TombolLanjutHp.tsx`](./src/app/components/TombolLanjutHp.tsx), dipakai oleh Level 1 **dan** Level 2. Dengan begitu perbaikan berikutnya cukup dilakukan SEKALI, dan tidak mungkin lagi ada salinan yang tertinggal.
+
+Komponen itu juga menangani hal yang mudah terlewat: `stopPropagation()`. Tanpa itu, menekan tombol akan memicu **DUA kemajuan sekaligus** — melompati satu baris percakapan — karena kartu dialognya juga dapat ditekan.
+
+#### 3. Cacat 3 — Petunjuk yang Hilang di Layar Sempit
+
+**Temuan.** Petunjuk `[Klik / SPASI untuk Lanjut]` memakai kelas `hidden sm:inline`, sehingga tidak pernah muncul di HP. Pola yang sama berpotensi muncul di tempat lain.
+
+**Perbaikan.** Pemeriksa baru [`scripts/periksa_petunjuk_hp.py`](./scripts/periksa_petunjuk_hp.py) mencari seluruh pola tersebut.
+
+**Yang membedakan temuan nyata dari positif palsu.** Pemeriksaan pertama melaporkan `"PILIH BENTANG ALAM:"` sebagai masalah, dan itu **SALAH**. Kodenya berbunyi:
+
+```jsx
+<span className="hidden sm:inline">PILIH BENTANG ALAM:</span>
+<span className="sm:hidden">BENTANG ALAM:</span>
+```
+
+Teksnya memang disembunyikan di HP, TETAPI **DIGANTI** dengan versi yang lebih pendek. Tidak ada informasi yang hilang; ini justru penataan yang benar. Karena itu pemeriksa membedakan **dengan pengganti** (bukan masalah) dan **tanpa pengganti** (masalah).
+
+> Positif palsu berbahaya: pemeriksa yang sering salah akan diabaikan orang, dan justru temuan yang benar ikut terlewat.
+
+**Dibuktikan dapat gagal:** tombol LANJUT di Level 1 diganti dengan petunjuk tersembunyi → terdeteksi 1 petunjuk hilang. Setelah dikembalikan → 0.
+
+#### 4. Dua Kesalahan Pengukuran yang Ditemukan Sendiri
+
+**Kesalahan pengukuran 1 — `transform` ditimpa animasi.** Percobaan uji pergeseran avatar Level 3 menyetel `transform` lewat JavaScript, tetapi animasi `animate-bounce` **menimpanya**. Akibatnya nilai tidak pernah berubah dan hasilnya tampak "tidak berpengaruh" untuk **semua** nilai. Diperbaiki dengan memakai properti `top`.
+
+**Kesalahan pengukuran 2 — penguraian berkas asar.** Basis offset isi `.asar` yang dipakai pertama kali SALAH (dikira `16 + ukuran_json`), sehingga `index.html` dilaporkan "tidak ada" padahal ada. Diperbaiki dengan memakai **hash SHA256 yang sudah tersimpan di metadata asar**, sehingga isi berkas tidak perlu diurai sama sekali.
+
+#### 5. Verifikasi
+
+| Pemeriksaan | Hasil |
+|---|---|
+| `cek:animasi` | 14/14 terdefinisi (**dan terbukti bisa gagal**) |
+| `cek:petunjuk-hp` | 0 petunjuk hilang (**dan terbukti bisa gagal**) |
+| Tombol LANJUT Level 1 | ada, terverifikasi visual |
+| Tombol LANJUT Level 2 | ada, terverifikasi visual |
+| Komponen bersama dipakai | Level 1 ✅ dan Level 2 ✅ |
+| `npx tsc -b` | 0 error |
+
+---
+
+## 99. Isolasi Data Antar-Guru, Penutupan Pencacahan Kode Kelas & Jaminan Kode Kelas Unik
+
+### Tanggal: 12 Oktober 2026
+- **Status Modul**: Selesai Penuh (`Production Ready`) & Teruji Bersih
+- **Rentang Commit**: `6727a8e` → `c5a2cdc`
+- **Migrasi Baru**: [`11_tutup_pencacahan_kode_kelas.sql`](./supabase/migrations/11_tutup_pencacahan_kode_kelas.sql), [`12_kode_kelas_unik.sql`](./supabase/migrations/12_kode_kelas_unik.sql)
+- **Komponen Kunci yang Terlibat**:
+  - [`src/app/TeacherDashboard/index.tsx`](./src/app/TeacherDashboard/index.tsx)
+  - [`src/utils/supabaseClient.ts`](./src/utils/supabaseClient.ts)
+  - [`scripts/uji_isolasi_guru.py`](./scripts/uji_isolasi_guru.py) **(baru)**
+  - [`scripts/periksa_izin_guru.py`](./scripts/periksa_izin_guru.py) **(baru)**
+  - [`scripts/kelola_akun_guru.py`](./scripts/kelola_akun_guru.py) **(baru)**
+
+#### 1. Latar Belakang Permintaan
+
+Pengguna berencana memakai RESQ-BOX di **banyak sekolah** dengan banyak akun guru, dan meminta kepastian bahwa **data guru A tidak dapat dilihat guru B**, karena kelas yang diampu berbeda — seperti Google Classroom.
+
+#### 2. Tiga Lapis Isolasi yang Sudah Ada (dan Diverifikasi)
+
+**Lapis 1 — Tabel `classrooms` memiliki pemilik.** Kolom `teacher_username TEXT NOT NULL`. Kolom `code` adalah **PRIMARY KEY**, sehingga mustahil ada dua guru dengan kode kelas yang sama. Jaminan ini penting: tanpa itu, pemeriksaan kepemilikan dapat menyasar kelas guru lain.
+
+**Lapis 2 — Kebijakan RLS memakai `can_read_student()`:**
+
+```sql
+p_student_id = auth.uid()                    -- murid: dirinya sendiri
+OR public.is_admin()                         -- admin: semua
+OR (public.is_teacher() AND EXISTS (         -- guru: HANYA kelas yang dia ampu
+      SELECT 1 FROM public.profiles s
+      JOIN public.classrooms c ON c.code = s.classroom_code
+      WHERE s.id = p_student_id
+        AND c.teacher_username = (SELECT username FROM public.profiles
+                                  WHERE id = auth.uid())
+   ))
+```
+
+Guru A yang menanyakan nilai murid guru B mendapat **NOL BARIS**, bukan pesan galat. Dari sisinya, data itu tidak ada.
+
+**Lapis 3 — Fungsi RPC memeriksa kepemilikan sendiri.** Fungsi `SECURITY DEFINER` **MELEWATI RLS**, sehingga wajib memeriksa izin sendiri. Contoh `teacher_create_student`:
+
+```sql
+IF NOT (v_me.is_admin OR v_me.role = 'admin') THEN
+  IF NOT EXISTS (SELECT 1 FROM public.classrooms c
+                 WHERE c.code = v_code AND c.teacher_username = v_me.username) THEN
+    RAISE EXCEPTION 'Kelas % bukan milik Anda.', v_code USING ERRCODE = '42501';
+  END IF;
+END IF;
+```
+
+Diperiksa satu per satu: **12 dari 12 fungsi guru aman, 0 perlu diperiksa.**
+
+#### 3. Uji dari Luar Memakai Kunci Publik
+
+`scripts/uji_isolasi_guru.py` menembak REST API Supabase dari LUAR memakai kunci `anon` yang sama dengan peramban — persis seperti penyerang:
+
+| Yang diuji | Hasil |
+|---|---|
+| Baca `profiles` tanpa login | HTTP 401 ditolak |
+| Baca `level_submissions` tanpa login | HTTP 401 ditolak |
+| Baca `classrooms` tanpa login | HTTP 401 ditolak |
+| Baca `rate_limits` tanpa login | HTTP 401 ditolak |
+| Panggil 13 fungsi privat tanpa login | ditolak semua |
+| Naikkan peran sendiri jadi admin | HTTP 401 ditolak |
+| Pendaftaran mandiri sebagai guru | HTTP 422 ditolak |
+| Admin API dengan kunci `anon` | **HTTP 403 `not_admin`** |
+
+**Uji kunci anon itu penting:** ia membuktikan aplikasi **tidak dapat dipakai menaikkan peran**, walaupun kunci publiknya diketahui siapa pun.
+
+#### 4. Cacat 1 — Dashboard Guru Menampilkan Murid Kelas Guru LAIN
+
+**Laporan pengguna.** *"Masuk ke akun guru sama ke akun tyas itu isinya muridnya sama."* Dilaporkan SETELAH migrasi 11 dijalankan, jadi ini masalah yang berbeda.
+
+**Dua cacat yang saling memperburuk:**
+
+**Cacat a — Kode kelas ditulis mati.** `src/app/TeacherDashboard/index.tsx` baris 51 semula berbunyi:
+
+```typescript
+const [selectedClassCode, setSelectedClassCode] = useState('RESQ-8A');
+```
+
+Setiap guru yang membuka Dashboard Guru **langsung diarahkan** ke kelas berkode `RESQ-8A` — bukan ke kelas miliknya. Kode `RESQ-8A` dan `RESQ-8B` adalah kode LAMA; kode kelas yang dibuat aplikasi sekarang bersifat acak (`RESQ-<nama><6 angka>`).
+
+**Cacat b — Urutan pemuatan salah.** Kedua efek berjalan bersamaan tanpa saling menunggu:
+
+```
+useEffect 1:  fetchTeacherClassrooms()             -> LAMBAT (jaringan)
+useEffect 2:  fetchClassroomStudents('RESQ-8A')    -> LANGSUNG jalan
+```
+
+`loadClassData()` **tidak menunggu** daftar kelas selesai dimuat. Bila server MENOLAK permintaan itu (karena kelas bukan milik guru itu), `fetchClassroomStudents` **jatuh ke simpanan lokal** (`localStorage`) dan menampilkan murid dari simpanan itu — data yang tertinggal dari sesi sebelumnya.
+
+**Perbaikan:**
+
+1. Kode kelas **tidak lagi ditulis mati**; nilainya kosong pada awalnya
+2. Ditambahkan penanda `classroomsSiap`, bernilai true hanya setelah daftar kelas selesai dimuat
+3. Ditambahkan **penjaga** di dalam efek pemuat murid:
+
+```typescript
+const kelasMilikku = classrooms.some((c) => c.code === selectedClassCode);
+if (!classroomsSiap || !selectedClassCode || !kelasMilikku) {
+  if (classroomsSiap) { setStudents([]); setSubmissions([]); }
+  return;
+}
+```
+
+4. Daftar dependensi efek diperbaiki dari `[selectedClassCode]` menjadi `[selectedClassCode, classroomsSiap, classrooms]`
+
+> **Catatan penting butir 4.** TANPA ini, penjaganya **TIDAK PERNAH dilewati** setelah daftar kelas selesai dimuat — sehingga daftar murid tidak akan termuat sama sekali. Ini kesalahan yang mudah terjadi ketika menambahkan penjaga pada efek yang sudah ada.
+
+#### 5. Cacat 2 — Kode Kelas Tidak Dijamin Unik
+
+**Temuan.** Kode dibentuk KLIEN sebagai `RESQ-<4 huruf nama kelas><3 angka acak>`. Awalan diambil dari NAMA KELAS, dan `'Kelas VIII-A'` adalah **NAMA BAWAAN**. Jadi semua guru yang tidak mengganti namanya mendapat awalan `KELA` yang sama, dan hanya berbagi **900 kemungkinan angka**.
+
+**Diukur dengan problem ulang tahun:**
+
+| Kelas se-awalan | Peluang bentrok |
+|---|---|
+| 2 | 0,11% |
+| 10 | 4,89% |
+| 20 | 19,16% |
+| 30 | 38,66% |
+| 50 | **75,01%** |
+
+Dan bila bentrok, klien hanya **MENCOBA ULANG SATU KALI**.
+
+**Bentuk kegagalannya SENYAP, dan itu yang paling berbahaya.** `create_my_classroom` memakai `ON CONFLICT (code) DO NOTHING`, sehingga **tidak menimpa** kelas guru lain — tetapi klien **TETAP menyimpan kode itu** di simpanan lokal dan menampilkannya sebagai kelas yang baru dibuat. Guru melihat kode kelas yang sebenarnya milik guru lain, **tanpa pesan galat**.
+
+**Perbaikan — satu sumber kebenaran.** Klien **tidak lagi** membuat kode; ia hanya mengirim nama kelas, dan **SERVER** yang membuat kode yang dijamin belum terpakai (migrasi 12):
+
+- `p_code` menjadi OPSIONAL (`DEFAULT NULL`)
+- Bila tidak dikirim, server membuat kode: awalan nama + **6 angka acak** (900.000 kemungkinan per awalan — 1000 kali lipat lebih banyak), lalu **mengulanginya** sampai bebas bentrok, di dalam transaksi yang sama dengan penyisipannya
+- Mengembalikan `dibuat_server` supaya jelas siapa yang membuat kodenya
+
+Perubahan klien di `src/utils/supabaseClient.ts`:
+
+- `p_code` tidak lagi dikirim
+- Kode diambil dari **HASIL server** (`data.code`), bukan dari tebakan klien
+- Bila server tidak mengembalikan kode, **MELEMPAR GALAT** alih-alih diam dan menyimpan kode kosong
+- Percobaan ulang di sisi klien **DIHAPUS**, karena pemulihannya kini ada di server
+
+> **Mengapa kode tidak dibuat di dua tempat?** Justru itulah akar masalahnya: aturan pembuatan kode ada di klien, sedangkan jaminan keunikannya ada di server (PRIMARY KEY). Keduanya **tidak pernah berbicara**, sehingga klien dapat memilih kode yang sudah dipakai dan **tidak tahu** pilihannya gagal.
+
+#### 6. Cacat 3 — Dashboard Guru Menampilkan "Kelas VIII-A" Palsu
+
+**Laporan pengguna.** *"Pas belum ada kelas sama sekali kok di dashboard gurunya tulisannya kelas 8 A ya, coba kamu ganti deh biar ga membingungkan."*
+
+**Penyebab.** Objek cadangan kelas menulis mati nama itu:
+
+```typescript
+|| { id: 'cls-fallback', name: 'Kelas VIII-A', code: selectedClassCode, ... }
+```
+
+Jadi ketika guru **BELUM PUNYA KELAS**, Dashboard Guru tetap menampilkan `Kelas VIII-A` — kelas yang **TIDAK ADA** dan **BUKAN miliknya**.
+
+**Akibat berantai yang berbahaya:**
+1. Guru mengira sudah punya kelas
+2. Lalu bingung kenapa tidak bisa menambah murid (`"Kelas belum dipilih."`)
+3. `'Kelas VIII-A'` juga **NAMA BAWAAN**, sehingga cocok dengan kelas milik guru LAIN — menambah kesan seolah kelasnya sudah ada
+
+**Perbaikan.** Nama cadangan dibuat **KOSONG**, dan seluruh tempat yang menampilkan nama kelas memakai penanda `adaKelas`:
+
+| Tempat | Sebelum | Sesudah |
+|---|---|---|
+| Judul | `Kelas VIII-A` | **`Belum ada kelas`** |
+| Lencana | `KODE KELAS:` (kosong) | **`Buat kelas dulu untuk mulai`** |
+| Keterangan | Cara tambah murid | **Arahkan ke `+ BUAT KELAS BARU`** |
+| Kartu KPI | `Kelas: Kelas VIII-A` | **`Kelas: Belum ada kelas`** |
+
+Ditambahkan juga panduan di tab **+ TAMBAH SISWA**: bila guru belum punya kelas, muncul penjelasan beserta tombol **+ BUAT KELAS SEKARANG** yang menutup modal itu dan langsung membuka modal Buat Kelas Baru.
+
+> Kejujuran di sini lebih penting daripada tampilan yang terlihat lengkap. Lebih baik guru melihat "Belum ada kelas" dan langsung tahu harus membuat kelas, daripada melihat "Kelas VIII-A" lalu menebak-nebak.
+
+#### 7. Penambahan Akun Guru
+
+**Temuan awal.** Tidak ada tombol "Tambah Guru" di aplikasi — dan itu **memang disengaja**. Peran `teacher` hanya sah bila berada di `app_metadata`, dan `app_metadata` hanya dapat ditulis **server**.
+
+**Panduan awal SALAH, dan diperbaiki.** Semula ditulis bahwa Dashboard Supabase menyediakan kolom **App Metadata** pada dialog Add user. **Tidak benar** — Dashboard versi sekarang hanya menyediakan **satu** kolom metadata, yaitu **User Metadata**. Sedangkan trigger `handle_new_auth_user` membaca peran dari **`raw_app_meta_data`**:
+
+```sql
+v_role := CASE
+  WHEN COALESCE(NEW.raw_app_meta_data ->> 'role', '') IN ('teacher','admin')
+  THEN NEW.raw_app_meta_data ->> 'role'
+  ELSE 'student'          -- kalau ditaruh di User Metadata, jatuh ke sini
+END;
+```
+
+Jadi menaruh `{"role": "teacher"}` di User Metadata **TIDAK berpengaruh**: guru itu akan masuk sebagai **siswa**, dan **tidak ada galat apa pun** yang muncul.
+
+**Perbaikan.** Dibuat [`scripts/kelola_akun_guru.py`](./scripts/kelola_akun_guru.py) yang menulis ke tempat yang BENAR:
+
+| Perintah | Fungsi |
+|---|---|
+`buat <username> "<Nama>" "<Sekolah>"` | Membuat akun, menulis `role` ke `app_metadata`, membuat kata sandi kuat (ditampilkan SEKALI), lalu **langsung memeriksa hasilnya** |
+`periksa <username>` | Memeriksa `app_metadata.role`, status konfirmasi, dan `profiles.role` |
+`daftar` | Menghitung dan mendaftar seluruh akun guru |
+
+Kunci `service_role` diminta lewat `getpass` bila belum diset, sehingga **tidak tampil di layar** dan tidak masuk riwayat perintah.
+
+**Cacat pada skrip yang ditemukan sendiri, lalu diperbaiki.** Saat skrip diuji memakai kunci `anon` (bukan `service_role`), skrip melaporkan:
+
+```
+[X] Akun ujicoba@resqbox.local TIDAK DITEMUKAN
+```
+
+**Itu berbohong.** Akunnya mungkin ada — **pencariannya yang GAGAL**, dan skrip tidak memeriksa apakah pencariannya berhasil. Bahayanya nyata: guru mengira akunnya belum ada, lalu mencoba membuat ulang dengan username yang sama, ditolak server karena sudah ada, dan menjadi bingung.
+
+Perbaikan: bila status pencarian bukan 200, skrip kini mengatakan yang sebenarnya — bahwa **pemeriksaannya** yang gagal — beserta penyebab tersering (kunci bukan `service_role`) dan cara mengambil kunci yang benar.
+
+#### 8. Pemeriksa yang Sempat Salah, Lalu Diperbaiki
+
+`scripts/periksa_izin_guru.py` versi pertama melaporkan **5 positif palsu**: `class_code_info`, `class_exists`, `get_my_progress`, `official_level_score`, dan `update_my_teacher_profile`.
+
+Setelah diperiksa dengan mata, kelimanya **AMAN**:
+
+| Fungsi | Alasan aman |
+|---|---|
+`official_level_score` | **Tidak menyentuh tabel sama sekali** — fungsi murni yang hanya menghitung angka dari argumennya |
+`get_my_progress` | Memakai `WHERE student_id = auth.uid()` — hanya baris milik pemanggil |
+`update_my_teacher_profile` | Memakai `WHERE id = auth.uid()` — hanya profil sendiri |
+`class_code_info`, `class_exists` | Memang yang bocor; kini disiapkan untuk dihapus |
+
+Pemeriksa diperbaiki agar mengenali **fungsi murni tanpa akses tabel** dan **fungsi terbatas pada diri sendiri**. **Dibuktikan dapat gagal:** `list_class_students` dibuat tanpa pemeriksaan kepemilikan → terdeteksi. Setelah dikembalikan → 0.
+
+#### 9. Verifikasi
+
+| Pemeriksaan | Hasil |
+|---|---|
+`uji_isolasi_guru` | tidak ada kebocoran |
+`periksa_izin_guru` | 12 aman, 0 perlu diperiksa (**dan terbukti bisa gagal**) |
+`uji_akses_tanpa_login` | 6 terlindungi, 0 terbuka |
+`uji_level_guru` | 18/18 |
+`npx tsc -b` | 0 error |
+
+**Tindak lanjut untuk pemilik proyek:** migrasi 11 dan 12 dijalankan lewat SQL Editor Supabase. Migrasi 12 **wajib dijalankan sebelum** memakai versi klien yang baru, karena server versi lama masih mewajibkan `p_code` sehingga pembuatan kelas akan gagal.
+
+---
+
+## 100. Penutupan Pencacahan Kode Kelas, Pagar Gradle & Pembangunan Ulang APK + `.exe`
+
+### Tanggal: 12 Oktober 2026
+- **Status Modul**: Selesai Penuh (`Production Ready`) & Terverifikasi
+- **Rentang Commit**: `9480f26`, `40ad153`, `265dada`
+- **Komponen Kunci yang Terlibat**:
+  - [`supabase/migrations/11_tutup_pencacahan_kode_kelas.sql`](./supabase/migrations/11_tutup_pencacahan_kode_kelas.sql)
+  - [`android/app/build.gradle`](./android/app/build.gradle)
+  - [`scripts/periksa_kesegaran_apk_exe.py`](./scripts/periksa_kesegaran_apk_exe.py) **(baru)**
+  - [`scripts/unggah_rilis.py`](./scripts/unggah_rilis.py) **(baru)**
+  - [`scripts/uji_blokir_ws.mjs`](./scripts/uji_blokir_ws.mjs) **(baru)**
+
+#### 1. Kebocoran yang Ditemukan: Kode Kelas Dapat Dicacah Tanpa Login
+
+Diuji langsung dari luar memakai kunci publik yang sama dengan peramban, **tanpa login**:
+
+```
+class_code_info('RESQ-8A')  ->  {"found": true, "name": "Kelas VIII-A",
+                                 "school_name": "SMP Negeri 1"}
+class_code_info('RESQ-8B')  ->  {"found": true, "name": "Kelas VIII-B",
+                                 "school_name": "SMP Negeri 1"}
+```
+
+Datanya lolos tanpa login. Kode kelas dibuat dari yang **DIKETIK GURU SENDIRI** (`v_code := upper(trim(p_code))`), jadi polanya mudah ditebak: `RESQ-8A`, `RESQ-8B`, `RESQ-8C`, `RESQ-9A`. Dari **21 tebakan**, **2 langsung berhasil**.
+
+**Yang bocor:** keberadaan kelas, nama kelas, dan nama sekolah.
+**Yang TIDAK bocor:** data murid — RLS pada `profiles` dan `level_submissions` tetap menolak (HTTP 401).
+
+**Rencana ke banyak sekolah membuat ini lebih penting:** semakin banyak kelas ada, semakin berharga daftar itu, dan nama sekolah yang bocor dapat dipakai menyasar sekolah tertentu.
+
+**Perbaikan.** Migrasi 11 **MENGHAPUS** `class_code_info` dan `class_exists`.
+
+**Mengapa dihapus, bukan dibatasi.** Diperiksa lebih dahulu: keduanya **tidak dipanggil sama sekali** oleh aplikasi — pencarian di seluruh `src/` tidak menemukan satu pun pemanggilnya. Jadi menghapusnya tidak mengurangi kemampuan aplikasi sedikit pun, sementara membiarkannya membuka data.
+
+`username_available` **DIPERTAHANKAN**: memang dipakai saat guru membuat akun siswa, dan hanya menjawab benar/salah untuk SATU nama yang ditanyakan, sehingga tidak dapat dipakai mencacah daftar.
+
+#### 2. Build APK Gagal: Duplikat Aset `.gz`
+
+**Gejala:**
+
+```
+:app:mergeDebugAssets FAILED
+Duplicate resources
+  public/terrain-688.stl
+  public/terrain-688.stl.gz
+```
+
+**Penyebab.** `public/` memuat DUA berkas berisi data yang sama:
+
+| Berkas | Ukuran |
+|---|---|
+`terrain-688.stl` | 3,02 MB (asli) |
+`terrain-688.stl.gz` | 0,92 MB (hasil kompresi berkas di atas) |
+
+Di web, kehadiran keduanya memang disengaja: aplikasi memuat `.gz` lebih dahulu (menghemat 2,1 MB), lalu beralih ke `.stl` bila dekompresi tidak didukung. Tetapi di dalam APK keduanya ikut dikemas — 3,9 MB untuk satu model yang sama — dan Gradle menolaknya sebagai sumber kembar.
+
+**Akar masalahnya: perbaikan yang bergantung pada ingatan orang.** Sudah ada `scripts/siapkan-aset-android.mjs` yang menghapus `.gz` dari aset Android, dan skrip itu BENAR. Tetapi skrip itu hanya berjalan bila seseorang memakai perintah `npm run android:sync`. Pada build ini, `cap sync android` dijalankan langsung — sehingga skrip itu **TERLEWAT**.
+
+**Perbaikan — pagar di tingkat Gradle.** Ditambahkan di `android/app/build.gradle`:
+
+```gradle
+androidResources {
+    ignoreAssetsPattern = '!*.gz'
+}
+```
+
+Dengan begitu `.gz` dikecualikan dari aset yang dikemas, berlaku untuk **SIAPA PUN** yang menjalankan build dengan cara apa pun.
+
+**Mengapa `.stl` yang dipertahankan, bukan `.gz`.** `.stl` adalah berkas ASLI dan selalu dapat dipakai. `.gz` memerlukan `DecompressionStream('gzip')`, yang belum tentu ada di WebView Android versi lama. Menyimpan berkas yang hanya berguna bila API tertentu ada — sambil menambah 0,92 MB dan menggagalkan build — tidak sepadan.
+
+**Dibuktikan bekerja.** Build dijalankan **DENGAN `.gz` MASIH ADA** di aset Android — sengaja, supaya pagarnya benar-benar teruji:
+
+```
+BUILD SUCCESSFUL in 17s
+```
+
+Isi APK diperiksa langsung dengan membaca berkas zip-nya:
+
+| Isi | Hasil |
+|---|---|
+Berkas `.gz` di dalam APK | **0** (dikecualikan) |
+`terrain-688.stl` | **ADA** (dipertahankan) |
+`index.html` | ADA |
+Berkas web | 51 |
+Total berkas | 487 |
+
+#### 3. Pentingnya Membangun Ulang APK & `.exe`
+
+**Pertanyaan pengguna:** *"apk sama exe nya perlu diperbarui ga, apa ga perlu, ga perlu ya soalnya kan yang diperbarui databasenya?"*
+
+**Jawabannya: sebagian benar.** Migrasi database tidak memerlukan pembangunan ulang. TETAPI perubahan tata letak HP, perbaikan tata letak Dashboard Guru, dan perubahan `supabaseClient.ts` **menyentuh kode KLIEN**, dan kode itu ikut dibungkus ke dalam APK dan `.exe`.
+
+**Yang membuat ini sulit terlihat.** Vite memberi **HASH pada nama berkas JS**. Begitu isinya berubah, namanya ikut berubah. APK lama tetap menunjuk nama lama, sehingga berkas baru **TIDAK ADA** di dalamnya, sementara berkas lama masih ada padahal sudah tidak dipakai. Diperiksa langsung dari isi berkasnya:
+
+| Sebelum dibangun ulang | APK | EXE |
+|---|---|---|
+Sama persis | 28 | 29 |
+**BERBEDA** | 2 | 2 |
+**TIDAK ADA** | 17 | 16 |
+
+**Perbaikan.** Dibuat [`scripts/periksa_kesegaran_apk_exe.py`](./scripts/periksa_kesegaran_apk_exe.py) yang membandingkan **setiap berkas di `dist/`** dengan isinya di dalam APK dan `.exe`, byte demi byte. Untuk asar, dipakai **hash SHA256 yang sudah tersimpan di metadata-nya**, sehingga isi berkas tidak perlu diurai.
+
+**Hasil sesudah dibangun ulang:**
+
+| Berkas | Sama persis | Bermasalah |
+|---|---|---|
+APK | 46 | **0** |
+EXE | 47 | **0** |
+
+> APK **46** dan bukan 47 karena `terrain-688.stl.gz` sengaja dikecualikan oleh pagar Gradle — memang disengaja.
+
+**Kapan perlu membangun ulang:**
+
+| Yang diubah | Perlu rebuild? |
+|---|---|
+Migrasi SQL | ❌ tidak |
+Kode di `src/` | ✅ **ya** |
+Dokumen / skrip | ❌ tidak |
+
+#### 4. Unggahan ke Rilis & Verifikasinya
+
+Dibuat [`scripts/unggah_rilis.py`](./scripts/unggah_rilis.py). GitHub **TIDAK mengizinkan menimpa** berkas, jadi yang lama dihapus lebih dahulu. Dua hal diperiksa lebih dahulu, dan keduanya penting:
+
+1. Rilis **TIDAK boleh** ditandai pre-release. GitHub melewati rilis pra-rilis saat mencari yang terbaru, sehingga tombol unduh akan menunjuk ke rilis yang **SALAH**.
+2. Berkas lokal diperiksa **ADA** sebelum berkas lama dihapus. Urutan ini mencegah kegagalan di tengah membuat rilis kehilangan berkasnya dan tombol unduh mati total.
+
+Sesudah mengunggah, ukurannya dibaca **ULANG dari server** lalu dibandingkan dengan berkas lokal — karena unggahan 115 MB dapat tampak berhasil padahal tidak.
+
+| Berkas | Ukuran | Cocok |
+|---|---|---|
+`RESQ-BOX-Android.apk` | 6,93 MB | ✅ |
+`RESQ-BOX-Laptop.exe` | 114,83 MB | ✅ |
+
+Tautan unduh yang dipakai website diuji mengembalikan magic bytes yang benar: `PK` (50 4B) untuk APK dan `MZ` (4D 5A) untuk `.exe`.
+
+#### 5. Uji Pemblokiran Sambungan Hardware (untuk Menjawab Pertanyaan Teknis)
+
+Pengguna menanyakan saran dari rekannya untuk memakai *"middleware translator"* agar web dapat menyambung ke hardware. Sebelum menjawab, perilakunya **diukur** memakai [`scripts/uji_blokir_ws.mjs`](./scripts/uji_blokir_ws.mjs):
+
+| Halaman | Percobaan ke `ws://192.168.4.1:81` | Artinya |
+|---|---|---|
+HTTP lokal (`http://127.0.0.1`) | gagal setelah **5004 ms** | Permintaan **sampai ke jaringan**; TCP timeout karena perangkat tidak ada |
+HTTPS asli (`https://resq-box.pages.dev`) | gagal dalam **0 ms** | **DIBLOKIR** sebelum dicoba |
+
+**0 milidetik vs 5 detik.** Kalau perangkatnya sekadar tidak ada, butuh 5 detik. **0 ms berarti peramban menolak sebelum menyentuh jaringan.**
+
+**Kesimpulan teknis.** Peramban memblokir sambungan `ws://` dari halaman HTTPS sebelum percobaan dilakukan, sehingga **tidak ada** yang dapat "diterjemahkan" — permintaan tidak pernah keluar dari peramban. Yang **BISA** bekerja adalah relay `wss://` di server bersertifikat tepercaya, TETAPI ESP32 dalam mode Access Point **tidak punya internet**, sehingga tidak dapat menghubungi relay. Solusi yang sudah ada — Aplikasi Laptop dan Aplikasi HP — menyelesaikannya dengan cara yang benar: **halamannya yang dibuat tidak lewat jalur aman**, bukan hardware-nya yang dibuat HTTPS.
+
+**Koreksi diri yang dicatat.** Pernyataan awal *"middleware translator TIDAK BISA"* terlalu mutlak; bentuk relay `wss://` secara teknis sah. Yang benar-benar tidak dapat bekerja adalah menerjemahkan sambungan yang **sudah diblokir sebelum dikirim**.
+
+#### 6. Verifikasi
+
+| Pemeriksaan | Hasil |
+|---|---|
+Build APK | **BERHASIL** (dengan `.gz` masih ada) |
+Isi APK | `.gz` = 0, `.stl` ada, `index.html` ada |
+Kesegaran APK | 46 sama persis, **0 bermasalah** |
+Kesegaran EXE | 47 sama persis, **0 bermasalah** |
+Ukuran di server | **Cocok persis** dengan berkas lokal |
+Tautan unduh | magic bytes `PK` dan `MZ` benar |
+Rilis | `v1.0.0`, draft `False`, prerelease `False` |
+`.exe` dijalankan | proses hidup setelah 8 detik ✅ |
+Pengerasan `.exe` di dalam asar | `nodeIntegration: false`, `contextIsolation: true`, `sandbox: true`, `webSecurity: true`, bind `127.0.0.1` — **semuanya utuh** |
+
+---
+
+## 101. Buku Panduan RESQ-BOX — Bab VI Aplikasi Laptop & HP, Daftar Perbaikan Halaman & Daftar Gambar
+
+### Tanggal: 12 Oktober 2026
+- **Status**: Selesai — berkas lampiran siap dipakai di Canva
+- **Berkas Hasil**: [`lampiran-buku/BAB-VI-APLIKASI.md`](./lampiran-buku/BAB-VI-APLIKASI.md)
+- **Sumber yang Dibaca**: `Buku Panduan RESQ-BOX (1).pdf` (88 halaman, dibuat di Canva)
+
+#### 1. Permintaan Pengguna
+
+Pengguna sudah menyusun buku panduan 88 halaman, tetapi buku itu **belum memuat aplikasi laptop dan aplikasi HP**. Diminta saran mengenai apa saja yang perlu ditambahkan. Kemudian pengguna meminta tambahan itu ditulis dengan **bahasa sehari-hari** karena buku ini untuk **orang awam**, lalu meminta **mengurangi jumlah poin, tabel, dan tanda titik dua** karena terlalu banyak, dan terakhir meminta **menghapus gaya bahasa "bayangkan…"**.
+
+#### 2. Isi Buku yang Sudah Ada (Dipetakan)
+
+Buku terdiri atas 8 bab: Pendahuluan, Pengenalan RESQ-BOX, Pembuatan Board, Instalasi dan Persiapan, Cara Penggunaan, K3, Penelusuran Masalah, serta Pemeliharaan dan Penyimpanan.
+
+#### 3. Celah yang Ditemukan — yang Belum Ada Sama Sekali
+
+Diperiksa dengan mencari kata kunci pada seluruh 88 halaman:
+
+| Topik | Kemunculan di buku |
+|---|---|
+Tombol unduh / kata "unduh" | **0** |
+Aplikasi Android / kata "apk" | **0** |
+Aplikasi desktop / kata ".exe" | **0** |
+Cara guru membuat kelas baru | **0** |
+Kode kelas | **0** |
+iPad / Safari / iOS | **0** |
+Mode Tamu | hanya **1×**, tanpa penjelasan |
+
+> Padahal aplikasinya **sudah ada dan dapat diunduh** (APK 6,93 MB, `.exe` 114,83 MB) — dan buku panduannya **tidak menyebutkannya sama sekali**.
+
+#### 4. Kesalahan yang Ditemukan di Buku
+
+| Hal. | Kesalahan |
+|---|---|
+**29** | Alamat web tertulis `https://resq-box.vercel.app` — **salah** |
+**30** | Alamat web tertulis `resq-box.pages.dev` — **benar** |
+**15** | Tertulis *"Kabel USB hanya berfungsi sebagai sumber daya (power), bukan untuk mengirim data"* — **sudah tidak tepat**, karena Aplikasi Laptop dapat mengirim data lewat USB |
+**42–45** | Kontrol permainan hanya menyebut papan ketik; belum menyebut tombol arah (D-pad) dan tombol LANJUT untuk perangkat sentuh |
+**53–54** | Panduan Guru belum menjelaskan cara membuat kelas, arti kode kelas, cara menambahkan akun siswa, dan isolasi antar-guru |
+**75** | Penelusuran masalah menyebut *"resolusi terlalu rendah"* dan *"zoom lebih dari 100%"*, tetapi belum menyebut bahwa **di HP tata letaknya memang berbeda dan itu disengaja** |
+**87** | Glosarium belum memuat istilah baru |
+
+**Buku itu kontradiksi sendiri:** halaman 29 menyebut alamat lama, halaman 30 menyebut alamat baru. Ini dibuktikan dengan membaca kedua halaman itu langsung dari PDF.
+
+#### 5. Temuan Penting: Satu Kesimpulan Pemeriksaan yang Salah
+
+Pencarian pertama menyimpulkan tombol **"Validasi Misi"** dan **"Ganti Akun"** **tidak ada** di aplikasi.
+
+**Kesimpulan itu SALAH.** Setelah diperiksa ulang, tombol **`VALIDASI MISI!`** **memang ada**, yaitu di [`src/app/Workspace/MissionPanel.tsx`](./src/app/Workspace/MissionPanel.tsx) baris 215 — tulisannya berada di dalam `<span>` dinamis sehingga tidak tertangkap pencarian sederhana. Demikian pula `Ganti Akun` ada, namun hanya sebagai label `title` pada Dashboard, bukan sebagai tulisan tombol.
+
+**Pelajaran yang dicatat:** bukti langsung lebih dapat dipercaya daripada pencarian yang gagal.
+
+#### 6. Yang Diverifikasi dan Ternyata Sudah Benar
+
+Sebagian besar isi buku sudah akurat. Yang diperiksa dan **cocok dengan aplikasi**:
+
+WiFi `DIORAMA_ESP32` · kata sandi `12345678` · alamat `192.168.4.1` · layar OLED `SISTEM SIAP` dan `WEB TERHUBUNG` · **Level 3 tepat 20 misi** (`level: 1..20`) · **Level 1 tepat 8 lapisan** · tombol MULAI, Koneksikan, Proyek Saya, VALIDASI MISI · tab PETA 3D / TELEMETRI / BALOK / KONSOL · menu Ganti Password Akun Siswa · tombol COBA TANPA LOGIN.
+
+Seluruh angka dan nama tombol itu diverifikasi langsung terhadap kode sumber, bukan dikira-kira.
+
+#### 7. Isi Lampiran yang Disusun
+
+| Bagian | Isi |
+|---|---|
+**Catatan Penomoran Bab** | Peringatan bahwa K3 dan Penelusuran Masalah bergeser nomor, beserta hal-hal yang ikut berubah |
+**Bab VI A–G** | Teks lengkap bab aplikasi, bahasa sehari-hari |
+**Daftar Perbaikan Halaman** | 14 baris perbaikan per halaman |
+**Teks Siap-Tempel** | Alur login, Mode Tamu, dan Pengelolaan Kelas |
+**Daftar Gambar** | 13 gambar beserta keterangan format Daftar Gambar |
+**Pemeriksaan Bab Lainnya** | Yang sudah benar, yang perlu ditambah, yang perlu diperiksa sendiri |
+**Urutan Pengerjaan** | 7 langkah yang disarankan |
+
+#### 8. Perbaikan Gaya Bahasa
+
+Pengguna memberi tiga catatan gaya berturut-turut, dan ketiganya dikerjakan:
+
+**Catatan 1 — bahasa sehari-hari.**
+
+| Istilah lama | Diganti |
+|---|---|
+"terenkripsi" / "tidak terenkripsi" | **"jalur aman"** / **"jalur biasa"** |
+"WebView internal" | **"membuka halamannya di dalam aplikasi"** |
+"WebSocket tanpa enkripsi" | **"jalur biasa"** |
+"port 81" | dihapus — pembaca tidak perlu tahu |
+"repository GitHub" | **"halaman unduhan di GitHub"** |
+"firewall" | **"firewall (tembok api)"** |
+
+**Catatan 2 — terlalu banyak poin, tabel, dan titik dua.**
+
+| | Sebelum | Sesudah |
+|---|---|---|
+Tabel | 20 | **7** |
+Poin butir | banyak | **0** |
+Kutipan (`>`) | banyak | **0** |
+Kotak centang | 8 | **0** |
+Daftar nomor | banyak | **1** |
+Baris prosa | sedikit | **352** |
+
+Seluruh isi diubah menjadi paragraf yang mengalir. Tabel dipertahankan **hanya** bila memang lebih jelas dari kalimat, misalnya kolom *Masalah → Penyebab → Tindakan* pada penelusuran masalah.
+
+**Catatan 3 — hapus gaya "bayangkan".**
+
+Dihapus beserta frasa sejenis. Diperiksa: `bayangkan`, `seolah`, `umpama`, `ibarat`, `andaikan`, `anggaplah`, `misalkan`, `perumpamaan` → **semuanya 0**.
+
+**Contoh perbaikannya:**
+
+> **Sebelum.** Peramban menolak sambungan itu sejak awal. **Bayangkan kamu berada di dalam sebuah gedung berpengaman ketat. Gedung itu melarang penghuninya berbicara lewat jalanan terbuka.**
+>
+> **Sesudah.** Peramban modern melarang halaman yang dibuka lewat jalur aman tersambung ke jalur biasa. Aturan ini ada supaya tidak ada pihak lain yang dapat menyadap atau menyisipkan perintah. Diorama Board menerima perintah lewat jalur yang belum diamankan, sehingga peramban menolaknya sejak awal.
+
+#### 9. Perbaikan Struktur yang Ditemukan Saat Menyunting
+
+| Masalah | Perbaikan |
+|---|---|
+Judul **"Cara Memasang Aplikasi"** padahal aplikasi tidak dipasang | Bagian dihapus; isinya dilipat ke bagian unduh sebagai **"Saat pertama kali dibuka"** |
+Huruf bagian **melompat** (A, B, C, lalu E) | Dirapikan menjadi **A sampai G** |
+Rujukan silang menunjuk **bagian yang salah** | Diperbaiki dan diverifikasi cocok dengan judul bagian yang ada |
+Saran **"Run as administrator"** untuk layar putih | **Dihapus** — itu melatih pembaca mematikan pengamanan Windows; diganti dengan buka ulang lalu unduh ulang |
+
+#### 10. Verifikasi
+
+| Pemeriksaan | Hasil |
+|---|---|
+Frasa "bayangkan" & sejenisnya | **0** |
+Istilah teknis | **0** |
+Poin butir | **0** |
+Kutipan | **0** |
+Kotak centang | **0** |
+"Run as administrator" | sudah tidak ada |
+"Cara Memasang" | sudah tidak ada |
+Rujukan silang "Bab VI bagian D" | cocok dengan judul bagian |
+Kutipan PDF halaman 29 & 30 | dibaca langsung, kontradiksi terkonfirmasi |
+
+#### 11. Pengeluaran `docs/` dan `lampiran-buku/` dari GitHub
+
+Pengguna meminta panduan internal **tidak diunggah ke GitHub** karena khawatir dapat dilihat orang.
+
+**Diperiksa lebih dahulu:** `docs/` **tidak pernah** ikut ke website. `dist/docs` tidak ada, `publicDir` di `vite.config.ts` tidak diset sehingga Vite memakai default `"public"`, dan Cloudflare Pages hanya meng-upload `dist/`. **Jadi kekhawatiran itu tidak terjadi.**
+
+**Namun repo GitHub-nya berstatus PUBLIC**, sehingga isi `docs/` dapat dibaca lewat GitHub. Dikeluarkan dengan `git rm -r --cached docs/` dan ditambahkan ke `.gitignore`; berkasnya **tetap ada di komputer**.
+
+**Ditemukan saat verifikasi:** commit pertama menghapus `docs/` dari pelacakan dan menulis aturan ke `.gitignore`, **tetapi berkas `.gitignore`-nya sendiri tidak ikut di-stage** — sehingga aturannya belum aktif. Ditemukan dengan **menguji langsung**: membuat berkas baru di `docs/` lalu memeriksa apakah git mengabaikannya. Git **tidak** mengabaikannya, dan `git status` menunjukkan `.gitignore` masih berstatus ` M`.
+
+> Contoh pemeriksaan yang berguna: **"sudah ditulis" tidak sama dengan "sudah berlaku".** Aturannya harus diuji, bukan diasumsikan.
+
+**Batasannya dicatat dengan jujur.** Ini menghentikan `docs/` ikut pada commit **berikutnya**. Isi yang **sudah** ter-push sebelumnya **masih ada di riwayat commit**, dan masih dapat dibaca lewat `https://github.com/zidan-cmiw/resq-box/commits/main/docs`. Menghapusnya dari riwayat memerlukan penulisan ulang riwayat git (`git filter-repo`) + force push, yang mengubah SELURUH hash commit — **belum dilakukan**.
+
+**Catatan kejujuran tambahan.** Pemeriksaan awal menandai nama-nama di `docs/` sebagai *"nama murid asli"*. **Itu SALAH.** Setelah konteksnya diperiksa, mereka adalah **TIM PEMBUAT proyek** (Ketua Tim, Hardware Engineer, UI/UX Designer, Penyusun Materi, Dosen Pendamping) yang **memang sengaja** diberi atribusi di Credits dalam aplikasi dan di `Readme.md` baris 343–345.
+
+**Temuan sampingan yang belum ditindaklanjuti:** ada berkas **`composer.phar` 3,47 MB** di root repo. Isinya Composer (pengelola paket PHP), tetapi `composer.json` **tidak ada**, kode PHP **0 berkas**, dan `package.json` tidak menyebutnya. Berkas asing yang tidak ada hubungannya dengan proyek ini dan membuat repo 3,5 MB lebih berat.
+
+---
+
+## 102. Alat Ukur & Pemeriksa Baru (Rekapitulasi Sesi 12 Oktober 2026)
+
+### Tanggal: 12 Oktober 2026
+- **Status**: Semua terpasang dan terverifikasi
+
+Seluruh alat di bawah ditambahkan pada sesi ini. Sebagian besar dibuat **karena alat sebelumnya tidak dapat dipercaya**, dan setiap pemeriksa **dibuktikan dapat gagal** sebelum dipercaya.
+
+#### 1. Alat Ukur Tata Letak (memakai Chrome DevTools Protocol)
+
+| Skrip | Fungsi | Alasan dibuat |
+|---|---|---|
+[`ukur_lebar.mjs`](./scripts/ukur_lebar.mjs) | Mengukur tata letak pada lebar tertentu | `--window-size` Chrome headless **diabaikan di bawah 504px** |
+[`foto_lebar.mjs`](./scripts/foto_lebar.mjs) | Tangkapan layar pada lebar tertentu | Alasan yang sama |
+[`ukur_hud_level1.mjs`](./scripts/ukur_hud_level1.mjs) | Mencari tumpang tindih kotak HUD Level 1 | Dua perbaikan tebakan gagal sebelumnya |
+[`ukur_plakat_level3.mjs`](./scripts/ukur_plakat_level3.mjs) | Kotak plakat & avatar Level 3 | Membuktikan perbaikan mendatar mustahil |
+[`ukur_bilah_workspace.mjs`](./scripts/ukur_bilah_workspace.mjs) | Bilah atas Workspace | Membuktikan `flex-1` tidak berpengaruh pada percobaan pertama |
+
+#### 2. Pemeriksa Kode (semuanya terbukti dapat gagal)
+
+| Skrip | Memeriksa | Bukti dapat gagal |
+|---|---|---|
+[`periksa_animasi.py`](./scripts/periksa_animasi.py) | Kelas animasi dipakai tetapi tidak ada | Definisi dicabut → **36 tempat terdeteksi** |
+[`periksa_petunjuk_hp.py`](./scripts/periksa_petunjuk_hp.py) | Petunjuk hilang di layar sempit | Tombol diganti petunjuk tersembunyi → **1 terdeteksi** |
+[`periksa_izin_guru.py`](./scripts/periksa_izin_guru.py) | Fungsi guru memeriksa kepemilikan kelas | Fungsi dibuat tanpa cek → **terdeteksi** |
+[`periksa_kesegaran_apk_exe.py`](./scripts/periksa_kesegaran_apk_exe.py) | APK & `.exe` memuat build terbaru | Menemukan **17 + 16 berkas tertinggal** |
+
+#### 3. Alat Uji dari Luar & Alat Bantu
+
+| Skrip | Fungsi |
+|---|---|
+[`uji_isolasi_guru.py`](./scripts/uji_isolasi_guru.py) | Menembak REST API dari luar memakai kunci publik |
+[`uji_akses_tanpa_login.py`](./scripts/uji_akses_tanpa_login.py) | Memeriksa tabel terlindungi |
+[`uji_blokir_ws.mjs`](./scripts/uji_blokir_ws.mjs) | Membuktikan `ws://` diblokir dari halaman HTTPS |
+[`kelola_akun_guru.py`](./scripts/kelola_akun_guru.py) | Membuat dan memeriksa akun guru |
+[`unggah_rilis.py`](./scripts/unggah_rilis.py) | Mengunggah berkas ke GitHub Release |
+[`diagnosa_guru_kelas.py`](./scripts/diagnosa_guru_kelas.py) | Menelusuri keadaan guru & kelas |
+[`diagnosa_murid_kembar.py`](./scripts/diagnosa_murid_kembar.py) | Menelusuri mengapa dua guru melihat murid sama |
+
+#### 4. Kesalahan Alat Ukur yang Ditemukan dan Diperbaiki Sendiri
+
+| Kesalahan | Perbaikan |
+|---|---|
+28 positif palsu dari ornamen SVG | Hanya periksa tombol, tautan, kolom isi, teks |
+Mengukur lapisan panduan, bukan halamannya | Siapkan sesi tamu + tandai panduan selesai |
+Rute `workspace` salah dipetakan ke `/level3` | Diperbaiki menjadi `/workspace` |
+`transform` ditimpa animasi `animate-bounce` | Uji memakai properti `top` |
+Basis offset berkas `.asar` salah | Memakai hash SHA256 dari metadata asar |
+`periksa_izin_guru.py` melaporkan 5 positif palsu | Mengenali fungsi murni & fungsi terbatas-diri |
+Semua alat memakai `hidden sm:inline` untuk menyembunyikan | Diuji ulang dengan pengganti vs tanpa pengganti |
+
+> **Pelajaran utama sesi ini.** Hampir setiap pemeriksaan pada percobaan pertama menghasilkan positif palsu atau negatif palsu. Karena itu **setiap pemeriksa dibuktikan dapat gagal** sebelum hasilnya dipercaya, dan setiap kesimpulan diverifikasi ulang dengan bukti langsung.
+
