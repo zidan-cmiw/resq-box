@@ -348,11 +348,16 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
     discovery: {
       id: 'disc-pangea',
       title: 'Pangea & Pemekaran Lempeng Divergen',
-      shortDesc: 'Batas divergen adalah zona tempat dua lempeng tektonik bergerak saling MENJAUH satu sama lain.',
-      fact: 'Gaya tarikan membelah benua purba Pangea dan membentuk kerak dasar samudra baru melalui naiknya magma panas.',
+      shortDesc: 'Batas divergen adalah zona tempat dua lempeng tektonik bergerak saling MENJAUH satu sama lain. Pangea, daratan raksasa yang menyatukan seluruh benua, mulai retak dan hanyut terpisah sejak sekitar 250 juta tahun lalu. Perpecahannya bertahap: 250 juta tahun lalu masih satu daratan Pangea; 200 juta tahun lalu terbelah dua menjadi Laurasia di utara dan Gondwana di selatan; 150 juta tahun lalu keduanya terpecah lagi dan benua-benua mulai berjauhan; 65 juta tahun lalu samudra baru terbentuk di antara benua yang makin menjauh; dan sekarang kita mengenal tujuh benua terpisah.',
+      fact: 'Gaya tarikan membelah benua purba Pangea dan membentuk kerak dasar samudra baru melalui naiknya magma panas. Buktinya, garis pantai benua saling cocok seperti potongan puzzle - misalnya pantai timur Amerika Selatan dengan pantai barat Afrika.',
       iconName: 'mountain',
       imageSrc: '/images/geology/divergent.jpg',
-      illustrationType: 'pangea-drift',
+      // Ilustrasi memakai 'wegener-pangea', yang kini menampilkan GAMBAR DARI DOSEN
+      // berisi lima tahap perpecahan benua (Pangea -> Triassic -> Jurassic ->
+      // Cretaceous -> sekarang). Sebelumnya 'pangea-drift' (animasi dua panel),
+      // diganti atas permintaan pemilik proyek agar gambar materinya sama dengan
+      // gambar acuan dosen dan cocok dengan penjelasan bertahap di materi.
+      illustrationType: 'wegener-pangea',
     },
     challenge: {
       id: 'chall-divergen',
@@ -691,9 +696,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-wegener-pangea',
       title: 'Temuan 1: Alfred Wegener & Teori Pangea',
       shortDesc:
-        'Dahulu kala sekitar 250 juta tahun lalu, seluruh benua di bumi menyatu menjadi satu benua raksasa (superkontinen) bernama PANGEA. Ilmuwan Alfred Wegener (1912) membuktikan benua-benua ini perlahan retak dan hanyut terpisah.',
+        'Sekitar 250 juta tahun lalu, seluruh benua di bumi MASIH MENYATU menjadi satu daratan raksasa yang disebut PANGEA. Ilmuwan Alfred Wegener pada 1912 menyadari bahwa benua-benua ini dulu pernah bersatu, lalu perlahan retak dan hanyut terpisah. Perpecahan Pangea berjalan bertahap, tidak sekaligus. 250 juta tahun lalu: masih satu daratan Pangea. 200 juta tahun lalu: Pangea terbelah dua menjadi Laurasia di utara dan Gondwana di selatan. 150 juta tahun lalu: keduanya terpecah lagi menjadi beberapa benua yang mulai berjauhan. 65 juta tahun lalu: benua-benua makin menjauh dan samudra baru terbentuk di antaranya. Sekarang: kita mengenal tujuh benua terpisah seperti pada peta dunia hari ini.',
       fact:
-        'Bumi kita tidak padat membatu utuh, melainkan terpecah menjadi lempeng-lempeng tektonik yang terus bergerak perlahan di atas mantel bumi!',
+        'Bukti yang dipakai Wegener: garis pantai benua saling cocok seperti potongan puzzle, misalnya pantai timur Amerika Selatan dengan pantai barat Afrika. Fosil dan jenis batuan yang sama juga ditemukan di benua yang sekarang terpisah jauh oleh lautan. Jadi bumi kita tidak padat membatu utuh, melainkan terpecah menjadi lempeng-lempeng tektonik yang terus bergerak perlahan di atas mantel bumi!',
       iconName: 'globe',
       imageSrc: '/images/geology/divergent.jpg',
       illustrationType: 'wegener-pangea',
