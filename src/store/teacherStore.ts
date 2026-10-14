@@ -139,6 +139,19 @@ const getInitialStudent = (): Student | null => {
   return null;
 };
 
+/**
+ * Batas tertinggi `unlocked_level` yang diterima database.
+ *
+ * Selaras dengan CHECK constraint di `supabase/migrations/01_secure_schema.sql`:
+ *     unlocked_level INT NOT NULL DEFAULT 1 CHECK (unlocked_level BETWEEN 1 AND 3)
+ *
+ * Angka ini penting karena trigger di server MENGABAIKAN setiap perubahan
+ * `unlocked_level` yang datang dari klien. Jadi nilai di luar rentang ini hanya
+ * menghasilkan keadaan lokal yang tidak pernah tersimpan - lalu hilang saat
+ * login berikutnya, seolah levelnya mundur.
+ */
+export const MAKS_LEVEL_BUKA = 3;
+
 const getInitialUnlockedLevel = (user: UserAccount | null): number => {
   if (typeof window === 'undefined') return 1;
   try {
@@ -147,7 +160,7 @@ const getInitialUnlockedLevel = (user: UserAccount | null): number => {
     // supaya tampilan tetap benar saat luring.
     const userObjLevel = user?.unlocked_level;
     if (typeof userObjLevel === 'number' && userObjLevel >= 1) {
-      return Math.min(3, userObjLevel);
+      return Math.min(MAKS_LEVEL_BUKA, userObjLevel);
     }
     const userId = user?.id;
     if (userId) {
@@ -555,7 +568,16 @@ export const useAuthStore = create<AuthState>()((set) => ({
 
   unlockLevel: (level: number) => {
     set((state) => {
-      const allowedLevel = level;
+      // JEPIT ke rentang yang benar-benar diterima database.
+      //
+      // Sebelumnya tidak ada penjepitan sama sekali, meskipun variabelnya sudah
+      // bernama `allowedLevel` - jadi niatnya ada, tetapi tidak diwujudkan.
+      // Akibatnya pemanggilan unlockLevel bernilai 4 benar-benar menulis 4 ke
+      // localStorage dan mengirimnya ke cloud, padahal kolomnya dibatasi 1..3 dan
+      // trigger server mengabaikan perubahan dari klien. Yang terjadi: keadaan
+      // lokal bertambah tetapi tidak pernah tersimpan, lalu hilang saat login
+      // berikutnya.
+      const allowedLevel = Math.min(MAKS_LEVEL_BUKA, Math.max(1, level));
       const newLevel = Math.max(state.unlockedLevel, allowedLevel);
 
       // Cegah penulisan berulang: bila level tidak berubah, jangan sentuh

@@ -143,8 +143,19 @@ export const useMissionStore = create<MissionState>()((set, get) => ({
       const allMissionsDone = MISSIONS.every((m) => allIds.has(m.id));
 
       if (allMissionsDone) {
-        // Unlock beyond Level 3
-        authState.unlockLevel(4);
+        // TIDAK memanggil unlockLevel dengan angka 4.
+        //
+        // Dulu di sini tertulis "Unlock beyond Level 3" dengan pemanggilan
+        // unlockLevel bernilai 4. Itu keliru dan sia-sia:
+        //   - Tidak ada Level 4. Kolom `unlocked_level` dibatasi 1..3 oleh
+        //     database, dan trigger server mengabaikan perubahan dari klien.
+        //   - Pemeriksaan `unlockedLevel >= 4` yang dulu memakainya sudah
+        //     diganti aturan peran, sehingga angka 4 tidak dipakai siapa pun.
+        // Jadi dulu nilai itu hanya membuat keadaan LOKAL bertambah tanpa pernah
+        // tersimpan, lalu hilang saat login berikutnya.
+        //
+        // Menuntaskan seluruh misi tetap tercatat dengan benar lewat
+        // `syncLevel3Progress` di bawah, yang menandai level 3 selesai.
       }
 
       // Sync progress for this mission immediately to cloud & teacher dashboard!
