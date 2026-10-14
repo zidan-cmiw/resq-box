@@ -106,10 +106,13 @@ export async function syncLevel3Progress(
       ? `${score} Poin`
       : 'BELUM';
 
+  // Angka jumlah misi TIDAK boleh ditulis tetap di sini. Sebelumnya kedua teks
+  // di bawah memakai "20" langsung, sehingga begitu jumlah misi berubah, status
+  // yang dilaporkan ke guru diam-diam menjadi salah tanpa error apa pun.
   const stageLabel = isCompleted
-    ? 'Tuntas (20/20 Misi Simulasi Selesai - 100 Poin)'
+    ? `Tuntas (${totalMissions}/${totalMissions} Misi Simulasi Selesai - 100 Poin)`
     : completedCount > 0
-      ? `Selesai ${completedCount}/20 Misi (${score} Poin)${lastMissionObj ? ` - Terakhir: ${lastMissionObj.title}` : ''}`
+      ? `Selesai ${completedCount}/${totalMissions} Misi (${score} Poin)${lastMissionObj ? ` - Terakhir: ${lastMissionObj.title}` : ''}`
       : 'Belum Mulai Misi';
 
   try {
@@ -119,7 +122,9 @@ export async function syncLevel3Progress(
       classroom_code: effectiveClassroom,
       level_number: 3,
       score,
-      // 20 misi × 5 poin. Server memakai angka ini sebagai sumber nilai resmi.
+      // Jumlah misi yang tuntas. Server memakai angka ini sebagai sumber nilai
+      // resmi, dan poin per misi dihitung dari TOTAL_MISSIONS - bukan dari angka
+      // yang ditulis di sini.
       missions: completedCount,
       isCompleted,
       details: {

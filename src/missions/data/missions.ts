@@ -967,3 +967,26 @@ export const MISSIONS: Mission[] = [
     },
   },
 ];
+
+// ══════════════════════════════════════════════════════════════════════════
+// SUMBER TUNGGAL JUMLAH MISI
+// ══════════════════════════════════════════════════════════════════════════
+//
+// Angka 20 pernah ditulis tetap di lebih dari lima belas tempat: teks status,
+// tampilan guru, tutorial, dan - yang paling berbahaya - PENGHITUNGAN NILAI.
+//
+// Akibatnya, begitu jumlah misi berubah, semua tempat itu diam-diam berbohong:
+// nilai di rapor guru menjadi salah, angka kemajuan di layar tidak lagi sesuai,
+// dan TIDAK ADA error apa pun yang muncul. Ini jenis kesalahan yang sudah
+// berulang kali ditemukan di proyek ini - nilai yang seharusnya diturunkan dari
+// data, tetapi ditulis tangan.
+//
+// Karena itu jumlah misi hanya boleh diambil dari sini.
+export const TOTAL_MISSIONS = MISSIONS.length;
+
+/**
+ * Poin untuk setiap misi yang tuntas. Menyelesaikan seluruh misi menghasilkan
+ * 100 poin penuh. Penilaiannya memakai rumus `(jumlah / TOTAL_MISSIONS) * 100`,
+ * sehingga hasilnya tetap bulat meski jumlah misinya bukan pembagi 100.
+ */
+export const POIN_PER_MISI = 100 / TOTAL_MISSIONS;

@@ -8,6 +8,11 @@ import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOve
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 import { tutupModalDenganKeyboard } from '../../utils/keyboard';
 import { blokirRambatanTombol } from '../../utils/keyboard';
+// Jumlah misi diambil dari datanya, TIDAK ditulis tetap. Sebelumnya angka 20
+// ditulis langsung di lima tempat PENGHITUNGAN NILAI di berkas ini, sehingga
+// nilai yang dilaporkan kepada guru menjadi salah begitu jumlah misi berubah -
+// tanpa error apa pun.
+import { TOTAL_MISSIONS } from '../../missions/data/missions';
 import type {
   StudentDbRecord,
   LevelSubmissionDbRecord,
@@ -560,7 +565,7 @@ export default function TeacherDashboard() {
       const completedLv3 =
         sub3?.details?.completed_count ??
         (Array.isArray(sub3?.details?.completed_missions) ? sub3.details.completed_missions.length : 0);
-      const score3 = sub3 ? sub3.score : (completedLv3 > 0 ? Math.round((completedLv3 / 20) * 100) : 0);
+      const score3 = sub3 ? sub3.score : (completedLv3 > 0 ? Math.round((completedLv3 / TOTAL_MISSIONS) * 100) : 0);
       const isLv3 = score3 >= 100 || Boolean(sub3?.details?.is_completed) || completedLv3 >= 20;
       const isLv3InProgress = !isLv3 && (score3 > 0 || completedLv3 > 0);
 
@@ -576,7 +581,7 @@ export default function TeacherDashboard() {
         score2,
         isLv3 ? 'Tuntas' : (isLv3InProgress ? 'Dalam Progres' : (isLv2 ? 'Aktif' : 'Terkunci')),
         score3,
-        `${completedLv3}/20 Misi`,
+        `${completedLv3}/${TOTAL_MISSIONS} Misi`,
         s.updated_at ? new Date(s.updated_at).toLocaleString('id-ID') : '-',
       ];
     });
@@ -608,7 +613,7 @@ export default function TeacherDashboard() {
     const completedLv3Count =
       sub3?.details?.completed_count ??
       (Array.isArray(sub3?.details?.completed_missions) ? sub3.details.completed_missions.length : 0);
-    const scoreLv3 = sub3 ? sub3.score : (completedLv3Count > 0 ? Math.round((completedLv3Count / 20) * 100) : 0);
+    const scoreLv3 = sub3 ? sub3.score : (completedLv3Count > 0 ? Math.round((completedLv3Count / TOTAL_MISSIONS) * 100) : 0);
     const isLv3Done = scoreLv3 >= 100 || Boolean(sub3?.details?.is_completed) || completedLv3Count >= 20;
     const isLv3InProgress = !isLv3Done && (scoreLv3 > 0 || completedLv3Count > 0);
 
@@ -690,7 +695,7 @@ export default function TeacherDashboard() {
                   <td class="text-center">3</td>
                   <td>Level 3: Simulation Game (Digital Twin &amp; Action Lab)</td>
                   <td class="text-center"><strong>${isLv3Done ? 'TUNTAS' : (isLv3InProgress ? 'PROGRES' : (isLv2Done ? 'AKTIF' : 'TERKUNCI'))}</strong></td>
-                  <td class="text-center"><strong>${isLv3Done ? scoreLv3 + '/100 Poin' : isLv3InProgress ? `${scoreLv3}/100 Poin (${completedLv3Count}/20 Misi)` : (isLv2Done ? '0/100 Poin' : '&mdash;')}</strong></td>
+                  <td class="text-center"><strong>${isLv3Done ? scoreLv3 + '/100 Poin' : isLv3InProgress ? `${scoreLv3}/100 Poin (${completedLv3Count}/${TOTAL_MISSIONS} Misi)` : (isLv2Done ? '0/100 Poin' : '&mdash;')}</strong></td>
                   <td>${sub3?.details?.stage_label ? escapeHtml(sub3.details.stage_label) : 'Logika sensor aksi &amp; penyelamatan warga'}</td>
                 </tr>
               </tbody>
@@ -1089,7 +1094,7 @@ export default function TeacherDashboard() {
                     const completedMissionsCount3 =
                       sub3?.details?.completed_count ??
                       (Array.isArray(sub3?.details?.completed_missions) ? sub3.details.completed_missions.length : 0);
-                    const score3 = sub3 ? sub3.score : (completedMissionsCount3 > 0 ? Math.round((completedMissionsCount3 / 20) * 100) : 0);
+                    const score3 = sub3 ? sub3.score : (completedMissionsCount3 > 0 ? Math.round((completedMissionsCount3 / TOTAL_MISSIONS) * 100) : 0);
                     const isLv3Done = score3 >= 100 || Boolean(sub3?.details?.is_completed) || completedMissionsCount3 >= 20;
                     const isLv3InProgress = !isLv3Done && (score3 > 0 || completedMissionsCount3 > 0);
                     const isLv3Unlocked = isLv2Done || s.unlocked_level >= 3;
@@ -1208,7 +1213,7 @@ export default function TeacherDashboard() {
                             {isLv3Done
                               ? `${score3} Poin`
                               : isLv3InProgress
-                                ? `${score3} Poin (${completedMissionsCount3}/20)`
+                                ? `${score3} Poin (${completedMissionsCount3}/${TOTAL_MISSIONS})`
                                 : isLv3Unlocked
                                   ? 'Lab Simulasi'
                                   : '—'}
@@ -1692,7 +1697,7 @@ export default function TeacherDashboard() {
                   (Array.isArray(sub3?.details?.completed_missions)
                     ? sub3.details.completed_missions.length
                     : 0);
-                const score3 = sub3 ? sub3.score : (completedMissionsCount > 0 ? Math.round((completedMissionsCount / 20) * 100) : 0);
+                const score3 = sub3 ? sub3.score : (completedMissionsCount > 0 ? Math.round((completedMissionsCount / TOTAL_MISSIONS) * 100) : 0);
                 const isLv3Done = score3 >= 100 || Boolean(sub3?.details?.is_completed) || completedMissionsCount >= 20;
                 const isLv3InProgress = !isLv3Done && (score3 > 0 || completedMissionsCount > 0);
                 const isLv3Active = selectedStudentForDetail.unlocked_level >= 3;
@@ -1725,7 +1730,7 @@ export default function TeacherDashboard() {
                       <div>
                         <span className="text-amber-950/60 block text-[12.5px] uppercase font-semibold">Misi Selesai:</span>
                         <strong className="text-amber-950 font-pixel-title text-[13.5px] font-semibold">
-                          {completedMissionsCount} / 20 Misi
+                          {completedMissionsCount} / {TOTAL_MISSIONS} Misi
                         </strong>
                       </div>
                     </div>
@@ -1733,7 +1738,7 @@ export default function TeacherDashboard() {
                     <div className="w-full bg-amber-100 rounded-full h-2 overflow-hidden border border-amber-950/20">
                       <div
                         className="bg-emerald-500 h-full rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min(100, Math.round((completedMissionsCount / 20) * 100))}%` }}
+                        style={{ width: `${Math.min(100, Math.round((completedMissionsCount / TOTAL_MISSIONS) * 100))}%` }}
                       />
                     </div>
 
