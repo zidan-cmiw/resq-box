@@ -35,7 +35,7 @@ import { LEVEL2_AREAS } from '../../app/Level2/level2Data.ts';
  * supaya sisa pekerjaan tidak pernah terlupakan.
  */
 const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
-const BATAS_AREA: Record<number, number> = { 0: 7, 1: 12, 2: 7, 3: 4, 4: 10, 5: 8 };
+const BATAS_AREA: Record<number, number> = { 0: 7, 1: 12, 2: 7, 3: 4, 4: 0, 5: 0 };
 
 const besar = (s: unknown) => String(s ?? '').toUpperCase();
 
