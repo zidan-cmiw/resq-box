@@ -1927,28 +1927,56 @@ function renderIllustration(
               <circle cx="364" cy="118" r="76" fill="#b45309" opacity="0.2" />
               <circle cx="364" cy="118" r="56" fill="#d97706" opacity="0.3" />
 
-              {/* Prisma Monolit Kristal Heksagonal Raksasa (Sejajar Sumbu Rotasi) */}
+              {/* BENTUK BULAT (sebelumnya segi delapan/heksagonal).
+                  Kata dosen: medan gravitasi bentuknya bulat, karena pada jarak
+                  yang sama besar tarikannya sama ke segala arah. */}
               <g transform="translate(364, 118)">
-                {/* Pilar Prisma Kolom Heksagonal Utama */}
-                <polygon points="-24,-52 24,-52 38,-34 38,34 24,52 -24,52 -38,34 -38,-34" fill="#78350f" stroke="#fbbf24" strokeWidth="2" />
-                <polygon points="-16,-44 16,-44 26,-28 26,28 16,44 -16,44 -26,28 -26,-28" fill="#b45309" stroke="#fef08a" strokeWidth="1.5" />
-                <polygon points="-8,-34 8,-34 14,-20 14,20 8,34 -8,34 -14,20 -14,-20" fill="#fef08a" stroke="#ffffff" strokeWidth="2" />
-
-                {/* Sinar P-Wave Seismik Merambat Cepat Searah Sumbu Kristal */}
-                <line x1="0" y1="-62" x2="0" y2="62" stroke="#ffffff" strokeWidth="3" />
+                <circle cx="0" cy="0" r="52" fill="#78350f" stroke="#fbbf24" strokeWidth="2" />
+                <circle cx="0" cy="0" r="34" fill="#b45309" stroke="#fef08a" strokeWidth="1.5" />
+                <circle cx="0" cy="0" r="18" fill="#fef08a" stroke="#ffffff" strokeWidth="2" />
 
                 {/* Titik Singularity Pusat Mutlak Bumi */}
                 <circle cx="0" cy="0" r="7" fill="#ffffff" stroke="#fbbf24" strokeWidth="2" />
               </g>
 
-              {/* Rambatan Gelombang Seismik P-Wave Melintasi Kutub */}
-              <g transform="translate(230, 80)">
-                <line x1="0" y1="0" x2="0" y2="76" stroke="#38bdf8" strokeWidth="2" />
-                <polygon points="0,0 -4,10 4,10" fill="#38bdf8" />
-                <polygon points="0,76 -4,66 4,66" fill="#38bdf8" />
-                <rect x="8" y="24" width="85" height="32" rx="3" fill="#082f49" stroke="#38bdf8" strokeWidth="1" />
-                <text x="50" y="37" fill="#38bdf8" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">GELOMBANG</text>
-                <text x="50" y="49" fill="#ffffff" fontSize="8.5" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">P-WAVE CEPAT</text>
+              {/* PANAH GRAVITASI DI SEKELILING BUMI.
+                  Menunjukkan tarikan gravitasi datang dari SEGALA ARAH menuju
+                  pusat. Karena besarannya sama di setiap arah, tarikannya saling
+                  meniadakan - itulah sebabnya gravitasi di pusat bernilai nol.
+
+                  Sebelumnya di sini ada sinar dan label "GELOMBANG P-WAVE CEPAT",
+                  yang dihapus atas permintaan pemilik proyek karena terlalu
+                  tinggi untuk siswa SMP. */}
+              {Array.from({ length: 8 }).map((_, i) => {
+                const sudut = (i * Math.PI) / 4;
+                const ax = Math.cos(sudut);
+                const ay = Math.sin(sudut);
+                const luar = 80;
+                const dalam = 62;
+                const x1 = 364 + ax * luar;
+                const y1 = 118 + ay * luar;
+                const x2 = 364 + ax * dalam;
+                const y2 = 118 + ay * dalam;
+                // Segitiga mata panah di ujung dalam, mengarah ke pusat bumi.
+                const px = -ay;
+                const py = ax;
+                return (
+                  <g key={`gravitasi-${i}`}>
+                    <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#a5b4fc" strokeWidth="2.5" />
+                    <polygon
+                      points={`${x2},${y2} ${x2 - ax * 11 + px * 5.5},${y2 - ay * 11 + py * 5.5} ${x2 - ax * 11 - px * 5.5},${y2 - ay * 11 - py * 5.5}`}
+                      fill="#a5b4fc"
+                    />
+                  </g>
+                );
+              })}
+
+              {/* Keterangan singkat, memakai ruang yang dulu dipakai label P-Wave */}
+              <g transform="translate(205, 26)">
+                <rect x="0" y="0" width="76" height="42" rx="3" fill="#1e1b4b" stroke="#818cf8" strokeWidth="1" />
+                <text x="38" y="15" fill="#a5b4fc" fontSize="8" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">TARIKAN</text>
+                <text x="38" y="27" fill="#ffffff" fontSize="8" fontWeight="bold" fontFamily="'Pixelify Sans', sans-serif" textAnchor="middle">SEGALA ARAH</text>
+                <text x="38" y="37" fill="#c7d2fe" fontSize="7.5" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">sama besar</text>
               </g>
 
               {/* ── RETRO PIXEL BADGES PENJELASAN ── */}
