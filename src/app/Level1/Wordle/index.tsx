@@ -500,14 +500,23 @@ export default function Wordle({
         </div>
       )}
 
+      {/* ── KESEMPATAN HABIS — KUNCI JAWABAN SENGAJA TIDAK DITAMPILKAN ──
+          Sebelumnya banner ini menuliskan "KATA: {targetWord}", sehingga siswa
+          yang gagal tiga kali langsung diberi tahu jawabannya. Ia cukup menekan
+          COBA LAGI lalu menjawab benar pada percobaan pertama — gerbangnya jadi
+          tidak menguji apa pun, dan nilainya tidak bermakna.
+
+          Sekarang siswa hanya diminta mengulang tanpa diberi kunci. Petunjuk
+          pengganti yang benar bukan jawabannya, melainkan meminta siswa membaca
+          ulang materinya. */}
       {gameState === 'lost' && (
         <div className="w-full py-3 px-4 sm:py-3.5 sm:px-5 bg-rose-100 border-3 border-rose-700 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow text-left">
           <div>
             <span className="font-pixel-title text-[15px] sm:text-base text-rose-900 block font-bold">
-              KESEMPATAN HABIS! KATA: {targetWord}
+              KESEMPATAN HABIS!
             </span>
             <span className="text-[13px] sm:text-[15px] text-rose-800 font-bold">
-              Coba pecahkan kembali kata ini!
+              Kata rahasianya belum terbuka. Pelajari kembali materinya, lalu pecahkan ulang kata ini.
             </span>
           </div>
           <button
