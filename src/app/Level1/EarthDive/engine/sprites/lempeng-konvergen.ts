@@ -19,7 +19,13 @@ export function getOceanicSubductingSlabTopY(x: number, p: number): number {
   const seafloorY = 350;
   // Palung laut adalah struktur jurang geologis dalam yang stabil (kedalaman 485 .. 510) tanpa deformasi melar kendur
   const trenchDepth = Math.round(485 + normP * 25);
-  const targetSlope = 0.70; // Kemiringan sudut penunjaman ~35°
+  // Kemiringan penunjaman. Sebelumnya 0,70 (~35°), tetapi ujungnya sampai di
+  // y sekitar 836 - terpotong dasar layar permainan. Dari tangkapan layar pemilik
+  // proyek: permukaan laut di y=350 dan jendela pandang menyisakan sekitar 460 px
+  // ke bawah, jadi batasnya y sekitar 810. Dengan 0,55 ujungnya berhenti di
+  // y sekitar 777 sehingga penunjamannya terlihat UTUH. Dijaga oleh
+  // __tests__/konvergenTampak.test.ts
+  const targetSlope = 0.55; // Kemiringan sudut penunjaman ~29°
 
   if (x <= flexStart) {
     return seafloorY;
