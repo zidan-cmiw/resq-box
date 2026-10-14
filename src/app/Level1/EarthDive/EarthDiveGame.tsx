@@ -263,7 +263,7 @@ export default function EarthDiveGame() {
       setConvergentMode(gameRef.current, mode);
       showToast(
         mode === 'land'
-          ? 'Kondisi 1: Tumbukan Benua Daratan aktif (Pegunungan Lipatan tanpa Palung Laut).'
+          ? 'Kondisi 1: Tumbukan Benua Daratan aktif (Pegunungan Lipatan, TANPA subduksi dan TANPA Palung Laut).'
           : 'Kondisi 2: Subduksi Samudra-Benua aktif (Perahu Riset & Palung Laut Dalam).'
       );
     }

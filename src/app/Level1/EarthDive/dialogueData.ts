@@ -2944,7 +2944,7 @@ export const MASCOT_CONVERGENT_INTRO_DIALOGUE: DialogueTree = {
     explain_land: {
       id: 'explain_land',
       speakerId: 'resqy',
- text: ' Kondisi Daratan (Tumbukan Benua - Benua): Dua lempeng benua yang sama-sama tebal saling bertabrakan! Kerak benua tertekan hebat dan terlipat ke atas membentuk jajaran pegunungan lipatan raksasa (seperti Pegunungan Himalaya) tanpa adanya palung laut!',
+ text: ' Kondisi Daratan (Tumbukan Benua - Benua): Dua lempeng benua yang sama-sama tebal saling bertabrakan! Di sini TIDAK TERJADI SUBDUKSI - tidak ada lempeng yang menunjam ke bawah, karena kedua lempeng sama-sama tebal dan ringan. Keduanya hanya tertekan hebat lalu terlipat ke atas, membentuk jajaran pegunungan lipatan raksasa (seperti Pegunungan Himalaya), tanpa palung laut!',
       expression: 'happy',
       choices: [
         {
