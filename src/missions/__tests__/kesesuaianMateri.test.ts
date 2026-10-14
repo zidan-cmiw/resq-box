@@ -1,21 +1,31 @@
-// ── kesesuaianMateri.test.ts ─────────────────────────────────────────────────
-// Uji bahwa setiap jawaban bank soal benar-benar berasal dari MATERI areanya.
+// ── kesesuaianMateri.test.ts ────────────────────────────────────────────────
+// Uji hubungan antara BANK SOAL dan MATERI tiap area.
 //
 // ═══════════════════════════════════════════════════════════════════════════
-// MENGAPA UJI INI ADA
+// ARAH UJI INI (berubah atas keputusan pemilik proyek)
 // ═══════════════════════════════════════════════════════════════════════════
 //
-//   Pemilik proyek menemukan soal LITOSFER di zona Kerak Bumi, padahal materi
-//   zona itu tidak pernah menyebut litosfer. Audit lalu menunjukkan hal itu
-//   terjadi di BANYAK zona: kata-kata yang ditambahkan untuk memperbanyak varian
-//   tidak diambil dari materi areanya.
+//   Awalnya uji ini lahir dari temuan pemilik proyek: soal LITOSFER muncul di
+//   zona Kerak Bumi, padahal materi zona itu tidak menyebut litosfer. Waktu itu
+//   JAWABANNYA yang diganti supaya cocok dengan materi.
 //
-//   Uji ini membandingkan setiap jawaban dengan teks materi areanya. Karena
-//   perbandingan teks itu kasar (materi dapat menjelaskan konsep dengan kata
-//   lain), hasilnya dipakai sebagai BATAS: jumlah kata yang belum selaras per
-//   zona tidak boleh MELEBIHI angka yang tercatat, dan angka itu wajib TURUN
-//   ketika zona diselaraskan - sehingga pekerjaan yang tersisa selalu terlihat
-//   di keluaran npm test dan tidak bisa diam-diam bertambah.
+//   Pemilik proyek kemudian memutuskan arah sebaliknya:
+//
+//     "aku mau ganti jadi sebelumnya aja deh, jadi tuh jawabannya sama kayak
+//      sebelumnya, yang masih awal awal itu, tapi nanti variasi soalnya aja yang
+//      dibanyakin, tapi jawabannya itu itu aja jadi gausah bikin jawaban baru"
+//
+//   Jadi sekarang:
+//     1. JAWABAN DIBEKUKAN pada set aslinya. Tidak boleh ada jawaban baru.
+//     2. Yang menyusul adalah MATERINYA - tiap kata yang belum diajarkan akan
+//        ditambahkan penjelasannya di materi zona tersebut.
+//
+//   Uji ini memegang keduanya:
+//     - "jawaban beku"    : set jawaban tiap zona harus sama persis dengan set
+//                           yang disepakati. Kalau ada yang menambah atau
+//                           mengganti jawaban, uji ini gagal.
+//     - "materi menyusul" : jumlah kata yang BELUM diajarkan di materi dicatat
+//                           sebagai batas, dan batas itu hanya boleh TURUN.
 //
 // Jalankan: npm run test
 
@@ -28,13 +38,44 @@ import { ZONES } from '../../app/Level1/EarthDive/engine/zones.ts';
 import { LEVEL2_AREAS } from '../../app/Level2/level2Data.ts';
 
 /**
- * Batas jumlah jawaban yang belum selaras dengan materi areanya.
+ * SET JAWABAN YANG DISEPAKATI — dibekukan.
  *
- * Angka ini WAJIB TURUN ketika sebuah zona/area diselaraskan. Bila hasil
- * sebenarnya lebih rendah, uji ini gagal dan meminta angkanya diturunkan -
- * supaya sisa pekerjaan tidak pernah terlupakan.
+ * Diambil dari set ASLI sebelum pekerjaan penyelarasan materi (commit 522730b),
+ * lalu zona 0 dibuang karena zona itu tidak punya gerbang sama sekali.
+ * Jangan menambah atau mengganti isi daftar ini tanpa keputusan pemilik proyek.
  */
-const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
+const KATA_BEKU: Record<number, string[]> = {
+  1: ['BASAL', 'BATU', 'BENUA', 'DARATAN', 'GEMPA', 'GRANIT', 'INDONESIA', 'KERAK', 'KERAS', 'LAUTAN', 'LEMPENG', 'LEMPUNG', 'LERENG', 'LITOSFER', 'SAMUDRA', 'SEDIMEN', 'SILIKAT', 'SUMATRA', 'TANAH', 'TEBAL', 'TIPIS'],
+  2: ['ADONAN', 'ASTENOSFER', 'FLUIDA', 'GEOTERMAL', 'KENTAL', 'KONDUKSI', 'KONVEKSI', 'MANTEL', 'MELELEH', 'PANAS', 'SILIKAT', 'SIRKULASI'],
+  3: ['ARUS', 'BESI', 'CAIR', 'CAIRAN', 'GEODYNAMO', 'KOMPAS', 'KUTUB', 'LEBUR', 'LELEHAN', 'LINDUNG', 'LISTRIK', 'LOGAM', 'MAGNET', 'MEDAN', 'NIKEL', 'PANAS', 'PERISAI', 'SUHU'],
+  4: ['BESI', 'BOLA', 'GRAVITASI', 'INTI', 'INTIDALAM', 'MAMPAT', 'NIKEL', 'PADAT', 'PADUAN', 'PUSAT', 'TEKANAN', 'TERDALAM'],
+  5: ['BENUA', 'CELAH', 'DIVERGEN', 'GERAK', 'LAVA', 'MAGMA', 'MELEBAR', 'MEMISAH', 'MENGAPUNG', 'MENJAUH', 'PANGEA', 'PUNGGUNG', 'REKAHAN', 'RETAK', 'SAMUDRA', 'TENGAH', 'TERBELAH', 'ZONA'],
+  6: ['DANGKAL', 'GUNUNG', 'HIMALAYA', 'LEMPENG', 'LIPATAN', 'MENDEKAT', 'MENUNJAM', 'MERAPI', 'PALUNG', 'PEGUNUNGAN', 'SUBDUKSI', 'TABRAKAN', 'TINGGI', 'TUMBUKAN'],
+  7: ['BERGESEK', 'GESERAN', 'HORIZONTAL', 'MENDATAR', 'PATAH', 'PATAHAN', 'REKAH', 'SANANDREAS', 'SEJAJAR', 'SESAR', 'TEGANGAN', 'TRANSFORM'],
+};
+
+/**
+ * Batas jumlah jawaban yang BELUM diajarkan di materi areanya.
+ *
+ * Angka ini WAJIB TURUN ketika materi dilengkapi. Bila hasil sebenarnya lebih
+ * rendah, uji ini gagal dan meminta angkanya diturunkan - supaya sisa pekerjaan
+ * tidak pernah terlupakan.
+ *
+ * Kondisi saat ini (48 dari 107 kata belum diajarkan):
+ *   zona 1 Kerak     13 : DARATAN, GEMPA, INDONESIA, KERAS, LAUTAN, LEMPENG,
+ *                        LEMPUNG, LERENG, LITOSFER, SEDIMEN, SILIKAT, SUMATRA, TANAH
+ *   zona 2 Mantel     6 : ASTENOSFER, GEOTERMAL, KONDUKSI, MELELEH, SILIKAT, SIRKULASI
+ *   zona 3 Inti Luar  5 : GEODYNAMO, KOMPAS, KUTUB, LEBUR, LELEHAN
+ *   zona 4 Inti Dalam 4 : INTIDALAM, MAMPAT, PADUAN, TERDALAM
+ *   zona 5 Divergen   8 : CELAH, LAVA, MELEBAR, MEMISAH, MENGAPUNG, PUNGGUNG,
+ *                        REKAHAN, ZONA
+ *   zona 6 Konvergen  4 : DANGKAL, MENDEKAT, TABRAKAN, TINGGI
+ *   zona 7 Transform  8 : GESERAN, HORIZONTAL, MENDATAR, PATAH, PATAHAN, REKAH,
+ *                        SANANDREAS, TEGANGAN
+ */
+const BATAS_ZONA: Record<number, number> = { 1: 13, 2: 6, 3: 5, 4: 4, 5: 8, 6: 4, 7: 8 };
+
+/** Batas untuk TTS Level 2. Area 1 tidak punya materi sama sekali. */
 const BATAS_AREA: Record<number, number> = { 0: 0, 1: 12, 2: 0, 3: 0, 4: 0, 5: 0 };
 
 const besar = (s: unknown) => String(s ?? '').toUpperCase();
@@ -64,11 +105,29 @@ function materiArea(area: number): string {
 }
 
 /** Jawaban yang teksnya TIDAK muncul di materi. */
-function belumSelaras(daftarJawaban: string[], materi: string): string[] {
+function belumDiajarkan(daftarJawaban: string[], materi: string): string[] {
   return daftarJawaban.filter((k) => !materi.includes(k.toUpperCase()));
 }
 
-describe('kesesuaian materi — tidak ada bank untuk zona tanpa gerbang', () => {
+describe('jawaban beku — tidak boleh ada jawaban baru', () => {
+  test('set jawaban tiap zona sama persis dengan set yang disepakati', () => {
+    for (const zona of Object.keys(KATA_BEKU).map(Number)) {
+      const sekarang = [...new Set(varianZona(zona).flat().map((k) => k.word))].sort();
+      const beku = [...KATA_BEKU[zona]].sort();
+
+      const tambahan = sekarang.filter((k) => !beku.includes(k));
+      const hilang = beku.filter((k) => !sekarang.includes(k));
+
+      assert.deepEqual(
+        tambahan,
+        [],
+        `zona ${zona} memakai JAWABAN BARU: ${tambahan.join(', ')}\n` +
+          '  Pemilik proyek memutuskan jawabannya TETAP seperti semula; yang ditambah hanya VARIASI KALIMAT soalnya.',
+      );
+      assert.deepEqual(hilang, [], `zona ${zona} kehilangan jawaban: ${hilang.join(', ')}`);
+    }
+  });
+
   test('bank kata TIDAK menyimpan kunci zona 0 (Permukaan Bumi)', () => {
     // Zona 0 adalah titik awal Level 1 dan tidak punya gerbang sama sekali, jadi
     // kata untuk zona itu tidak akan pernah terpakai.
@@ -85,25 +144,26 @@ describe('kesesuaian materi — tidak ada bank untuk zona tanpa gerbang', () => 
   });
 });
 
-describe('kesesuaian materi — Level 1 (Wordle) per zona', () => {
+describe('materi menyusul — batas kata yang belum diajarkan hanya boleh turun', () => {
   for (let z = 1; z < ZONES.length; z++) {
-    test(`zona ${z} (${ZONES[z]?.name ?? '?'}) tidak melebihi batas kata belum selaras`, () => {
+    test(`zona ${z} (${ZONES[z]?.name ?? '?'}) tidak melebihi batas`, () => {
       const materi = materiZona(z);
       assert.ok(materi.length > 50, `materi zona ${z} tidak terbaca`);
 
       const semua = [...new Set(varianZona(z).flat().map((k) => k.word))];
-      const sisa = belumSelaras(semua, materi);
+      const sisa = belumDiajarkan(semua, materi);
       const batas = BATAS_ZONA[z] ?? 0;
 
       assert.ok(
         sisa.length <= batas,
-        `zona ${z}: ${sisa.length} kata belum selaras (batas ${batas}): ${sisa.join(', ')}\n` +
-          '  Kata-kata ini tidak ada di materi zona tersebut, jadi soalnya menanyakan hal yang tidak diajarkan di sana.',
+        `zona ${z}: ${sisa.length} kata belum diajarkan (batas ${batas}): ${sisa.join(', ')}\n` +
+          '  Kata-kata ini perlu ditambahkan penjelasannya DI MATERI zona tersebut,\n' +
+          '  bukan diganti soalnya.',
       );
 
       if (sisa.length < batas) {
         assert.fail(
-          `zona ${z} sudah lebih selaras (${sisa.length}) daripada batasnya (${batas}). ` +
+          `zona ${z} sudah lebih lengkap (${sisa.length}) daripada batasnya (${batas}). ` +
             `Turunkan BATAS_ZONA[${z}] menjadi ${sisa.length} supaya kemajuannya tercatat.`,
         );
       }
@@ -113,30 +173,24 @@ describe('kesesuaian materi — Level 1 (Wordle) per zona', () => {
 
 describe('kesesuaian materi — Level 2 (TTS) per area', () => {
   for (let a = 0; a < LEVEL2_AREAS.length; a++) {
-    test(`area ${a} (${LEVEL2_AREAS[a]?.name ?? '?'}) tidak melebihi batas jawaban belum selaras`, () => {
+    test(`area ${a} (${LEVEL2_AREAS[a]?.name ?? '?'}) tidak melebihi batas`, () => {
       const materi = materiArea(a);
       const semua = [...new Set(varianTTS(a).flatMap((g) => g.clues.map((c) => c.answer)))];
 
       // Area tanpa materi memang tidak punya acuan; dilewati dengan catatan.
       if (materi.length < 50) {
-        assert.ok(
-          semua.length > 0,
-          `area ${a} tidak punya materi maupun soal - keduanya kosong`,
-        );
+        assert.ok(semua.length > 0, `area ${a} tidak punya materi maupun soal - keduanya kosong`);
         return;
       }
 
-      const sisa = belumSelaras(semua, materi);
+      const sisa = belumDiajarkan(semua, materi);
       const batas = BATAS_AREA[a] ?? 0;
 
-      assert.ok(
-        sisa.length <= batas,
-        `area ${a}: ${sisa.length} jawaban belum selaras (batas ${batas}): ${sisa.join(', ')}`,
-      );
+      assert.ok(sisa.length <= batas, `area ${a}: ${sisa.length} jawaban belum selaras (batas ${batas}): ${sisa.join(', ')}`);
 
       if (sisa.length < batas) {
         assert.fail(
-          `area ${a} sudah lebih selaras (${sisa.length}) daripada batasnya (${batas}). ` +
+          `area ${a} sudah lebih lengkap (${sisa.length}) daripada batasnya (${batas}). ` +
             `Turunkan BATAS_AREA[${a}] menjadi ${sisa.length}.`,
         );
       }

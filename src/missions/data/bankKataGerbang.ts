@@ -57,37 +57,45 @@ export interface KataGerbang {
 }
 
 /** Bank varian: indeks zona -> daftar varian -> daftar kata. */
-export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
+export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
   1: [
-    // Kerak Bumi.
-    //
-    // SELURUH kata di zona ini diambil dari materi zona Kerak Bumi sendiri:
-    // kerak, lapisan, luar, padat, suhu, kerak benua (granit, ringan, SiAl),
-    // kerak samudra (basal, tipis, berat, SiMa), dan tebal.
+    // Kerak Bumi
     [
-      { word: 'KERAK', hint: 'Lapisan paling luar bumi tempat kita tinggal, dan paling tipis.', hintLain: ['Bagian terluar bumi yang menjadi tempat berpijak seluruh makhluk hidup.'] },
-      { word: 'BENUA', hint: 'Jenis kerak bumi di bawah daratan, tebalnya sampai 100 kilometer.', hintLain: ['Kerak di bawah daratan; paling tebal di antara kedua jenis kerak.'] },
-      { word: 'SAMUDRA', hint: 'Jenis kerak bumi di bawah lautan yang tipis (5-15 km), tetapi lebih padat dan berat.', hintLain: ['Kerak di bawah lautan; hanya 5-15 km tetapi paling berat.'] },
+      { word: 'KERAK', hint: 'Lapisan paling luar bumi tempat kita tinggal, dan merupakan lapisan yang paling tipis.', hintLain: ['Bagian terluar bumi yang paling tipis, tempat kita berpijak.'] },
+      { word: 'BENUA', hint: 'Jenis kerak bumi di bawah daratan yang memiliki ketebalan mencapai 100 kilometer.', hintLain: ['Daratan yang sangat luas; kerak bumi di bawahnya paling tebal, sampai 100 km.'] },
+      { word: 'SAMUDRA', hint: 'Jenis kerak bumi di bawah lautan yang tipis (5-15 km), tetapi lebih padat dan berat.', hintLain: ['Lautan yang sangat luas; kerak di bawahnya hanya 5-15 km tetapi lebih berat.'] },
     ],
     [
-      { word: 'GRANIT', hint: 'Batuan penyusun kerak benua, berwarna terang dan lebih ringan.', hintLain: ['Batuan pembentuk kerak di bawah daratan, bersifat ringan.'] },
-      { word: 'BASAL', hint: 'Batuan penyusun kerak samudra, berwarna gelap dan lebih padat.', hintLain: ['Batuan pembentuk kerak di bawah lautan, bersifat padat dan berat.'] },
-      { word: 'TIPIS', hint: 'Kerak samudra bersifat ... dibandingkan kerak benua.', hintLain: ['Sifat kerak di bawah lautan: hanya 5-15 kilometer tebalnya.'] },
+      { word: 'LITOSFER', hint: 'Lapisan batuan paling luar bumi, tersusun dari kerak dan bagian atas mantel.', hintLain: ['Lapisan kaku terluar bumi, gabungan kerak dengan bagian atas mantel.'] },
+      { word: 'DARATAN', hint: 'Wilayah kerak bumi yang letaknya lebih tinggi daripada permukaan laut.', hintLain: ['Bagian permukaan bumi yang kering dan tidak tertutup air.'] },
+      { word: 'LAUTAN', hint: 'Wilayah kerak bumi yang tertutup air, keraknya lebih tipis tetapi lebih berat.', hintLain: ['Bagian bumi yang tergenang air asin dan menutupi sebagian besar permukaannya.'] },
     ],
     [
-      { word: 'TEBAL', hint: 'Kerak benua bersifat ... dibandingkan kerak samudra.', hintLain: ['Sifat kerak di bawah daratan: mencapai 30-100 kilometer.'] },
-      { word: 'PADAT', hint: 'Sifat lapisan kerak bumi yang tersusun dari batuan.', hintLain: ['Sifat lapisan terluar bumi karena terbuat dari batuan, bukan zat alir.'] },
-      { word: 'BERAT', hint: 'Sifat kerak samudra selain lebih padat, dibandingkan kerak benua.', hintLain: ['Sifat kerak di bawah lautan yang membuatnya tenggelam lebih dalam.'] },
+      { word: 'TIPIS', hint: 'Kerak samudra bersifat ... dibandingkan kerak benua.', hintLain: ['Sifat kerak di bawah lautan jika dibandingkan kerak di bawah daratan.'] },
+      { word: 'GRANIT', hint: 'Batuan penyusun utama kerak benua, berwarna lebih terang dan lebih ringan.', hintLain: ['Jenis batuan yang mendominasi kerak di bawah daratan; warnanya terang.'] },
+      { word: 'BASAL', hint: 'Batuan penyusun utama kerak samudra, berwarna gelap dan lebih padat.', hintLain: ['Jenis batuan yang mendominasi kerak di bawah lautan; warnanya gelap.'] },
     ],
     [
-      { word: 'LAPISAN', hint: 'Kerak bumi disebut sebagai ... paling luar dari bumi.', hintLain: ['Sebutan bagi kerak: bagian teratas yang menyusun tubuh bumi.'] },
-      { word: 'SUHU', hint: 'Besaran yang berkisar 25 sampai 500 derajat Celsius di kerak bumi.', hintLain: ['Besaran yang diukur termometer; di kerak bumi nilainya 25-500 derajat.'] },
-      { word: 'LUAR', hint: 'Kedudukan kerak bumi: lapisan paling ... dari bumi.', hintLain: ['Kedudukan kerak dibandingkan seluruh lapisan bumi lainnya.'] },
+      // Pengetahuan lokal Indonesia — materi yang diminta dosen IPA saat validasi
+      // (Indonesia berada di pertemuan lempeng, sehingga rawan gempa).
+      { word: 'INDONESIA', hint: 'Negara yang terletak di pertemuan Lempeng Indo-Australia, Eurasia, dan Pasifik.', hintLain: ['Negara kita, berada di titik pertemuan tiga lempeng besar sehingga rawan gempa.'] },
+      { word: 'SUMATRA', hint: 'Pulau yang tanahnya subur karena abu vulkanik, tetapi juga rawan gempa.', hintLain: ['Pulau di barat negara kita; tanahnya subur, tetapi sering diguncang gempa.'] },
+      { word: 'GEMPA', hint: 'Peristiwa yang sering terjadi di Indonesia karena lempengnya saling bertumbukan.', hintLain: ['Getaran yang menjalar di permukaan bumi akibat lempeng yang bertumbukan.'] },
     ],
     [
-      { word: 'RINGAN', hint: 'Sifat batuan granit penyusun kerak benua, selain berwarna terang.', hintLain: ['Sifat granit yang membuat kerak benua mengapung di atas kerak samudra.'] },
-      { word: 'SIAL', hint: 'Nama lain kerak benua berdasarkan unsur penyusunnya: silika dan aluminium.', hintLain: ['Sebutan kerak benua dari dua unsur pembentuknya, silika dan aluminium.'] },
-      { word: 'SIMA', hint: 'Nama lain kerak samudra berdasarkan unsur penyusunnya: silika dan magnesium.', hintLain: ['Sebutan kerak samudra dari dua unsur pembentuknya, silika dan magnesium.'] },
+      { word: 'TEBAL', hint: 'Kerak benua bersifat ... dibandingkan kerak samudra.', hintLain: ['Sifat kerak di bawah daratan jika dibandingkan kerak di bawah lautan.'] },
+      { word: 'SEDIMEN', hint: 'Batuan yang terbentuk dari endapan material di permukaan kerak.', hintLain: ['Endapan yang mengeras lapis demi lapis di permukaan bumi.'] },
+      { word: 'LEMPENG', hint: 'Pecahan besar kerak bumi yang bergerak di atas lapisan yang kental.', hintLain: ['Potongan raksasa kerak bumi yang saling bergerak dan bertumbukan.'] },
+    ],
+    [
+      { word: 'KERAS', hint: 'Sifat lapisan paling luar bumi yang membuat kita dapat berpijak di atasnya.', hintLain: ['Sifat batuan di permukaan sehingga kita dapat berdiri di atasnya.'] },
+      { word: 'SILIKAT', hint: 'Senyawa pembentuk batuan yang banyak menyusun lapisan padat bumi.', hintLain: ['Senyawa batuan yang mengandung silikon dan oksigen, banyak menyusun bumi.'] },
+      { word: 'BATU', hint: 'Benda padat alami yang menyusun lapisan kerak bumi.', hintLain: ['Bahan padat alami pembentuk kerak, misalnya granit dan basal.'] },
+    ],
+    [
+      { word: 'LERENG', hint: 'Sisi miring sebuah gunung atau bukit, dari kaki sampai ke puncaknya.', hintLain: ['Bagian miring gunung yang menghubungkan kaki dengan puncaknya.'] },
+      { word: 'TANAH', hint: 'Lapisan paling atas kerak bumi tempat tumbuhan tumbuh dan berakar.', hintLain: ['Lapisan gembur di permukaan tempat akar tumbuhan menancap.'] },
+      { word: 'LEMPUNG', hint: 'Jenis tanah yang lengket dan kedap air, sering dipakai membuat kerajinan.', hintLain: ['Jenis tanah yang liat dan sulit dilalui air; bahan dasar gerabah.'] },
     ],
   ],
   2: [
@@ -101,20 +109,20 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'FLUIDA', hint: 'Wujud material mantel: bukan padat kaku, melainkan ... sangat kental.', hintLain: ['Sebutan untuk zat yang dapat mengalir, misalnya zat kental di dalam mantel.'] },
     ],
     [
-      { word: 'ARUS', hint: 'Aliran panas yang terbentuk di dalam mantel karena pemanasan dari bawah.', hintLain: ['Yang mengalir dan berputar di dalam mantel, menjadi tenaga penggerak lempeng.'] },
+      { word: 'SILIKAT', hint: 'Bahan batuan penyusun mantel bumi.', hintLain: ['Senyawa yang banyak menyusun batuan mantel, mengandung silikon dan oksigen.'] },
       { word: 'PANAS', hint: 'Suhu mantel berkisar 1.000 sampai 3.700 derajat Celsius, artinya mantel sangat...', hintLain: ['Keadaan suhu di dalam mantel yang mencapai ribuan derajat Celsius.'] },
     ],
     [
       { word: 'KENTAL', hint: 'Sifat material mantel: sangat ... sehingga mengalir sangat lambat.', hintLain: ['Sifat zat yang mengalir lambat karena partikelnya rapat, seperti material mantel.'] },
-      { word: 'BERPUTAR', hint: 'Gerakan aliran panas mantel yang berbalik arah membentuk lingkaran.', hintLain: ['Sifat gerak aliran panas mantel: naik lalu turun kembali membentuk lingkaran.'] },
+      { word: 'ASTENOSFER', hint: 'Lapisan kental di bagian atas mantel, tepat di bawah kerak bumi.', hintLain: ['Bagian paling atas mantel yang paling liat, tempat lempeng bergerak di atasnya.'] },
     ],
     [
-      { word: 'MENDIDIH', hint: 'Keadaan air di dalam panci saat dipanaskan, dipakai sebagai perumpamaan arus mantel.', hintLain: ['Perumpamaan arus mantel: seperti air panas yang menggelegak di panci.'] },
-      { word: 'PANCI', hint: 'Wadah tempat air direbus, dipakai sebagai perumpamaan arus konveksi mantel.', hintLain: ['Perkakas dapur untuk merebus air, menjadi perumpamaan sel konveksi.'] },
+      { word: 'MELELEH', hint: 'Yang terjadi pada batuan bila suhunya melampaui titik leburnya.', hintLain: ['Perubahan wujud batuan menjadi zat alir karena suhunya sangat tinggi.'] },
+      { word: 'SIRKULASI', hint: 'Nama lain perputaran aliran panas yang membentuk sel di dalam mantel.', hintLain: ['Gerakan berputar aliran zat kental di dalam mantel, dari bawah ke atas lalu kembali turun.'] },
     ],
     [
-      { word: 'LEMPENG', hint: 'Bagian kerak bumi yang digerakkan oleh arus panas di dalam mantel.', hintLain: ['Kepingan kerak bumi; arus mantel menjadi mesin penggeraknya.'] },
-      { word: 'PENGGERAK', hint: 'Peran arus konveksi mantel bagi pergerakan lempeng bumi: sebagai mesin ...', hintLain: ['Peran arus mantel: menjadi mesin yang menggerakkan lempeng bumi.'] },
+      { word: 'KONDUKSI', hint: 'Perpindahan panas melalui sebuah zat tanpa memindahkan zatnya sendiri.', hintLain: ['Cara panas merambat melalui sebuah benda tanpa benda itu ikut berpindah.'] },
+      { word: 'GEOTERMAL', hint: 'Sebutan bagi energi panas yang berasal dari dalam bumi.', hintLain: ['Istilah bagi panas bumi yang dimanfaatkan sebagai pembangkit listrik.'] },
     ],
   ],
   3: [
@@ -126,26 +134,26 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     ],
     [
       { word: 'BESI', hint: 'Logam utama penyusun inti bumi, bersama nikel.', hintLain: ['Logam yang paling banyak menyusun pusat bumi, bersama nikel.'] },
-      { word: 'PUTARAN', hint: 'Gerakan berulang aliran logam cair di inti luar yang membangkitkan magnet.', hintLain: ['Gerak berulang logam cair inti luar; inilah yang menimbulkan medan magnet.'] },
-      { word: 'EKSTREM', hint: 'Sifat panas di inti luar yang membuat logam besi dan nikel meleleh.', hintLain: ['Sifat suhu inti luar yang melampaui titik leleh besi dan nikel.'] },
+      { word: 'LELEHAN', hint: 'Inti luar berupa ... logam, karena suhunya melampaui titik leleh besi.', hintLain: ['Logam yang telah berubah menjadi zat alir karena panas.'] },
+      { word: 'KOMPAS', hint: 'Alat penunjuk arah yang bekerja karena memanfaatkan medan magnet bumi.', hintLain: ['Alat navigasi berjarum yang selalu menunjuk ke arah utara dan selatan.'] },
     ],
     [
       { word: 'LOGAM', hint: 'Inti bumi tersusun dari ... besi dan nikel, bukan batuan.', hintLain: ['Bahan penghantar panas dan listrik yang baik, seperti besi dan nikel.'] },
       { word: 'PANAS', hint: 'Suhu inti luar sekitar 5.000 derajat Celsius, artinya sangat...', hintLain: ['Keadaan suhu di inti luar yang mencapai sekitar 5.000 derajat Celsius.'] },
-      { word: 'DINAMO', hint: 'Alat pembangkit listrik; perputaran logam inti luar bekerja seperti ini.', hintLain: ['Perumpamaan bagi kerja inti luar: seperti ... raksasa yang berputar.'] },
+      { word: 'KUTUB', hint: 'Medan magnet bumi memiliki dua ..., yaitu utara dan selatan.', hintLain: ['Sebutan bagi ujung utara dan ujung selatan sebuah magnet.'] },
     ],
     [
-      { word: 'RAKSASA', hint: 'Ukuran dinamo yang menggambarkan besarnya medan magnet bumi.', hintLain: ['Sifat dinamo yang dibentuk oleh inti luar bumi: sangat besar.'] },
-      { word: 'MATAHARI', hint: 'Bintang yang radiasinya dibelokkan oleh medan magnet bumi.', hintLain: ['Sumber badai radiasi yang ditahan oleh medan magnet bumi.'] },
+      { word: 'ARUS', hint: 'Logam cair di inti luar membentuk ... listrik yang menghasilkan medan magnet.', hintLain: ['Aliran listrik yang timbul dari logam yang bergerak di inti luar.'] },
+      { word: 'LISTRIK', hint: 'Jenis aliran yang timbul dari logam cair yang bergerak di inti luar.', hintLain: ['Aliran energi yang muncul dari logam yang bergerak, dan membangkitkan magnet.'] },
       { word: 'LINDUNG', hint: 'Medan magnet bumi bertugas ... permukaan dari radiasi angkasa.', hintLain: ['Tugas medan magnet bumi: menahan radiasi angkasa agar tidak sampai ke permukaan.'] },
     ],
     [
       { word: 'MEDAN', hint: 'Wilayah yang dipengaruhi sebuah gaya, misalnya gaya magnet bumi.', hintLain: ['Ruang di sekitar magnet yang masih terpengaruh gaya tariknya.'] },
-      { word: 'BADAI', hint: 'Sebutan bagi gangguan radiasi hebat yang datang dari matahari.', hintLain: ['Gangguan radiasi matahari yang dibelokkan medan magnet bumi.'] },
+      { word: 'GEODYNAMO', hint: 'Mekanisme perputaran logam di inti luar yang membangkitkan magnet bumi.', hintLain: ['Cara kerja perputaran logam panas di inti luar sehingga bumi memiliki magnet.'] },
       { word: 'PERISAI', hint: 'Sebutan bagi medan magnet bumi karena melindungi dari radiasi angkasa.', hintLain: ['Sebutan bagi pelindung alami bumi dari radiasi angkasa.'] },
     ],
     [
-      { word: 'RADIASI', hint: 'Pancaran berbahaya dari angkasa yang dilindungi medan magnet bumi.', hintLain: ['Pancaran berbahaya matahari yang dibelokkan oleh medan magnet bumi.'] },
+      { word: 'LEBUR', hint: 'Hancur menjadi zat alir karena panas yang sangat tinggi.', hintLain: ['Peristiwa berubahnya logam menjadi zat alir akibat panas yang sangat tinggi.'] },
       { word: 'CAIR', hint: 'Wujud logam di inti luar, berbeda dengan inti dalam yang padat.', hintLain: ['Wujud zat yang mengalir dan tidak mempertahankan bentuknya.'] },
       { word: 'SUHU', hint: 'Besaran yang mencapai 5.000 derajat Celsius di inti luar bumi.', hintLain: ['Besaran yang diukur dengan termometer dan menyatakan derajat panas.'] },
     ],
@@ -153,7 +161,7 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
   4: [
     // Inti Dalam — sengaja HANYA 2 kata.
     [
-      { word: 'KRISTAL', hint: 'Bentuk susunan logam besi dan nikel di inti dalam.', hintLain: ['Susunan atom logam yang teratur rapat di inti dalam.'] },
+      { word: 'INTIDALAM', hint: 'Lapisan terdalam planet bumi pada kedalaman 6.371 kilometer.', hintLain: ['Bagian paling tengah bumi, berupa bola logam di kedalaman 6.371 km.'] },
       { word: 'PADAT', hint: 'Inti dalam berbentuk sangat ... karena tekanan yang sangat besar dari segala arah.', hintLain: ['Sifat zat yang partikelnya rapat dan tidak dapat mengalir, seperti lapisan terdalam bumi.'] },
     ],
     [
@@ -166,15 +174,15 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     ],
     [
       { word: 'GRAVITASI', hint: 'Gaya yang menarik segala sesuatu menuju pusat bumi.', hintLain: ['Gaya tarik bumi yang membuat benda jatuh ke bawah.'] },
-      { word: 'ATOM', hint: 'Bagian terkecil penyusun besi yang dikunci rapat oleh tekanan di inti dalam.', hintLain: ['Bagian terkecil penyusun logam; di inti dalam terkuci rapat oleh tekanan.'] },
+      { word: 'TERDALAM', hint: 'Inti dalam adalah lapisan yang paling ... di seluruh bumi.', hintLain: ['Kedudukan lapisan yang paling jauh dari permukaan bumi.'] },
     ],
     [
       { word: 'INTI', hint: 'Bagian paling tengah dari sesuatu, misalnya bagian terdalam bumi.', hintLain: ['Bagian paling tengah, misalnya pada buah atau pada bumi.'] },
-      { word: 'NOL', hint: 'Nilai gravitasi tepat di pusat bumi, karena tarikan dari segala arah saling meniadakan.', hintLain: ['Nilai gaya tarik di titik pusat bumi: karena saling meniadakan.'] },
+      { word: 'PADUAN', hint: 'Campuran dua logam atau lebih, seperti besi dan nikel di pusat bumi.', hintLain: ['Hasil pencampuran beberapa logam, misalnya besi dengan nikel.'] },
     ],
     [
       { word: 'NIKEL', hint: 'Logam penyusun inti bumi yang berpasangan dengan besi.', hintLain: ['Logam berwarna keperakan yang menyertai besi di pusat bumi.'] },
-      { word: 'DAHSYAT', hint: 'Sifat tekanan di inti dalam yang membuat besi tetap padat.', hintLain: ['Sifat tekanan dari seluruh bumi yang mengunci besi tetap padat.'] },
+      { word: 'MAMPAT', hint: 'Keadaan zat yang partikelnya sangat rapat karena tekanan yang besar.', hintLain: ['Keadaan zat yang partikelnya terdesak sangat rapat oleh tekanan besar.'] },
     ],
   ],
   5: [
@@ -186,26 +194,26 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     ],
     [
       { word: 'DIVERGEN', hint: 'Nama batas lempeng tempat dua lempeng bergerak saling menjauh.', hintLain: ['Sebutan batas lempeng yang kedua sisinya bergerak saling meninggalkan.'] },
-      { word: 'HANYUT', hint: 'Peristiwa terpisahnya benua setelah Pangea retak, menurut teori Alfred Wegener.', hintLain: ['Yang dialami benua setelah Pangea retak dan bergerak saling menjauh.'] },
-      { word: 'LEMPENG', hint: 'Kepingan kerak bumi yang terus bergerak perlahan di atas mantel.', hintLain: ['Bagian kerak bumi yang terpecah dan bergerak perlahan di atas mantel.'] },
+      { word: 'CELAH', hint: 'Ruang terbuka yang terbentuk saat dua lempeng saling menjauh, lalu terisi magma.', hintLain: ['Rongga terbuka di kerak yang muncul ketika lempeng saling bergerak menjauh.'] },
+      { word: 'REKAHAN', hint: 'Retakan pada kerak bumi tempat magma dapat naik ke permukaan.', hintLain: ['Belahan pada kerak bumi yang menjadi jalan naiknya zat cair panas.'] },
     ],
     [
-      { word: 'TEKTONIK', hint: 'Sebutan bagi lempeng yang bergerak perlahan di atas mantel bumi.', hintLain: ['Jenis lempeng yang bergerak perlahan di atas mantel, penggerak benua.'] },
-      { word: 'MENDESAK', hint: 'Yang dilakukan magma panas terhadap permukaan bumi saat naik.', hintLain: ['Perbuatan magma panas yang naik lalu menekan permukaan bumi.'] },
+      { word: 'MEMISAH', hint: 'Arti kata divergen: kedua lempeng saling...', hintLain: ['Arti kata divergen: kedua lempeng saling meninggalkan satu sama lain.'] },
+      { word: 'PUNGGUNG', hint: 'Bentuk dasar samudra yang menjulang di batas divergen: ... tengah samudra.', hintLain: ['Bagian dasar laut yang meninggi di batas divergen, disebut ... tengah samudra.'] },
       { word: 'SAMUDRA', hint: 'Batas divergen paling banyak terdapat di dasar...', hintLain: ['Batas divergen paling banyak ditemukan di dasar lautan luas.'] },
     ],
     [
-      { word: 'MENDINGIN', hint: 'Yang terjadi pada magma setelah keluar ke permukaan bumi.', hintLain: ['Proses yang dialami magma setelah naik, sebelum mengeras menjadi batuan.'] },
+      { word: 'TERBELAH', hint: 'Daratan Pangea perlahan ... menjadi benua-benua yang kita kenal sekarang.', hintLain: ['Benua yang kita kenal sekarang dahulu menyatu, lalu saling melepaskan diri.'] },
       { word: 'TENGAH', hint: 'Batas divergen di dasar samudra disebut punggung ... samudra.', hintLain: ['Batas divergen di dasar laut disebut punggung ... laut.'] },
-      { word: 'MENGERAS', hint: 'Yang terjadi pada magma setelah mendingin di permukaan.', hintLain: ['Perubahan magma setelah dingin, menjadi batuan kerak baru.'] },
+      { word: 'LAVA', hint: 'Magma yang sudah mencapai permukaan bumi disebut...', hintLain: ['Zat cair panas dari dalam bumi yang sudah keluar ke permukaan.'] },
     ],
     [
-      { word: 'PEMATANG', hint: 'Bentuk dasar laut yang menjulang di tengah samudra akibat batas divergen.', hintLain: ['Bentuk dasar laut yang naik di tengah samudra, disebut mid-ocean ridge.'] },
+      { word: 'MELEBAR', hint: 'Bertambah luas, seperti dasar samudra yang terus memanjang.', hintLain: ['Bertambah lebar, seperti dasar laut yang terus memanjang.'] },
       { word: 'RETAK', hint: 'Keadaan kerak yang terbelah akibat gaya yang menariknya memisah.', hintLain: ['Keadaan kerak yang terbelah-belah karena ditarik ke dua arah.'] },
-      { word: 'MEMPERLUAS', hint: 'Yang dilakukan dasar laut ketika magma baru terus menambah kerak.', hintLain: ['Akibat magma baru yang terus keluar: dasar laut bertambah lebar.'] },
+      { word: 'ZONA', hint: 'Sebutan untuk daerah atau kawasan yang memiliki ciri tertentu.', hintLain: ['Sebutan bagi kawasan yang punya ciri khas tertentu.'] },
     ],
     [
-      { word: 'PERLAHAN', hint: 'Sifat gerak lempeng tektonik menurut teori Alfred Wegener.', hintLain: ['Cara lempeng tektonik bergerak: sangat lambat sehingga tidak terasa.'] },
+      { word: 'MENGAPUNG', hint: 'Keadaan lempeng yang berada di atas lapisan mantel yang kental.', hintLain: ['Keadaan lempeng yang terapung di atas lapisan kental di bawahnya.'] },
       { word: 'GERAK', hint: 'Perpindahan posisi, seperti lempeng yang berpindah sangat lambat.', hintLain: ['Perpindahan tempat, seperti lempeng yang berpindah beberapa sentimeter per tahun.'] },
       { word: 'BENUA', hint: 'Daratan luas, yang dahulu menyatu lalu saling menjauh.', hintLain: ['Daratan sangat luas yang dahulu bersatu lalu berpisah.'] },
     ],
@@ -232,43 +240,43 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'LIPATAN', hint: 'Bentuk pegunungan dari tumbukan dua lempeng benua, bukan gunung api.', hintLain: ['Jenis pegunungan yang terbentuk dari tumbukan dua lempeng daratan.'] },
     ],
     [
-      { word: 'TEKUK', hint: 'Keadaan lempeng yang terlipat ke bawah saat dua lempeng bertumbukan.', hintLain: ['Yang terjadi pada salah satu lempeng: terlipat dan masuk ke bawah lempeng lain.'] },
-      { word: 'DAHSYAT', hint: 'Sifat gerakan tumbukan lempeng yang menimbulkan gempa sangat kuat.', hintLain: ['Sifat gerakan tumbukan lempeng hingga memicu gempa dan tsunami Aceh 2004.'] },
+      { word: 'TABRAKAN', hint: 'Batas konvergen terjadi karena ... antara dua lempeng tektonik.', hintLain: ['Peristiwa benturan antara dua lempeng yang membentuk batas konvergen.'] },
+      { word: 'TINGGI', hint: 'Tumbukan dua lempeng benua mengangkat daratan menjadi pegunungan yang sangat...', hintLain: ['Akibat benturan dua lempeng daratan, tanah terangkat sampai menjulang ke langit.'] },
     ],
     [
       { word: 'GUNUNG', hint: 'Bentuk permukaan bumi yang menjulang tinggi dan sering berbentuk kerucut.', hintLain: ['Bentang alam menjulang yang sering berbentuk kerucut dan dapat meletus.'] },
       { word: 'PEGUNUNGAN', hint: 'Rangkaian gunung berderet memanjang, seperti hasil tumbukan lempeng.', hintLain: ['Kumpulan gunung yang berderet, terbentuk dari tumbukan lempeng.'] },
     ],
     [
-      { word: 'INDONESIA', hint: 'Negara kepulauan yang terbentuk dari jalur subduksi lempeng aktif.', hintLain: ['Kepulauan yang lahir dari tumbukan lempeng, sehingga rawan gempa dan tsunami.'] },
-      { word: 'GEMPA', hint: 'Getaran yang ditimbulkan oleh tumbukan dua lempeng kulit bumi.', hintLain: ['Getaran kuat akibat lempeng yang saling bertumbukan, dapat memicu tsunami.'] },
+      { word: 'DANGKAL', hint: 'Sifat gempa yang pusatnya dekat permukaan, sehingga getarannya kuat.', hintLain: ['Sifat gempa yang pusatnya dekat permukaan bumi; getarannya terasa kuat.'] },
+      { word: 'MENDEKAT', hint: 'Arah gerak dua lempeng pada batas konvergen, yaitu saling...', hintLain: ['Pada batas konvergen, kedua lempeng bergerak saling menghampiri.'] },
     ],
   ],
   7: [
     // Batas Transform — sengaja HANYA 2 kata.
     [
       { word: 'TRANSFORM', hint: 'Batas lempeng tektonik di mana dua lempeng saling bergesekan mendatar berlawanan arah.', hintLain: ['Jenis batas lempeng tempat dua lempeng saling bergesekan mendatar berlawanan arah.'] },
-      { word: 'KALIFORNIA', hint: 'Wilayah di Amerika Serikat tempat patahan San Andreas membentang.', hintLain: ['Nama wilayah tempat sesar San Andreas berada.'] },
+      { word: 'SANANDREAS', hint: 'Patahan mendatar terkenal di California yang membentang sepanjang 1.200 kilometer.', hintLain: ['Patahan mendatar di California yang panjangnya sekitar 1.200 kilometer.'] },
     ],
     [
-      { word: 'INCI', hint: 'Satuan panjang; sesar San Andreas bergeser sekitar 2 ... per tahun.', hintLain: ['Satuan panjang pergeseran San Andreas setiap tahun (2 ... per tahun).'] },
+      { word: 'GESERAN', hint: 'Jenis pergerakan lempeng pada batas transform: ... mendatar.', hintLain: ['Pada batas transform, lempeng bergerak menyamping sejajar permukaan bumi.'] },
       { word: 'SESAR', hint: 'Nama lain patahan mendatar tempat dua lempeng bergesekan menyamping.', hintLain: ['Sebutan lain bagi patahan mendatar, tempat dua lempeng bergesekan menyamping.'] },
     ],
     [
-      { word: 'DANGKAL', hint: 'Sifat gempa yang dipicu oleh gesekan di batas transform.', hintLain: ['Sifat gempa akibat gesekan batuan yang terlepas di batas transform.'] },
-      { word: 'ENERGI', hint: 'Yang dilepaskan ketika gesekan batuan di sesar tidak lagi tertahan.', hintLain: ['Yang terlepas saat batuan di sepanjang sesar bergesekan lalu retak.'] },
+      { word: 'MENDATAR', hint: 'Arah gesekan kedua lempeng pada batas transform: saling bergesekan...', hintLain: ['Arah gesekan kedua lempeng pada batas transform, yaitu sejajar permukaan.'] },
+      { word: 'PATAHAN', hint: 'Retakan panjang di kerak bumi akibat gesekan mendatar lempeng.', hintLain: ['Retakan panjang di kerak akibat dua lempeng bergesekan menyamping.'] },
     ],
     [
       { word: 'BERGESEK', hint: 'Dua lempeng pada batas transform saling ... mendatar.', hintLain: ['Kedua lempeng bersentuhan dan saling menggosok menyamping di batas transform.'] },
-      { word: 'BATUAN', hint: 'Bahan yang saling bergesekan di sepanjang sesar pada batas transform.', hintLain: ['Yang saling bergesekan di sepanjang sesar sehingga memicu gempa.'] },
+      { word: 'PATAH', hint: 'Batuan di sepanjang sesar dapat ... dan melepaskan energi gempa.', hintLain: ['Ketika batuan di sepanjang sesar tak kuat lagi menahan, energi gempa terlepas.'] },
     ],
     [
-      { word: 'LEPAS', hint: 'Nasib energi gesekan batuan ketika sudah tidak tertahan lagi.', hintLain: ['Energi gesekan batuan akan ... dan memicu gempa dangkal.'] },
+      { word: 'HORIZONTAL', hint: 'Arah gesekan kedua lempeng pada batas transform, yaitu mendatar.', hintLain: ['Arah gesekan kedua lempeng pada batas transform: sejajar permukaan bumi.'] },
       { word: 'SEJAJAR', hint: 'Posisi dua garis yang arahnya sama dan tidak pernah berpotongan.', hintLain: ['Kedudukan dua garis yang arahnya sama dan tak pernah bertemu.'] },
     ],
     [
-      { word: 'DATAR', hint: 'Kedudukan kedua lempeng pada batas transform: sejajar dan rata.', hintLain: ['Posisi kedua lempeng yang bergesek di batas transform: sama ...'] },
-      { word: 'POSISI', hint: 'Letak kedua lempeng ketika bergesekan: dalam ... yang sama.', hintLain: ['Kedudukan kedua lempeng saat bergesek: dalam ... yang sama rata.'] },
+      { word: 'REKAH', hint: 'Keadaan tanah yang terbelah-belah akibat gesekan lempeng mendatar.', hintLain: ['Keadaan tanah yang pecah-pecah akibat gesekan lempeng mendatar.'] },
+      { word: 'TEGANGAN', hint: 'Yang menumpuk pada batuan akibat gesekan yang terus-menerus.', hintLain: ['Yang terkumpul pada batuan karena gesekan terus-menerus, lalu dilepas saat retak.'] },
     ],
   ],
 };

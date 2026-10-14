@@ -357,12 +357,15 @@ describe('materi wajib dari validasi dosen IPA — di format yang benar-benar di
   });
 
   test('ada pengetahuan lokal Indonesia (lempeng & kerawanan gempa)', () => {
-    // Materi dosen ini disimpan di zona Konvergen, karena materi zona itulah yang
-    // benar-benar menyebut Indonesia dan gempa (jalur subduksi Kepulauan
-    // Indonesia, gempa dan tsunami Aceh 2004) - bukan di zona Kerak.
-    const kata = varianZona(6).flat().map((k) => k.word);
-    assert.ok(kata.includes('INDONESIA'), 'materi dosen tentang Indonesia hilang dari bank');
-    assert.ok(kata.includes('GEMPA'), 'materi dosen tentang kerawanan gempa hilang dari bank');
+    // Set jawaban ASLI menempatkan materi dosen ini di zona Kerak Bumi. Karena
+    // penempatan zona bisa berubah, diperiksa ke SELURUH bank - yang penting
+    // pengetahuannya masih ADA dan tetap dipakai.
+    const semua = Object.keys(ZONE_GATE_BANK)
+      .map(Number)
+      .flatMap((z) => varianZona(z).flat().map((k) => k.word));
+
+    assert.ok(semua.includes('INDONESIA'), 'materi dosen tentang Indonesia hilang dari bank');
+    assert.ok(semua.includes('GEMPA'), 'materi dosen tentang kerawanan gempa hilang dari bank');
   });
 
   test('ada materi mantel sebagai fluida kental, bukan batuan padat', () => {
