@@ -36,7 +36,7 @@
 // File ini murni data + satu fungsi pengundian, dipisah dari komponennya supaya
 // dapat diuji otomatis tanpa perlu merender React.
 
-import { acakBerbenih, benihDari } from '../engine/undianSoal.ts';
+import { benihDari, pilihBerbenih } from '../engine/undianBerbenih.ts';
 
 export interface KataGerbang {
   word: string;
@@ -215,15 +215,12 @@ export function varianZona(zoneIdx: number): KataGerbang[][] {
  * supaya gerbangnya tidak pernah kosong.
  */
 export function undiKataGerbang(zoneIdx: number, userId: string): KataGerbang[] {
-  const varian = varianZona(zoneIdx);
-  if (varian.length > 0) {
-    const acak = acakBerbenih(benihDari(`${userId}|gerbang|${zoneIdx}`));
-    const idx = Math.min(varian.length - 1, Math.floor(acak() * varian.length));
-    return varian[idx];
-  }
+  const varian = pilihBerbenih(varianZona(zoneIdx), benihDari(`${userId}|gerbang|${zoneIdx}`));
+  if (varian) return varian;
 
-  const cadangan = varianZona(1);
-  if (cadangan.length === 0) return [];
-  const acak = acakBerbenih(benihDari(`${userId}|gerbang|1`));
-  return cadangan[Math.min(cadangan.length - 1, Math.floor(acak() * cadangan.length))];
+  // Zona yang diminta tidak ada di bank — pakai zona 1 sebagai cadangan supaya
+  // gerbangnya tidak pernah kosong. Benihnya memakai penanda zona cadangan,
+  // bukan nomor zona yang salah, agar hasilnya tetap dapat diperiksa.
+  const cadangan = pilihBerbenih(varianZona(1), benihDari(`${userId}|gerbang|1`));
+  return cadangan ?? [];
 }
