@@ -4,6 +4,7 @@ import AppLayout from './app/AppLayout';
 import Dashboard from './app/Dashboard';
 import { useAuthStore, levelTertinggiYangBoleh } from './store/teacherStore';
 import AppErrorBoundary from './components/AppErrorBoundary';
+import ChatbotResqy from './components/ChatbotResqy';
 import { setMonitoringContext } from './utils/monitoring';
 
 const Login = lazy(() => import('./app/Login'));
@@ -79,6 +80,32 @@ function MonitoringContextTracker() {
   return null;
 }
 
+/**
+ * Halaman tempat chatbot materi boleh muncul.
+ *
+ * Sengaja berupa daftar, bukan "semua halaman kecuali". Dengan begitu, halaman
+ * baru yang ditambahkan nanti tidak otomatis memunculkan chatbot di tempat yang
+ * belum tentu tepat (mis. halaman login atau halaman publik).
+ */
+const RUTE_SISWA = ['/', '/level1', '/level2', '/level3', '/workspace', '/profile'];
+
+/**
+ * Chatbot materi Resqy — hanya untuk siswa, dan hanya di halaman belajar.
+ *
+ * Dipasang di dalam Router (bukan di dalam setiap halaman) supaya percakapan
+ * TIDAK terulang di setiap rute. Guru tidak perlu melihatnya, dan halaman
+ * publik seperti /login dan /privacy tidak boleh memuatnya.
+ */
+function ChatbotSiswa() {
+  const location = useLocation();
+  const currentUser = useAuthStore((state) => state.currentUser);
+
+  if (!currentUser || currentUser.role === 'teacher') return null;
+  if (!RUTE_SISWA.includes(location.pathname)) return null;
+
+  return <ChatbotResqy />;
+}
+
 function App() {
   return (
     // ErrorBoundary diletakkan DI LUAR BrowserRouter & Suspense supaya ia
@@ -87,6 +114,7 @@ function App() {
     <AppErrorBoundary label="root">
       <BrowserRouter>
         <MonitoringContextTracker />
+        <ChatbotSiswa />
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/login" element={<Login />} />
