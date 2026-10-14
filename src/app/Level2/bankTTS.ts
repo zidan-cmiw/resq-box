@@ -722,11 +722,141 @@ const VARIAN_AREA_5: GridTTS[] = [
   // TAMBAH_VARIAN_5
 ];
 
+const VARIAN_AREA_4: GridTTS[] = [
+  {
+    rows: 17,
+    cols: 11,
+    clues: [
+      {
+        id: 'c3',
+        number: 1,
+        direction: 'down',
+        answer: 'MENGUNGSI',
+        clue: 'Meninggalkan rumah menuju tempat aman atas arahan petugas.',
+        startRow: 0,
+        startCol: 7,
+      },
+      {
+        id: 'c1',
+        number: 2,
+        direction: 'across',
+        answer: 'PIROKLASTIK',
+        clue: 'Aliran gas dan material panas yang meluncur cepat menuruni lereng gunung.',
+        startRow: 7,
+        startCol: 0,
+      },
+      {
+        id: 'c2',
+        number: 3,
+        direction: 'down',
+        answer: 'PERINGATAN',
+        clue: 'Pemberitahuan resmi mengenai ancaman bahaya yang akan datang.',
+        startRow: 7,
+        startCol: 0,
+      },
+      {
+        id: 'c4',
+        number: 4,
+        direction: 'down',
+        answer: 'LEDAKAN',
+        clue: 'Letusan dahsyat yang menyemburkan material vulkanik ke udara.',
+        startRow: 7,
+        startCol: 5,
+      },
+    ],
+  },
+  {
+    rows: 7,
+    cols: 11,
+    clues: [
+      {
+        id: 'c2',
+        number: 1,
+        direction: 'down',
+        answer: 'GEMURUH',
+        clue: 'Suara berdengung keras dari dalam gunung tanda aktivitas meningkat.',
+        startRow: 0,
+        startCol: 5,
+      },
+      {
+        id: 'c3',
+        number: 2,
+        direction: 'down',
+        answer: 'ERUPSI',
+        clue: 'Peristiwa keluarnya magma dan gas dari dalam gunung menuju permukaan.',
+        startRow: 0,
+        startCol: 8,
+      },
+      {
+        id: 'c1',
+        number: 3,
+        direction: 'across',
+        answer: 'MENURUN',
+        clue: 'Arah aliran awan panas, yaitu mengikuti lereng dan lembah.',
+        startRow: 1,
+        startCol: 4,
+      },
+      {
+        id: 'c4',
+        number: 4,
+        direction: 'across',
+        answer: 'KRATER',
+        clue: 'Lubang kawah di puncak gunung tempat magma dan gas keluar.',
+        startRow: 4,
+        startCol: 0,
+      },
+    ],
+  },
+  {
+    rows: 10,
+    cols: 6,
+    clues: [
+      {
+        id: 'c3',
+        number: 1,
+        direction: 'down',
+        answer: 'LAHAR',
+        clue: 'Aliran campuran air, pasir, dan batu vulkanik yang turun melalui alur sungai.',
+        startRow: 0,
+        startCol: 5,
+      },
+      {
+        id: 'c4',
+        number: 2,
+        direction: 'down',
+        answer: 'TUTUP',
+        clue: 'Yang harus dilakukan pada jendela dan pintu agar abu tidak masuk.',
+        startRow: 3,
+        startCol: 1,
+      },
+      {
+        id: 'c1',
+        number: 3,
+        direction: 'across',
+        answer: 'SUMBER',
+        clue: 'Tempat air berasal, yang wajib dilindungi dari abu vulkanik.',
+        startRow: 4,
+        startCol: 0,
+      },
+      {
+        id: 'c2',
+        number: 4,
+        direction: 'down',
+        answer: 'BAHAYA',
+        clue: 'Kondisi yang mengancam keselamatan sehingga warga harus menjauh.',
+        startRow: 4,
+        startCol: 3,
+      },
+    ],
+  },
+];
+
 export const BANK_TTS: Record<number, GridTTS[]> = {
   0: VARIAN_AREA_0,
   1: VARIAN_AREA_1,
   2: VARIAN_AREA_2,
   3: VARIAN_AREA_3,
+  4: VARIAN_AREA_4,
   5: VARIAN_AREA_5,
 };
 

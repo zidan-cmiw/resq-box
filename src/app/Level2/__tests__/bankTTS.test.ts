@@ -17,9 +17,14 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { varianTTS, periksaGrid, undiGridTTS } from '../bankTTS.ts';
+import { LEVEL2_AREAS } from '../level2Data.ts';
 
-/** Seluruh area yang seharusnya ada di bank. */
-const AREA = [0, 1, 2, 3, 5];
+/**
+ * Seluruh area Level 2, DITURUNKAN dari datanya, bukan ditulis tangan.
+ * Ditulis tangan membuat daftar ini bisa basi begitu ada area baru - dan area
+ * yang lupa didaftarkan justru area yang paling perlu diuji.
+ */
+const AREA = LEVEL2_AREAS.map((_, i) => i);
 
 /** Jalankan validator atas seluruh bank, kumpulkan kegagalannya. */
 function semuaMasalah(): string[] {
@@ -44,8 +49,7 @@ function semuaMasalah(): string[] {
  */
 const AREA_MENUNGGU_VARIAN: number[] = [];
 
-describe('bank TTS — setiap grid WAJIB dapat diselesaikan', () => {
-  test('tidak ada satu pun grid yang mustahil diisi', () => {
+describe('bank TTS — setiap grid WAJIB dapat diselesaikan', () => {  test('tidak ada satu pun grid yang mustahil diisi', () => {
     assert.deepEqual(semuaMasalah(), [], `grid bermasalah:\n  ${semuaMasalah().join('\n  ')}`);
   });
 
@@ -138,7 +142,38 @@ describe('bank TTS — setiap grid WAJIB dapat diselesaikan', () => {
 });
 
 describe('bank TTS — keabsahan isi', () => {
-  test('seluruh area tersedia di bank', () => {
+  test('SETIAP area Level 2 punya grid di bank — tidak ada yang jatuh ke cadangan', () => {
+    // Inilah penjaga terpenting berkas ini.
+    //
+    // Kejadian nyata: area 4 (Simulasi Erupsi Merapi) pernah TIDAK punya entri
+    // di bank, sehingga undiannya jatuh ke cadangan area 0 - dan siswa di area
+    // erupsi justru mendapat teka-teki bertema GEMPA. Tidak ada error apa pun.
+    //
+    // Daftar area diambil dari LEVEL2_AREAS supaya penjaga ini ikut menangkap
+    // area baru yang ditambahkan kelak tanpa grid.
+    const hilang = LEVEL2_AREAS.map((a, i) => ({ i, id: a.id }))
+      .filter(({ i }) => varianTTS(i).length === 0)
+      .map(({ i, id }) => `indeks ${i} (${id})`);
+
+    assert.deepEqual(
+      hilang,
+      [],
+      `area tanpa grid — materinya akan diam-diam memakai grid area lain:\n  ${hilang.join('\n  ')}`,
+    );
+  });
+
+  test('bank tidak menyimpan kunci area yang bukan area Level 2', () => {
+    // Kebalikannya: kunci yang tidak punya area berarti grid yang tidak akan
+    // pernah terundi, jadi sia-sia ditulis.
+    const jumlahArea = LEVEL2_AREAS.length;
+    const berlebih = Object.keys(AREA)
+      .map(Number)
+      .filter((i) => i < 0 || i >= jumlahArea);
+
+    assert.deepEqual(berlebih, [], `kunci area di luar jangkauan: ${berlebih.join(', ')}`);
+  });
+
+  test('seluruh area yang diuji memang ada di bank', () => {
     const hilang = AREA.filter((a) => varianTTS(a).length === 0);
     assert.deepEqual(hilang, [], `area tanpa grid: ${hilang.join(', ')}`);
   });
