@@ -8,6 +8,9 @@ import PixelIcon from '../../components/PixelIcon';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 import { tutupModalDenganKeyboard } from '../../utils/keyboard';
+// Angka jumlah misi dan poin per misi diambil dari datanya, TIDAK ditulis tetap.
+// Teks yang menyebut angkanya langsung akan berbohong begitu jumlah misi berubah.
+import { TOTAL_MISSIONS, POIN_PER_MISI } from '../../missions/data/missions';
 import { blokirRambatanTombol } from '../../utils/keyboard';
 
 export default function Dashboard() {
@@ -984,7 +987,7 @@ export default function Dashboard() {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="px-2.5 py-1 rounded-md bg-purple-200 text-purple-950 font-black text-[13px] sm:text-[15px] border border-purple-800/40">
-                          20 Misi Studi Kasus
+                          {TOTAL_MISSIONS} Misi Studi Kasus
                         </span>
                         <span className={`px-2.5 py-1 rounded-md font-black text-[13px] sm:text-[15px] shadow-sm ${levelBerlaku >= 3 ? 'bg-amber-600 text-white' : 'bg-stone-300 text-stone-700'
                           }`}>
@@ -998,11 +1001,11 @@ export default function Dashboard() {
                     <div className="text-[15px] sm:text-base md:text-[19px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
-                        <span className="font-bold text-[#200b01]">20 Misi Studi Kasus, Mode Bebas (Proyek Saya Sandbox), gempa 3-tingkat, erupsi eksplosif vs efusif, reaksi 75 AI warga, kontrol simulasi fleksibel, tombol Reset Kondisi, dan koneksi ESP32.</span>
+                        <span className="font-bold text-[#200b01]">{TOTAL_MISSIONS} Misi Studi Kasus, Mode Bebas (Proyek Saya Sandbox), gempa 3-tingkat, erupsi eksplosif vs efusif, reaksi 75 AI warga, kontrol simulasi fleksibel, tombol Reset Kondisi, dan koneksi ESP32.</span>
                       </div>
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
-                        <span className="font-bold text-[#200b01]">Tuntaskan 20 Misi Studi Kasus; nilai otomatis tersinkronisasi ke Rapor Siswa di Posko Guru (/teacher)!</span>
+                        <span className="font-bold text-[#200b01]">Tuntaskan {TOTAL_MISSIONS} Misi Studi Kasus; nilai otomatis tersinkronisasi ke Rapor Siswa di Posko Guru (/teacher)!</span>
                       </div>
                     </div>
                   </div>
@@ -1139,7 +1142,7 @@ export default function Dashboard() {
                   <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-3 shadow-sm">
                     <h5 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base text-[#260c02] flex items-center gap-2">
                       <PixelIcon name="map" size={16} />
-                      <span>20 Misi Studi Kasus Terbagi dalam 4 Sektor:</span>
+                      <span>{TOTAL_MISSIONS} Misi Studi Kasus Terbagi dalam 4 Sektor:</span>
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[13px] sm:text-[15px] md:text-base leading-relaxed text-[#1a0800] font-bold">
                       <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
@@ -1165,7 +1168,7 @@ export default function Dashboard() {
                     <ul className="list-disc list-inside space-y-2 text-[#1a0800] font-bold">
                       <li><strong className="font-black text-[#1a0800]">Blockly Ramah Anak:</strong> Susun blok aksi-reaksi (Sensor ➔ Lampu Status ➔ Sirine EWS ➔ Tindakan Evakuasi). Setiap misi dilengkapi panduan kategori toolbox.</li>
                       <li><strong className="font-black text-[#1a0800]">Digital Twin 3D Merapi:</strong> Amati reaksi 75 AI warga saat bencana berlangsung. Kerusakan tetap terlihat untuk evaluasi dan dapat direset dengan tombol <strong className="font-black text-[#1a0800]">[Reset Kondisi]</strong>.</li>
-                      <li><strong className="font-black text-[#1a0800]">Sinkronisasi Guru &amp; Hardware:</strong> Setiap misi yang tuntas langsung terkirim ke Dashboard Guru (5 poin per misi, total 100 poin) dan opsional terhubung ke diorama fisik ESP32.</li>
+                      <li><strong className="font-black text-[#1a0800]">Sinkronisasi Guru &amp; Hardware:</strong> Setiap misi yang tuntas langsung terkirim ke Dashboard Guru ({POIN_PER_MISI} poin per misi, total 100 poin) dan opsional terhubung ke diorama fisik ESP32.</li>
                     </ul>
                   </div>
                 </div>

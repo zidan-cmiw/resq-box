@@ -18,6 +18,11 @@ export interface TutorialTourConfig {
   steps: TutorialStep[];
 }
 
+// Jumlah misi dan poin per misi diambil dari datanya, TIDAK ditulis tetap di
+// dalam teks. Teks panduan yang menyebut angkanya langsung akan berbohong begitu
+// jumlah misi berubah - dan tidak ada error yang menandainya.
+import { TOTAL_MISSIONS, POIN_PER_MISI } from '../../missions/data/missions';
+
 // ── LOCAL STORAGE PERSISTENCE HELPERS ──
 const STORAGE_PREFIX = 'resqbox_tour_completed_';
 
@@ -136,7 +141,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'STRATEGI BELAJAR',
         placement: 'center',
         content:
-          'Petualangan belajarmu dirancang dalam 3 Tahap Berjenjang:\n\n• Tahap 1 (Earth Explorer): Menjelajahi 8 area geologis interior bumi & memecahkan tebak kata Wordle Sains bersama Bu Tyas\n• Tahap 2 (Disaster Analyst): Menuntaskan 6 pos mitigasi lereng Merapi & menjawab kuis Teka-Teki Silang (TTS Mitigasi).\n• Tahap 3 (Simulation Game): Menyelesaikan 20 misi simulasi penyelamatan bencana di lab mitigasi & mengamati dampaknya pada model 3D lereng Merapi.\n\nSemua skor dan progres belajarmu akan otomatis tersimpan ke Rapor Posko Gurumu!',
+          'Petualangan belajarmu dirancang dalam 3 Tahap Berjenjang:\n\n• Tahap 1 (Earth Explorer): Menjelajahi 8 area geologis interior bumi & memecahkan tebak kata Wordle Sains bersama Bu Tyas\n• Tahap 2 (Disaster Analyst): Menuntaskan 6 pos mitigasi lereng Merapi & menjawab kuis Teka-Teki Silang (TTS Mitigasi).\n• Tahap 3 (Simulation Game): Menyelesaikan ' + TOTAL_MISSIONS + ' misi simulasi penyelamatan bencana di lab mitigasi & mengamati dampaknya pada model 3D lereng Merapi.\n\nSemua skor dan progres belajarmu akan otomatis tersimpan ke Rapor Posko Gurumu!',
       },
       {
         id: 'dash_level1',
@@ -401,11 +406,11 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
       },
       {
         id: 'l3_sectors',
-        title: '20 Misi Studi Kasus Bertingkat',
+        title: TOTAL_MISSIONS + ' Misi Studi Kasus Bertingkat',
         badge: 'SEKTOR MISI',
         placement: 'center',
         content:
-          'Terdapat 20 Misi Studi Kasus dalam 4 sektor pembelajaran mitigasi:\n• Sektor 1: Pengenalan Peringatan Dini (EWS) & Deteksi Tanda Bahaya Bencana\n• Sektor 2: Kesiapsiagaan Gempa Bumi (Ringan, Sedang, Kuat)\n• Sektor 3: Mitigasi Erupsi Efusif (Lelehan Lava & Alur Awan Panas)\n• Sektor 4: Mitigasi Erupsi Eksplosif (Awan Panas) & Tantangan Terpadu Penyelamatan.',
+          'Terdapat ' + TOTAL_MISSIONS + ' Misi Studi Kasus dalam 4 sektor pembelajaran mitigasi:\n• Sektor 1: Pengenalan Peringatan Dini (EWS) & Deteksi Tanda Bahaya Bencana\n• Sektor 2: Kesiapsiagaan Gempa Bumi (Ringan, Sedang, Kuat)\n• Sektor 3: Mitigasi Erupsi Efusif (Lelehan Lava & Alur Awan Panas)\n• Sektor 4: Mitigasi Erupsi Eksplosif (Awan Panas) & Tantangan Terpadu Penyelamatan.',
       },
       {
         id: 'l3_blockly',
@@ -430,7 +435,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         targetSelector: '#tour-level3-my-projects',
         placement: 'bottom',
         content:
-          'Kuk-kuuk! Selain 20 misi skenario terstruktur, kamu juga bisa bereksperimen secara bebas lewat tombol [PROYEK SAYA] ini!\n\nDi Ruang Eksperimen Bebas ini, kamu bisa:\n• Merancang skenario penyelamatan bencana alam kreasimu sendiri tanpa batasan misi.\n• Mencoba berbagai kombinasi tanda bahaya gempa/gunung api, lampu status siaga, dan sirine peringatan dini.\n• Menyimpan hasil karyamu dan membukanya kembali kapan saja!',
+          'Kuk-kuuk! Selain ' + TOTAL_MISSIONS + ' misi skenario terstruktur, kamu juga bisa bereksperimen secara bebas lewat tombol [PROYEK SAYA] ini!\n\nDi Ruang Eksperimen Bebas ini, kamu bisa:\n• Merancang skenario penyelamatan bencana alam kreasimu sendiri tanpa batasan misi.\n• Mencoba berbagai kombinasi tanda bahaya gempa/gunung api, lampu status siaga, dan sirine peringatan dini.\n• Menyimpan hasil karyamu dan membukanya kembali kapan saja!',
         actionHint: 'Klik tombol "PROYEK SAYA" di sudut kanan atas untuk membuat dan mengelola karya eksperimen sainsmu!',
       },
       {
@@ -439,7 +444,7 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'TERHUBUNG POSKO',
         placement: 'center',
         content:
-          'Setiap misi yang tuntas otomatis menyumbang 5 poin (total 100 poin penuh) ke Rapor Belajarmu di Posko Guru. Lab simulasi ini juga dapat terhubung langsung ke alat peraga kotak diorama fisik RESQ-BOX!',
+          'Setiap misi yang tuntas otomatis menyumbang ' + POIN_PER_MISI + ' poin (total 100 poin penuh) ke Rapor Belajarmu di Posko Guru. Lab simulasi ini juga dapat terhubung langsung ke alat peraga kotak diorama fisik RESQ-BOX!',
         actionHint: 'Pilih misi pertama dan buktikan rencana penyelamatan bencanamu!',
       },
     ],

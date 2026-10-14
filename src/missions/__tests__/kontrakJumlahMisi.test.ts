@@ -76,13 +76,14 @@ const POLA_MENGHITUNG: { nama: string; pola: RegExp }[] = [
 /**
  * Berkas yang MASIH menyebut jumlah misi di teks deskriptif.
  *
- * Daftar ini WAJIB menyusut. Uji di bawah menolak berkas yang sudah bersih
- * tetapi masih terdaftar, dan menolak berkas baru yang menyebut angkanya.
+ * SUDAH KOSONG: seluruh teks deskriptif kini mengambil angkanya dari
+ * `TOTAL_MISSIONS` dan `POIN_PER_MISI`, sehingga tidak bisa basi.
+ *
+ * Daftar ini sengaja tetap dipertahankan - kalau kelak ada teks baru yang
+ * menuliskan angkanya langsung, uji di bawah akan langsung gagal dan berkas itu
+ * harus ditambahkan ke sini (dan sebaiknya diperbaiki, bukan didaftarkan).
  */
-const MASIH_MENYEBUT: string[] = [
-  'app/Dashboard/index.tsx',
-  'components/Tutorial/tutorialConfig.ts',
-];
+const MASIH_MENYEBUT: string[] = [];
 
 describe('jumlah misi — sumber tunggalnya benar', () => {
   test('TOTAL_MISSIONS sama dengan jumlah misi yang sebenarnya', () => {
