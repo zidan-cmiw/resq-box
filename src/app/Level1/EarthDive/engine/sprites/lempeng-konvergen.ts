@@ -19,13 +19,7 @@ export function getOceanicSubductingSlabTopY(x: number, p: number): number {
   const seafloorY = 350;
   // Palung laut adalah struktur jurang geologis dalam yang stabil (kedalaman 485 .. 510) tanpa deformasi melar kendur
   const trenchDepth = Math.round(485 + normP * 25);
-  // Kemiringan penunjaman. Sebelumnya 0,70 (~35°), tetapi ujungnya sampai di
-  // y sekitar 836 - terpotong dasar layar permainan. Dari tangkapan layar pemilik
-  // proyek: permukaan laut di y=350 dan jendela pandang menyisakan sekitar 460 px
-  // ke bawah, jadi batasnya y sekitar 810. Dengan 0,55 ujungnya berhenti di
-  // y sekitar 777 sehingga penunjamannya terlihat UTUH. Dijaga oleh
-  // __tests__/konvergenTampak.test.ts
-  const targetSlope = 0.55; // Kemiringan sudut penunjaman ~29°
+  const targetSlope = 0.70; // Kemiringan sudut penunjaman ~35°
 
   if (x <= flexStart) {
     return seafloorY;
@@ -295,17 +289,9 @@ export function renderConvergentLandMode(
   // 3. Tekstur, warna gradien, arus konveksi, dan gelembung pijar 100% SAMA PERSIS dan MENYATU
   // 4. Bebas garis pembatas/sekat seolah satu fluida magma cair murni
   // ══════════════════════════════════════════════════════════════════════
-  // Lapisan mantel & magma TIDAK digambar pada kondisi DARATAN.
-  //
-  // Koreksi dosen: tumbukan dua lempeng BENUA tidak menghasilkan subduksi, jadi
-  // penampangnya cukup memperlihatkan kerak yang terlipat menjadi pegunungan -
-  // tanpa lapisan mantel dan tanpa kantung magma di perut gunungnya.
-  const GAMBAR_MANTEL_KONVERGEN = false;
-
   ctx.save();
-  if (GAMBAR_MANTEL_KONVERGEN) {
-    ctx.beginPath();
-    ctx.moveTo(-800, h);
+  ctx.beginPath();
+  ctx.moveTo(-800, h);
   ctx.lineTo(-800, getConvergentMantleY(-800, p, 'land'));
   for (let mx = -800; mx <= w + 400; mx += 3) {
     ctx.lineTo(mx, getConvergentMantleY(mx, p, 'land'));
@@ -369,7 +355,6 @@ export function renderConvergentLandMode(
   ctx.stroke();
 
   ctx.restore();
-  }
 
   // ══════════════════════════════════════════════════════════════════════
   // LAYER 2: LAPISAN TANAH & BATUAN PADAT LITOSFER BAWAH (SOLID KONTINU)
@@ -491,24 +476,6 @@ export function renderConvergentLandMode(
   ctx.stroke();
   ctx.restore();
 
-  // Tubuh pegunungan digambar PADAT, menutup rongga tempat kantung magma dulu
-  // berada. Tanpa ini, melewati Layer 1 meninggalkan LUBANG HITAM di perut
-  // gunung - sudah dibuktikan lewat pemotretan halaman uji pada putaran lalu.
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(-800, h);
-  for (let x = -800; x <= w + 400; x += 4) {
-    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
-  }
-  ctx.lineTo(w + 400, h);
-  ctx.closePath();
-  const batuanPadatGrad = ctx.createLinearGradient(0, 220, 0, h);
-  batuanPadatGrad.addColorStop(0, '#57534e');
-  batuanPadatGrad.addColorStop(1, '#292524');
-  ctx.fillStyle = batuanPadatGrad;
-  ctx.fill();
-  ctx.restore();
-
   // ══════════════════════════════════════════════════════════════════════
   // LAYER 5: LEMPENG BENUA KIRI (SLAB SUBDUKSI - Z-INDEX LEBIH TINGGI)
   // - Dirender SETELAH lempeng kanan dan gunung, sehingga lempeng kiri berada di atas
@@ -521,19 +488,14 @@ export function renderConvergentLandMode(
   const slabReachX = contactX + 260 + Math.round(p * 45);
 
   // 5A. Tubuh Lempeng Benua Kiri (Batuan Granit, Sedimen & Batuan Dasar Menunjam)
-  // Lempeng kiri TIDAK lagi menukik ke bawah. Koreksi dosen: tumbukan dua
-  // lempeng BENUA tidak menghasilkan subduksi, jadi tidak ada lempeng yang
-  // menunjam. Sebelumnya bentuknya mengikuti getSubductingPlateTopY yang turun
-  // curam. Sekarang mengikuti PERMUKAAN TANAH dengan tebal tetap, sehingga
-  // lempengnya hanya terlipat naik mengikuti pegunungan.
   ctx.beginPath();
   ctx.moveTo(-800, baseY);
   for (let x = -800; x <= slabReachX; x += 4) {
-    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+    ctx.lineTo(x, getSubductingPlateTopY(x, p));
   }
-  ctx.lineTo(slabReachX, getConvergentTerrainElevation(slabReachX, p, 'land') + plateThick);
+  ctx.lineTo(slabReachX, getSubductingPlateTopY(slabReachX, p) + plateThick);
   for (let x = slabReachX; x >= -800; x -= 4) {
-    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land') + plateThick);
+    ctx.lineTo(x, getSubductingPlateTopY(x, p) + plateThick);
   }
   ctx.closePath();
 
