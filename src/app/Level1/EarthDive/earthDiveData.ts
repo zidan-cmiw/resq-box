@@ -803,6 +803,26 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
   },
 };
 
+
+// ══════════════════════════════════════════════════════════════════════════
+// SATU MATERI, SATU SUMBER.
+//
+// Sebagian materi punya DUA salinan: satu di EARTH_STRATA_DATA dan satu di
+// ALL_DISCOVERY_CATALOG. Salinan itu bisa MENYIMPANG satu sama lain - dan itu
+// pernah terjadi: perbaikan rantai medan magnet pada materi inti luar sempat
+// hanya masuk ke salinan strata, sehingga materi yang benar-benar dibaca siswa
+// tidak ikut berubah. Bug seperti itu tidak menimbulkan pesan kesalahan apa pun.
+//
+// Karena kataloglah yang ditampilkan ke siswa, katalog dijadikan SATU SUMBER
+// KEBENARAN: setiap salinan pada strata yang punya pasangan di katalog
+// disamakan dengan pasangannya.
+// ══════════════════════════════════════════════════════════════════════════
+for (const strata of EARTH_STRATA_DATA) {
+  const salinan = strata?.discovery;
+  if (!salinan) continue;
+  const asli = Object.values(ALL_DISCOVERY_CATALOG).find((v) => v.discovery.id === salinan.id);
+  if (asli) strata.discovery = asli.discovery;
+}
 export function getDiscoveryItem(discoveryId: number | string): { discovery: DiscoveryPoint; strata: EarthStrata } {
   const numId = typeof discoveryId === 'number' ? discoveryId : parseInt(String(discoveryId), 10);
   if (!isNaN(numId) && ALL_DISCOVERY_CATALOG[numId]) {
