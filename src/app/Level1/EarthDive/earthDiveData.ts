@@ -253,7 +253,7 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-inti-luar',
       title: 'Lautan Logam Meleleh pada Suhu 5.000°C',
       shortDesc:
-        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang meleleh karena panas ekstrem. Perputaran aliran logam cair ini membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron dari atomnya, atau disebut ionisasi. Lepasnya elektron membuat muncul arus listrik yang mengalir di dalam inti luar. Arus listrik inilah yang akhirnya menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
+        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang MELEBUR karena panas ekstrem. LELEHAN logam panas itulah yang mengalir dan berputar. Perputaran aliran logam cair ini membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron dari atomnya, atau disebut ionisasi. Lepasnya elektron membuat muncul arus listrik yang mengalir di dalam inti luar. Arus listrik inilah yang akhirnya menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
       fact: 'Suhu 5.000°C di inti luar jauh melampaui titik leleh logam besi dan nikel! Akibatnya, inti luar bukanlah batuan padat seperti kerak atau mantel, melainkan logam cair yang terus berputar. Perputaran itu membuat atom besi dan nikel bergesekan, lalu terionisasi dan menimbulkan arus listrik. Barulah dari arus listrik itu terbentuk medan magnet bumi.',
       iconName: 'shield',
       imageSrc: '/images/geology/outer_core.jpg',
@@ -632,9 +632,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-inti-luar',
       title: 'Inti Luar: Lautan Logam Cair',
       shortDesc:
-        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang meleleh karena panas ekstrem. Perputaran aliran logam cair ini menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
+        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang MELEBUR karena panas ekstrem. LELEHAN logam panas itulah yang mengalir dan berputar. Perputaran aliran logam cair ini membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron dari atomnya, atau disebut ionisasi. Lepasnya elektron membuat muncul arus listrik yang mengalir di dalam inti luar. Arus listrik inilah yang akhirnya menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
       fact:
-        'Suhu 5.000°C di inti luar jauh melampaui titik leleh logam besi dan nikel! Akibatnya, inti luar bukanlah batuan padat seperti kerak atau mantel, melainkan logam cair meleleh yang terus berputar membentuk medan magnet bumi.',
+        'Suhu 5.000°C di inti luar jauh melampaui titik LEBUR logam besi dan nikel! Akibatnya, inti luar bukanlah batuan padat seperti kerak atau mantel, melainkan logam cair yang MELEBUR dan terus berputar. Perputaran itu membuat atom besi dan nikel bergesekan, lalu terionisasi dan menimbulkan arus listrik. Barulah dari arus listrik itu terbentuk medan magnet bumi.',
       iconName: 'shield',
       imageSrc: '/images/geology/outer_core.jpg',
       illustrationType: 'molten-metal',
@@ -648,7 +648,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-geodynamo',
       title: 'Medan Magnet Pelindung Bumi',
       shortDesc:
-        'Terletak di lapisan inti luar pada kedalaman 2.900–5.150 km dengan suhu 4.000°C–5.000°C. Perputaran aliran logam cair membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron (ionisasi), sehingga muncul arus listrik yang terus mengalir. Arus listrik inilah yang bekerja seperti dinamo raksasa dan menghasilkan medan magnet pelindung yang menjaga bumi dari badai radiasi matahari. Jadi urutannya: atom bergesekan, terionisasi, timbul arus listrik, barulah muncul medan magnet.',
+        'Terletak di lapisan inti luar pada kedalaman 2.900–5.150 km dengan suhu 4.000°C–5.000°C. Perputaran aliran logam cair membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron (ionisasi), sehingga muncul arus listrik yang terus mengalir. Arus listrik inilah yang bekerja seperti dinamo raksasa dan menghasilkan medan magnet pelindung yang menjaga bumi dari badai radiasi matahari. Jadi urutannya: atom bergesekan, terionisasi, timbul arus listrik, barulah muncul medan magnet. Cara kerja inti luar yang menyerupai dinamo ini disebut GEODYNAMO. Buktinya bisa kita lihat pada KOMPAS: jarum kompas selalu menunjuk ke arah KUTUB utara dan KUTUB selatan bumi.',
       fact:
         'Ingat urutannya: atom besi dan nikel bergesekan, terjadi ionisasi, muncul arus listrik, barulah terbentuk medan magnet. Medan magnet ini menjadi perisai utama bumi! Perisai ini membelokkan radiasi berbahaya dari badai matahari sehingga kehidupan di bumi tetap terlindungi dengan aman.',
       iconName: 'shield',
