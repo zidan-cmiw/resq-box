@@ -8,27 +8,33 @@
 
 import { TILE } from './konstanta';
 import type { ZoneConfig } from '../zones';
-import { getConvergentTerrainElevation, getSubductingPlateTopY, getConvergentMantleY } from '../zones';
+import {
+  getConvergentTerrainElevation,
+  getConvergentLandSurfaceY,
+  getSubductingPlateTopY,
+  getConvergentMantleY,
+} from '../zones';
 import { drawPineTree } from './tumbuhan';
 
-// Elevasi permukaan atas lempeng samudra yang menunjam ke bawah lempeng benua (Slab Subduksi Mulus Kontinu & Rigid)
-// CATATAN PENTING (jendela pandangan permainan):
-// Kamera area konvergen selalu terkunci di y = 0 dan tinggi pandangan hanya
-// 480 px (15 baris x 32 px) — jadi hanya dunia y = 0..480 yang benar-benar
-// terlihat pemain. Dulu palung berada di y = 485..510 sehingga SELURUH zona
-// subduksi (palung + lempeng yang menunjam) berada di bawah tepi layar dan
-// tidak pernah terlihat di dalam permainan. Seluruh geometri dasar laut
-// dinaikkan lewat OCEAN_CRUST_LIFT_Y supaya palung (355) dan slab yang
-// menunjam masuk ke dalam pandangan.
-const OCEAN_CRUST_LIFT_Y = 100;
+// ══════════════════════════════════════════════════════════════════════════
+// GEOMETRI DASAR LAUT — NILAI ASLI, TIDAK ADA PENGGESERAN GLOBAL
+//
+// Dulu seluruh geometri dinaikkan 100 px lewat OCEAN_CRUST_LIFT_Y supaya
+// palung masuk ke pandangan. Cara itu SALAH karena ikut mengangkat kolom air,
+// paparan benua, dan seluruh pemandangan. Penggeser itu sudah DIHAPUS TOTAL.
+//
+// Permukaan laut (300), dasar laut (350), palung (485..510), dan paparan benua
+// kini kembali persis ke nilai semula. Yang membuat palung terlihat adalah
+// LOGIKA KAMERA di renderer.ts (OCEAN_CAMERA_Y), bukan penggeseran gambar.
+// ══════════════════════════════════════════════════════════════════════════
 
 export function getOceanicSubductingSlabTopY(x: number, p: number): number {
   const normP = Math.max(0, Math.min(1, p));
   const flexStart = 190 + Math.round(normP * 25);
   const trenchX = 370 + Math.round(normP * 12);
-  const seafloorY = 350 - OCEAN_CRUST_LIFT_Y;
+  const seafloorY = 350;
   // Palung laut adalah struktur jurang geologis dalam yang stabil tanpa deformasi melar kendur
-  const trenchDepth = Math.round(485 + normP * 25) - OCEAN_CRUST_LIFT_Y;
+  const trenchDepth = Math.round(485 + normP * 25);
   const targetSlope = 0.70; // Kemiringan sudut penunjaman ~35°
 
   if (x <= flexStart) {
@@ -58,8 +64,8 @@ export function getOceanicSlabSlope(x: number, p: number): number {
   const normP = Math.max(0, Math.min(1, p));
   const flexStart = 190 + Math.round(normP * 25);
   const trenchX = 370 + Math.round(normP * 12);
-  const seafloorY = 350 - OCEAN_CRUST_LIFT_Y;
-  const trenchDepth = Math.round(485 + normP * 25) - OCEAN_CRUST_LIFT_Y;
+  const seafloorY = 350;
+  const trenchDepth = Math.round(485 + normP * 25);
   const targetSlope = 0.70;
 
   if (x <= flexStart) {
@@ -84,7 +90,7 @@ export function getOceanicSlabSlope(x: number, p: number): number {
 export function getConvergentSeafloorProfile(x: number, p: number): number {
   const normP = Math.max(0, Math.min(1, p));
   const trenchX = 370 + Math.round(normP * 12);
-  const trenchDepth = Math.round(485 + normP * 25) - OCEAN_CRUST_LIFT_Y;
+  const trenchDepth = Math.round(485 + normP * 25);
   const coastX = 580;
   const seaLevelY = 300;
 
@@ -107,6 +113,46 @@ export function getConvergentSeafloorProfile(x: number, p: number): number {
 
   // Di daratan pantai lempeng benua (x > coastX)
   return getConvergentTerrainElevation(x, normP, 'ocean');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// WARNA & TEKSTUR TANAH MODE DARATAN (SATU WARNA COKELAT RATA)
+//
+// Permintaan pemilik proyek: "tekstur tanahnya kamu samain semua deh".
+// Sebelumnya badan tanah memakai EMPAT gradien berbeda (lapisan bawah
+// #382b21→#1b130e, lempeng kanan #4a3f35→#1c1510, tubuh gunung #4a3f35→#2a1f16,
+// lempeng kiri #4a3f35→#1c1510) sehingga terlihat gelap-terang yang mencolok
+// dan seperti ada beberapa lapisan berbeda. Sekarang SEMUA permukaan tanah
+// memakai satu warna ini, dengan tekstur butir halus yang seragam.
+// ══════════════════════════════════════════════════════════════════════════
+const TANAH_COKLAT = '#4a3c2e';
+
+/**
+ * Butiran tanah halus yang SERAGAM (bukan gradien, bukan garis strata besar).
+ *
+ * Memakai fungsi hash dari koordinat, jadi tidak butuh Math.random() dan
+ * hasilnya sama persis di setiap frame (tidak berkedip). Hanya digambar di
+ * dalam daerah yang sedang di-clip, dan tiap pemanggil memakai seed berbeda
+ * supaya butirannya tidak bertumpuk dua kali di area yang saling menutupi.
+ */
+function gambarButirTanah(
+  ctx: CanvasRenderingContext2D,
+  x0: number,
+  x1: number,
+  y0: number,
+  y1: number,
+  seed: number,
+): void {
+  for (let by = y0; by < y1; by += 5) {
+    for (let bx = x0; bx < x1; bx += 5) {
+      const h = ((bx * 73856093) ^ (by * 19349663) ^ (seed * 83492791)) >>> 0;
+      if (h % 7 !== 0) continue;
+      ctx.fillStyle = h % 2 === 0 ? 'rgba(116, 95, 73, 0.22)' : 'rgba(44, 34, 24, 0.22)';
+      const gx = bx + (h % 4);
+      const gy = by + ((h >>> 3) % 4);
+      ctx.fillRect(gx, gy, 1.5, 1.5);
+    }
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -286,24 +332,18 @@ export function renderConvergentLandMode(
   const plateThick = 95;
   const mountainPeakX = contactX + 200;
   const mountainEndX = contactX + 460;
-  const mountainLift = p * 155;
 
   // Geometri Dapur Magma di dalam Gunung yang Terbentuk saat Konvergen Tabrakan Benua
   const chamberApexX = mountainPeakX;
 
-  // Permukaan lempeng benua kiri pada mode daratan.
+  // Permukaan kerak benua pada mode daratan.
   //
-  // FIX: sebelumnya permukaan lempeng kiri memakai getSubductingPlateTopY() yang
-  // MELENGKUNG TURUN ke bawah (kurva subduksi). Karena Layer 5 digambar paling
-  // akhir (paling atas), lengkungan itu masih tampak sebagai "penunjaman" di
-  // sekitar titik tumbukan, padahal tumbukan dua lempeng BENUA tidak menunjam.
-  // Sekarang kerak kiri mengikuti lengkungan lipatan naik yang SAMA dengan
-  // lempeng kanan (getConvergentTerrainElevation) dan menyatu tepat di
-  // contactX, sehingga hanya terlihat kerak yang terlipat naik tanpa subduksi.
-  const getLeftPlateSurfaceY = (px: number): number => {
-    if (px <= contactX) return baseY;
-    return getConvergentTerrainElevation(px, p, 'land');
-  };
+  // FIX (bentuk V / baji turun): permukaan ini WAJIB memakai fungsi yang SAMA
+  // dengan yang dipakai fisika dan gunung, yaitu getConvergentLandSurfaceY().
+  // Sebelumnya memakai getSubductingPlateTopY() yang melengkung TURUN
+  // (subduksi) sementara sisi gunung naik — pertemuan keduanya itulah siku
+  // tajam berarah ke bawah di titik tumbukan.
+  const getLeftPlateSurfaceY = (px: number): number => getConvergentLandSurfaceY(px, p);
 
   // ══════════════════════════════════════════════════════════════════════
   // LAYER 1: LAPISAN MANTEL BUMI & MAGMA TERPADU (UNIFIED ASTHENOSPHERE & MAGMA DOME)
@@ -403,7 +443,7 @@ export function renderConvergentLandMode(
   // ══════════════════════════════════════════════════════════════════════
   ctx.save();
   const getPlateBottomY = (px: number) => {
-    return px <= contactX ? (getSubductingPlateTopY(px, p) + plateThick) : (baseY + plateThick);
+    return px <= contactX ? (getLeftPlateSurfaceY(px) + plateThick) : (getConvergentLandSurfaceY(px, p) + plateThick);
   };
 
   ctx.beginPath();
@@ -422,29 +462,15 @@ export function renderConvergentLandMode(
   }
   ctx.closePath();
 
-  const subGroundGrad = ctx.createLinearGradient(0, baseY + plateThick, 0, 424);
-  subGroundGrad.addColorStop(0, '#382b21');  // Batuan kerak benua padat
-  subGroundGrad.addColorStop(0.5, '#281e16'); // Litosfer padat berkompresi tinggi
-  subGroundGrad.addColorStop(1, '#1b130e');  // Dasar kontak termal mantel
-  ctx.fillStyle = subGroundGrad;
+  // Satu warna cokelat rata (dulu gradien #382b21 → #1b130e yang gelap-terang)
+  ctx.fillStyle = TANAH_COKLAT;
   ctx.fill();
 
-  // Clip agar tekstur strata batuan hanya berada di dalam litosfer padat
+  // Clip agar tekstur butiran hanya berada di dalam litosfer padat
   ctx.clip();
 
-  // Tekstur strata batuan horizontal lembut (hanya di zona litosfer, aman di atas mantel)
-  for (let gy = baseY + plateThick + 3; gy < 424; gy += 7) {
-    const isEven = Math.floor(gy / 7) % 2 === 0;
-    ctx.strokeStyle = isEven ? 'rgba(78, 62, 50, 0.35)' : 'rgba(38, 28, 21, 0.40)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(-800, gy);
-    for (let x = -800; x <= w + 400; x += 24) {
-      const wave = Math.sin(x * 0.035 + gy * 0.08) * 2.0;
-      ctx.lineTo(x, gy + wave);
-    }
-    ctx.stroke();
-  }
+  // Butiran tanah halus yang seragam (dulu: garis strata melengkung besar)
+  gambarButirTanah(ctx, -800, w + 400, baseY + plateThick - 60, 440, 11);
   ctx.restore();
 
   // ══════════════════════════════════════════════════════════════════════
@@ -454,9 +480,9 @@ export function renderConvergentLandMode(
   // ══════════════════════════════════════════════════════════════════════
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(contactX, getSubductingPlateTopY(contactX, p));
+  ctx.moveTo(contactX, getConvergentLandSurfaceY(contactX, p));
   for (let x = contactX; x <= w + 400; x += 4) {
-    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+    ctx.lineTo(x, getConvergentLandSurfaceY(x, p));
   }
   ctx.lineTo(w + 400, baseY + plateThick);
   for (let x = w + 400; x >= contactX; x -= 4) {
@@ -465,41 +491,33 @@ export function renderConvergentLandMode(
   }
   ctx.closePath();
 
-  // Gradien kerak benua yang SAMA PERSIS dengan lempeng kiri (tebal 95px)
-  const rightPlateGrad = ctx.createLinearGradient(0, baseY - mountainLift, 0, baseY + plateThick);
-  rightPlateGrad.addColorStop(0, '#4a3f35');   // Sedimen atas
-  rightPlateGrad.addColorStop(0.35, '#3a3028'); // Granit menengah
-  rightPlateGrad.addColorStop(0.70, '#29211a'); // Granit dalam
-  rightPlateGrad.addColorStop(1, '#1c1510');    // Batuan dasar mafik
-  ctx.fillStyle = rightPlateGrad;
+  // Satu warna cokelat rata — SAMA dengan lempeng kiri dan seluruh badan tanah
+  ctx.fillStyle = TANAH_COKLAT;
   ctx.fill();
 
-  // Garis Lipatan Tektonik Antiklinal Alami yang Mulus Menyatukan Gunung & Dataran (5 lipatan)
-  for (let f = 1; f <= 5; f++) {
-    const fOffset = f * 17;
-    ctx.strokeStyle = (f % 2 === 0) ? 'rgba(87, 72, 61, 0.40)' : 'rgba(53, 44, 37, 0.35)';
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    for (let x = contactX; x <= w + 400; x += 8) {
-      const elev = getConvergentTerrainElevation(x, p, 'land');
-      const sy = elev + fOffset;
-      if (sy < baseY + plateThick + 4) {
-        if (x === contactX) ctx.moveTo(x, sy);
-        else ctx.lineTo(x, sy);
-      }
-    }
-    ctx.stroke();
-  }
+  // Garis Lipatan Tektonik Antiklinal (5 lipatan) DIHAPUS.
+  // Garis-garis itu melengkung mengikuti punggungan dan pangkal gunung sehingga
+  // terbaca sebagai "strata melengkung besar yang terlihat seperti eror"
+  // (keluhan pemilik proyek). Tekstur sekarang hanya butiran halus seragam.
+  ctx.save();
+  ctx.clip();
+  gambarButirTanah(ctx, contactX, w + 400, 120, baseY + plateThick, 23);
+  ctx.restore();
+  ctx.restore();
 
   // Rumput Hijau Subur pada Permukaan Lempeng Kanan & Lereng Gunung
+  // (dibungkus save/restore SENDIRI agar jumlah save/restore tetap seimbang:
+  //  Layer 3 membuka satu save di atas, jadi penggambaran tambahan di sini
+  //  tidak boleh menumpang state itu.)
+  ctx.save();
   ctx.beginPath();
-  ctx.moveTo(contactX, getSubductingPlateTopY(contactX, p));
+  ctx.moveTo(contactX, getConvergentLandSurfaceY(contactX, p));
   for (let x = contactX; x <= w + 400; x += 4) {
-    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+    ctx.lineTo(x, getConvergentLandSurfaceY(x, p));
   }
   ctx.lineTo(w + 400, baseY + 4);
   for (let x = w + 400; x >= contactX; x -= 4) {
-    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land') + 4);
+    ctx.lineTo(x, getConvergentLandSurfaceY(x, p) + 4);
   }
   ctx.closePath();
   ctx.fillStyle = '#15803d';
@@ -508,9 +526,9 @@ export function renderConvergentLandMode(
   ctx.strokeStyle = '#22c55e';
   ctx.lineWidth = 2.0;
   ctx.beginPath();
-  ctx.moveTo(contactX, getSubductingPlateTopY(contactX, p));
+  ctx.moveTo(contactX, getConvergentLandSurfaceY(contactX, p));
   for (let x = contactX; x <= w + 400; x += 4) {
-    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+    ctx.lineTo(x, getConvergentLandSurfaceY(x, p));
   }
   ctx.stroke();
   ctx.restore();
@@ -521,19 +539,20 @@ export function renderConvergentLandMode(
   ctx.beginPath();
   ctx.moveTo(-800, h);
   for (let x = -800; x <= w + 400; x += 4) {
-    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+    ctx.lineTo(x, getConvergentLandSurfaceY(x, p));
   }
   ctx.lineTo(w + 400, h);
   ctx.closePath();
-  // Gradien batuan padat Satu Keluarga Coklat (tanpa bercak kelabu):
-  // Sebelumnya memakai #57534e → #292524 yang terbaca abu-abu/kelabu pada
-  // badan tanah sehingga terlihat "ada abu-abunya" di tengah coklat.
-  const batuanPadatGrad = ctx.createLinearGradient(0, 220, 0, h);
-  batuanPadatGrad.addColorStop(0, '#4a3f35');
-  batuanPadatGrad.addColorStop(0.40, '#3a2f26');
-  batuanPadatGrad.addColorStop(1, '#2a1f16');
-  ctx.fillStyle = batuanPadatGrad;
+  // Satu warna cokelat rata untuk SELURUH badan tanah (dulu gradien
+  // #4a3f35 → #2a1f16 yang membuat bagian atas terang dan bawah gelap).
+  ctx.fillStyle = TANAH_COKLAT;
   ctx.fill();
+
+  // Butiran tanah halus seragam di badan tanah (pengganti gradien & garis strata)
+  ctx.save();
+  ctx.clip();
+  gambarButirTanah(ctx, -800, w + 400, 240, h, 37);
+  ctx.restore();
   ctx.restore();
 
   // ══════════════════════════════════════════════════════════════════════
@@ -563,36 +582,31 @@ export function renderConvergentLandMode(
   }
   ctx.closePath();
 
-  const leftPlateGrad = ctx.createLinearGradient(0, baseY, 0, baseY + plateThick);
-  leftPlateGrad.addColorStop(0, '#4a3f35');   // Sedimen atas
-  leftPlateGrad.addColorStop(0.35, '#3a3028'); // Granit menengah
-  leftPlateGrad.addColorStop(0.70, '#29211a'); // Granit dalam
-  leftPlateGrad.addColorStop(1, '#1c1510');    // Batuan dasar mafik
-  ctx.fillStyle = leftPlateGrad;
+  // Satu warna cokelat rata — SAMA PERSIS dengan seluruh badan tanah lainnya
+  ctx.fillStyle = TANAH_COKLAT;
   ctx.fill();
 
-  // 5B. Garis Strata Internal Lempeng Kiri (4 lapisan strata tebal mengikuti lipatan kerak)
-  for (let s = 1; s <= 4; s++) {
-    const sOffset = s * 20;
-    ctx.strokeStyle = (s % 2 === 0) ? 'rgba(87, 72, 61, 0.45)' : 'rgba(53, 44, 37, 0.45)';
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    ctx.moveTo(-800, getLeftPlateSurfaceY(-800) + sOffset);
-    for (let x = -800; x <= slabReachX; x += 6) {
-      ctx.lineTo(x, getLeftPlateSurfaceY(x) + sOffset);
-    }
-    ctx.stroke();
-  }
+  // 5B. Garis Strata Internal Lempeng Kiri (4 lapisan strata) DIHAPUS.
+  // Garis-garis itu melengkung mengikuti lipatan kerak sehingga terbaca sebagai
+  // "garis strata melengkung besar" (keluhan pemilik proyek). Sebagai gantinya,
+  // dipakai butiran tanah halus yang seragam.
+  ctx.save();
+  ctx.clip();
+  gambarButirTanah(ctx, -800, slabReachX, baseY - 40, baseY + plateThick + 20, 51);
+  ctx.restore();
 
   // 5B.2 TEKSTUR PERGERAKAN LEMPENG (STRATA BERGESER NYATA MENGIKUTI PERGERAKAN LEMPENG KE KANAN)
   const strataOffset = leftShiftX;
 
-  // Garis kekar / patahan vertikal litosfer yang bergerak meluncur ke kanan
+  // Garis kekar / patahan vertikal litosfer yang bergerak meluncur ke kanan.
+  // DIPERTAHANKAN (tetap halus & searah) karena inilah satu-satunya penanda
+  // bahwa lempeng benar-benar bergerak; garisnya pendek, tipis, dan tidak
+  // melengkung sehingga tidak terbaca sebagai strata besar.
   for (let bx = -800; bx <= slabReachX; bx += 44) {
     const fx = bx + strataOffset;
     if (fx <= slabReachX) {
       const topY = getLeftPlateSurfaceY(fx);
-      ctx.strokeStyle = (Math.floor(bx / 44) % 2 === 0) ? 'rgba(78, 62, 50, 0.28)' : 'rgba(38, 28, 21, 0.24)';
+      ctx.strokeStyle = (Math.floor(bx / 44) % 2 === 0) ? 'rgba(96, 78, 60, 0.30)' : 'rgba(40, 31, 22, 0.26)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(fx, topY + 4);
@@ -602,11 +616,12 @@ export function renderConvergentLandMode(
   }
 
   // Bintik kristal mineral padat yang bergeser dinamis bersama lempeng
-  // (diwarnai coklat/hangat saja supaya badan tanah tetap SATU keluarga coklat)
+  // (diwarnai coklat/hangat saja supaya badan tanah tetap SATU keluarga coklat,
+  //  dan hanya dua tingkat kepekatan supaya tidak terlihat bergradasi)
   for (let i = 0; i < 48; i++) {
     const sx = (((i * 89 + strataOffset) % (contactX + 750)) - 750);
     const sy = baseY + 12 + ((i * 27) % (plateThick - 24));
-    ctx.fillStyle = i % 3 === 0 ? 'rgba(190, 160, 130, 0.45)' : (i % 2 === 0 ? 'rgba(150, 118, 88, 0.42)' : 'rgba(40, 30, 22, 0.45)');
+    ctx.fillStyle = i % 2 === 0 ? 'rgba(126, 104, 80, 0.30)' : 'rgba(44, 34, 24, 0.30)';
     ctx.fillRect(sx, sy, 2, 2);
   }
 
@@ -673,7 +688,7 @@ export function renderConvergentLandMode(
   ];
   for (const px of pineXs) {
     if (px < w + 200) {
-      const treeY = getConvergentTerrainElevation(px, p, 'land');
+      const treeY = getConvergentLandSurfaceY(px, p);
       drawPineTree(ctx, px, treeY, 0.95);
     }
   }
@@ -751,9 +766,9 @@ export function renderConvergentOceanMode(
   // Pergerakan nyata lempeng samudra meluncur maju ke kanan (110 px)
   const oceanicShift = Math.round(p * 110);
   const trenchX = 370 + Math.round(p * 12);
-  // Dinaikkan OCEAN_CRUST_LIFT_Y agar palung & slab penunjaman masuk ke dalam
-  // jendela pandangan permainan (kamera terkunci di y = 0, tinggi pandang 480 px).
-  const trenchDepth = Math.round(485 + p * 25) - OCEAN_CRUST_LIFT_Y;
+  // Kedalaman palung: TIDAK lagi digeser. Nilai ini sama persis dengan
+  // getOceanicSubductingSlabTopY()/getConvergentSeafloorProfile() di atas.
+  const trenchDepth = Math.round(485 + p * 25);
   const slabThick = 75;
   // Slab subduksi menusuk menembus makin jauh & makin dalam ke bawah lempeng benua (p: 0 -> 1)
   const slabReachX = trenchX + 130 + Math.round(p * 260);
@@ -762,23 +777,21 @@ export function renderConvergentOceanMode(
     return x <= coastX ? getConvergentSeafloorProfile(x, p) : getConvergentTerrainElevation(x, p, 'ocean');
   };
 
-  // ══════════════════════════════════════════════════════════════════════
-  // BIDANG KONTAK LEMPENG (MEGATHRUST PLATE INTERFACE) — JENDELA SUBDUKSI
+  // ── BIDANG KONTAK LEMPENG (MEGATHRUST PLATE INTERFACE) ──
   //
-  // Akar masalah yang diperbaiki:
   // 1. Dulu alas SELURUH lapisan kerak benua digambar memanjang tegak sampai
   //    dasar kanvas (selalu memakai getOceanicSubductingSlabTopY). Akibatnya
   //    lempeng samudra yang menunjam TERTIMBUN TOTAL, sehingga penunjaman tidak
-  //    pernah kelihatan.
-  // 2. Dulu palung berada di y = 485..510, sedangkan kamera area konvergen
-  //    selalu terkunci di y = 0 dengan tinggi pandang hanya 480 px — jadi
-  //    seluruh zona subduksi berada di BAWAH tepi layar. Geometri dasar laut
-  //    dinaikkan lewat OCEAN_CRUST_LIFT_Y supaya masuk ke pandangan pemain.
-  //
-  // Sekarang alas kerak benua berhenti pada BIDANG KONTAK yang mencelup ke
-  // dalam palung lalu naik kembali menyusuri paparan benua. Di bawah garis
-  // bidang kontak itu lempeng samudra tetap tergambar, jadi bagian lempeng
-  // yang menunjam terlihat jelas tepat di bawah palung.
+  //    pernah kelihatan. Sekarang alas kerak berhenti di BIDANG KONTAK.
+  // 2. Agar palung + slab yang menunjam masuk ke pandangan, dulu SELURUH
+  //    geometri dasar laut dinaikkan 100 px (OCEAN_CRUST_LIFT_Y). Cara itu
+  //    SALAH: kolom air jadi tipis, paparan benua ikut terangkat, dan seluruh
+  //    pemandangan bergeser. Penggeser itu sudah DIHAPUS, dan pandangan ke
+  //    palung sekarang diperoleh dari LOGIKA KAMERA (OCEAN_CAMERA_Y di
+  //    renderer.ts), bukan dengan menggeser gambar.
+  // 3. Alas kerak benua menyusur tepat di atas atap lempeng samudra (zona
+  //    kopling / underthrusting) sebelum menanjak ke paparan benua, sehingga
+  //    lempeng samudra di bawah palung tidak tertimbun penuh.
   // ══════════════════════════════════════════════════════════════════════
   const interfaceDropX = 46; // Kedalaman celupan bidang kontak ke dalam palung
   const interfaceSpanX = 215; // Panjang lereng bidang kontak naik ke paparan benua
@@ -786,7 +799,13 @@ export function renderConvergentOceanMode(
 
   const getInterfaceRockElevation = (x: number): number => {
     if (x <= trenchX) return trenchDepth;
-    // Alas kerak benua tidak mungkin lebih dalam dari atap lempeng samudra.
+    // Alas kerak benua berhenti pada ATAP LEMPENG SAMUDRA yang menunjam.
+    //
+    // maxDepth = getOceanicSubductingSlabTopY(x, p) adalah atap slab; karena
+    // sumbu Y membesar ke bawah, atap slab bernilai LEBIH KECIL daripada dasar
+    // palung. Math.min(y, maxDepth) karena itu berarti: alas kerak mengikuti
+    // atap slab (kerak benua menindih lempeng samudra) dan tidak pernah turun
+    // lebih dalam daripada lantai samudra. Inilah batas yang benar.
     const maxDepth = getOceanicSubductingSlabTopY(x, p);
     let y: number;
     if (x <= interfaceEndX) {
@@ -812,7 +831,7 @@ export function renderConvergentOceanMode(
   // Batuan litosfer mafik padat, dingin, dan stabil mengisi bagian bawah kanvas.
   // ══════════════════════════════════════════════════════════════════════
   ctx.save();
-  const deepLithoTopY = 390 - OCEAN_CRUST_LIFT_Y;
+  const deepLithoTopY = 390;
   const deepLithoGrad = ctx.createLinearGradient(0, deepLithoTopY, 0, h);
   deepLithoGrad.addColorStop(0, '#1c1917');
   deepLithoGrad.addColorStop(0.35, '#12100e');
@@ -871,10 +890,19 @@ export function renderConvergentOceanMode(
   ctx.fillStyle = '#18181b';
   ctx.fillRect(trenchX - 20, 0, w + 1000, h);
 
-  // Jalur satu lapisan strata benua: permukaan atas menuruni lereng benua,
-  // lalu KEMBALI menyusuri bidang kontak (bukan tegak ke bawah). Dengan begitu
-  // lapisan terdalampun berhenti di bidang kontak dan lempeng samudra yang
-  // menunjam tetap terlihat pada "jendela subduksi" di bawah dasar palung.
+  // Jalur satu lapisan strata benua.
+  //
+  // FIX PENTING (akar artefak "bidang kerak menembus permukaan laut"):
+  // Sebelumnya batas BAWAH band memakai getInterfaceRockElevation(bx) + offset.
+  // Karena sumbu Y membesar KE BAWAH, menambahkan offset justru MENGANGKAT batas
+  // bawah itu — sehingga alas kerak benua naik lebih tinggi daripada permukaan
+  // laut (mis. alas 391 − 102 = 289, padahal permukaan laut 300). Akibatnya
+  // lapisan diorit/granit/serpih MUNCUL ke permukaan air sebagai bidang pucat
+  // raksasa di sebelah timur palung, menutupi air dan paparan benua.
+  //
+  // Yang benar: offset ditambahkan pada batas ATAS dan DIKURANGKAN pada batas
+  // bawah, sehingga setiap lapisan yang lebih dalam tetap tergambar di bawah
+  // lapisan di atasnya, dan alas kerak selalu berhenti TEPAT di bidang kontak.
   const traceStrataBand = (offset: number) => {
     ctx.beginPath();
     ctx.moveTo(trenchX, trenchDepth + offset);
@@ -883,8 +911,7 @@ export function renderConvergentOceanMode(
     }
     ctx.lineTo(w + 800, h);
     for (let bx = w + 800; bx >= trenchX; bx -= 8) {
-      const lowY = bx <= slabReachX ? getInterfaceRockElevation(bx) + offset : h;
-      ctx.lineTo(bx, lowY);
+      ctx.lineTo(bx, bx <= slabReachX ? getInterfaceRockElevation(bx) - offset : h);
     }
     ctx.closePath();
   };
@@ -1144,18 +1171,16 @@ export function renderConvergentOceanMode(
   ctx.beginPath();
   ctx.moveTo(-800, seaLevelY);
   ctx.lineTo(coastX, seaLevelY);
-  // Air TIDAK lagi masuk ke dalam celah bidang kontak: dasar air mengikuti
-  // profil dasar laut, tetapi dibatasi oleh garis bidang kontak sehingga
-  // lempeng samudra yang menunjam di bawah palung tidak tertutup air.
+  // Dasar air = BIDANG KONTAK LEMPENG (garis yang sama dengan alas kerak benua).
+  // Dengan begitu air selalu berhenti TEPAT di batuan: tidak ada air yang
+  // menembus tubuh kerak benua, dan tidak ada batuan yang muncul di atas
+  // permukaan laut.
   for (let bx = coastX; bx >= -800; bx -= 4) {
-    const floorY = getConvergentSeafloorProfile(bx, p);
-    ctx.lineTo(bx, bx <= slabReachX ? Math.min(floorY, getInterfaceRockElevation(bx)) : floorY);
+    ctx.lineTo(bx, getInterfaceRockElevation(bx));
   }
   ctx.closePath();
   ctx.fill();
-
-  // Sinar matahari menembus air laut (God rays miring menuju palung)
-  const rayEndY = 420 - OCEAN_CRUST_LIFT_Y;
+  const rayEndY = 420;
   const rayRays = [-650, -480, -310, -140, 30, 200, 350, 440];
   for (const rx of rayRays) {
     const drift = Math.sin(frame * 0.03 + rx * 0.01) * 8;

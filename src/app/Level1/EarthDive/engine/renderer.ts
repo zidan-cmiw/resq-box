@@ -32,6 +32,29 @@ export interface Camera {
   y: number;
 }
 
+// ── JENDELA PANDANGAN ZONA KONVERGEN (TINGGI) ──────────────────────────────
+// getGameScale() menghasilkan skala = canvasH / 480 (dengan lantai 0,7). Maka
+// tinggi pandangan di koordinat dunia adalah:
+//     viewH = canvasH / scale = 480 px   (selama canvasH >= 336 px)
+// Jadi viewH SELALU 480 px, dan tinggi peta zona konvergen juga 15 x 32 = 480 px.
+// Karena mapH <= viewH, updateCamera() mengunci camera.y = 0 (dan begitu pula
+// jalur pemulihan simpanan di gameEngine.ts). Akibatnya yang terlihat hanya
+// dunia y = 0..480, sedangkan palung berada di y = 485..510: SELURUH zona
+// subduksi ada di bawah tepi layar dan tidak pernah terlihat pemain.
+//
+// PENYELESAIAN (disetujui pemilik proyek): JANGAN menggeser geometri — geser
+// KAMERA, dan hanya di mode lautan zona konvergen. Zona lain tetap memakai
+// camera.y = 0 sehingga perilakunya tidak berubah sama sekali.
+//   camera.y = 0    -> pandangan y    0..480 : dasar laut (350) terlihat, tetapi
+//                      palung (485..510) tepat di bawah tepi layar sehingga
+//                      subduksi tak pernah terlihat.
+//   camera.y = -80  -> pandangan y  -80..400 : permukaan laut (300), dasar laut
+//                      (350), dinding palung, dan dasar palung (485) semuanya
+//                      masuk ke pandangan. Permukaan laut dan paparan benua
+//                      tetap di koordinat aslinya — TIDAK ada geometri yang
+//                      digeser, hanya sudut pandangnya yang diturunkan.
+export const OCEAN_CAMERA_Y = -80;
+
 // ── CAMERA & SCALE ──
 export function getGameScale(_canvasW: number, canvasH: number): number {
   // Target tinggi gameplay 480px (15 baris * 32px) agar seluruh dunia pas dari langit hingga tanah
@@ -135,9 +158,23 @@ export function renderFrame(
   ctx.restore();
 
   // 3. Transformasi kamera dunia
+  //
+  // Kamera vertikal zona konvergen: peta zona konvergen setinggi 480 px sama
+  // persis dengan viewH (lihat penjelasan OCEAN_CAMERA_Y), sehingga
+  // updateCamera() mengunci camera.y = 0 dan palung di y 485..510 berada di
+  // bawah tepi layar. HANYA di zona konvergen mode LAUTAN, pandangan digeser
+  // naik sebesar OCEAN_CAMERA_Y supaya palung + lempeng yang menunjam masuk.
+  //
+  // Sengaja memakai variabel LOKAL, bukan mengubah camera.y bersama: dengan
+  // begitu objek camera milik game tidak pernah berubah nilainya, sehingga
+  // hitungan klik layar, balon papan informasi, dan zona lain tetap memakai
+  // nilai yang sama seperti sebelumnya.
+  const camShiftY =
+    zone.id === 'convergent' && convergentMode === 'ocean' ? OCEAN_CAMERA_Y : 0;
+
   ctx.save();
   ctx.scale(scale, scale);
-  ctx.translate(-Math.round(camera.x), -Math.round(camera.y));
+  ctx.translate(-Math.round(camera.x), -Math.round(camera.y + camShiftY));
 
   // 4. Gambar medan lanskap mikro-pixel (dari cache off-screen atau dinamis untuk divergent / convergent / transform)
   if (zone.id === 'divergent') {

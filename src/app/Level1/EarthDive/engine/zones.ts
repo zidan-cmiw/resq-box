@@ -1316,6 +1316,77 @@ export function getSubductingPlateTopY(x: number, progress: number = 1.0): numbe
   return Math.round(baseY + leftShiftY + rx * slabSlope + Math.pow(rx / 135, 1.85) * 45);
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// PERMUKAAN KERAK BENUA MODE DARATAN (SATU-SATUNYA SUMBER KEBENARAN)
+//
+// Dipakai bersama oleh fisika (groundProfile/updateConvergentGroundProfile)
+// DAN oleh penggambar (renderConvergentLandMode), sehingga permukaan yang
+// dipijak pemain selalu sama persis dengan yang terlihat.
+//
+// KENAPA DIBUAT TERPISAH — akar "bentuk V / baji yang turun ke dalam tanah"
+// yang dilaporkan pemilik proyek:
+//   Dulu sisi barat memakai getSubductingPlateTopY() yang MELENGKUNG TURUN
+//   (kurva subduksi, kemiringan 0,60 px/px) tepat di sebelah kanan titik
+//   tumbukan, sementara sisi timur adalah lengkung gunung yang NAIK. Pertemuan
+//   "turun" dan "naik" itu membentuk siku tajam mengarah ke bawah — itulah
+//   baji/V yang terlihat seperti subduksi, padahal tumbukan dua lempeng BENUA
+//   tidak menghasilkan subduksi.
+//
+// SEKARANG: seluruh permukaan dijamin TIDAK PERNAH TURUN.
+//   - Sebelah barat titik tumbukan : dataran rata baseY (tidak ada undakan).
+//   - Sebelah timur titik tumbukan : langsung melengkung NAIK membentuk gunung,
+//     dimulai tepat dari baseY dengan kemiringan 0 (tanpa siku).
+// Karena tidak ada satu titik pun yang lebih rendah dari titik di sebelah
+// kirinya, mustahil terbentuk bentuk V atau baji yang turun ke dalam tanah.
+// ══════════════════════════════════════════════════════════════════════
+export function getConvergentLandSurfaceY(x: number, progress: number = 1.0): number {
+  const p = Math.max(0, Math.min(1, progress));
+  const leftShiftX = Math.round(p * 80);
+  const contactX = 380 + leftShiftX;
+  const baseY = 310;
+
+  // ── Sisi barat: dataran kerak yang rata ──
+  if (x <= contactX) return baseY;
+
+  // ── Sisi timur: gunung hasil kompresi horizontal ──
+  const mountainWidth = 460;
+  const mountainPeakX = contactX + 200;
+  const mountainEndX = contactX + mountainWidth;
+
+  let mountainLift = 0;
+  if (x <= mountainEndX) {
+    const dist = x - mountainPeakX;
+    const halfW = dist < 0 ? (mountainPeakX - contactX) : (mountainEndX - mountainPeakX);
+    const u = Math.min(1, Math.abs(dist) / halfW);
+    const bell = Math.cos(u * (Math.PI / 2));
+    mountainLift = Math.pow(bell, 1.35) * (p * 155);
+    // Variasi lipatan tektonik alami pada lereng gunung
+    const foldWave = Math.sin(((x - contactX) / 80) * Math.PI) * (p * 2.5) * Math.sin(bell * Math.PI);
+    mountainLift += foldWave;
+  }
+
+  // Tanjakan mulus keluar dari titik tumbukan. Faktor peredam 'ease' bernilai 0
+  // tepat di contactX dan mencapai 1 penuh mulai 140 px di kanannya, sehingga
+  // kemiringan di titik tumbukan = 0 (tanpa siku) dan tinggi puncak akhirnya
+  // tetap sama seperti semula (baseY - 155 saat p = 1).
+  const transitionSpanX = 140;
+  const rt = Math.min(1, (x - contactX) / transitionSpanX);
+  const ease = rt * rt * (3 - 2 * rt);
+  const mountainSurfaceY = baseY - (mountainLift / 155) * (p * 155) * ease;
+
+  // Transisi mulus menuju teras altar akhir (x: 1220 .. 1340)
+  let surfaceY = mountainSurfaceY;
+  if (x >= 1220 && x < 1340) {
+    const t = (x - 1220) / 120;
+    const sCurve = (1 - Math.cos(t * Math.PI)) / 2;
+    surfaceY = surfaceY * (1 - sCurve) + 310 * sCurve;
+  } else if (x >= 1340) {
+    surfaceY = 310;
+  }
+
+  return Math.round(surfaceY);
+}
+
 export function getConvergentTerrainElevation(
   x: number,
   progress: number = 1.0,
@@ -1326,21 +1397,11 @@ export function getConvergentTerrainElevation(
   if (mode === 'land') {
     // ══════════════════════════════════════════════════════════════════════
     // KONDISI 1: KONVERGEN DARATAN (TABRAKAN BENUA & PEMBENTUKAN GUNUNG)
-    // Sesuai Konsep Video Referensi:
-    // Dua lempeng benua: lempeng kiri menunjam miring ke kanan bawah (↘),
-    // lempeng kanan bergeser ke kiri (←) dan bertabrakan membentuk gunung
-    // yang di dalamnya terisi dapur magma.
+    // Dua lempeng benua: lempeng kiri bergerak ke kanan, lempeng kanan bergeser
+    // ke kiri, keduanya bertabrakan dan kerak terlipat NAIK membentuk gunung.
+    // Tidak ada bagian kerak yang turun ke dalam tanah (tidak ada subduksi).
     // ══════════════════════════════════════════════════════════════════════
-    const leftShiftX = Math.round(p * 80);
-    const contactX = 380 + leftShiftX;
-
-    // Lempeng kiri menunjam ke kanan bawah (x <= contactX)
-    if (x <= contactX) {
-      return getSubductingPlateTopY(x, p);
-    }
-
-    // Lempeng kanan: Pembentukan gunung hasil tabrakan kedua lempeng benua (x > contactX)
-    return Math.round(getConvergentLandRightElevation(x, p));
+    return getConvergentLandSurfaceY(x, p);
   } else {
     // ══════════════════════════════════════════════════════════════════════
     // KONDISI 2: KONVERGEN LAUTAN & PANTAI (PALUNG SAMUDRA & PANTAI BENUA)
@@ -1382,56 +1443,10 @@ export function getConvergentTerrainElevation(
   }
 }
 
-// Elevasi lempeng benua kanan pada mode daratan:
-// Tabrakan kedua lempeng benua melipat kerak dan membentuk gunung megah secara dinamis
-function getConvergentLandRightElevation(x: number, p: number): number {
-  const base = 310;
-  const leftShiftX = Math.round(p * 80);
-  const leftShiftY = Math.round(p * 28);
-  const contactX = 380 + leftShiftX;
-  const mountainWidth = 460;
-  const mountainPeakX = contactX + 200;
-  const mountainEndX = contactX + mountainWidth;
-
-  // Pembentukan gunung dinamis dari hasil tabrakan kedua lempeng benua (p: 0 -> 1)
-  // Di p=0, tanah datar murni (base = 310)
-  // Saat tabrakan p: 0 -> 1, lempeng terlipat membentuk gunung menjulang setinggi 155px (peak = 155)
-  let mountainLift = 0;
-  if (x >= contactX && x <= mountainEndX) {
-    const dist = x - mountainPeakX;
-    const halfW = dist < 0 ? (mountainPeakX - contactX) : (mountainEndX - mountainPeakX);
-    const u = Math.min(1, Math.abs(dist) / halfW);
-    const bell = Math.cos(u * (Math.PI / 2));
-    const currentLift = p * 155;
-    mountainLift = Math.pow(bell, 1.35) * currentLift;
-
-    // Variasi lipatan tektonik alami pada lereng gunung
-    const foldWave = Math.sin(((x - contactX) / 80) * Math.PI) * (p * 2.5) * Math.sin(bell * Math.PI);
-    mountainLift += foldWave;
-  }
-
-  // Di titik kontak contactX, pastikan elevasi tepat menyatu dengan lempeng kiri
-  let elev = base - Math.max(0, mountainLift);
-  if (x === contactX) {
-    elev = base + leftShiftY;
-  } else if (x > contactX && x < contactX + 25) {
-    // Transisi sangat halus di titik kontak
-    const t = (x - contactX) / 25;
-    const leftY = getSubductingPlateTopY(contactX, p);
-    elev = leftY * (1 - t) + elev * t;
-  }
-
-  // Transisi mulus menuju teras altar akhir (x: 1220 .. 1340)
-  if (x >= 1220 && x < 1340) {
-    const t = (x - 1220) / 120;
-    const sCurve = (1 - Math.cos(t * Math.PI)) / 2;
-    elev = elev * (1 - sCurve) + 310 * sCurve;
-  } else if (x >= 1340) {
-    elev = 310;
-  }
-
-  return elev;
-}
+// Catatan: fungsi getConvergentLandRightElevation() LAMA sudah dihapus. Isinya
+// digabung ke getConvergentLandSurfaceY() di atas, karena justru percabangan
+// "kiri memakai kurva subduksi, kanan memakai lengkung gunung" itulah yang
+// menciptakan siku turun (bentuk V) di titik tumbukan.
 
 // ── PENGUPDATE PROFIL MEDAN DINAMIS PENUMBUKAN KONVERGEN (AREA 7) ──
 export function updateConvergentGroundProfile(
