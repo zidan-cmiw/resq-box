@@ -777,7 +777,12 @@ function renderIllustration(
           <img
             src="/images.jpg"
             alt="Lima tahap perpecahan benua: dari Pangea sampai tujuh benua seperti sekarang"
-            className="max-w-full max-h-full object-contain"
+            // w-full h-full (BUKAN max-w/max-h): gambar dari dosen hanya 470x366 px,
+            // sedangkan max-w/max-h hanya MEMBATASI ukuran dan tidak pernah
+            // memperbesar - itulah sebabnya gambarnya tampil kecil di tengah.
+            // Dengan w-full h-full + object-contain, gambar diperbesar memenuhi
+            // wadah SEUTUHNYA tanpa terpotong.
+            className="w-full h-full object-contain"
           />
         </div>
       );

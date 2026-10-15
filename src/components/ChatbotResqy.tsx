@@ -42,11 +42,164 @@ const SAPAAN: Pesan = {
     'Halo! Aku Resqy. Tanyakan apa saja tentang materi kebencanaan dan geologi — gempa, gunung api, lempeng, mitigasi, atau pengungsian. Aku menjawab dari catatan yang sudah diperiksa gurumu.',
 };
 
+// ═══════════════════════════════════════════════════════════════════════════
+// MENGAPA TOMBOL INI BERGESER SAAT KONTROL SENTUH PERMAINAN MUNCUL
+// ═══════════════════════════════════════════════════════════════════════════
+//
+//   Dilaporkan dari HP: tombol aksi permainan di kanan bawah TIDAK BISA
+//   DITEKAN — yang tertekan justru tombol chatbot ini.
+//
+//   Sebabnya kedua tombol mengklaim pojok yang sama: chatbot memakai
+//   `fixed bottom-4 right-4` dengan `z-[70]`, sedangkan kontrol sentuh
+//   permainan (D-Pad, LONCAT, AKSI — lihat `EarthDiveGame.tsx` dan
+//   `TectonicGame.tsx`) duduk di `bottom-2.5 right-2.5` dengan `z-30`.
+//   Karena z-index chatbot lebih tinggi, ia MENUTUPI tombol permainan.
+//
+//   Diukur pada layar 390x844 (Chrome headless, peniruan perangkat sentuh):
+//
+//       kotak tombol chatbot : x 318..374, y 772..828
+//       kotak tombol AKSI    : x 324..380, y 786..834
+//       tumpang tindih       : 2.100 px²
+//       `document.elementsFromPoint` di titik tengah tombol AKSI
+//       mengembalikan tombol chatbot, bukan tombol AKSI.
+//
+//   CARA MEMPERBAIKI
+//
+//     Tombol ini MENGUKUR kotak tombol kontrol sentuh (`.touch-control` —
+//     kelas yang sudah dipakai D-Pad, LONCAT, dan AKSI di Level 1 & 2),
+//     lalu memilih tempat yang tidak bertumpuk:
+//
+//       1. Bila pojok kanan bawah sudah bebas — desktop, atau halaman yang
+//          tidak punya kontrol sentuh — TIDAK ADA gaya yang dipasang,
+//          sehingga tampilannya sama persis seperti sebelumnya.
+//       2. Bila bertumpuk, tombol pindah ke celah kosong TERLEBAR di antara
+//          kontrol (di HP: celah antara D-Pad dan tombol LONCAT/AKSI), pada
+//          ketinggian yang sama.
+//       3. Ketinggiannya sengaja TIDAK dinaikkan. Di HP, tepat di atasnya
+//          sudah ada tombol "PANDUAN RESQY" (`bottom-20`, z-40) dan kotak
+//          petunjuk interaksi (`bottom-24`), jadi menaikkan tombol ini justru
+//          memindahkan tumpang tindihnya ke tombol lain.
+//       4. Bila celah selebar tombol tidak ada (layar sangat sempit), tombol
+//          diangkat ke atas seluruh kontrol sebagai jalan terakhir.
+//
+//   Posisi diukur ulang saat ukuran layar berubah dan saat isi halaman
+//   berubah, karena kontrol sentuh baru muncul setelah komponen permainan
+//   selesai dimuat (rutenya `lazy`).
+// ═══════════════════════════════════════════════════════════════════════════
+
+const UKURAN_TOMBOL = 56; // w-14 h-14
+const JARAK_TEPI = 16; // bottom-4 / right-4
+const JARAK_AMAN = 8; // sela minimal ke tombol kontrol permainan
+const SELEKTOR_KONTROL = '.touch-control';
+
+/** Gaya posisi tombol chatbot (inline) bila posisi bawaan tidak aman. */
+type GayaPosisi = { left: string; right: string; bottom: string };
+
+/**
+ * Mencari posisi tombol chatbot yang tidak menimpa kontrol sentuh permainan.
+ * Mengembalikan `null` bila posisi bawaan (pojok kanan bawah) sudah aman.
+ */
+function gayaPosisiAman(): GayaPosisi | null {
+  if (typeof document === 'undefined') return null;
+
+  const lebar = document.documentElement.clientWidth || window.innerWidth;
+  const tinggi = document.documentElement.clientHeight || window.innerHeight;
+  const kontrol = Array.from(document.querySelectorAll(SELEKTOR_KONTROL));
+  if (kontrol.length === 0) return null;
+
+  // Hanya kontrol yang sejalur tegak dengan tombol ini yang dapat menimpanya.
+  const bandAtas = tinggi - JARAK_TEPI - UKURAN_TOMBOL;
+  const kotak = kontrol
+    .map((el) => el.getBoundingClientRect())
+    .filter((r) => r.width > 0 && r.height > 0 && r.bottom > bandAtas && r.top < tinggi - JARAK_TEPI);
+  if (kotak.length === 0) return null;
+
+  const penghalang = kotak
+    .map((r) => ({ kiri: r.left - JARAK_AMAN, kanan: r.right + JARAK_AMAN }))
+    .sort((a, b) => a.kiri - b.kiri);
+
+  const bawaan = lebar - JARAK_TEPI - UKURAN_TOMBOL;
+  const bertumpuk = (kiri: number) =>
+    penghalang.some((r) => kiri < r.kanan && kiri + UKURAN_TOMBOL > r.kiri);
+  if (!bertumpuk(bawaan)) return null;
+
+  // Gabungkan penghalang yang bersambung, lalu cari celah terlebar di antaranya.
+  const gabung: { kiri: number; kanan: number }[] = [];
+  for (const r of penghalang) {
+    const terakhir = gabung[gabung.length - 1];
+    if (terakhir && r.kiri <= terakhir.kanan) terakhir.kanan = Math.max(terakhir.kanan, r.kanan);
+    else gabung.push({ ...r });
+  }
+
+  const celah: { kiri: number; lebar: number }[] = [];
+  let tepi = JARAK_TEPI;
+  for (const r of gabung) {
+    celah.push({ kiri: tepi, lebar: r.kiri - tepi });
+    tepi = Math.max(tepi, r.kanan);
+  }
+  celah.push({ kiri: tepi, lebar: lebar - JARAK_TEPI - tepi });
+
+  const terlebar = celah.reduce((a, b) => (b.lebar > a.lebar ? b : a), celah[0]);
+  if (terlebar.lebar >= UKURAN_TOMBOL) {
+    const kiri = Math.round(terlebar.kiri + (terlebar.lebar - UKURAN_TOMBOL) / 2);
+    return { left: `${kiri}px`, right: 'auto', bottom: `${JARAK_TEPI}px` };
+  }
+
+  // Jalan terakhir: tidak ada celah selebar tombol — angkat ke atas seluruh kontrol.
+  const atapKontrol = Math.min(...kotak.map((r) => r.top));
+  const bawah = Math.max(
+    JARAK_TEPI,
+    Math.min(tinggi - atapKontrol + JARAK_AMAN, tinggi - UKURAN_TOMBOL - JARAK_TEPI),
+  );
+  return { left: 'auto', right: `${JARAK_TEPI}px`, bottom: `${Math.round(bawah)}px` };
+}
+
 export default function ChatbotResqy() {
   const [terbuka, setTerbuka] = useState(false);
   const [pesan, setPesan] = useState<Pesan[]>([SAPAAN]);
   const [input, setInput] = useState('');
+  const [gaya, setGaya] = useState<GayaPosisi | null>(null);
   const daftarRef = useRef<HTMLDivElement>(null);
+
+  // Ukur ulang saat layar berubah ukuran (putar layar / jendela diubah) dan
+  // saat isi halaman berubah (kontrol sentuh baru muncul setelah rute `lazy`
+  // selesai dimuat). Pengukuran dijadwalkan satu kali per frame.
+  useEffect(() => {
+    let menunggu = false;
+
+    const ukur = () => {
+      menunggu = false;
+      setGaya((lama) => {
+        const baru = gayaPosisiAman();
+        const sama =
+          lama === baru ||
+          (!!lama &&
+            !!baru &&
+            lama.left === baru.left &&
+            lama.right === baru.right &&
+            lama.bottom === baru.bottom);
+        return sama ? lama : baru;
+      });
+    };
+
+    const jadwalkan = () => {
+      if (menunggu) return;
+      menunggu = true;
+      requestAnimationFrame(ukur);
+    };
+
+    jadwalkan();
+    window.addEventListener('resize', jadwalkan);
+    window.addEventListener('orientationchange', jadwalkan);
+    const pengamat = new MutationObserver(jadwalkan);
+    pengamat.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      window.removeEventListener('resize', jadwalkan);
+      window.removeEventListener('orientationchange', jadwalkan);
+      pengamat.disconnect();
+    };
+  }, []);
 
   const contoh = pertanyaanContoh(undefined, 3);
 
@@ -80,10 +233,11 @@ export default function ChatbotResqy() {
 
   return (
     <>
-      {/* Tombol buka/tutup */}
+      {/* Tombol buka/tutup — bergeser bila pojok kanan bawah dipakai kontrol permainan */}
       <button
         onClick={() => setTerbuka((v) => !v)}
         aria-label={terbuka ? 'Tutup chatbot Resqy' : 'Buka chatbot Resqy'}
+        style={gaya ?? undefined}
         className="fixed bottom-4 right-4 z-[70] w-14 h-14 rounded-2xl bg-amber-400 hover:bg-amber-300 border-3 border-[#451a03] shadow-[0_4px_0_#451a03] flex items-center justify-center cursor-pointer active:translate-y-0.5"
       >
         <PixelIcon name={terbuka ? 'cross' : 'bulb'} size={24} className="text-[#451a03]" />
