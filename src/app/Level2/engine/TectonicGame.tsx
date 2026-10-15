@@ -16,6 +16,7 @@ import {
   loadLevel2Progress,
   clearLevel2Progress,
   switchAreaL2,
+  teleportToAreaL2,
   startSimulationArea2,
   startSimulationArea5,
   retryVolcanoPhase,
@@ -243,6 +244,50 @@ export default function TectonicGame() {
     activeVolcanoPhaseModal !== null ||
     simPhase === 'failed' ||
     isVolcanoFailed;
+
+  // ── PESAN SINGKAT PENOLAKAN TELEPORT TRACKER ──
+  // Alasan penolakan datang dari mesin (`teleportToAreaL2`), bukan dari sini:
+  // area belum terbuka, atau sedang ada simulasi berjalan. Pesannya dipakai
+  // supaya klik pada titik yang terlihat aktif tidak terasa "tidak terjadi
+  // apa-apa". Hilang sendiri setelah beberapa detik, sama seperti toast Level 1.
+  const [teleportNotice, setTeleportNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!teleportNotice) return;
+    const timer = window.setTimeout(() => setTeleportNotice(null), 2600);
+    return () => window.clearTimeout(timer);
+  }, [teleportNotice]);
+
+  /**
+   * Teleport ke area yang sudah terbuka, dipicu dari tracker progres.
+   *
+   * MESIN yang memutuskan boleh atau tidak (lihat `teleportToAreaL2`): area
+   * yang belum pernah dibuka ditolak supaya materi dan tantangan di antaranya
+   * tidak terlewat, dan area yang sedang menjalankan simulasi juga ditolak
+   * supaya simulasi yang berjalan tidak hilang. Karena itu penolakan di sini
+   * hanya menampilkan pesannya, bukan memutuskan sendiri.
+   *
+   * Salinan mekanisme Level 1 (`handleTeleportToArea` di `EarthDiveGame.tsx`).
+   */
+  const handleTeleportToArea = useCallback(
+    (targetAreaIndex: number) => {
+      const state = gameStateRef.current;
+      if (!state) return;
+      // Saat ada modal/panel terbuka, permainan sedang dijeda: jangan berpindah.
+      if (isPaused) return;
+
+      const hasil = teleportToAreaL2(state, targetAreaIndex);
+      if (hasil.success) {
+        retroAudio.playSelect();
+        // Tracker, nama area, dan telemetri mengikuti area baru saat itu juga.
+        setCurrentAreaIndex(state.currentAreaIndex);
+      } else {
+        retroAudio.playLocked();
+        if (hasil.reason) setTeleportNotice(hasil.reason);
+      }
+    },
+    [isPaused]
+  );
 
   // ── INIT GAME STATE & INPUTS (SCOPED TO ACTIVE USER) ──
   useEffect(() => {
@@ -1203,8 +1248,31 @@ export default function TectonicGame() {
           currentAreaIndex={currentAreaIndex}
           areas={LEVEL2_TRACKER_AREAS}
           avatarConfig={avatarConfig}
+          // Daftar area yang PERNAH dimasuki, dibaca langsung dari keadaan
+          // permainan — sama seperti Level 1 (`gameRef.current?.zonesVisited`).
+          // Inilah yang membuat area yang sudah terbuka tetap dapat ditekan
+          // walaupun pemain sedang berada di area yang lebih jauh.
+          //
+          // Dibaca dari `gameStateRef.current` (bukan disalin ke state React)
+          // karena `areasVisited` berubah di dalam mesin permainan; salinannya
+          // bisa tertinggal dari kenyataan.
+          areaDikunjungi={
+            gameStateRef.current ? Array.from(gameStateRef.current.areasVisited) : undefined
+          }
+          onAreaSelect={handleTeleportToArea}
         />
       </div>
+
+      {/* ── 2.9 PESAN PENOLAKAN TELEPORT (dari tracker progres) ──
+          Hanya muncul bila MESIN menolak perpindahan, mis. saat sedang ada
+          simulasi berjalan. Diletakkan di bawah tracker supaya tidak menutupi
+          titik area yang baru saja ditekan. */}
+      {teleportNotice && (
+        <div className="absolute top-40 left-1/2 -translate-x-1/2 z-30 bg-amber-950/95 border-2 border-amber-400 text-amber-200 px-4 py-2 rounded-xl font-pixel text-[12.5px] sm:text-[13px] shadow-2xl flex items-center gap-2 pointer-events-none w-[min(90vw,560px)] justify-center text-center font-semibold">
+          <PixelIcon name="broadcast" size={14} className="shrink-0" />
+          <span>{teleportNotice}</span>
+        </div>
+      )}
 
       {/* ── 3. DISCREET KEYBOARD CONTROLS GUIDE (Desktop Bottom Persis Level 1) ── */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[12.5px] font-pixel text-slate-300 pointer-events-none z-10 select-none font-semibold">

@@ -12,6 +12,12 @@ import { createInitialNpcsL2, updateNpcsL2, CLASSROOM_STUDENTS_L2, type NpcState
 import { DIALOGUE_TREES_L2, type DialogueTreeL2 } from '../dialogueDataL2';
 import { LEVEL2_AREAS } from '../level2Data';
 import { hasDiscovery, normalizeDiscoveryIds } from './legacyIds';
+// Aturan "titik area mana yang dapat ditekan" di tracker progres. Berkas itu
+// murni (tanpa React, tanpa penyimpanan peramban), dan SENGAJA dipakai ulang di
+// sini supaya gerbang di layar (komponen tracker) dan gerbang di mesin
+// permainan TIDAK PERNAH berbeda aturan. Di Level 1 aturan ini sempat tertulis
+// dua kali dan keduanya sempat tidak sinkron.
+import { areaDapatDitekan } from '../../../components/JourneyProgressTracker.helpers';
 
 // ============================================================================
 // PENGATURAN GETARAN GEMPA AREA 2 (RUANG KELAS)
@@ -272,6 +278,18 @@ export interface GameStateL2 {
   collectedCrystals: Set<string>;
   discoveredPoints: Set<string>;
   unlockedGates: Set<string>;
+  /**
+   * Indeks area yang PERNAH dimasuki pemain.
+   *
+   * MENGAPA PERLU
+   *   Tracker progres memakainya untuk menentukan titik area mana yang boleh
+   *   ditekan (teleport). Ini SALINAN aturan Level 1 (`zonesVisited`): yang
+   *   membuka sebuah area adalah "sudah pernah sampai ke sana", BUKAN
+   *   "sedang berada di area yang lebih jauh". Tanpa daftar ini, pemain yang
+   *   sudah pernah sampai Barak lalu kembali ke Ruang Kelas tidak dapat
+   *   menekan Barak lagi — padahal area itu sudah terbuka.
+   */
+  areasVisited: Set<number>;
   npcs: Map<string, NpcStateL2>;
   activeDialogueTree: DialogueTreeL2 | null;
   activeSignText: string | null;
@@ -303,6 +321,14 @@ export interface SavedLevel2Progress {
   collectedCrystals: string[];
   discoveredPoints: string[];
   unlockedGates: string[];
+  /**
+   * Daftar area yang pernah dimasuki (lihat `GameStateL2.areasVisited`).
+   *
+   * OPSIONAL dengan sengaja: simpanan LAMA (sebelum fitur teleport tracker)
+   * tidak punya kolom ini. Membacanya sebagai `undefined` tidak boleh membuat
+   * permainan gagal dimuat.
+   */
+  areasVisited?: number[];
   isAreaCompleted: boolean;
   pgaRoomQuizSolved?: boolean;
 }
@@ -324,6 +350,7 @@ export function saveLevel2Progress(state: GameStateL2, userId?: string): void {
       collectedCrystals: Array.from(state.collectedCrystals).slice(0, TOTAL_CRYSTALS_L2),
       discoveredPoints: Array.from(state.discoveredPoints),
       unlockedGates: Array.from(state.unlockedGates),
+      areasVisited: Array.from(state.areasVisited),
       isAreaCompleted: state.isAreaCompleted,
       pgaRoomQuizSolved: !!state.pgaRoomQuizSolved,
     };
@@ -386,6 +413,15 @@ export function createInitialGameStateL2(userId?: string): GameStateL2 {
     collectedCrystals: new Set<string>((saved?.collectedCrystals || []).slice(0, TOTAL_CRYSTALS_L2)),
     discoveredPoints: new Set<string>(normalizeDiscoveryIds(saved?.discoveredPoints || [])),
     unlockedGates: new Set<string>(saved?.unlockedGates || []),
+    // Area yang pernah dimasuki. Simpanan lama belum punya daftar ini, jadi
+    // daftar diisi dengan area yang sedang ditempati — cara yang sama dipakai
+    // Level 1 (`saved?.zonesVisited ?? [zoneIndex]`). Area di belakang posisi
+    // sekarang tetap dapat ditekan lewat aturan `areaDapatDitekan`.
+    areasVisited: new Set<number>(
+      saved?.areasVisited && saved.areasVisited.length > 0
+        ? saved.areasVisited
+        : [currentAreaIndex]
+    ),
     npcs: createInitialNpcsL2(currentAreaIndex),
     activeDialogueTree: null,
     activeSignText: null,
@@ -749,6 +785,9 @@ export function switchAreaL2(
   spawnAtStart = true
 ): void {
   state.currentAreaIndex = targetAreaIndex;
+  // Area yang baru dimasuki dicatat di sini — satu-satunya tempat perpindahan
+  // area terjadi (portal maju, portal mundur, dan teleport tracker).
+  state.areasVisited.add(targetAreaIndex);
   state.zone = getAreaZoneL2(targetAreaIndex);
   state.npcs = createInitialNpcsL2(targetAreaIndex);
   state.activeDialogueTree = null;
@@ -908,6 +947,114 @@ export function switchAreaL2(
   }
 
   saveLevel2Progress(state);
+}
+
+/**
+ * Apakah sedang ada simulasi/mode khusus yang BERJALAN di area ini?
+ *
+ * Dipakai sebagai syarat penolakan teleport tracker. Alasannya sama dengan
+ * alasan Level 1 menolak teleport saat `isTransitioning`: berpindah area di
+ * tengah rangkaian akan MENGHANCURKAN keadaan rangkaian itu.
+ *
+ * Di Level 2 akibatnya nyata:
+ *   - `switchAreaL2` menyetel ulang `state.simulation` ke `idle` dan membuang
+ *     `state.volcanoSim` begitu area tujuan bukan area 4 — jadi simulasi gempa
+ *     (Area 2) atau simulasi erupsi (Area 5) yang sedang berjalan akan hilang
+ *     dan harus diulang dari awal.
+ *   - Pemain TIDAK dapat melakukan ini dengan berjalan kaki: pintu keluar
+ *     memang terkunci selama simulasi belum selesai. Teleport tidak boleh
+ *     menjadi jalan pintas yang tidak ada padanannya.
+ *
+ * Fase yang dianggap "tidak berjalan" hanyalah `idle` (belum dimulai) dan
+ * `completed`/`volcano_completed` (sudah selesai).
+ */
+function simulasiBerjalanL2(state: GameStateL2): boolean {
+  const simulasiGempaBerjalan =
+    state.simulation.phase !== 'idle' && state.simulation.phase !== 'completed';
+  const simulasiErupsiBerjalan =
+    !!state.volcanoSim &&
+    state.volcanoSim.phase !== 'idle' &&
+    state.volcanoSim.phase !== 'volcano_completed';
+  return simulasiGempaBerjalan || simulasiErupsiBerjalan;
+}
+
+/**
+ * Teleport langsung ke area tertentu — dipakai oleh tracker progres.
+ *
+ * MENGAPA ADA
+ *   Saat demo, berpindah antar area dengan berjalan memakan waktu lama.
+ *   Tracker progres menampilkan seluruh area, jadi area yang sudah terbuka
+ *   dapat diklik untuk melompat ke sana. Ini SALINAN mekanisme Level 1
+ *   (`teleportToZone` di `Level1/EarthDive/engine/gameEngine.ts`).
+ *
+ * BATASAN: HANYA AREA YANG SUDAH TERBUKA
+ *
+ *   Aturannya memakai `areasVisited` — daftar area yang PERNAH dimasuki —
+ *   plus area di belakang posisi sekarang untuk simpanan lama. Aturannya
+ *   TIDAK ditulis ulang di sini: fungsinya dipinjam dari
+ *   `areaDapatDitekan()`, fungsi yang sama yang menentukan titik mana yang
+ *   dapat ditekan di komponen tracker. Dengan begitu titik yang terlihat
+ *   aktif TIDAK MUNGKIN ditolak mesin, dan sebaliknya.
+ *
+ *   Membandingkan dengan area SEKARANG saja ("target > currentAreaIndex")
+ *   adalah kesalahan yang pernah terjadi di Level 1: kemajuan pemain jadi
+ *   "mundur" setiap kali ia kembali ke area sebelumnya, sehingga area yang
+ *   sudah terbuka tidak dapat ditekan lagi.
+ *
+ *   Batasan ini juga menjaga keabsahan hasil belajar: area yang belum pernah
+ *   dicapai tetap tidak dapat dituju, sehingga materi dan tantangan di
+ *   antaranya tidak terlewat.
+ *
+ * PERPINDAHAN MEMAKAI JALUR YANG SAMA DENGAN BERJALAN KAKI
+ *
+ *   Perpindahan dikerjakan `switchAreaL2()` — fungsi yang sama yang dipakai
+ *   pintu antar area. Karena itu spanduk nama area, posisi masuk, penataan
+ *   ulang NPC, simulasi khusus area tujuan, dan penyimpanan progres tidak
+ *   pernah berbeda dari perpindahan biasa.
+ *
+ *   Arah ditentukan dari posisi relatif (persis Level 1): menuju area yang
+ *   lebih jauh berarti MASUK dari pangkalan awal area itu, menuju area yang
+ *   lebih dekat berarti KEMBALI dan masuk dari pintu sisi timurnya.
+ *
+ * @returns `{ success, reason }` — reason berisi alasan bila ditolak.
+ */
+export function teleportToAreaL2(
+  state: GameStateL2,
+  targetAreaIndex: number
+): { success: boolean; reason?: string } {
+  if (
+    !Number.isInteger(targetAreaIndex) ||
+    targetAreaIndex < 0 ||
+    targetAreaIndex >= LEVEL2_AREAS.length
+  ) {
+    return { success: false, reason: 'Area tidak dikenal.' };
+  }
+  if (targetAreaIndex === state.currentAreaIndex) {
+    return { success: false, reason: 'Kamu sudah berada di area ini.' };
+  }
+  if (simulasiBerjalanL2(state)) {
+    return {
+      success: false,
+      reason: 'Sedang ada simulasi berjalan. Selesaikan dulu sebelum berpindah area.',
+    };
+  }
+  // `true` pada argumen terakhir = tracker memang memasang penangan klik.
+  if (
+    !areaDapatDitekan(
+      targetAreaIndex,
+      state.currentAreaIndex,
+      Array.from(state.areasVisited),
+      true
+    )
+  ) {
+    return {
+      success: false,
+      reason: 'Area itu belum terbuka. Selesaikan area sebelumnya dulu.',
+    };
+  }
+
+  switchAreaL2(state, targetAreaIndex, targetAreaIndex > state.currentAreaIndex);
+  return { success: true };
 }
 
 // ── HELPER: SPAWN PUING-PUING RUANG KELAS YANG TAMPAK JELAS DI VIEWPORT ──
