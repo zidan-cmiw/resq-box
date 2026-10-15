@@ -6,7 +6,7 @@ import { ZONES, getZone, updateDivergentGroundProfile, updateConvergentGroundPro
 import type { PlayerState, InputState } from './player';
 import { createPlayer, updatePlayer, getEffectiveGround, isNearObject, initInput, readInput, mergeInput } from './player';
 import type { Camera } from './renderer';
-import { renderFrame, updateCamera, getGameScale, invalidateTileCache, drawTransitionOverlay } from './renderer';
+import { renderFrame, updateCamera, getGameScale, invalidateTileCache, drawTransitionOverlay, OCEAN_CAMERA_Y } from './renderer';
 import { TILE } from './sprites';
 import type { CustomAvatarConfig } from '../../../../store/teacherStore';
 import { retroAudio } from '../../../../utils/retroAudio';
@@ -504,7 +504,14 @@ function updateTransition(state: GameState): void {
 // ── SUIT HELPER & VALIDATION ──
 
 /**
- * Pakaian yang WAJIB dipakai di setiap zona.
+ * Pakaian yang WAJIB dipakai di setiap zona — SATU-SATUNYA SUMBER ATURAN.
+ *
+ * ATURAN (diminta pemilik proyek, ditulis eksplisit di sini):
+ *   1. Bila area/zona itu punya pakaian khusus  -> WAJIB memakai pakaian itu.
+ *   2. Bila tidak ada pakaian khusus            -> PAKAIAN BIASA (null).
+ * Pakaian TIDAK PERNAH diwarisi dari zona sebelumnya. Nilai balik fungsi ini
+ * selalu dipakai APA ADANYA (termasuk null) oleh syncSuitToZone(), sehingga
+ * tidak ada lagi pakaian sisa dari zona sebelumnya.
  *
  * MENGAPA DIBUAT TERPISAH
  *   Sebelumnya aturan ini hanya ada di satu tempat, yaitu saat memuat simpanan
@@ -521,31 +528,49 @@ function updateTransition(state: GameState): void {
  *   0 Permukaan, 1 Kerak, 2 Mantel, 3 Inti Luar, 4 Inti Dalam,
  *   5 Batas Divergen, 6 Batas Konvergen, 7 Batas Transform
  *
- * @returns nama pakaian, atau null bila zona itu tidak mewajibkan pakaian
- *          khusus (Permukaan dan Kerak).
+ * ZONA 6 (BATAS KONVERGEN) PUNYA DUA MODE — dan pakaiannya BERBEDA:
+ *   - mode 'ocean' (LAUTAN & PANTAI / palung samudra) -> 'diver_suit', karena
+ *     pemain menyelam di palung.
+ *   - mode 'land'  (DARATAN / tumbukan benua)         -> null (pakaian biasa),
+ *     karena pemain berjalan di daratan pegunungan.
+ *   Itulah akar keluhan "pindah ke area konvergen tetapi masih memakai pakaian
+ *   selam dari area divergen": dulu zona 6 selalu 'diver_suit' (zoneIndex >= 5)
+ *   dan mode daratan tidak pernah melepasnya.
+ *
+ * @returns nama pakaian, atau null bila zona itu memakai pakaian biasa.
  */
-export function getRequiredSuitForZone(zoneIndex: number): string | null {
+export function getRequiredSuitForZone(
+  zoneIndex: number,
+  convergentMode: 'land' | 'ocean' = 'land',
+): string | null {
   if (zoneIndex === 2) return 'mantle_suit';       // Mantel
   if (zoneIndex === 3) return 'outer_core_suit';   // Inti Luar
   if (zoneIndex === 4) return 'inner_core_suit';   // Inti Dalam
-  if (zoneIndex >= 5) return 'diver_suit';         // Batas lempeng (bawah laut)
-  return null;                                     // Permukaan & Kerak
+  if (zoneIndex === 5) return 'diver_suit';        // Batas Divergen (dasar laut)
+  if (zoneIndex === 6) {
+    // Batas Konvergen: hanya mode LAUTAN yang memakai pakaian selam.
+    return convergentMode === 'ocean' ? 'diver_suit' : null;
+  }
+  // 0 Permukaan, 1 Kerak, 7 Batas Transform (gurun, di darat) -> pakaian biasa
+  return null;
 }
 
 /**
- * Sesuaikan pakaian dengan zona sekarang.
+ * Sesuaikan pakaian dengan zona (DAN mode konvergen) yang sedang aktif.
  *
- * Dipanggil pada dua saat:
+ * Dipanggil pada tiga saat:
  *   1. Saat permainan dimuat (memperbaiki simpanan lama yang pakaiannya salah).
  *   2. Saat perpindahan zona mencapai titik tengah (pemain benar-benar pindah).
+ *   3. Saat mode zona konvergen diganti DARATAN <-> LAUTAN (setConvergentMode).
  *
- * Pakaian TIDAK diturunkan bila zona tidak mewajibkan pakaian khusus. Dengan
- * begitu pemain yang sudah membeli pakaian di zona bawah tidak kehilangannya
- * saat naik kembali ke Permukaan atau Kerak.
+ * PENTING: nilai pakaian SELALU ditulis, termasuk saat hasilnya null. Dulu
+ * barisnya berbunyi "if (wajib) state.player.equippedSuit = wajib;" sehingga
+ * zona tanpa pakaian khusus membiarkan pakaian lama tetap terpakai. Sekarang
+ * tidak ada lagi pakaian sisa: zona tanpa pakaian khusus = pakaian biasa.
  */
 export function syncSuitToZone(state: GameState): void {
-  const wajib = getRequiredSuitForZone(state.currentZone);
-  if (wajib) state.player.equippedSuit = wajib;
+  const mode = state.convergentMode || 'land';
+  state.player.equippedSuit = getRequiredSuitForZone(state.currentZone, mode);
 }
 
 export function buyAndEquipSuit(state: GameState, suitType: string): boolean {
@@ -1299,11 +1324,20 @@ export function handleCanvasClick(
   if (state.isTransitioning) return null;
 
   const scale = getGameScale(canvasW, canvasH);
+  const zone = getZone(state.currentZone);
+
+  // Geser kamera vertikal yang SAMA dengan yang dipakai renderFrame: hanya di
+  // zona konvergen mode LAUTAN (OCEAN_CAMERA_Y). Tanpa baris ini, hitungan klik
+  // tidak cocok dengan gambar yang terlihat — objek yang diklik akan meleset
+  // sejauh geser itu ke bawah.
+  const camShiftY =
+    zone.id === 'convergent' && (state.convergentMode || 'land') === 'ocean'
+      ? OCEAN_CAMERA_Y
+      : 0;
+
   // Convert canvas pixel to world pixel
   const worldX = state.camera.x + clickX / scale;
-  const worldY = state.camera.y + clickY / scale;
-
-  const zone = getZone(state.currentZone);
+  const worldY = state.camera.y + camShiftY + clickY / scale;
 
   for (const obj of zone.objects) {
     if (state.collectedCrystals.has(obj.id)) continue;
@@ -1381,6 +1415,12 @@ export function setConvergentMode(state: GameState, mode: 'land' | 'ocean'): voi
   state.convergentShake = 0;
   const zone = getZone(6);
   updateConvergentGroundProfile(zone, 0, mode);
+
+  // Pakaian mengikuti MODE, bukan sisa nilai sebelumnya: mode LAUTAN memakai
+  // pakaian selam, mode DARATAN memakai pakaian biasa. Tanpa baris ini, pemain
+  // yang baru datang dari area divergen (memakai pakaian selam) tetap memakai
+  // pakaian selam di daratan.
+  syncSuitToZone(state);
 
   // Update teks papan informasi sesuai mode
   const signObj = zone.objects.find(o => o.id === 'conv_sign_dock');

@@ -13,6 +13,14 @@
  *    "pas mau ke area mantel perlu beli pakaiannya lagi padahal kan sebelumnya
  *     udah dibeli"
  *
+ * 3. PAKAIAN YANG SEHARUSNYA DILEPAS (aturan pakaian per zona & per mode)
+ *    "setelah pindah ke area konvergen, pemain masih memakai pakaian selam
+ *     dari area divergen"
+ *    Aturannya: zona yang punya pakaian khusus -> wajib memakai pakaian itu;
+ *    zona tanpa pakaian khusus -> pakaian biasa (tidak mewarisi pakaian lama).
+ *    Zona 6 (Batas Konvergen) mengikuti MODE-nya: LAUTAN = pakaian selam,
+ *    DARATAN = pakaian biasa.
+ *
  * ═══════════════════════════════════════════════════════════════════════════
  * MENGAPA BUNDEL DULU, BARU DIUJI
  * ═══════════════════════════════════════════════════════════════════════════
@@ -46,7 +54,7 @@ const berkasMasuk = join(AKAR, 'scripts', '_uji_masuk.ts');
 
 writeFileSync(
   berkasMasuk,
-  `export { teleportToZone, checkSuitRequirements, getRequiredSuitForZone }
+  `export { teleportToZone, checkSuitRequirements, getRequiredSuitForZone, syncSuitToZone }
      from '../src/app/Level1/EarthDive/engine/gameEngine';
    export { areaDapatDitekan } from '../src/components/JourneyProgressTracker.helpers';
    export const jumlahZona = 8;
@@ -78,12 +86,12 @@ try {
   try { rmSync(berkasMasuk, { force: true }); } catch { /* abaikan */ }
 }
 
-const { teleportToZone, checkSuitRequirements, getRequiredSuitForZone, areaDapatDitekan } = ekspor;
+const { teleportToZone, checkSuitRequirements, getRequiredSuitForZone, syncSuitToZone, areaDapatDitekan } = ekspor;
 
 // ── Kerangka state seminimal mungkin ──────────────────────────────────────
-// Hanya memuat bagian yang dibaca kedua fungsi yang diuji, supaya uji ini
+// Hanya memuat bagian yang dibaca fungsi-fungsi yang diuji, supaya uji ini
 // tidak bergantung pada localStorage atau canvas yang tidak ada di Node.
-function buatState({ zona = 1, pernahKe = [], pakaian = [], dipakai = null } = {}) {
+function buatState({ zona = 1, pernahKe = [], pakaian = [], dipakai = null, mode = 'land' } = {}) {
   return {
     currentZone: zona,
     zonesVisited: new Set(pernahKe),
@@ -92,6 +100,7 @@ function buatState({ zona = 1, pernahKe = [], pakaian = [], dipakai = null } = {
     transitionProgress: 0,
     transitionTargetZone: zona,
     transitionDirection: 'down',
+    convergentMode: mode,
     player: { equippedSuit: dipakai },
     pendingSuitRequired: null,
     userId: 'uji',
@@ -260,16 +269,62 @@ uji(
 );
 
 // ═══════════════════════════════════════════════════════════════════════════
-console.log('\n── 3. PEMETAAN PAKAIAN PER ZONA (tidak boleh bergeser) ──');
+console.log('\n── 3. PEMETAAN PAKAIAN PER ZONA & PER MODE (aturan baru) ──');
+//
+// ATURAN YANG BERLAKU SEKARANG:
+//   - Zona yang punya pakaian khusus  -> WAJIB memakai pakaian itu.
+//   - Zona tanpa pakaian khusus       -> pakaian biasa (null), TIDAK mewarisi
+//     pakaian dari zona sebelumnya.
+//   - Zona 6 (Batas Konvergen) punya DUA mode dengan pakaian berbeda:
+//       mode 'ocean' (palung samudra) -> diver_suit
+//       mode 'land'  (tumbukan benua) -> pakaian biasa (null)
+//
+// Zona 7 (Batas Transform) adalah gurun di darat, jadi pakaian biasa.
 
-uji('Area 0 Permukaan  -> tanpa pakaian', getRequiredSuitForZone(0), null);
-uji('Area 1 Kerak      -> tanpa pakaian', getRequiredSuitForZone(1), null);
-uji('Area 2 Mantel     -> mantle_suit', getRequiredSuitForZone(2), 'mantle_suit');
-uji('Area 3 Inti Luar  -> outer_core_suit', getRequiredSuitForZone(3), 'outer_core_suit');
-uji('Area 4 Inti Dalam -> inner_core_suit', getRequiredSuitForZone(4), 'inner_core_suit');
-uji('Area 5 Divergen   -> diver_suit', getRequiredSuitForZone(5), 'diver_suit');
-uji('Area 6 Konvergen  -> diver_suit', getRequiredSuitForZone(6), 'diver_suit');
-uji('Area 7 Transform  -> diver_suit', getRequiredSuitForZone(7), 'diver_suit');
+uji('Area 0 Permukaan          -> tanpa pakaian', getRequiredSuitForZone(0), null);
+uji('Area 1 Kerak              -> tanpa pakaian', getRequiredSuitForZone(1), null);
+uji('Area 2 Mantel             -> mantle_suit', getRequiredSuitForZone(2), 'mantle_suit');
+uji('Area 3 Inti Luar          -> outer_core_suit', getRequiredSuitForZone(3), 'outer_core_suit');
+uji('Area 4 Inti Dalam         -> inner_core_suit', getRequiredSuitForZone(4), 'inner_core_suit');
+uji('Area 5 Divergen           -> diver_suit', getRequiredSuitForZone(5), 'diver_suit');
+uji('Area 6 Konvergen LAUTAN   -> diver_suit', getRequiredSuitForZone(6, 'ocean'), 'diver_suit');
+uji('Area 6 Konvergen DARATAN  -> tanpa pakaian', getRequiredSuitForZone(6, 'land'), null);
+uji('Area 6 tanpa mode (bawaan) -> tanpa pakaian', getRequiredSuitForZone(6), null);
+uji('Area 7 Transform          -> tanpa pakaian', getRequiredSuitForZone(7), null);
+
+// ═══════════════════════════════════════════════════════════════════════════
+console.log('\n── 3B. PAKAIAN TIDAK DIWARISI DARI ZONA SEBELUMNYA ──');
+//
+// Inilah keluhan yang diperbaiki: "setelah pindah ke area konvergen, pemain
+// masih memakai pakaian selam dari area divergen". Pakaian lama harus DILEPAS
+// bila zona/mode yang baru tidak memakai pakaian khusus.
+
+const sesudahSinkron = (zona, mode, dipakai) => {
+  const s = buatState({ zona, mode, dipakai });
+  syncSuitToZone(s);
+  return s.player.equippedSuit;
+};
+
+uji('Masuk Konvergen DARATAN dengan pakaian selam -> pakaian biasa',
+  sesudahSinkron(6, 'land', 'diver_suit'), null);
+uji('Ganti ke Konvergen LAUTAN -> pakaian selam',
+  sesudahSinkron(6, 'ocean', null), 'diver_suit');
+uji('Balik lagi ke Konvergen DARATAN -> pakaian selam dilepas',
+  sesudahSinkron(6, 'land', 'diver_suit'), null);
+uji('Masuk Batas Divergen -> pakaian selam',
+  sesudahSinkron(5, 'land', null), 'diver_suit');
+uji('Masuk Batas Transform dengan pakaian selam -> pakaian biasa',
+  sesudahSinkron(7, 'land', 'diver_suit'), null);
+uji('Naik ke Kerak dengan pakaian Mantel -> pakaian biasa',
+  sesudahSinkron(1, 'land', 'mantle_suit'), null);
+uji('Naik ke Permukaan dengan pakaian Inti Dalam -> pakaian biasa',
+  sesudahSinkron(0, 'land', 'inner_core_suit'), null);
+uji('Masuk Mantel -> pakaian Mantel',
+  sesudahSinkron(2, 'land', null), 'mantle_suit');
+uji('Masuk Inti Luar -> pakaian Inti Luar',
+  sesudahSinkron(3, 'land', 'mantle_suit'), 'outer_core_suit');
+uji('Masuk Inti Dalam -> pakaian Inti Dalam',
+  sesudahSinkron(4, 'land', 'outer_core_suit'), 'inner_core_suit');
 
 // ═══════════════════════════════════════════════════════════════════════════
 console.log('\n── 4. TITIK AREA DI TRACKER: mana yang dapat ditekan ──');

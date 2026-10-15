@@ -45,15 +45,18 @@ export interface Camera {
 // PENYELESAIAN (disetujui pemilik proyek): JANGAN menggeser geometri — geser
 // KAMERA, dan hanya di mode lautan zona konvergen. Zona lain tetap memakai
 // camera.y = 0 sehingga perilakunya tidak berubah sama sekali.
-//   camera.y = 0    -> pandangan y    0..480 : dasar laut (350) terlihat, tetapi
-//                      palung (485..510) tepat di bawah tepi layar sehingga
-//                      subduksi tak pernah terlihat.
-//   camera.y = -80  -> pandangan y  -80..400 : permukaan laut (300), dasar laut
-//                      (350), dinding palung, dan dasar palung (485) semuanya
-//                      masuk ke pandangan. Permukaan laut dan paparan benua
-//                      tetap di koordinat aslinya — TIDAK ada geometri yang
-//                      digeser, hanya sudut pandangnya yang diturunkan.
-export const OCEAN_CAMERA_Y = -80;
+//   geser 0   -> pandangan y   0..480 : langit luas, dasar laut (350) dan
+//                dinding palung terlihat, tetapi dasar palung (485..510) dan
+//                seluruh lempeng yang menunjam berada di bawah tepi layar.
+//   geser 140 -> pandangan y 140..620 : permukaan laut (300) di 33% layar,
+//                dasar laut (350) di 44%, palung (485..510) di 72..77%, dan
+//                sisa 23% layar di bawahnya memperlihatkan lempeng samudra yang
+//                menunjam masuk ke bawah kerak benua. Langit masih tersisa 33%
+//                sehingga baris HUD di atas tidak menutupi daratan/pemain.
+// Geometri TIDAK disentuh sama sekali: permukaan laut (300), dasar laut (350),
+// palung (485..510), dan paparan benua tetap di koordinat aslinya (persis
+// seperti commit d9ca81b) — hanya sudut pandangnya yang diturunkan.
+export const OCEAN_CAMERA_Y = 140;
 
 // ── CAMERA & SCALE ──
 export function getGameScale(_canvasW: number, canvasH: number): number {
@@ -162,8 +165,8 @@ export function renderFrame(
   // Kamera vertikal zona konvergen: peta zona konvergen setinggi 480 px sama
   // persis dengan viewH (lihat penjelasan OCEAN_CAMERA_Y), sehingga
   // updateCamera() mengunci camera.y = 0 dan palung di y 485..510 berada di
-  // bawah tepi layar. HANYA di zona konvergen mode LAUTAN, pandangan digeser
-  // naik sebesar OCEAN_CAMERA_Y supaya palung + lempeng yang menunjam masuk.
+  // bawah tepi layar. HANYA di zona konvergen mode LAUTAN, pandangan diturunkan
+  // sebesar OCEAN_CAMERA_Y supaya palung + lempeng yang menunjam masuk.
   //
   // Sengaja memakai variabel LOKAL, bukan mengubah camera.y bersama: dengan
   // begitu objek camera milik game tidak pernah berubah nilainya, sehingga
