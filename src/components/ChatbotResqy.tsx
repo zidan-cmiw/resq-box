@@ -55,7 +55,7 @@ const SAPAAN: Pesan = {
 //   `TectonicGame.tsx`) duduk di `bottom-2.5 right-2.5` dengan `z-30`.
 //   Karena z-index chatbot lebih tinggi, ia MENUTUPI tombol permainan.
 //
-//   Diukur pada layar 390x844 (Chrome headless, peniruan perangkat sentuh):
+//   Diukur pada layar 390x844 (Edge headless, peniruan perangkat sentuh):
 //
 //       kotak tombol chatbot : x 318..374, y 772..828
 //       kotak tombol AKSI    : x 324..380, y 786..834
