@@ -144,6 +144,10 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
     // ══════════════════════════════════════════════════════════════════════
 
     // 0. Resqy (Instruktur & Pemandu Simulasi di depan kelas dekat pintu & meja guru x: 140)
+    //    Resqy juga PEMBAWA MATERI area ini: "Tiga Persiapan Sebelum Gempa"
+    //    (bangunan tahan gempa, jalur evakuasi, titik kumpul). Materi itu dibuka
+    //    lewat pilihan dialog `resqy_briefing_area2` -> `triggerDiscoveryModal: 0`
+    //    yang menunjuk `disc-earthquake-mitigation-prep` di `level2Data.ts`.
     map.set('l2_sim_npc_resqy', {
       id: 'l2_sim_npc_resqy',
       type: 'resqy',
@@ -159,6 +163,8 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
       timer: 100,
       animFrame: 0,
       isNearPlayer: false,
+      hasMaterial: true,
+      discoveryKey: 'disc-earthquake-mitigation-prep',
     });
 
     // 1. Bu Tyas (Guru Kelas di depan kelas dekat papan tulis x: 200)

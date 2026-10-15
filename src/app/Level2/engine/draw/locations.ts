@@ -16,9 +16,18 @@
 //   kemudian, tetapi tidak mendesak: yang penting berkas ini tidak lagi
 //   bercampur dengan orkestrator.
 //
-// ATURAN: boleh mengimpor ./base dan ./volcano; tidak boleh mengimpor renderer.
+// ATURAN: boleh mengimpor ./base, ./volcano, dan ../tataLetakKartuL2;
+//          tidak boleh mengimpor renderer.
+//
+// CATATAN POSISI KARTU SIMULASI
+//   Seluruh kartu di berkas ini (papan status gunung, ajakan sirine, dan 4
+//   kartu QTE) dulu digambar mulai `y = 72`/`82`, sehingga bagian atasnya
+//   TERTUTUP tracker progres Level 2 yang berada di atas tengah layar.
+//   Sekarang atasnya diambil dari `atasKartuAmanL2()` — penjelasan beserta
+//   angka pengukurannya ada di `../tataLetakKartuL2.ts`.
 
 import { drawRoundedBadgeL2, drawRealisticVolcanicSmoke } from './base';
+import { atasKartuAmanL2 } from '../tataLetakKartuL2';
 import { MAP_WIDTH_PX, MAP_HEIGHT_PX } from '../zones';
 import type { GameStateL2, VolcanoSimulationDataL2 } from '../gameEngine';
 import type { Point2D } from './volcano';
@@ -438,7 +447,7 @@ export function drawTopVolcanoStatusBanner(
   const isCompact = viewW < 768;
   const cardW = Math.min(viewW - 28, isCompact ? 520 : 760);
   const cardH = isCompact ? 46 : 56;
-  const cardY = isCompact ? 72 : 82;
+  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
 
   ctx.save();
   ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
@@ -573,7 +582,7 @@ export function drawVolcanoSirenPromptOverlay(
   const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
   const cardH = isCompact ? 116 : 136;
   const cardX = cx - cardW / 2;
-  const cardY = isCompact ? 72 : 82;
+  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
 
   ctx.save();
   // Kartu gelap pekat bergaya simulasi gempa
@@ -736,7 +745,7 @@ export function drawVolcanoQteKentonganOverlay(
   const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
   const cardH = isCompact ? 144 : 168;
   const cardX = cx - cardW / 2;
-  const cardY = isCompact ? 72 : 82;
+  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
 
   ctx.save();
   ctx.fillStyle = 'rgba(11, 17, 32, 0.97)';
@@ -826,7 +835,7 @@ export function drawVolcanoQteRescueOverlay(
   const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
   const cardH = isCompact ? 168 : 192;
   const cardX = cx - cardW / 2;
-  const cardY = isCompact ? 72 : 82;
+  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
 
   ctx.save();
   ctx.fillStyle = 'rgba(11, 17, 32, 0.97)';
@@ -944,7 +953,7 @@ export function drawVolcanoQteTruckOverlay(
   const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
   const cardH = isCompact ? 116 : 136;
   const cardX = cx - cardW / 2;
-  const cardY = isCompact ? 72 : 82;
+  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
 
   ctx.save();
   ctx.fillStyle = 'rgba(11, 17, 32, 0.97)';
@@ -1025,7 +1034,7 @@ export function drawVolcanoFailedOverlay(
   const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
   const cardH = isCompact ? 148 : 168;
   const cardX = cx - cardW / 2;
-  const cardY = isCompact ? 72 : 82;
+  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
 
   ctx.save();
   ctx.fillStyle = 'rgba(15, 23, 42, 0.98)';
@@ -1895,30 +1904,23 @@ export function drawShelterRecoveryAtmosphere(
     ctx.fillRect(pyroclasticSignX - 2, 244, 4, 14);
     ctx.fillRect(pyroclasticSignX - 2, 262, 4, 4);
 
-    // Papan Tambahan Bawah: "AWAS AWAN PANAS DARI HULU MERAPI" (Kotak Pas & Font Jelas)
-    const pyroclasticBoardW = 144;
-    const pyroclasticBoardH = 30;
-    const pyroclasticBoardX = pyroclasticSignX - pyroclasticBoardW / 2;
-    const pyroclasticBoardY = 270;
-    drawRoundedBadgeL2(
-      ctx,
-      pyroclasticBoardX,
-      pyroclasticBoardY,
-      pyroclasticBoardW,
-      pyroclasticBoardH,
-      5,
-      '#dc2626',
-      '#ffffff',
-      1.5
-    );
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '900 10px "Plus Jakarta Sans", sans-serif';
-    ctx.fillText('AWAS AWAN PANAS', pyroclasticSignX, pyroclasticBoardY + 10);
-    ctx.fillStyle = '#fef08a';
-    ctx.font = 'bold 8.5px "Plus Jakarta Sans", sans-serif';
-    ctx.fillText('HULU SUNGAI MERAPI', pyroclasticSignX, pyroclasticBoardY + 21);
+    // ── PAPAN TEKS PERINGATAN AWAN PANAS — DIHAPUS ───────────────────────
+    //
+    // Atas permintaan pemilik proyek (ditandai lingkaran merah pada tangkapan
+    // layar Area 6), papan merah dua baris di bawah segitiga ini SUDAH
+    // DIHAPUS, beserta seluruh variabelnya (pyroclasticBoardW/H/X/Y) supaya
+    // tidak ada sisa kode tak terpakai.
+    //
+    // Tulisan yang dulu tercetak di papan itu (baris pertama "awas awan
+    // panas", baris kedua "hulu sungai merapi") kini TIDAK ADA LAGI di dalam
+    // kode permainan — cari dengan huruf besar untuk memastikannya.
+    //
+    // Yang DIPERTAHANKAN adalah rambu itu sendiri: tiang baja loreng
+    // hitam-kuning, segitiga peringatan kuning, dan sensor EWS beserta lampu
+    // strobo di puncaknya. Susunan ini sama persis dengan landmark yang sama
+    // di Level 3 (`landmark_pyroclastic_sign_ews`) yang memang dibuat
+    // "- Tanpa Teks", sehingga tidak ada objek lain di sekitarnya yang ikut
+    // terhapus.
 
     // Sensor EWS Sirene di Puncak Tiang
     ctx.fillStyle = '#3b82f6';

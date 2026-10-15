@@ -697,9 +697,16 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       sim_brief_3: {
         id: 'sim_brief_3',
         speakerId: 'resqy',
-        text: 'Apakah kamu sudah siap melakukan simulasi gempa bumi sekarang? Kamu bisa memilih skenario Gempa Sedang atau Gempa Besar!',
+        text: 'Apakah kamu sudah siap melakukan simulasi gempa bumi sekarang? Kamu bisa memilih skenario Gempa Sedang atau Gempa Besar, atau mempelajari dulu materi persiapan sebelum gempa!',
         expression: 'thinking',
         choices: [
+          {
+            id: 'c_learn_mitigation_prep',
+            text: 'Pelajari dulu: 3 Persiapan Sebelum Gempa (bangunan, jalur evakuasi, titik kumpul)',
+            nextNodeId: 'sim_learn_prep',
+            triggerDiscoveryModal: 0,
+            discoveryIdToMark: 'disc-earthquake-mitigation-prep',
+          },
           {
             id: 'c_start_mod',
             text: '[1] Mulai Skenario 1: Gempa Sedang (Evakuasi Tas Cepat)',
@@ -718,6 +725,29 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
             id: 'c_not_ready',
             text: 'Belum Siap, saya ingin melihat-lihat dulu',
             nextNodeId: 'sim_cancel',
+          },
+        ],
+      },
+      // Node ini muncul bila pemain memilih mempelajari materi lebih dahulu.
+      // Materi "Tiga Persiapan Sebelum Gempa" dibuka lewat
+      // `triggerDiscoveryModal: 0` (temuan pertama area ini di level2Data.ts).
+      sim_learn_prep: {
+        id: 'sim_learn_prep',
+        speakerId: 'resqy',
+        text: 'Kuk-kuuk! Bagus sekali, mempelajari persiapan sebelum gempa itu jauh lebih penting daripada sekadar berlatih saat gempa! Materi ini menjelaskan tiga hal: bangunan tahan gempa, jalur evakuasi, dan titik kumpul. Tanda kaca pembesar di atas kepalaku kini menyimpan modul itu untukmu.',
+        expression: 'happy',
+        choices: [
+          {
+            id: 'c_open_mitigation_prep',
+            text: 'Buka lagi modul 3 Persiapan Sebelum Gempa',
+            nextNodeId: 'sim_learn_prep',
+            triggerDiscoveryModal: 0,
+            discoveryIdToMark: 'disc-earthquake-mitigation-prep',
+          },
+          {
+            id: 'c_learn_ready_sim',
+            text: 'Sudah paham! Lanjut mulai simulasi gempa sekarang',
+            nextNodeId: 'sim_brief_3',
           },
         ],
       },

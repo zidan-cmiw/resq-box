@@ -1441,5 +1441,231 @@ export function EarthquakePostCoordinationIllustration() {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// SUB-KOMPONEN 15: PASCABENCANA ERUPSI — PENANGANAN ABU VULKANIK & ATAP (BNPB)
+// SUB-KOMPONEN: TIGA PERSIAPAN SEBELUM GEMPA (AREA 2 — SIMULASI TANGGAP GEMPA)
+//
+// Materi baru atas permintaan dosen pembimbing: yang harus dilakukan SEBELUM
+// gempa, yaitu (1) membangun bangunan tahan gempa, (2) menyiapkan jalur
+// evakuasi, dan (3) menyiapkan titik kumpul.
+//
+// Ilustrasi ini dibuat BARU (bukan memakai gambar "Tas Siaga 72 Jam" atau
+// gambar pascabencana) supaya gambarnya benar-benar cocok dengan isi materi,
+// sesuai aturan `illustrationType` di `level2Data.ts`.
 // ═════════════════════════════════════════════════════════════════════════════
+export function EarthquakeMitigationPrepIllustration() {
+  const [activeTab, setActiveTab] = useState<'bangunan' | 'jalur' | 'titik'>('bangunan');
+
+  const tabDetails = {
+    bangunan: {
+      title: 'BANGUNAN TAHAN GEMPA',
+      badge: 'PERSIAPAN 1',
+      color: '#38bdf8',
+      desc: 'Rangka rumah dan sekolah dibuat dari kolom serta balok BETON BERTULANG agar tidak mudah retak saat diguncang. Atap dipilih dari bahan RINGAN, dan lemari atau rak tinggi dipaku kuat ke dinding supaya tidak roboh menimpa kita.',
+    },
+    jalur: {
+      title: 'JALUR EVAKUASI',
+      badge: 'PERSIAPAN 2',
+      color: '#22c55e',
+      desc: 'Jalur evakuasi adalah rute keluar bertanda panah hijau yang selalu BEBAS dari barang. Rutenya menyusuri koridor kelas lalu menuruni tangga darurat, MENJAUH dari jendela kaca besar. Saat gempa, lift tidak boleh dipakai.',
+    },
+    titik: {
+      title: 'TITIK KUMPUL',
+      badge: 'PERSIAPAN 3',
+      color: '#f59e0b',
+      desc: 'Titik kumpul adalah tempat terbuka seperti LAPANGAN sekolah, jauh dari gedung, tiang listrik, dan pohon besar. Semua penghuni harus tahu letaknya dan berlatih berkumpul di sana dengan TERTIB.',
+    },
+  };
+
+  return (
+    <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
+      {/* Top Banner */}
+      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
+        <span className="text-[13px] sm:text-[15px] font-pixel-title text-sky-400 font-bold flex items-center gap-1.5">
+          <PixelIcon name="shield" size={14} />
+          TIGA PERSIAPAN SEBELUM GEMPA
+        </span>
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel font-semibold">
+          STANDAR BNPB &amp; BMKG
+        </span>
+      </div>
+
+      {/* SVG Canvas Area */}
+      <div className="w-full flex-1 flex items-center justify-center p-2">
+        <svg viewBox="0 0 540 220" className="w-full h-full object-contain" shapeRendering="crispEdges">
+          {/* Latar Halaman Sekolah */}
+          <rect x="0" y="0" width="540" height="220" fill="#0b0f19" />
+          <rect x="0" y="0" width="540" height="170" fill="#0f172a" />
+          <line x1="0" y1="170" x2="540" y2="170" stroke="#1e293b" strokeWidth="2" />
+          <rect x="0" y="170" width="540" height="50" fill="#1e293b" />
+
+          {/* 1. BANGUNAN TAHAN GEMPA */}
+          {activeTab === 'bangunan' && (
+            <g transform="translate(18, 12)">
+              {/* Tanah */}
+              <rect x="0" y="152" width="240" height="10" fill="#334155" />
+              {/* Badan Bangunan */}
+              <rect x="30" y="34" width="170" height="118" fill="#475569" stroke="#94a3b8" strokeWidth="2" />
+              {/* Kolom Beton Bertulang (Tulangan Kuning) */}
+              <rect x="34" y="34" width="14" height="118" fill="#1e293b" />
+              <rect x="108" y="34" width="14" height="118" fill="#1e293b" />
+              <rect x="182" y="34" width="14" height="118" fill="#1e293b" />
+              <rect x="39" y="42" width="4" height="102" fill="#facc15" />
+              <rect x="113" y="42" width="4" height="102" fill="#facc15" />
+              <rect x="187" y="42" width="4" height="102" fill="#facc15" />
+              {/* Balok Beton Bertulang Atas & Bawah */}
+              <rect x="30" y="34" width="170" height="12" fill="#334155" />
+              <rect x="39" y="36" width="152" height="4" fill="#facc15" />
+              <rect x="30" y="140" width="170" height="12" fill="#334155" />
+              {/* Jendela Kuat Rangka Kayu */}
+              <rect x="58" y="58" width="34" height="30" fill="#7dd3fc" stroke="#0f172a" strokeWidth="2" />
+              <rect x="134" y="58" width="34" height="30" fill="#7dd3fc" stroke="#0f172a" strokeWidth="2" />
+              <rect x="58" y="104" width="34" height="26" fill="#7dd3fc" stroke="#0f172a" strokeWidth="2" />
+              <rect x="134" y="104" width="34" height="26" fill="#7dd3fc" stroke="#0f172a" strokeWidth="2" />
+              {/* Atap Ringan */}
+              <polygon points="22,34 115,4 208,34" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="2" />
+              <text x="228" y="14" fill="#e2e8f0" fontSize="8" fontWeight="bold" textAnchor="end">ATAP RINGAN</text>
+              {/* Lemari Dipaku ke Dinding */}
+              <rect x="200" y="104" width="34" height="48" fill="#78350f" stroke="#f59e0b" strokeWidth="2" />
+              <line x1="200" y1="112" x2="234" y2="120" stroke="#facc15" strokeWidth="3" />
+              <line x1="200" y1="120" x2="234" y2="112" stroke="#facc15" strokeWidth="3" />
+              <text x="250" y="196" fill="#facc15" fontSize="8" fontWeight="bold" textAnchor="end">LEMARI DIPAKU KE DINDING</text>
+              <text x="115" y="184" fill="#38bdf8" fontSize="8.5" fontWeight="bold" textAnchor="middle">KOLOM &amp; BALOK BETON BERTULANG</text>
+            </g>
+          )}
+
+          {/* 2. JALUR EVAKUASI */}
+          {activeTab === 'jalur' && (
+            <g transform="translate(18, 12)">
+              {/* Lantai Koridor */}
+              <rect x="0" y="96" width="240" height="66" fill="#1e293b" />
+              <rect x="0" y="150" width="240" height="12" fill="#334155" />
+              {/* Dinding Koridor */}
+              <rect x="0" y="20" width="240" height="12" fill="#475569" />
+              {/* Pintu Keluar Hijau di Ujung Koridor */}
+              <rect x="196" y="34" width="44" height="62" fill="#15803d" stroke="#22c55e" strokeWidth="2" />
+              <rect x="214" y="46" width="12" height="26" fill="#ffffff" />
+              <polygon points="219,49 227,59 219,69" fill="#15803d" />
+              <text x="218" y="30" fill="#4ade80" fontSize="7.5" fontWeight="bold" textAnchor="middle">PINTU KELUAR</text>
+              {/* Tanda Panah Hijau Sepanjang Koridor */}
+              <polygon points="18,86 44,86 44,76 62,92 44,108 44,98 18,98" fill="#22c55e" />
+              <polygon points="74,86 100,86 100,76 118,92 100,108 100,98 74,98" fill="#22c55e" />
+              <polygon points="130,86 156,86 156,76 174,92 156,108 156,98 130,98" fill="#22c55e" />
+              {/* Tangga Darurat Turun */}
+              <rect x="0" y="108" width="14" height="10" fill="#94a3b8" />
+              <rect x="14" y="118" width="14" height="10" fill="#94a3b8" />
+              <rect x="28" y="128" width="14" height="10" fill="#94a3b8" />
+              <text x="22" y="70" fill="#cbd5e1" fontSize="7.5" fontWeight="bold" textAnchor="middle">TANGGA</text>
+              <text x="22" y="80" fill="#cbd5e1" fontSize="7.5" fontWeight="bold" textAnchor="middle">DARURAT</text>
+              {/* Lift Disilang Merah */}
+              <rect x="176" y="118" width="54" height="34" fill="#334155" stroke="#64748b" strokeWidth="2" />
+              <text x="203" y="140" fill="#cbd5e1" fontSize="9" fontWeight="bold" textAnchor="middle">LIFT</text>
+              <line x1="172" y1="114" x2="234" y2="156" stroke="#ef4444" strokeWidth="4" />
+              <text x="203" y="164" fill="#f87171" fontSize="7.5" fontWeight="bold" textAnchor="middle">JANGAN PAKAI</text>
+              <text x="203" y="173" fill="#f87171" fontSize="7.5" fontWeight="bold" textAnchor="middle">SAAT GEMPA</text>
+              {/* Jendela Kaca yang Harus Dijauhi */}
+              <rect x="60" y="34" width="40" height="26" fill="#7dd3fc" stroke="#0f172a" strokeWidth="2" />
+              <line x1="56" y1="30" x2="104" y2="64" stroke="#ef4444" strokeWidth="3" />
+              <text x="80" y="72" fill="#f87171" fontSize="7.5" fontWeight="bold" textAnchor="middle">JAUH DARI KACA</text>
+              <text x="120" y="184" fill="#22c55e" fontSize="8.5" fontWeight="bold" textAnchor="middle">KORIDOR BEBAS HAMBATAN MENUJU TANGGA DARURAT</text>
+            </g>
+          )}
+
+          {/* 3. TITIK KUMPUL */}
+          {activeTab === 'titik' && (
+            <g transform="translate(18, 12)">
+              {/* Langit & Lapangan Terbuka */}
+              <rect x="0" y="0" width="240" height="120" fill="#0f172a" />
+              <rect x="0" y="120" width="240" height="46" fill="#166534" />
+              <rect x="0" y="120" width="240" height="4" fill="#22c55e" />
+              {/* Gedung Sekolah Jauh di Belakang */}
+              <rect x="150" y="66" width="76" height="54" fill="#334155" stroke="#475569" strokeWidth="2" />
+              <rect x="160" y="76" width="14" height="14" fill="#64748b" />
+              <rect x="184" y="76" width="14" height="14" fill="#64748b" />
+              <rect x="208" y="76" width="12" height="14" fill="#64748b" />
+              {/* Tiang Listrik Disilang */}
+              <rect x="34" y="58" width="4" height="62" fill="#78350f" />
+              <rect x="24" y="66" width="24" height="4" fill="#78350f" />
+              <line x1="20" y1="54" x2="52" y2="96" stroke="#ef4444" strokeWidth="3" />
+              {/* Rambu Titik Kumpul Hijau */}
+              <rect x="96" y="30" width="44" height="44" rx="3" fill="#15803d" stroke="#ffffff" strokeWidth="2" />
+              <rect x="115" y="74" width="6" height="34" fill="#64748b" />
+              {/* Ikon Orang Berkumpul di Rambu */}
+              <rect x="107" y="42" width="6" height="8" fill="#ffffff" />
+              <rect x="105" y="52" width="10" height="10" fill="#ffffff" />
+              <rect x="123" y="42" width="6" height="8" fill="#ffffff" />
+              <rect x="121" y="52" width="10" height="10" fill="#ffffff" />
+              {/* Warga Berkumpul Tertib di Lapangan */}
+              <rect x="88" y="132" width="7" height="9" fill="#fbbf24" />
+              <rect x="86" y="142" width="11" height="12" fill="#3b82f6" />
+              <rect x="112" y="132" width="7" height="9" fill="#fbbf24" />
+              <rect x="110" y="142" width="11" height="12" fill="#22c55e" />
+              <rect x="136" y="132" width="7" height="9" fill="#fbbf24" />
+              <rect x="134" y="142" width="11" height="12" fill="#ef4444" />
+              <text x="120" y="176" fill="#4ade80" fontSize="8.5" fontWeight="bold" textAnchor="middle">LAPANGAN TERBUKA = TITIK KUMPUL</text>
+              <text x="120" y="190" fill="#fbbf24" fontSize="8" fontWeight="bold" textAnchor="middle">JAUH DARI GEDUNG, TIANG LISTRIK &amp; POHON BESAR</text>
+            </g>
+          )}
+
+          {/* Panel Deskripsi Kanan (HTML Responsif, Tidak Akan Terpotong) */}
+          <foreignObject x="266" y="10" width="264" height="200">
+            <div className="w-full h-full bg-[#111827]/95 border-2 border-slate-700/80 rounded-xl p-3 flex flex-col justify-start overflow-y-auto shadow-md">
+              <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
+                <span
+                  className="px-2 py-0.5 rounded text-[13px] font-bold text-slate-950 uppercase tracking-wider shadow-sm"
+                  style={{ backgroundColor: tabDetails[activeTab].color }}
+                >
+                  {tabDetails[activeTab].badge}
+                </span>
+              </div>
+              <h3 className="text-[13px] sm:text-[15.5px] font-bold text-slate-100 leading-snug font-sans tracking-wide mb-2 shrink-0">
+                {tabDetails[activeTab].title}
+              </h3>
+              <p className="text-[14.5px] sm:text-[15px] text-slate-200 leading-relaxed font-sans font-medium">
+                {tabDetails[activeTab].desc}
+              </p>
+            </div>
+          </foreignObject>
+        </svg>
+      </div>
+
+      {/* Button Switcher Tabs */}
+      <div className="w-full grid grid-cols-3 gap-1.5 pt-1">
+        <button
+          onClick={() => {
+            retroAudio.playSelect?.();
+            setActiveTab('bangunan');
+          }}
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'bangunan'
+            ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold'
+            : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-500'
+            }`}
+        >
+          1. BANGUNAN TAHAN GEMPA
+        </button>
+        <button
+          onClick={() => {
+            retroAudio.playSelect?.();
+            setActiveTab('jalur');
+          }}
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'jalur'
+            ? 'bg-emerald-500 text-slate-950 border-emerald-300 font-bold'
+            : 'bg-slate-800 text-emerald-300 border-slate-700 hover:border-emerald-500'
+            }`}
+        >
+          2. JALUR EVAKUASI
+        </button>
+        <button
+          onClick={() => {
+            retroAudio.playSelect?.();
+            setActiveTab('titik');
+          }}
+          className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'titik'
+            ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
+            : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
+            }`}
+        >
+          3. TITIK KUMPUL
+        </button>
+      </div>
+    </div>
+  );
+}

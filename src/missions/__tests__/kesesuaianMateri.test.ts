@@ -81,18 +81,24 @@ const KATA_BEKU: Record<number, string[]> = {
 const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
 
 /**
- * Batas untuk TTS Level 2. Area 1 tidak punya materi sama sekali, sehingga
- * kedua belas jawabannya memang tidak punya acuan.
+ * Batas untuk TTS Level 2.
  *
- * Kondisi saat ini (0 dari 60 jawaban belum diajarkan; area 1 tidak dihitung):
+ * Area 1 (Simulasi Tanggap Gempa) DULU tidak punya materi sama sekali,
+ * sehingga kedua belas jawabannya memang tidak punya acuan. Setelah dosen
+ * pembimbing meminta materi "yang harus dilakukan SEBELUM gempa", area itu
+ * kini punya satu materi ("Tiga Persiapan Sebelum Gempa": bangunan tahan
+ * gempa, jalur evakuasi, dan titik kumpul) dan KEDUA BELAS jawabannya sudah
+ * punya acuan di materi tersebut - karena itu batasnya turun dari 12 ke 0.
+ *
+ * Kondisi saat ini (0 dari 60 jawaban belum diajarkan):
   area 0 Mitigasi Gempa Bumi            0 : SELESAI
-  area 1 tanpa materi: 12 jawaban tidak punya acuan
+  area 1 Simulasi Tanggap Gempa         0 : SELESAI (materi baru, batas 12 -> 0)
   area 2 Lapangan Evakuasi Sekolah (Pasca Gempa Besar) 0 : SELESAI
   area 3 Pos Pengamatan Merapi          0 : SELESAI
   area 4 Simulasi Erupsi Merapi         0 : SELESAI
   area 5 Barak Pengungsian & Pemulihan  0 : SELESAI
  */
-const BATAS_AREA: Record<number, number> = { 0: 0, 1: 12, 2: 0, 3: 0, 4: 0, 5: 0 };
+const BATAS_AREA: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
 const besar = (s: unknown) => String(s ?? '').toUpperCase();
 

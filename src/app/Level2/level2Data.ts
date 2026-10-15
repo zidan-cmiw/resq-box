@@ -12,6 +12,7 @@ export interface DiscoveryPointL2 {
   iconName: string;
   illustrationType:
   | 'earthquake-prep'
+  | 'earthquake-mitigation-prep'
   | 'earthquake-action'
   | 'earthquake-post-safety'
   | 'earthquake-post-coordination'
@@ -154,7 +155,30 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
       accentColor: '#f59e0b',
       glowColor: 'rgba(245, 158, 11, 0.4)',
     },
-    discoveries: [],
+    discoveries: [
+      // Temuan 1 (BARU, permintaan dosen pembimbing): Tiga Persiapan SEBELUM Gempa
+      // — bangunan tahan gempa, jalur evakuasi, dan titik kumpul.
+      //
+      // Area ini sebelumnya TIDAK PUNYA materi sama sekali (`discoveries: []`),
+      // sehingga gerbangnya (l2_gate_gempa_sim) terbuka tanpa bacaan apa pun.
+      // Materi ini dibuka pemain lewat dialog Resqy (pemandu simulasi) di depan
+      // kelas — lihat `resqy_briefing_area2` di `dialogueDataL2.ts`.
+      //
+      // `illustrationType: 'earthquake-mitigation-prep'` adalah nilai BARU yang
+      // didaftarkan di `DiscoveryPointL2` di atas, karena gambar materi ini
+      // (bangunan, jalur evakuasi, titik kumpul) tidak sama dengan gambar
+      // "Tas Siaga 72 Jam" (`earthquake-prep`) maupun gambar pascabencana.
+      {
+        id: 'disc-earthquake-mitigation-prep',
+        title: 'Temuan 1: Tiga Persiapan Sebelum Gempa — Bangunan Tahan Gempa, Jalur Evakuasi & Titik Kumpul',
+        shortDesc:
+          'Gempa belum bisa diramalkan, jadi persiapan harus dilakukan SEBELUM gempa terjadi. Pertama, membangun BANGUNAN TAHAN GEMPA: kolom, balok, dan rangka beton bertulang yang kuat, atap dari bahan ringan, serta lemari, rak, dan papan tulis yang dipaku atau disekrup menempel ke dinding supaya tidak roboh menimpa kita. Kedua, menyiapkan JALUR EVAKUASI: rute keluar yang ditandai tanda panah hijau dan selalu bebas dari barang, menyusuri KORIDOR kelas lalu menuruni TANGGA darurat, serta letaknya MENJAUH dari JENDELA kaca besar, cermin, dan lemari tinggi yang mudah pecah atau jatuh. Ketiga, menyiapkan TITIK KUMPUL: tempat terbuka seperti LAPANGAN sekolah yang jauh dari gedung, tiang listrik, dan pohon besar. Supaya semua hafal, kita berlatih simulasi evakuasi secara TERTIB: saat sirine berbunyi kita MENUNDUK rendah di bawah BANGKU, melindungi KEPALA dan tengkuk dengan kedua TANGAN, lalu BERTAHAN memegang kaki meja sampai GETARAN berhenti, barulah berjalan tertib menuju titik kumpul.',
+        fact:
+          'Jalur evakuasi dan titik kumpul harus DIKENALI dan DILATIH seluruh penghuni bangunan JAUH SEBELUM gempa terjadi — bukan saat guncangan sudah berlangsung. BNPB & BMKG menekankan tiga persiapan ini agar saat gempa kita tinggal mengikuti rute yang sudah hafal, tanpa berpikir panik dan tanpa memakai lift!',
+        iconName: 'shield',
+        illustrationType: 'earthquake-mitigation-prep',
+      },
+    ],
     challenge: {
       id: 'chall-gate-simulasi',
       title: 'Ujian Akhir Simulasi: Tanggap Gempa Bumi Sekolah',

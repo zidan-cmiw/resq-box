@@ -3118,6 +3118,16 @@ export function updateGameEngineL2(
           let requiredKeys: string[] = [];
           if (state.zone.id === 'area-mitigasi-gempa' || state.currentAreaIndex === 0) {
             requiredKeys = ['l2_q_disc_prep', 'l2_q_disc_action'];
+          } else if (state.zone.id === 'area-simulasi-gempa' || state.currentAreaIndex === 1) {
+            // Area 2 (Simulasi Tanggap Gempa) kini PUNYA materi: "Tiga Persiapan
+            // Sebelum Gempa" (bangunan tahan gempa, jalur evakuasi, titik kumpul)
+            // yang dibuka lewat dialog Resqy. Sebelumnya area ini
+            // `discoveries: []`, sehingga tidak ada yang perlu diwajibkan baca.
+            // Gerbang area ini (l2_gate_gempa_sim) terbuka setelah simulasi
+            // selesai, bukan lewat objek challenge_gate; kunci ini tetap
+            // didaftarkan supaya aturan "area bermateri WAJIB terdaftar" tetap
+            // berlaku bila kelak gerbangnya dipasang kembali.
+            requiredKeys = ['disc-earthquake-mitigation-prep'];
           } else if (state.zone.id === 'area-lapangan-evakuasi' || state.currentAreaIndex === 2) {
             requiredKeys = ['disc-post-safety', 'disc-post-coordination'];
           } else if (state.zone.id === 'area-pos-pengamatan-merapi' || state.currentAreaIndex === 3) {

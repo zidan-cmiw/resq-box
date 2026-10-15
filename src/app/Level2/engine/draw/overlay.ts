@@ -4,11 +4,20 @@
 // gunung, dan prompt interaksi umum.
 //
 // Dipisahkan dari renderer.ts (Langkah 4 dari pemecahan berkas).
-// Terbukti mandiri: hanya bergantung pada ./base.
+// Terbukti mandiri: hanya bergantung pada ./base dan ../tataLetakKartuL2.
 //
-// ATURAN: hanya boleh mengimpor dari ./base.
+// ATURAN: hanya boleh mengimpor dari ./base dan ../tataLetakKartuL2.
+//   `tataLetakKartuL2` HANYA berisi angka tata letak + pembacaan skala kanvas
+//   (tanpa impor apa pun), sehingga tidak menimbulkan impor melingkar.
+//
+// CATATAN POSISI KARTU
+//   Semua kartu di berkas ini dulu digambar mulai `y = 52`–`90` sehingga
+//   TERTUTUP tracker progres Level 2 yang berada di atas tengah layar.
+//   Sekarang atasnya diambil dari `atasKartuAmanL2()` — lihat penjelasan
+//   lengkap beserta angka pengukurannya di `../tataLetakKartuL2.ts`.
 
 import { drawRealisticVolcanicSmoke } from './base';
+import { atasKartuAmanL2 } from '../tataLetakKartuL2';
 
 export function drawSimulationQteOverlay(
   ctx: CanvasRenderingContext2D,
@@ -25,7 +34,12 @@ export function drawSimulationQteOverlay(
   const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
   const cardH = isCompact ? 164 : 220;
   const cardX = cx - cardW / 2;
-  const cardY = isCompact ? 76 : Math.max(88, Math.min(125, Math.floor(viewH * 0.10)));
+  // Dulu langsung `isCompact ? 76 : ...` — terlalu tinggi sehingga judul kartu
+  // tertutup tracker progres Level 2. Lihat ../tataLetakKartuL2.ts.
+  const cardY = atasKartuAmanL2(
+    ctx,
+    isCompact ? 76 : Math.max(88, Math.min(125, Math.floor(viewH * 0.10)))
+  );
 
   ctx.save();
 
@@ -130,7 +144,12 @@ export function drawSimulationQuakeTimerOverlay(
   const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
   const cardH = isCompact ? 130 : 168;
   const cardX = cx - cardW / 2;
-  const cardY = isCompact ? 76 : Math.max(88, Math.min(125, Math.floor(viewH * 0.10)));
+  // Dulu langsung `isCompact ? 76 : ...` — terlalu tinggi sehingga tertutup
+  // tracker progres Level 2. Lihat ../tataLetakKartuL2.ts.
+  const cardY = atasKartuAmanL2(
+    ctx,
+    isCompact ? 76 : Math.max(88, Math.min(125, Math.floor(viewH * 0.10)))
+  );
 
   ctx.save();
   // Flash halus tepi layar
@@ -221,7 +240,9 @@ export function drawSimulationEvacuationPrompt(
   const cardW = Math.min(viewW - 40, Math.max(880, Math.min(1150, Math.round(viewW * 0.70))));
   const cardH = 125;
   const cardX = cx - cardW / 2;
-  const cardY = 52;
+  // Dulu tetap `52` — terlalu tinggi sehingga tertutup tracker progres Level 2.
+  // Lihat ../tataLetakKartuL2.ts.
+  const cardY = atasKartuAmanL2(ctx, 52);
 
   ctx.save();
   ctx.fillStyle = '#064e3b';

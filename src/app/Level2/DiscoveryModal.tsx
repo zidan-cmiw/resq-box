@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import type { DiscoveryPointL2 } from './level2Data';
 import { retroAudio } from '../../utils/retroAudio';
 import PixelIcon from '../../components/PixelIcon';
-import { EarthquakePrepIllustration, EarthquakeActionIllustration, EarthquakePostSafetyIllustration, EarthquakePostCoordinationIllustration } from './ilustrasi/gempa';
+import { EarthquakePrepIllustration, EarthquakeMitigationPrepIllustration, EarthquakeActionIllustration, EarthquakePostSafetyIllustration, EarthquakePostCoordinationIllustration } from './ilustrasi/gempa';
 import { VolcanoStatusIllustration, VolcanoResponseIllustration, VolcanoPostAshIllustration, VolcanoPostSanitationIllustration, VolcanoPostPyroclasticIllustration } from './ilustrasi/gunung-api';
 import { PangeaIllustration, ConvergentSubductionIllustration, CONVERGENT_LANDFORMS_DATA, ConvergentLandformsIllustration, MegathrustIllustration, SeismographPlatesIllustration, TRANSFORM_POINTS_DATA, TransformSanAndreasIllustration } from './ilustrasi/lempeng';
 
 // Ekspor ulang agar pemakai lama tetap bekerja tanpa perubahan
-export { EarthquakePrepIllustration, EarthquakeActionIllustration, EarthquakePostSafetyIllustration, EarthquakePostCoordinationIllustration } from './ilustrasi/gempa';
+export { EarthquakePrepIllustration, EarthquakeMitigationPrepIllustration, EarthquakeActionIllustration, EarthquakePostSafetyIllustration, EarthquakePostCoordinationIllustration } from './ilustrasi/gempa';
 export { VolcanoStatusIllustration, VolcanoResponseIllustration, VolcanoPostAshIllustration, VolcanoPostSanitationIllustration, VolcanoPostPyroclasticIllustration } from './ilustrasi/gunung-api';
 export { PangeaIllustration, ConvergentSubductionIllustration, CONVERGENT_LANDFORMS_DATA, ConvergentLandformsIllustration, TrenchIllustration, FoldedMountainsIllustration, VolcanoIllustration, MegathrustIllustration, SeismographPlatesIllustration, TRANSFORM_POINTS_DATA, TransformSanAndreasIllustration } from './ilustrasi/lempeng';
 
@@ -703,6 +703,13 @@ function renderIllustration(
     // ═════════════════════════════════════════════════════════════════════════
     case 'earthquake-prep':
       return <EarthquakePrepIllustration />;
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // 9b. MITIGASI GEMPA (AREA 2 SIMULASI): TIGA PERSIAPAN SEBELUM GEMPA
+    //     Bangunan tahan gempa, jalur evakuasi, dan titik kumpul.
+    // ═════════════════════════════════════════════════════════════════════════
+    case 'earthquake-mitigation-prep':
+      return <EarthquakeMitigationPrepIllustration />;
 
     // ═════════════════════════════════════════════════════════════════════════
     // 10. MITIGASI GEMPA: STANDAR DROP, COVER, HOLD ON
