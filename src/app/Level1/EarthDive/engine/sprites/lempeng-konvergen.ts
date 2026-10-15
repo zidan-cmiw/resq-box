@@ -289,7 +289,20 @@ export function renderConvergentLandMode(
   // 3. Tekstur, warna gradien, arus konveksi, dan gelembung pijar 100% SAMA PERSIS dan MENYATU
   // 4. Bebas garis pembatas/sekat seolah satu fluida magma cair murni
   // ══════════════════════════════════════════════════════════════════════
+  // Lapisan mantel & magma TIDAK digambar pada kondisi DARATAN.
+  //
+  // Koreksi dosen: tumbukan dua lempeng BENUA tidak menghasilkan subduksi, jadi
+  // penampangnya cukup memperlihatkan kerak yang terlipat menjadi pegunungan -
+  // tanpa lapisan mantel dan tanpa kantung magma di perut gunungnya.
+  //
+  // PENTING: ctx.save() dan ctx.restore() DUA-DUANYA berada di luar blok if.
+  // Percobaan pertama saya menaruh restore() di dalam if, sehingga saat penanda
+  // dimatikan jumlah save/restore tidak seimbang - transformasi gambar milik
+  // permainan rusak dan layar menjadi HITAM. Jangan diubah seperti itu lagi.
+  const GAMBAR_MANTEL_KONVERGEN = false;
+
   ctx.save();
+  if (GAMBAR_MANTEL_KONVERGEN) {
   ctx.beginPath();
   ctx.moveTo(-800, h);
   ctx.lineTo(-800, getConvergentMantleY(-800, p, 'land'));
@@ -354,6 +367,7 @@ export function renderConvergentLandMode(
   }
   ctx.stroke();
 
+  }
   ctx.restore();
 
   // ══════════════════════════════════════════════════════════════════════
@@ -476,6 +490,23 @@ export function renderConvergentLandMode(
   ctx.stroke();
   ctx.restore();
 
+  // Tubuh pegunungan digambar PADAT, menutup rongga tempat kantung magma dulu
+  // berada. Tanpa ini, melewati Layer 1 meninggalkan LUBANG HITAM di perut gunung.
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(-800, h);
+  for (let x = -800; x <= w + 400; x += 4) {
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
+  }
+  ctx.lineTo(w + 400, h);
+  ctx.closePath();
+  const batuanPadatGrad = ctx.createLinearGradient(0, 220, 0, h);
+  batuanPadatGrad.addColorStop(0, '#57534e');
+  batuanPadatGrad.addColorStop(1, '#292524');
+  ctx.fillStyle = batuanPadatGrad;
+  ctx.fill();
+  ctx.restore();
+
   // ══════════════════════════════════════════════════════════════════════
   // LAYER 5: LEMPENG BENUA KIRI (SLAB SUBDUKSI - Z-INDEX LEBIH TINGGI)
   // - Dirender SETELAH lempeng kanan dan gunung, sehingga lempeng kiri berada di atas
@@ -490,12 +521,15 @@ export function renderConvergentLandMode(
   // 5A. Tubuh Lempeng Benua Kiri (Batuan Granit, Sedimen & Batuan Dasar Menunjam)
   ctx.beginPath();
   ctx.moveTo(-800, baseY);
+  // Lempeng kiri TIDAK menukik ke bawah: tumbukan dua lempeng BENUA tidak
+  // menghasilkan subduksi. Bentuknya mengikuti PERMUKAAN TANAH dengan tebal
+  // tetap, sehingga hanya terlipat naik mengikuti pegunungan.
   for (let x = -800; x <= slabReachX; x += 4) {
-    ctx.lineTo(x, getSubductingPlateTopY(x, p));
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land'));
   }
-  ctx.lineTo(slabReachX, getSubductingPlateTopY(slabReachX, p) + plateThick);
+  ctx.lineTo(slabReachX, getConvergentTerrainElevation(slabReachX, p, 'land') + plateThick);
   for (let x = slabReachX; x >= -800; x -= 4) {
-    ctx.lineTo(x, getSubductingPlateTopY(x, p) + plateThick);
+    ctx.lineTo(x, getConvergentTerrainElevation(x, p, 'land') + plateThick);
   }
   ctx.closePath();
 
