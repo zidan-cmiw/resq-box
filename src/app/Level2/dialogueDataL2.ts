@@ -3,6 +3,8 @@
 // Menghadirkan atmosfer sekolah SMP: Guru, Siswa/Siswi, Instruktur Tanggap Bencana, dan Robot Maskot Resqy.
 // Terhubung dengan kontinuitas alur cerita Level 1 (Kembali dari Inti Bumi menuju Mitigasi Sekolah).
 
+import { MATERI_PERSIAPAN_GEMPA_ID } from './level2Data';
+
 export interface CharacterProfileL2 {
   id: string;
   name: string;
@@ -490,25 +492,66 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
         speakerId: 'ican',
         text: 'Ya bayangin aja, orang-orang lari histeris berebut pintu keluar, saling senggol, keinjak-injak, atau ketiban kaca jendela! Kalo lu panik, otak lu ngeblank dan refleks keselamatan lu buyar.',
         expression: 'serious',
+        // PERMINTAAN PEMILIK PROYEK: pada node ini SISAKAN HANYA pilihan
+        // pembuka materi. Dua pilihan obrolan lama dihapus dari sini:
+        //   - "Benar juga ya, ketenangan dan latihan drill..." (dulu -> node_4)
+        //   - "Lalu apa yang harus kita lakukan saat getaran pertama..." (dulu -> node_5)
+        // Keduanya TIDAK dihapus dari pohon dialog, hanya tidak lagi
+        // terjangkau dari sini - lihat catatan di node_4/node_5.
+        //
+        // Alur tetap maju, tidak buntu: mengklik satu-satunya pilihan menutup
+        // dialog lalu membuka modul materi (`triggerDiscoveryModal: 2`),
+        // persis pola pilihan materi Zahra & Lintang. Setelah modul ditutup
+        // pemain kembali ke ruang kelas dan bisa melanjutkan.
         choices: [
           {
-            id: 'c1',
-            text: 'Benar juga ya, ketenangan dan latihan drill membuat tindakan kita tetap terkontrol!',
-            nextNodeId: 'node_4',
-          },
-          {
-            id: 'c2',
-            text: 'Lalu apa yang harus kita lakukan saat getaran pertama mulai terasa, Ican?',
-            nextNodeId: 'node_5',
+            id: 'c_view_mitigation_prep',
+            // Satu-satunya pilihan yang tersisa pada node ini.
+            text: 'Aku ingin tahu persiapan SEBELUM gempa: bangunan tahan gempa, jalur evakuasi, dan titik kumpul!',
+            nextNodeId: 'node_open_mitigation_prep',
+            // `triggerDiscoveryModal: 2` menunjuk temuan indeks 2 di katalog
+            // area ini (`LEVEL2_AREAS[0].discoveries[2]`) — id-nya sama dengan
+            // MATERI_PERSIAPAN_GEMPA_ID. Tanpa membaca materi ini, Bu Tyas
+            // tidak akan membuka evaluasi TTS gerbang Area 1.
+            triggerDiscoveryModal: 2,
+            discoveryIdToMark: MATERI_PERSIAPAN_GEMPA_ID,
           },
         ],
       },
+      // ── NODE YANG KINI TIDAK TERJANGKAU (sengaja TIDAK dihapus) ──
+      // node_open_mitigation_prep, node_4, dan node_5 sudah tidak dapat dicapai
+      // lagi: pilihan yang menuju ke sana telah dihapus dari node_3 atas
+      // permintaan pemilik proyek ("pilihannya cuma yang ketiga aja").
+      // Node-node ini DIPERTAHANKAN agar isi percakapan lama tidak hilang dan
+      // mudah dihidupkan kembali bila nanti diperlukan.
+      node_open_mitigation_prep: {
+        id: 'node_open_mitigation_prep',
+        speakerId: 'ican',
+        text: 'Nah itu dia yang paling penting, bukan pas bumi udah goyang! Tiga persiapan sebelum gempa: bangunan tahan gempa, jalur evakuasi yang bebas hambatan, dan titik kumpul di lapangan terbuka. Tanda kaca pembesar di atas kepalaku sekarang menyimpan modul itu buat lu.',
+        expression: 'happy',
+        choices: [
+          {
+            id: 'c_reopen_mitigation_prep',
+            text: 'Buka lagi modul Tiga Persiapan Sebelum Gempa',
+            nextNodeId: 'node_open_mitigation_prep',
+            triggerDiscoveryModal: 2,
+            discoveryIdToMark: MATERI_PERSIAPAN_GEMPA_ID,
+          },
+          {
+            id: 'c_done_mitigation_prep',
+            text: 'Sudah paham! Aku lanjut menemui Bu Tyas untuk evaluasi gerbang.',
+            nextNodeId: 'node_4',
+          },
+        ],
+      },
+      // TIDAK TERJANGKAU LAGI: dulu dicapai dari pilihan [1] di node_3.
       node_4: {
         id: 'node_4',
         speakerId: 'ican',
-        text: 'Nah gitu dong, pinter! Makanya nanti di Area 2 kita bakal simulasi langsung. Sekarang lu samperin tuh Lintang di deretan meja belakang, dia punya modul aksi baku Drop-Cover-Hold On!',
+        text: 'Nah gitu dong, pinter! Makanya nanti di Area 2 kita bakal simulasi langsung. Jangan lupa baca juga modul Tiga Persiapan Sebelum Gempa dari kaca pembesarku, terus samperin tuh Lintang di deretan meja belakang, dia punya modul aksi baku Drop-Cover-Hold On!',
         expression: 'happy',
       },
+      // TIDAK TERJANGKAU LAGI: dulu dicapai dari pilihan [2] di node_3.
       node_5: {
         id: 'node_5',
         speakerId: 'ican',
@@ -611,7 +654,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       node_3: {
         id: 'node_3',
         speakerId: 'player',
-        text: 'Kami sudah mempelajari denah aman dari Zidane, Tas Siaga 72 Jam dari Zahra, ketenangan mental dari Ican, serta aksi Drop-Cover-Hold On dari Lintang, Bu Tyas!',
+        text: 'Kami sudah mempelajari denah aman dari Zidane, Tas Siaga 72 Jam dari Zahra, Tiga Persiapan Sebelum Gempa (bangunan tahan gempa, jalur evakuasi, titik kumpul) dari Ican, serta aksi Drop-Cover-Hold On dari Lintang, Bu Tyas!',
         expression: 'happy',
         nextNodeId: 'node_4',
       },
@@ -705,7 +748,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
             text: 'Pelajari dulu: 3 Persiapan Sebelum Gempa (bangunan, jalur evakuasi, titik kumpul)',
             nextNodeId: 'sim_learn_prep',
             triggerDiscoveryModal: 0,
-            discoveryIdToMark: 'disc-earthquake-mitigation-prep',
+            discoveryIdToMark: MATERI_PERSIAPAN_GEMPA_ID,
           },
           {
             id: 'c_start_mod',
@@ -742,7 +785,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
             text: 'Buka lagi modul 3 Persiapan Sebelum Gempa',
             nextNodeId: 'sim_learn_prep',
             triggerDiscoveryModal: 0,
-            discoveryIdToMark: 'disc-earthquake-mitigation-prep',
+            discoveryIdToMark: MATERI_PERSIAPAN_GEMPA_ID,
           },
           {
             id: 'c_learn_ready_sim',

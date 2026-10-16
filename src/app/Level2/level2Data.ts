@@ -31,6 +31,16 @@ export interface DiscoveryPointL2 {
   | 'transform-sanandreas';
 }
 
+// ── ID MATERI "TIGA PERSIAPAN SEBELUM GEMPA" ───────────────────────────────
+//
+// Materi ini adalah SATU materi milik Area 1 (Mitigasi Gempa Bumi), namun
+// gerbang TTS-nya juga menyebutkan kunci yang sama dengan `requiredKeys`.
+// Karena itu id-nya ditulis SEKALI di sini lalu diimpor, supaya tulisan di
+// `dialogueDataL2.ts`, `npcManagerL2.ts`, `gameEngine.ts`, dan katalog area
+// tidak pernah berbeda huruf (kunci yang salah ketik TIDAK pernah terpenuhi,
+// sehingga gerbang mustahil terbuka - dan itu tidak menimbulkan error apa pun).
+export const MATERI_PERSIAPAN_GEMPA_ID = 'disc-earthquake-mitigation-prep';
+
 export interface MiniChallengeL2 {
   id: string;
   title: string;
@@ -104,6 +114,26 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         iconName: 'zap',
         illustrationType: 'earthquake-action',
       },
+      // Temuan 3 (PINDAH ke sini dari Area 2, permintaan pemilik proyek):
+      // "Tiga Persiapan Sebelum Gempa" — bangunan tahan gempa, jalur evakuasi,
+      // dan titik kumpul. Materi ini SEBELUMNYA hanya terpasang pada Resqy di
+      // Area 2, sehingga pemain yang berada di Area 1 tidak menemukannya sama
+      // sekali. Sekarang materi ini terdaftar di katalog Area 1 (indeks 2) dan
+      // dibuka lewat Ican, yang memang membahas kepanikan & jalur evakuasi.
+      //
+      // Id-nya tetap `disc-earthquake-mitigation-prep` supaya pemain yang sudah
+      // pernah membaca materi ini di Area 2 (progres tersimpan) tidak diminta
+      // membacanya ulang, dan supaya gerbang Area 2 tidak mustahil terbuka.
+      {
+        id: MATERI_PERSIAPAN_GEMPA_ID,
+        title: 'Temuan 3: Tiga Persiapan Sebelum Gempa — Bangunan Tahan Gempa, Jalur Evakuasi & Titik Kumpul',
+        shortDesc:
+          'Gempa belum bisa diramalkan, jadi persiapan harus dilakukan SEBELUM gempa terjadi. Pertama, membangun BANGUNAN TAHAN GEMPA: kolom, balok, dan rangka beton bertulang yang kuat, atap dari bahan ringan, serta lemari, rak, dan papan tulis yang dipaku atau disekrup menempel ke dinding supaya tidak roboh menimpa kita. Kedua, menyiapkan JALUR EVAKUASI: rute keluar yang ditandai tanda panah hijau dan selalu bebas dari barang, menyusuri KORIDOR kelas lalu menuruni TANGGA darurat, serta letaknya MENJAUH dari JENDELA kaca besar, cermin, dan lemari tinggi yang mudah pecah atau jatuh. Ketiga, menyiapkan TITIK KUMPUL: tempat terbuka seperti LAPANGAN sekolah yang jauh dari gedung, tiang listrik, dan pohon besar. Supaya semua hafal, kita berlatih simulasi evakuasi secara TERTIB: saat sirine berbunyi kita MENUNDUK rendah di bawah BANGKU, melindungi KEPALA dan tengkuk dengan kedua TANGAN, lalu BERTAHAN memegang kaki meja sampai GETARAN berhenti, barulah berjalan tertib menuju titik kumpul.',
+        fact:
+          'Jalur evakuasi dan titik kumpul harus DIKENALI dan DILATIH seluruh penghuni bangunan JAUH SEBELUM gempa terjadi — bukan saat guncangan sudah berlangsung. BNPB & BMKG menekankan tiga persiapan ini agar saat gempa kita tinggal mengikuti rute yang sudah hafal, tanpa berpikir panik dan tanpa memakai lift!',
+        iconName: 'shield',
+        illustrationType: 'earthquake-mitigation-prep',
+      },
     ],
     challenge: {
       id: 'chall-gate-gempa',
@@ -156,20 +186,28 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
       glowColor: 'rgba(245, 158, 11, 0.4)',
     },
     discoveries: [
-      // Temuan 1 (BARU, permintaan dosen pembimbing): Tiga Persiapan SEBELUM Gempa
-      // — bangunan tahan gempa, jalur evakuasi, dan titik kumpul.
+      // Temuan 1: Tiga Persiapan SEBELUM Gempa — bangunan tahan gempa, jalur
+      // evakuasi, dan titik kumpul.
       //
       // Area ini sebelumnya TIDAK PUNYA materi sama sekali (`discoveries: []`),
       // sehingga gerbangnya (l2_gate_gempa_sim) terbuka tanpa bacaan apa pun.
-      // Materi ini dibuka pemain lewat dialog Resqy (pemandu simulasi) di depan
-      // kelas — lihat `resqy_briefing_area2` di `dialogueDataL2.ts`.
+      // Materi ini tetap dapat dibuka dari area ini lewat dialog Resqy
+      // (`resqy_briefing_area2` di `dialogueDataL2.ts`), jadi jalur lama tidak
+      // dihapus.
+      //
+      // CATATAN PENTING (perbaikan berikutnya): id yang SAMA kini juga terdaftar
+      // sebagai temuan indeks 2 di katalog Area 1 (`area-mitigasi-gempa`), karena
+      // materi ini sesungguhnya milik Area 1 dan pemain harus dapat menemukannya
+      // di sana. Keduanya menunjuk satu id yang sama persis, sehingga membacanya
+      // di Area 1 langsung dihitung "sudah dibaca" di Area 2 (dan sebaliknya) —
+      // materi ini tidak pernah diminta dibaca dua kali.
       //
       // `illustrationType: 'earthquake-mitigation-prep'` adalah nilai BARU yang
       // didaftarkan di `DiscoveryPointL2` di atas, karena gambar materi ini
       // (bangunan, jalur evakuasi, titik kumpul) tidak sama dengan gambar
       // "Tas Siaga 72 Jam" (`earthquake-prep`) maupun gambar pascabencana.
       {
-        id: 'disc-earthquake-mitigation-prep',
+        id: MATERI_PERSIAPAN_GEMPA_ID,
         title: 'Temuan 1: Tiga Persiapan Sebelum Gempa — Bangunan Tahan Gempa, Jalur Evakuasi & Titik Kumpul',
         shortDesc:
           'Gempa belum bisa diramalkan, jadi persiapan harus dilakukan SEBELUM gempa terjadi. Pertama, membangun BANGUNAN TAHAN GEMPA: kolom, balok, dan rangka beton bertulang yang kuat, atap dari bahan ringan, serta lemari, rak, dan papan tulis yang dipaku atau disekrup menempel ke dinding supaya tidak roboh menimpa kita. Kedua, menyiapkan JALUR EVAKUASI: rute keluar yang ditandai tanda panah hijau dan selalu bebas dari barang, menyusuri KORIDOR kelas lalu menuruni TANGGA darurat, serta letaknya MENJAUH dari JENDELA kaca besar, cermin, dan lemari tinggi yang mudah pecah atau jatuh. Ketiga, menyiapkan TITIK KUMPUL: tempat terbuka seperti LAPANGAN sekolah yang jauh dari gedung, tiang listrik, dan pohon besar. Supaya semua hafal, kita berlatih simulasi evakuasi secara TERTIB: saat sirine berbunyi kita MENUNDUK rendah di bawah BANGKU, melindungi KEPALA dan tengkuk dengan kedua TANGAN, lalu BERTAHAN memegang kaki meja sampai GETARAN berhenti, barulah berjalan tertib menuju titik kumpul.',

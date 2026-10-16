@@ -3,6 +3,7 @@
 // Mengatur penempatan NPC sekolah, patroli santai, hadap pemain saat dekat, dan deteksi interaksi radius 48px.
 
 import type { NpcWorldTypeL2 } from './npcSpritesL2';
+import { MATERI_PERSIAPAN_GEMPA_ID } from '../level2Data';
 
 export interface NpcStateL2 {
   id: string;
@@ -77,6 +78,15 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
     map.set('l2_npc_bu_rahma', zahra);
 
     // 3. Ican (Pengamat Dinamika & Jalur Evakuasi)
+    //
+    //    Ican adalah PEMBAWA MATERI AREA 1: "Tiga Persiapan Sebelum Gempa"
+    //    (bangunan tahan gempa, jalur evakuasi, titik kumpul). Tema Ican memang
+    //    kepanikan & jalur evakuasi, jadi materi ini paling masuk akal di sini.
+    //    Materi dibuka lewat pilihan dialog `c_view_mitigation_prep` di
+    //    `dito_dialogue` -> `triggerDiscoveryModal: 2` (temuan indeks 2 di
+    //    katalog `area-mitigasi-gempa`) + `discoveryIdToMark`.
+    //    `hasMaterial` + `discoveryKey` membuat lencana kaca pembesar "MATERI"
+    //    digambar di atas kepala Ican (lihat `renderer.ts`).
     const ican: NpcStateL2 = {
       id: 'l2_npc_ican',
       type: 'ican',
@@ -92,6 +102,8 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
       timer: 70,
       animFrame: 0,
       isNearPlayer: false,
+      hasMaterial: true,
+      discoveryKey: MATERI_PERSIAPAN_GEMPA_ID,
     };
     map.set(ican.id, ican);
     map.set('l2_npc_dito', ican);
@@ -144,10 +156,13 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
     // ══════════════════════════════════════════════════════════════════════
 
     // 0. Resqy (Instruktur & Pemandu Simulasi di depan kelas dekat pintu & meja guru x: 140)
-    //    Resqy juga PEMBAWA MATERI area ini: "Tiga Persiapan Sebelum Gempa"
+    //    Resqy juga PEMBAWA materi ini di Area 2: "Tiga Persiapan Sebelum Gempa"
     //    (bangunan tahan gempa, jalur evakuasi, titik kumpul). Materi itu dibuka
     //    lewat pilihan dialog `resqy_briefing_area2` -> `triggerDiscoveryModal: 0`
-    //    yang menunjuk `disc-earthquake-mitigation-prep` di `level2Data.ts`.
+    //    yang menunjuk `MATERI_PERSIAPAN_GEMPA_ID` di `level2Data.ts`.
+    //    Sejak perbaikan Area 1, materi yang SAMA juga dapat dibuka dari Ican di
+    //    Area 1; jalur Resqy ini sengaja TIDAK dihapus supaya alur simulasi lama
+    //    tetap utuh.
     map.set('l2_sim_npc_resqy', {
       id: 'l2_sim_npc_resqy',
       type: 'resqy',
@@ -164,7 +179,7 @@ export function createInitialNpcsL2(areaIndex: number): Map<string, NpcStateL2> 
       animFrame: 0,
       isNearPlayer: false,
       hasMaterial: true,
-      discoveryKey: 'disc-earthquake-mitigation-prep',
+      discoveryKey: MATERI_PERSIAPAN_GEMPA_ID,
     });
 
     // 1. Bu Tyas (Guru Kelas di depan kelas dekat papan tulis x: 200)

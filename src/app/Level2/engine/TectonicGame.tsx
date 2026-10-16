@@ -33,7 +33,7 @@ import {
   setMobileControlL2,
   resetMobileJustPressedL2,
 } from './player';
-import { LEVEL2_AREAS } from '../level2Data';
+import { LEVEL2_AREAS, MATERI_PERSIAPAN_GEMPA_ID } from '../level2Data';
 import DiscoveryModal from '../DiscoveryModal';
 import CrosswordModal from '../CrosswordModal';
 import MiniChallengeModal from '../MiniChallengeModal';
@@ -106,7 +106,7 @@ export default function TectonicGame() {
   const [showSeismographModal, setShowSeismographModal] = useState(false);
   const [showPgaWordle, setShowPgaWordle] = useState(false);
   const [isGateLockedModalOpen, setIsGateLockedModalOpen] = useState(false);
-  const [discoveryWarning, setDiscoveryWarning] = useState<{ read: number; total: number } | null>(null);
+  const [discoveryWarning, setDiscoveryWarning] = useState<{ read: number; total: number; missingTitles?: string[] } | null>(null);
 
   // Cek apakah gerbang evaluasi TTS / tantangan di area saat ini sudah berhasil diselesaikan & terbuka
   const isCurrentGateUnlocked = useCallback(() => {
@@ -567,13 +567,16 @@ export default function TectonicGame() {
           setPlayerHp(state.player.health);
         }
 
-        // Discovery count in current area (Area 1: Bu Rahma & Pak Surya, Area 3: dr. Alisa & Pak Bambang)
+        // Discovery count in current area (Area 1: Zahra, Lintang & Ican,
+        // Area 3: dr. Alisa & Pak Bambang)
         let readInArea = 0;
         if (state.currentAreaIndex === 0) {
           const hasPrep = state.discoveredPoints.has('l2_q_disc_prep') || state.discoveredPoints.has('disc-earthquake-prep');
           const hasAction = state.discoveredPoints.has('l2_q_disc_action') || state.discoveredPoints.has('disc-earthquake-action');
+          const hasMitigationPrep = hasDiscovery(state.discoveredPoints, MATERI_PERSIAPAN_GEMPA_ID);
           if (hasPrep) readInArea++;
           if (hasAction) readInArea++;
+          if (hasMitigationPrep) readInArea++;
         } else if (state.currentAreaIndex === 2) {
           if (state.discoveredPoints.has('disc-post-safety')) readInArea++;
           if (state.discoveredPoints.has('disc-post-coordination')) readInArea++;
@@ -1464,8 +1467,23 @@ export default function TectonicGame() {
             </h3>
 
             <p className="font-sans text-base sm:text-lg md:text-xl font-bold text-[#351505] leading-relaxed mb-6">
-              Kamu harus mengamati dan membaca seluruh Temuan Geologis di area ini (<span className="text-amber-800 font-extrabold">{discoveryWarning.read}/{discoveryWarning.total}</span>) terlebih dahulu sebelum membuka Evaluasi Gerbang!
+              Kamu harus mengamati dan membaca seluruh Temuan Geologis di area ini (<span className="text-amber-800 font-extrabold">{discoveryWarning.read}/{discoveryWarning.total}</span>) terlebih dahulu sebelum pintu area berikutnya boleh terbuka!
             </p>
+
+            {discoveryWarning.missingTitles && discoveryWarning.missingTitles.length > 0 && (
+              <div className="mb-6 text-left bg-amber-100/90 border-2 border-[#b45309]/60 rounded-xl p-3.5">
+                <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f] block mb-1.5">
+                  MATERI YANG BELUM DIBACA:
+                </span>
+                <ul className="list-disc pl-5 space-y-1">
+                  {discoveryWarning.missingTitles.map((judul) => (
+                    <li key={judul} className="font-sans text-[15px] sm:text-base font-bold text-[#291305] leading-snug">
+                      {judul}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <button
               onClick={() => {
@@ -1551,6 +1569,7 @@ export default function TectonicGame() {
               if (currentAreaIndex === 0) {
                 if (state.discoveredPoints.has('l2_q_disc_prep') || state.discoveredPoints.has('disc-earthquake-prep')) readInArea++;
                 if (state.discoveredPoints.has('l2_q_disc_action') || state.discoveredPoints.has('disc-earthquake-action')) readInArea++;
+                if (hasDiscovery(state.discoveredPoints, MATERI_PERSIAPAN_GEMPA_ID)) readInArea++;
               } else if (currentAreaIndex === 2) {
                 if (state.discoveredPoints.has('disc-post-safety')) readInArea++;
                 if (state.discoveredPoints.has('disc-post-coordination')) readInArea++;
@@ -1627,6 +1646,7 @@ export default function TectonicGame() {
               if (currentAreaIndex === 0) {
                 if (gameStateRef.current.discoveredPoints.has('l2_q_disc_prep') || gameStateRef.current.discoveredPoints.has('disc-earthquake-prep')) readInArea++;
                 if (gameStateRef.current.discoveredPoints.has('l2_q_disc_action') || gameStateRef.current.discoveredPoints.has('disc-earthquake-action')) readInArea++;
+                if (hasDiscovery(gameStateRef.current.discoveredPoints, MATERI_PERSIAPAN_GEMPA_ID)) readInArea++;
               } else if (currentAreaIndex === 2) {
                 if (gameStateRef.current.discoveredPoints.has('disc-post-safety')) readInArea++;
                 if (gameStateRef.current.discoveredPoints.has('disc-post-coordination')) readInArea++;

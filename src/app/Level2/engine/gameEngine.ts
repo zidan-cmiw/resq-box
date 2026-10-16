@@ -10,7 +10,7 @@ import { createPlayerL2, updatePlayerPhysicsL2 } from './player';
 import { retroAudio } from '../../../utils/retroAudio';
 import { createInitialNpcsL2, updateNpcsL2, CLASSROOM_STUDENTS_L2, type NpcStateL2 } from './npcManagerL2';
 import { DIALOGUE_TREES_L2, type DialogueTreeL2 } from '../dialogueDataL2';
-import { LEVEL2_AREAS } from '../level2Data';
+import { LEVEL2_AREAS, MATERI_PERSIAPAN_GEMPA_ID } from '../level2Data';
 import { hasDiscovery, normalizeDiscoveryIds } from './legacyIds';
 // Aturan "titik area mana yang dapat ditekan" di tracker progres. Berkas itu
 // murni (tanpa React, tanpa penyimpanan peramban), dan SENGAJA dipakai ulang di
@@ -299,7 +299,7 @@ export interface GameStateL2 {
   pendingMiniChallenge: boolean;
   nearInteractablePrompt: string | null;
   lastAutoSignId: string | null;
-  pendingDiscoveryRequired: { read: number; total: number } | null;
+  pendingDiscoveryRequired: { read: number; total: number; missingTitles?: string[] } | null;
   pendingGateLocked?: boolean;
   isAreaCompleted: boolean;
   transitionCooldown: number;
@@ -2379,7 +2379,13 @@ export function getNpcDialogueTreeL2(state: GameStateL2, npc: NpcStateL2): Dialo
       }
       const hasPrep = state.discoveredPoints.has('l2_q_disc_prep') || state.discoveredPoints.has('disc-earthquake-prep');
       const hasAction = state.discoveredPoints.has('l2_q_disc_action') || state.discoveredPoints.has('disc-earthquake-action');
-      if (!hasPrep || !hasAction) {
+      // Materi ke-3 Area 1: "Tiga Persiapan Sebelum Gempa" (bangunan tahan
+      // gempa, jalur evakuasi, titik kumpul) — dibaca lewat Ican. Inilah
+      // PENJAGA WAJIB BACA Area 1: selama materi ini belum dibaca, Bu Tyas
+      // hanya menampilkan pengingat dan TIDAK membuka Teka-Teki Silang gerbang
+      // (jadi pintu ke Area 2 juga tidak pernah terbuka).
+      const hasMitigationPrep = hasDiscovery(state.discoveredPoints, MATERI_PERSIAPAN_GEMPA_ID);
+      if (!hasPrep || !hasAction || !hasMitigationPrep) {
         return {
           id: 'kak_fajar_reminder',
           title: 'Kesiapan Ujian bersama Bu Tyas',
@@ -2389,7 +2395,7 @@ export function getNpcDialogueTreeL2(state: GameStateL2, npc: NpcStateL2): Dialo
             remind_1: {
               id: 'remind_1',
               speakerId: 'bu_tyas',
-              text: 'Halo penjelajah! Kamu perlu mempelajari materi Tas Siaga 72 Jam bersama Zahra dan Simulasi Aksi bersama Lintang terlebih dahulu sebelum menempuh evaluasi Teka-Teki Silang ini!',
+              text: 'Halo penjelajah! Kamu perlu mempelajari TIGA materi di ruang kelas ini terlebih dahulu sebelum menempuh evaluasi Teka-Teki Silang:\n\n1. Tas Siaga Bencana 72 Jam — bersama Zahra\n2. Aksi Drop, Cover, Hold On — bersama Lintang\n3. Tiga Persiapan Sebelum Gempa: bangunan tahan gempa, jalur evakuasi & titik kumpul — bersama Ican\n\nBaca dulu materi Tiga Persiapan Sebelum Gempa ya, materi itu yang paling sering terlewat!',
               expression: 'normal',
             },
           },
@@ -3264,17 +3270,26 @@ export function updateGameEngineL2(
           // Ada uji otomatis yang memastikan setiap area BERMATERI terdaftar.
           let requiredKeys: string[] = [];
           if (state.zone.id === 'area-mitigasi-gempa' || state.currentAreaIndex === 0) {
-            requiredKeys = ['l2_q_disc_prep', 'l2_q_disc_action'];
+            // Area 1 (Mitigasi Gempa Bumi) punya TIGA materi wajib:
+            //   1. Tas Siaga 72 Jam          -> Zahra  (`l2_q_disc_prep`)
+            //   2. Drop, Cover, Hold On      -> Lintang (`l2_q_disc_action`)
+            //   3. Tiga Persiapan Sebelum Gempa (bangunan tahan gempa, jalur
+            //      evakuasi, titik kumpul)   -> Ican   (MATERI_PERSIAPAN_GEMPA_ID)
+            // Materi ke-3 ini sebelumnya hanya terpasang di Area 2 (Resqy),
+            // sehingga pemain Area 1 tidak menemukannya DAN gerbang Area 1
+            // terbuka tanpa membacanya. Sekarang materi itu menjadi syarat
+            // gerbang Area 1, jadi tidak bisa dilewati.
+            requiredKeys = ['l2_q_disc_prep', 'l2_q_disc_action', MATERI_PERSIAPAN_GEMPA_ID];
           } else if (state.zone.id === 'area-simulasi-gempa' || state.currentAreaIndex === 1) {
-            // Area 2 (Simulasi Tanggap Gempa) kini PUNYA materi: "Tiga Persiapan
-            // Sebelum Gempa" (bangunan tahan gempa, jalur evakuasi, titik kumpul)
-            // yang dibuka lewat dialog Resqy. Sebelumnya area ini
-            // `discoveries: []`, sehingga tidak ada yang perlu diwajibkan baca.
+            // Area 2 (Simulasi Tanggap Gempa) memakai materi yang sama
+            // ("Tiga Persiapan Sebelum Gempa") yang kini juga terdaftar di
+            // katalog Area 1. Sebelumnya area ini `discoveries: []`, sehingga
+            // tidak ada yang perlu diwajibkan baca.
             // Gerbang area ini (l2_gate_gempa_sim) terbuka setelah simulasi
             // selesai, bukan lewat objek challenge_gate; kunci ini tetap
             // didaftarkan supaya aturan "area bermateri WAJIB terdaftar" tetap
             // berlaku bila kelak gerbangnya dipasang kembali.
-            requiredKeys = ['disc-earthquake-mitigation-prep'];
+            requiredKeys = [MATERI_PERSIAPAN_GEMPA_ID];
           } else if (state.zone.id === 'area-lapangan-evakuasi' || state.currentAreaIndex === 2) {
             requiredKeys = ['disc-post-safety', 'disc-post-coordination'];
           } else if (state.zone.id === 'area-pos-pengamatan-merapi' || state.currentAreaIndex === 3) {
@@ -3286,6 +3301,10 @@ export function updateGameEngineL2(
           }
 
           let readCount = 0;
+          // Judul singkat materi yang BELUM dibaca, dipakai untuk menyebut nama
+          // materinya di pesan penolakan - supaya siswa tahu persis apa yang
+          // harus dibaca, bukan hanya jumlahnya.
+          const judulBelumDibaca: string[] = [];
           const totalCount = requiredKeys.length;
           for (const key of requiredKeys) {
             if (key === 'l2_q_disc_prep' && (state.discoveredPoints.has('l2_q_disc_prep') || state.discoveredPoints.has('disc-earthquake-prep'))) {
@@ -3294,6 +3313,9 @@ export function updateGameEngineL2(
               readCount++;
             } else if (hasDiscovery(state.discoveredPoints, key)) {
               readCount++;
+            } else {
+              const judul = LEVEL2_AREAS[state.currentAreaIndex]?.discoveries?.find((d) => d.id === key)?.title;
+              if (judul) judulBelumDibaca.push(judul.replace(/^Temuan \d+:\s*/, ''));
             }
           }
 
@@ -3301,7 +3323,11 @@ export function updateGameEngineL2(
             state.nearInteractablePrompt = `Baca Semua Materi Pembelajaran Dulu (${readCount}/${totalCount})!`;
             if (input.interactJustPressed) {
               retroAudio.playError();
-              state.pendingDiscoveryRequired = { read: readCount, total: totalCount };
+              state.pendingDiscoveryRequired = {
+                read: readCount,
+                total: totalCount,
+                missingTitles: judulBelumDibaca,
+              };
             }
           } else {
             state.nearInteractablePrompt = 'Tekan [E] atau Tap untuk Membuka Teka-Teki Silang Gerbang';
@@ -3407,12 +3433,55 @@ export function updateGameEngineL2(
           }
         } else {
           // Area 1: Mitigasi Gempa Bumi
+          //
+          // Dua lapis penjaga materi wajib baca:
+          //   1. Materi belum lengkap -> pintu menolak sambil MENYEBUT nama
+          //      materinya ("Baca dulu materi Tiga Persiapan Sebelum Gempa").
+          //   2. Materi lengkap tetapi TTS belum tuntas -> perilaku lama
+          //      (pesan TTS) tetap dipertahankan.
+          // Penjagaan utamanya tetap di Bu Tyas (`getNpcDialogueTreeL2`), yang
+          // TIDAK membuka TTS sebelum ketiga materi dibaca - jadi pintu ini
+          // tidak akan pernah terbuka sebelum materi dibaca.
+          const daftarMateriArea1: { kunci: string; sudahDibaca: boolean; judul: string }[] = [
+            {
+              kunci: 'l2_q_disc_prep',
+              sudahDibaca: state.discoveredPoints.has('l2_q_disc_prep') || state.discoveredPoints.has('disc-earthquake-prep'),
+              judul: 'Kesiapsiagaan & Tas Siaga Bencana (72 Jam)',
+            },
+            {
+              kunci: 'l2_q_disc_action',
+              sudahDibaca: state.discoveredPoints.has('l2_q_disc_action') || state.discoveredPoints.has('disc-earthquake-action'),
+              judul: 'Aksi Keselamatan Gempa (Merunduk, Berlindung, Bertahan)',
+            },
+            {
+              kunci: MATERI_PERSIAPAN_GEMPA_ID,
+              sudahDibaca: hasDiscovery(state.discoveredPoints, MATERI_PERSIAPAN_GEMPA_ID),
+              judul: 'Tiga Persiapan Sebelum Gempa — Bangunan Tahan Gempa, Jalur Evakuasi & Titik Kumpul',
+            },
+          ];
+          const materiKurangArea1 = daftarMateriArea1.filter((m) => !m.sudahDibaca);
+          const totalMateriArea1 = daftarMateriArea1.length;
+          const dibacaArea1 = totalMateriArea1 - materiKurangArea1.length;
+
           if (state.unlockedGates.has('l2_gate_gempa')) {
             state.nearInteractablePrompt = 'Tekan [E] untuk Masuk ke Ruang Simulasi Gempa (Area 2)';
             if (input.interactJustPressed) {
               input.interactJustPressed = false;
               retroAudio.playPowerup();
               switchAreaL2(state, 1, true);
+            }
+          } else if (materiKurangArea1.length > 0) {
+            // Sebut nama materi yang belum dibaca langsung di prompt pintu.
+            const judulKurang = materiKurangArea1.map((m) => m.judul.split(' — ')[0]);
+            state.nearInteractablePrompt = `Pintu Terkunci — Baca dulu materi ${judulKurang.join(' & ')} (${dibacaArea1}/${totalMateriArea1})`;
+            if (input.interactJustPressed) {
+              input.interactJustPressed = false;
+              retroAudio.playError();
+              state.pendingDiscoveryRequired = {
+                read: dibacaArea1,
+                total: totalMateriArea1,
+                missingTitles: materiKurangArea1.map((m) => m.judul),
+              };
             }
           } else {
             state.nearInteractablePrompt = 'Pintu Terkunci (Selesaikan Evaluasi TTS Bersama Bu Tyas Terlebih Dahulu)';
