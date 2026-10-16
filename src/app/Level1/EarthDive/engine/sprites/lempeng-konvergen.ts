@@ -546,33 +546,20 @@ export function renderConvergentLandMode(
   ctx.restore();
   ctx.restore();
 
-  // Rumput Hijau Subur pada Permukaan Lempeng Kanan & Lereng Gunung
-  // (dibungkus save/restore SENDIRI agar jumlah save/restore tetap seimbang:
-  //  Layer 3 membuka satu save di atas, jadi penggambaran tambahan di sini
-  //  tidak boleh menumpang state itu.)
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(contactX, getConvergentLandSurfaceY(contactX, p));
-  for (let x = contactX; x <= w + 400; x += 4) {
-    ctx.lineTo(x, getConvergentLandSurfaceY(x, p));
-  }
-  ctx.lineTo(w + 400, baseY + 4);
-  for (let x = w + 400; x >= contactX; x -= 4) {
-    ctx.lineTo(x, getConvergentLandSurfaceY(x, p) + 4);
-  }
-  ctx.closePath();
-  ctx.fillStyle = '#15803d';
-  ctx.fill();
-
-  ctx.strokeStyle = '#22c55e';
-  ctx.lineWidth = 2.0;
-  ctx.beginPath();
-  ctx.moveTo(contactX, getConvergentLandSurfaceY(contactX, p));
-  for (let x = contactX; x <= w + 400; x += 4) {
-    ctx.lineTo(x, getConvergentLandSurfaceY(x, p));
-  }
-  ctx.stroke();
-  ctx.restore();
+  // Rumput di sini SUDAH TIDAK digambar lagi (dipindah ke Layer 5, blok 5C).
+  //
+  // AKAR MASALAH "tebal rumput tidak seragam" (diperbaiki di sini):
+  //   Dulu rumput digambar DUA KALI — sekali di sini (lempeng kanan + lereng
+  //   gunung) dan sekali lagi di Layer 5 (dataran lempeng kiri). Gambar di sini
+  //   letaknya SEBELUM dua badan tanah cokelat yang menutupi seluruh permukaan:
+  //   Layer 4 ("tubuh pegunungan digambar PADAT", di bawah) dan Layer 5 (badan
+  //   lempeng kiri). Keduanya memakai fill TANAH_COKLAT dari garis permukaan ke
+  //   bawah, sehingga pita rumput 4 px + garis 2 px di sini tertimpa habis dan
+  //   yang tersisa hanya ±1 px teratas garis #22c55e. Itu sebabnya rumput di
+  //   lereng gunung terlihat TIPIS (2 px) sedangkan di dataran lempeng kiri
+  //   terlihat TEBAL (10 px pada skala kamera 1,83).
+  //   Sekarang rumput digambar SATU KALI saja di akhir Layer 5 (blok 5C), yaitu
+  //   SESUDAH semua badan tanah, sehingga tebalnya seragam di seluruh permukaan.
 
   // Tubuh pegunungan digambar PADAT, menutup rongga tempat kantung magma dulu
   // berada. Tanpa ini, melewati Layer 1 meninggalkan LUBANG HITAM di perut gunung.
@@ -666,14 +653,42 @@ export function renderConvergentLandMode(
     ctx.fillRect(sx, sy, 2, 2);
   }
 
-  // 5C. Rumput Hijau Subur pada Dataran Lempeng Barat (TERTUTUP PENUH SAMPAI contactX)
+  // 5D. Kontak Alami Batuan pada Bidang Lipatan Kerak di Bawah Gunung
+  //
+  // Dipindah KE ATAS blok rumput 5C: garis ini tepat berada DI garis permukaan
+  // (y = getLeftPlateSurfaceY(x)), jadi kalau digambar sesudah rumput ia
+  // menggelapkan pita rumput di lereng gunung dan tebalnya jadi terlihat
+  // berbeda dari dataran.
+  ctx.strokeStyle = 'rgba(30, 22, 16, 0.40)';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  for (let x = contactX; x <= slabReachX; x += 4) {
+    const y = getLeftPlateSurfaceY(x);
+    if (x === contactX) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // 5C. RUMPUT PERMUKAAN — SATU KALI, MENDATAR SERAGAM DI SELURUH PERMUKAAN
+  //
+  // FIX (tebal rumput tidak seragam): dulu blok ini hanya menggambar rumput
+  // dari x = -800 sampai contactX (dataran lempeng kiri), sedangkan rumput
+  // lempeng kanan + lereng gunung digambar di Layer 3 — SEBELUM badan tanah
+  // cokelat Layer 4 & Layer 5, sehingga tertimpa dan tinggal ±1 px.
+  // Sekarang di sinilah SATU-SATUNYA tempat rumput digambar, yaitu SESUDAH
+  // seluruh badan tanah, dan membentang dari -800 sampai w + 400 mengikuti
+  // getLeftPlateSurfaceY() yang sama dengan permukaan tanah yang dipijak
+  // pemain. Karena pita rumput memakai jarak tetap 4 px tegak lurus ke bawah
+  // dari garis permukaan (bukan per segmen bertumpuk), tebalnya sama di
+  // dataran maupun di lereng gunung.
+  const rumputReachX = w + 400;
   ctx.beginPath();
   ctx.moveTo(-800, getLeftPlateSurfaceY(-800));
-  for (let x = -800; x <= contactX; x += 4) {
+  for (let x = -800; x <= rumputReachX; x += 4) {
     ctx.lineTo(x, getLeftPlateSurfaceY(x));
   }
-  ctx.lineTo(contactX, getLeftPlateSurfaceY(contactX) + 4);
-  for (let x = contactX; x >= -800; x -= 4) {
+  ctx.lineTo(rumputReachX, getLeftPlateSurfaceY(rumputReachX) + 4);
+  for (let x = rumputReachX; x >= -800; x -= 4) {
     ctx.lineTo(x, getLeftPlateSurfaceY(x) + 4);
   }
   ctx.closePath();
@@ -684,7 +699,7 @@ export function renderConvergentLandMode(
   ctx.lineWidth = 2.0;
   ctx.beginPath();
   ctx.moveTo(-800, getLeftPlateSurfaceY(-800));
-  for (let x = -800; x <= contactX; x += 4) {
+  for (let x = -800; x <= rumputReachX; x += 4) {
     ctx.lineTo(x, getLeftPlateSurfaceY(x));
   }
   ctx.stroke();
@@ -700,17 +715,6 @@ export function renderConvergentLandMode(
       ctx.fillRect(px + 1, py, 2, 2);
     }
   }
-
-  // 5D. Kontak Alami Batuan pada Bidang Lipatan Kerak di Bawah Gunung
-  ctx.strokeStyle = 'rgba(30, 22, 16, 0.40)';
-  ctx.lineWidth = 1.8;
-  ctx.beginPath();
-  for (let x = contactX; x <= slabReachX; x += 4) {
-    const y = getLeftPlateSurfaceY(x);
-    if (x === contactX) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.stroke();
 
   ctx.restore();
 
@@ -736,15 +740,26 @@ export function renderConvergentLandMode(
 
   // ══════════════════════════════════════════════════════════════════════
   // LAYER 7: INDIKATOR VEKTOR GERAKAN LEMPENG (JELAS, EDUKATIF & BERANIMASI)
+  // Dua panah ini menunjuk KE TITIK TUMBUKAN dan KEDUANYA MENDATAR:
+  //   - Lempeng kiri  : → (ke kanan), sejajar pergeseran leftShiftX = p * 80 px
+  //   - Lempeng kanan : ← (ke kiri)
+  // Tidak ada panah yang menunjam ke bawah di mode DARATAN, karena tumbukan
+  // dua lempeng BENUA tidak menghasilkan subduksi (koreksi dosen).
   // ══════════════════════════════════════════════════════════════════════
-  // Panah 1: Lempeng kiri menunjam miring ke kanan bawah (↘)
+  // Panah 1: Lempeng kiri bergerak mendatar ke kanan (→) menuju titik tumbukan
+  //
+  // FIX (arah panah salah): sudutnya dulu (Math.PI / 180) * 28, yaitu miring
+  // 28° ke KANAN BAWAH (↘), sehingga terbaca seolah lempeng kiri menunjam ke
+  // bawah. Padahal lempeng kiri hanya bergeser MENDATAR ke kanan
+  // (leftShiftX = p * 80 px, tanpa pergeseran vertikal sama sekali), jadi
+  // panahnya harus 0 radian — mendatar ke kanan pada SEMUA nilai p.
   const leftArrowX = curveStartX + 30;
   const leftArrowY = getSubductingPlateTopY(leftArrowX, p) + 40;
   drawPlateVectorArrow(
     ctx,
     leftArrowX,
     leftArrowY,
-    (Math.PI / 180) * 28,
+    0, // 0 radian = mendatar ke kanan (dulu: 28° ke kanan bawah)
     42,
     '',
     '#38bdf8',
