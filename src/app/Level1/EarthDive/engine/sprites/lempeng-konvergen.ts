@@ -115,6 +115,40 @@ export function getConvergentSeafloorProfile(x: number, p: number): number {
 // ══════════════════════════════════════════════════════════════════════════
 const TANAH_COKLAT = '#4a3c2e';
 
+// ══════════════════════════════════════════════════════════════════════════
+// DUA LEMPENG BENUA: SATU RONA COKLAT PER LEMPENG (MASING-MASING SERAGAM)
+//
+// Permintaan pemilik proyek (dengan tangkapan layar kondisi DARATAN):
+//   "ini di area konvergen yang kondisi daratan kamu kasih lempeng deh".
+//
+// AKAR MASALAH: seluruh badan tanah — lempeng barat (kiri), lempeng timur
+// (kanan), dan badan pegunungan — memakai satu warna TANAH_COKLAT yang sama
+// persis. Kedua lempeng karena itu MELEBUR menjadi satu gundukan tanah rata:
+// di layar tidak ada satu pun batas yang bisa dibaca siswa, sehingga mustahil
+// melihat bahwa ada DUA lempeng yang saling menekan.
+//
+// PERBAIKAN: lempeng barat tetap TANAH_COKLAT, lempeng timur memakai rona
+// coklat yang lebih terang, dan bidang tumbukannya diberi garis tegas (lihat
+// GARIS_BIDANG_TUMBUKAN di blok 5E). Warna di dalam MASING-MASING lempeng tetap
+// SATU warna rata — tidak ada gradien sama sekali — jadi permintaan sebelumnya
+// ("tekstur tanah disamakan, bukan abu-abu bergradasi") tetap dipenuhi. Yang
+// berbeda hanya ANTAR lempeng, tepat seperti yang diizinkan pemilik proyek.
+//
+// Angka rona (diperiksa dengan getImageData pada halaman uji):
+//   lempeng kiri  #4a3c2e = rgb(74, 60, 46)   (tidak diubah dari sebelumnya)
+//   lempeng kanan #685440 = rgb(104, 84, 64)  (≈40% lebih terang, HUE SAMA —
+//     perbandingan kanal 1 : 0,81 : 0,62 persis seperti #4a3c2e — jadi tetap
+//     terbaca sebagai "tanah coklat" yang sama, hanya ronanya lebih terang)
+// ══════════════════════════════════════════════════════════════════════════
+const TANAH_LEMPENG_KIRI = TANAH_COKLAT; // #4a3c2e
+const TANAH_LEMPENG_KANAN = '#685440';
+
+// Garis batas bidang tumbukan (suture): garis gelap tegas + garis terang tipis
+// di sisi baratnya, supaya terbaca sebagai DUA benda padat yang saling menekan,
+// bukan sebagai satu bidang tanah yang rata.
+const GARIS_BIDANG_TUMBUKAN = 'rgba(32, 22, 13, 0.85)';
+const GARIS_BIDANG_TUMBUKAN_SISI = 'rgba(150, 123, 92, 0.45)';
+
 // ── TEKSTUR BUTIR TANAH: DICAP SEKALI KE UBIN KECIL, LALU DIPAKAI SEBAGAI POLA ──
 //
 // AKAR MASALAH NGELAG DI KONDISI DARATAN (diperbaiki di sini):
@@ -487,27 +521,53 @@ export function renderConvergentLandMode(
     return px <= contactX ? (getLeftPlateSurfaceY(px) + plateThick) : (getConvergentLandSurfaceY(px, p) + plateThick);
   };
 
-  ctx.beginPath();
-  // Jalur atas: dari -800 ke w + 400 mengikuti dasar lempeng tektonik
-  ctx.moveTo(-800, getPlateBottomY(-800));
-  for (let x = -800; x <= w + 400; x += 6) {
-    ctx.lineTo(x, getPlateBottomY(x));
-  }
-  // Jalur bawah: dari w + 400 kembali ke -800 mengikuti permukaan mantel
-  // Menggunakan Math.max(getPlateBottomY(x), getConvergentMantleY(x, p, 'land'))
-  // sehingga di area magma naik ke perut gunung, ketebalan litosfer menjadi 0 secara mulus tanpa celah kosong.
-  for (let x = w + 400; x >= -800; x -= 6) {
-    const pBottom = getPlateBottomY(x);
-    const mTop = getConvergentMantleY(x, p, 'land');
-    ctx.lineTo(x, Math.max(pBottom, mTop));
-  }
-  ctx.closePath();
+  // ── DIPISAH DI BIDANG TUMBUKAN (x = contactX) MENJADI DUA BAGIAN ──
+  //
+  // Dulu seluruh lapisan ini satu jalur dengan SATU warna TANAH_COKLAT. Sekarang
+  // sengaja dibelah tepat di garis tumbukan supaya bagian bawah tiap lempeng
+  // memakai rona lempengnya sendiri (kiri #4a3c2e, kanan #685440). Batasnya
+  // vertikal persis di contactX, jadi warnanya menyambung lurus dengan badan
+  // lempeng di atasnya: dari permukaan tanah sampai dasar layar, sisi barat satu
+  // rona dan sisi timur rona lain — itulah yang membuat DUA lempeng terbaca.
+  //
+  // Bentuk jalurnya TIDAK diubah: rumus getPlateBottomY() dan
+  // Math.max(getPlateBottomY, getConvergentMantleY) tetap sama persis, hanya
+  // rentang x-nya dibelah dua.
+  const jalurBawahLitosfer = (x0: number, x1: number): void => {
+    ctx.moveTo(x0, getPlateBottomY(x0));
+    for (let x = x0; x <= x1; x += 6) {
+      ctx.lineTo(x, getPlateBottomY(x));
+    }
+    // Jalur bawah: kembali mengikuti permukaan mantel memakai
+    // Math.max(getPlateBottomY(x), getConvergentMantleY(x, p, 'land'))
+    // sehingga di area magma naik ke perut gunung, ketebalan litosfer menjadi 0
+    // secara mulus tanpa celah kosong.
+    for (let x = x1; x >= x0; x -= 6) {
+      const pBottom = getPlateBottomY(x);
+      const mTop = getConvergentMantleY(x, p, 'land');
+      ctx.lineTo(x, Math.max(pBottom, mTop));
+    }
+    ctx.closePath();
+  };
 
-  // Satu warna cokelat rata (dulu gradien #382b21 → #1b130e yang gelap-terang)
-  ctx.fillStyle = TANAH_COKLAT;
+  // (a) Bagian barat: rona LEMPENG KIRI
+  ctx.beginPath();
+  jalurBawahLitosfer(-800, contactX);
+  ctx.fillStyle = TANAH_LEMPENG_KIRI;
   ctx.fill();
 
-  // Clip agar tekstur butiran hanya berada di dalam litosfer padat
+  // (b) Bagian timur: rona LEMPENG KANAN
+  ctx.beginPath();
+  jalurBawahLitosfer(contactX, w + 400);
+  ctx.fillStyle = TANAH_LEMPENG_KANAN;
+  ctx.fill();
+
+  // Clip agar tekstur butiran hanya berada di dalam litosfer padat.
+  // Satu jalur berisi DUA sub-jalur (barat + timur) => clip-nya gabungan
+  // keduanya, sehingga butiran tanah tetap SATU kali digambar merata.
+  ctx.beginPath();
+  jalurBawahLitosfer(-800, contactX);
+  jalurBawahLitosfer(contactX, w + 400);
   ctx.clip();
 
   // Butiran tanah halus yang seragam (dulu: garis strata melengkung besar)
@@ -532,8 +592,11 @@ export function renderConvergentLandMode(
   }
   ctx.closePath();
 
-  // Satu warna cokelat rata — SAMA dengan lempeng kiri dan seluruh badan tanah
-  ctx.fillStyle = TANAH_COKLAT;
+  // ── LEMPENG BENUA KANAN: rona coklat yang lebih terang ──
+  // Dulu TANAH_COKLAT yang sama persis dengan lempeng kiri, sehingga kedua
+  // lempeng melebur jadi satu gundukan tanah rata (keluhan pemilik proyek).
+  // Tetap SATU warna rata tanpa gradien, hanya berbeda dari lempeng kiri.
+  ctx.fillStyle = TANAH_LEMPENG_KANAN;
   ctx.fill();
 
   // Garis Lipatan Tektonik Antiklinal (5 lipatan) DIHAPUS.
@@ -561,23 +624,53 @@ export function renderConvergentLandMode(
   //   Sekarang rumput digambar SATU KALI saja di akhir Layer 5 (blok 5C), yaitu
   //   SESUDAH semua badan tanah, sehingga tebalnya seragam di seluruh permukaan.
 
-  // Tubuh pegunungan digambar PADAT, menutup rongga tempat kantung magma dulu
-  // berada. Tanpa ini, melewati Layer 1 meninggalkan LUBANG HITAM di perut gunung.
+  // Tubuh pegunungan + seluruh badan tanah bawah digambar PADAT, menutup rongga
+  // tempat kantung magma dulu berada. Tanpa ini, melewati Layer 1 (mantel yang
+  // sengaja dimatikan di mode daratan) meninggalkan LUBANG HITAM / celah tembus
+  // pandang di perut gunung dan di bawah dasar lempeng.
+  //
+  // PENTING (perbaikan "lempeng tidak terlihat"): jalur ini DULU satu jalur dari
+  // x = -800 sampai w + 400 dengan SATU warna TANAH_COKLAT, sehingga seluruh
+  // badan tanah — termasuk badan lempeng kiri (Layer 5) dan lempeng kanan
+  // (Layer 3) — tertimpa rata oleh warna yang sama. Itulah sebabnya di layar
+  // hanya tampak SATU gundukan coklat tanpa batas lempeng.
+  //
+  // Sekarang jalur ini DIBELAH DUA tepat di contactX: bagian barat memakai rona
+  // LEMPENG KIRI (#4a3c2e), bagian timur memakai rona LEMPENG KANAN (#685440).
+  // Keduanya tetap satu warna rata (tanpa gradien) dan tetap menutup rapat
+  // seluruh badan tanah dari garis permukaan sampai dasar layar — jadi tidak ada
+  // celah tembus pandang, tetapi sekarang ada BATAS LEMPENG yang jelas.
+  const jalurBadanTanah = (x0: number, x1: number): void => {
+    ctx.moveTo(x0, getConvergentLandSurfaceY(x0, p));
+    for (let x = x0; x <= x1; x += 4) {
+      ctx.lineTo(x, getConvergentLandSurfaceY(x, p));
+    }
+    ctx.lineTo(x1, h);
+    ctx.lineTo(x0, h);
+    ctx.closePath();
+  };
+
   ctx.save();
+  // (a) Lempeng benua KIRI: dari tepi barat peta sampai bidang tumbukan
   ctx.beginPath();
-  ctx.moveTo(-800, h);
-  for (let x = -800; x <= w + 400; x += 4) {
-    ctx.lineTo(x, getConvergentLandSurfaceY(x, p));
-  }
-  ctx.lineTo(w + 400, h);
-  ctx.closePath();
-  // Satu warna cokelat rata untuk SELURUH badan tanah (dulu gradien
-  // #4a3f35 → #2a1f16 yang membuat bagian atas terang dan bawah gelap).
-  ctx.fillStyle = TANAH_COKLAT;
+  jalurBadanTanah(-800, contactX);
+  ctx.fillStyle = TANAH_LEMPENG_KIRI;
   ctx.fill();
 
-  // Butiran tanah halus seragam di badan tanah (pengganti gradien & garis strata)
+  // (b) Lempeng benua KANAN + gunung hasil lipatan: dari bidang tumbukan ke timur
+  ctx.beginPath();
+  jalurBadanTanah(contactX, w + 400);
+  ctx.fillStyle = TANAH_LEMPENG_KANAN;
+  ctx.fill();
+
+  // Butiran tanah halus seragam di badan tanah (pengganti gradien & garis strata).
+  // Clip = gabungan kedua sub-jalur di atas, dan butirannya tetap SATU kali
+  // digambar menerus dari barat ke timur supaya teksturnya identik di KEDUA
+  // lempeng — yang berbeda hanya rona coklatnya, bukan teksturnya.
   ctx.save();
+  ctx.beginPath();
+  jalurBadanTanah(-800, contactX);
+  jalurBadanTanah(contactX, w + 400);
   ctx.clip();
   gambarButirTanah(ctx, -800, w + 400, 240, h, 37);
   ctx.restore();
@@ -592,7 +685,18 @@ export function renderConvergentLandMode(
   //   sehingga pergerakan lempeng tektonik tampak jelas dan hidup.
   // ══════════════════════════════════════════════════════════════════════
   ctx.save();
-  const slabReachX = contactX + 260 + Math.round(p * 45);
+  // UJUNG TIMUR LEMPENG KIRI = BIDANG TUMBUKAN (contactX).
+  //
+  // Dulu ujungnya contactX + 260 + p * 45, yaitu 260..305 px MELEWATI titik
+  // tumbukan sehingga badan lempeng kiri menutupi lereng kiri gunung (milik
+  // lempeng kanan) dan warna kedua lempeng saling menimpa — salah satu sebab
+  // "lempengnya tidak terlihat sebagai lempeng". Sekarang ujungnya berhenti
+  // TEPAT di contactX, jadi batas barat/timur berupa bidang vertikal yang tegas
+  // dan kedua lempeng terbaca sebagai dua benda yang saling menekan.
+  // Lempeng kiri TIDAK menunjam ke bawah (tidak ada subduksi di mode daratan):
+  // permukaan dan alasnya tetap mendatar, hanya bergeser ke kanan sejauh
+  // leftShiftX = p * 80 px.
+  const slabReachX = contactX;
 
   // 5A. Tubuh Lempeng Benua Kiri (Batuan Granit, Sedimen & Batuan Dasar Terlipat)
   ctx.beginPath();
@@ -610,8 +714,9 @@ export function renderConvergentLandMode(
   }
   ctx.closePath();
 
-  // Satu warna cokelat rata — SAMA PERSIS dengan seluruh badan tanah lainnya
-  ctx.fillStyle = TANAH_COKLAT;
+  // Rona LEMPENG KIRI: satu warna rata (#4a3c2e). Sengaja TIDAK sama dengan
+  // lempeng kanan (#685440) supaya kedua lempeng bisa dibedakan.
+  ctx.fillStyle = TANAH_LEMPENG_KIRI;
   ctx.fill();
 
   // 5B. Garis Strata Internal Lempeng Kiri (4 lapisan strata) DIHAPUS.
@@ -653,21 +758,12 @@ export function renderConvergentLandMode(
     ctx.fillRect(sx, sy, 2, 2);
   }
 
-  // 5D. Kontak Alami Batuan pada Bidang Lipatan Kerak di Bawah Gunung
-  //
-  // Dipindah KE ATAS blok rumput 5C: garis ini tepat berada DI garis permukaan
-  // (y = getLeftPlateSurfaceY(x)), jadi kalau digambar sesudah rumput ia
-  // menggelapkan pita rumput di lereng gunung dan tebalnya jadi terlihat
-  // berbeda dari dataran.
-  ctx.strokeStyle = 'rgba(30, 22, 16, 0.40)';
-  ctx.lineWidth = 1.8;
-  ctx.beginPath();
-  for (let x = contactX; x <= slabReachX; x += 4) {
-    const y = getLeftPlateSurfaceY(x);
-    if (x === contactX) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.stroke();
+  // 5D. (DIPINDAH) Garis kontak batuan di bidang lipatan DULU digambar di sini,
+  // yaitu garis gelap tipis mengikuti lereng kiri gunung dari contactX sampai
+  // slabReachX. Karena ujung lempeng kiri sekarang berhenti tepat di contactX,
+  // garis itu tidak punya panjang lagi; sebagai gantinya dipakai GARIS BIDANG
+  // TUMBUKAN yang jauh lebih tegas di blok 5E (sesudah rumput), sebab itulah
+  // penanda utama "dua lempeng bertumbukan" yang diminta pemilik proyek.
 
   // 5C. RUMPUT PERMUKAAN — SATU KALI, MENDATAR SERAGAM DI SELURUH PERMUKAAN
   //
@@ -715,6 +811,40 @@ export function renderConvergentLandMode(
       ctx.fillRect(px + 1, py, 2, 2);
     }
   }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // 5E. GARIS BIDANG TUMBUKAN (SUTURE) — PENANDA UTAMA DUA LEMPENG
+  //
+  // Ini jawaban langsung atas keluhan pemilik proyek "ini di area konvergen yang
+  // kondisi daratan kamu kasih lempeng deh": satu garis gelap tegas di
+  // x = contactX, dari garis permukaan sampai dasar layar, dengan garis terang
+  // tipis di sisi baratnya. Fungsinya membuat mata langsung membaca DUA benda
+  // padat yang saling menekan (bidang kontak), bukan satu bidang tanah rata —
+  // tanpa perlu menggambar mantel, magma, subduksi, atau gunung berapi.
+  //
+  // Garisnya VERTIKAL (tidak miring ke bawah) supaya tidak terbaca sebagai
+  // penunjaman/subduksi: lempeng kiri hanya bergeser MENDATAR ke kanan
+  // (leftShiftX = p * 80 px) dan tidak menukik sama sekali.
+  //
+  // Digambar SESUDAH blok 5C (rumput) supaya tidak tertimpa pita rumput, dan
+  // sengaja TIDAK memakai save/restore karena tidak mengubah transformasi,
+  // globalAlpha, maupun globalCompositeOperation — hanya strokeStyle/lineWidth.
+  // ══════════════════════════════════════════════════════════════════════
+  const bidangTumbukanTopY = getLeftPlateSurfaceY(contactX);
+  // Sisi barat: garis terang tipis (tepi lempeng kiri yang tertancap)
+  ctx.strokeStyle = GARIS_BIDANG_TUMBUKAN_SISI;
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(contactX - 3.5, bidangTumbukanTopY);
+  ctx.lineTo(contactX - 3.5, h);
+  ctx.stroke();
+  // Sumbu bidang tumbukan: garis gelap tegas
+  ctx.strokeStyle = GARIS_BIDANG_TUMBUKAN;
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(contactX, bidangTumbukanTopY);
+  ctx.lineTo(contactX, h);
+  ctx.stroke();
 
   ctx.restore();
 
