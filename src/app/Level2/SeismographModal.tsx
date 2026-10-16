@@ -132,18 +132,18 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md select-none animate-fadeIn font-pixel">
       {/* Board Kontainer Bergaya Perkamen Retro */}
-      <div className="relative w-full max-w-5xl xl:max-w-6xl bg-[#fef3c7] border-4 sm:border-[5px] border-[#451a03] rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-7 shadow-[0_12px_0_#1c0d02] text-[#451a03] font-pixel max-h-[96vh] overflow-y-auto">
+      <div className="relative w-full max-w-5xl xl:max-w-6xl bg-paper border-4 sm:border-[5px] border-ink rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-7 shadow-[0_12px_0_#1c0d02] text-on-accent-chip font-pixel max-h-[96vh] overflow-y-auto">
         {/* Header Modal */}
-        <div className="flex items-center justify-between border-b-3 border-[#78350f] pb-3 sm:pb-4 mb-3 sm:mb-4">
+        <div className="flex items-center justify-between border-b-3 border-paper-border pb-3 sm:pb-4 mb-3 sm:mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-700/20 border-2 border-orange-700 flex items-center justify-center shrink-0 shadow-inner">
               <PixelIcon name="volcano" size={24} className="text-orange-800" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#451a03] font-pixel-title font-bold tracking-wide">
+              <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl text-on-accent-chip font-pixel-title font-bold tracking-wide">
                 SEISMOGRAF &amp; 4 BENTUK GELOMBANG STATUS MERAPI
               </h2>
-              <p className="text-[13px] sm:text-[15px] font-sans font-bold text-[#78350f] mt-0.5">
+              <p className="text-[13px] sm:text-[15px] font-sans font-bold text-on-paper-soft mt-0.5">
                 Laboratorium Pos Pengamatan Gunung Api (PGA) PVMBG • Badan Geologi KESDM
               </p>
             </div>
@@ -153,7 +153,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_#451a03] shrink-0 transition-colors font-medium"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_var(--shadow-accent-deep)] shrink-0 transition-colors font-medium"
             title="Tutup"
           >
             <PixelIcon name="cross" size={18} />
@@ -170,7 +170,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
             className={`px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl border-2 font-pixel-title text-[13px] sm:text-[15px] cursor-pointer transition-all flex items-center gap-2 ${
               activeTab === 'waveforms'
                 ? 'bg-orange-600 text-amber-50 border-orange-800 shadow-[0_3px_0_#7c2d12] font-bold'
-                : 'bg-amber-200/80 text-[#78350f] border-amber-800/40 hover:bg-amber-200'
+                : 'bg-amber-200/80 text-on-paper-soft border-amber-800/40 hover:bg-amber-200'
             }`}
           >
             <PixelIcon name="chart" size={16} />
@@ -184,7 +184,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
             className={`px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl border-2 font-pixel-title text-[13px] sm:text-[15px] cursor-pointer transition-all flex items-center gap-2 ${
               activeTab === 'comparison'
                 ? 'bg-orange-600 text-amber-50 border-orange-800 shadow-[0_3px_0_#7c2d12] font-bold'
-                : 'bg-amber-200/80 text-[#78350f] border-amber-800/40 hover:bg-amber-200'
+                : 'bg-amber-200/80 text-on-paper-soft border-amber-800/40 hover:bg-amber-200'
             }`}
           >
             <PixelIcon name="search" size={16} />
@@ -198,7 +198,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
             className={`px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl border-2 font-pixel-title text-[13px] sm:text-[15px] cursor-pointer transition-all flex items-center gap-2 ${
               activeTab === 'instrument'
                 ? 'bg-orange-600 text-amber-50 border-orange-800 shadow-[0_3px_0_#7c2d12] font-bold'
-                : 'bg-amber-200/80 text-[#78350f] border-amber-800/40 hover:bg-amber-200'
+                : 'bg-amber-200/80 text-on-paper-soft border-amber-800/40 hover:bg-amber-200'
             }`}
           >
             <PixelIcon name="gear" size={16} />
@@ -207,7 +207,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
         </div>
 
         {/* Visual Content Canvas Area */}
-        <div className="w-full bg-[#0c0a09] border-3 sm:border-4 border-[#78350f] rounded-xl sm:rounded-2xl overflow-hidden relative mb-3 sm:mb-4 p-3 sm:p-5 shadow-inner">
+        <div className="w-full bg-ink border-3 sm:border-4 border-paper-border rounded-xl sm:rounded-2xl overflow-hidden relative mb-3 sm:mb-4 p-3 sm:p-5 shadow-inner">
           {/* ═══════════════════════════════════════════════════════════════════ */}
           {/* TAB 1: 4 BENTUK GELOMBANG STATUS INTERAKTIF                         */}
           {/* ═══════════════════════════════════════════════════════════════════ */}
@@ -225,7 +225,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                     className={`py-2.5 px-3 rounded-xl border-2 text-[13px] sm:text-[15px] font-pixel-title cursor-pointer transition-all flex items-center justify-center gap-2 ${
                       activeStatusLvl === st.lvl
                         ? 'text-white border-white shadow-[0_3px_0_rgba(0,0,0,0.5)] font-bold scale-[1.02]'
-                        : 'text-slate-300 border-slate-700 bg-slate-900/80 hover:border-slate-500'
+                        : 'text-on-chrome border-outline-variant bg-slate-900/80 hover:border-outline'
                     }`}
                     style={{
                       backgroundColor: activeStatusLvl === st.lvl ? st.color : undefined,
@@ -238,12 +238,12 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
               </div>
 
               {/* Monitor Tampilan Seismogram Gelombang */}
-              <div className="w-full bg-slate-950 border-2 border-slate-800 rounded-xl p-3 sm:p-4 shadow-inner relative overflow-hidden">
+              <div className="w-full bg-chrome border-2 border-outline-variant rounded-xl p-3 sm:p-4 shadow-inner relative overflow-hidden">
                 {/* Header Oscilloscope */}
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-2.5 flex-wrap gap-2">
+                <div className="flex items-center justify-between border-b border-outline-variant pb-2.5 mb-2.5 flex-wrap gap-2">
                   <div className="flex items-center gap-2.5">
                     <span className="w-3.5 h-3.5 rounded-full animate-ping" style={{ backgroundColor: currentStatus.color }} />
-                    <span className="text-[13px] sm:text-base font-pixel-title font-bold text-slate-100">
+                    <span className="text-[13px] sm:text-base font-pixel-title font-bold text-on-chrome">
                       REKAMAN SEISMOGRAM: {currentStatus.name}
                     </span>
                   </div>
@@ -279,19 +279,19 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                 </svg>
 
                 {/* 3 Kartu Indikator Teknis Yang Jelas & Terbaca */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-3 pt-3 border-t border-slate-800">
-                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5">
-                    <span className="text-[13px] sm:text-[15px] font-bold text-slate-300 block mb-1">AMPLITUDO GETARAN</span>
-                    <span className="font-sans text-base sm:text-lg font-bold text-slate-100">{currentStatus.amplitude}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-3 pt-3 border-t border-outline-variant">
+                  <div className="bg-chrome border border-outline-variant rounded-xl p-3.5">
+                    <span className="text-[13px] sm:text-[15px] font-bold text-on-chrome block mb-1">AMPLITUDO GETARAN</span>
+                    <span className="font-sans text-base sm:text-lg font-bold text-on-chrome">{currentStatus.amplitude}</span>
                   </div>
-                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5">
-                    <span className="text-[13px] sm:text-[15px] font-bold text-slate-300 block mb-1">KERAPATAN GELOMBANG</span>
+                  <div className="bg-chrome border border-outline-variant rounded-xl p-3.5">
+                    <span className="text-[13px] sm:text-[15px] font-bold text-on-chrome block mb-1">KERAPATAN GELOMBANG</span>
                     <span className="font-sans text-base sm:text-lg font-bold" style={{ color: currentStatus.color }}>
                       {currentStatus.frequency}
                     </span>
                   </div>
-                  <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5">
-                    <span className="text-[13px] sm:text-[15px] font-bold text-slate-300 block mb-1">RADIUS ZONA BAHAYA</span>
+                  <div className="bg-chrome border border-outline-variant rounded-xl p-3.5">
+                    <span className="text-[13px] sm:text-[15px] font-bold text-on-chrome block mb-1">RADIUS ZONA BAHAYA</span>
                     <span className="font-sans text-[15px] sm:text-base font-bold text-amber-300 leading-tight block">
                       {currentStatus.hazardNote}
                     </span>
@@ -299,8 +299,8 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                 </div>
 
                 {/* Deskripsi Karakteristik Magma */}
-                <div className="mt-3 bg-slate-900/90 border border-slate-800 rounded-xl p-3.5">
-                  <p className="font-sans text-[15px] sm:text-base md:text-[19px] text-slate-100 leading-relaxed font-medium">
+                <div className="mt-3 bg-slate-900/90 border border-outline-variant rounded-xl p-3.5">
+                  <p className="font-sans text-[15px] sm:text-base md:text-[19px] text-on-chrome leading-relaxed font-medium">
                     <strong className="text-amber-400 font-bold">Deskripsi Geologis:</strong> {currentStatus.desc}
                   </p>
                 </div>
@@ -313,23 +313,23 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
           {/* ═══════════════════════════════════════════════════════════════════ */}
           {activeTab === 'comparison' && (
             <div className="w-full flex flex-col gap-3">
-              <div className="bg-slate-900 border border-slate-700 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <div className="bg-chrome border border-outline-variant rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                 <span className="text-[13px] sm:text-[15px] font-pixel-title text-amber-300 font-bold">
                   KOMPARASI KERAPATAN GELOMBANG SEISMOGRAM (LEVEL I - IV)
                 </span>
-                <span className="text-[13px] font-sans text-slate-300 font-semibold">
+                <span className="text-[13px] font-sans text-on-chrome font-semibold">
                   Prinsip: Dari atas (Normal) ke bawah (Awas), gelombang semakin rapat dan padat!
                 </span>
               </div>
 
               {/* 4 Strip Gelombang Ditumpuk Vertikal Persis Gambar Sketsa 2 */}
-              <div className="flex flex-col gap-3 bg-slate-950 p-3 sm:p-4 rounded-xl border border-slate-800">
+              <div className="flex flex-col gap-3 bg-chrome p-3 sm:p-4 rounded-xl border border-outline-variant">
                 {/* 1. Normal (Atas) - Landai Renggang */}
                 <div className="flex items-center gap-3">
                   <span className="w-24 sm:w-28 text-[13px] font-pixel-title font-bold text-emerald-400 shrink-0">
                     [I] NORMAL:
                   </span>
-                  <svg viewBox="0 0 600 36" className="w-full h-9 bg-slate-900 rounded-lg border border-slate-800">
+                  <svg viewBox="0 0 600 36" className="w-full h-9 bg-chrome rounded-lg border border-outline-variant">
                     <line x1="0" y1="18" x2="600" y2="18" stroke="#334155" strokeWidth="1" strokeDasharray="3 3" />
                     <path
                       d={generateSeismoPath(600, 36, 1)}
@@ -339,7 +339,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                       strokeLinecap="round"
                     />
                   </svg>
-                  <span className="px-2.5 py-1 rounded-md bg-emerald-950 text-emerald-300 text-[13px] font-sans font-bold border border-emerald-800 shrink-0">
+                  <span className="px-2.5 py-1 rounded-md bg-emerald-950 text-emerald-300 text-[13px] font-sans font-bold border border-success shrink-0">
                     Sangat Renggang
                   </span>
                 </div>
@@ -349,7 +349,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                   <span className="w-24 sm:w-28 text-[13px] font-pixel-title font-bold text-yellow-400 shrink-0">
                     [II] WASPADA:
                   </span>
-                  <svg viewBox="0 0 600 36" className="w-full h-9 bg-slate-900 rounded-lg border border-slate-800">
+                  <svg viewBox="0 0 600 36" className="w-full h-9 bg-chrome rounded-lg border border-outline-variant">
                     <line x1="0" y1="18" x2="600" y2="18" stroke="#334155" strokeWidth="1" strokeDasharray="3 3" />
                     <path
                       d={generateSeismoPath(600, 36, 2)}
@@ -369,7 +369,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                   <span className="w-24 sm:w-28 text-[13px] font-pixel-title font-bold text-orange-400 shrink-0">
                     [III] SIAGA:
                   </span>
-                  <svg viewBox="0 0 600 36" className="w-full h-9 bg-slate-900 rounded-lg border border-slate-800">
+                  <svg viewBox="0 0 600 36" className="w-full h-9 bg-chrome rounded-lg border border-outline-variant">
                     <line x1="0" y1="18" x2="600" y2="18" stroke="#334155" strokeWidth="1" strokeDasharray="3 3" />
                     <path
                       d={generateSeismoPath(600, 36, 3)}
@@ -389,7 +389,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
                   <span className="w-24 sm:w-28 text-[13px] font-pixel-title font-bold text-red-400 shrink-0">
                     [IV] AWAS:
                   </span>
-                  <svg viewBox="0 0 600 36" className="w-full h-9 bg-slate-900 rounded-lg border border-red-900">
+                  <svg viewBox="0 0 600 36" className="w-full h-9 bg-chrome rounded-lg border border-red-900">
                     <line x1="0" y1="18" x2="600" y2="18" stroke="#334155" strokeWidth="1" strokeDasharray="3 3" />
                     <path
                       d={generateSeismoPath(600, 36, 4)}
@@ -413,12 +413,12 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
           {activeTab === 'instrument' && (
             <div className="w-full flex flex-col gap-4">
               {/* DIAGRAM BESAR INSTRUMEN SEISMOGRAF DENGAN ZONA TERPISAH BERSIH */}
-              <div className="w-full bg-slate-950 p-4 sm:p-5 rounded-2xl border-2 border-slate-700 shadow-xl flex flex-col items-center">
-                <div className="w-full flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+              <div className="w-full bg-chrome p-4 sm:p-5 rounded-2xl border-2 border-outline-variant shadow-xl flex flex-col items-center">
+                <div className="w-full flex items-center justify-between pb-2 mb-2 border-b border-outline-variant">
                   <span className="text-[13px] sm:text-[15px] font-pixel-title text-amber-300 font-bold">
                     BAGIAN-BAGIAN UTAMA ALAT SEISMOGRAF MEKANIK
                   </span>
-                  <span className="text-[13px] font-sans text-slate-400 font-semibold">
+                  <span className="text-[13px] font-sans text-on-surface-variant font-semibold">
                     Prinsip: Kelembaman (Inersia) Beban Berat
                   </span>
                 </div>
@@ -544,45 +544,45 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
               </div>
 
               {/* 3 URAIAN CARA KERJA DENGAN FONT BESAR & JELAS */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-slate-100 font-sans">
-                <div className="bg-slate-900 border-2 border-amber-500/40 p-4 rounded-xl shadow-md">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-on-chrome font-sans">
+                <div className="bg-chrome border-2 border-amber-500/40 p-4 rounded-xl shadow-md">
                   <div className="flex items-center gap-2 mb-2.5">
-                    <span className="w-7 h-7 rounded-full bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-[15px]">
+                    <span className="w-7 h-7 rounded-full bg-amber-500 text-on-accent-chip font-bold flex items-center justify-center text-[15px]">
                       1
                     </span>
                     <h4 className="font-pixel-title text-amber-300 font-bold text-[15px] sm:text-base">
                       PRINSIP HUKUM KELEMBAMAN
                     </h4>
                   </div>
-                  <p className="text-slate-200 text-[15px] sm:text-[17px] leading-relaxed font-medium">
+                  <p className="text-on-chrome text-[15px] sm:text-[17px] leading-relaxed font-medium">
                     Saat tanah bergetar akibat desakan magma, <strong>Bandul Berat (Inersia)</strong> cenderung <strong>TETAP DIAM</strong> di tempatnya karena sifat kelembaman massanya.
                   </p>
                 </div>
 
-                <div className="bg-slate-900 border-2 border-sky-500/40 p-4 rounded-xl shadow-md">
+                <div className="bg-chrome border-2 border-sky-500/40 p-4 rounded-xl shadow-md">
                   <div className="flex items-center gap-2 mb-2.5">
-                    <span className="w-7 h-7 rounded-full bg-sky-500 text-slate-950 font-bold flex items-center justify-center text-[15px]">
+                    <span className="w-7 h-7 rounded-full bg-sky-500 text-on-accent-chip font-bold flex items-center justify-center text-[15px]">
                       2
                     </span>
                     <h4 className="font-pixel-title text-sky-300 font-bold text-[15px] sm:text-base">
                       PENCATATAN PADA DRUM
                     </h4>
                   </div>
-                  <p className="text-slate-200 text-[15px] sm:text-[17px] leading-relaxed font-medium">
+                  <p className="text-on-chrome text-[15px] sm:text-[17px] leading-relaxed font-medium">
                     <strong>Drum kertas berputar terus-menerus</strong> dan ikut bergerak bersama tanah. <strong>Pena Stylus</strong> yang terhubung ke bandul akan otomatis menggoreskan garis gelombang getaran.
                   </p>
                 </div>
 
-                <div className="bg-slate-900 border-2 border-emerald-500/40 p-4 rounded-xl shadow-md">
+                <div className="bg-chrome border-2 border-emerald-500/40 p-4 rounded-xl shadow-md">
                   <div className="flex items-center gap-2 mb-2.5">
-                    <span className="w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold flex items-center justify-center text-[15px]">
+                    <span className="w-7 h-7 rounded-full bg-emerald-500 text-on-accent-chip font-bold flex items-center justify-center text-[15px]">
                       3
                     </span>
                     <h4 className="font-pixel-title text-emerald-300 font-bold text-[15px] sm:text-base">
                       SENSOR GEOFON &amp; TELEMETRI
                     </h4>
                   </div>
-                  <p className="text-slate-200 text-[15px] sm:text-[17px] leading-relaxed font-medium">
+                  <p className="text-on-chrome text-[15px] sm:text-[17px] leading-relaxed font-medium">
                     Di puncak Merapi, getaran mikro dideteksi oleh <strong>Sensor Geofon</strong> dan ditransmisikan lewat <strong>antena radio telemetri</strong> langsung ke monitor Pos Pengamatan PVMBG 24 jam!
                   </p>
                 </div>
@@ -592,23 +592,23 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
         </div>
 
         {/* Kotak Materi Edukasi & Fakta Kunci (Teks Jelas, Besar & Kontras) */}
-        <div className="bg-[#fef9c3] p-4 sm:p-6 rounded-2xl border-3 border-[#b45309]/60 shadow-md text-[#291305] space-y-2.5 sm:space-y-3.5">
+        <div className="bg-paper-deep p-4 sm:p-6 rounded-2xl border-3 border-[#b45309]/60 shadow-md text-on-paper space-y-2.5 sm:space-y-3.5">
           <div className="flex items-center gap-2.5 flex-wrap">
-            <span className="px-3.5 py-1.5 rounded-lg bg-[#b45309] text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow">
+            <span className="px-3.5 py-1.5 rounded-lg bg-accent-chip text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow">
               MATERI PEMBELAJARAN
             </span>
-            <span className="text-[15px] sm:text-base font-pixel font-bold text-[#78350f]">
+            <span className="text-[15px] sm:text-base font-pixel font-bold text-on-paper-soft">
               HUBUNGAN KERAPATAN GELOMBANG DENGAN TINGKAT STATUS MERAPI
             </span>
           </div>
-          <p className="font-sans text-base sm:text-lg md:text-[21px] leading-relaxed text-[#291305] font-semibold">
+          <p className="font-sans text-base sm:text-lg md:text-[21px] leading-relaxed text-on-paper font-semibold">
             Semakin dekat magma ke permukaan kawah, getaran tanah akan terekam <strong>semakin rapat dan padat</strong> pada kertas seismogram. Saat gunung berapi mencapai <strong>Status Level IV (AWAS)</strong>, grafik berubah menjadi <strong>Tremor Menerus (Continuous Tremor)</strong> yang sangat rapat tiada henti!
           </p>
           <div className="pt-3 border-t-2 border-[#b45309]/25 flex items-start gap-3">
-            <span className="px-3 py-1.5 rounded-lg bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[13px] sm:text-[15px] font-bold shrink-0 mt-0.5">
+            <span className="px-3 py-1.5 rounded-lg bg-amber-700/20 text-on-paper-soft border border-[#b45309]/40 font-pixel-title text-[13px] sm:text-[15px] font-bold shrink-0 mt-0.5">
               FAKTA KUNCI
             </span>
-            <p className="font-sans text-[15px] sm:text-base md:text-lg leading-relaxed text-[#451a03] font-bold italic">
+            <p className="font-sans text-[15px] sm:text-base md:text-lg leading-relaxed text-on-accent-chip font-bold italic">
               "Bentuk gelombang yang SANGAT RAPAT dan BERAMPLITUDO TINGGI KONTINU adalah ciri khas Status AWAS. Ingat bentuk ini saat menjawab kuis pintu keluar nanti!"
             </p>
           </div>
@@ -621,7 +621,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
               retroAudio.playSelect();
               onClose();
             }}
-            className="px-8 py-3 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all font-medium"
+            className="px-8 py-3 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 border-ink shadow-[0_5px_0_var(--shadow-ink)] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all font-medium"
           >
             <PixelIcon name="check" size={20} className="text-amber-200" />
             <span>SAYA MENGERTI!</span>

@@ -148,7 +148,7 @@ const JourneyProgressTracker = forwardRef<
         {/* ── TRACK BAR CONTAINER DENGAN AVATAR MARKER & CHECKPOINT NODES ── */}
         <div className="relative pt-11 sm:pt-13 pb-5 sm:pb-6 px-3 sm:px-4">
           {/* 1. Track Bar Kapsul */}
-          <div className="relative h-4 sm:h-5 rounded-full bg-slate-950/90 border-2 border-slate-700 shadow-[0_4px_12px_rgba(0,0,0,0.85),inset_0_2px_4px_rgba(0,0,0,0.9)]">
+          <div className="relative h-4 sm:h-5 rounded-full bg-slate-950/90 border-2 border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.85),inset_0_2px_4px_rgba(0,0,0,0.9)]">
             {/* Dynamic Progress Fill Bar */}
             <div
               ref={fillBarRef}
@@ -208,17 +208,17 @@ const JourneyProgressTracker = forwardRef<
                       isCompleted
                         ? 'bg-emerald-600 border-2.5 border-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.95)] text-emerald-100 scale-100'
                         : isCurrent
-                          ? 'bg-gradient-to-b from-amber-400 to-amber-600 border-2.5 border-yellow-200 shadow-[0_0_16px_rgba(251,191,36,1)] text-slate-950 scale-115 animate-pulse'
-                          : 'bg-slate-900/95 border-2 border-slate-600/90 text-slate-300 opacity-80 hover:opacity-100 hover:scale-105'
+                          ? 'bg-gradient-to-b from-amber-400 to-amber-600 border-2.5 border-yellow-200 shadow-[0_0_16px_rgba(251,191,36,1)] text-on-accent-chip scale-115 animate-pulse'
+                          : 'bg-slate-900/95 border-2 border-slate-600/90 text-on-chrome opacity-80 hover:opacity-100 hover:scale-105'
                     }`}
                     title={`${area.name} (${area.metricLabel})`}
                   >
                     {isCompleted ? (
                       <PixelIcon name="check" size={13} className="text-white drop-shadow-sm" />
                     ) : isCurrent ? (
-                      <PixelIcon name={area.iconName} size={15} className="text-slate-950" />
+                      <PixelIcon name={area.iconName} size={15} className="text-on-accent-chip" />
                     ) : (
-                      <PixelIcon name={area.iconName} size={12} className="text-slate-300" />
+                      <PixelIcon name={area.iconName} size={12} className="text-on-chrome" />
                     )}
                   </div>
 
@@ -323,7 +323,7 @@ const JourneyProgressTracker = forwardRef<
                       ? 'text-yellow-300 font-extrabold tracking-wide'
                       : isCompleted
                         ? 'text-emerald-300 font-bold'
-                        : 'text-slate-300 font-semibold'
+                        : 'text-on-chrome font-semibold'
                   }`}
                   style={{
                     left: `${((idx + 0.5) / totalAreas) * 100}%`,
@@ -352,7 +352,7 @@ const JourneyProgressTracker = forwardRef<
               {/* Lingkaran Avatar Mini Siswa */}
               <div
                 ref={markerAvatarRef}
-                className="w-8 h-8 sm:w-9.5 sm:h-9.5 rounded-full border-2.5 border-cyan-300 bg-slate-950 shadow-[0_0_14px_rgba(56,189,248,1)] overflow-hidden flex items-center justify-center shrink-0 transition-transform duration-75"
+                className="w-8 h-8 sm:w-9.5 sm:h-9.5 rounded-full border-2.5 border-cyan-300 bg-chrome shadow-[0_0_14px_rgba(56,189,248,1)] overflow-hidden flex items-center justify-center shrink-0 transition-transform duration-75"
               >
                 <PixelAvatarRenderer
                   config={avatarConfig}

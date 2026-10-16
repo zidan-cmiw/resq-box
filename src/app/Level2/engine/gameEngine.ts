@@ -112,6 +112,29 @@ export type VolcanoSimPhaseL2 =
   | 'qte_truck_evac'
   | 'failed';
 
+/**
+ * Fase simulasi erupsi yang PESANNYA sudah tampil di KARTU KANVAS bagian atas.
+ *
+ * MENGAPA DAFTAR INI ADA
+ *   Pesan fase (`state.nearInteractablePrompt`) tampil sebagai popup kecil di
+ *   bagian BAWAH layar (elemen HTML "floating interaction hint"). Untuk
+ *   fase-fase di bawah ini, pesan yang sama SUDAH ada di kartu simulasi atas,
+ *   sehingga popup bawah itu hanya mengulang dan menutupi pandangan pemain:
+ *     • fase3_siaga_prep_evac → kartu status gunung memuat perintahnya
+ *     • fase4_awas_siren      → kartu sirine memuat jarak + tombol [E]
+ *     • fase4_awas_rescue /
+ *       qte_rescue_villagers  → kartu evakuasi memuat hitungan warga + [E]
+ *   Daftar ini dipakai `TectonicGame.tsx` untuk tidak menggambar popup bawah
+ *   pada fase-fase tersebut. Isi pesannya TIDAK dihapus dari mesin, supaya
+ *   tetap menjadi satu-satunya sumber teks bagi kartu kanvas.
+ */
+export const FASE_PESAN_DI_KARTU_L2: ReadonlySet<VolcanoSimPhaseL2> = new Set<VolcanoSimPhaseL2>([
+  'fase3_siaga_prep_evac',
+  'fase4_awas_siren',
+  'fase4_awas_rescue',
+  'qte_rescue_villagers',
+]);
+
 export interface BirdParticleL2 {
   x: number;
   y: number;

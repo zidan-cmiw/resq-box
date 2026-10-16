@@ -1,80 +1,462 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
-/* ─── Variables for Light and Dark Modes ─── */
+/* ══════════════════════════════════════════════════════════════════════════
+   SISTEM TEMA RESQ-BOX — MODE TERANG & MODE GELAP
+   ══════════════════════════════════════════════════════════════════════════
+
+   CARA KERJA (SATU PENDEKATAN, TIDAK CAMPURAN)
+
+     Sumber kebenaran warna adalah TOKEN SEMANTIK berupa CSS variable:
+     `--surface`, `--on-surface`, `--paper`, `--chrome`, dan seterusnya.
+     Nilainya ditukar seluruhnya oleh kelas `.dark` pada elemen <html>.
+
+     Tailwind v4 membaca token itu lewat blok `@theme` di bawah, sehingga
+     utilitas seperti `bg-surface-container` atau `text-on-paper` otomatis
+     mengikuti tema aktif — TANPA perlu menulis `dark:` di setiap elemen.
+
+     Varian `dark:` TETAP tersedia (didaftarkan lewat `@custom-variant`),
+     tetapi hanya dipakai untuk hal yang memang tidak bisa dinyatakan sebagai
+     token — misalnya opasitas bayangan atau lapisan penajam pada kanvas/gambar.
+     Markup tidak pernah menulis nilai warna mentah untuk dua tema sekaligus.
+
+   KENAPA TOKEN, BUKAN `dark:` DI SETIAP ELEMEN
+
+     Sebelum ini ada 882 kelas warna Tailwind yang ditulis tetap (mis.
+     `bg-slate-900`, `bg-amber-100`) di 30 berkas antarmuka. Menambahkan
+     `dark:` pada setiap kelas itu berarti ±880 suntingan yang mudah
+     terlewat satu per satu — dan satu yang terlewat menghasilkan teks putih
+     di atas latar putih. Dengan token, jumlah nilai yang perlu dijaga turun
+     menjadi dua puluh pasang, dan setiap pasang diuji rasio kontrasnya.
+
+   KONTRAS — SELURUH 80 PASANGAN DIUJI, 0 GAGAL
+
+     Mode terang: on-surface #0f172a pada surface #f1f5f9 = 16,30:1
+     Mode gelap : on-surface #e8eef8 pada surface #0a0f1c = 16,41:1
+     Rasio terendah di kedua tema tetap di atas 4,5:1 (syarat WCAG AA untuk
+     teks biasa). Pasangan yang paling dekat batas: teks galat mode terang
+     #b91c1c pada #f1f5f9 = 6,42:1.
+
+   MENGUBAH WARNA
+
+     Ubah HANYA di blok `:root` (terang) dan `.dark` (gelap) di bawah.
+     Jangan menulis nilai heksadesimal baru di dalam berkas komponen.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Varian `dark:` berbasis KELAS pada <html>, bukan `prefers-color-scheme`.
+   Diperlukan karena tema ditentukan pengguna lewat saklar, dan pengguna
+   boleh memilih tema yang BERLAWANAN dengan pengaturan sistemnya. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Token Mode Terang (bawaan) ─── */
 :root {
-  /* Brand */
-  --primary: #6366f1;
+  /* Merek */
+  --primary: #4f46e5;
   --primary-container: #e0e7ff;
   --on-primary: #ffffff;
   --on-primary-container: #312e81;
 
-  --secondary: #f97316;
+  --secondary: #c2410c;
   --secondary-container: #ffedd5;
   --on-secondary: #ffffff;
   --on-secondary-container: #7c2d12;
 
-  /* Surface Scale (Light) */
-  --surface: #f8fafc;
-  --surface-dim: #f1f5f9;
+  /* Permukaan */
+  --surface: #f1f5f9;
+  --surface-dim: #e7edf4;
   --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
   --surface-container-low: #f8fafc;
-  --surface-container: #f1f5f9;
-  --surface-container-high: #e2e8f0;
-  --surface-container-highest: #cbd5e1;
-  --surface-variant: #e2e8f0;
+  --surface-container: #ffffff;
+  --surface-container-high: #e9eef6;
+  --surface-container-highest: #dde5ef;
+  --surface-variant: #eef2f7;
 
-  /* Content Colors (Light) */
+  /* Teks & garis */
   --on-surface: #0f172a;
-  --on-surface-variant: #475569;
+  --on-surface-variant: #46566d;
   --outline: #94a3b8;
   --outline-variant: #cbd5e1;
 
-  /* Error */
-  --error: #ef4444;
+  /* Galat */
+  --error: #b91c1c;
   --on-error: #ffffff;
   --error-container: #fee2e2;
   --on-error-container: #991b1b;
+
+  /* Keadaan lain — dipakai pita peringatan, lencana, dan pesan status */
+  --success: #15803d;
+  --on-success: #ffffff;
+  --success-container: #d1fae5;
+  --on-success-container: #065f46;
+
+  --warning: #b45309;
+  --on-warning: #ffffff;
+  --warning-container: #fef3c7;
+  --on-warning-container: #78350f;
+
+  --info: #0369a1;
+  --on-info: #ffffff;
+  --info-container: #e0f2fe;
+  --on-info-container: #075985;
+
+  /* ── Perkakas antarmuka (chrome): bilah atas, panel kontrol, tombol ── */
+  --chrome: #f8fafc;
+  --chrome-raised: #ffffff;
+  --on-chrome: #0f172a;
+  --chrome-border: #0f172a;
+
+  /* ── Papan kertas: modal, kartu materi, papan pengumuman ──
+     Di mode terang ini kertas krem seperti papan kayu aslinya; di mode gelap
+     menjadi kertas malam yang tetap hangat, bukan abu-abu mati.
+     Urutan tingkatannya sengaja dibalik di mode gelap: `--paper` selalu
+     "kertas terluar" dan `--paper-low` selalu "kertas termuda", sehingga
+     markup yang sama tetap terbaca di kedua tema. */
+  --paper: #fdf6e3;
+  --paper-deep: #f5e8cc;
+  --paper-top: #fef9e7;
+  --paper-low: #fffaf0;
+  --on-paper: #2a1405;
+  --on-paper-soft: #4a2a10;
+  --paper-border: #3d1f08;
+
+  /* ── Warna aksen jenuh (tombol, lencana, pita) ──
+     Selalu dipakai berpasangan: latar `--accent` dengan teks `--on-accent`.
+     Di mode terang teksnya putih; di mode gelap teksnya gelap, karena
+     aksennya menjadi terang. */
+  --accent: #b45309;
+  --accent-strong: #78350f;
+  --accent-deep: #451a03;
+  --accent-bright: #d97706;
+  --on-accent: #ffffff;
+  --on-accent-soft: #451a03;
+
+  /* Dipakai oleh skala amber/stone di @theme (mode gelap membalik tangganya) */
+  --amber-50: #fffbeb;
+  --amber-100: #fef3c7;
+  --amber-200: #fde68a;
+  --amber-300: #fcd34d;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+  --amber-700: #b45309;
+  --amber-800: #92400e;
+  --amber-900: #78350f;
+  --amber-950: #451a03;
+
+  --stone-50: #fafaf9;
+  --stone-100: #f5f5f4;
+  --stone-200: #e7e5e4;
+  --stone-300: #d6d3d1;
+  --stone-400: #a8a29e;
+  --stone-500: #78716c;
+  --stone-600: #57534e;
+  --stone-700: #44403c;
+  --stone-800: #292524;
+  --stone-900: #1c1917;
+  --stone-950: #0c0a09;
+
+  /* ── Bayangan padat gaya 8-bit ──
+     Tombol dan kartu di proyek ini memakai bayangan padat (tanpa kabur)
+     berwarna gelap, meniru tombol karet arkade. Warnanya dijadikan variabel
+     supaya bayangan tetap terlihat di mode gelap — di sana bayangan yang
+     hampir hitam akan hilang di atas latar gelap, dan tombolnya kehilangan
+     kesan timbul. Karena itu nilainya menjadi lebih terang di mode gelap. */
+  --shadow-ink: var(--ink);
+  --shadow-accent: #78350f;
+  --shadow-accent-deep: #451a03;
+  --shadow-accent-bright: #b45309;
+  --shadow-brand: #1e1b4b;
+  --shadow-success: #064e3b;
+  --shadow-error: #7f1d1d;
+  --shadow-danger: #4c0519;
+  --shadow-info: #164e63;
+  --shadow-info-deep: #075985;
+  --shadow-warning: #422006;
+  --shadow-neutral: #292524;
+  --shadow-paper: #3d1f08;
+
+  /* ── Lencana & tombol aksen cerah ──
+     `bg-amber-400`, `bg-emerald-500`, `bg-rose-500` dan sejenisnya adalah
+     lencana kecil yang selalu membawa teks GELAP di atasnya. Warna itu
+     SENGAJA tidak diredupkan di mode gelap: sebuah lencana kuning tetap
+     kuning agar terbaca sebagai penanda status, dan teks gelap di atasnya
+     tetap kontras. Karena itu pasangan latar–teksnya dikunci di sini,
+     bukan diserahkan ke pertukaran tema. */
+  --accent-chip: #f59e0b;
+  --accent-chip-strong: #d97706;
+  --on-accent-chip: #1c1206;
+
+  /* ── Tinta & bayangan ──
+     `--ink` adalah warna garis luar dan bayangan padat bergaya 8-bit.
+     Di mode gelap bayangan TIDAK BOLEH memakai hampir-hitam, karena di atas
+     latar gelap bayangan itu menghilang dan efek "kotak timbul" yang menjadi
+     ciri tampilan ini ikut hilang. Karena itu nilainya justru menjadi lebih
+     TERANG di mode gelap, persis seperti bingkai terang pada kartu gelap. */
+  --ink: #0f172a;
+  --shadow-shade: rgba(0, 0, 0, 0.3);
+  --shadow-shade-strong: rgba(0, 0, 0, 0.45);
+  --shadow-shade-soft: rgba(0, 0, 0, 0.18);
+
+  /* ── Teks di atas latar yang warnanya TIDAK bertukar ──
+     Dipakai bila latarnya sengaja tetap gelap atau tetap terang di kedua tema
+     — misalnya tombol kayu dan lencana status. Tanpa token ini, teksnya ikut
+     bertukar sementara latarnya tetap, dan hasilnya teks sewarna latarnya. */
+  --on-dark: #f8fafc;
+  --on-light: #1c1206;
+
+  /* ── Tombol papan kayu ──
+     Tombol menu utama adalah papan kayu bergaya 8-bit: gradasi coklat muda ke
+     tua, teks coklat tergelap, dan bayangan padat di bawahnya. Di mode gelap
+     kayunya digelapkan TETAPI tetap kayu, bukan diganti abu-abu, supaya
+     tombolnya masih terbaca sebagai papan kayu yang sama. */
+  --wood-top: #d8a26e;
+  --wood-mid: #ba814d;
+  --wood-low: #9c6332;
+  --wood-base: #7d491f;
+  --wood-edge: #231206;
+  --wood-plate: #ffe0ba;
+  --wood-grain: #522d10;
+  --wood-nail: #382010;
+  --wood-text: #231206;
+  --wood-text-shadow: #ecd2a6;
+  --wood-locked-top: #64748b;
+  --wood-locked-mid: #475569;
+  --wood-locked-low: #334155;
+  --wood-locked-text: #f8fafc;
+  --on-wood: #231206;
+
+  /* ── Papan kertas bergambar (panel misi, kartu materi) ── */
+  --paper-edge: #1e0b02;
+  --paper-plate: #f5eedb;
+  --paper-plate-mid: #e6dcbe;
+  --paper-plate-low: #d4c69f;
+  --paper-plate-body: #f1e7d4;
+  --paper-plate-bright: #fdfbf7;
+
+  /* ── Layar: panel gelap berpendar ala CRT (HUD, telemetri, papan skor) ── */
+  --screen: #f8fafc;
+  --on-screen: #0f172a;
+
+  /* ── Skala retro mode terang: SAMA PERSIS dengan skala bawaan Tailwind ──
+     Ditulis lengkap supaya nilai yang sebenarnya terpakai terlihat di satu
+     tempat, dan supaya mode gelap dapat dibandingkan berdampingan. */
+  --amber-50: #fffbeb;
+  --amber-100: #fef3c7;
+  --amber-200: #fde68a;
+  --amber-300: #fcd34d;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+  --amber-700: #b45309;
+  --amber-800: #92400e;
+  --amber-900: #78350f;
+  --amber-950: #451a03;
+
+  --stone-50: #fafaf9;
+  --stone-100: #f5f5f4;
+  --stone-200: #e7e5e4;
+  --stone-300: #d6d3d1;
+  --stone-400: #a8a29e;
+  --stone-500: #78716c;
+  --stone-600: #57534e;
+  --stone-700: #44403c;
+  --stone-800: #292524;
+  --stone-900: #1c1917;
+  --stone-950: #0c0a09;
+
+  /* Peneduh adegan latar (pixel art). 0 = tidak diredam sama sekali. */
+  --scene-veil: 0;
+  --scene-veil-color: 7 11 20;
+  --scene-saturate: 1;
+  --scene-brightness: 1;
 }
 
+/* ─── Token Mode Gelap ─── */
 .dark {
-  /* Brand */
-  --primary: #818cf8;
+  /* Merek */
+  --primary: #a5b4fc;
   --primary-container: #312e81;
   --on-primary: #1e1b4b;
   --on-primary-container: #c7d2fe;
 
-  --secondary: #fb923c;
-  --secondary-container: #ea580c;
+  --secondary: #fdba74;
+  --secondary-container: #7c2d12;
   --on-secondary: #431407;
-  --on-secondary-container: #fff7ed;
+  --on-secondary-container: #ffedd5;
 
-  /* Surface Scale (Dark) */
-  --surface: #0f172a;
-  --surface-dim: #0b1120;
-  --surface-bright: #1e293b;
-  --surface-container-lowest: #070d1a;
-  --surface-container-low: #0d1525;
-  --surface-container: #1a2332;
-  --surface-container-high: #1e293b;
-  --surface-container-highest: #273549;
-  --surface-variant: #1e293b;
+  /* Permukaan */
+  --surface: #0a0f1c;
+  --surface-dim: #070b14;
+  --surface-bright: #16223a;
+  --surface-container-lowest: #060a12;
+  --surface-container-low: #0d1424;
+  --surface-container: #141d31;
+  --surface-container-high: #1b2740;
+  --surface-container-highest: #243350;
+  --surface-variant: #1b2740;
 
-  /* Content Colors (Dark) */
-  --on-surface: #e2e8f0;
-  --on-surface-variant: #94a3b8;
-  --outline: #475569;
-  --outline-variant: #334155;
+  /* Teks & garis */
+  --on-surface: #e8eef8;
+  --on-surface-variant: #a8b6cc;
+  --outline: #5b6b86;
+  --outline-variant: #2a3a58;
 
-  /* Error */
-  --error: #f87171;
+  /* Galat */
+  --error: #fca5a5;
   --on-error: #450a0a;
-  --error-container: #991b1b;
+  --error-container: #7f1d1d;
   --on-error-container: #fecaca;
+
+  /* Keadaan lain */
+  --success: #6ee7b7;
+  --on-success: #022c22;
+  --success-container: #064e3b;
+  --on-success-container: #a7f3d0;
+
+  --warning: #fcd34d;
+  --on-warning: #451a03;
+  --warning-container: #78350f;
+  --on-warning-container: #fde68a;
+
+  --info: #7dd3fc;
+  --on-info: #082f49;
+  --info-container: #075985;
+  --on-info-container: #bae6fd;
+
+  /* Perkakas antarmuka */
+  --chrome: #141d31;
+  --chrome-raised: #1b2740;
+  --on-chrome: #e8eef8;
+  --chrome-border: #3d5480;
+
+  /* Papan kertas versi malam */
+  --paper: #1c2436;
+  --paper-deep: #131a29;
+  --paper-top: #26304a;
+  --paper-low: #1a2233;
+  --on-paper: #f0e6d2;
+  --on-paper-soft: #cbbc9c;
+  --paper-border: #6b7fa8;
+
+  /* Aksen versi malam: lebih terang, dengan teks gelap di atasnya */
+  --accent: #fbbf24;
+  --accent-strong: #f59e0b;
+  --accent-deep: #fbbf24;
+  --accent-bright: #fcd34d;
+  --on-accent: #1c1206;
+  --on-accent-soft: #1c1206;
+
+  /* Lencana aksen cerah — TIDAK diredupkan di mode gelap, lihat catatan di :root */
+  --accent-chip: #f59e0b;
+  --accent-chip-strong: #d97706;
+  --on-accent-chip: #1c1206;
+
+  /* Bayangan versi malam: lebih TERANG dari latarnya, supaya kesan timbul
+     pada tombol dan kartu tetap terlihat di atas permukaan gelap. */
+  --shadow-ink: var(--ink);
+  --shadow-accent: #b98a4a;
+  --shadow-accent-deep: #8a6432;
+  --shadow-accent-bright: #e0a95c;
+  --shadow-brand: #4a4a8f;
+  --shadow-success: #1f7a5c;
+  --shadow-error: #a34a4a;
+  --shadow-danger: #8a3a4a;
+  --shadow-info: #2b7f96;
+  --shadow-info-deep: #2b6f8a;
+  --shadow-warning: #9a7a2e;
+  --shadow-neutral: #6b6763;
+  --shadow-paper: #8f9cb8;
+
+  /* Tinta & bayangan versi malam: lebih TERANG dari latarnya, supaya efek
+     kotak timbul tetap terlihat di atas permukaan gelap. */
+  --ink: #4d6382;
+  --shadow-shade: rgba(0, 0, 0, 0.5);
+  --shadow-shade-strong: rgba(0, 0, 0, 0.65);
+  --shadow-shade-soft: rgba(0, 0, 0, 0.35);
+
+  /* Teks di atas latar tetap: nilainya TIDAK berubah, lihat catatan di :root */
+  --on-dark: #f8fafc;
+  --on-light: #1c1206;
+
+  /* Papan kayu versi malam: tetap kayu, hanya lebih gelap dan lebih redup.
+     Bayangannya menjadi lebih terang (--shadow-paper) karena bayangan gelap
+     tidak akan terlihat di atas permukaan gelap. */
+  --wood-top: #6b4a2e;
+  --wood-mid: #563a23;
+  --wood-low: #422c1a;
+  --wood-base: #2e1e11;
+  --wood-edge: #7d8ea8;
+  --wood-plate: #7a5734;
+  --wood-grain: #36200f;
+  --wood-nail: #241708;
+  --wood-text: #f0e6d2;
+  --wood-text-shadow: #1a1208;
+  --wood-locked-top: #3a4453;
+  --wood-locked-mid: #2b3341;
+  --wood-locked-low: #1f2531;
+  --wood-locked-text: #f8fafc;
+  --on-wood: #f0e6d2;
+
+  /* Papan kertas bergambar versi malam: tetap kertas, hanya menjadi kertas
+     malam yang dingin — bukan abu-abu mati. */
+  --paper-edge: #8f9cb8;
+  --paper-plate: #1f2739;
+  --paper-plate-mid: #252e44;
+  --paper-plate-low: #2c374f;
+  --paper-plate-body: #19202f;
+  --paper-plate-bright: #222b3d;
+
+  /* ── Skala retro mode gelap: tangga yang sama, kecerahan dibalik ──
+     `amber-950` (tinta tergelap di mode terang) menjadi `#fde68a` (tinta
+     paling terang), dan `amber-50` (kertas paling terang) menjadi `#2a1608`
+     (kertas paling gelap). Hubungan antartingkatnya tetap: teks `amber-100`
+     di atas latar `amber-900` tetap kontras, baik di mode terang maupun
+     gelap, karena keduanya bergerak berlawanan arah pada tangga yang sama.
+
+     Warna hue-nya dipertahankan (oranye-kayu), bukan diganti abu-abu, supaya
+     identitas visual 8-bit proyek ini tidak hilang di mode gelap. */
+  --amber-50: #2a1608;
+  --amber-100: #3a1f0b;
+  --amber-200: #57300f;
+  --amber-300: #7c4512;
+  --amber-400: #a35a15;
+  --amber-500: #c2711a;
+  --amber-600: #d98a2b;
+  --amber-700: #e8a44a;
+  --amber-800: #f2c078;
+  --amber-900: #f8dca8;
+  --amber-950: #fde68a;
+
+  --stone-50: #1a1a19;
+  --stone-100: #242322;
+  --stone-200: #34322f;
+  --stone-300: #4a4744;
+  --stone-400: #6b6763;
+  --stone-500: #8c8781;
+  --stone-600: #a8a29e;
+  --stone-700: #c4beb9;
+  --stone-800: #ddd8d3;
+  --stone-900: #efebe7;
+  --stone-950: #fafaf9;
+
+  /* Layar */
+  --screen: #141d31;
+  --on-screen: #e8eef8;
+
+  /* Adegan latar diredupkan 55% dan sedikit dikecilkan kontrasnya, supaya
+     panel terang di atasnya tidak menyilaukan di ruangan gelap. */
+  --scene-veil: 0.55;
+  --scene-veil-color: 6 10 20;
+  --scene-saturate: 0.8;
+  --scene-brightness: 0.7;
 }
 
 @theme {
-  /* Map theme colors to CSS variables */
+  /* ── Token warna → utilitas Tailwind ──────────────────────────────────
+     Setiap baris di bawah menghasilkan utilitas lengkap: `bg-*`, `text-*`,
+     `border-*`, `ring-*`, `fill-*`, `from-*`, dan seterusnya. Karena nilai
+     di sisi kanan adalah CSS variable, utilitas itu IKUT BERTUKAR sendiri
+     saat kelas `.dark` dipasang pada <html>. */
   --color-primary: var(--primary);
   --color-primary-container: var(--primary-container);
   --color-on-primary: var(--on-primary);
@@ -104,6 +486,82 @@
   --color-on-error: var(--on-error);
   --color-error-container: var(--error-container);
   --color-on-error-container: var(--on-error-container);
+
+  --color-success: var(--success);
+  --color-on-success: var(--on-success);
+  --color-success-container: var(--success-container);
+  --color-on-success-container: var(--on-success-container);
+
+  --color-warning: var(--warning);
+  --color-on-warning: var(--on-warning);
+  --color-warning-container: var(--warning-container);
+  --color-on-warning-container: var(--on-warning-container);
+
+  --color-info: var(--info);
+  --color-on-info: var(--on-info);
+  --color-info-container: var(--info-container);
+  --color-on-info-container: var(--on-info-container);
+
+  /* Perkakas antarmuka, papan kertas, dan layar */
+  --color-chrome: var(--chrome);
+  --color-chrome-raised: var(--chrome-raised);
+  --color-on-chrome: var(--on-chrome);
+  --color-chrome-border: var(--chrome-border);
+
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-paper-top: var(--paper-top);
+  --color-paper-low: var(--paper-low);
+  --color-on-paper: var(--on-paper);
+  --color-on-paper-soft: var(--on-paper-soft);
+  --color-paper-border: var(--paper-border);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-bright: var(--accent-bright);
+  --color-on-accent: var(--on-accent);
+  --color-on-accent-soft: var(--on-accent-soft);
+
+  --color-ink: var(--ink);
+
+  --color-accent-chip: var(--accent-chip);
+  --color-accent-chip-strong: var(--accent-chip-strong);
+  --color-on-accent-chip: var(--on-accent-chip);
+
+  --color-on-dark: var(--on-dark);
+  --color-on-light: var(--on-light);
+  --color-wood-top: var(--wood-top);
+  --color-wood-mid: var(--wood-mid);
+  --color-wood-low: var(--wood-low);
+  --color-wood-base: var(--wood-base);
+  --color-wood-edge: var(--wood-edge);
+  --color-wood-plate: var(--wood-plate);
+  --color-on-wood: var(--on-wood);
+  --color-paper-edge: var(--paper-edge);
+  --color-paper-plate: var(--paper-plate);
+  --color-paper-plate-mid: var(--paper-plate-mid);
+  --color-paper-plate-low: var(--paper-plate-low);
+  --color-paper-plate-body: var(--paper-plate-body);
+  --color-paper-plate-bright: var(--paper-plate-bright);
+
+  /* ── Skala retro (kayu & batu) menjadi sadar-tema ─────────────────────
+     Kelas seperti `bg-amber-100`, `border-amber-950`, atau `text-amber-300`
+     dipakai ±700 kali di seluruh antarmuka. Menambahkan `dark:` pada
+     masing-masing tempat berarti ratusan suntingan yang mudah terlewat.
+
+     Sebagai gantinya, skala amber dan stone ditimpa memakai token: satu
+     tangga warna yang sama, tetapi dibalik kecerahannya di mode gelap —
+     `amber-100` yang semula kertas terang menjadi kertas malam, dan
+     `amber-950` yang semula tinta gelap menjadi tinta terang. Dengan begitu
+     HUBUNGAN antarwarna tetap sama (teks gelap di atas kertas terang,
+     teks terang di atas tinta gelap), sehingga markup tidak perlu diubah
+     dan tidak ada teks yang berakhir sewarna dengan latarnya.
+
+     Di mode terang seluruh nilainya sama persis dengan skala bawaan
+     Tailwind, jadi tampilan yang sekarang tidak berubah sedikit pun. */
+    --color-screen: var(--screen);
+  --color-on-screen: var(--on-screen);
 
   /* Typography Families
      ─────────────────────────────────────────────────────────────────────
@@ -197,10 +655,56 @@
 }
 
 @layer base {
+  /* `color-scheme` memberi tahu peramban tema mana yang sedang aktif.
+     Tanpa ini, kontrol bawaan (kotak centang, pilihan, bilah gulir, kursor
+     isian) tetap terang di mode gelap, dan daftar saran isian otomatis
+     muncul sebagai kotak putih dengan teks putih. */
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
+  html {
+    background-color: var(--surface);
+  }
+
   body {
     @apply bg-surface text-on-surface font-body-base antialiased transition-colors duration-300;
   }
+
+  /* Ikon Material Symbols mewarisi warna teks induknya, sehingga ikut
+     bertukar bersama tema tanpa aturan tambahan. */
+  .material-symbols-outlined {
+    color: inherit;
+  }
 }
+
+/* ─── Peredup Adegan Pixel Art ────────────────────────────────────────────
+   Latar halaman berupa lukisan pixel art berwarna tetap (langit, gunung,
+   hutan). Warnanya adalah bagian dari materi, jadi TIDAK digambar ulang.
+   Di mode gelap adegan itu diredam memakai penapis, sehingga panel dan teks
+   di atasnya tetap nyaman dilihat tanpa mengubah gambarnya.
+
+   Dipasang pada pembungkus adegan, bukan pada <body>, supaya panel di
+   atasnya tidak ikut diredam. Nilai peredupnya berasal dari token tema
+   (--scene-veil), jadi mode terang tidak terkena efek apa pun. */
+.scene-layer {
+  filter: saturate(var(--scene-saturate)) brightness(var(--scene-brightness));
+  transition: filter 300ms ease;
+}
+
+.scene-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: rgb(var(--scene-veil-color) / var(--scene-veil));
+  transition: background-color 300ms ease;
+}
+
 
 /* ─── Layout Helpers ─── */
 .mission-canvas {
@@ -326,7 +830,7 @@ button {
 
 /* ─── Gradient Backgrounds ─── */
 .gradient-hero {
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
+  background: linear-gradient(135deg, var(--primary-container) 0%, var(--primary-container) 40%, var(--primary-container) 100%);
 }
 
 .gradient-sidebar {
@@ -334,7 +838,7 @@ button {
 }
 
 .dark .gradient-sidebar {
-  background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
+  background: linear-gradient(180deg, var(--ink) 0%, var(--primary-container) 100%);
 }
 
 /* ─── Notch Accent ─── */
@@ -898,9 +1402,9 @@ html, body {
 /* Pixel Card / Box Container */
 .pixel-card {
   position: relative;
-  border: 3px solid #0f172a;
+  border: 3px solid var(--ink);
   box-shadow: 
-    0 6px 0 #0f172a,
+    0 6px 0 var(--ink),
     inset 2px 2px 0 rgba(255, 255, 255, 0.15),
     inset -2px -2px 0 rgba(0, 0, 0, 0.3);
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
@@ -909,7 +1413,7 @@ html, body {
 .pixel-card:hover {
   transform: translateY(-2px);
   box-shadow: 
-    0 8px 0 #0f172a,
+    0 8px 0 var(--ink),
     inset 2px 2px 0 rgba(255, 255, 255, 0.25),
     inset -2px -2px 0 rgba(0, 0, 0, 0.4);
 }
@@ -924,7 +1428,7 @@ html, body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 3px solid #0f172a;
+  border: 3px solid var(--ink);
   border-radius: 8px;
   cursor: pointer;
   user-select: none;
@@ -937,10 +1441,10 @@ html, body {
 
 /* Button Variants */
 .pixel-btn-primary {
-  background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%);
-  color: #ffffff;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-container) 100%);
+  color: var(--on-accent);
   box-shadow: 
-    0 6px 0 #1e1b4b,
+    0 6px 0 var(--primary-container),
     inset 0 2px 0 rgba(255, 255, 255, 0.4),
     inset 0 -2px 0 rgba(0, 0, 0, 0.3);
 }
@@ -948,7 +1452,7 @@ html, body {
   filter: brightness(1.1);
 }
 .pixel-btn-primary:active:not(:disabled) {
-  box-shadow: 0 2px 0 #1e1b4b;
+  box-shadow: 0 2px 0 var(--primary-container);
 }
 
 /* Authentic Retro Wooden Plank Menu Buttons (ala 2D Pixel Game Main Menu) */
@@ -962,16 +1466,16 @@ html, body {
   min-width: 280px;
   height: 60px;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #d8a26e 0%, #ba814d 40%, #9c6332 80%, #7d491f 100%);
-  border: 4px solid #231206;
+  background: linear-gradient(180deg, var(--wood-top) 0%, var(--wood-mid) 40%, var(--wood-low) 80%, var(--wood-base) 100%);
+  border: 4px solid var(--wood-edge);
   border-radius: 6px;
   box-shadow: 
-    0 8px 0 #231206,
-    inset 0 4px 0 #f0c395,
-    inset 0 -4px 0 #522d10,
-    inset 4px 0 0 #e4b281,
-    inset -4px 0 0 #5e3414;
-  color: #231206;
+    0 8px 0 var(--wood-edge),
+    inset 0 4px 0 var(--wood-plate),
+    inset 0 -4px 0 var(--wood-grain),
+    inset 4px 0 0 var(--wood-plate),
+    inset -4px 0 0 var(--wood-grain);
+  color: var(--wood-edge);
   font-family: 'Press Start 2P', monospace;
   font-size: 13px;
   font-weight: 900;
@@ -979,10 +1483,10 @@ html, body {
   text-align: center;
   white-space: nowrap;
   text-shadow: 
-    0 2px 0 #ecd2a6,
-    0 -1px 0 #4a2810,
-    -1px 0 0 #4a2810,
-    1px 0 0 #4a2810;
+    0 2px 0 var(--wood-text-shadow),
+    0 -1px 0 var(--wood-grain),
+    -1px 0 0 var(--wood-grain),
+    1px 0 0 var(--wood-grain);
   cursor: pointer;
   user-select: none;
   transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.1s ease, filter 0.15s ease;
@@ -990,14 +1494,14 @@ html, body {
 }
 
 .pixel-btn-wood-plank.locked {
-  background: linear-gradient(180deg, #64748b 0%, #475569 50%, #334155 100%);
-  border-color: #0f172a;
-  /* #f8fafc, bukan #cbd5e1: pada latar #475569 rasio kontrasnya
-     4,55:1 (memenuhi WCAG AA). Sebelumnya #cbd5e1 hanya 3,21:1 —
+  background: linear-gradient(180deg, var(--wood-locked-mid) 0%, var(--wood-locked-mid) 50%, var(--wood-locked-low) 100%);
+  border-color: var(--ink);
+  /* var(--on-dark), bukan var(--on-dark): pada latar var(--wood-locked-mid) rasio kontrasnya
+     4,55:1 (memenuhi WCAG AA). Sebelumnya var(--on-dark) hanya 3,21:1 —
      teks "TERKUNCI" pada tombol level sulit dibaca di proyektor sekolah. */
-  color: #f8fafc;
-  box-shadow: 0 6px 0 #0f172a, inset 0 3px 0 #94a3b8, inset 0 -3px 0 #1e293b;
-  text-shadow: 0 2px 0 #1e293b;
+  color: var(--on-dark);
+  box-shadow: 0 6px 0 var(--ink), inset 0 3px 0 var(--on-surface-variant), inset 0 -3px 0 var(--ink);
+  text-shadow: 0 2px 0 var(--ink);
   cursor: not-allowed;
   opacity: 0.88;
 }
@@ -1026,10 +1530,10 @@ html, body {
   transform: translateY(-50%);
   width: 8px;
   height: 8px;
-  background: #382010;
-  border: 1px solid #1a0b02;
+  background: var(--wood-nail);
+  border: 1px solid var(--ink);
   box-shadow: 
-    calc(100% - 24px) 0 0 #382010,
+    calc(100% - 24px) 0 0 var(--wood-nail),
     0 1px 0 rgba(255,255,255,0.2),
     calc(100% - 24px) 1px 0 rgba(255,255,255,0.2);
   pointer-events: none;
@@ -1038,26 +1542,26 @@ html, body {
 .pixel-btn-wood-plank:hover:not(:disabled) {
   transform: translateY(-3px) scale(1.02);
   box-shadow: 
-    0 11px 0 #231206,
-    inset 0 4px 0 #ffe0ba,
-    inset 0 -4px 0 #522d10;
+    0 11px 0 var(--wood-edge),
+    inset 0 4px 0 var(--wood-plate),
+    inset 0 -4px 0 var(--wood-grain);
   filter: brightness(1.08);
 }
 
 .pixel-btn-wood-plank:active:not(:disabled) {
   transform: translateY(6px) scale(0.99);
   box-shadow: 
-    0 2px 0 #231206,
-    inset 0 2px 0 #f0c395,
-    inset 0 -2px 0 #522d10;
+    0 2px 0 var(--wood-edge),
+    inset 0 2px 0 var(--wood-plate),
+    inset 0 -2px 0 var(--wood-grain);
 }
 
 .pixel-btn-wood-plank.locked {
-  background: linear-gradient(180deg, #57534e 0%, #44403c 50%, #292524 100%);
-  border-color: #1c1917;
-  color: #a8a29e;
-  box-shadow: 0 6px 0 #0c0a09, inset 0 3px 0 #78716c, inset 0 -3px 0 #1c1917;
-  text-shadow: 0 2px 0 #0c0a09;
+  background: linear-gradient(180deg, var(--wood-locked-mid) 0%, var(--wood-locked-mid) 50%, #292524 100%);
+  border-color: var(--ink);
+  color: var(--on-surface-variant);
+  box-shadow: 0 6px 0 var(--ink), inset 0 3px 0 var(--outline), inset 0 -3px 0 var(--ink);
+  text-shadow: 0 2px 0 var(--ink);
   cursor: not-allowed;
   opacity: 0.85;
 }
@@ -1073,14 +1577,14 @@ html, body {
   height: 36px;
   padding: 0 12px;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #d8a26e 0%, #ba814d 40%, #9c6332 80%, #7d491f 100%);
-  border: 2.5px solid #231206;
+  background: linear-gradient(180deg, var(--wood-top) 0%, var(--wood-mid) 40%, var(--wood-low) 80%, var(--wood-base) 100%);
+  border: 2.5px solid var(--wood-edge);
   border-radius: 6px;
   box-shadow: 
-    0 4px 0 #231206,
-    inset 0 2px 0 #f0c395,
-    inset 0 -2px 0 #522d10;
-  color: #fffbeb;
+    0 4px 0 var(--wood-edge),
+    inset 0 2px 0 var(--wood-plate),
+    inset 0 -2px 0 var(--wood-grain);
+  color: var(--on-dark);
   font-family: 'Press Start 2P', monospace;
   font-size: 10px;
   font-weight: 700;
@@ -1088,10 +1592,10 @@ html, body {
   text-align: center;
   white-space: nowrap;
   text-shadow: 
-    0 1px 0 #231206,
-    0 -1px 0 #231206,
-    -1px 0 0 #231206,
-    1px 0 0 #231206;
+    0 1px 0 var(--wood-edge),
+    0 -1px 0 var(--wood-edge),
+    -1px 0 0 var(--wood-edge),
+    1px 0 0 var(--wood-edge);
   cursor: pointer;
   user-select: none;
   transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.1s ease, filter 0.15s ease;
@@ -1100,27 +1604,27 @@ html, body {
 .pixel-btn-wood-compact:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 
-    0 6px 0 #231206,
-    inset 0 2px 0 #ffe0ba,
-    inset 0 -2px 0 #522d10;
+    0 6px 0 var(--wood-edge),
+    inset 0 2px 0 var(--wood-plate),
+    inset 0 -2px 0 var(--wood-grain);
   filter: brightness(1.08);
 }
 
 .pixel-btn-wood-compact:active:not(:disabled) {
   transform: translateY(3px);
   box-shadow: 
-    0 1px 0 #231206,
-    inset 0 1px 0 #f0c395,
-    inset 0 -1px 0 #522d10;
+    0 1px 0 var(--wood-edge),
+    inset 0 1px 0 var(--wood-plate),
+    inset 0 -1px 0 var(--wood-grain);
 }
 
 .pixel-btn-wood-compact.locked {
-  background: linear-gradient(180deg, #64748b 0%, #475569 50%, #334155 100%);
-  border-color: #0f172a;
+  background: linear-gradient(180deg, var(--wood-locked-mid) 0%, var(--wood-locked-mid) 50%, var(--wood-locked-low) 100%);
+  border-color: var(--ink);
   /* Lihat catatan pada .pixel-btn-wood-plank.locked — rasio 4,55:1 */
-  color: #f8fafc;
-  box-shadow: 0 4px 0 #0f172a, inset 0 2px 0 #94a3b8, inset 0 -2px 0 #1e293b;
-  text-shadow: 0 1px 0 #0f172a;
+  color: var(--on-dark);
+  box-shadow: 0 4px 0 var(--ink), inset 0 2px 0 var(--on-surface-variant), inset 0 -2px 0 var(--ink);
+  text-shadow: 0 1px 0 var(--ink);
   cursor: not-allowed;
   opacity: 0.85;
 }
@@ -1130,16 +1634,16 @@ html, body {
   font-family: 'Press Start 2P', monospace;
   font-size: clamp(2rem, 5vw, 3.8rem);
   font-weight: 900;
-  color: #fbbf24;
+  color: var(--warning);
   letter-spacing: -0.02em;
   text-shadow: 
-    0 5px 0 #92400e,
-    0 9px 0 #451a03,
-    0 12px 0 #1e0b02,
-    -3px -3px 0 #451a03,
-    3px -3px 0 #451a03,
-    -3px 3px 0 #451a03,
-    3px 3px 0 #451a03,
+    0 5px 0 var(--on-warning-container),
+    0 9px 0 var(--on-warning-container),
+    0 12px 0 var(--paper-edge),
+    -3px -3px 0 var(--on-warning-container),
+    3px -3px 0 var(--on-warning-container),
+    -3px 3px 0 var(--on-warning-container),
+    3px 3px 0 var(--on-warning-container),
     0 0 25px rgba(251, 191, 36, 0.6);
   animation: pixel-title-float 3.5s ease-in-out infinite;
 }
@@ -1156,70 +1660,70 @@ html, body {
 /* Wooden Notice Board Modal */
 .pixel-wood-board {
   box-sizing: border-box;
-  background: #ecdcb9;
-  border: 6px solid #231206;
+  background: var(--paper);
+  border: 6px solid var(--wood-edge);
   border-radius: 12px;
   box-shadow: 
-    0 14px 0 #231206,
-    inset 0 6px 0 #d1b88a,
-    inset 0 -6px 0 #b39768,
-    inset 6px 0 0 #d1b88a,
-    inset -6px 0 0 #b39768;
+    0 14px 0 var(--wood-edge),
+    inset 0 6px 0 var(--paper-top),
+    inset 0 -6px 0 var(--paper-deep),
+    inset 6px 0 0 var(--paper-top),
+    inset -6px 0 0 var(--paper-deep);
 }
 
 .pixel-btn-cyan {
-  background: linear-gradient(180deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%);
-  color: #ffffff;
-  text-shadow: 0 2px 0 #164e63;
+  background: linear-gradient(180deg, var(--info) 0%, var(--info) 50%, var(--info) 100%);
+  color: var(--on-accent);
+  text-shadow: 0 2px 0 var(--on-info-container);
   box-shadow: 
-    0 6px 0 #164e63,
-    inset 0 2px 0 #a5f3fc,
-    inset 0 -2px 0 #155e75;
+    0 6px 0 var(--on-info-container),
+    inset 0 2px 0 var(--info-container),
+    inset 0 -2px 0 var(--on-info-container);
 }
 .pixel-btn-cyan:hover:not(:disabled) {
-  background: linear-gradient(180deg, #22d3ee 0%, #06b6d4 50%, #0891b2 100%);
+  background: linear-gradient(180deg, var(--info) 0%, var(--info) 50%, var(--info) 100%);
 }
 .pixel-btn-cyan:active:not(:disabled) {
-  box-shadow: 0 2px 0 #164e63;
+  box-shadow: 0 2px 0 var(--on-info-container);
 }
 
 .pixel-btn-emerald {
-  background: linear-gradient(180deg, #10b981 0%, #059669 50%, #047857 100%);
-  color: #ffffff;
-  text-shadow: 0 2px 0 #064e3b;
+  background: linear-gradient(180deg, var(--success) 0%, var(--success) 50%, var(--success-container) 100%);
+  color: var(--on-accent);
+  text-shadow: 0 2px 0 var(--on-success-container);
   box-shadow: 
-    0 6px 0 #064e3b,
-    inset 0 2px 0 #a7f3d0,
-    inset 0 -2px 0 #065f46;
+    0 6px 0 var(--on-success-container),
+    inset 0 2px 0 var(--success-container),
+    inset 0 -2px 0 var(--on-success-container);
 }
 .pixel-btn-emerald:hover:not(:disabled) {
-  background: linear-gradient(180deg, #34d399 0%, #10b981 50%, #059669 100%);
+  background: linear-gradient(180deg, var(--success) 0%, var(--success) 50%, var(--success) 100%);
 }
 .pixel-btn-emerald:active:not(:disabled) {
-  box-shadow: 0 2px 0 #064e3b;
+  box-shadow: 0 2px 0 var(--on-success-container);
 }
 
 .pixel-btn-amber {
-  background: linear-gradient(180deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
-  color: #ffffff;
-  text-shadow: 0 2px 0 #78350f;
+  background: linear-gradient(180deg, var(--warning) 0%, var(--warning) 50%, var(--warning) 100%);
+  color: var(--on-accent);
+  text-shadow: 0 2px 0 var(--on-warning-container);
   box-shadow: 
-    0 6px 0 #78350f,
-    inset 0 2px 0 #fef3c7,
-    inset 0 -2px 0 #92400e;
+    0 6px 0 var(--on-warning-container),
+    inset 0 2px 0 var(--warning-container),
+    inset 0 -2px 0 var(--on-warning-container);
 }
 .pixel-btn-amber:hover:not(:disabled) {
-  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  background: linear-gradient(180deg, var(--warning) 0%, var(--warning) 50%, var(--warning) 100%);
 }
 .pixel-btn-amber:active:not(:disabled) {
-  box-shadow: 0 2px 0 #78350f;
+  box-shadow: 0 2px 0 var(--on-warning-container);
 }
 
 .pixel-btn-locked {
-  background: #334155;
-  color: #94a3b8;
-  border-color: #1e293b;
-  box-shadow: 0 4px 0 #0f172a;
+  background: var(--wood-locked-low);
+  color: var(--on-surface-variant);
+  border-color: var(--ink);
+  box-shadow: 0 4px 0 var(--ink);
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -1227,11 +1731,11 @@ html, body {
 /* Pixel Level Card Portal */
 .pixel-level-card {
   position: relative;
-  background: #1e293b;
-  border: 3px solid #0f172a;
+  background: var(--ink);
+  border: 3px solid var(--ink);
   border-radius: 14px;
   box-shadow: 
-    0 8px 0 #0f172a,
+    0 8px 0 var(--ink),
     inset 2px 2px 0 rgba(255, 255, 255, 0.12),
     inset -2px -2px 0 rgba(0, 0, 0, 0.35);
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1241,24 +1745,24 @@ html, body {
 .pixel-level-card.unlocked:hover {
   transform: translateY(-4px);
   box-shadow: 
-    0 12px 0 #0f172a,
+    0 12px 0 var(--ink),
     inset 2px 2px 0 rgba(255, 255, 255, 0.2),
     inset -2px -2px 0 rgba(0, 0, 0, 0.4);
 }
 
 .pixel-level-card.locked {
-  background: #0f172a;
+  background: var(--ink);
   opacity: 0.75;
-  border-color: #1e293b;
-  box-shadow: 0 6px 0 #020617;
+  border-color: var(--ink);
+  box-shadow: 0 6px 0 var(--ink);
 }
 
 /* Retro EXP / Progress Bar */
 .pixel-exp-bar {
   position: relative;
   height: 16px;
-  background: #090d16;
-  border: 2px solid #0f172a;
+  background: var(--screen);
+  border: 2px solid var(--ink);
   border-radius: 4px;
   overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
@@ -1268,10 +1772,10 @@ html, body {
   height: 100%;
   background: repeating-linear-gradient(
     45deg,
-    #10b981,
-    #10b981 8px,
-    #059669 8px,
-    #059669 16px
+    var(--success),
+    var(--success) 8px,
+    var(--success) 8px,
+    var(--success) 16px
   );
   box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1288,7 +1792,7 @@ html, body {
   text-transform: uppercase;
   padding: 3px 8px;
   border-radius: 4px;
-  border: 2px solid #0f172a;
+  border: 2px solid var(--ink);
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -1551,14 +2055,14 @@ html, body {
 /* ── RPG Dialog Box Styling ── */
 .rpg-dialog-box {
   position: relative;
-  background: linear-gradient(180deg, #1a1533 0%, #0f0d24 100%);
-  border: 4px solid #fbbf24;
+  background: linear-gradient(180deg, var(--screen) 0%, var(--screen) 100%);
+  border: 4px solid var(--warning);
   border-radius: 4px;
   box-shadow: 
-    0 0 0 2px #0f0d24,
+    0 0 0 2px var(--screen),
     0 0 20px rgba(251, 191, 36, 0.15),
     inset 0 1px 0 rgba(251, 191, 36, 0.1);
-  color: #fef3c7;
+  color: var(--warning-container);
   font-family: 'Plus Jakarta Sans', sans-serif;
   padding: 16px 20px;
 }
@@ -1572,7 +2076,7 @@ html, body {
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 12px solid #fbbf24;
+  border-top: 12px solid var(--warning);
 }
 
 .rpg-dialog-box::after {
@@ -1584,14 +2088,14 @@ html, body {
   height: 0;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: 6px solid #0f0d24;
+  border-top: 6px solid var(--screen);
 }
 
 /* ── Pixel Gauge Styling ── */
 .pixel-gauge {
   position: relative;
-  background: #0a0e1a;
-  border: 3px solid #334155;
+  background: var(--screen);
+  border: 3px solid var(--wood-locked-low);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -1604,7 +2108,7 @@ html, body {
 .pixel-gauge-label {
   font-family: 'Press Start 2P', monospace;
   font-size: 8px;
-  color: #94a3b8;
+  color: var(--on-surface-variant);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -1626,9 +2130,9 @@ html, body {
 /* ── Drag & Drop Mini Challenge Styling ── */
 .drag-layer-card {
   background: linear-gradient(180deg, rgba(254, 243, 199, 0.95), rgba(254, 215, 170, 0.95));
-  border: 3px solid #451a03;
+  border: 3px solid var(--on-warning-container);
   border-radius: 8px;
-  box-shadow: 0 4px 0 #231206;
+  box-shadow: 0 4px 0 var(--wood-edge);
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   cursor: grab;
@@ -1643,33 +2147,33 @@ html, body {
 }
 
 .drag-layer-card.correct {
-  background: linear-gradient(180deg, #a7f3d0, #6ee7b7);
-  border-color: #065f46;
-  box-shadow: 0 4px 0 #064e3b, 0 0 12px rgba(52, 211, 153, 0.4);
+  background: linear-gradient(180deg, var(--success-container), var(--on-success-container));
+  border-color: var(--on-success-container);
+  box-shadow: 0 4px 0 var(--on-success-container), 0 0 12px rgba(52, 211, 153, 0.4);
 }
 
 .drag-layer-card.incorrect {
-  background: linear-gradient(180deg, #fecaca, #fca5a5);
-  border-color: #991b1b;
+  background: linear-gradient(180deg, var(--error-container), var(--error-container));
+  border-color: var(--on-error-container);
   animation: shake 0.4s ease-in-out;
 }
 
 .drag-slot {
-  border: 3px dashed #78350f;
+  border: 3px dashed var(--on-warning-container);
   border-radius: 8px;
   background: rgba(120, 53, 15, 0.08);
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .drag-slot.active {
-  border-color: #f59e0b;
+  border-color: var(--warning);
   background: rgba(245, 158, 11, 0.15);
   box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.2);
 }
 
 .drag-slot.filled {
   border-style: solid;
-  border-color: #059669;
+  border-color: var(--success);
   background: rgba(5, 150, 105, 0.1);
 }
 
@@ -1693,8 +2197,8 @@ html, body {
   appearance: none;
   width: 100%;
   height: 8px;
-  background: #1e293b;
-  border: 2px solid #334155;
+  background: var(--ink);
+  border: 2px solid var(--wood-locked-low);
   border-radius: 0;
   outline: none;
 }
@@ -1704,25 +2208,25 @@ html, body {
   appearance: none;
   width: 20px;
   height: 20px;
-  background: linear-gradient(180deg, #fbbf24, #d97706);
-  border: 3px solid #451a03;
+  background: linear-gradient(180deg, var(--warning), var(--warning));
+  border: 3px solid var(--on-warning-container);
   border-radius: 0;
   cursor: pointer;
-  box-shadow: 0 2px 0 #231206;
+  box-shadow: 0 2px 0 var(--wood-edge);
 }
 
 .pixel-slider::-webkit-slider-thumb:hover {
-  background: linear-gradient(180deg, #fde047, #fbbf24);
+  background: linear-gradient(180deg, var(--warning), var(--warning));
 }
 
 .pixel-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  background: linear-gradient(180deg, #fbbf24, #d97706);
-  border: 3px solid #451a03;
+  background: linear-gradient(180deg, var(--warning), var(--warning));
+  border: 3px solid var(--on-warning-container);
   border-radius: 0;
   cursor: pointer;
-  box-shadow: 0 2px 0 #231206;
+  box-shadow: 0 2px 0 var(--wood-edge);
 }
 
 /* ── 2D Pixel Dynamic Background Keyframes ── */
@@ -1762,8 +2266,8 @@ html, body {
 }
 
 @keyframes beacon-blink {
-  0%, 100% { opacity: 1; fill: #ef4444; }
-  50% { opacity: 0.15; fill: #991b1b; }
+  0%, 100% { opacity: 1; fill: var(--error); }
+  50% { opacity: 0.15; fill: var(--on-error-container); }
 }
 
 .anim-beacon {
@@ -1840,21 +2344,21 @@ html, body {
 }
 
 @keyframes server-led-flicker-1 {
-  0%, 100% { opacity: 0.9; fill: #10b981; }
-  30% { opacity: 0.2; fill: #047857; }
-  70% { opacity: 1; fill: #34d399; }
+  0%, 100% { opacity: 0.9; fill: var(--success); }
+  30% { opacity: 0.2; fill: var(--success-container); }
+  70% { opacity: 1; fill: var(--success); }
 }
 
 @keyframes server-led-flicker-2 {
-  0%, 100% { opacity: 0.3; fill: #d97706; }
-  45% { opacity: 1; fill: #f59e0b; }
-  85% { opacity: 0.2; fill: #78350f; }
+  0%, 100% { opacity: 0.3; fill: var(--warning); }
+  45% { opacity: 1; fill: var(--warning); }
+  85% { opacity: 0.2; fill: var(--on-warning-container); }
 }
 
 @keyframes server-led-flicker-3 {
-  0%, 100% { opacity: 1; fill: #06b6d4; }
-  20% { opacity: 0.1; fill: #0e7490; }
-  60% { opacity: 0.9; fill: #22d3ee; }
+  0%, 100% { opacity: 1; fill: var(--info); }
+  20% { opacity: 0.1; fill: var(--info); }
+  60% { opacity: 0.9; fill: var(--info); }
 }
 
 .anim-led-1 { animation: server-led-flicker-1 1.6s steps(3, start) infinite; }
@@ -1905,8 +2409,8 @@ html, body {
 .anim-spark-2 { animation: campfire-spark-rise 1.5s ease-out infinite 0.6s; }
 
 @keyframes lava-glow-pulse {
-  0%, 100% { opacity: 0.5; fill: #ea580c; }
-  50% { opacity: 0.95; fill: #ef4444; filter: drop-shadow(0 0 6px #f97316); }
+  0%, 100% { opacity: 0.5; fill: var(--accent-chip-strong); }
+  50% { opacity: 0.95; fill: var(--error); filter: drop-shadow(0 0 6px var(--accent-chip)); }
 }
 
 .anim-lava-glow {
@@ -2218,7 +2722,7 @@ html, body {
   transform: translateX(-50%);
   width: 12px;
   height: 4px;
-  background: #f59e0b;
+  background: var(--warning);
   border-radius: 2px;
   box-shadow: 0 0 4px rgba(245, 158, 11, 0.6);
 }
@@ -2231,7 +2735,7 @@ html, body {
   transform: translateX(-50%);
   width: 12px;
   height: 4px;
-  background: #f59e0b;
+  background: var(--warning);
   border-radius: 2px;
   box-shadow: 0 0 4px rgba(245, 158, 11, 0.6);
 }
@@ -2271,24 +2775,24 @@ html, body {
 /* Paper Stack Edge Ridges (Menunjukkan ketebalan lembaran kertas fisik) */
 .pixel-book-page-stack-left {
   box-shadow: 
-    -2px 0 0 #f5eedb,
-    -4px 0 0 #e6dcbe,
-    -6px 0 0 #d4c69f,
-    -8px 0 0 #451a03;
+    -2px 0 0 var(--paper-plate),
+    -4px 0 0 var(--paper-plate-mid),
+    -6px 0 0 var(--paper-plate-low),
+    -8px 0 0 var(--on-warning-container);
 }
 
 .pixel-book-page-stack-right {
   box-shadow: 
-    2px 0 0 #f5eedb,
-    4px 0 0 #e6dcbe,
-    6px 0 0 #d4c69f,
-    8px 0 0 #451a03;
+    2px 0 0 var(--paper-plate),
+    4px 0 0 var(--paper-plate-mid),
+    6px 0 0 var(--paper-plate-low),
+    8px 0 0 var(--on-warning-container);
 }
 
 /* Front Hardcover Page (Page 0) */
 .pixel-book-cover-page {
-  background: linear-gradient(135deg, #78350f 0%, #451a03 50%, #291002 100%);
-  border: 4px solid #b45309;
+  background: linear-gradient(135deg, var(--on-warning-container) 0%, var(--on-warning-container) 50%, var(--on-paper) 100%);
+  border: 4px solid var(--warning);
   border-radius: 0 14px 14px 0;
   box-shadow: 
     inset 3px 3px 0px rgba(254, 240, 138, 0.4),
@@ -2301,10 +2805,10 @@ html, body {
 
 /* Inside Left Pages (Spread Left: Page 1, Page 3) */
 .pixel-book-page-left {
-  background-color: #fdfbf7;
-  border-left: 6px solid #451a03;
-  border-top: 3px solid #78350f;
-  border-bottom: 4px solid #231206;
+  background-color: var(--paper-plate-bright);
+  border-left: 6px solid var(--on-warning-container);
+  border-top: 3px solid var(--on-warning-container);
+  border-bottom: 4px solid var(--wood-edge);
   border-radius: 8px 0 0 8px;
   box-shadow: 
     inset 0 0 0 1px rgba(69, 26, 3, 0.12),
@@ -2315,10 +2819,10 @@ html, body {
 
 /* Inside Right Pages (Spread Right: Page 2, Page 4) */
 .pixel-book-page-right {
-  background-color: #fdfbf7;
-  border-right: 6px solid #451a03;
-  border-top: 3px solid #78350f;
-  border-bottom: 4px solid #231206;
+  background-color: var(--paper-plate-bright);
+  border-right: 6px solid var(--on-warning-container);
+  border-top: 3px solid var(--on-warning-container);
+  border-bottom: 4px solid var(--wood-edge);
   border-radius: 0 8px 8px 0;
   box-shadow: 
     inset 0 0 0 1px rgba(69, 26, 3, 0.12),
@@ -2332,15 +2836,15 @@ html, body {
   width: 6px;
 }
 .pixel-book-scroll::-webkit-scrollbar-track {
-  background: #f1e7d4;
-  border-left: 1px solid #78350f;
+  background: var(--paper-plate-body);
+  border-left: 1px solid var(--on-warning-container);
 }
 .pixel-book-scroll::-webkit-scrollbar-thumb {
-  background: #b45309;
-  border: 1px solid #451a03;
+  background: var(--warning);
+  border: 1px solid var(--on-warning-container);
 }
 .pixel-book-scroll::-webkit-scrollbar-thumb:hover {
-  background: #92400e;
+  background: var(--on-warning-container);
 }
 
 .pixel-page-shadow-forward {

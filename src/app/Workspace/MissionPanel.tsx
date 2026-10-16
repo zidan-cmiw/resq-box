@@ -63,24 +63,24 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
   const categoryObj = CATEGORIES.find((c) => c.id === mission.category);
 
   return (
-    <aside aria-label="Panduan Misi" className="w-80 max-w-[85vw] bg-[#fffbeb] border-r-4 border-[#78350f] flex flex-col overflow-hidden shrink-0 font-pixel text-[#1c1917] shadow-xl">
+    <aside aria-label="Panduan Misi" className="w-80 max-w-[85vw] bg-paper-low border-r-4 border-paper-border flex flex-col overflow-hidden shrink-0 font-pixel text-on-accent-chip shadow-xl">
       {/* ── 1. HEADER MISSION CARD (SS 3 Warm Parchment) ── */}
-      <div className="p-3.5 border-b-2 border-[#b45309] bg-[#fef3c7]">
+      <div className="p-3.5 border-b-2 border-accent-chip bg-paper">
         <div className="flex items-center justify-between gap-1 mb-1.5">
           <div className="flex items-center gap-1.5">
-            <span className="px-2 py-0.5 rounded text-[13.5px] font-bold uppercase tracking-wider bg-[#b45309] text-white shadow-sm font-pixel">
+            <span className="px-2 py-0.5 rounded text-[13.5px] font-bold uppercase tracking-wider bg-accent-chip text-white shadow-sm font-pixel">
               {categoryObj?.title.toUpperCase()} • {mission.category === 'proyek' ? 'KASUS' : 'LEVEL'} {mission.level}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[13.5px] text-[#78350f] font-bold">
+            <span className="text-[13.5px] text-on-paper-soft font-bold">
               {currentStep + 1} / {totalSteps}
             </span>
             {onClose && (
               <button aria-label="Tutup"
                 onClick={onClose}
-                className="w-5 h-5 rounded bg-[#b45309] hover:bg-[#92400e] text-white flex items-center justify-center font-bold text-[13.5px] cursor-pointer lg:hidden"
+                className="w-5 h-5 rounded bg-accent-chip hover:bg-accent-chip-strong text-white flex items-center justify-center font-bold text-[13.5px] cursor-pointer lg:hidden"
                 title="Tutup Panduan Misi"
               >
                 ✕
@@ -89,7 +89,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
           </div>
         </div>
 
-        <h2 className="text-[15px] sm:text-base font-extrabold text-[#451a03] leading-snug font-sans">
+        <h2 className="text-[15px] sm:text-base font-extrabold text-on-accent-chip leading-snug font-sans">
           {mission.title}
         </h2>
 
@@ -105,7 +105,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
               className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${i < currentStep
                 ? 'bg-[#15803d] flex-1'
                 : i === currentStep
-                  ? 'bg-[#b45309] flex-[2] ring-2 ring-[#78350f]'
+                  ? 'bg-accent-chip flex-[2] ring-2 ring-[#78350f]'
                   : 'bg-[#d6d3d1] border border-[#a8a29e] flex-1'
                 }`}
               title={`Langkah ${i + 1}: ${steps[i].title}`}
@@ -115,17 +115,17 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
       </div>
 
       {/* ── 2. SCROLLABLE MISSION BRIEF & STEP CONTENT ── */}
-      <div className="flex-1 overflow-y-auto p-3.5 flex flex-col gap-3 font-sans bg-[#fffbeb]">
+      <div className="flex-1 overflow-y-auto p-3.5 flex flex-col gap-3 font-sans bg-paper-low">
         {/* Step Card: Warm High-Contrast Parchment (SS 3 Style) */}
-        <div className="rounded-xl border-2 border-[#b45309] bg-[#fefce8] p-3.5 flex flex-col gap-2.5 shadow-sm text-[#1c1917]">
+        <div className="rounded-xl border-2 border-accent-chip bg-paper-low p-3.5 flex flex-col gap-2.5 shadow-sm text-on-accent-chip">
           {/* Step Icon & Title */}
           <div className="flex items-center gap-2.5 pb-2 border-b border-[#b45309]/20">
-            <div className="w-8 h-8 rounded-lg bg-[#b45309] text-white flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
+            <div className="w-8 h-8 rounded-lg bg-accent-chip text-white flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
               <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
                 {step.icon}
               </span>
             </div>
-            <h3 className="font-bold text-[#451a03] text-[15px] sm:text-base leading-tight">
+            <h3 className="font-bold text-on-accent-chip text-[15px] sm:text-base leading-tight">
               {step.title}
             </h3>
           </div>
@@ -138,8 +138,8 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
 
         {/* Tip Box (SS 3 Style Fact Box) */}
         {step.tip && (
-          <div className="flex items-start gap-2 bg-[#fef3c7] border-2 border-[#d97706] rounded-xl p-3 text-[#78350f] shadow-sm">
-            <p className="text-[13px] sm:text-[15px] text-[#78350f] font-semibold leading-relaxed">
+          <div className="flex items-start gap-2 bg-paper border-2 border-accent-chip rounded-xl p-3 text-on-paper-soft shadow-sm">
+            <p className="text-[13px] sm:text-[15px] text-on-paper-soft font-semibold leading-relaxed">
               {step.tip}
             </p>
           </div>
@@ -183,7 +183,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
       </div>
 
       {/* ── 3. BOTTOM FOOTER NAVIGATION ── */}
-      <div className="p-3.5 border-t-2 border-[#b45309] bg-[#fef3c7] flex flex-col gap-2 font-pixel">
+      <div className="p-3.5 border-t-2 border-accent-chip bg-paper flex flex-col gap-2 font-pixel">
         {/* Navigation / Validation Buttons */}
         {!isPassed && (
           <div className="flex gap-2">
@@ -208,8 +208,8 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
                 onClick={handleValidate}
                 disabled={isChecking}
                 className={`flex-[2] py-2.5 px-3.5 rounded-lg text-[13px] sm:text-[15px] font-bold flex items-center justify-center gap-1.5 shadow-md transition-all border-2 border-[#7c2d12] ${isChecking
-                  ? 'bg-[#b45309] text-white cursor-not-allowed animate-pulse'
-                  : 'bg-gradient-to-r from-[#c2410c] to-[#b45309] hover:from-[#ea580c] hover:to-[#c2410c] text-white'
+                  ? 'bg-accent-chip text-white cursor-not-allowed animate-pulse'
+                  : 'bg-gradient-to-r from-[#c2410c] to-accent-chip hover:from-[#ea580c] hover:to-[#c2410c] text-white'
                   }`}
               >
                 <span>{isChecking ? 'MENGECEK...' : 'VALIDASI MISI!'}</span>
@@ -246,7 +246,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
             retroAudio.playSelect();
             navigate('/level3');
           }}
-          className="w-full py-1 text-[13px] text-[#78350f] hover:text-[#451a03] font-bold flex items-center justify-center gap-1 transition-colors"
+          className="w-full py-1 text-[13px] text-on-paper-soft hover:text-on-accent-chip font-bold flex items-center justify-center gap-1 transition-colors"
         >
           <span>Kembali ke Peta Level 3</span>
         </button>

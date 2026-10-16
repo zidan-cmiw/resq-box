@@ -66,7 +66,7 @@ export function PangeaIllustration() {
           <PixelIcon name="globe" size={18} className="text-amber-400" />
           <span>SUPERKONTINEN PANGEA (~250 JUTA TAHUN LALU)</span>
         </span>
-        <span className="hidden sm:inline-block text-[14.5px] text-slate-300 font-semibold bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700">
+        <span className="hidden sm:inline-block text-[14.5px] text-on-chrome font-semibold bg-slate-800/80 px-2.5 py-1 rounded-md border border-outline-variant">
           Teori Alfred Wegener (1912)
         </span>
       </div>
@@ -329,18 +329,18 @@ export function PangeaIllustration() {
       </div>
 
       {/* Bottom Interactive Educational Banner */}
-      <div className="w-full bg-[#0f172a] border-2 border-emerald-500/60 rounded-xl p-3 sm:p-3.5 text-slate-200 z-10 flex items-center justify-between gap-3 shadow-lg">
+      <div className="w-full bg-ink border-2 border-emerald-500/60 rounded-xl p-3 sm:p-3.5 text-on-chrome z-10 flex items-center justify-between gap-3 shadow-lg">
         {activePlateInfo ? (
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 animate-fadeIn w-full">
             <span className="px-3 py-1 rounded-md bg-emerald-500/20 text-emerald-300 font-bold text-[13px] sm:text-[15px] border border-emerald-500/50 whitespace-nowrap shadow-sm">
               {activePlateInfo.title}
             </span>
-            <span className="text-slate-100 font-medium text-[13px] sm:text-[15px] leading-relaxed">
+            <span className="text-on-chrome font-medium text-[13px] sm:text-[15px] leading-relaxed">
               {activePlateInfo.desc}
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2.5 text-slate-200 font-semibold text-[13px] sm:text-[15px]">
+          <div className="flex items-center gap-2.5 text-on-chrome font-semibold text-[13px] sm:text-[15px]">
             <PixelIcon name="bulb" size={18} className="text-amber-400 shrink-0" />
             <span className="text-amber-400 font-bold text-[13px] sm:text-[15px]">PETUNJUK:</span>
             <span>Arahkan kursor atau sentuh tiap benua di atas untuk mempelajari kepingan Pangea!</span>
@@ -486,7 +486,7 @@ export function ConvergentSubductionIllustration() {
 
           <button
             onClick={handleTriggerSubduction}
-            className="px-3 py-1 rounded bg-amber-600 hover:bg-amber-500 text-slate-950 text-[13px] font-bold transition-all active:scale-95 border border-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.5)] cursor-pointer hidden sm:flex items-center gap-1"
+            className="px-3 py-1 rounded bg-amber-600 hover:bg-amber-500 text-on-accent-chip text-[13px] font-bold transition-all active:scale-95 border border-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.5)] cursor-pointer hidden sm:flex items-center gap-1"
             title="Klik untuk memicu proses penunjaman dan peleburan magma"
           >
             <span>Picu Subduksi</span>
@@ -494,7 +494,7 @@ export function ConvergentSubductionIllustration() {
 
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[13px] font-bold border border-slate-600 transition-all cursor-pointer"
+            className="px-3 py-1 rounded bg-chrome-raised hover:bg-surface-container-highest text-on-chrome text-[13px] font-bold border border-outline transition-all cursor-pointer"
           >
             {isPlaying ? '⏸ Jeda' : '▶ Putar'}
           </button>
@@ -1064,7 +1064,7 @@ export function ConvergentLandformsIllustration({
   return (
     <div className="w-full h-full relative flex flex-col justify-between select-none">
       {/* Tab Switcher Top - Padding cukup agar tombol atas tidak terpotong */}
-      <div className="w-full pt-2.5 px-2 sm:px-3 pb-2 flex items-center justify-between border-b border-slate-800 bg-slate-950/95 z-20 shrink-0 gap-1 overflow-x-auto">
+      <div className="w-full pt-2.5 px-2 sm:px-3 pb-2 flex items-center justify-between border-b border-outline-variant bg-slate-950/95 z-20 shrink-0 gap-1 overflow-x-auto">
         <span className="text-[13px] sm:text-[15px] font-pixel-title text-amber-400 font-bold shrink-0 flex items-center gap-1.5">
           <PixelIcon name="layers" size={14} className="text-amber-400" />
           <span className="hidden sm:inline">PILIH BENTANG ALAM:</span>
@@ -1075,7 +1075,7 @@ export function ConvergentLandformsIllustration({
             onClick={() => handleSelect('trench')}
             className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'trench'
               ? 'bg-cyan-600 text-white border-cyan-300 shadow-[0_2px_0_#083344]'
-              : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
+              : 'bg-chrome text-on-surface-variant border-outline-variant hover:text-on-chrome hover:bg-chrome-raised'
               } font-semibold`}
           >
             [1. PALUNG LAUT]
@@ -1083,8 +1083,8 @@ export function ConvergentLandformsIllustration({
           <button
             onClick={() => handleSelect('mountains')}
             className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'mountains'
-              ? 'bg-amber-600 text-white border-amber-300 shadow-[0_2px_0_#451a03]'
-              : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
+              ? 'bg-amber-600 text-white border-amber-300 shadow-[0_2px_0_var(--shadow-accent-deep)]'
+              : 'bg-chrome text-on-surface-variant border-outline-variant hover:text-on-chrome hover:bg-chrome-raised'
               } font-semibold`}
           >
             [2. PEGUNUNGAN]
@@ -1092,8 +1092,8 @@ export function ConvergentLandformsIllustration({
           <button
             onClick={() => handleSelect('volcano')}
             className={`px-3 py-1.5 rounded-lg text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-colors border-2 ${activeLandform === 'volcano'
-              ? 'bg-rose-600 text-white border-rose-300 shadow-[0_2px_0_#4c0519]'
-              : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200 hover:bg-slate-800'
+              ? 'bg-rose-600 text-white border-rose-300 shadow-[0_2px_0_var(--shadow-danger)]'
+              : 'bg-chrome text-on-surface-variant border-outline-variant hover:text-on-chrome hover:bg-chrome-raised'
               } font-semibold`}
           >
             [3. GUNUNG BERAPI]
@@ -1770,7 +1770,7 @@ export function MegathrustIllustration() {
   return (
     <div className="w-full h-full relative flex flex-col items-center justify-between p-2 select-none">
       {/* Top Controller */}
-      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800 z-10">
+      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-outline-variant z-10">
         <span className="text-[12.5px] font-pixel-title text-rose-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="alert" size={13} className="text-rose-500 animate-pulse" />
           <span>SIMULATOR MEKANISME GEMPA MEGATHRUST &amp; TSUNAMI</span>
@@ -1779,8 +1779,8 @@ export function MegathrustIllustration() {
           <button
             onClick={() => handleTogglePhase('locked')}
             className={`px-3 py-1 rounded-lg text-[12.5px] font-pixel-title font-bold border-2 cursor-pointer transition-all ${!isRupture
-              ? 'bg-amber-600 text-white border-amber-300 shadow-[0_2px_0_#451a03] -translate-y-0.5'
-              : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200'
+              ? 'bg-amber-600 text-white border-amber-300 shadow-[0_2px_0_var(--shadow-accent-deep)] -translate-y-0.5'
+              : 'bg-chrome text-on-surface-variant border-outline-variant hover:text-on-chrome'
               }`}
           >
             [1. FASE TERKUNCI]
@@ -1788,8 +1788,8 @@ export function MegathrustIllustration() {
           <button
             onClick={() => handleTogglePhase('rupture')}
             className={`px-3 py-1 rounded-lg text-[12.5px] font-pixel-title font-bold border-2 cursor-pointer transition-all ${isRupture
-              ? 'bg-rose-600 text-white border-rose-300 shadow-[0_2px_0_#4c0519] -translate-y-0.5'
-              : 'bg-slate-900 text-slate-400 border-slate-700 hover:text-slate-200'
+              ? 'bg-rose-600 text-white border-rose-300 shadow-[0_2px_0_var(--shadow-danger)] -translate-y-0.5'
+              : 'bg-chrome text-on-surface-variant border-outline-variant hover:text-on-chrome'
               }`}
           >
             [2. RUPTUR &amp; TSUNAMI]
@@ -2016,12 +2016,12 @@ export function MegathrustIllustration() {
       </svg>
 
       {/* Bottom Educational Summary */}
-      <div className="w-full bg-[#0f172a] border-2 border-rose-500/80 rounded-xl p-2.5 text-slate-200 text-[13px] flex items-center justify-between gap-3 shadow-lg font-semibold">
+      <div className="w-full bg-ink border-2 border-rose-500/80 rounded-xl p-2.5 text-on-chrome text-[13px] flex items-center justify-between gap-3 shadow-lg font-semibold">
         <div className="flex items-center gap-2">
           <span className="px-2 py-0.5 rounded bg-rose-600/30 text-rose-300 font-pixel-title text-[12.5px] border border-rose-500 font-bold whitespace-nowrap">
             {!isRupture ? 'FASE 1: AKUMULASI TEGANGAN' : 'FASE 2: PELEPASAN & TSUNAMI'}
           </span>
-          <p className="text-[13.5px] sm:text-[14.5px] leading-snug text-slate-300 font-semibold">
+          <p className="text-[13.5px] sm:text-[14.5px] leading-snug text-on-chrome font-semibold">
             {!isRupture
               ? 'Selama puluhan tahun, bidang kontak terkunci menahan gesekan. Ujung lempeng benua tertekuk ke bawah dan menyimpan tegangan elastis raksasa.'
               : 'Ketika batas elastis terlampaui, batuan patah mendadak! Ujung lempeng benua terpelanting naik (<Rebound Elastis>), mendesak miliaran kubik air laut membentuk Tsunami!'}
@@ -2054,7 +2054,7 @@ export function SeismographPlatesIllustration() {
             }}
             className={`pt-2 px-3 pb-1.5 rounded-t-lg font-pixel-title text-[12.5px] font-bold cursor-pointer transition-all border-t-2 border-x-2 ${activeTab === 'seismograph'
               ? 'bg-[#1e1b4b] text-cyan-300 border-cyan-500 shadow-[0_-2px_6px_rgba(6,182,212,0.3)]'
-              : 'bg-slate-900/80 text-slate-400 border-slate-700 hover:text-slate-200'
+              : 'bg-slate-900/80 text-on-surface-variant border-outline-variant hover:text-on-chrome'
               }`}
           >
             [1. INSTRUMEN SISMOGRAF 3D]
@@ -2066,13 +2066,13 @@ export function SeismographPlatesIllustration() {
             }}
             className={`pt-2 px-3 pb-1.5 rounded-t-lg font-pixel-title text-[12.5px] font-bold cursor-pointer transition-all border-t-2 border-x-2 ${activeTab === 'plates'
               ? 'bg-[#1e1b4b] text-amber-300 border-amber-500 shadow-[0_-2px_6px_rgba(245,158,11,0.3)]'
-              : 'bg-slate-900/80 text-slate-400 border-slate-700 hover:text-slate-200'
+              : 'bg-slate-900/80 text-on-surface-variant border-outline-variant hover:text-on-chrome'
               }`}
           >
             [2. PETA 20 LEMPENG BUMI]
           </button>
         </div>
-        <span className="text-[12px] text-slate-400 hidden sm:inline font-semibold">
+        <span className="text-[12px] text-on-surface-variant hidden sm:inline font-semibold">
           INSTRUMEN PENCATAT GELOMBANG SEISMIK
         </span>
       </div>
@@ -2311,32 +2311,32 @@ export function SeismographPlatesIllustration() {
 
       {/* 3-Card Scientific Explanation for SMP Kelas 8 */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1">
-        <div className="bg-[#0f172a] border-2 border-cyan-500/80 rounded-xl p-2.5 text-slate-200 text-[13px] shadow-md font-semibold">
+        <div className="bg-ink border-2 border-cyan-500/80 rounded-xl p-2.5 text-on-chrome text-[13px] shadow-md font-semibold">
           <div className="flex items-center gap-1.5 mb-1.5 text-cyan-300 font-pixel-title text-[14px] sm:text-[13px] font-bold">
             <PixelIcon name="shield" size={14} />
             <span>1. INERSIA MASSA</span>
           </div>
-          <p className="text-[13px] sm:text-[16px] leading-relaxed text-slate-100 font-sans font-medium">
+          <p className="text-[13px] sm:text-[16px] leading-relaxed text-on-chrome font-sans font-medium">
             Bandul berat tetap diam di posisinya karena gaya inersia saat rangka penopang dan tanah bergetar hebat.
           </p>
         </div>
 
-        <div className="bg-[#0f172a] border-2 border-amber-500/80 rounded-xl p-2.5 text-slate-200 text-[13px] shadow-md font-semibold">
+        <div className="bg-ink border-2 border-amber-500/80 rounded-xl p-2.5 text-on-chrome text-[13px] shadow-md font-semibold">
           <div className="flex items-center gap-1.5 mb-1.5 text-amber-300 font-pixel-title text-[14px] sm:text-[13px] font-bold">
             <PixelIcon name="zap" size={14} />
             <span>2. SINYAL LISTRIK</span>
           </div>
-          <p className="text-[13px] sm:text-[16px] leading-relaxed text-slate-100 font-sans font-medium">
+          <p className="text-[13px] sm:text-[16px] leading-relaxed text-on-chrome font-sans font-medium">
             Gerak relatif bandul dan magnet menginduksi arus listrik di koil kawat, direkam sebagai grafik seismogram (Gelombang P &amp; S).
           </p>
         </div>
 
-        <div className="bg-[#0f172a] border-2 border-rose-500/80 rounded-xl p-2.5 text-slate-200 text-[13px] shadow-md font-semibold">
+        <div className="bg-ink border-2 border-rose-500/80 rounded-xl p-2.5 text-on-chrome text-[13px] shadow-md font-semibold">
           <div className="flex items-center gap-1.5 mb-1.5 text-rose-300 font-pixel-title text-[14px] sm:text-[13px] font-bold">
             <PixelIcon name="globe" size={14} />
             <span>3. 20 LEMPENG BUMI</span>
           </div>
-          <p className="text-[13px] sm:text-[16px] leading-relaxed text-slate-100 font-sans font-medium">
+          <p className="text-[13px] sm:text-[16px] leading-relaxed text-on-chrome font-sans font-medium">
             Titik-titik gempa global memetakan sekitar 20 keping lempeng tektonik yang bergerak di atas arus konveksi mantel bumi.
           </p>
         </div>

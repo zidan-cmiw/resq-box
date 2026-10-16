@@ -224,15 +224,15 @@ export default function Wordle({
     if (isGateChallenge) {
       return (
         <div
-          className="w-full mx-auto my-auto flex flex-col items-center justify-center p-6 sm:p-8 bg-amber-100/95 rounded-3xl border-4 border-amber-950 shadow-[0_12px_0_#78350f] font-pixel animate-fade-in select-none text-center space-y-5"
+          className="w-full mx-auto my-auto flex flex-col items-center justify-center p-6 sm:p-8 bg-amber-100/95 rounded-3xl border-4 border-amber-950 shadow-[0_12px_0_var(--shadow-accent)] font-pixel animate-fade-in select-none text-center space-y-5"
           style={{ maxWidth: '640px' }}
         >
-          <div className="p-4 bg-emerald-400 rounded-3xl border-4 border-amber-950 shadow-[0_6px_0_#064e3b] flex items-center justify-center animate-bounce-slight">
+          <div className="p-4 bg-emerald-400 rounded-3xl border-4 border-amber-950 shadow-[0_6px_0_var(--shadow-success)] flex items-center justify-center animate-bounce-slight">
             <PixelTrophy size={80} showSparkles={true} />
           </div>
 
           <div className="space-y-2.5 w-full">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md font-semibold">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md font-semibold">
               GERBANG TERBUKA!
             </span>
             <h3 className="font-pixel-title text-base sm:text-lg md:text-xl text-amber-950 pt-1 font-bold">
@@ -249,7 +249,7 @@ export default function Wordle({
               onSuccess?.();
               onClose?.();
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center font-medium"
+            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_var(--shadow-success)] transition-transform active:translate-y-1 cursor-pointer text-center font-medium"
           >
             BUKA AKSES TURUN ▼
           </button>
@@ -260,15 +260,15 @@ export default function Wordle({
     if (onClose) {
       return (
         <div
-          className="w-full mx-auto my-auto flex flex-col items-center justify-center p-6 sm:p-8 bg-amber-100/95 rounded-3xl border-4 border-amber-950 shadow-[0_12px_0_#78350f] font-pixel animate-fade-in select-none text-center space-y-5"
+          className="w-full mx-auto my-auto flex flex-col items-center justify-center p-6 sm:p-8 bg-amber-100/95 rounded-3xl border-4 border-amber-950 shadow-[0_12px_0_var(--shadow-accent)] font-pixel animate-fade-in select-none text-center space-y-5"
           style={{ maxWidth: '640px' }}
         >
-          <div className="p-4 bg-amber-400 rounded-3xl border-4 border-amber-950 shadow-[0_6px_0_#78350f] flex items-center justify-center animate-bounce-slight">
+          <div className="p-4 bg-amber-400 rounded-3xl border-4 border-amber-950 shadow-[0_6px_0_var(--shadow-accent)] flex items-center justify-center animate-bounce-slight">
             <PixelTrophy size={80} showSparkles={true} />
           </div>
 
           <div className="space-y-2.5 w-full">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md font-semibold">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-md font-semibold">
               MINI CHALLENGE SELESAI!
             </span>
             <h3 className="font-pixel-title text-base sm:text-lg md:text-xl text-amber-950 pt-1 font-bold">
@@ -285,7 +285,7 @@ export default function Wordle({
               onSuccess?.();
               onClose();
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer text-center font-medium"
+            className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-emerald-50 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_6px_0_var(--shadow-success)] transition-transform active:translate-y-1 cursor-pointer text-center font-medium"
           >
             KEMBALI KE PENJELAJAHAN ➔
           </button>
@@ -295,18 +295,18 @@ export default function Wordle({
 
     return (
       <div
-        className="w-full mx-auto my-auto flex flex-col items-center justify-center p-6 sm:p-8 bg-amber-100/95 rounded-3xl border-4 border-amber-950 shadow-[0_12px_0_#78350f] font-pixel animate-fade-in select-none text-center space-y-4"
+        className="w-full mx-auto my-auto flex flex-col items-center justify-center p-6 sm:p-8 bg-amber-100/95 rounded-3xl border-4 border-amber-950 shadow-[0_12px_0_var(--shadow-accent)] font-pixel animate-fade-in select-none text-center space-y-4"
         style={{ maxWidth: '640px' }}
       >
 
         {/* Pixel Trophy */}
-        <div className="p-4 bg-amber-400 rounded-3xl border-4 border-amber-950 shadow-[0_6px_0_#78350f] flex items-center justify-center animate-bounce-slight">
+        <div className="p-4 bg-amber-400 rounded-3xl border-4 border-amber-950 shadow-[0_6px_0_var(--shadow-accent)] flex items-center justify-center animate-bounce-slight">
           <PixelTrophy size={88} showSparkles={true} />
         </div>
 
         {/* Victory Header */}
         <div className="space-y-2 w-full">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow font-semibold">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500 text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] border-2 border-amber-950 shadow font-semibold">
             STAGE 1 CLEARED
           </span>
           <h3 className="font-pixel-title text-base sm:text-lg md:text-xl text-amber-950 pt-1 font-bold">
@@ -326,7 +326,7 @@ export default function Wordle({
             <span className="bg-amber-100 py-2 px-2.5 rounded-xl border border-amber-950/30 truncate">
               Wordle: 3/3
             </span>
-            <span className="bg-emerald-200 text-emerald-950 py-2 px-2.5 rounded-xl border border-emerald-950/30 font-bold truncate">
+            <span className="bg-success-container text-on-success-container py-2 px-2.5 rounded-xl border border-emerald-950/30 font-bold truncate">
               Level 2 Buka
             </span>
           </div>
@@ -339,7 +339,7 @@ export default function Wordle({
               retroAudio.playSelect();
               navigate('/level2');
             }}
-            className="w-full py-4 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_5px_0_#064e3b] transition-transform active:translate-y-0.5 cursor-pointer text-center font-medium"
+            className="w-full py-4 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-on-accent-chip font-pixel-title text-[15px] sm:text-base border-3 border-amber-950 shadow-[0_5px_0_var(--shadow-success)] transition-transform active:translate-y-0.5 cursor-pointer text-center font-medium"
           >
             LANJUT KE LEVEL 2 ➔
           </button>
@@ -350,14 +350,14 @@ export default function Wordle({
                 retroAudio.playSelect();
                 navigate('/');
               }}
-              className="flex-1 py-3 px-4 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel font-bold text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-[0_3px_0_#78350f] cursor-pointer"
+              className="flex-1 py-3 px-4 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel font-bold text-[13px] sm:text-[15px] border-2 border-amber-950 shadow-[0_3px_0_var(--shadow-accent)] cursor-pointer"
             >
               MENU UTAMA
             </button>
 
             <button
               onClick={handleRestartAll}
-              className="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-200 font-pixel font-bold text-[13px] sm:text-[15px] border-2 border-slate-950 shadow-[0_3px_0_#0f172a] cursor-pointer whitespace-nowrap"
+              className="py-3 px-5 rounded-xl bg-chrome-raised hover:bg-surface-container-highest text-amber-200 font-pixel font-bold text-[13px] sm:text-[15px] border-2 border-chrome-border shadow-[0_3px_0_var(--shadow-ink)] cursor-pointer whitespace-nowrap"
               title="Mainkan Ulang Quest"
             >
               ULANG ↺
@@ -437,14 +437,14 @@ export default function Wordle({
                 if (rowIdx < guesses.length) {
                   const status = getLetterStatus(letter, colIdx, targetWord);
                   if (status === 'correct') {
-                    tileBg = 'bg-emerald-500 border-emerald-950 text-slate-950 shadow-[0_3px_0_#064e3b] font-bold';
+                    tileBg = 'bg-emerald-500 border-emerald-950 text-on-accent-chip shadow-[0_3px_0_var(--shadow-success)] font-bold';
                   } else if (status === 'present') {
-                    tileBg = 'bg-amber-400 border-amber-950 text-slate-950 shadow-[0_3px_0_#78350f] font-bold';
+                    tileBg = 'bg-amber-400 border-amber-950 text-on-accent-chip shadow-[0_3px_0_var(--shadow-accent)] font-bold';
                   } else {
-                    tileBg = 'bg-slate-700 border-slate-950 text-slate-300 shadow-inner font-bold';
+                    tileBg = 'bg-surface-container-highest border-chrome-border text-on-chrome shadow-inner font-bold';
                   }
                 } else if (isCurrentRow && letter) {
-                  tileBg = 'bg-amber-200 border-amber-950 text-amber-950 scale-105 shadow-[0_3px_0_#78350f] font-bold';
+                  tileBg = 'bg-amber-200 border-amber-950 text-amber-950 scale-105 shadow-[0_3px_0_var(--shadow-accent)] font-bold';
                 }
 
                 // Dynamic responsive tile sizing based on word length - significantly enlarged
@@ -480,18 +480,18 @@ export default function Wordle({
 
       {/* ── Outcome Banners ── */}
       {gameState === 'won' && (
-        <div className="w-full py-3 px-4 sm:py-3.5 sm:px-5 bg-emerald-100 border-3 border-emerald-700 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow text-left">
+        <div className="w-full py-3 px-4 sm:py-3.5 sm:px-5 bg-success-container border-3 border-emerald-700 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow text-left">
           <div>
-            <span className="font-pixel-title text-[15px] sm:text-base text-emerald-900 block font-bold">
+            <span className="font-pixel-title text-[15px] sm:text-base text-on-success-container block font-bold">
               BENAR! KATA: {targetWord}
             </span>
-            <span className="text-[13px] sm:text-[15px] text-emerald-800 font-bold">
+            <span className="text-[13px] sm:text-[15px] text-on-success-container font-bold">
               Selesai dalam {guesses.length} percobaan!
             </span>
           </div>
           <button
             onClick={handleNextQuestion}
-            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-3 border-emerald-950 shadow-[0_3px_0_#064e3b] cursor-pointer whitespace-nowrap active:translate-y-0.5 font-semibold"
+            className="w-full sm:w-auto py-2.5 px-4 sm:px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] border-3 border-emerald-950 shadow-[0_3px_0_var(--shadow-success)] cursor-pointer whitespace-nowrap active:translate-y-0.5 font-semibold"
           >
             {currentQIdx < questions.length - 1 ? 'SOAL BERIKUTNYA ➔' : 'SELESAI ✓'}
           </button>
@@ -508,12 +508,12 @@ export default function Wordle({
           gantinya ia diberi PETUNJUK materi di bawah ini. Petunjuk itu sendiri
           dijamin tidak memuat jawabannya — lihat `__tests__/kataWordle.test.ts`. */}
       {gameState === 'lost' && (
-        <div className="w-full py-3 px-4 sm:py-3.5 sm:px-5 bg-rose-100 border-3 border-rose-700 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow text-left">
+        <div className="w-full py-3 px-4 sm:py-3.5 sm:px-5 bg-error-container border-3 border-rose-700 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-fade-in shadow text-left">
           <div>
-            <span className="font-pixel-title text-[15px] sm:text-base text-rose-900 block font-bold">
+            <span className="font-pixel-title text-[15px] sm:text-base text-on-error-container block font-bold">
               KESEMPATAN HABIS!
             </span>
-            <span className="text-[13px] sm:text-[15px] text-rose-800 font-bold">
+            <span className="text-[13px] sm:text-[15px] text-on-error-container font-bold">
               Kata rahasianya belum terbuka. Baca petunjuk di bawah, lalu pecahkan ulang kata yang sama.
             </span>
             {/* PETUNJUK, BUKAN JAWABAN.
@@ -523,7 +523,7 @@ export default function Wordle({
                 sehingga siswa yang gagal tidak mendapat arahan apa pun — dan
                 satu-satunya "bantuan" yang ada justru kunci jawabannya. */}
             {currentHint && (
-              <span className="mt-2 block text-[13px] sm:text-[14.5px] text-rose-950 bg-rose-50 border-2 border-rose-300 rounded-xl px-3 py-2 text-left font-bold">
+              <span className="mt-2 block text-[13px] sm:text-[14.5px] text-on-error-container bg-error-container border-2 border-rose-300 rounded-xl px-3 py-2 text-left font-bold">
                 <strong className="font-pixel-title">PETUNJUK: </strong>
                 {currentHint}
               </span>
@@ -544,13 +544,13 @@ export default function Wordle({
           <div key={rIdx} className="flex justify-center gap-1 sm:gap-1.5">
             {row.map((k) => {
               const status = usedLetters[k];
-              let keyBg = 'bg-amber-100 hover:bg-amber-200 text-amber-950 border-amber-950/40 shadow-[0_2px_0_#78350f]';
+              let keyBg = 'bg-amber-100 hover:bg-amber-200 text-amber-950 border-amber-950/40 shadow-[0_2px_0_var(--shadow-accent)]';
               if (status === 'correct') {
-                keyBg = 'bg-emerald-500 text-slate-950 font-bold border-emerald-950 shadow-[0_2px_0_#064e3b]';
+                keyBg = 'bg-emerald-500 text-on-accent-chip font-bold border-emerald-950 shadow-[0_2px_0_var(--shadow-success)]';
               } else if (status === 'present') {
-                keyBg = 'bg-amber-400 text-slate-950 font-bold border-amber-950 shadow-[0_2px_0_#78350f]';
+                keyBg = 'bg-amber-400 text-on-accent-chip font-bold border-amber-950 shadow-[0_2px_0_var(--shadow-accent)]';
               } else if (status === 'absent') {
-                keyBg = 'bg-slate-700 text-slate-400 border-slate-950 opacity-60';
+                keyBg = 'bg-surface-container-highest text-on-surface-variant border-chrome-border opacity-60';
               }
 
               const isActionKey = k === 'ENTER' || k === 'DEL';

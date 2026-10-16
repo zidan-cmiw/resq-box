@@ -4,6 +4,14 @@ import './index.css'
 import App from './App.tsx'
 import { initGlobalErrorHandlers, initWebVitals } from './utils/monitoring'
 import { kirimNilaiTertunda } from './utils/supabaseClient'
+import { initTema } from './utils/tema'
+
+// ── Tema terang / gelap ───────────────────────────────────────────────────
+// Kelas `.dark` sudah dipasang oleh skrip kecil di index.html sebelum halaman
+// digambar, sehingga tidak ada kedipan putih. Panggilan ini melanjutkan
+// pekerjaannya: menyinkronkan keadaan, memperbarui warna bilah peramban, dan
+// meneruskan perubahan pengaturan sistem selama pengguna belum memilih sendiri.
+initTema()
 
 // ── Observabilitas ────────────────────────────────────────────────────────
 // Tanpa ini, kegagalan yang terjadi di HP siswa tidak pernah sampai ke kita.

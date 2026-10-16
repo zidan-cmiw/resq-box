@@ -122,7 +122,7 @@ export default function PrivacyPage() {
             </h1>
           </div>
 
-          <div className="pixel-wood-board p-5 sm:p-7 text-[#3e1f07]">
+          <div className="pixel-wood-board p-5 sm:p-7 text-on-paper-soft">
             <div className="flex items-start gap-3 mb-4 pb-4 border-b-2 border-[#451a03]/25">
               <span className="shrink-0 mt-0.5">
                 <PixelIcon name="shield" size={26} />

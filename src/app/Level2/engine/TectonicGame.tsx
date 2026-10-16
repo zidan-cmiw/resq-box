@@ -22,7 +22,9 @@ import {
   retryVolcanoPhase,
   retryVolcanoRescuePhase,
   getNpcDialogueTreeL2,
+  FASE_PESAN_DI_KARTU_L2,
   type GameStateL2,
+  type VolcanoSimPhaseL2,
 } from './gameEngine';
 import { hasDiscovery } from './legacyIds';
 import { TOTAL_CRYSTALS_L2 } from './zones';
@@ -141,6 +143,16 @@ export default function TectonicGame() {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [nearInteractablePrompt, setNearInteractablePrompt] = useState<string | null>(null);
   const nearPromptRef = useRef<string | null>(null);
+  /**
+   * Fase simulasi erupsi yang sedang berjalan.
+   *
+   * Dibaca dari `gameStateRef.current.volcanoSim.phase` di dalam gelung
+   * permainan (keadaan mesin tidak berada di dalam React). Dipakai untuk
+   * menyembunyikan popup petunjuk BAWAH pada fase-fase yang pesannya sudah
+   * tampil di kartu kanvas atas — lihat `FASE_PESAN_DI_KARTU_L2`.
+   */
+  const [faseVulkanik, setFaseVulkanik] = useState<string | null>(null);
+  const faseVulkanikRef = useRef<string | null>(null);
   const discoveredInAreaRef = useRef<number>(0);
 
   // Handler memilih dan menjalankan skenario simulasi gempa (Gempa Sedang / Gempa Besar)
@@ -535,6 +547,10 @@ export default function TectonicGame() {
 
         // Sinkronisasi status fase modal popup simulasi erupsi Merapi
         if (state.volcanoSim) {
+          if (state.volcanoSim.phase !== faseVulkanikRef.current) {
+            faseVulkanikRef.current = state.volcanoSim.phase;
+            setFaseVulkanik(state.volcanoSim.phase);
+          }
           if (state.volcanoSim.phase === 'fase1_normal_popup' && activeVolcanoPhaseModal !== 'NORMAL') {
             setActiveVolcanoPhaseModal('NORMAL');
           } else if (state.volcanoSim.phase === 'fase2_waspada_popup' && activeVolcanoPhaseModal !== 'WASPADA') {
@@ -1288,8 +1304,14 @@ export default function TectonicGame() {
           Sebelumnya kotak ini selebar 860px dengan huruf sampai `md:text-xl`
           dan padding tebal, sehingga menutupi karakter pemain di bagian
           tengah-bawah layar. Sekarang dibuat ringkas: lebar maksimum 620px,
-          huruf lebih kecil, padding dan ikon lebih tipis. */}
-      {nearInteractablePrompt && !isPaused && (
+          huruf lebih kecil, padding dan ikon lebih tipis.
+
+          TIDAK DIGAMBAR pada fase simulasi erupsi yang pesannya sudah ada di
+          kartu kanvas bagian ATAS (sirine, bantu 3 warga, persiapan tas
+          siaga). Dulu pesan yang sama tampil dua kali — di atas dan di bawah
+          — sehingga layar penuh tulisan yang mengulang. Daftar fasenya ada di
+          `FASE_PESAN_DI_KARTU_L2` (gameEngine.ts). */}
+      {nearInteractablePrompt && !isPaused && !(faseVulkanik && FASE_PESAN_DI_KARTU_L2.has(faseVulkanik as VolcanoSimPhaseL2)) && (
         <div className="absolute bottom-24 sm:bottom-28 left-1/2 -translate-x-1/2 pointer-events-auto z-30 select-none w-[min(86vw,620px)] px-2">
           <div className="bg-slate-950/95 text-amber-100 border-2 border-amber-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl font-bold text-[12.5px] sm:text-[13.5px] shadow-[0_8px_22px_rgba(0,0,0,0.9)] backdrop-blur-md flex items-center justify-center gap-2 text-center leading-snug">
             <PixelIcon name="broadcast" size={16} className="text-amber-400 shrink-0" />

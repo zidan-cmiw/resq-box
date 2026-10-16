@@ -225,13 +225,13 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-slate-950/80 animate-fade-in font-pixel select-none">
       <div
-        className="relative w-full max-w-[980px] sm:max-w-[1020px] lg:max-w-[1080px] max-h-[calc(100dvh-1rem)] flex flex-col pixel-wood-board p-4 sm:p-6 md:p-7 overflow-hidden shadow-[0_12px_0_#231206] rounded-2xl"
+        className="relative w-full max-w-[980px] sm:max-w-[1020px] lg:max-w-[1080px] max-h-[calc(100dvh-1rem)] flex flex-col pixel-wood-board p-4 sm:p-6 md:p-7 overflow-hidden shadow-[0_12px_0_var(--shadow-ink)] rounded-2xl"
         style={{ background: '#fef3c7' }}
       >
         {/* ── HEADER ── */}
         <div className="flex items-center justify-between pb-3.5 border-b-3 border-amber-950/30">
           <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-400 border-2 border-amber-950 flex items-center justify-center shadow-[0_3px_0_#78350f]">
+            <div className="w-10 h-10 rounded-xl bg-amber-400 border-2 border-amber-950 flex items-center justify-center shadow-[0_3px_0_var(--shadow-accent)]">
               <PixelAvatarRenderer config={avatar} size={32} bordered={false} />
             </div>
             <div>
@@ -248,7 +248,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 rounded-xl bg-amber-200 border-2 border-amber-950 flex items-center justify-center font-pixel-title text-[15px] text-amber-950 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer shadow-[0_2px_0_#78350f] font-semibold"
+            className="w-9 h-9 rounded-xl bg-amber-200 border-2 border-amber-950 flex items-center justify-center font-pixel-title text-[15px] text-amber-950 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer shadow-[0_2px_0_var(--shadow-accent)] font-semibold"
             title="Tutup Modal"
           >
             ✕
@@ -265,7 +265,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
             <div className="w-full flex flex-col items-center bg-amber-950/10 py-4 px-3 rounded-xl border-2 border-amber-950/30">
               <div className="relative group">
                 <PixelAvatarRenderer config={avatar} size={140} animate={false} />
-                <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-slate-950 text-[13.5px] font-bold px-2.5 py-0.5 rounded-full border-2 border-slate-950 shadow">
+                <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-on-accent-chip text-[13.5px] font-bold px-2.5 py-0.5 rounded-full border-2 border-chrome-border shadow">
                   ● LIVE
                 </div>
               </div>
@@ -283,7 +283,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
             {/* Randomize button */}
             <button
               onClick={handleRandomize}
-              className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold border-3 border-amber-950 shadow-[0_4px_0_#78350f] flex items-center justify-center gap-2 text-[13px] sm:text-[15px] transition-transform active:translate-y-1 cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-on-accent-chip font-bold border-3 border-amber-950 shadow-[0_4px_0_var(--shadow-accent)] flex items-center justify-center gap-2 text-[13px] sm:text-[15px] transition-transform active:translate-y-1 cursor-pointer"
             >
               <PixelIcon name="dice" size={18} />
               <span>ACAK AVATAR (RANDOM)</span>
@@ -300,7 +300,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                   <button
                     key={preset.name}
                     onClick={() => handleApplyPreset(preset)}
-                    className="p-1.5 bg-amber-100 hover:bg-amber-200 border-2 border-amber-950 rounded-xl flex items-center gap-2 text-left transition-all active:scale-95 cursor-pointer shadow-[0_2px_0_#78350f]"
+                    className="p-1.5 bg-amber-100 hover:bg-amber-200 border-2 border-amber-950 rounded-xl flex items-center gap-2 text-left transition-all active:scale-95 cursor-pointer shadow-[0_2px_0_var(--shadow-accent)]"
                   >
                     <PixelAvatarRenderer config={preset.config} size={36} bordered={true} />
                     <div className="min-w-0 flex-1">
@@ -340,8 +340,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                     }}
                     className={`py-2 px-2 rounded-xl border-2 border-amber-950 text-[13px] sm:text-[15px] font-bold text-center cursor-pointer transition-all ${
                       isActive
-                        ? 'bg-amber-950 text-amber-300 shadow-[0_3px_0_#451a03] scale-102'
-                        : 'bg-amber-200/90 text-amber-950 hover:bg-amber-300 shadow-[0_2px_0_#78350f]'
+                        ? 'bg-amber-950 text-amber-300 shadow-[0_3px_0_var(--shadow-accent-deep)] scale-102'
+                        : 'bg-amber-200/90 text-amber-950 hover:bg-amber-300 shadow-[0_2px_0_var(--shadow-accent)]'
                     }`}
                   >
                     {tab.label}
@@ -373,8 +373,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                             }}
                             className={`p-2.5 rounded-xl border-2 border-amber-950 flex items-center gap-3 text-left transition-all cursor-pointer ${
                               isSelected
-                                ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_#78350f] ring-2 ring-amber-950'
-                                : 'bg-white hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_#78350f]'
+                                ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_var(--shadow-accent)] ring-2 ring-amber-950'
+                                : 'bg-surface-container hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_var(--shadow-accent)]'
                             }`}
                           >
                             <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
@@ -404,8 +404,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                             }}
                             className={`p-2.5 rounded-xl border-2 border-amber-950 flex items-center gap-2.5 cursor-pointer transition-all ${
                               isSelected
-                                ? 'ring-2 ring-amber-950 bg-amber-300 font-bold shadow-[0_2px_0_#78350f]'
-                                : 'bg-white hover:bg-amber-100 shadow-[0_2px_0_#78350f]'
+                                ? 'ring-2 ring-amber-950 bg-amber-300 font-bold shadow-[0_2px_0_var(--shadow-accent)]'
+                                : 'bg-surface-container hover:bg-amber-100 shadow-[0_2px_0_var(--shadow-accent)]'
                             }`}
                           >
                             <span
@@ -442,8 +442,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           }}
                           className={`p-3 rounded-xl border-2 border-amber-950 flex items-center gap-3 cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_#78350f] ring-2 ring-amber-950'
-                              : 'bg-white hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_#78350f]'
+                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_var(--shadow-accent)] ring-2 ring-amber-950'
+                              : 'bg-surface-container hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_var(--shadow-accent)]'
                           }`}
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
@@ -479,8 +479,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           }}
                           className={`p-3 rounded-xl border-2 border-amber-950 flex items-center gap-3 text-left cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_#78350f] ring-2 ring-amber-950'
-                              : 'bg-white hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_#78350f]'
+                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_var(--shadow-accent)] ring-2 ring-amber-950'
+                              : 'bg-surface-container hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_var(--shadow-accent)]'
                           }`}
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
@@ -514,8 +514,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           }}
                           className={`p-3 rounded-xl border-2 border-amber-950 flex items-center gap-3 text-left cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_#78350f] ring-2 ring-amber-950'
-                              : 'bg-white hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_#78350f]'
+                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_var(--shadow-accent)] ring-2 ring-amber-950'
+                              : 'bg-surface-container hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_var(--shadow-accent)]'
                           }`}
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
@@ -549,8 +549,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           }}
                           className={`p-3 rounded-xl border-2 border-amber-950 flex items-center gap-3 text-left cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_#78350f] ring-2 ring-amber-950'
-                              : 'bg-white hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_#78350f]'
+                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_var(--shadow-accent)] ring-2 ring-amber-950'
+                              : 'bg-surface-container hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_var(--shadow-accent)]'
                           }`}
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
@@ -584,8 +584,8 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
                           }}
                           className={`p-3 rounded-xl border-2 border-amber-950 flex items-center gap-3 text-left cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_#78350f] ring-2 ring-amber-950'
-                              : 'bg-white hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_#78350f]'
+                              ? 'bg-amber-400 text-amber-950 font-bold shadow-[0_3px_0_var(--shadow-accent)] ring-2 ring-amber-950'
+                              : 'bg-surface-container hover:bg-amber-100 text-amber-950 shadow-[0_2px_0_var(--shadow-accent)]'
                           }`}
                         >
                           <PixelAvatarRenderer config={previewConfig} size={48} bordered={true} />
@@ -611,14 +611,14 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
               retroAudio.playSelect();
               onClose();
             }}
-            className="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-200 hover:bg-slate-700 border-2 border-slate-950 font-bold text-[13px] sm:text-[15px] cursor-pointer shadow-[0_3px_0_#0f172a]"
+            className="px-5 py-2.5 rounded-xl bg-chrome-raised text-on-chrome hover:bg-surface-container-highest border-2 border-chrome-border font-bold text-[13px] sm:text-[15px] cursor-pointer shadow-[0_3px_0_var(--shadow-ink)]"
           >
             BATAL
           </button>
 
           <button aria-label="Lanjutkan"
             onClick={handleSave}
-            className="px-7 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-pixel-title text-[13px] sm:text-[15px] border-3 border-amber-950 shadow-[0_4px_0_#064e3b] transition-transform active:translate-y-1 cursor-pointer flex items-center gap-2 font-semibold"
+            className="px-7 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] border-3 border-amber-950 shadow-[0_4px_0_var(--shadow-success)] transition-transform active:translate-y-1 cursor-pointer flex items-center gap-2 font-semibold"
           >
             <span>SIMPAN AVATAR SAYA</span>
             <PixelIcon name="check" size={16} />

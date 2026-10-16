@@ -42,12 +42,12 @@ export function EarthquakePrepIllustration() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner */}
-      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800 shrink-0">
+      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-outline-variant shrink-0">
         <span className="text-[13px] sm:text-[15px] font-pixel-title text-sky-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="shield" size={14} />
           TAS SIAGA BENCANA (SURVIVAL KIT 72 JAM)
         </span>
-        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel font-semibold">
+        <span className="text-[13.5px] sm:text-[13px] text-on-surface-variant font-pixel font-semibold">
           STANDAR BNPB &amp; BPBD
         </span>
       </div>
@@ -60,8 +60,8 @@ export function EarthquakePrepIllustration() {
             setActiveItem('air');
           }}
           className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[13px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'air'
-            ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold shadow-[0_2px_0_#0369a1]'
-            : 'bg-slate-800/90 text-sky-300 border-slate-700 hover:border-sky-500 hover:text-white'}`}
+            ? 'bg-sky-500 text-on-accent-chip border-sky-300 font-bold shadow-[0_2px_0_#0369a1]'
+            : 'bg-slate-800/90 text-sky-300 border-outline-variant hover:border-sky-500 hover:text-white'}`}
         >
           <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
           <span>1. AIR &amp; RANSUM</span>
@@ -72,8 +72,8 @@ export function EarthquakePrepIllustration() {
             setActiveItem('p3k');
           }}
           className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[13px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'p3k'
-            ? 'bg-rose-500 text-slate-950 border-rose-300 font-bold shadow-[0_2px_0_#991b1b]'
-            : 'bg-slate-800/90 text-rose-300 border-slate-700 hover:border-rose-500 hover:text-white'}`}
+            ? 'bg-rose-500 text-on-accent-chip border-rose-300 font-bold shadow-[0_2px_0_#991b1b]'
+            : 'bg-slate-800/90 text-rose-300 border-outline-variant hover:border-rose-500 hover:text-white'}`}
         >
           <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
           <span>2. KOTAK P3K</span>
@@ -84,8 +84,8 @@ export function EarthquakePrepIllustration() {
             setActiveItem('senter');
           }}
           className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[13px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'senter'
-            ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold shadow-[0_2px_0_#92400e]'
-            : 'bg-slate-800/90 text-amber-300 border-slate-700 hover:border-amber-400 hover:text-white'}`}
+            ? 'bg-amber-400 text-on-accent-chip border-amber-300 font-bold shadow-[0_2px_0_var(--shadow-accent)]'
+            : 'bg-slate-800/90 text-amber-300 border-outline-variant hover:border-amber-400 hover:text-white'}`}
         >
           <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
           <span>3. SENTER &amp; PELUIT</span>
@@ -96,8 +96,8 @@ export function EarthquakePrepIllustration() {
             setActiveItem('dokumen');
           }}
           className={`px-2 py-1.5 sm:py-2 rounded-lg border-2 text-[13px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 ${activeItem === 'dokumen'
-            ? 'bg-emerald-500 text-slate-950 border-emerald-300 font-bold shadow-[0_2px_0_#065f46]'
-            : 'bg-slate-800/90 text-emerald-300 border-slate-700 hover:border-emerald-500 hover:text-white'}`}
+            ? 'bg-emerald-500 text-on-accent-chip border-emerald-300 font-bold shadow-[0_2px_0_#065f46]'
+            : 'bg-slate-800/90 text-emerald-300 border-outline-variant hover:border-emerald-500 hover:text-white'}`}
         >
           <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
           <span>4. DOKUMEN &amp; UANG</span>
@@ -397,7 +397,7 @@ export function EarthquakePrepIllustration() {
             {/* Panel Teks Deskripsi (Di Sebelah Kanan Grafis - Luas, Terbaca Jelas & Anti-Cutoff) */}
             <foreignObject x="122" y="30" width="186" height="138">
               <div className="w-full h-full flex flex-col justify-center overflow-y-auto pr-1 select-none">
-                <p className="text-[14.5px] sm:text-[15px] md:text-[15px] text-slate-100 leading-snug sm:leading-normal font-sans font-medium">
+                <p className="text-[14.5px] sm:text-[15px] md:text-[15px] text-on-chrome leading-snug sm:leading-normal font-sans font-medium">
                   {itemDetails[activeItem].desc}
                 </p>
               </div>
@@ -921,8 +921,8 @@ export function EarthquakeActionIllustration() {
               setActiveTab(card.id);
             }}
             className={`px-2 py-2 sm:py-2.5 rounded-xl border-2 text-[14px] sm:text-[13px] md:text-[15px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 flex items-center justify-center gap-1.5 sm:gap-2 ${activeTab === card.id
-              ? 'bg-amber-400 text-slate-950 border-amber-200 font-bold shadow-[0_3px_0_#92400e]'
-              : 'bg-slate-800/95 text-slate-300 border-slate-700 hover:border-amber-400 hover:text-white'
+              ? 'bg-amber-400 text-on-accent-chip border-amber-200 font-bold shadow-[0_3px_0_var(--shadow-accent)]'
+              : 'bg-slate-800/95 text-on-chrome border-outline-variant hover:border-amber-400 hover:text-white'
               }`}
           >
             <span className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full ${card.badgeBg} shrink-0`} />
@@ -933,10 +933,10 @@ export function EarthquakeActionIllustration() {
 
       {/* 2. Kartu Penuh Mengisi Seluruh Kotak (Full Frame) */}
       <div className="w-full flex-1 min-h-0 flex items-center justify-center overflow-hidden">
-        <div className="w-full h-full bg-white rounded-2xl border-3 sm:border-4 border-[#facc15] shadow-2xl p-3 sm:p-4 md:p-5 flex flex-col items-center justify-between text-center animate-fadeIn relative">
+        <div className="w-full h-full bg-surface-container rounded-2xl border-3 sm:border-4 border-[#facc15] shadow-2xl p-3 sm:p-4 md:p-5 flex flex-col items-center justify-between text-center animate-fadeIn relative">
           {/* Header: Nomor Urut Badge & Judul Kartu Resmi Poster */}
           <div className="w-full flex items-center justify-center gap-2.5 mb-1 sm:mb-2 shrink-0">
-            <span className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-400 text-slate-950 font-pixel-title text-[15px] sm:text-base md:text-lg font-bold flex items-center justify-center border-2 border-amber-500 shadow-sm shrink-0">
+            <span className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-amber-400 text-on-accent-chip font-pixel-title text-[15px] sm:text-base md:text-lg font-bold flex items-center justify-center border-2 border-amber-500 shadow-sm shrink-0">
               {currentCard.id}
             </span>
             <h3 className="font-extrabold text-[#0f172a] text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-wider uppercase font-sans">
@@ -1004,12 +1004,12 @@ export function EarthquakePostSafetyIllustration() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner */}
-      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
+      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-outline-variant">
         <span className="text-[13px] sm:text-[15px] font-pixel-title text-amber-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="shield" size={14} />
           SOP KESELAMATAN &amp; MEDIS PASCABENCANA
         </span>
-        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel font-semibold">
+        <span className="text-[13.5px] sm:text-[13px] text-on-surface-variant font-pixel font-semibold">
           STANDAR BNPB &amp; PMI
         </span>
       </div>
@@ -1132,16 +1132,16 @@ export function EarthquakePostSafetyIllustration() {
             <div className="w-full h-full bg-[#111827]/95 border-2 border-slate-700/80 rounded-xl p-3 flex flex-col justify-start overflow-y-auto shadow-md">
               <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
                 <span
-                  className="px-2 py-0.5 rounded text-[13px] font-bold text-slate-950 uppercase tracking-wider shadow-sm"
+                  className="px-2 py-0.5 rounded text-[13px] font-bold text-on-accent-chip uppercase tracking-wider shadow-sm"
                   style={{ backgroundColor: tabDetails[activeTab].color }}
                 >
                   {tabDetails[activeTab].badge}
                 </span>
               </div>
-              <h3 className="text-[13px] sm:text-[15.5px] font-bold text-slate-100 leading-snug font-sans tracking-wide mb-2 shrink-0">
+              <h3 className="text-[13px] sm:text-[15.5px] font-bold text-on-chrome leading-snug font-sans tracking-wide mb-2 shrink-0">
                 {tabDetails[activeTab].title}
               </h3>
-              <p className="text-[14.5px] sm:text-[15px] text-slate-200 leading-relaxed font-sans font-medium">
+              <p className="text-[14.5px] sm:text-[15px] text-on-chrome leading-relaxed font-sans font-medium">
                 {tabDetails[activeTab].desc}
               </p>
             </div>
@@ -1154,8 +1154,8 @@ export function EarthquakePostSafetyIllustration() {
         <button
           onClick={() => setActiveTab('susulan')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'susulan'
-            ? 'bg-orange-500 text-slate-950 border-orange-300 font-bold'
-            : 'bg-slate-800 text-orange-300 border-slate-700 hover:border-orange-500'
+            ? 'bg-orange-500 text-on-accent-chip border-orange-300 font-bold'
+            : 'bg-chrome-raised text-orange-300 border-outline-variant hover:border-orange-500'
             }`}
         >
           1. GEMPA SUSULAN
@@ -1163,8 +1163,8 @@ export function EarthquakePostSafetyIllustration() {
         <button
           onClick={() => setActiveTab('utilitas')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'utilitas'
-            ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
-            : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
+            ? 'bg-amber-400 text-on-accent-chip border-amber-300 font-bold'
+            : 'bg-chrome-raised text-amber-300 border-outline-variant hover:border-amber-400'
             }`}
         >
           2. LISTRIK &amp; GAS
@@ -1172,8 +1172,8 @@ export function EarthquakePostSafetyIllustration() {
         <button
           onClick={() => setActiveTab('p3k')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'p3k'
-            ? 'bg-rose-500 text-slate-950 border-rose-300 font-bold'
-            : 'bg-slate-800 text-rose-300 border-slate-700 hover:border-rose-500'
+            ? 'bg-rose-500 text-on-accent-chip border-rose-300 font-bold'
+            : 'bg-chrome-raised text-rose-300 border-outline-variant hover:border-rose-500'
             }`}
         >
           3. PERTOLONGAN P3K
@@ -1181,8 +1181,8 @@ export function EarthquakePostSafetyIllustration() {
         <button
           onClick={() => setActiveTab('tandu')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'tandu'
-            ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold'
-            : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-500'
+            ? 'bg-sky-500 text-on-accent-chip border-sky-300 font-bold'
+            : 'bg-chrome-raised text-sky-300 border-outline-variant hover:border-sky-500'
             }`}
         >
           4. PROSEDUR TANDU
@@ -1234,12 +1234,12 @@ export function EarthquakePostCoordinationIllustration() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner */}
-      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
+      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-outline-variant">
         <span className="text-[13px] sm:text-[15px] font-pixel-title text-emerald-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="shield" size={14} />
           MANAJEMEN TITIK KUMPUL &amp; INFORMASI RESMI
         </span>
-        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel font-semibold">
+        <span className="text-[13.5px] sm:text-[13px] text-on-surface-variant font-pixel font-semibold">
           STANDAR BNPB &amp; BMKG
         </span>
       </div>
@@ -1380,16 +1380,16 @@ export function EarthquakePostCoordinationIllustration() {
             <div className="w-full h-full bg-[#111827]/95 border-2 border-slate-700/80 rounded-xl p-3 flex flex-col justify-start overflow-y-auto shadow-md">
               <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
                 <span
-                  className="px-2 py-0.5 rounded text-[13px] font-bold text-slate-950 uppercase tracking-wider shadow-sm"
+                  className="px-2 py-0.5 rounded text-[13px] font-bold text-on-accent-chip uppercase tracking-wider shadow-sm"
                   style={{ backgroundColor: tabDetails[activeTab].color }}
                 >
                   {tabDetails[activeTab].badge}
                 </span>
               </div>
-              <h3 className="text-[13px] sm:text-[15.5px] font-bold text-slate-100 leading-snug font-sans tracking-wide mb-2 shrink-0">
+              <h3 className="text-[13px] sm:text-[15.5px] font-bold text-on-chrome leading-snug font-sans tracking-wide mb-2 shrink-0">
                 {tabDetails[activeTab].title}
               </h3>
-              <p className="text-[14.5px] sm:text-[15px] text-slate-200 leading-relaxed font-sans font-medium">
+              <p className="text-[14.5px] sm:text-[15px] text-on-chrome leading-relaxed font-sans font-medium">
                 {tabDetails[activeTab].desc}
               </p>
             </div>
@@ -1402,8 +1402,8 @@ export function EarthquakePostCoordinationIllustration() {
         <button
           onClick={() => setActiveTab('lapangan')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'lapangan'
-            ? 'bg-emerald-500 text-slate-950 border-emerald-300 font-bold'
-            : 'bg-slate-800 text-emerald-300 border-slate-700 hover:border-emerald-500'
+            ? 'bg-emerald-500 text-on-accent-chip border-emerald-300 font-bold'
+            : 'bg-chrome-raised text-emerald-300 border-outline-variant hover:border-emerald-500'
             }`}
         >
           1. ZONA LAPANGAN
@@ -1411,8 +1411,8 @@ export function EarthquakePostCoordinationIllustration() {
         <button
           onClick={() => setActiveTab('presensi')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'presensi'
-            ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold'
-            : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-500'
+            ? 'bg-sky-500 text-on-accent-chip border-sky-300 font-bold'
+            : 'bg-chrome-raised text-sky-300 border-outline-variant hover:border-sky-500'
             }`}
         >
           2. PRESENSI KELAS
@@ -1420,8 +1420,8 @@ export function EarthquakePostCoordinationIllustration() {
         <button
           onClick={() => setActiveTab('bmkg')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'bmkg'
-            ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
-            : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
+            ? 'bg-amber-400 text-on-accent-chip border-amber-300 font-bold'
+            : 'bg-chrome-raised text-amber-300 border-outline-variant hover:border-amber-400'
             }`}
         >
           3. INFO BMKG RESMI
@@ -1429,8 +1429,8 @@ export function EarthquakePostCoordinationIllustration() {
         <button
           onClick={() => setActiveTab('evakuasi')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'evakuasi'
-            ? 'bg-pink-500 text-slate-950 border-pink-300 font-bold'
-            : 'bg-slate-800 text-pink-300 border-slate-700 hover:border-pink-500'
+            ? 'bg-pink-500 text-on-accent-chip border-pink-300 font-bold'
+            : 'bg-chrome-raised text-pink-300 border-outline-variant hover:border-pink-500'
             }`}
         >
           4. AMBULANS TRANSIT
@@ -1478,12 +1478,12 @@ export function EarthquakeMitigationPrepIllustration() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner */}
-      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
+      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-outline-variant">
         <span className="text-[13px] sm:text-[15px] font-pixel-title text-sky-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="shield" size={14} />
           TIGA PERSIAPAN SEBELUM GEMPA
         </span>
-        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel font-semibold">
+        <span className="text-[13.5px] sm:text-[13px] text-on-surface-variant font-pixel font-semibold">
           STANDAR BNPB &amp; BMKG
         </span>
       </div>
@@ -1610,16 +1610,16 @@ export function EarthquakeMitigationPrepIllustration() {
             <div className="w-full h-full bg-[#111827]/95 border-2 border-slate-700/80 rounded-xl p-3 flex flex-col justify-start overflow-y-auto shadow-md">
               <div className="flex items-center gap-1.5 mb-1.5 shrink-0">
                 <span
-                  className="px-2 py-0.5 rounded text-[13px] font-bold text-slate-950 uppercase tracking-wider shadow-sm"
+                  className="px-2 py-0.5 rounded text-[13px] font-bold text-on-accent-chip uppercase tracking-wider shadow-sm"
                   style={{ backgroundColor: tabDetails[activeTab].color }}
                 >
                   {tabDetails[activeTab].badge}
                 </span>
               </div>
-              <h3 className="text-[13px] sm:text-[15.5px] font-bold text-slate-100 leading-snug font-sans tracking-wide mb-2 shrink-0">
+              <h3 className="text-[13px] sm:text-[15.5px] font-bold text-on-chrome leading-snug font-sans tracking-wide mb-2 shrink-0">
                 {tabDetails[activeTab].title}
               </h3>
-              <p className="text-[14.5px] sm:text-[15px] text-slate-200 leading-relaxed font-sans font-medium">
+              <p className="text-[14.5px] sm:text-[15px] text-on-chrome leading-relaxed font-sans font-medium">
                 {tabDetails[activeTab].desc}
               </p>
             </div>
@@ -1635,8 +1635,8 @@ export function EarthquakeMitigationPrepIllustration() {
             setActiveTab('bangunan');
           }}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'bangunan'
-            ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold'
-            : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-500'
+            ? 'bg-sky-500 text-on-accent-chip border-sky-300 font-bold'
+            : 'bg-chrome-raised text-sky-300 border-outline-variant hover:border-sky-500'
             }`}
         >
           1. BANGUNAN TAHAN GEMPA
@@ -1647,8 +1647,8 @@ export function EarthquakeMitigationPrepIllustration() {
             setActiveTab('jalur');
           }}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'jalur'
-            ? 'bg-emerald-500 text-slate-950 border-emerald-300 font-bold'
-            : 'bg-slate-800 text-emerald-300 border-slate-700 hover:border-emerald-500'
+            ? 'bg-emerald-500 text-on-accent-chip border-emerald-300 font-bold'
+            : 'bg-chrome-raised text-emerald-300 border-outline-variant hover:border-emerald-500'
             }`}
         >
           2. JALUR EVAKUASI
@@ -1659,8 +1659,8 @@ export function EarthquakeMitigationPrepIllustration() {
             setActiveTab('titik');
           }}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'titik'
-            ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
-            : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
+            ? 'bg-amber-400 text-on-accent-chip border-amber-300 font-bold'
+            : 'bg-chrome-raised text-amber-300 border-outline-variant hover:border-amber-400'
             }`}
         >
           3. TITIK KUMPUL

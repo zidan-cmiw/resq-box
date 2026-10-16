@@ -375,7 +375,7 @@ export default function TutorialBlok({ workspace, userId, onSelesai }: Props) {
                   {langkah.tombol && (
                     <button
                       onClick={() => (tahap === LANGKAH.length - 1 ? selesaikan() : setTahap(tahap + 1))}
-                      className="px-4 py-1.5 rounded-lg border-2 border-amber-300 bg-amber-400 text-slate-950 font-pixel text-[12.5px] font-black hover:brightness-110 cursor-pointer"
+                      className="px-4 py-1.5 rounded-lg border-2 border-amber-300 bg-amber-400 text-on-accent-chip font-pixel text-[12.5px] font-black hover:brightness-110 cursor-pointer"
                     >
                       {langkah.tombol}
                     </button>

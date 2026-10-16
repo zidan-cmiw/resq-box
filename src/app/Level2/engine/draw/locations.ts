@@ -26,7 +26,8 @@
 //   Sekarang atasnya diambil dari `atasKartuAmanL2()` — penjelasan beserta
 //   angka pengukurannya ada di `../tataLetakKartuL2.ts`.
 
-import { drawRoundedBadgeL2, drawRealisticVolcanicSmoke } from './base';
+import { drawRoundedBadgeL2, drawRealisticVolcanicSmoke, gambarKartuL2 } from './base';
+import type { AksenKartuL2 } from './base';
 import { atasKartuAmanL2 } from '../tataLetakKartuL2';
 import { MAP_WIDTH_PX, MAP_HEIGHT_PX } from '../zones';
 import type { GameStateL2, VolcanoSimulationDataL2 } from '../gameEngine';
@@ -404,7 +405,16 @@ export function drawVolcanoSimulationOverlays(
 
   // B. BANNER STATUS GUNUNG UTAMA DI ATAS (Hanya saat TIDAK ada action card aktif agar tidak saling tumpuk!)
   if (!hasActiveActionCard && sim.phase !== 'idle' && sim.phase !== 'volcano_completed') {
-    drawTopVolcanoStatusBanner(ctx, viewW, sim.statusLevel, state.animTick);
+    // Perintah fase persiapan tas siaga ("TEKAN [E] / [SPASI] / TAP UNTUK
+    // MENYIAPKAN TAS SIAGA & MEMAKAI MASKER N95!") dulu hanya muncul sebagai
+    // popup kecil di bagian BAWAH layar. Sekarang naik ke ATAS menjadi bilah
+    // tombol di dalam kartu status ini — susunannya sama dengan kartu acuan
+    // simulasi gempa. Popup bawahnya tidak digambar lagi (lihat
+    // `FASE_PESAN_DI_KARTU_L2` di gameEngine). Teksnya tetap diambil dari
+    // mesin, jadi tidak ada kalimat yang disalin dua kali.
+    const petunjukKartuStatus =
+      sim.phase === 'fase3_siaga_prep_evac' ? state.nearInteractablePrompt : null;
+    drawTopVolcanoStatusBanner(ctx, viewW, sim.statusLevel, state.animTick, petunjukKartuStatus);
   }
 
   // 3. OVERLAY GEMPA BESAR: Teks tengah layar dihilangkan sesuai permintaan user ("di ss an kedua itu diilangin aja")
@@ -437,84 +447,55 @@ export function drawVolcanoSimulationOverlays(
 }
 
 // 1. BANNER STATUS UTAMA GUNUNG MERAPI (TOP CENTER, BERWIBAWA, HURUF BESAR & JELAS TERBACA)
+//
+//    Dipindah & diseragamkan (permintaan pemilik proyek, "ss an ketiga"):
+//      • Gaya, ukuran huruf, dan susunannya kini SAMA dengan kartu acuan
+//        simulasi gempa ("GEMPA SEDANG! AMBIL TAS & EVAKUASI!") karena
+//        keduanya digambar oleh `gambarKartuL2()` — lihat `./base`.
+//        Judulnya naik dari 20 px menjadi sampai 24 px (sebesar yang masih
+//        muat di dalam kartu), tingginya mengikuti isi, bukan 56 px tetap.
+//      • Posisinya TETAP di bawah pita tracker, di tengah atas
+//        (`atasKartuAmanL2`) — sama seperti kartu acuan.
+//      • Bila ada `petunjuk` (perintah fase yang relevan, mis. "TEKAN [E] /
+//        [SPASI] / TAP UNTUK MENYIAPKAN TAS SIAGA..."), perintah itu
+//        ditampilkan sebagai BILAH TOMBOL AKSI di dalam kartu ini — persis
+//        susunan kartu acuan. Sebelumnya perintah itu hanya muncul sebagai
+//        popup kecil di bagian BAWAH layar.
 export function drawTopVolcanoStatusBanner(
   ctx: CanvasRenderingContext2D,
   viewW: number,
   status: 'NORMAL' | 'WASPADA' | 'SIAGA' | 'AWAS',
-  animTick: number
+  animTick: number,
+  petunjuk?: string | null
 ): void {
-  const cx = viewW / 2;
-  const isCompact = viewW < 768;
-  const cardW = Math.min(viewW - 28, isCompact ? 520 : 760);
-  const cardH = isCompact ? 46 : 56;
-  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
-
-  ctx.save();
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
-  ctx.shadowBlur = 14;
-  ctx.shadowOffsetY = 4;
-
-  ctx.fillStyle = 'rgba(10, 16, 30, 0.96)';
-  ctx.beginPath();
-  ctx.roundRect(cx - cardW / 2, cardY, cardW, cardH, 10);
-  ctx.fill();
-  ctx.shadowColor = 'transparent';
-
-  let borderColor = '#22c55e';
-  let cornerColor = '#4ade80';
   let statusText = '● STATUS GUNUNG MERAPI: LEVEL I (NORMAL) ●';
-  let textColor = '#86efac';
+  // Warna mengikuti TINGKAT status PVMBG (bukan hiasan): hijau NORMAL,
+  // kuning WASPADA, oranye SIAGA, merah berkedip AWAS.
+  let aksen: AksenKartuL2 = 'hijau';
+  let berdenyut = false;
 
   if (status === 'WASPADA') {
-    borderColor = '#facc15';
-    cornerColor = '#fde047';
     statusText = '▲ STATUS GUNUNG MERAPI: LEVEL II (WASPADA) ▲';
-    textColor = '#fef08a';
+    aksen = 'kuning';
   } else if (status === 'SIAGA') {
-    borderColor = '#f97316';
-    cornerColor = '#fb923c';
     statusText = '▲ STATUS GUNUNG MERAPI: LEVEL III (SIAGA) ▲';
-    textColor = '#fed7aa';
+    aksen = 'oranye';
   } else if (status === 'AWAS') {
-    const isFlashing = Math.floor(animTick / 12) % 2 === 0;
-    borderColor = isFlashing ? '#f87171' : '#ef4444';
-    cornerColor = isFlashing ? '#ffffff' : '#ef4444';
     statusText = '▲ STATUS GUNUNG MERAPI: LEVEL IV (AWAS) ▲';
-    textColor = isFlashing ? '#fee2e2' : '#fca5a5';
+    aksen = 'merah';
+    berdenyut = true;
   }
 
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = isCompact ? 2.8 : 3.5;
-  ctx.stroke();
-
-  // Corner brackets aksen retro-tactical
-  const leftX = cx - cardW / 2;
-  const rightX = cx + cardW / 2;
-  const bW = isCompact ? 10 : 13;
-  const bT = isCompact ? 2.5 : 3.5;
-  ctx.fillStyle = cornerColor;
-  ctx.fillRect(leftX + 4, cardY + 4, bW, bT);
-  ctx.fillRect(leftX + 4, cardY + 4, bT, bW);
-  ctx.fillRect(rightX - 4 - bW, cardY + 4, bW, bT);
-  ctx.fillRect(rightX - 4 - bT, cardY + 4, bT, bW);
-  ctx.fillRect(leftX + 4, cardY + cardH - 4 - bT, bW, bT);
-  ctx.fillRect(leftX + 4, cardY + cardH - 4 - bW, bT, bW);
-  ctx.fillRect(rightX - 4 - bW, cardY + cardH - 4 - bT, bW, bT);
-  ctx.fillRect(rightX - 4 - bT, cardY + cardH - 4 - bW, bT, bW);
-
-  // Teks status besar, tebal, dan berwibawa
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = isCompact
-    ? '900 14px "Plus Jakarta Sans", system-ui, sans-serif'
-    : '900 20px "Plus Jakarta Sans", system-ui, sans-serif';
-  ctx.fillStyle = textColor;
-  ctx.shadowColor = borderColor;
-  ctx.shadowBlur = 8;
-  ctx.fillText(statusText, cx, cardY + cardH / 2);
-  ctx.shadowBlur = 0;
-
-  ctx.restore();
+  gambarKartuL2(ctx, viewW, {
+    y: atasKartuAmanL2(ctx, viewW < 768 ? 72 : 82),
+    judul: statusText,
+    aksen,
+    berdenyut,
+    tick: animTick,
+    baris: petunjuk
+      ? [{ jenis: 'tombol', teks: petunjuk, isi: '#b45309' }]
+      : [],
+  });
 }
 
 // 2. OVERLAY TRANSISI LAYAR GELAP DENGAN TEKS "BEBERAPA HARI KEMUDIAN..."
@@ -569,7 +550,13 @@ export function drawVolcanoDarkScreenTransition(
   ctx.restore();
 }
 
-// 1.7. OVERLAY PERINGATAN BUNYIKAN SIRINE EWS (GAYA KARTU GEMPA BUMI: BESAR, JELAS, HIGH-CONTRAST)
+// 1.7. OVERLAY PERINGATAN BUNYIKAN SIRINE EWS (GAYA KARTU ACUAN SIMULASI GEMPA)
+//
+//   Isi pesannya digabung dari dua tempat (permintaan pemilik proyek, "ss an
+//   keempat"): popup BAWAH "LARI KE TIANG SIRINE EWS (x: 376)! TEKAN [E]
+//   UNTUK MEMBUNYIKAN SIRINE DARURAT! (…M)" DIHAPUS, dan kata "EWS" yang
+//   hanya ada di sana dipindah ke bilah tombol kartu ini. Jarak ("SISA: …M")
+//   dan tombol [E] sudah ada di kartu ini sejak awal.
 export function drawVolcanoSirenPromptOverlay(
   ctx: CanvasRenderingContext2D,
   viewW: number,
@@ -577,71 +564,26 @@ export function drawVolcanoSirenPromptOverlay(
   _sim: VolcanoSimulationDataL2,
   state: GameStateL2
 ): void {
-  const cx = viewW / 2;
-  const isCompact = viewW < 800;
-  const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
-  const cardH = isCompact ? 116 : 136;
-  const cardX = cx - cardW / 2;
-  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
-
-  ctx.save();
-  // Kartu gelap pekat bergaya simulasi gempa
-  ctx.fillStyle = 'rgba(11, 17, 32, 0.97)';
-  ctx.fillRect(cardX, cardY, cardW, cardH);
-
-  const isBlink = Math.floor(state.animTick / 10) % 2 === 0;
-  ctx.strokeStyle = isBlink ? '#ef4444' : '#f97316';
-  ctx.lineWidth = isCompact ? 3 : 4;
-  ctx.strokeRect(cardX, cardY, cardW, cardH);
-
-  // Sudut-sudut retro pixel khas simulasi gempa
-  ctx.fillStyle = isBlink ? '#ef4444' : '#f87171';
-  const cSz = isCompact ? 10 : 13;
-  const cTh = isCompact ? 3 : 4;
-  ctx.fillRect(cardX + 4, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cSz, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + cardH - 4 - cSz, cTh, cSz);
-
-  // Baris 1: Header Peringatan Besar & Terbaca
-  ctx.textAlign = 'center';
-  ctx.font = isCompact
-    ? '900 17px "Plus Jakarta Sans", sans-serif'
-    : '900 23px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#fca5a5';
-  ctx.fillText('▲ [STATUS AWAS] GUNUNG MELETUS! SEGERA BUNYIKAN SIRINE EWS! ▲', cx, cardY + (isCompact ? 30 : 36));
-
-  // Baris 2: Tombol Aksi Utama yang Sangat Besar & Kontras
   const distToPole = Math.round(Math.abs(state.player.x - 376));
   const isNearPole = distToPole <= 55;
 
-  const btnW = Math.min(cardW - (isCompact ? 28 : 56), 800);
-  const btnH = isCompact ? 52 : 64;
-  const btnY = cardY + (isCompact ? 48 : 56);
-
-  ctx.fillStyle = isNearPole ? '#dc2626' : '#b45309';
-  ctx.fillRect(cx - btnW / 2, btnY, btnW, btnH);
-  ctx.strokeStyle = isNearPole ? '#fde047' : '#fef08a';
-  ctx.lineWidth = isCompact ? 3 : 3.8;
-  ctx.strokeRect(cx - btnW / 2, btnY, btnW, btnH);
-
-  ctx.font = isCompact
-    ? '900 16px "Plus Jakarta Sans", sans-serif'
-    : '900 21px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.textBaseline = 'middle';
-
-  if (!isNearPole) {
-    ctx.fillText(`LARI KE TIANG SIRINE DI SAMPING POSKO! [SISA: ${distToPole}M]`, cx, btnY + btnH / 2);
-  } else {
-    ctx.fillText('TEKAN [E] / [SPASI] / TAP UNTUK MEMBUNYIKAN SIRINE DARURAT!', cx, btnY + btnH / 2);
-  }
-
-  ctx.restore();
+  gambarKartuL2(ctx, viewW, {
+    y: atasKartuAmanL2(ctx, viewW < 800 ? 72 : 82),
+    judul: '▲ [STATUS AWAS] GUNUNG MELETUS! SEGERA BUNYIKAN SIRINE EWS! ▲',
+    aksen: 'amber',
+    berdenyut: true,
+    tick: state.animTick,
+    baris: [
+      {
+        jenis: 'tombol',
+        teks: isNearPole
+          ? 'TEKAN [E] / [SPASI] / TAP UNTUK MEMBUNYIKAN SIRINE DARURAT!'
+          : `LARI KE TIANG SIRINE EWS DI SAMPING POSKO! [SISA: ${distToPole}M]`,
+        // Saat pemain sudah dekat tiang, bilah berubah merah seperti sebelumnya.
+        isi: isNearPole ? '#dc2626' : '#b45309',
+      },
+    ],
+  });
 }
 
 // 3. RADAR INDIKATOR WARGA DI LUAR LAYAR (PANAH KIRI / KANAN SCREEN SPACE)
@@ -740,89 +682,39 @@ export function drawVolcanoQteKentonganOverlay(
   const isBlinkVisible = (state.animTick % 60) < 46;
   if (!isBlinkVisible) return;
 
-  const cx = viewW / 2;
-  const isCompact = viewW < 800;
-  const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
-  const cardH = isCompact ? 144 : 168;
-  const cardX = cx - cardW / 2;
-  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
-
-  ctx.save();
-  ctx.fillStyle = 'rgba(11, 17, 32, 0.97)';
-  ctx.fillRect(cardX, cardY, cardW, cardH);
-  ctx.strokeStyle = '#facc15';
-  ctx.lineWidth = isCompact ? 3 : 4;
-  ctx.strokeRect(cardX, cardY, cardW, cardH);
-
-  // Sudut dekoratif retro piksel
-  ctx.fillStyle = '#fde047';
-  const cSz = isCompact ? 10 : 13;
-  const cTh = isCompact ? 3 : 4;
-  ctx.fillRect(cardX + 4, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cSz, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + cardH - 4 - cSz, cTh, cSz);
-
-  // Baris 1: Judul Peringatan
-  ctx.textAlign = 'center';
-  ctx.font = isCompact
-    ? '900 15px "Plus Jakarta Sans", sans-serif'
-    : '900 20px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#fef08a';
-  ctx.fillText('▲ [STATUS WASPADA] SEGERA BUNYIKAN KENTONGAN DI POS RONDA! ▲', cx, cardY + (isCompact ? 28 : 34));
-
-  // Baris 2: Tombol Aksi Utama yang Kontras & Besar
-  const btnW = Math.min(cardW - (isCompact ? 28 : 56), 800);
-  const btnH = isCompact ? 44 : 52;
-  const btnY = cardY + (isCompact ? 42 : 50);
-  ctx.fillStyle = '#d97706';
-  ctx.fillRect(cx - btnW / 2, btnY, btnW, btnH);
-  ctx.strokeStyle = '#fef08a';
-  ctx.lineWidth = isCompact ? 2.5 : 3;
-  ctx.strokeRect(cx - btnW / 2, btnY, btnW, btnH);
-
   const distToPos = Math.round(Math.abs(state.player.x - 440));
-  ctx.font = isCompact
-    ? '900 13.5px "Plus Jakarta Sans", sans-serif'
-    : '900 18px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#ffffff';
 
-  if (distToPos > 65) {
-    ctx.fillText(`LARI KE POS RONDA! [SISA: ${distToPos}M]`, cx, btnY + (isCompact ? 27 : 32));
-  } else {
-    ctx.fillText(`TEKAN [E] / TAP SEKARANG! (${sim.kentonganHits}/3)`, cx, btnY + (isCompact ? 27 : 32));
-  }
-
-  // Baris 3: Progress Bar Waktu
-  const barW = btnW;
-  const barH = isCompact ? 20 : 26;
-  const barX = cx - barW / 2;
-  const barY = btnY + btnH + (isCompact ? 10 : 14);
-
-  ctx.fillStyle = '#1e293b';
-  ctx.fillRect(barX, barY, barW, barH);
-  const progress = Math.max(0, Math.min(1, sim.qteTimer / sim.qteMaxTimer));
-  ctx.fillStyle = progress > 0.35 ? '#10b981' : '#ef4444';
-  ctx.fillRect(barX, barY, barW * progress, barH);
-  ctx.strokeStyle = '#475569';
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(barX, barY, barW, barH);
-
-  const secondsLeft = (sim.qteTimer / 60).toFixed(1);
-  ctx.font = isCompact
-    ? '800 11.5px "Plus Jakarta Sans", sans-serif'
-    : '800 14px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(`SISA WAKTU: ${secondsLeft} DETIK`, cx, barY + (isCompact ? 14 : 18));
-
-  ctx.restore();
+  gambarKartuL2(ctx, viewW, {
+    y: atasKartuAmanL2(ctx, viewW < 800 ? 72 : 82),
+    judul: '▲ [STATUS WASPADA] SEGERA BUNYIKAN KENTONGAN DI POS RONDA! ▲',
+    aksen: 'amber',
+    berdenyut: true,
+    tick: state.animTick,
+    baris: [
+      {
+        jenis: 'tombol',
+        teks: distToPos > 65
+          ? `LARI KE POS RONDA! [SISA: ${distToPos}M]`
+          : `TEKAN [E] / TAP SEKARANG! (${sim.kentonganHits}/3)`,
+      },
+    ],
+    bilah: {
+      teks: `SISA WAKTU: ${(sim.qteTimer / 60).toFixed(1)} DETIK`,
+      progres: Math.max(0, Math.min(1, sim.qteTimer / sim.qteMaxTimer)),
+      isi: sim.qteTimer / sim.qteMaxTimer > 0.35 ? '#10b981' : '#ef4444',
+    },
+  });
 }
 
-// 5. QTE 2: APD MASKER & CARI 3 WARGA DUSUN (MAP 3 AWAS - GAYA KARTU GEMPA BUMI)
+// 5. QTE 2: APD MASKER & CARI 3 WARGA DUSUN (MAP 3 AWAS - GAYA KARTU ACUAN GEMPA)
+//
+//   Popup BAWAH "BANTU 3 WARGA MENUJU MOBIL EVAKUASI BPBD (0/3)!" DIHAPUS
+//   (permintaan pemilik proyek, "ss an kelima") karena seluruh isinya sudah
+//   ada di kartu atas ini:
+//     • perintahnya  -> baris "[ ! ] 2. SELAMATKAN 3 WARGA: …/3 [DEKATI
+//                       WARGA & TEKAN E / TAP]"
+//     • hitungannya  -> angka "…/3" pada baris yang sama
+//     • sisa waktunya-> bilah waktu di bawahnya
 export function drawVolcanoQteRescueOverlay(
   ctx: CanvasRenderingContext2D,
   viewW: number,
@@ -830,111 +722,40 @@ export function drawVolcanoQteRescueOverlay(
   sim: VolcanoSimulationDataL2,
   _animTick: number
 ): void {
-  const cx = viewW / 2;
-  const isCompact = viewW < 800;
-  const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
-  const cardH = isCompact ? 168 : 192;
-  const cardX = cx - cardW / 2;
-  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
-
-  ctx.save();
-  ctx.fillStyle = 'rgba(11, 17, 32, 0.97)';
-  ctx.fillRect(cardX, cardY, cardW, cardH);
-  ctx.strokeStyle = '#ea580c';
-  ctx.lineWidth = isCompact ? 3 : 4;
-  ctx.strokeRect(cardX, cardY, cardW, cardH);
-
-  // Sudut dekoratif retro piksel
-  ctx.fillStyle = '#fb923c';
-  const cSz = isCompact ? 10 : 13;
-  const cTh = isCompact ? 3 : 4;
-  ctx.fillRect(cardX + 4, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cSz, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + cardH - 4 - cSz, cTh, cSz);
-
-  // Baris 1: Header Peringatan Besar & Nyaman Dibaca
-  ctx.textAlign = 'center';
-  ctx.font = isCompact
-    ? '900 15px "Plus Jakarta Sans", sans-serif'
-    : '900 20px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#fed7aa';
-  ctx.fillText('▲ [STATUS AWAS] EVAKUASI DUSUN: BANTU 3 WARGA KE MOBIL BPBD! ▲', cx, cardY + (isCompact ? 28 : 34));
-
-  // Dua Kotak Checklist Kompak & Kontras
-  const boxW = Math.min(cardW - (isCompact ? 28 : 56), 800);
-  const boxX = cx - boxW / 2;
-  const boxH = isCompact ? 32 : 36;
-
-  // Langkah 1: APD Masker N95
-  const box1Y = cardY + (isCompact ? 40 : 48);
-  ctx.fillStyle = sim.apdEquipped ? 'rgba(34, 197, 94, 0.22)' : 'rgba(234, 88, 12, 0.25)';
-  ctx.fillRect(boxX, box1Y, boxW, boxH);
-  ctx.strokeStyle = sim.apdEquipped ? '#22c55e' : '#ea580c';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(boxX, box1Y, boxW, boxH);
-
-  ctx.textAlign = 'left';
-  ctx.font = isCompact
-    ? '900 12.5px "Plus Jakarta Sans", sans-serif'
-    : '900 15px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = sim.apdEquipped ? '#4ade80' : '#fef08a';
-  ctx.fillText(
-    sim.apdEquipped
-      ? '[✓] 1. MASKER N95 & GOGGLE: TERPASANG & AMAN DARI ABU VULKANIK'
-      : '[ ! ] 1. AMBIL TAS SIAGA & PAKAI MASKER N95 [TEKAN E / TAP]',
-    boxX + 16,
-    box1Y + boxH / 2 + 5
-  );
-
-  // Langkah 2: Selamatkan 3 Warga Dusun
   const rescuedCount = sim.villagersToRescue.filter((v) => v.rescued).length;
   const isAllRescued = rescuedCount >= 3;
-  const box2Y = box1Y + boxH + (isCompact ? 8 : 10);
+  const progres = Math.max(0, Math.min(1, sim.qteTimer / sim.qteMaxTimer));
 
-  ctx.fillStyle = isAllRescued ? 'rgba(34, 197, 94, 0.22)' : 'rgba(249, 115, 22, 0.22)';
-  ctx.fillRect(boxX, box2Y, boxW, boxH);
-  ctx.strokeStyle = isAllRescued ? '#22c55e' : '#f97316';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(boxX, box2Y, boxW, boxH);
-
-  ctx.fillStyle = isAllRescued ? '#4ade80' : (sim.apdEquipped ? '#fde047' : '#cbd5e1');
-  ctx.fillText(
-    isAllRescued
-      ? '[✓] 2. WARGA DUSUN: 3/3 BERHASIL DIARAHKAN KE MOBIL EVAKUASI!'
-      : `[ ! ] 2. SELAMATKAN 3 WARGA: ${rescuedCount}/3 [DEKATI WARGA & TEKAN E / TAP]`,
-    boxX + 16,
-    box2Y + boxH / 2 + 5
-  );
-
-  // Baris 3: Progress Bar Waktu
-  const barW = boxW;
-  const barH = isCompact ? 18 : 24;
-  const barX = cx - barW / 2;
-  const barY = box2Y + boxH + (isCompact ? 10 : 12);
-
-  ctx.fillStyle = '#1e293b';
-  ctx.fillRect(barX, barY, barW, barH);
-  const progress = Math.max(0, Math.min(1, sim.qteTimer / sim.qteMaxTimer));
-  ctx.fillStyle = progress > 0.35 ? '#ea580c' : '#ef4444';
-  ctx.fillRect(barX, barY, barW * progress, barH);
-  ctx.strokeStyle = '#475569';
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(barX, barY, barW, barH);
-
-  const secondsLeft = (sim.qteTimer / 60).toFixed(1);
-  ctx.textAlign = 'center';
-  ctx.font = isCompact
-    ? '800 11.5px "Plus Jakarta Sans", sans-serif'
-    : '800 14px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(`SISA WAKTU: ${secondsLeft} DETIK`, cx, barY + (isCompact ? 13 : 17));
-
-  ctx.restore();
+  gambarKartuL2(ctx, viewW, {
+    y: atasKartuAmanL2(ctx, viewW < 800 ? 72 : 82),
+    judul: '▲ [STATUS AWAS] EVAKUASI DUSUN: BANTU 3 WARGA KE MOBIL BPBD! ▲',
+    aksen: 'amber',
+    baris: [
+      {
+        jenis: 'cek',
+        teks: sim.apdEquipped
+          ? '[✓] 1. MASKER N95 & GOGGLE: TERPASANG & AMAN DARI ABU VULKANIK'
+          : '[ ! ] 1. AMBIL TAS SIAGA & PAKAI MASKER N95 [TEKAN E / TAP]',
+        isi: sim.apdEquipped ? 'rgba(34, 197, 94, 0.22)' : 'rgba(234, 88, 12, 0.25)',
+        tepi: sim.apdEquipped ? '#22c55e' : '#ea580c',
+        warnaTeks: sim.apdEquipped ? '#4ade80' : '#fef08a',
+      },
+      {
+        jenis: 'cek',
+        teks: isAllRescued
+          ? '[✓] 2. WARGA DUSUN: 3/3 BERHASIL DIARAHKAN KE MOBIL EVAKUASI!'
+          : `[ ! ] 2. SELAMATKAN 3 WARGA: ${rescuedCount}/3 [DEKATI WARGA & TEKAN E / TAP]`,
+        isi: isAllRescued ? 'rgba(34, 197, 94, 0.22)' : 'rgba(249, 115, 22, 0.22)',
+        tepi: isAllRescued ? '#22c55e' : '#f97316',
+        warnaTeks: isAllRescued ? '#4ade80' : (sim.apdEquipped ? '#fde047' : '#cbd5e1'),
+      },
+    ],
+    bilah: {
+      teks: `SISA WAKTU: ${(sim.qteTimer / 60).toFixed(1)} DETIK`,
+      progres,
+      isi: progres > 0.35 ? '#ea580c' : '#ef4444',
+    },
+  });
 }
 
 // 6. QTE 3: SPRINT MENUJU MOBIL EVAKUASI (MAP 3 AWAS - GAYA KARTU GEMPA BUMI)
@@ -948,146 +769,64 @@ export function drawVolcanoQteTruckOverlay(
   const isBlinkVisible = (state.animTick % 60) < 46;
   if (!isBlinkVisible) return;
 
-  const cx = viewW / 2;
-  const isCompact = viewW < 800;
-  const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
-  const cardH = isCompact ? 116 : 136;
-  const cardX = cx - cardW / 2;
-  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
-
-  ctx.save();
-  ctx.fillStyle = 'rgba(11, 17, 32, 0.97)';
-  ctx.fillRect(cardX, cardY, cardW, cardH);
-
-  // Border Berkedip Merah Darurat
-  const isRed = Math.floor(state.animTick / 10) % 2 === 0;
-  ctx.strokeStyle = isRed ? '#dc2626' : '#ef4444';
-  ctx.lineWidth = isCompact ? 3 : 4;
-  ctx.strokeRect(cardX, cardY, cardW, cardH);
-
-  // Sudut dekoratif retro piksel
-  ctx.fillStyle = '#f87171';
-  const cSz = isCompact ? 10 : 13;
-  const cTh = isCompact ? 3 : 4;
-  ctx.fillRect(cardX + 4, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cSz, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + cardH - 4 - cSz, cTh, cSz);
-
-  // Baris 1: Header Peringatan Besar & Nyaman Dibaca
-  ctx.textAlign = 'center';
-  ctx.font = isCompact
-    ? '900 17px "Plus Jakarta Sans", sans-serif'
-    : '900 23px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#fca5a5';
-  ctx.fillText('▲ [STATUS AWAS] SELURUH WARGA SIAP! LARI KE MOBIL EVAKUASI BPBD! ▲', cx, cardY + (isCompact ? 30 : 36));
-
-  // Baris 2: Bar Jarak ke Mobil Evakuasi
-  const barW = Math.min(cardW - (isCompact ? 28 : 56), 800);
-  const barH = isCompact ? 52 : 64;
-  const barY = cardY + (isCompact ? 48 : 56);
-
-  ctx.fillStyle = '#1e293b';
-  ctx.fillRect(cx - barW / 2, barY, barW, barH);
-
   const distToTruck = Math.max(0, Math.round(1800 - state.player.x));
   const progressPct = Math.min(100, Math.max(0, Math.floor(((state.player.x - 800) / 1000) * 100)));
 
-  const sprintGrad = ctx.createLinearGradient(cx - barW / 2, 0, cx + barW / 2, 0);
+  ctx.save();
+  // Bilah kemajuan sprint: isiannya gradien oranye -> kuning -> hijau (seperti
+  // sebelumnya), kini memakai bilah baku kartu supaya tingginya seragam.
+  const sprintGrad = ctx.createLinearGradient(0, 0, viewW, 0);
   sprintGrad.addColorStop(0, '#f97316');
   sprintGrad.addColorStop(0.6, '#eab308');
   sprintGrad.addColorStop(1, '#22c55e');
-
-  ctx.fillStyle = sprintGrad;
-  ctx.fillRect(cx - barW / 2, barY, barW * (progressPct / 100), barH);
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(cx - barW / 2, barY, barW, barH);
-
-  ctx.fillStyle = '#ffffff';
-  ctx.font = isCompact
-    ? '900 16px "Plus Jakarta Sans", sans-serif'
-    : '900 21px "Plus Jakarta Sans", sans-serif';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(
-    distToTruck <= 0 ? '[✓] TIBA DI MOBIL EVAKUASI BPBD! BERHASIL MENGUNGSI!' : `JARAK KE MOBIL: ${distToTruck} METER (LARI KE KANAN ➔)`,
-    cx,
-    barY + barH / 2
-  );
-
   ctx.restore();
+
+  gambarKartuL2(ctx, viewW, {
+    y: atasKartuAmanL2(ctx, viewW < 800 ? 72 : 82),
+    judul: '▲ [STATUS AWAS] SELURUH WARGA SIAP! LARI KE MOBIL EVAKUASI BPBD! ▲',
+    aksen: 'amber',
+    berdenyut: true,
+    tick: state.animTick,
+    baris: [
+      {
+        jenis: 'tombol',
+        teks: distToTruck <= 0
+          ? '[✓] TIBA DI MOBIL EVAKUASI BPBD! BERHASIL MENGUNGSI!'
+          : `JARAK KE MOBIL: ${distToTruck} METER (LARI KE KANAN ➔)`,
+      },
+    ],
+    bilah: {
+      // Bilah tanpa teks: jaraknya sudah tertulis di bilah tombol di atasnya.
+      teks: '',
+      progres: progressPct / 100,
+      isi: sprintGrad,
+    },
+  });
 }
 
-// 7. MODAL GAGAL & RETRY FASE (GAYA KARTU GEMPA BUMI)
+// 7. MODAL GAGAL & RETRY FASE (GAYA KARTU ACUAN GEMPA)
 export function drawVolcanoFailedOverlay(
   ctx: CanvasRenderingContext2D,
   viewW: number,
   _viewH: number,
   sim: VolcanoSimulationDataL2
 ): void {
-  const cx = viewW / 2;
-  const isCompact = viewW < 800;
-  const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
-  const cardH = isCompact ? 148 : 168;
-  const cardX = cx - cardW / 2;
-  const cardY = atasKartuAmanL2(ctx, isCompact ? 72 : 82);
-
-  ctx.save();
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.98)';
-  ctx.fillRect(cardX, cardY, cardW, cardH);
-  ctx.strokeStyle = '#ef4444';
-  ctx.lineWidth = isCompact ? 3 : 4;
-  ctx.strokeRect(cardX, cardY, cardW, cardH);
-
-  // Sudut dekoratif retro piksel
-  ctx.fillStyle = '#f87171';
-  const cSz = isCompact ? 10 : 13;
-  const cTh = isCompact ? 3 : 4;
-  ctx.fillRect(cardX + 4, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cSz, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + cardH - 4 - cSz, cTh, cSz);
-
-  ctx.textAlign = 'center';
-  ctx.font = isCompact
-    ? '900 16px "Plus Jakarta Sans", sans-serif'
-    : '900 22px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#fca5a5';
-  ctx.fillText('[ ! ] EVAKUASI TERHAMBAT!', cx, cardY + (isCompact ? 32 : 38));
-
-  // Penjelasan Alasan Kegagalan Ringkas
-  ctx.font = isCompact
-    ? '800 12px "Plus Jakarta Sans", sans-serif'
-    : '800 14px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#e2e8f0';
   const reason = sim.failureReason || 'Kesigapan mitigasi terlambat. Waspada bahaya awan panas!';
-  ctx.fillText(reason, cx, cardY + (isCompact ? 60 : 72));
 
-  // Tombol Ulangi Fase
-  const btnW = Math.min(cardW - (isCompact ? 28 : 56), 640);
-  const btnH = isCompact ? 40 : 48;
-  const btnY = cardY + (isCompact ? 86 : 100);
-  ctx.fillStyle = '#dc2626';
-  ctx.fillRect(cx - btnW / 2, btnY, btnW, btnH);
-  ctx.strokeStyle = '#fef08a';
-  ctx.lineWidth = isCompact ? 2 : 3;
-  ctx.strokeRect(cx - btnW / 2, btnY, btnW, btnH);
-
-  ctx.fillStyle = '#ffffff';
-  ctx.font = isCompact
-    ? '900 13px "Plus Jakarta Sans", sans-serif'
-    : '900 16px "Plus Jakarta Sans", sans-serif';
-  ctx.fillText('TEKAN [E] / TAP UNTUK MENCOBA LAGI', cx, btnY + (isCompact ? 25 : 30));
-
-  ctx.restore();
+  gambarKartuL2(ctx, viewW, {
+    y: atasKartuAmanL2(ctx, viewW < 800 ? 72 : 82),
+    judul: '[ ! ] EVAKUASI TERHAMBAT!',
+    // Kartu kegagalan tetap MERAH (aksen darurat kartu acuan), bukan amber.
+    aksen: 'merah',
+    baris: [
+      { jenis: 'teks', teks: reason, warnaTeks: '#e2e8f0' },
+      {
+        jenis: 'tombol',
+        teks: 'TEKAN [E] / TAP UNTUK MENCOBA LAGI',
+        isi: '#dc2626',
+      },
+    ],
+  });
 }
 
 // ══════════════════════════════════════════════════════════════════════════

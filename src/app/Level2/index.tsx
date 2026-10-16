@@ -42,18 +42,18 @@ class Level2ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
   render() {
     if (this.state.hasError) {
       return (
-        <div className="fixed inset-0 w-screen w-[100dvw] h-screen h-[100dvh] bg-[#1c1917] flex items-center justify-center p-3 sm:p-6 text-amber-100 font-pixel z-50">
-          <div className="max-w-md w-full bg-[#0f172a] border-4 border-rose-600 rounded-2xl p-4 sm:p-6 shadow-2xl text-center space-y-4">
+        <div className="fixed inset-0 w-screen w-[100dvw] h-screen h-[100dvh] bg-ink flex items-center justify-center p-3 sm:p-6 text-amber-100 font-pixel z-50">
+          <div className="max-w-md w-full bg-ink border-4 border-rose-600 rounded-2xl p-4 sm:p-6 shadow-2xl text-center space-y-4">
             <div className="w-14 h-14 mx-auto rounded-xl bg-rose-500/20 border-2 border-rose-500 flex items-center justify-center text-rose-400 animate-pulse">
               <PixelIcon name="warning" size={26} className="text-rose-400" />
             </div>
             <h2 className="font-pixel-title text-[15px] sm:text-base text-rose-400 font-bold">
               GANGGUAN TRANSMISI GEOLOGIS
             </h2>
-            <p className="text-[13px] text-slate-300 leading-relaxed font-semibold">
+            <p className="text-[13px] text-on-chrome leading-relaxed font-semibold">
               Terjadi anomali saat memuat ekspedisi Level 2. Sistem keamanan Siaga telah menstabilkan layar.
             </p>
-            <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700 text-left overflow-x-auto text-[13.5px] text-rose-300 font-mono">
+            <div className="bg-slate-900/80 p-3 rounded-xl border border-outline-variant text-left overflow-x-auto text-[13.5px] text-rose-300 font-mono">
               {this.state.error?.message || 'Unknown Error'}
             </div>
             <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
@@ -65,7 +65,7 @@ class Level2ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
               </button>
               <button
                 onClick={this.handleResetAndReload}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 font-pixel text-[13px] cursor-pointer active:translate-y-0.5 font-semibold"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-chrome-raised hover:bg-surface-container-highest text-on-chrome border border-outline font-pixel text-[13px] cursor-pointer active:translate-y-0.5 font-semibold"
               >
                 RESET DATA
               </button>
@@ -92,7 +92,7 @@ export default function Level2() {
 
   return (
     <Level2ErrorBoundary activeUserId={activeUserId}>
-      <div className="fixed inset-0 w-screen w-[100dvw] h-screen h-[100dvh] safe-area-pad select-none bg-[#1c1917] overflow-hidden font-pixel">
+      <div className="fixed inset-0 w-screen w-[100dvw] h-screen h-[100dvh] safe-area-pad select-none bg-ink overflow-hidden font-pixel">
         <TectonicGame />
       </div>
     </Level2ErrorBoundary>

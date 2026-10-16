@@ -270,15 +270,15 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
   }, []);
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#fefce8]">
-      <div className="flex justify-between items-center px-3 py-2 border-b-2 border-[#b45309] bg-[#fef3c7] shadow-sm">
-        <h2 className="font-pixel text-[13px] sm:text-[15px] text-[#451a03] font-bold flex items-center gap-2">
-          <span className="material-symbols-outlined text-[#b45309]" style={{ fontSize: '18px' }}>widgets</span>
+    <div className="flex flex-col h-full w-full bg-paper-low">
+      <div className="flex justify-between items-center px-3 py-2 border-b-2 border-accent-chip bg-paper shadow-sm">
+        <h2 className="font-pixel text-[13px] sm:text-[15px] text-on-accent-chip font-bold flex items-center gap-2">
+          <span className="material-symbols-outlined text-accent-chip" style={{ fontSize: '18px' }}>widgets</span>
           Ruang Simulasi
         </h2>
       </div>
       
-      <div className="flex-1 relative flex bg-[#fefce8]">
+      <div className="flex-1 relative flex bg-paper-low">
         <div 
           ref={blocklyDiv} 
           className="absolute inset-0 w-full"

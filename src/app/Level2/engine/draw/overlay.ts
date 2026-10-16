@@ -15,8 +15,16 @@
 //   TERTUTUP tracker progres Level 2 yang berada di atas tengah layar.
 //   Sekarang atasnya diambil dari `atasKartuAmanL2()` — lihat penjelasan
 //   lengkap beserta angka pengukurannya di `../tataLetakKartuL2.ts`.
+//
+// CATATAN GAYA KARTU
+//   Seluruh kartu di berkas ini digambar oleh SATU fungsi bersama,
+//   `gambarKartuL2()` di `./base`. Fungsi itulah yang menyimpan gaya baku
+//   kartu popup Level 2 (panel gelap, bingkai, sudut retro, ukuran judul,
+//   ukuran baris, tinggi kartu yang mengikuti isinya). Kartu di berkas ini
+//   hanya menentukan ISI dan AKSEN warnanya.
+//   Sebelumnya tiap kartu menuliskan sendiri angka font dan tata letaknya.
 
-import { drawRealisticVolcanicSmoke } from './base';
+import { drawRealisticVolcanicSmoke, gambarKartuL2 } from './base';
 import { atasKartuAmanL2 } from '../tataLetakKartuL2';
 
 export function drawSimulationQteOverlay(
@@ -29,106 +37,40 @@ export function drawSimulationQteOverlay(
   scenario: 'moderate' | 'severe' = 'severe'
 ): void {
   const isModerate = scenario === 'moderate';
-  const cx = viewW / 2;
   const isCompact = viewW < 800;
-  const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
-  const cardH = isCompact ? 164 : 220;
-  const cardX = cx - cardW / 2;
+  const progres = Math.max(0, Math.min(1, timer / maxTimer));
+  const secondsLeft = (timer / 60).toFixed(1);
+
   // Dulu langsung `isCompact ? 76 : ...` — terlalu tinggi sehingga judul kartu
   // tertutup tracker progres Level 2. Lihat ../tataLetakKartuL2.ts.
-  const cardY = atasKartuAmanL2(
-    ctx,
-    isCompact ? 76 : Math.max(88, Math.min(125, Math.floor(viewH * 0.10)))
-  );
-
-  ctx.save();
-
-  // Background kartu retro arcade gelap pekat
-  ctx.fillStyle = 'rgba(11, 17, 32, 0.97)';
-  ctx.fillRect(cardX, cardY, cardW, cardH);
-
-  // Border berdenyut (Amber untuk gempa sedang, Merah untuk gempa besar)
-  const pulseBorder = (animTick % 30 < 15);
-  ctx.strokeStyle = isModerate
-    ? (pulseBorder ? '#fde047' : '#d97706')
-    : (pulseBorder ? '#f87171' : '#dc2626');
-  ctx.lineWidth = isCompact ? 3 : 4;
-  ctx.strokeRect(cardX, cardY, cardW, cardH);
-
-  // Sudut-sudut retro pixel
-  ctx.fillStyle = isModerate ? '#facc15' : '#f87171';
-  const cSz = isCompact ? 10 : 14;
-  const cTh = isCompact ? 3 : 4;
-  ctx.fillRect(cardX + 4, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cSz, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + cardH - 4 - cSz, cTh, cSz);
-
-  // Baris 1: Judul Peringatan (Responsif)
-  ctx.textAlign = 'center';
-  ctx.font = isCompact
-    ? '900 16px "Plus Jakarta Sans", sans-serif'
-    : '900 24px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = isModerate ? '#fef08a' : '#fca5a5';
-  ctx.fillText(
-    isModerate
+  gambarKartuL2(ctx, viewW, {
+    y: atasKartuAmanL2(
+      ctx,
+      isCompact ? 76 : Math.max(88, Math.min(125, Math.floor(viewH * 0.10)))
+    ),
+    judul: isModerate
       ? '[ ! ] GEMPA SEDANG! AMBIL TAS & EVAKUASI!'
       : '[ ! ] AWAS GEMPA BESAR! MERUNDUK & BERLINDUNG!',
-    cx,
-    cardY + (isCompact ? 32 : 44)
-  );
-
-  // Baris 2: Tombol Aksi Utama yang Sangat Besar & Kontras
-  const btnW = Math.min(cardW - (isCompact ? 28 : 56), 880);
-  const btnH = isCompact ? 48 : 62;
-  const btnY = cardY + (isCompact ? 48 : 64);
-  ctx.fillStyle = isModerate ? '#d97706' : '#b45309';
-  ctx.fillRect(cx - btnW / 2, btnY, btnW, btnH);
-  ctx.strokeStyle = '#fef08a';
-  ctx.lineWidth = isCompact ? 2.5 : 3.5;
-  ctx.strokeRect(cx - btnW / 2, btnY, btnW, btnH);
-
-  ctx.font = isCompact
-    ? '900 14px "Plus Jakarta Sans", sans-serif'
-    : '900 22px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(
-    isModerate
-      ? 'TEKAN [E]  /  TAP AMBIL TAS & EVAKUASI!'
-      : 'TEKAN [E]  /  TAP BERLINDUNG DI KOLONG MEJA!',
-    cx,
-    btnY + (isCompact ? 30 : 40)
-  );
-
-  // Baris 3: Bar Progress Waktu Besar & Nyaman Dibaca
-  const barW = Math.min(cardW - (isCompact ? 28 : 56), 880);
-  const barH = isCompact ? 24 : 30;
-  const barX = cx - barW / 2;
-  const barY = btnY + btnH + (isCompact ? 10 : 16);
-
-  ctx.fillStyle = '#1e293b';
-  ctx.fillRect(barX, barY, barW, barH);
-  const progress = Math.max(0, Math.min(1, timer / maxTimer));
-  ctx.fillStyle = isModerate
-    ? (progress > 0.35 ? '#10b981' : '#f59e0b')
-    : (progress > 0.35 ? '#eab308' : '#ef4444');
-  ctx.fillRect(barX, barY, barW * progress, barH);
-  ctx.strokeStyle = '#475569';
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(barX, barY, barW, barH);
-
-  const secondsLeft = (timer / 60).toFixed(1);
-  ctx.font = isCompact
-    ? '800 12px "Plus Jakarta Sans", sans-serif'
-    : '800 16px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(`SISA WAKTU: ${secondsLeft} DETIK`, cx, barY + (isCompact ? 17 : 21));
-
-  ctx.restore();
+    aksen: isModerate ? 'amber' : 'merah',
+    berdenyut: true,
+    tick: animTick,
+    baris: [
+      {
+        jenis: 'tombol',
+        teks: isModerate
+          ? 'TEKAN [E]  /  TAP AMBIL TAS & EVAKUASI!'
+          : 'TEKAN [E]  /  TAP BERLINDUNG DI KOLONG MEJA!',
+        isi: isModerate ? '#d97706' : '#b45309',
+      },
+    ],
+    bilah: {
+      teks: `SISA WAKTU: ${secondsLeft} DETIK`,
+      progres,
+      isi: isModerate
+        ? (progres > 0.35 ? '#10b981' : '#f59e0b')
+        : (progres > 0.35 ? '#eab308' : '#ef4444'),
+    },
+  });
 }
 
 
@@ -139,95 +81,41 @@ export function drawSimulationQuakeTimerOverlay(
   timer: number,
   maxTimer: number
 ): void {
-  const cx = viewW / 2;
   const isCompact = viewW < 800;
-  const cardW = Math.min(viewW - 24, isCompact ? 520 : 860);
-  const cardH = isCompact ? 130 : 168;
-  const cardX = cx - cardW / 2;
-  // Dulu langsung `isCompact ? 76 : ...` — terlalu tinggi sehingga tertutup
-  // tracker progres Level 2. Lihat ../tataLetakKartuL2.ts.
-  const cardY = atasKartuAmanL2(
-    ctx,
-    isCompact ? 76 : Math.max(88, Math.min(125, Math.floor(viewH * 0.10)))
-  );
+  const secLeft = Math.ceil(timer / 60);
+  const timeStr = `00:${secLeft.toString().padStart(2, '0')}`;
+  const p = Math.max(0, Math.min(1, timer / maxTimer));
 
+  // Flash halus tepi layar (tanda guncangan masih berlangsung)
   ctx.save();
-  // Flash halus tepi layar
   ctx.fillStyle = 'rgba(239, 68, 68, 0.10)';
   ctx.fillRect(0, 0, viewW, 20);
   ctx.fillRect(0, viewH - 20, viewW, 20);
-
-  // Kartu utama gelap dengan border kuning amber tebal
-  ctx.fillStyle = '#0b1120';
-  ctx.fillRect(cardX, cardY, cardW, cardH);
-  ctx.strokeStyle = '#f59e0b';
-  ctx.lineWidth = isCompact ? 3 : 4;
-  ctx.strokeRect(cardX, cardY, cardW, cardH);
-
-  // Aksen retro corner
-  ctx.fillStyle = '#f59e0b';
-  const cSz = isCompact ? 10 : 12;
-  const cTh = isCompact ? 3 : 4;
-  ctx.fillRect(cardX + 4, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + 4, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + 4, cTh, cSz);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + 4, cardY + cardH - 4 - cSz, cTh, cSz);
-  ctx.fillRect(cardX + cardW - 4 - cSz, cardY + cardH - 4 - cTh, cSz, cTh);
-  ctx.fillRect(cardX + cardW - 4 - cTh, cardY + cardH - 4 - cSz, cTh, cSz);
-
-  // Indikator kedip merah/amber
-  const indR = isCompact ? 11 : 15;
-  const indX = cardX + (isCompact ? 32 : 48);
-  const indY = cardY + (isCompact ? 44 : 58);
-  const flash = Math.sin(timer * 0.15) > 0;
-  ctx.fillStyle = flash ? '#ef4444' : '#f59e0b';
-  ctx.beginPath();
-  ctx.arc(indX, indY, indR, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = flash ? '#fca5a5' : '#fde68a';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  ctx.arc(indX, indY, indR + 5, 0, Math.PI * 2);
-  ctx.stroke();
-
-  const secLeft = Math.ceil(timer / 60);
-  const timeStr = `00:${secLeft.toString().padStart(2, '0')}`;
-
-  const textLeft = indX + indR + (isCompact ? 14 : 24);
-
-  // Teks Judul Timer Gempa
-  ctx.textAlign = 'left';
-  ctx.font = isCompact
-    ? '900 17px "Plus Jakarta Sans", sans-serif'
-    : '900 26px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#fbbf24';
-  ctx.fillText(`GUNCANGAN GEMPA: ${timeStr}`, textLeft, cardY + (isCompact ? 36 : 48));
-
-  // Subtitle instruksi SOP
-  ctx.font = isCompact
-    ? '800 10.5px "Plus Jakarta Sans", sans-serif'
-    : '800 14.5px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#f8fafc';
-  ctx.fillText('TETAP MERUNDUK & BERTAHAN DI KAKI MEJA (HOLD ON)', textLeft, cardY + (isCompact ? 56 : 78));
-
-  // Progress Bar timer guncangan
-  const barX = textLeft;
-  const barW = Math.max(120, cardW - (textLeft - cardX) - (isCompact ? 20 : 36));
-  const barH = isCompact ? 16 : 22;
-  const barY = cardY + (isCompact ? 74 : 100);
-
-  ctx.fillStyle = '#1e293b';
-  ctx.fillRect(barX, barY, barW, barH);
-  const p = Math.max(0, Math.min(1, timer / maxTimer));
-  ctx.fillStyle = p > 0.3 ? '#ef4444' : '#f59e0b';
-  ctx.fillRect(barX, barY, barW * p, barH);
-  ctx.strokeStyle = '#475569';
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(barX, barY, barW, barH);
-
   ctx.restore();
+
+  // Dulu langsung `isCompact ? 76 : ...` — terlalu tinggi sehingga tertutup
+  // tracker progres Level 2. Lihat ../tataLetakKartuL2.ts.
+  gambarKartuL2(ctx, viewW, {
+    y: atasKartuAmanL2(
+      ctx,
+      isCompact ? 76 : Math.max(88, Math.min(125, Math.floor(viewH * 0.10)))
+    ),
+    judul: `GUNCANGAN GEMPA: ${timeStr}`,
+    aksen: 'amber',
+    baris: [
+      {
+        jenis: 'teks',
+        teks: 'TETAP MERUNDUK & BERTAHAN DI KAKI MEJA (HOLD ON)',
+        warnaTeks: '#f8fafc',
+      },
+    ],
+    bilah: {
+      // Bilah tanpa teks: hitung mundurnya sudah tertulis besar di judul.
+      teks: '',
+      progres: p,
+      isi: p > 0.3 ? '#ef4444' : '#f59e0b',
+    },
+  });
 }
 
 
@@ -236,42 +124,21 @@ export function drawSimulationEvacuationPrompt(
   viewW: number,
   _viewH: number
 ): void {
-  const cx = viewW / 2;
-  const cardW = Math.min(viewW - 40, Math.max(880, Math.min(1150, Math.round(viewW * 0.70))));
-  const cardH = 125;
-  const cardX = cx - cardW / 2;
   // Dulu tetap `52` — terlalu tinggi sehingga tertutup tracker progres Level 2.
   // Lihat ../tataLetakKartuL2.ts.
-  const cardY = atasKartuAmanL2(ctx, 52);
-
-  ctx.save();
-  ctx.fillStyle = '#064e3b';
-  ctx.fillRect(cardX, cardY, cardW, cardH);
-  ctx.strokeStyle = '#10b981';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(cardX, cardY, cardW, cardH);
-
-  // Sudut retro emerald
-  ctx.fillStyle = '#34d399';
-  ctx.fillRect(cardX + 4, cardY + 4, 12, 4);
-  ctx.fillRect(cardX + 4, cardY + 4, 4, 12);
-  ctx.fillRect(cardX + cardW - 16, cardY + 4, 12, 4);
-  ctx.fillRect(cardX + cardW - 8, cardY + 4, 4, 12);
-  ctx.fillRect(cardX + 4, cardY + cardH - 8, 12, 4);
-  ctx.fillRect(cardX + 4, cardY + cardH - 16, 4, 12);
-  ctx.fillRect(cardX + cardW - 16, cardY + cardH - 8, 12, 4);
-  ctx.fillRect(cardX + cardW - 8, cardY + cardH - 16, 4, 12);
-
-  ctx.textAlign = 'center';
-  ctx.font = '900 26px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#6ee7b7';
-  ctx.fillText('[AMAN] GUNCANGAN SELESAI! AMBIL TAS LINDUNGI KEPALA', cx, cardY + 48);
-
-  ctx.font = '800 18px "Plus Jakarta Sans", sans-serif';
-  ctx.fillStyle = '#fef08a';
-  ctx.fillText('TEKAN [E] ATAU TAP UNTUK KELUAR DARI KOLONG MEJA & EVAKUASI', cx, cardY + 92);
-
-  ctx.restore();
+  gambarKartuL2(ctx, viewW, {
+    y: atasKartuAmanL2(ctx, 52),
+    judul: '[AMAN] GUNCANGAN SELESAI! AMBIL TAS LINDUNGI KEPALA',
+    aksen: 'hijau',
+    baris: [
+      {
+        jenis: 'tombol',
+        teks: 'TEKAN [E] ATAU TAP UNTUK KELUAR DARI KOLONG MEJA & EVAKUASI',
+        isi: '#047857',
+        tepi: '#6ee7b7',
+      },
+    ],
+  });
 }
 
 
