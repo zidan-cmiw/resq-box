@@ -85,7 +85,7 @@ export const TombolLanjutHp: React.FC<TombolLanjutHpProps> = ({
         e.stopPropagation();
         onLanjut();
       }}
-      className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 active:translate-y-0.5 text-amber-50 border-2 border-ink shadow-[0_3px_0_var(--shadow-ink)] font-pixel-title text-[13px] font-bold flex items-center gap-1.5 cursor-pointer"
+      className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 active:translate-y-0.5 text-on-accent-chip border-2 border-ink shadow-[0_3px_0_var(--shadow-ink)] font-pixel-title text-[13px] font-bold flex items-center gap-1.5 cursor-pointer"
     >
       <span>{sedangMengetik ? 'LEWATI' : 'LANJUT'}</span>
       <span className="text-[11px]">▶</span>

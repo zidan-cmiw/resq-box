@@ -673,7 +673,7 @@ export default function Workspace() {
                   {activeMission ? activeMission.title : 'Ruang Simulasi Sandbox'}
                 </h1>
                 {activeMission && (
-                  <span className="shrink-0 px-2 py-0.5 rounded text-[14.5px] font-bold bg-accent-chip text-white font-pixel uppercase shadow-sm">
+                  <span className="shrink-0 px-2 py-0.5 rounded text-[14.5px] font-bold bg-accent-chip text-on-accent-chip font-pixel uppercase shadow-sm">
                     {activeMission.category === 'proyek' ? `Kasus ${activeMission.level}` : `Level ${activeMission.level}`}
                   </span>
                 )}
@@ -821,7 +821,7 @@ export default function Workspace() {
               <button
                 onClick={() => setTopTabMobile('canvas')}
                 className={`px-2 py-0.5 rounded font-bold transition-all ${
-                  topTabMobile === 'canvas' ? 'bg-accent-chip text-white shadow-xs' : 'text-on-paper-soft'
+                  topTabMobile === 'canvas' ? 'bg-accent-chip text-on-accent-chip shadow-xs' : 'text-on-paper-soft'
                 }`}
               >
                 PETA 3D
@@ -829,7 +829,7 @@ export default function Workspace() {
               <button
                 onClick={() => setTopTabMobile('telemetry')}
                 className={`px-2 py-0.5 rounded font-bold transition-all ${
-                  topTabMobile === 'telemetry' ? 'bg-accent-chip text-white shadow-xs' : 'text-on-paper-soft'
+                  topTabMobile === 'telemetry' ? 'bg-accent-chip text-on-accent-chip shadow-xs' : 'text-on-paper-soft'
                 }`}
               >
                 TELEMETRI

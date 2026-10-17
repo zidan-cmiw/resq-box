@@ -87,7 +87,7 @@ export default function CoreChallengeModal({ onClose, initialCompleted = false }
                   retroAudio.playSelect();
                   onClose();
                 }}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0 font-medium"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0 font-medium"
                 title="Tutup"
               >
                 ✕

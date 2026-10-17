@@ -439,7 +439,7 @@ export default function Profile() {
               ))}
             </div>
 
-            <p className="text-[13px] text-amber-900/75 leading-relaxed font-semibold">
+            <p className="text-[13px] text-hud-accent/90 leading-relaxed font-semibold">
               Materi pelajaran tetap lengkap. Yang diringankan hanya tampilan:
               scene 3D gunung dan animasi berat tidak dimuat, sehingga lebih cepat
               dan lebih hemat kuota.
@@ -499,10 +499,10 @@ export default function Profile() {
           {/* Tingkat Kesiapsiagaan / Level Progress Banner */}
           <div id="tour-profile-readiness" className="p-3 bg-amber-950 text-amber-100 rounded-xl border-2 border-amber-950 shadow-[0_3px_0_var(--shadow-ink)]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[13px] font-pixel-title text-amber-400 font-semibold">
+              <span className="text-[13px] font-pixel-title text-on-accent-chip font-semibold">
                 TINGKAT KESIAPSIAGAAN:
               </span>
-              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[13.5px] font-pixel-title font-bold">
+              <span className="px-2 py-0.5 rounded bg-success-container text-on-success-container border border-success/40 text-[13.5px] font-pixel-title font-bold">
                 LEVEL {levelBerlaku} / 3
               </span>
             </div>

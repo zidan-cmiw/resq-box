@@ -2233,7 +2233,7 @@ export default function EarthDiveGame() {
               </span>
               <button
                 onClick={() => setIsRadarOpen(false)}
-                className="w-8 h-8 rounded-lg bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink text-[14px] font-bold flex items-center justify-center cursor-pointer active:translate-y-0.5"
+                className="w-8 h-8 rounded-lg bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink text-[14px] font-bold flex items-center justify-center cursor-pointer active:translate-y-0.5"
                 aria-label="Tutup radar"
               >
                 ✕
@@ -2250,7 +2250,7 @@ export default function EarthDiveGame() {
 
             <button
               onClick={() => setIsRadarOpen(false)}
-              className="mt-2 w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-50 border-2 border-ink font-pixel-title text-[13px] font-bold cursor-pointer active:translate-y-0.5"
+              className="mt-2 w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-on-accent-chip border-2 border-ink font-pixel-title text-[13px] font-bold cursor-pointer active:translate-y-0.5"
             >
               TUTUP
             </button>

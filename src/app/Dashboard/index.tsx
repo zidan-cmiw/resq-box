@@ -533,8 +533,13 @@ export default function Dashboard() {
           </div>
         </button>
 
-        {/* Top Right: Sound, Fullscreen, Teacher Portal & Auth Controls */}
-        <div className="flex items-center gap-2 bg-slate-950/85 backdrop-blur-md p-2 rounded-xl border-3 border-amber-950 shadow-[0_5px_0_var(--shadow-ink)]">
+        {/* Top Right: Sound, Fullscreen, Teacher Portal & Auth Controls.
+            `flex-wrap` + `max-w` dipasang karena pada layar 390 px baris ini
+            meluber keluar layar (lebar isinya 424 px pada ruang 358 px),
+            sehingga tombol paling kanan — termasuk saklar tema — tidak dapat
+            dilihat maupun ditekan. Dengan membolehkan membungkus, tombolnya
+            turun ke baris berikutnya dan tetap terjangkau. */}
+        <div className="flex flex-wrap justify-end items-center gap-2 max-w-[calc(100vw-2rem)] bg-slate-950/85 backdrop-blur-md p-2 rounded-xl border-3 border-amber-950 shadow-[0_5px_0_var(--shadow-ink)]">
           {/* Teacher Portal Shortcut (HANYA MUNCUL DI AKUN GURU) */}
           {currentUser?.role === 'teacher' && (
             <button

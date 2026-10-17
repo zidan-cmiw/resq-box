@@ -268,7 +268,7 @@ export const SuitMerchantModal: React.FC<SuitMerchantModalProps> = ({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-lg bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink flex items-center justify-center transition-colors text-[15px] font-bold cursor-pointer"
+            className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-lg bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink flex items-center justify-center transition-colors text-[15px] font-bold cursor-pointer"
             title="Tutup [ESC]"
           >
             ✕

@@ -357,10 +357,13 @@ export default function Level3() {
           <span>PROYEK SAYA</span>
         </button>
 
-        {/* Sound toggle */}
+        {/* Sound toggle — memakai pasangan token bilah (bg-chrome + text-on-chrome)
+            supaya latar dan teksnya bertukar bersama. Sebelumnya latarnya
+            bg-ink (yang justru menjadi TERANG di mode gelap) sementara teksnya
+            tetap terang, sehingga ikonnya tinggal 3:1. */}
         <button aria-label="Nyalakan atau matikan suara"
           onClick={handleSoundToggle}
-          className="p-2.5 rounded-xl bg-[#24160c]/90 hover:bg-[#3d2412] text-amber-300 border-2 border-amber-900/80 shadow-2xl transition-colors cursor-pointer"
+          className="p-2.5 rounded-xl bg-chrome hover:bg-chrome-raised text-on-chrome border-2 border-chrome-border shadow-2xl transition-colors cursor-pointer"
           title={soundOn ? 'Matikan Suara' : 'Nyalakan Suara'}
         >
           <PixelIcon name={soundOn ? 'sound-on' : 'sound-off'} size={18} />
@@ -369,7 +372,7 @@ export default function Level3() {
         {/* Fullscreen toggle */}
         <button aria-label="Masuk atau keluar dari layar penuh"
           onClick={handleFullscreenToggle}
-          className="p-2.5 rounded-xl bg-[#24160c]/90 hover:bg-[#3d2412] text-amber-300 border-2 border-amber-900/80 shadow-2xl transition-colors cursor-pointer"
+          className="p-2.5 rounded-xl bg-chrome hover:bg-chrome-raised text-on-chrome border-2 border-chrome-border shadow-2xl transition-colors cursor-pointer"
           title={isFullscreen ? 'Keluar Layar Penuh' : 'Layar Penuh'}
         >
           <PixelIcon name="computer" size={18} />
@@ -934,7 +937,7 @@ export default function Level3() {
                 return {
                   rim: 'bg-accent-chip-strong border-amber-400 shadow-[0_6px_0_var(--shadow-accent-deep)] ring-4 ring-amber-400/60 animate-pulse',
                   core: 'bg-gradient-to-b from-amber-500 to-accent-chip text-white',
-                  badge: 'bg-accent-chip text-white',
+                  badge: 'bg-accent-chip text-on-accent-chip',
                   plaque: 'bg-paper-low text-on-paper-soft border-2 sm:border-3 border-accent-chip shadow-[0_4px_0_var(--shadow-accent-deep)] ring-2 ring-amber-400',
                 };
               }
@@ -1030,7 +1033,7 @@ export default function Level3() {
                     } z-30 flex flex-col items-center animate-bounce pointer-events-none font-['Plus_Jakarta_Sans',sans-serif]`}
                   >
                     {/* Speech bubble */}
-                    <div className="bg-paper text-on-accent-chip px-3 py-1 rounded-full text-[13px] font-black shadow-md border-2 border-accent-chip whitespace-nowrap mb-1">
+                    <div className="bg-paper text-on-paper px-3 py-1 rounded-full text-[13px] font-black shadow-md border-2 border-accent-chip whitespace-nowrap mb-1">
                       {student?.name && student.name !== '-' ? `Ayo ${student.name.split(' ')[0]}!` : 'Misi Aktif!'}
                     </div>
 
@@ -1212,7 +1215,7 @@ export default function Level3() {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                           </svg>
                         ) : isCurrentActive ? (
-                          <span className="text-accent-chip text-[12px] font-black tracking-wider uppercase animate-pulse">AKTIF</span>
+                          <span className="text-hud-accent text-[12px] font-black tracking-wider uppercase animate-pulse">AKTIF</span>
                         ) : null}
                       </span>
                     </div>
@@ -1239,7 +1242,7 @@ export default function Level3() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       ) : isCurrentActive ? (
-                        <span className="text-accent-chip text-[13.5px] font-black tracking-wider uppercase animate-pulse">AKTIF</span>
+                        <span className="text-hud-accent text-[13.5px] font-black tracking-wider uppercase animate-pulse">AKTIF</span>
                       ) : null}
                     </span>
                   </div>
@@ -1286,7 +1289,7 @@ export default function Level3() {
                     <span className="text-[13px] sm:text-[15px] text-accent-chip uppercase tracking-widest font-black">
                       {CATEGORIES.find((c) => c.id === selectedMission.category)?.title || 'MISI MITIGASI'}
                     </span>
-                    <span className="px-2 py-0.5 rounded bg-accent-chip text-white text-[13.5px] font-black tracking-wider">
+                    <span className="px-2 py-0.5 rounded bg-accent-chip text-on-accent-chip text-[13.5px] font-black tracking-wider">
                       LEVEL {pathNodes.find((n) => n.mission.id === selectedMission.id)?.levelNumber}
                     </span>
                   </div>
@@ -1301,7 +1304,7 @@ export default function Level3() {
                   retroAudio.playSelect();
                   setSelectedMission(null);
                 }}
-                className="w-10 h-10 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink font-bold text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0"
+                className="w-10 h-10 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink font-bold text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0"
               >
                 <PixelIcon name="cross" size={14} />
               </button>
@@ -1362,7 +1365,7 @@ export default function Level3() {
                   retroAudio.playSelect();
                   setSelectedMission(null);
                 }}
-                className="flex-1 py-3 px-5 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 font-bold text-[15px] border-2 border-ink shadow-[0_3px_0_var(--shadow-accent-deep)] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+                className="flex-1 py-3 px-5 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip font-bold text-[15px] border-2 border-ink shadow-[0_3px_0_var(--shadow-accent-deep)] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
               >
                 KEMBALI
               </button>
@@ -1402,7 +1405,7 @@ export default function Level3() {
               </button>
               <button
                 onClick={() => handleConfirmReplay(confirmReplayMissionId)}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-white text-[15px] font-black border-2 border-ink shadow-[0_3px_0_var(--shadow-accent-deep)] cursor-pointer"
+                className="flex-1 py-2.5 px-4 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip text-[15px] font-black border-2 border-ink shadow-[0_3px_0_var(--shadow-accent-deep)] cursor-pointer"
               >
                 YA, ULANGI
               </button>
@@ -1432,7 +1435,7 @@ export default function Level3() {
               </div>
               <button aria-label="Tutup"
                 onClick={() => setShowLkpdModal(false)}
-                className="w-10 h-10 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink font-bold text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0"
+                className="w-10 h-10 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink font-bold text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0"
               >
                 <PixelIcon name="cross" size={14} />
               </button>
@@ -1441,7 +1444,7 @@ export default function Level3() {
             {/* 3 Step Instructions */}
             <div className="flex flex-col gap-3 py-1">
               <div className="p-4 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-[#b45309]/40 flex gap-3.5 items-start shadow-xs">
-                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-accent-chip text-white font-black text-[15px] shrink-0 shadow-sm">
+                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-accent-chip text-on-accent-chip font-black text-[15px] shrink-0 shadow-sm">
                   1
                 </span>
                 <div className="text-[15px] text-on-paper leading-relaxed font-semibold">
@@ -1451,7 +1454,7 @@ export default function Level3() {
               </div>
 
               <div className="p-4 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-[#b45309]/40 flex gap-3.5 items-start shadow-xs">
-                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-accent-chip text-white font-black text-[15px] shrink-0 shadow-sm">
+                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-accent-chip text-on-accent-chip font-black text-[15px] shrink-0 shadow-sm">
                   2
                 </span>
                 <div className="text-[15px] text-on-paper leading-relaxed font-semibold">
@@ -1461,7 +1464,7 @@ export default function Level3() {
               </div>
 
               <div className="p-4 rounded-2xl bg-amber-100/90 border-2 sm:border-3 border-[#b45309]/40 flex gap-3.5 items-start shadow-xs">
-                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-accent-chip text-white font-black text-[15px] shrink-0 shadow-sm">
+                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-accent-chip text-on-accent-chip font-black text-[15px] shrink-0 shadow-sm">
                   3
                 </span>
                 <div className="text-[15px] text-on-paper leading-relaxed font-semibold">

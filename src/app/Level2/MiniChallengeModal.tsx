@@ -66,7 +66,7 @@ export default function MiniChallengeModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink font-pixel-title text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0 font-semibold"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink font-pixel-title text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0 font-semibold"
           >
             <PixelIcon name="cross" size={14} />
           </button>
@@ -159,7 +159,7 @@ export default function MiniChallengeModal({
                     setIsAnswered(false);
                     setSelectedOptId(null);
                   }}
-                  className="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-[13px] sm:text-[15px] md:text-base font-pixel-title font-bold border-2 border-amber-950 shadow-[0_3px_0_var(--shadow-accent-deep)] cursor-pointer active:translate-y-0.5"
+                  className="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-on-accent-chip text-[13px] sm:text-[15px] md:text-base font-pixel-title font-bold border-2 border-amber-950 shadow-[0_3px_0_var(--shadow-accent-deep)] cursor-pointer active:translate-y-0.5"
                 >
                   COBA LAGI ↺
                 </button>

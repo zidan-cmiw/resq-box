@@ -153,7 +153,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_var(--shadow-accent-deep)] shrink-0 transition-colors font-medium"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_var(--shadow-accent-deep)] shrink-0 transition-colors font-medium"
             title="Tutup"
           >
             <PixelIcon name="cross" size={18} />
@@ -594,7 +594,7 @@ export default function SeismographModal({ onClose }: SeismographModalProps) {
         {/* Kotak Materi Edukasi & Fakta Kunci (Teks Jelas, Besar & Kontras) */}
         <div className="bg-paper-deep p-4 sm:p-6 rounded-2xl border-3 border-[#b45309]/60 shadow-md text-on-paper space-y-2.5 sm:space-y-3.5">
           <div className="flex items-center gap-2.5 flex-wrap">
-            <span className="px-3.5 py-1.5 rounded-lg bg-accent-chip text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow">
+            <span className="px-3.5 py-1.5 rounded-lg bg-accent-chip text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow">
               MATERI PEMBELAJARAN
             </span>
             <span className="text-[15px] sm:text-base font-pixel font-bold text-on-paper-soft">

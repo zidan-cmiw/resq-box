@@ -203,7 +203,7 @@ export default function CrosswordModal({ areaIndex = 0, userId = 'guest', onSucc
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0 font-medium"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0 font-medium"
             title="Tutup"
           >
             <PixelIcon name="cross" size={16} />

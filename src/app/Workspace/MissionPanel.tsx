@@ -68,7 +68,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
       <div className="p-3.5 border-b-2 border-accent-chip bg-paper">
         <div className="flex items-center justify-between gap-1 mb-1.5">
           <div className="flex items-center gap-1.5">
-            <span className="px-2 py-0.5 rounded text-[13.5px] font-bold uppercase tracking-wider bg-accent-chip text-white shadow-sm font-pixel">
+            <span className="px-2 py-0.5 rounded text-[13.5px] font-bold uppercase tracking-wider bg-accent-chip text-on-accent-chip shadow-sm font-pixel">
               {categoryObj?.title.toUpperCase()} • {mission.category === 'proyek' ? 'KASUS' : 'LEVEL'} {mission.level}
             </span>
           </div>
@@ -80,7 +80,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
             {onClose && (
               <button aria-label="Tutup"
                 onClick={onClose}
-                className="w-5 h-5 rounded bg-accent-chip hover:bg-accent-chip-strong text-white flex items-center justify-center font-bold text-[13.5px] cursor-pointer lg:hidden"
+                className="w-5 h-5 rounded bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip flex items-center justify-center font-bold text-[13.5px] cursor-pointer lg:hidden"
                 title="Tutup Panduan Misi"
               >
                 ✕
@@ -120,7 +120,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
         <div className="rounded-xl border-2 border-accent-chip bg-paper-low p-3.5 flex flex-col gap-2.5 shadow-sm text-on-accent-chip">
           {/* Step Icon & Title */}
           <div className="flex items-center gap-2.5 pb-2 border-b border-[#b45309]/20">
-            <div className="w-8 h-8 rounded-lg bg-accent-chip text-white flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
+            <div className="w-8 h-8 rounded-lg bg-accent-chip text-on-accent-chip flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
               <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
                 {step.icon}
               </span>
@@ -208,7 +208,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
                 onClick={handleValidate}
                 disabled={isChecking}
                 className={`flex-[2] py-2.5 px-3.5 rounded-lg text-[13px] sm:text-[15px] font-bold flex items-center justify-center gap-1.5 shadow-md transition-all border-2 border-[#7c2d12] ${isChecking
-                  ? 'bg-accent-chip text-white cursor-not-allowed animate-pulse'
+                  ? 'bg-accent-chip text-on-accent-chip cursor-not-allowed animate-pulse'
                   : 'bg-gradient-to-r from-[#c2410c] to-accent-chip hover:from-[#ea580c] hover:to-[#c2410c] text-white'
                   }`}
               >

@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 /* ══════════════════════════════════════════════════════════════════════════
    SISTEM TEMA RESQ-BOX — MODE TERANG & MODE GELAP
@@ -181,10 +181,30 @@
      SENGAJA tidak diredupkan di mode gelap: sebuah lencana kuning tetap
      kuning agar terbaca sebagai penanda status, dan teks gelap di atasnya
      tetap kontras. Karena itu pasangan latar–teksnya dikunci di sini,
-     bukan diserahkan ke pertukaran tema. */
-  --accent-chip: #f59e0b;
+     bukan diserahkan ke pertukaran tema.
+
+     CATATAN: `--accent-chip` dipakai untuk DUA hal — latar lencana DAN warna
+     ikon/teks aksen kecil. Karena itu nilainya dipilih yang lolos kontras
+     untuk keduanya sekaligus: cukup gelap untuk dibaca sebagai teks di atas
+     kertas terang, dan cukup terang untuk menahan teks gelap di atasnya. */
+  --accent-chip: #b87333;
   --accent-chip-strong: #d97706;
   --on-accent-chip: #1c1206;
+
+  /* ── Judul beraksen di atas bilah yang ikut bertukar tema ──
+     `text-amber-300`/`text-amber-400` hanya cocok di atas bilah GELAP: di
+     mode terang bilahnya menjadi terang, sehingga teks amber muda di atasnya
+     tinggal 1,4:1 — praktis hilang. Token ini menyimpan warna yang benar
+     untuk kedua tema: amber tua di atas bilah terang, amber muda di atas
+     bilah gelap.
+
+     NAMANYA `hud-accent`, BUKAN `accent-text`. Tailwind sudah memakai awalan
+     `accent-` untuk properti `accent-color` (warna kotak centang & tombol
+     pilihan), sehingga `text-accent-text` TIDAK menghasilkan utilitas warna
+     teks sama sekali — teksnya diam-diam mewarisi warna induknya. Awalan
+     `hud-` dipilih supaya tidak bertabrakan dengan utilitas bawaan. */
+  --hud-accent: #a34705;
+  --on-hud-accent: #ffffff;
 
   /* ── Tinta & bayangan ──
      `--ink` adalah warna garis luar dan bayangan padat bergaya 8-bit.
@@ -223,7 +243,7 @@
   --wood-locked-mid: #475569;
   --wood-locked-low: #334155;
   --wood-locked-text: #f8fafc;
-  --on-wood: #231206;
+  --on-wood: #1c1206;
 
   /* ── Papan kertas bergambar (panel misi, kartu materi) ── */
   --paper-edge: #1e0b02;
@@ -351,6 +371,15 @@
   --accent-chip-strong: #d97706;
   --on-accent-chip: #1c1206;
 
+  /* Judul beraksen: di mode gelap bilahnya gelap, jadi teksnya amber muda */
+  --hud-accent: #fbbf24;
+  --on-hud-accent: #1c1206;
+
+  /* Lencana aksen: latarnya sengaja tetap cerah, jadi teksnya tetap gelap.
+     Nilainya sama dengan mode terang — pertukaran tema tidak berlaku di sini
+     justru karena itu yang menjaga lencana tetap terbaca. */
+  --accent: #b45309;
+
   /* Bayangan versi malam: lebih TERANG dari latarnya, supaya kesan timbul
      pada tombol dan kartu tetap terlihat di atas permukaan gelap. */
   --shadow-ink: var(--ink);
@@ -368,8 +397,15 @@
   --shadow-paper: #8f9cb8;
 
   /* Tinta & bayangan versi malam: lebih TERANG dari latarnya, supaya efek
-     kotak timbul tetap terlihat di atas permukaan gelap. */
-  --ink: #4d6382;
+     kotak timbul tetap terlihat di atas permukaan gelap.
+     #6076a0 dipilih, bukan #4d6382: pada latar bilah gelap #1b2740 rasio
+     kontrasnya 5,0:1 — cukup untuk teks tombol, sedangkan #4d6382 hanya
+     4,47:1 dan gagal tipis di bawah ambang 4,5:1. */
+  --ink: #7d93bb;
+
+  /* Sisa tangga amber yang lebih muda: dinaikkan agar tetap terbaca sebagai
+     teks di atas bilah gelap (#1b2740), tanpa mengubah perannya sebagai
+     warna latar lencana. */
   --shadow-shade: rgba(0, 0, 0, 0.5);
   --shadow-shade-strong: rgba(0, 0, 0, 0.65);
   --shadow-shade-soft: rgba(0, 0, 0, 0.35);
@@ -380,22 +416,28 @@
 
   /* Papan kayu versi malam: tetap kayu, hanya lebih gelap dan lebih redup.
      Bayangannya menjadi lebih terang (--shadow-paper) karena bayangan gelap
-     tidak akan terlihat di atas permukaan gelap. */
-  --wood-top: #6b4a2e;
-  --wood-mid: #563a23;
-  --wood-low: #422c1a;
-  --wood-base: #2e1e11;
-  --wood-edge: #7d8ea8;
-  --wood-plate: #7a5734;
-  --wood-grain: #36200f;
-  --wood-nail: #241708;
+     tidak akan terlihat di atas permukaan gelap.
+
+     DIBUAT LEBIH TERANG DARIPADA PERKIRAAN AWAL (#6b4a2e → #9c6f47).
+     Semula kayunya digelapkan mengikuti latar malam, dan akibatnya teks
+     gelap di atasnya hanya 2,3:1 — tombol menu utama praktis tidak terbaca.
+     Kayu di mode gelap sekarang dibiarkan cukup terang sehingga teks
+     gelapnya tetap kontras, seperti papan kayu yang tersorot lampu. */
+  --wood-top: #bd8b5f;
+  --wood-mid: #a87a52;
+  --wood-low: #94684a;
+  --wood-base: #805636;
+  --wood-edge: #7d93bb;
+  --wood-plate: #cfa374;
+  --wood-grain: #5a3a1e;
+  --wood-nail: #3d2711;
   --wood-text: #f0e6d2;
   --wood-text-shadow: #1a1208;
   --wood-locked-top: #3a4453;
   --wood-locked-mid: #2b3341;
   --wood-locked-low: #1f2531;
   --wood-locked-text: #f8fafc;
-  --on-wood: #f0e6d2;
+  --on-wood: #1c1206;
 
   /* Papan kertas bergambar versi malam: tetap kertas, hanya menjadi kertas
      malam yang dingin — bukan abu-abu mati. */
@@ -418,15 +460,14 @@
   --amber-50: #2a1608;
   --amber-100: #3a1f0b;
   --amber-200: #57300f;
-  --amber-300: #7c4512;
-  --amber-400: #a35a15;
+  --amber-300: #8f5212;
+  --amber-400: #b87333;
   --amber-500: #c2711a;
   --amber-600: #d98a2b;
   --amber-700: #e8a44a;
   --amber-800: #f2c078;
   --amber-900: #f8dca8;
   --amber-950: #fde68a;
-
   --stone-50: #1a1a19;
   --stone-100: #242322;
   --stone-200: #34322f;
@@ -528,6 +569,8 @@
   --color-accent-chip: var(--accent-chip);
   --color-accent-chip-strong: var(--accent-chip-strong);
   --color-on-accent-chip: var(--on-accent-chip);
+  --color-hud-accent: var(--hud-accent);
+  --color-on-hud-accent: var(--on-hud-accent);
 
   --color-on-dark: var(--on-dark);
   --color-on-light: var(--on-light);
@@ -560,7 +603,45 @@
 
      Di mode terang seluruh nilainya sama persis dengan skala bawaan
      Tailwind, jadi tampilan yang sekarang tidak berubah sedikit pun. */
-    --color-screen: var(--screen);
+  --color-amber-50: var(--amber-50);
+  --color-amber-100: var(--amber-100);
+  --color-amber-200: var(--amber-200);
+  --color-amber-300: var(--amber-300);
+  --color-amber-400: var(--amber-400);
+  --color-amber-500: var(--amber-500);
+  --color-amber-600: var(--amber-600);
+  --color-amber-700: var(--amber-700);
+  --color-amber-800: var(--amber-800);
+  --color-amber-900: var(--amber-900);
+  --color-amber-950: var(--amber-950);
+
+  /* Oranye disamakan dengan amber: di proyek ini keduanya dipakai bergantian
+     untuk maksud yang sama (kertas hangat dan pita peringatan). */
+  --color-orange-50: var(--amber-50);
+  --color-orange-100: var(--amber-100);
+  --color-orange-200: var(--amber-200);
+  --color-orange-300: var(--amber-300);
+  --color-orange-400: var(--amber-400);
+  --color-orange-500: var(--amber-500);
+  --color-orange-600: var(--amber-600);
+  --color-orange-700: var(--amber-700);
+  --color-orange-800: var(--amber-800);
+  --color-orange-900: var(--amber-900);
+  --color-orange-950: var(--amber-950);
+
+  --color-stone-50: var(--stone-50);
+  --color-stone-100: var(--stone-100);
+  --color-stone-200: var(--stone-200);
+  --color-stone-300: var(--stone-300);
+  --color-stone-400: var(--stone-400);
+  --color-stone-500: var(--stone-500);
+  --color-stone-600: var(--stone-600);
+  --color-stone-700: var(--stone-700);
+  --color-stone-800: var(--stone-800);
+  --color-stone-900: var(--stone-900);
+  --color-stone-950: var(--stone-950);
+
+  --color-screen: var(--screen);
   --color-on-screen: var(--on-screen);
 
   /* Typography Families

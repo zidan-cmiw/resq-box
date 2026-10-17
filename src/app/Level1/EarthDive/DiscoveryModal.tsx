@@ -53,7 +53,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_var(--shadow-accent-deep)] shrink-0 transition-colors font-medium"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_var(--shadow-accent-deep)] shrink-0 transition-colors font-medium"
             title="Tutup"
           >
             ✕
@@ -74,7 +74,7 @@ export default function DiscoveryModal({
         {/* ── PENJELASAN MATERI (RINGKAS & MUDAH DIPAHAMI UNTUK SMP) ── */}
         <div className="bg-paper-deep p-4 sm:p-6 md:p-7 rounded-2xl border-3 border-[#b45309]/60 shadow-md text-on-paper space-y-3 sm:space-y-4">
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-1 rounded-md bg-accent-chip text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
+            <span className="px-2.5 py-1 rounded-md bg-accent-chip text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
               MATERI PEMBELAJARAN
             </span>
           </div>

@@ -341,7 +341,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
         >
           <ResqyMascot size={isMobile ? 22 : 24} className="group-hover:animate-bounce-subtle shrink-0" />
           <span className="hidden sm:inline">PANDUAN RESQY</span>
-          <span className="text-[12.5px] sm:text-[13.5px] bg-accent-chip text-amber-50 px-1 sm:px-1.5 py-0.5 rounded font-pixel font-semibold">?</span>
+          <span className="text-[12.5px] sm:text-[13.5px] bg-accent-chip text-on-accent-chip px-1 sm:px-1.5 py-0.5 rounded font-pixel font-semibold">?</span>
         </button>
       )}
 
@@ -402,7 +402,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
             >
               {/* Pulsing Corner Badge yang adaptif agar tidak terpotong tepi layar */}
               <div
-                className="absolute bg-accent-chip text-amber-100 border border-paper-border px-2 py-0.5 rounded-md font-pixel-title text-[12.5px] font-bold shadow-md animate-pulse whitespace-nowrap"
+                className="absolute bg-accent-chip text-on-accent-chip border border-paper-border px-2 py-0.5 rounded-md font-pixel-title text-[12.5px] font-bold shadow-md animate-pulse whitespace-nowrap"
                 style={{
                   left: highlightRect.left < 24 ? '4px' : '-8px',
                   top: highlightRect.top < 26 ? 'auto' : '-13px',
@@ -460,7 +460,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1 sm:gap-2 flex-wrap mb-0.5">
-                      <span className="px-1.5 sm:px-2 py-0.5 rounded-md bg-accent-chip text-amber-50 font-pixel-title text-[10px] sm:text-[13px] font-bold tracking-wide sm:tracking-wider shadow-sm">
+                      <span className="px-1.5 sm:px-2 py-0.5 rounded-md bg-accent-chip text-on-accent-chip font-pixel-title text-[10px] sm:text-[13px] font-bold tracking-wide sm:tracking-wider shadow-sm">
                         {activeStep.badge || 'PANDUAN RESQY'}
                       </span>
                       <span className="text-[11px] sm:text-[13px] text-on-paper-soft font-pixel-title font-bold">
@@ -476,7 +476,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                 <button aria-label="Tutup"
                   type="button"
                   onClick={handleSkip}
-                  className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-lg sm:rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-amber-100 border-2 border-ink font-pixel text-[13px] sm:text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0 transition-colors font-semibold"
+                  className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-lg sm:rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink font-pixel text-[13px] sm:text-[15px] flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] shrink-0 transition-colors font-semibold"
                   title="Lewati panduan ini"
                 >
                   ✕

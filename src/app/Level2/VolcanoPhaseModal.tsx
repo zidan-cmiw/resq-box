@@ -135,7 +135,7 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
 
         {/* 1. Header Pill */}
         <div className="text-center">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-accent-chip-strong border-2 border-ink text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider uppercase shadow-sm">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-accent-chip-strong border-2 border-ink text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider uppercase shadow-sm">
             {data.pill}
           </span>
         </div>
@@ -155,7 +155,7 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
           {/* Karakteristik / Tanda-Tanda Geologis */}
           <div className="bg-paper-deep border-3 border-[#b45309]/60 rounded-2xl p-4 sm:p-5 shadow-sm text-on-paper">
             <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-accent-chip text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-accent-chip text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
                 <PixelIcon name="volcano" size={17} className="text-amber-200 shrink-0" />
                 <span>CIRI &amp; INDIKATOR GEOLOGIS</span>
               </span>

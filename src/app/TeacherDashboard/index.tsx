@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
 import { PixelAvatarRenderer } from '../../components/PixelAvatar/PixelAvatarRenderer';
 import PixelIcon from '../../components/PixelIcon';
+import TombolTema from '../../components/TombolTema';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 import { tutupModalDenganKeyboard } from '../../utils/keyboard';
@@ -807,6 +808,11 @@ export default function TeacherDashboard() {
 
         {/* Right Header: Cloud Status & Logout */}
         <div className="flex items-center gap-2">
+          {/* Saklar Mode Terang / Mode Gelap — tersedia juga untuk guru,
+              karena Posko Guru dipakai di ruang kelas yang terang maupun
+              saat malam. */}
+          <TombolTema bentuk="kompak" />
+
           <button
             onClick={() => {
               retroAudio.playSelect();
@@ -849,8 +855,8 @@ export default function TeacherDashboard() {
                 setSelectedClassCode(cls.code);
               }}
               className={`px-4 py-2 rounded-xl border-2 text-[13px] font-pixel-title transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${selectedClassCode === cls.code
-                ? 'bg-amber-400 text-amber-950 border-amber-950 shadow-[0_4px_0_var(--shadow-accent-deep)] font-bold -translate-y-0.5'
-                : 'bg-[#fef3c7]/95 text-amber-950 border-amber-950/60 hover:bg-amber-100 shadow-[0_2px_0_var(--shadow-accent-deep)]'
+                ? 'bg-amber-400 text-on-accent-chip border-accent-chip shadow-[0_4px_0_var(--shadow-accent-deep)] font-bold -translate-y-0.5'
+                : 'bg-paper text-on-paper border-paper-border hover:bg-paper-deep shadow-[0_2px_0_var(--shadow-accent-deep)]'
                 }`}
             >
               <span>{cls.name}</span>
@@ -872,7 +878,7 @@ export default function TeacherDashboard() {
         </div>
 
         {/* ── ACTIVE CLASSROOM BANNER & UNIFIED CONTROLS (LIGHT PARCHMENT BOARD) ── */}
-        <div className="pixel-wood-board p-4 sm:p-5 rounded-2xl shadow-[0_6px_0_var(--shadow-ink)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3" style={{ background: '#fef3c7' }}>
+        <div className="pixel-wood-board bg-paper p-4 sm:p-5 rounded-2xl shadow-[0_6px_0_var(--shadow-ink)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               {/*
@@ -963,7 +969,7 @@ export default function TeacherDashboard() {
         {/* ── KPI TELEMETRY CARDS (OVERALL PROGRESS ACROSS ALL LEVELS) ── */}
         <div id="tour-teacher-kpi" className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {/* Card 1: Total Siswa */}
-          <div className="pixel-wood-board p-4 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)] space-y-1" style={{ background: '#fef3c7' }}>
+          <div className="pixel-wood-board bg-paper p-4 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)] space-y-1">
             <span className="text-[13.5px] font-pixel-title font-bold text-amber-900 uppercase block">
               TOTAL SISWA TERDAFTAR
             </span>
@@ -976,7 +982,7 @@ export default function TeacherDashboard() {
           </div>
 
           {/* Card 2: Progres Ketuntasan Kelas Keseluruhan */}
-          <div className="pixel-wood-board p-4 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)] space-y-1.5" style={{ background: '#fef3c7' }}>
+          <div className="pixel-wood-board bg-paper p-4 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)] space-y-1.5">
             <span className="text-[13.5px] font-pixel-title font-bold text-amber-900 uppercase block">
               PROGRES KETUNTASAN KELAS
             </span>
@@ -995,7 +1001,7 @@ export default function TeacherDashboard() {
           </div>
 
           {/* Card 3: Rata-Rata Skor Kuis Kelas */}
-          <div className="pixel-wood-board p-4 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)] space-y-1" style={{ background: '#fef3c7' }}>
+          <div className="pixel-wood-board bg-paper p-4 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)] space-y-1">
             <span className="text-[13.5px] font-pixel-title font-bold text-amber-900 uppercase block">
               RATA-RATA SKOR KELAS
             </span>
@@ -1006,7 +1012,7 @@ export default function TeacherDashboard() {
         </div>
 
         {/* ── FILTER & LIVE TABLE SECTION (LIGHT PARCHMENT WOOD BOARD) ── */}
-        <div id="tour-teacher-table" className="pixel-wood-board p-4 sm:p-5 rounded-2xl shadow-[0_8px_0_var(--shadow-ink)] space-y-4" style={{ background: '#fef3c7' }}>
+        <div id="tour-teacher-table" className="pixel-wood-board bg-paper p-4 sm:p-5 rounded-2xl shadow-[0_8px_0_var(--shadow-ink)] space-y-4">
 
           {/* Controls Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pb-3 border-b-2 border-amber-950/20">
@@ -1258,7 +1264,7 @@ export default function TeacherDashboard() {
       {/* ── UNIFIED MODAL: KELOLA / EDIT KELAS (GANTI NAMA, TAMBAH SISWA, HAPUS KELAS) ── */}
       {showManageClassModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="pixel-wood-board p-5 sm:p-6 rounded-2xl text-amber-950 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto" style={{ background: '#fef3c7' }}>
+          <div className="pixel-wood-board bg-paper p-5 sm:p-6 rounded-2xl text-amber-950 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b-2 border-amber-950/30 pb-3">
               <div>
@@ -1532,7 +1538,7 @@ export default function TeacherDashboard() {
       {/* ── MODAL: BUAT KELAS BARU ── */}
       {showNewClassModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="pixel-wood-board p-5 sm:p-6 rounded-2xl text-amber-950 w-full max-w-sm space-y-4" style={{ background: '#fef3c7' }}>
+          <div className="pixel-wood-board bg-paper p-5 sm:p-6 rounded-2xl text-amber-950 w-full max-w-sm space-y-4">
             <div className="flex items-center justify-between border-b-2 border-amber-950/30 pb-2">
               <h3 className="font-pixel-title text-[15px] text-amber-950 font-bold">
                 BUAT KELAS BARU
@@ -1574,7 +1580,7 @@ export default function TeacherDashboard() {
       {/* ── MODAL: DETAIL SISWA & CETAK RAPOR INDIVIDUAL ── */}
       {selectedStudentForDetail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="pixel-wood-board p-5 md:p-6 rounded-2xl text-amber-950 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto" style={{ background: '#fef3c7' }}>
+          <div className="pixel-wood-board bg-paper p-5 md:p-6 rounded-2xl text-amber-950 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto">
 
             {/* Header */}
             <div className="flex items-center justify-between border-b-2 border-amber-950/30 pb-3">
@@ -1780,7 +1786,7 @@ export default function TeacherDashboard() {
       {/* ── MODAL: KONFIRMASI HAPUS SISWA ── */}
       {studentToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="pixel-wood-board p-5 rounded-2xl text-amber-950 w-full max-w-sm space-y-3" style={{ background: '#fef3c7' }}>
+          <div className="pixel-wood-board bg-paper p-5 rounded-2xl text-amber-950 w-full max-w-sm space-y-3">
             <div className="flex items-center gap-2 text-on-error-container">
               <PixelIcon name="alert" size={18} />
               <h3 className="font-pixel-title text-[15px] text-on-error-container font-bold">
@@ -1815,8 +1821,7 @@ export default function TeacherDashboard() {
           onClick={() => setShowTeacherProfileModal(false)}
         >
           <div onKeyDown={blokirRambatanTombol()}
-            className="pixel-wood-board p-5 rounded-2xl text-amber-950 w-full max-w-md space-y-4"
-            style={{ background: '#fef3c7' }}
+            className="pixel-wood-board bg-paper bg-paper p-5 rounded-2xl text-on-paper w-full max-w-md space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

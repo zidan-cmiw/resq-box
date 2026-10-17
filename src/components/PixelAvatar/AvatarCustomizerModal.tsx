@@ -225,8 +225,7 @@ export const AvatarCustomizerModal: React.FC<AvatarCustomizerModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-slate-950/80 animate-fade-in font-pixel select-none">
       <div
-        className="relative w-full max-w-[980px] sm:max-w-[1020px] lg:max-w-[1080px] max-h-[calc(100dvh-1rem)] flex flex-col pixel-wood-board p-4 sm:p-6 md:p-7 overflow-hidden shadow-[0_12px_0_var(--shadow-ink)] rounded-2xl"
-        style={{ background: '#fef3c7' }}
+        className="relative w-full max-w-[980px] sm:max-w-[1020px] lg:max-w-[1080px] max-h-[calc(100dvh-1rem)] flex flex-col pixel-wood-board bg-paper p-4 sm:p-6 md:p-7 overflow-hidden shadow-[0_12px_0_var(--shadow-ink)] rounded-2xl"
       >
         {/* ── HEADER ── */}
         <div className="flex items-center justify-between pb-3.5 border-b-3 border-amber-950/30">
