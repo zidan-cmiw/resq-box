@@ -5866,14 +5866,14 @@ export default function Merapi3DScene() {
   };
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-surface-dim select-none">
+    <div className="relative w-full h-full overflow-hidden bg-[#060913] select-none">
       <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
       {isLoading && (
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#060913]/90 backdrop-blur-md">
           <div className="w-14 h-14 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mb-3" />
           <h3 className="text-[15px] font-bold text-white tracking-wide font-pixel">Memuat Digital Twin 3D Merapi</h3>
-          <p className="text-[14.5px] text-on-surface-variant mt-1 font-semibold">Mengoptimalkan geometri maket & topografi STL • {loadProgress}%</p>
+          <p className="text-[14.5px] text-slate-400 mt-1 font-semibold">Mengoptimalkan geometri maket & topografi STL • {loadProgress}%</p>
         </div>
       )}
 
@@ -5906,7 +5906,7 @@ export default function Merapi3DScene() {
               <span className="text-[13.5px] font-bold font-pixel px-2.5 py-1.5 rounded-xl border bg-red-950/90 text-red-200 border-red-500 shadow-xl backdrop-blur-md animate-pulse">
  ⚠ GEMPA {richterScale.toFixed(1)} SR [{seismicLevel === 3 ? 'KUAT' : seismicLevel === 2 ? 'SEDANG' : 'RINGAN'}]
               </span>
-              <span className="text-[12.5px] font-semibold font-sans px-2 py-0.5 rounded-lg bg-black/70 text-on-chrome border border-slate-700/80 backdrop-blur-xs w-fit">
+              <span className="text-[12.5px] font-semibold font-sans px-2 py-0.5 rounded-lg bg-black/70 text-slate-300 border border-slate-700/80 backdrop-blur-xs w-fit">
                 {seismicLevel === 1 && 'Status: Panic • NPC Menuju Lapangan (1.5x) • Bangunan Aman (HP 100%)'}
                 {seismicLevel === 2 && 'Status: Extreme Panic • Merunduk 3s & Lari (2x) • Dinding Retak (HP 60%) • Tiang Miring'}
                 {seismicLevel === 3 && 'Status: Kolaps Total • Warga Tiarap/Reruntuhan • Bangunan Runtuh Amblas • Tiang Roboh'}
@@ -5936,7 +5936,7 @@ export default function Merapi3DScene() {
       <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 bg-[#0f172a]/90 backdrop-blur-md border border-slate-700/80 rounded-xl p-1 shadow-xl">
         <button
           onClick={() => setShowKrbZones(!showKrbZones)}
-          className={`px-2.5 py-1 text-[14.5px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${showKrbZones ? 'bg-amber-600 text-white border-amber-400 shadow-xs' : 'bg-chrome-raised text-on-surface-variant border-outline-variant hover:text-white'
+          className={`px-2.5 py-1 text-[14.5px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${showKrbZones ? 'bg-amber-600 text-white border-amber-400 shadow-xs' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
             }`}
           title="Tampilkan / Sembunyikan Zonasi KRB I, II, III"
         >
@@ -5944,7 +5944,7 @@ export default function Merapi3DScene() {
         </button>
         <button
           onClick={resetCamera}
-          className="px-2.5 py-1 text-[14.5px] font-bold rounded-lg bg-chrome-raised hover:bg-surface-container-highest text-on-chrome border border-outline-variant cursor-pointer flex items-center gap-1"
+          className="px-2.5 py-1 text-[14.5px] font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer flex items-center gap-1"
           title="Reset Sudut Pandang Kamera"
         >
           <span>Reset View</span>
@@ -5955,7 +5955,7 @@ export default function Merapi3DScene() {
           onClick={toggleMapExpanded}
           className={`px-2.5 py-1 text-[13.5px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1 shadow-xs ${isMapExpanded
             ? 'bg-amber-600 text-white border-amber-400'
-            : 'bg-chrome-raised hover:bg-surface-container-highest text-amber-300 border-amber-600/60'
+            : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border-amber-600/60'
             }`}
           title={isMapExpanded ? 'Kecilkan Tampilan Peta' : 'Perbesar Tampilan Peta'}
         >
@@ -5967,7 +5967,7 @@ export default function Merapi3DScene() {
           onClick={handleResetDisasterEnvironment}
           className={`px-2.5 py-1 text-[13.5px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1 shadow-xs ${hasDisasterImpact
             ? 'bg-rose-600 hover:bg-rose-500 text-white border-rose-400 animate-pulse'
-            : 'bg-chrome-raised hover:bg-surface-container-highest text-on-chrome border-outline-variant hover:text-white'
+            : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700 hover:text-white'
             }`}
           title="Reset kondisi lingkungan, kerusakan bangunan, awan panas, dan lava ke kondisi normal"
         >

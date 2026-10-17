@@ -1473,14 +1473,14 @@ export default function EarthDiveGame() {
         <div className="flex flex-col items-start gap-1.5 pointer-events-auto">
           {/* Row 1: Tombol Navigasi Menu, Sound, Fullscreen, serta (khusus Batas Konvergen) Strata Badge & Tombol Kontrol Naik ke Atas */}
           <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/85 backdrop-blur-md border-2 border-amber-800/80 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)]">
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/85 backdrop-blur-md border-2 border-amber-800/80 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
               {/* Back to Menu */}
               <button
                 onClick={() => {
                   retroAudio.playSelect();
                   navigate('/');
                 }}
-                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-sans font-bold text-[13px] sm:text-[15px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-ink)] whitespace-nowrap"
+                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-sans font-bold text-[13px] sm:text-[15px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#231206] whitespace-nowrap"
                 title="Kembali ke Menu Utama"
               >
                 <span className="text-amber-400 font-bold">&lt;</span>
@@ -1491,8 +1491,8 @@ export default function EarthDiveGame() {
               <button aria-label="Nyalakan atau matikan suara"
                 onClick={handleSoundToggle}
                 className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl border flex items-center justify-center cursor-pointer transition-all ${soundOn
-                  ? 'bg-amber-500 text-on-accent-chip border-amber-300 shadow-[0_2px_0_var(--shadow-accent)]'
-                  : 'bg-chrome-raised text-on-surface-variant border-outline-variant'
+                  ? 'bg-amber-500 text-slate-950 border-amber-300 shadow-[0_2px_0_#78350f]'
+                  : 'bg-slate-800 text-slate-400 border-slate-700'
                   }`}
                 title="Musik & Efek Suara"
               >
@@ -1502,7 +1502,7 @@ export default function EarthDiveGame() {
               {/* Fullscreen Toggle */}
               <button aria-label="Masuk atau keluar dari layar penuh"
                 onClick={handleFullscreenToggle}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-chrome-raised hover:bg-surface-container-highest text-on-chrome border border-outline-variant flex items-center justify-center cursor-pointer transition-all active:translate-y-0.5"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center cursor-pointer transition-all active:translate-y-0.5"
                 title="Layar Penuh"
               >
                 <PixelIcon name="fullscreen" size={13} />
@@ -1541,7 +1541,7 @@ export default function EarthDiveGame() {
                 menyesuaikan sendiri.
             */}
             <div className={`flex flex-col xl:flex-row items-start xl:items-center gap-1 sm:gap-1.5 `}>
-              <div className="bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-amber-200 font-pixel text-[13px] sm:text-[15px] md:text-base font-bold shadow-[0_4px_0_var(--shadow-ink)] flex items-center gap-2 whitespace-nowrap">
+              <div className="bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-amber-200 font-pixel text-[13px] sm:text-[15px] md:text-base font-bold shadow-[0_4px_0_#231206] flex items-center gap-2 whitespace-nowrap">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
                 <span className="font-bold text-amber-300 uppercase tracking-wider truncate max-w-[120px] xs:max-w-[160px] sm:max-w-[220px] md:max-w-[300px] lg:max-w-none">
                   {hudData.strataName}
@@ -1563,7 +1563,7 @@ export default function EarthDiveGame() {
                 */
                 <button
                   onClick={() => setIsRadarOpen(true)}
-                  className="w-11 h-11 rounded-full bg-slate-950/90 backdrop-blur-md border-2 border-paper-border shadow-[0_4px_0_var(--shadow-ink)] flex items-center justify-center text-amber-400 hover:text-amber-200 cursor-pointer active:translate-y-0.5 transition-all"
+                  className="w-11 h-11 rounded-full bg-slate-950/90 backdrop-blur-md border-2 border-[#78350f] shadow-[0_4px_0_#231206] flex items-center justify-center text-amber-400 hover:text-amber-200 cursor-pointer active:translate-y-0.5 transition-all"
                   title="Buka Radar Bumi"
                   aria-label="Buka Radar Bumi"
                 >
@@ -1571,7 +1571,7 @@ export default function EarthDiveGame() {
                 </button>
               ) : (
                 /* LAPTOP: panel penuh yang selalu terlihat, seperti sebelumnya. */
-                <div className="bg-slate-950/90 backdrop-blur-md border-2 sm:border-3 border-paper-border rounded-2xl p-1.5 sm:p-2 shadow-[0_6px_0_var(--shadow-ink)] flex flex-col items-center transition-all">
+                <div className="bg-slate-950/90 backdrop-blur-md border-2 sm:border-3 border-[#78350f] rounded-2xl p-1.5 sm:p-2 shadow-[0_6px_0_#231206] flex flex-col items-center transition-all">
                   <button
                     onClick={() => setIsRadarOpen(!isRadarOpen)}
                     className="flex items-center justify-between gap-1.5 sm:gap-2 w-full px-1.5 sm:px-2 pb-1 text-[13.5px] sm:text-[13px] font-pixel text-amber-400 hover:text-amber-200 cursor-pointer select-none font-semibold"
@@ -1600,13 +1600,13 @@ export default function EarthDiveGame() {
 
             {/* 2. Tombol Pemilih Kondisi & Ulang Animasi untuk Batas Konvergen (Area 7 / Zone Index 6) - DI POJOK KANAN ATAS */}
             {hudData.zoneIndex === 6 && (
-              <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-amber-800/80 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)]">
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-amber-800/80 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
                 {/* Kondisi 1: Daratan (Tabrakan Benua & Pembentukan Gunung) */}
                 <button
                   onClick={() => handleSelectConvergentMode('land')}
                   className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-[13px] sm:text-[15px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${convergentMode === 'land'
-                    ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white border-2 border-yellow-300 shadow-[0_2px_0_var(--shadow-accent)] scale-105'
-                    : 'bg-slate-900/80 hover:bg-chrome-raised text-amber-200/80 border border-amber-700/50 hover:text-amber-100'
+                    ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white border-2 border-yellow-300 shadow-[0_2px_0_#78350f] scale-105'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-amber-200/80 border border-amber-700/50 hover:text-amber-100'
                     }`}
                   title="Kondisi 1 (Daratan): Dua lempeng benua bertabrakan, lempeng terlipat membentuk pegunungan megah"
                 >
@@ -1623,7 +1623,7 @@ export default function EarthDiveGame() {
                   onClick={() => handleSelectConvergentMode('ocean')}
                   className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-sans text-[13px] sm:text-[15px] font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:translate-y-0.5 ${convergentMode === 'ocean'
                     ? 'bg-gradient-to-r from-cyan-600 to-cyan-700 text-white border-2 border-cyan-200 shadow-[0_2px_0_#0e7490] scale-105'
-                    : 'bg-slate-900/80 hover:bg-chrome-raised text-cyan-200/80 border border-cyan-700/50 hover:text-cyan-100'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-cyan-200/80 border border-cyan-700/50 hover:text-cyan-100'
                     }`}
                   title="Kondisi 2 (Lautan & Pantai): Lempeng samudra menunjam membentuk palung laut, lempeng benua kanan berupa pantai"
                 >
@@ -1647,7 +1647,7 @@ export default function EarthDiveGame() {
                       );
                     }
                   }}
-                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950/95 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-sans font-bold text-[13px] sm:text-[15px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] whitespace-nowrap"
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950/95 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-sans font-bold text-[13px] sm:text-[15px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#451a03] whitespace-nowrap"
                   title="Ulangi Animasi Tumbukan Lempeng Konvergen"
                 >
                   <span className="text-amber-400 font-bold">↺</span>
@@ -1658,7 +1658,7 @@ export default function EarthDiveGame() {
 
             {/* 3. Tombol Ulang Animasi untuk Batas Divergen (Area 6 / Zone Index 5) - DI POJOK KANAN ATAS */}
             {hudData.zoneIndex === 5 && (
-              <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-rose-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)]">
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-rose-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
                 <button
                   onClick={() => {
                     if (gameRef.current) {
@@ -1666,7 +1666,7 @@ export default function EarthDiveGame() {
                       showToast('Memutar ulang animasi pemekaran lempeng & magma...');
                     }
                   }}
-                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-rose-950/95 hover:bg-rose-900 text-rose-200 border-2 border-rose-600/80 font-sans font-bold text-[13px] sm:text-[15px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-danger)] whitespace-nowrap"
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-rose-950/95 hover:bg-rose-900 text-rose-200 border-2 border-rose-600/80 font-sans font-bold text-[13px] sm:text-[15px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#4c0519] whitespace-nowrap"
                   title="Ulangi Animasi Pemekaran Lempeng & Pembekuan Magma"
                 >
                   <span className="text-rose-400 font-bold">↺</span>
@@ -1677,7 +1677,7 @@ export default function EarthDiveGame() {
 
             {/* 4. Tombol Replay Simulasi Tektonik untuk Batas Transform (Area 8 / Zone Index 7) - DI POJOK KANAN ATAS */}
             {hudData.zoneIndex === 7 && (
-              <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_var(--shadow-ink)]">
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/95 backdrop-blur-md border-2 border-amber-600/90 p-1 sm:p-1.5 rounded-2xl shadow-[0_4px_0_#231206]">
                 <button
                   onClick={() => {
                     if (gameRef.current) {
@@ -1685,7 +1685,7 @@ export default function EarthDiveGame() {
                       showToast('Memutar ulang pergeseran mendatar Sesar San Andreas...');
                     }
                   }}
-                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950/95 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-pixel-title text-[13.5px] sm:text-[13px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_var(--shadow-accent-deep)] whitespace-nowrap font-semibold"
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-amber-950/95 hover:bg-amber-900 text-amber-200 border-2 border-amber-600/80 font-pixel-title text-[13.5px] sm:text-[13px] flex items-center gap-1.5 cursor-pointer transition-transform active:translate-y-0.5 shadow-[0_2px_0_#451a03] whitespace-nowrap font-semibold"
                   title="Putar Ulang Animasi Sesar San Andreas"
                 >
                   <span className="text-amber-400 font-bold">↻</span>
@@ -1835,7 +1835,7 @@ export default function EarthDiveGame() {
           yang menutupi pandangan. */}
 
       {/* ── 6. DISCREET KEYBOARD CONTROLS GUIDE (Desktop Bottom) ── */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[12.5px] font-pixel text-on-chrome pointer-events-none z-10 select-none font-semibold">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-3 px-3.5 py-1 rounded-full bg-black/70 border border-amber-900/50 text-[12.5px] font-pixel text-slate-300 pointer-events-none z-10 select-none font-semibold">
         {hudData.zoneIndex === 7 ? (
           <>
             <span>W A S D / Panah (Gerak 4 Arah)</span>
@@ -1872,7 +1872,7 @@ export default function EarthDiveGame() {
               onPointerUp={() => handleMobileBtnUp('up')}
               onPointerLeave={() => handleMobileBtnUp('up')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-surface-container-highest active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-on-chrome font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_var(--shadow-ink),0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
+              className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-slate-100 font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
               title={hudData.zoneIndex === 7 ? "Bergerak ke Atas (Utara)" : hudData.zoneIndex === 5 ? "Berenang ke Atas" : "Lompat ke Atas"}
             >
               ▲
@@ -1884,18 +1884,18 @@ export default function EarthDiveGame() {
                 onPointerUp={() => handleMobileBtnUp('left')}
                 onPointerLeave={() => handleMobileBtnUp('left')}
                 onContextMenu={(e) => e.preventDefault()}
-                className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-surface-container-highest active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-on-chrome font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_var(--shadow-ink),0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
+                className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-slate-100 font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
                 title="Bergerak ke Kiri"
               >
                 ◀
               </button>
-              <div className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-slate-700/90 border-2 border-outline shadow-inner" />
+              <div className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-slate-700/90 border-2 border-slate-500 shadow-inner" />
               <button aria-label="Mulai simulasi"
                 onPointerDown={() => handleMobileBtnDown('right')}
                 onPointerUp={() => handleMobileBtnUp('right')}
                 onPointerLeave={() => handleMobileBtnUp('right')}
                 onContextMenu={(e) => e.preventDefault()}
-                className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-surface-container-highest active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-on-chrome font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_var(--shadow-ink),0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
+                className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-slate-100 font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
                 title="Bergerak ke Kanan"
               >
                 ▶
@@ -1907,7 +1907,7 @@ export default function EarthDiveGame() {
               onPointerUp={() => handleMobileBtnUp('down')}
               onPointerLeave={() => handleMobileBtnUp('down')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-surface-container-highest active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-on-chrome font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_var(--shadow-ink),0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
+              className="touch-control w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-slate-800/90 hover:bg-slate-700 active:bg-blue-600 border-2 sm:border-3 border-slate-500/90 text-slate-100 font-bold text-lg sm:text-xl md:text-2xl flex items-center justify-center touch-none shadow-[0_5px_0_#0f172a,0_10px_20px_rgba(0,0,0,0.5)] cursor-pointer active:translate-y-1 transition-transform select-none"
               title={hudData.zoneIndex === 7 ? "Bergerak ke Bawah (Selatan)" : hudData.zoneIndex === 5 ? "Berenang ke Bawah / Menyelam" : "Turun / Jongkok"}
             >
               ▼
@@ -1938,7 +1938,7 @@ export default function EarthDiveGame() {
               onPointerUp={() => handleMobileBtnUp('interact')}
               onPointerLeave={() => handleMobileBtnUp('interact')}
               onContextMenu={(e) => e.preventDefault()}
-              className="touch-control w-14 h-12 sm:w-16 sm:h-14 md:w-18 md:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 sm:border-3 border-amber-400 text-amber-50 font-pixel flex flex-col items-center justify-center touch-none shadow-[0_4px_0_var(--shadow-accent-deep),0_8px_16px_rgba(0,0,0,0.5)] active:translate-y-0.5 cursor-pointer transition-transform select-none"
+              className="touch-control w-14 h-12 sm:w-16 sm:h-14 md:w-18 md:h-16 rounded-xl sm:rounded-2xl bg-gradient-to-b from-amber-600 to-amber-800 active:from-amber-500 active:to-amber-700 border-2 sm:border-3 border-amber-400 text-amber-50 font-pixel flex flex-col items-center justify-center touch-none shadow-[0_4px_0_#451a03,0_8px_16px_rgba(0,0,0,0.5)] active:translate-y-0.5 cursor-pointer transition-transform select-none"
               title="Interaksi (E)"
             >
               <span className="text-[15px] sm:text-base md:text-lg font-bold leading-none">[E]</span>
@@ -1992,8 +1992,8 @@ export default function EarthDiveGame() {
       {/* ── POPUP PERINGATAN: AKSES TURUN TERKUNCI (TANTANGAN GERBANG BELUM SELESAI) ── */}
       {isGateLockedModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
-          <div className="relative w-full max-w-xl bg-paper border-4 border-ink rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-[0_16px_0_#1c0d02] text-on-accent-chip font-pixel text-center">
-            <h3 className="text-base sm:text-lg md:text-xl font-pixel-title text-on-error-container font-bold mb-3">
+          <div className="relative w-full max-w-xl bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-[0_16px_0_#1c0d02] text-[#451a03] font-pixel text-center">
+            <h3 className="text-base sm:text-lg md:text-xl font-pixel-title text-rose-950 font-bold mb-3">
               AKSES TURUN TERKUNCI!
             </h3>
 
@@ -2006,7 +2006,7 @@ export default function EarthDiveGame() {
                 retroAudio.playSelect();
                 setIsGateLockedModalOpen(false);
               }}
-              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-ink shadow-[0_5px_0_var(--shadow-ink)] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 font-medium"
+              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 font-medium"
             >
               <span>SIAP, SELESAIKAN TANTANGAN PENELITI DULU</span>
             </button>
@@ -2017,7 +2017,7 @@ export default function EarthDiveGame() {
       {/* ── POPUP PERINGATAN: TEMUAN GEOLOGIS BELUM SELESAI ── */}
       {discoveryWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-sm select-none animate-fadeIn">
-          <div className="relative w-full max-w-xl bg-paper border-4 border-ink rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-[0_16px_0_#1c0d02] text-on-accent-chip font-pixel text-center">
+          <div className="relative w-full max-w-xl bg-[#fef3c7] border-4 border-[#451a03] rounded-2xl sm:rounded-3xl p-6 sm:p-7 shadow-[0_16px_0_#1c0d02] text-[#451a03] font-pixel text-center">
             <h3 className="text-base sm:text-lg md:text-xl font-pixel-title text-amber-950 font-bold mb-3">
               TEMUAN GEOLOGIS BELUM SELESAI!
             </h3>
@@ -2031,7 +2031,7 @@ export default function EarthDiveGame() {
                 retroAudio.playSelect();
                 setDiscoveryWarning(null);
               }}
-              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-ink shadow-[0_5px_0_var(--shadow-ink)] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer active:translate-y-0.5 font-medium"
+              className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title cursor-pointer active:translate-y-0.5 font-medium"
             >
               SIAP, AMATI TEMUAN DULU
             </button>
@@ -2041,7 +2041,7 @@ export default function EarthDiveGame() {
 
       {activeChallenge && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-3xl sm:max-w-4xl bg-amber-50 border-4 border-amber-950 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-[0_16px_0_var(--shadow-ink)] max-h-[96vh] overflow-y-auto">
+          <div className="relative w-full max-w-3xl sm:max-w-4xl bg-amber-50 border-4 border-amber-950 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-[0_16px_0_#231206] max-h-[96vh] overflow-y-auto">
             <Wordle
               customWords={activeChallenge.words}
               targetCount={activeChallenge.targetCount ?? 3}
@@ -2081,17 +2081,17 @@ export default function EarthDiveGame() {
           ref={signBubbleRef}
           className="fixed z-40 max-w-[420px] w-[90vw] sm:w-[380px] pointer-events-none animate-fadeIn select-none font-pixel"
         >
-          <div className="relative bg-paper border-3 sm:border-4 border-ink rounded-2xl p-3.5 sm:p-4 shadow-[0_8px_0_#1c0d02] text-on-accent-chip">
+          <div className="relative bg-[#fef3c7] border-3 sm:border-4 border-[#451a03] rounded-2xl p-3.5 sm:p-4 shadow-[0_8px_0_#1c0d02] text-[#451a03]">
             {/* Header */}
-            <div className="flex items-center gap-1.5 border-b-2 border-paper-border pb-1.5 mb-2">
-              <PixelIcon name="clipboard" size={16} className="text-accent-chip shrink-0" />
-              <span className="font-sans text-[14.5px] sm:text-[13px] text-accent-chip tracking-wider uppercase font-bold">
+            <div className="flex items-center gap-1.5 border-b-2 border-[#78350f] pb-1.5 mb-2">
+              <PixelIcon name="clipboard" size={16} className="text-[#b45309] shrink-0" />
+              <span className="font-sans text-[14.5px] sm:text-[13px] text-[#b45309] tracking-wider uppercase font-bold">
                 CATATAN EKSPEDISI GEOLOGI
               </span>
             </div>
 
             {/* Content text */}
-            <p className="font-sans text-[13px] sm:text-[15px] md:text-[16.5px] text-on-paper leading-relaxed font-semibold whitespace-pre-line">
+            <p className="font-sans text-[13px] sm:text-[15px] md:text-[16.5px] text-[#291305] leading-relaxed font-semibold whitespace-pre-line">
               {inWorldSign.text}
             </p>
 
@@ -2111,7 +2111,7 @@ export default function EarthDiveGame() {
       {/* Wordle Bonus Quest Modal */}
       {showWordleBonus && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/90 backdrop-blur-md">
-          <div className="relative w-full max-w-2xl bg-chrome border-4 border-amber-600 rounded-2xl p-4 max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full max-w-2xl bg-slate-950 border-4 border-amber-600 rounded-2xl p-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-2 mb-3 border-b border-amber-900">
               <div className="flex items-center gap-2">
                 <PixelIcon name="target" size={14} />
@@ -2174,7 +2174,7 @@ export default function EarthDiveGame() {
               Dibutuhkan: <span className="text-white underline font-black">{suitWarningModal.suitName}</span>
             </div>
 
-            <p className="relative z-10 text-base sm:text-lg text-on-chrome leading-relaxed mb-8 font-medium max-w-2xl mx-auto">
+            <p className="relative z-10 text-base sm:text-lg text-slate-100 leading-relaxed mb-8 font-medium max-w-2xl mx-auto">
               {suitWarningModal.reason}
             </p>
 
@@ -2183,7 +2183,7 @@ export default function EarthDiveGame() {
                 retroAudio.playSelect();
                 setSuitWarningModal(null);
               }}
-              className="relative z-10 w-full py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-on-accent-chip font-black text-base sm:text-lg border-2 border-yellow-200 shadow-[0_6px_25px_rgba(245,158,11,0.6)] transition-all cursor-pointer hover:scale-[1.02] active:scale-95 tracking-wide"
+              className="relative z-10 w-full py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-base sm:text-lg border-2 border-yellow-200 shadow-[0_6px_25px_rgba(245,158,11,0.6)] transition-all cursor-pointer hover:scale-[1.02] active:scale-95 tracking-wide"
             >
               MENGERTI, BELI BAJU PELINDUNG DULU
             </button>
@@ -2218,7 +2218,7 @@ export default function EarthDiveGame() {
           aria-label="Radar Bumi"
         >
           <div
-            className="w-full max-w-md bg-slate-950/98 border-t-4 border-x-4 border-paper-border rounded-t-3xl px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_32px_rgba(0,0,0,0.8)] animate-fade-in-up"
+            className="w-full max-w-md bg-slate-950/98 border-t-4 border-x-4 border-[#78350f] rounded-t-3xl px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_32px_rgba(0,0,0,0.8)] animate-fade-in-up"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Gagang penunjuk bahwa lembar ini dapat ditutup */}
@@ -2233,7 +2233,7 @@ export default function EarthDiveGame() {
               </span>
               <button
                 onClick={() => setIsRadarOpen(false)}
-                className="w-8 h-8 rounded-lg bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink text-[14px] font-bold flex items-center justify-center cursor-pointer active:translate-y-0.5"
+                className="w-8 h-8 rounded-lg bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] text-[14px] font-bold flex items-center justify-center cursor-pointer active:translate-y-0.5"
                 aria-label="Tutup radar"
               >
                 ✕
@@ -2250,7 +2250,7 @@ export default function EarthDiveGame() {
 
             <button
               onClick={() => setIsRadarOpen(false)}
-              className="mt-2 w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-on-accent-chip border-2 border-ink font-pixel-title text-[13px] font-bold cursor-pointer active:translate-y-0.5"
+              className="mt-2 w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-50 border-2 border-[#451a03] font-pixel-title text-[13px] font-bold cursor-pointer active:translate-y-0.5"
             >
               TUTUP
             </button>

@@ -32,47 +32,8 @@
       tidak ada salahnya tetap ditulis.
     -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
-    <meta name="theme-color" content="#f1f5f9" />
+    <meta name="theme-color" content="#0f172a" />
     <meta name="description" content="Platform media pembelajaran IPA interaktif & simulasi mitigasi bencana untuk SMP Kelas 8" />
-    <!--
-      TEMA — DIJALANKAN SEBELUM HALAMAN DIGAMBAR
-
-      Skrip ini membaca kunci localStorage yang SAMA dengan `src/utils/tema.ts`
-      ('resqbox-theme') dan memasang kelas `.dark` pada <html> lebih dahulu.
-
-      MENGAPA TIDAK CUKUP MENUNGGU REACT
-        Bila kelas tema baru dipasang setelah React menyala, seluruh halaman
-        sempat digambar dengan tema terang terlebih dahulu. Di mode gelap itu
-        terlihat sebagai kedipan putih menyilaukan setiap kali halaman dibuka
-        atau dimuat ulang — persis pada saat mata sudah menyesuaikan gelap.
-
-      MENGAPA DI <head>, BUKAN DI AKHIR <body>
-        Skrip di akhir <body> berjalan setelah sebagian halaman digambar,
-        sehingga kedipannya tetap ada.
-
-      ATURAN: berkas ini dan `src/utils/tema.ts` harus membaca format yang
-      sama — string 'light' atau 'dark'. Mengubah salah satunya sendirian akan
-      mematikan tema tersimpan pada pemuatan berikutnya.
-    -->
-    <script>
-      (function () {
-        try {
-          var tersimpan = localStorage.getItem('resqbox-theme');
-          var tema =
-            tersimpan === 'light' || tersimpan === 'dark'
-              ? tersimpan
-              : window.matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light';
-          document.documentElement.classList.toggle('dark', tema === 'dark');
-          document.documentElement.dataset.tema = tema;
-          var meta = document.querySelector('meta[name="theme-color"]');
-          if (meta) meta.setAttribute('content', tema === 'dark' ? '#0a0f1c' : '#f1f5f9');
-        } catch (e) {
-          /* localStorage diblokir: halaman tetap tampil dengan tema terang */
-        }
-      })();
-    </script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <!--
       TIGA keluarga font, masing-masing punya peran (jangan disatukan):

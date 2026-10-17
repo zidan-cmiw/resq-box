@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
 import PixelIcon from '../../components/PixelIcon';
-import TombolTema from '../../components/TombolTema';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 import { sedangDiWeb } from '../../utils/lingkungan';
@@ -118,7 +117,7 @@ export default function Login() {
 
 
   return (
-    <div className="min-h-screen min-h-[100dvh] w-full bg-surface-dim flex flex-col items-center justify-center p-4 pb-[max(1rem,env(safe-area-inset-bottom))] font-pixel select-none relative overflow-x-hidden">
+    <div className="min-h-screen min-h-[100dvh] w-full bg-[#050813] flex flex-col items-center justify-center p-4 pb-[max(1rem,env(safe-area-inset-bottom))] font-pixel select-none relative overflow-x-hidden">
 
       {/* ── 1. ULTRA-DETAILED 2D PIXEL ART TROPICAL MISTY CLOUD FOREST BACKDROP ── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -236,14 +235,10 @@ export default function Login() {
 
       {/* ── 2. PREMIUM 2D PIXEL ART COMMAND SLATE CARD ── */}
       <div className="relative z-10 w-full max-w-[420px] sm:max-w-[480px] md:max-w-[520px] xl:max-w-[560px]">
-        {/* Saklar Mode Terang / Mode Gelap — di sudut kanan atas, di luar kartu
-            supaya tetap terlihat sebelum siswa masuk. */}
-        <div className="flex justify-end mb-2">
-          <TombolTema bentuk="kompak" />
-        </div>
         {/* Outer Wooden Bezel with Pixel Rivets */}
         <div
-          className="relative pixel-wood-board bg-paper p-5 sm:p-6 md:p-7 rounded-2xl shadow-[0_12px_0_var(--shadow-ink),0_20px_35px_rgba(0,0,0,0.8)] border-4 border-paper-border space-y-4"
+          className="relative pixel-wood-board p-5 sm:p-6 md:p-7 rounded-2xl shadow-[0_12px_0_#231206,0_20px_35px_rgba(0,0,0,0.8)] border-4 border-[#3e1f07] space-y-4"
+          style={{ background: '#fef3c7' }}
         >
           {/* 4 Golden Pixel Corner Rivets */}
           <div className="absolute top-2 left-2 w-3 h-3 bg-amber-400 border-2 border-amber-950 shadow-sm" />
@@ -268,7 +263,7 @@ export default function Login() {
                 setErrorMsg('');
               }}
               className={`py-2 px-3 rounded-lg text-[13px] font-pixel-title font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${role === 'student'
-                ? 'bg-amber-950 text-amber-200 shadow-[0_3px_0_var(--shadow-accent-deep)] border-2 border-amber-950 translate-y-[-1px]'
+                ? 'bg-amber-950 text-amber-200 shadow-[0_3px_0_#451a03] border-2 border-amber-950 translate-y-[-1px]'
                 : 'text-amber-950 hover:bg-amber-200/70 font-semibold'
                 }`}
             >
@@ -284,7 +279,7 @@ export default function Login() {
                 setErrorMsg('');
               }}
               className={`py-2 px-3 rounded-lg text-[13px] font-pixel-title font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${role === 'teacher'
-                ? 'bg-amber-950 text-amber-200 shadow-[0_3px_0_var(--shadow-accent-deep)] border-2 border-amber-950 translate-y-[-1px]'
+                ? 'bg-amber-950 text-amber-200 shadow-[0_3px_0_#451a03] border-2 border-amber-950 translate-y-[-1px]'
                 : 'text-amber-950 hover:bg-amber-200/70 font-semibold'
                 }`}
             >
@@ -305,8 +300,8 @@ export default function Login() {
 
           {/* Error Notification Alert */}
           {errorMsg && (
-            <div className="p-2.5 rounded-lg bg-error-container border-2 border-error text-on-error-container text-[14.5px] font-bold flex items-center gap-2 shadow-sm animate-shake">
-              <PixelIcon name="alert" size={16} className="text-on-error-container flex-shrink-0" />
+            <div className="p-2.5 rounded-lg bg-rose-100 border-2 border-rose-800 text-rose-950 text-[14.5px] font-bold flex items-center gap-2 shadow-sm animate-shake">
+              <PixelIcon name="alert" size={16} className="text-rose-900 flex-shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
@@ -498,7 +493,7 @@ export default function Login() {
                   href={TAUTAN_UNDUH.laptop}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-2 rounded-lg bg-info-container hover:bg-info-container text-on-info-container border-2 border-sky-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
+                  className="px-3 py-2 rounded-lg bg-sky-100 hover:bg-sky-50 text-sky-950 border-2 border-sky-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
                 >
                   <PixelIcon name="cpu" size={14} className="shrink-0" />
                   <span>LAPTOP (.exe)</span>
@@ -507,7 +502,7 @@ export default function Login() {
                   href={TAUTAN_UNDUH.android}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-2 rounded-lg bg-success-container hover:bg-success-container text-on-success-container border-2 border-emerald-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
+                  className="px-3 py-2 rounded-lg bg-emerald-100 hover:bg-emerald-50 text-emerald-950 border-2 border-emerald-900/50 font-pixel-title text-[12px] sm:text-[13px] font-bold transition-all cursor-pointer active:translate-y-0.5 shadow-sm flex items-center justify-center gap-1.5 no-underline"
                 >
                   <PixelIcon name="phone" size={14} className="shrink-0" />
                   <span>ANDROID (.apk)</span>

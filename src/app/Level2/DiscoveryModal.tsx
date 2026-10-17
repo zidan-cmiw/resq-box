@@ -36,15 +36,15 @@ export default function DiscoveryModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none animate-fadeIn font-pixel">
       {/* Main Parchment Board (100% Selaras Level 1) */}
-      <div className="relative w-full max-w-5xl xl:max-w-6xl bg-paper border-4 sm:border-[5px] border-ink rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-[0_12px_0_#1c0d02] text-on-accent-chip font-pixel max-h-[96vh] overflow-y-auto">
+      <div className="relative w-full max-w-5xl xl:max-w-6xl bg-[#fef3c7] border-4 sm:border-[5px] border-[#451a03] rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-[0_12px_0_#1c0d02] text-[#451a03] font-pixel max-h-[96vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between border-b-3 border-paper-border pb-3 sm:pb-4 mb-3 sm:mb-4">
+        <div className="flex items-center justify-between border-b-3 border-[#78350f] pb-3 sm:pb-4 mb-3 sm:mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309]/20 border-2 border-accent-chip flex items-center justify-center shrink-0 shadow-inner">
-              <PixelIcon name="search" size={20} className="text-accent-chip-strong" />
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309]/20 border-2 border-[#b45309] flex items-center justify-center shrink-0 shadow-inner">
+              <PixelIcon name="search" size={20} className="text-[#92400e]" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl text-on-accent-chip font-pixel-title font-bold mt-0.5 tracking-wide">
+              <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#451a03] font-pixel-title font-bold mt-0.5 tracking-wide">
                 {discovery.title}
               </h2>
             </div>
@@ -54,7 +54,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-accent-chip hover:bg-accent-chip-strong text-on-accent-chip border-2 border-ink font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_var(--shadow-accent-deep)] shrink-0 transition-colors font-medium"
+            className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 border-2 border-[#451a03] font-pixel-title text-[15px] sm:text-base flex items-center justify-center cursor-pointer active:translate-y-0.5 shadow-[0_3px_0_#451a03] shrink-0 transition-colors font-medium"
             title="Tutup"
           >
             ✕
@@ -62,18 +62,18 @@ export default function DiscoveryModal({
         </div>
 
         {/* Visual Illustration Area (Dimensi Presisi Level 1) */}
-        <div className="w-full h-[360px] sm:h-[410px] md:h-[460px] bg-ink border-3 sm:border-4 border-paper-border rounded-xl sm:rounded-2xl overflow-hidden relative mb-3 sm:mb-4 flex items-center justify-center shadow-inner">
+        <div className="w-full h-[360px] sm:h-[410px] md:h-[460px] bg-[#0c0a09] border-3 sm:border-4 border-[#78350f] rounded-xl sm:rounded-2xl overflow-hidden relative mb-3 sm:mb-4 flex items-center justify-center shadow-inner">
           {renderIllustration(discovery.illustrationType, isSimulating, handleTriggerSimulate, selectedLandform, setSelectedLandform)}
         </div>
 
         {/* ── PENJELASAN MATERI (RINGKAS & MUDAH DIPAHAMI UNTUK SMP) ── */}
-        <div className="bg-paper-deep p-3.5 sm:p-5 md:p-6 rounded-2xl border-3 border-[#b45309]/60 shadow-md text-on-paper space-y-2 sm:space-y-3">
+        <div className="bg-[#fef9c3] p-3.5 sm:p-5 md:p-6 rounded-2xl border-3 border-[#b45309]/60 shadow-md text-[#291305] space-y-2 sm:space-y-3">
           <div className="flex items-center gap-2 mb-0.5">
-            <span className="px-2.5 py-1 rounded-md bg-accent-chip text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
+            <span className="px-2.5 py-1 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
               MATERI PEMBELAJARAN
             </span>
           </div>
-          <p className="font-sans text-base sm:text-lg md:text-xl leading-relaxed text-on-paper font-bold tracking-wide">
+          <p className="font-sans text-base sm:text-lg md:text-xl leading-relaxed text-[#291305] font-bold tracking-wide">
             {discovery.shortDesc}
           </p>
 
@@ -81,8 +81,8 @@ export default function DiscoveryModal({
           {discovery.illustrationType === 'earthquake-prep' && (
             <div className="mt-3 pt-3.5 border-t-2 border-[#b45309]/30 space-y-3">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-accent-chip animate-pulse" />
-                <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-on-paper-soft">
+                <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
+                <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-[#78350f]">
                   4 KOMPONEN WAJIB TAS SIAGA BENCANA (STANDAR BNPB)
                 </span>
               </div>
@@ -91,11 +91,11 @@ export default function DiscoveryModal({
                 <div className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3 shadow-sm flex flex-col gap-1.5 hover:bg-amber-100 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-sky-500 shrink-0" />
-                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-on-paper-soft">
+                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f]">
                       1. AIR &amp; RANSUM
                     </span>
                   </div>
-                  <p className="font-sans text-[13px] sm:text-[15px] text-on-paper font-semibold leading-snug">
+                  <p className="font-sans text-[13px] sm:text-[15px] text-[#291305] font-semibold leading-snug">
                     Min. 3 liter air per orang per hari serta biskuit/makanan kaleng kalori tinggi untuk 72 jam mandiri.
                   </p>
                 </div>
@@ -103,11 +103,11 @@ export default function DiscoveryModal({
                 <div className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3 shadow-sm flex flex-col gap-1.5 hover:bg-amber-100 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" />
-                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-on-paper-soft">
+                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f]">
                       2. KOTAK P3K
                     </span>
                   </div>
-                  <p className="font-sans text-[13px] sm:text-[15px] text-on-paper font-semibold leading-snug">
+                  <p className="font-sans text-[13px] sm:text-[15px] text-[#291305] font-semibold leading-snug">
                     Kasa steril, perban, plester, cairan antiseptik luka, pereda nyeri, dan obat-obatan rutin pribadi.
                   </p>
                 </div>
@@ -115,19 +115,19 @@ export default function DiscoveryModal({
                 <div className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3 shadow-sm flex flex-col gap-1.5 hover:bg-amber-100 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
-                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-on-paper-soft">
+                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f]">
                       3. SENTER &amp; PELUIT
                     </span>
                   </div>
-                  <p className="font-sans text-[13px] sm:text-[15px] text-on-paper font-semibold leading-snug">
+                  <p className="font-sans text-[13px] sm:text-[15px] text-[#291305] font-semibold leading-snug">
                     Senter LED waterproof dengan baterai cadangan serta peluit darurat untuk panggilan sinyal evakuasi SAR.
                   </p>
                 </div>
 
-                <div className="bg-emerald-100/90 border-2 border-emerald-600/70 rounded-xl p-3 shadow-sm flex flex-col gap-1.5 hover:bg-success-container transition-colors">
+                <div className="bg-emerald-100/90 border-2 border-emerald-600/70 rounded-xl p-3 shadow-sm flex flex-col gap-1.5 hover:bg-emerald-100 transition-colors">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0" />
-                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-on-success-container">
+                    <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-emerald-900">
                       4. DOKUMEN &amp; UANG
                     </span>
                   </div>
@@ -144,12 +144,12 @@ export default function DiscoveryModal({
             <div className="mt-3 pt-3.5 border-t-2 border-[#b45309]/30 space-y-3">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-accent-chip animate-pulse" />
-                  <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-on-paper-soft">
+                  <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
+                  <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-[#78350f]">
                     {CONVERGENT_LANDFORMS_DATA[selectedLandform].title}
                   </span>
                 </div>
-                <span className="text-[13px] sm:text-[15px] font-pixel font-bold uppercase text-on-paper-soft bg-amber-200/80 px-2.5 py-1 rounded-lg border border-[#b45309]/40">
+                <span className="text-[13px] sm:text-[15px] font-pixel font-bold uppercase text-[#78350f] bg-amber-200/80 px-2.5 py-1 rounded-lg border border-[#b45309]/40">
                   {CONVERGENT_LANDFORMS_DATA[selectedLandform].subtitle}
                 </span>
               </div>
@@ -161,9 +161,9 @@ export default function DiscoveryModal({
                     className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3.5 sm:p-4 shadow-sm flex items-start gap-3 hover:bg-amber-100 transition-colors"
                   >
                     <div className="w-7 h-7 rounded-lg bg-[#b45309]/20 border border-[#b45309]/50 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
-                      <PixelIcon name={pt.icon as any} size={15} className="text-accent-chip-strong" />
+                      <PixelIcon name={pt.icon as any} size={15} className="text-[#92400e]" />
                     </div>
-                    <p className="font-sans text-[15px] sm:text-base md:text-[19px] leading-relaxed text-on-paper font-semibold">
+                    <p className="font-sans text-[15px] sm:text-base md:text-[19px] leading-relaxed text-[#291305] font-semibold">
                       {pt.text}
                     </p>
                   </div>
@@ -176,8 +176,8 @@ export default function DiscoveryModal({
           {discovery.illustrationType === 'transform-sanandreas' && (
             <div className="mt-3 pt-3.5 border-t-2 border-[#b45309]/30 space-y-3">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-accent-chip animate-pulse" />
-                <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-on-paper-soft">
+                <span className="w-3 h-3 rounded-full bg-[#b45309] animate-pulse" />
+                <span className="font-pixel-title text-[15px] sm:text-base md:text-lg font-bold text-[#78350f]">
                   3 KARAKTERISTIK UTAMA BATAS TRANSFORM
                 </span>
               </div>
@@ -189,13 +189,13 @@ export default function DiscoveryModal({
                     className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3.5 sm:p-4 shadow-sm flex items-start gap-3 hover:bg-amber-100 transition-colors"
                   >
                     <div className="w-7 h-7 rounded-lg bg-[#b45309]/20 border border-[#b45309]/50 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
-                      <PixelIcon name={pt.icon as any} size={15} className="text-accent-chip-strong" />
+                      <PixelIcon name={pt.icon as any} size={15} className="text-[#92400e]" />
                     </div>
                     <div className="space-y-1">
-                      <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-on-paper-soft block">
+                      <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f] block">
                         {pt.title}
                       </span>
-                      <p className="font-sans text-[15px] sm:text-base md:text-[19px] leading-relaxed text-on-paper font-semibold">
+                      <p className="font-sans text-[15px] sm:text-base md:text-[19px] leading-relaxed text-[#291305] font-semibold">
                         {pt.text}
                       </p>
                     </div>
@@ -206,10 +206,10 @@ export default function DiscoveryModal({
           )}
           {discovery.fact && (
             <div className="pt-3 border-t-2 border-[#b45309]/25 flex items-start gap-2.5 sm:gap-3">
-              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-amber-700/20 text-on-paper-soft border border-[#b45309]/40 font-pixel-title text-[13.5px] sm:text-[13px] md:text-[15px] font-bold shrink-0 mt-0.5">
+              <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[13.5px] sm:text-[13px] md:text-[15px] font-bold shrink-0 mt-0.5">
                 FAKTA KUNCI
               </span>
-              <p className="font-sans text-base sm:text-lg md:text-xl leading-relaxed text-on-accent-chip font-semibold italic">
+              <p className="font-sans text-base sm:text-lg md:text-xl leading-relaxed text-[#451a03] font-semibold italic">
                 {discovery.fact}
               </p>
             </div>
@@ -223,7 +223,7 @@ export default function DiscoveryModal({
               retroAudio.playSelect();
               onClose();
             }}
-            className="px-8 py-3 sm:px-10 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-ink shadow-[0_5px_0_var(--shadow-ink)] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all font-medium"
+            className="px-8 py-3 sm:px-10 sm:py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center gap-2.5 transition-all font-medium"
           >
             <PixelIcon name="check" size={18} className="text-amber-200" />
             <span>SAYA MENGERTI!</span>
@@ -509,11 +509,11 @@ function DivergentAnimIllustration({
       </div>
 
       {/* Scientific Legend & Process Overview (Keterangan Rapi di Luar Gambar) */}
-      <div className="w-full bg-[#0f172a]/95 border-2 border-orange-500/70 rounded-xl p-2.5 sm:p-3 text-on-chrome text-[13px] sm:text-[15px] z-10 flex flex-wrap items-center justify-between gap-2 shadow-lg font-semibold">
+      <div className="w-full bg-[#0f172a]/95 border-2 border-orange-500/70 rounded-xl p-2.5 sm:p-3 text-slate-200 text-[13px] sm:text-[15px] z-10 flex flex-wrap items-center justify-between gap-2 shadow-lg font-semibold">
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-orange-500 shrink-0" />
           <span className="font-bold text-orange-300">Pematang Tengah Samudra (Mid-Ocean Ridge):</span>
-          <span className="text-on-chrome">
+          <span className="text-slate-200">
             Dua lempeng memisah, magma naik mengisi celah dan membeku menjadi daratan kerak samudra baru.
           </span>
         </div>

@@ -16,7 +16,7 @@ class CanvasErrorBoundary extends Component<{ children: ReactNode }, { hasError:
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex items-center justify-center h-full text-on-paper-soft text-[13px] flex-col gap-2 font-pixel p-4 bg-amber-50 font-semibold">
+        <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel p-4 bg-amber-50 font-semibold">
           <span>TERJADI KENDALA PADA TAMPILAN PETA DIORAMA.</span>
           <button
             onClick={() => this.setState({ hasError: false })}
@@ -577,9 +577,9 @@ export default function Workspace() {
   // State rightPanel dihapus karena sekarang game selalu tampil di atas
 
   return (
-    <div className="h-screen h-[100dvh] w-full safe-area-pad flex flex-col bg-paper-low text-on-accent-chip font-pixel overflow-hidden">
+    <div className="h-screen h-[100dvh] w-full safe-area-pad flex flex-col bg-[#fefce8] text-[#1c1917] font-pixel overflow-hidden">
       {/* ── Retro Header Bar (SS 3 Warm Parchment & Wood Palette) ── */}
-      <header className="h-14 bg-paper border-b-4 border-paper-border flex items-center px-3 sm:px-4 justify-between shrink-0 shadow-md z-30">
+      <header className="h-14 bg-[#fef3c7] border-b-4 border-[#78350f] flex items-center px-3 sm:px-4 justify-between shrink-0 shadow-md z-30">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
           <button
             onClick={() => {
@@ -665,15 +665,15 @@ export default function Workspace() {
               mendapat 199px, butuh 199px — sudah pas). `flex-1` di sana hanya
               akan mengubah tata letak yang sudah benar.
           */}
-          <div className="min-w-0 flex-1 sm:flex-none bg-paper-low border-2 border-accent-chip px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
+          <div className="min-w-0 flex-1 sm:flex-none bg-[#fffbeb] border-2 border-[#b45309] px-3.5 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
             <div className="min-w-0">
               <div className="flex items-center gap-2 min-w-0">
                 {/* Judul misi dipotong dengan elipsis alih-alih memaksa lebar */}
-                <h1 className="min-w-0 truncate text-[15px] sm:text-base font-extrabold text-on-accent-chip font-sans tracking-wide leading-tight">
+                <h1 className="min-w-0 truncate text-[15px] sm:text-base font-extrabold text-[#451a03] font-sans tracking-wide leading-tight">
                   {activeMission ? activeMission.title : 'Ruang Simulasi Sandbox'}
                 </h1>
                 {activeMission && (
-                  <span className="shrink-0 px-2 py-0.5 rounded text-[14.5px] font-bold bg-accent-chip text-on-accent-chip font-pixel uppercase shadow-sm">
+                  <span className="shrink-0 px-2 py-0.5 rounded text-[14.5px] font-bold bg-[#b45309] text-white font-pixel uppercase shadow-sm">
                     {activeMission.category === 'proyek' ? `Kasus ${activeMission.level}` : `Level ${activeMission.level}`}
                   </span>
                 )}
@@ -698,8 +698,8 @@ export default function Workspace() {
               className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[14.5px] font-bold transition-all shadow-sm ${wsStatus === 'connected'
                 ? 'bg-[#f0fdf4] text-[#15803d] border-[#16a34a]'
                 : wsStatus === 'connecting'
-                  ? 'bg-paper text-accent-chip border-accent-chip animate-pulse'
-                  : 'bg-paper-low border-accent-chip text-on-paper-soft hover:bg-paper'
+                  ? 'bg-[#fef3c7] text-[#b45309] border-[#d97706] animate-pulse'
+                  : 'bg-[#fffbeb] border-[#b45309] text-[#78350f] hover:bg-[#fef3c7]'
                 }`}
               title="Sambungkan Diorama Fisik via WiFi"
             >
@@ -710,9 +710,9 @@ export default function Workspace() {
 
             {/* IP Input Modal (SS 3 Warm Parchment) */}
             {showWsModal && wsStatus !== 'connected' && (
-              <div className="absolute top-full right-0 mt-2 w-72 bg-paper-low border-2 border-accent-chip rounded-xl shadow-2xl p-3.5 z-50 font-sans text-on-accent-chip">
-                <h4 className="font-bold text-[13px] text-on-paper-soft mb-1 font-pixel">Alamat IP Diorama (WiFi)</h4>
-                <p className="text-[13.5px] text-on-accent-chip mb-2 leading-relaxed font-semibold">
+              <div className="absolute top-full right-0 mt-2 w-72 bg-[#fffbeb] border-2 border-[#b45309] rounded-xl shadow-2xl p-3.5 z-50 font-sans text-[#1c1917]">
+                <h4 className="font-bold text-[13px] text-[#78350f] mb-1 font-pixel">Alamat IP Diorama (WiFi)</h4>
+                <p className="text-[13.5px] text-[#451a03] mb-2 leading-relaxed font-semibold">
                   Hubungkan ke WiFi <b>DIORAMA_ESP32</b> (Pass: 12345678). IP default: <b>192.168.4.1</b> (Port 81).
                 </p>
                 <div className="flex flex-col gap-2">
@@ -721,14 +721,14 @@ export default function Workspace() {
                       type="text"
                       value={wsIp}
                       onChange={(e) => setWsIp(e.target.value)}
-                      className="flex-1 bg-paper-low px-2.5 py-1.5 border border-accent-chip rounded-lg text-on-accent-chip text-[13px] outline-none focus:ring-1 focus:ring-[#d97706] font-mono font-bold"
+                      className="flex-1 bg-[#fefce8] px-2.5 py-1.5 border border-[#b45309] rounded-lg text-[#451a03] text-[13px] outline-none focus:ring-1 focus:ring-[#d97706] font-mono font-bold"
                       placeholder="192.168.4.1"
                       disabled={wsStatus === 'connecting'}
                     />
                     <button
                       type="button"
                       onClick={() => setWsIp('192.168.4.1')}
-                      className="px-2 py-1.5 text-[13.5px] bg-paper hover:bg-paper-deep text-on-paper-soft border border-accent-chip rounded-lg font-bold font-pixel shrink-0"
+                      className="px-2 py-1.5 text-[13.5px] bg-[#fef3c7] hover:bg-[#fde68a] text-[#78350f] border border-[#b45309] rounded-lg font-bold font-pixel shrink-0"
                       title="Set IP ke 192.168.4.1 (Access Point Diorama)"
                     >
                       AP 4.1
@@ -737,7 +737,7 @@ export default function Workspace() {
                   <div className="flex justify-end gap-2 pt-1 font-pixel">
                     <button
                       onClick={() => setShowWsModal(false)}
-                      className="text-[14.5px] text-[#78716c] hover:text-on-accent-chip px-2 py-1 font-bold"
+                      className="text-[14.5px] text-[#78716c] hover:text-[#1c1917] px-2 py-1 font-bold"
                     >
                       Batal
                     </button>
@@ -763,8 +763,8 @@ export default function Workspace() {
             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border-2 text-[14.5px] font-bold transition-all shadow-sm ${serialStatus === 'connected'
               ? 'bg-[#eff6ff] text-[#1d4ed8] border-[#3b82f6]'
               : serialStatus === 'connecting'
-                ? 'bg-paper text-accent-chip border-accent-chip animate-pulse'
-                : 'bg-paper-low border-accent-chip text-on-paper-soft hover:bg-paper'
+                ? 'bg-[#fef3c7] text-[#b45309] border-[#d97706] animate-pulse'
+                : 'bg-[#fffbeb] border-[#b45309] text-[#78350f] hover:bg-[#fef3c7]'
               }`}
             title="Sambungkan via Kabel USB (Web Serial)"
           >
@@ -781,7 +781,7 @@ export default function Workspace() {
             }}
             className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-[13px] shadow-md transition-all border-2 cursor-pointer ${isRunning
               ? 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white border-red-800'
-              : 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white border-success'
+              : 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white border-emerald-800'
               }`}
           >
             <span>{isRunning ? '⏹' : '▶'}</span>
@@ -791,7 +791,7 @@ export default function Workspace() {
       </header>
 
       {/* ── Main Layout: Mission Panel on Left + Split Canvas/Editor on Right ── */}
-      <main className="flex-1 flex overflow-hidden relative bg-paper-low">
+      <main className="flex-1 flex overflow-hidden relative bg-[#fefce8]">
         {/* Desktop inline mission panel */}
         {activeMission && showMissionPanel && (
           <div className="hidden lg:flex h-full shrink-0 relative z-20 shadow-lg">
@@ -815,13 +815,13 @@ export default function Workspace() {
         {/* RIGHT SIDE: Evacuation Digital Twin (Top) & Blockly/Console (Bottom) */}
         <div className="flex-1 flex flex-col overflow-hidden relative">
           {/* TOP: Evacuation Game View (Kiri: Kanvas 3D Merapi, Kanan: Telemetri Digital Twin Sesuai SS 3 & SS 2) */}
-          <section className={`${isMapExpanded ? 'h-[72vh]' : 'h-[44vh]'} w-full shrink-0 border-b-4 border-paper-border shadow-md relative z-10 bg-surface-dim transition-all duration-300 flex overflow-hidden`}>
+          <section className={`${isMapExpanded ? 'h-[72vh]' : 'h-[44vh]'} w-full shrink-0 border-b-4 border-[#78350f] shadow-md relative z-10 bg-[#060913] transition-all duration-300 flex overflow-hidden`}>
             {/* Mobile Tab Switcher for Top Section */}
-            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-paper border-2 border-paper-border rounded-lg p-0.5 shadow-md text-[13.5px] font-pixel font-semibold">
+            <div className="md:hidden absolute top-2 right-2 z-30 flex items-center bg-[#fef3c7] border-2 border-[#78350f] rounded-lg p-0.5 shadow-md text-[13.5px] font-pixel font-semibold">
               <button
                 onClick={() => setTopTabMobile('canvas')}
                 className={`px-2 py-0.5 rounded font-bold transition-all ${
-                  topTabMobile === 'canvas' ? 'bg-accent-chip text-on-accent-chip shadow-xs' : 'text-on-paper-soft'
+                  topTabMobile === 'canvas' ? 'bg-[#b45309] text-white shadow-xs' : 'text-[#78350f]'
                 }`}
               >
                 PETA 3D
@@ -829,7 +829,7 @@ export default function Workspace() {
               <button
                 onClick={() => setTopTabMobile('telemetry')}
                 className={`px-2 py-0.5 rounded font-bold transition-all ${
-                  topTabMobile === 'telemetry' ? 'bg-accent-chip text-on-accent-chip shadow-xs' : 'text-on-paper-soft'
+                  topTabMobile === 'telemetry' ? 'bg-[#b45309] text-white shadow-xs' : 'text-[#78350f]'
                 }`}
               >
                 TELEMETRI
@@ -840,7 +840,7 @@ export default function Workspace() {
             <div id="tour-ws-canvas" className={`flex-1 h-full relative overflow-hidden ${topTabMobile === 'telemetry' ? 'hidden md:block' : 'block'}`}>
               <CanvasErrorBoundary>
                 <Suspense fallback={
-                  <div className="flex items-center justify-center h-full text-on-paper-soft text-[13px] flex-col gap-2 font-pixel font-semibold">
+                  <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel font-semibold">
                     <span>MEMUAT PETA DIORAMA 3D MITIGASI BENCANA...</span>
                   </div>
                 }>
@@ -850,13 +850,13 @@ export default function Workspace() {
             </div>
 
             {/* Kanan: Telemetri Digital Twin Side Panel (Sesuai Garis Merah SS 3 & Data SS 2) */}
-            <aside id="tour-ws-telemetry" aria-label="Telemetri Digital Twin" className={`w-full md:w-80 xl:w-92 h-full shrink-0 md:border-l-4 md:border-paper-border bg-paper-low shadow-xl overflow-hidden z-20 ${topTabMobile === 'canvas' ? 'hidden md:block' : 'block'}`}>
+            <aside id="tour-ws-telemetry" aria-label="Telemetri Digital Twin" className={`w-full md:w-80 xl:w-92 h-full shrink-0 md:border-l-4 md:border-[#78350f] bg-[#fffbeb] shadow-xl overflow-hidden z-20 ${topTabMobile === 'canvas' ? 'hidden md:block' : 'block'}`}>
               <TelemetrySidePanel />
             </aside>
           </section>
 
           {/* BOTTOM: Blockly Workspace & Right Activity Console */}
-          <section className="flex-1 flex overflow-hidden relative isolate bg-paper-low z-0">
+          <section className="flex-1 flex overflow-hidden relative isolate bg-[#fefce8] z-0">
             {/* Blockly Editor — kini memakai SELURUH lebar bagian bawah.
                 Panel "LOG AKTIVITAS" di sebelah kanan sudah DIHAPUS atas
                 arahan dosen pembimbing: panel itu memakan 320px lebar layar

@@ -254,7 +254,7 @@ export default function Credits() {
         {/* Header */}
         <div className="flex items-center justify-between border-b-3 border-amber-950/30 pb-3.5">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 border-2 border-amber-950 flex items-center justify-center text-on-accent-chip shadow-[0_3px_0_var(--shadow-ink)] shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 border-2 border-amber-950 flex items-center justify-center text-slate-950 shadow-[0_3px_0_#231206] shrink-0">
               <span className="material-symbols-outlined text-2xl font-bold">
                 military_tech
               </span>
@@ -274,7 +274,7 @@ export default function Credits() {
               retroAudio.playSelect();
               navigate('/');
             }}
-            className="w-9 h-9 rounded-lg bg-amber-900 hover:bg-amber-800 text-amber-100 flex items-center justify-center border-2 border-amber-950 font-bold shadow-[0_3px_0_var(--shadow-ink)] cursor-pointer"
+            className="w-9 h-9 rounded-lg bg-amber-900 hover:bg-amber-800 text-amber-100 flex items-center justify-center border-2 border-amber-950 font-bold shadow-[0_3px_0_#231206] cursor-pointer"
             title="Kembali ke Menu Utama"
           >
             ✕
@@ -286,9 +286,9 @@ export default function Credits() {
           {MEMBERS.map((member, i) => (
             <div
               key={i}
-              className="p-3.5 rounded-xl bg-amber-100/85 border-2 border-amber-900/40 shadow-[0_3px_0_var(--shadow-accent)] flex items-start gap-3"
+              className="p-3.5 rounded-xl bg-amber-100/85 border-2 border-amber-900/40 shadow-[0_3px_0_#78350f] flex items-start gap-3"
             >
-              <div className={`w-11 h-11 rounded-lg bg-gradient-to-b ${member.avatarBg} border border-amber-950 flex items-center justify-center text-on-accent-chip shadow-sm shrink-0 mt-0.5`}>
+              <div className={`w-11 h-11 rounded-lg bg-gradient-to-b ${member.avatarBg} border border-amber-950 flex items-center justify-center text-slate-950 shadow-sm shrink-0 mt-0.5`}>
                 <span className="material-symbols-outlined text-xl font-medium">
                   {member.icon}
                 </span>
@@ -310,7 +310,7 @@ export default function Credits() {
 
         {/* ── Dosen Pembimbing ── */}
         <div className="p-4 rounded-xl bg-amber-950 text-amber-100 border-2 border-amber-900 flex items-start gap-3.5 shadow-inner">
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 border border-amber-950 flex items-center justify-center text-on-accent-chip shadow-sm shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 border border-amber-950 flex items-center justify-center text-slate-950 shadow-sm shrink-0">
             <span className="material-symbols-outlined text-2xl font-bold">
               school
             </span>

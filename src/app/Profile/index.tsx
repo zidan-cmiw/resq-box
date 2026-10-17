@@ -15,7 +15,6 @@ import { useDataSaver, setDataSaverMode, describeReason } from '../../utils/data
 import {
   supabase,
 } from '../../utils/supabaseClient';
-import TombolTema from '../../components/TombolTema';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -117,7 +116,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen min-h-[100dvh] w-full bg-surface-dim text-amber-950 p-4 pb-24 sm:p-6 sm:pb-28 lg:p-8 flex flex-col items-center justify-center relative font-pixel overflow-x-hidden select-none">
+    <div className="min-h-screen min-h-[100dvh] w-full bg-[#070b18] text-amber-950 p-4 pb-24 sm:p-6 sm:pb-28 lg:p-8 flex flex-col items-center justify-center relative font-pixel overflow-x-hidden select-none">
       
       {/* ── 1. NIGHTTIME STARRY RESCUE OBSERVATORY PIXEL BACKGROUND ── */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -299,18 +298,12 @@ export default function Profile() {
               retroAudio.playSelect();
               navigate('/');
             }}
-            className="w-9 h-9 rounded-lg bg-amber-900 hover:bg-amber-800 text-amber-100 flex items-center justify-center border-2 border-amber-950 font-bold shadow-[0_3px_0_var(--shadow-ink)] cursor-pointer"
+            className="w-9 h-9 rounded-lg bg-amber-900 hover:bg-amber-800 text-amber-100 flex items-center justify-center border-2 border-amber-950 font-bold shadow-[0_3px_0_#231206] cursor-pointer"
             title="Kembali ke Menu Utama"
           >
             ✕
           </button>
         </div>
-
-        {/* ── SAKLAR TEMA (MODE TERANG / MODE GELAP) ──
-            Diletakkan di halaman pengaturan ini karena di sinilah siswa memang
-            sedang mengatur tampilannya. Bentuk `baris` dipakai supaya labelnya
-            terbaca lengkap, bukan sekadar ikon. */}
-        <TombolTema bentuk="baris" />
 
         {/* ── AVATAR CUSTOMIZER CALLOUT BANNER ── */}
         <div id="tour-profile-avatar" className="bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 border-2 border-amber-950/40 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
@@ -331,7 +324,7 @@ export default function Profile() {
               retroAudio.playSelect();
               setIsCustomizerOpen(true);
             }}
-            className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-on-accent-chip font-bold border-2 border-amber-950 shadow-[0_3px_0_var(--shadow-accent)] text-[13px] flex items-center justify-center gap-2 transition-transform active:translate-y-0.5 cursor-pointer shrink-0"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold border-2 border-amber-950 shadow-[0_3px_0_#78350f] text-[13px] flex items-center justify-center gap-2 transition-transform active:translate-y-0.5 cursor-pointer shrink-0"
           >
             <PixelIcon name="palette" size={16} />
             <span>Buka Bengkel Avatar</span>
@@ -414,7 +407,7 @@ export default function Profile() {
               <span
                 className={`px-2 py-0.5 rounded border text-[13.5px] font-pixel-title font-bold shrink-0 ${
                   dataSaver.active
-                    ? 'bg-success-container border-emerald-900/50 text-on-success-container'
+                    ? 'bg-emerald-200 border-emerald-900/50 text-emerald-950'
                     : 'bg-amber-200 border-amber-950/40 text-amber-950'
                 }`}
               >
@@ -439,7 +432,7 @@ export default function Profile() {
               ))}
             </div>
 
-            <p className="text-[13px] text-hud-accent/90 leading-relaxed font-semibold">
+            <p className="text-[13px] text-amber-900/75 leading-relaxed font-semibold">
               Materi pelajaran tetap lengkap. Yang diringankan hanya tampilan:
               scene 3D gunung dan animasi berat tidak dimuat, sehingga lebih cepat
               dan lebih hemat kuota.
@@ -463,7 +456,7 @@ export default function Profile() {
             </div>
 
             {passwordError && (
-              <div className="p-2 rounded bg-error-container border border-rose-700 text-on-error-container text-[13.5px] font-bold">
+              <div className="p-2 rounded bg-rose-100 border border-rose-700 text-rose-900 text-[13.5px] font-bold">
                 {passwordError}
               </div>
             )}
@@ -497,17 +490,17 @@ export default function Profile() {
           </div>
 
           {/* Tingkat Kesiapsiagaan / Level Progress Banner */}
-          <div id="tour-profile-readiness" className="p-3 bg-amber-950 text-amber-100 rounded-xl border-2 border-amber-950 shadow-[0_3px_0_var(--shadow-ink)]">
+          <div id="tour-profile-readiness" className="p-3 bg-amber-950 text-amber-100 rounded-xl border-2 border-amber-950 shadow-[0_3px_0_#231206]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[13px] font-pixel-title text-on-accent-chip font-semibold">
+              <span className="text-[13px] font-pixel-title text-amber-400 font-semibold">
                 TINGKAT KESIAPSIAGAAN:
               </span>
-              <span className="px-2 py-0.5 rounded bg-success-container text-on-success-container border border-success/40 text-[13.5px] font-pixel-title font-bold">
+              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[13.5px] font-pixel-title font-bold">
                 LEVEL {levelBerlaku} / 3
               </span>
             </div>
             <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 text-center text-[13.5px] font-semibold">
-              <div className={`p-2 rounded border ${levelBerlaku >= 1 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-chrome border-outline-variant text-on-surface-variant'}`}>
+              <div className={`p-2 rounded border ${levelBerlaku >= 1 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900 border-slate-800 text-slate-600'}`}>
                 <div className="font-bold">STAGE 1</div>
                 <div className="truncate">Earth Explorer</div>
                 <div className="text-[12.5px] text-emerald-400 mt-0.5 flex items-center justify-center gap-1 font-semibold">
@@ -515,7 +508,7 @@ export default function Profile() {
                   <span>Terbuka</span>
                 </div>
               </div>
-              <div className={`p-2 rounded border ${levelBerlaku >= 2 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-outline-variant text-on-surface-variant'}`}>
+              <div className={`p-2 rounded border ${levelBerlaku >= 2 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
                 <div className="font-bold">STAGE 2</div>
                 <div className="truncate">Disaster Analyst</div>
                 <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1 font-semibold">
@@ -527,12 +520,12 @@ export default function Profile() {
                   ) : (
                     <>
                       <PixelIcon name="lock" size={10} />
-                      <span className="text-on-surface-variant">Terkunci</span>
+                      <span className="text-slate-400">Terkunci</span>
                     </>
                   )}
                 </div>
               </div>
-              <div className={`p-2 rounded border ${levelBerlaku >= 3 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-outline-variant text-on-surface-variant'}`}>
+              <div className={`p-2 rounded border ${levelBerlaku >= 3 ? 'bg-amber-900/80 border-amber-600 text-amber-200' : 'bg-slate-900/80 border-slate-800 text-slate-500'}`}>
                 <div className="font-bold">STAGE 3</div>
                 <div className="truncate">Simulation Game</div>
                 <div className="text-[12.5px] mt-0.5 flex items-center justify-center gap-1 font-semibold">
@@ -544,7 +537,7 @@ export default function Profile() {
                   ) : (
                     <>
                       <PixelIcon name="lock" size={10} />
-                      <span className="text-on-surface-variant">Terkunci</span>
+                      <span className="text-slate-400">Terkunci</span>
                     </>
                   )}
                 </div>
@@ -556,7 +549,7 @@ export default function Profile() {
           <div id="tour-profile-actions" className="pt-2 flex flex-col gap-2">
             <button aria-label="Lanjutkan"
               type="submit"
-              className="w-full py-3.5 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-pixel-title text-[15px] tracking-wider border-3 border-amber-950 shadow-[0_5px_0_var(--shadow-ink)] transition-transform active:translate-y-1 cursor-pointer flex items-center justify-center gap-2 font-semibold"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-b from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-amber-100 font-pixel-title text-[15px] tracking-wider border-3 border-amber-950 shadow-[0_5px_0_#231206] transition-transform active:translate-y-1 cursor-pointer flex items-center justify-center gap-2 font-semibold"
             >
               <span>SIMPAN PROFIL</span>
               <PixelIcon name="check" size={16} />
@@ -568,7 +561,7 @@ export default function Profile() {
                 retroAudio.playSelect();
                 navigate('/');
               }}
-              className="w-full py-2.5 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel font-bold text-[13px] border-2 border-amber-950 shadow-[0_3px_0_var(--shadow-accent)] transition-transform active:translate-y-0.5 cursor-pointer text-center"
+              className="w-full py-2.5 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-950 font-pixel font-bold text-[13px] border-2 border-amber-950 shadow-[0_3px_0_#78350f] transition-transform active:translate-y-0.5 cursor-pointer text-center"
             >
               KEMBALI KE MENU UTAMA
             </button>
@@ -587,7 +580,7 @@ export default function Profile() {
 
       {/* ── Saved Toast Notification ── */}
       {showSavedToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] w-[calc(100vw-2rem)] max-w-sm justify-center text-center bg-emerald-600 text-white font-pixel px-4 py-3 rounded-xl border-3 border-emerald-950 shadow-[0_5px_0_var(--shadow-success)] flex items-center gap-3 animate-fade-in">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] w-[calc(100vw-2rem)] max-w-sm justify-center text-center bg-emerald-600 text-white font-pixel px-4 py-3 rounded-xl border-3 border-emerald-950 shadow-[0_5px_0_#064e3b] flex items-center gap-3 animate-fade-in">
           <PixelIcon name="check" size={20} />
           <span className="text-[15px] font-bold">Profil Berhasil Disimpan!</span>
         </div>

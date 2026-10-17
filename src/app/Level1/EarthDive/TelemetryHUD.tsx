@@ -29,7 +29,7 @@ export default function TelemetryHUD({
   const formattedDepth = currentDepthKm !== undefined ? currentDepthKm.toLocaleString('id-ID') : null;
 
   return (
-    <div className="bg-slate-950/95 backdrop-blur-md border-2 sm:border-3 border-amber-600/90 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-[0_5px_0_var(--shadow-ink)] text-amber-200 font-sans font-bold flex flex-col items-stretch select-none transition-all duration-200 w-auto min-w-[170px] sm:min-w-[195px] max-w-[calc(100vw-24px)]">
+    <div className="bg-slate-950/95 backdrop-blur-md border-2 sm:border-3 border-amber-600/90 rounded-2xl sm:rounded-3xl p-1.5 sm:p-2 shadow-[0_5px_0_#231206] text-amber-200 font-sans font-bold flex flex-col items-stretch select-none transition-all duration-200 w-auto min-w-[170px] sm:min-w-[195px] max-w-[calc(100vw-24px)]">
       
       {/* Header Pill yang dapat diklik di SEMUA layar (Mobile, Tablet, Desktop) persis seperti tangkapan layar */}
       <button
@@ -134,7 +134,7 @@ export default function TelemetryHUD({
               <span className="text-[14.5px] sm:text-[13px] text-rose-300 font-bold tracking-wide">HP</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-12 sm:w-16 xl:w-20 h-3 bg-chrome-raised rounded-full border border-outline-variant overflow-hidden p-0.5 shrink-0">
+              <div className="w-12 sm:w-16 xl:w-20 h-3 bg-slate-800 rounded-full border border-slate-700 overflow-hidden p-0.5 shrink-0">
                 <div
                   className={`h-full rounded-full transition-all duration-300 ${
                     playerHp > 50

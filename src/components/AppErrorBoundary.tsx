@@ -89,8 +89,8 @@ export default class AppErrorBoundary extends Component<Props, State> {
     const recoverable = this.isRecoverable();
 
     return (
-      <div className="fixed inset-0 w-screen w-[100dvw] h-screen h-[100dvh] bg-ink flex items-center justify-center p-4 sm:p-6 z-[9999] overflow-y-auto">
-        <div className="pixel-wood-board max-w-lg w-full p-5 sm:p-7 text-on-paper-soft text-center">
+      <div className="fixed inset-0 w-screen w-[100dvw] h-screen h-[100dvh] bg-[#1c1917] flex items-center justify-center p-4 sm:p-6 z-[9999] overflow-y-auto">
+        <div className="pixel-wood-board max-w-lg w-full p-5 sm:p-7 text-[#3e1f07] text-center">
           <div className="flex justify-center mb-3">
             <PixelIcon name="warning" size={44} />
           </div>
@@ -110,7 +110,7 @@ export default class AppErrorBoundary extends Component<Props, State> {
             <summary className="font-pixel text-[13.5px] cursor-pointer opacity-80 hover:opacity-100 font-semibold">
               Lihat detail teknis
             </summary>
-            <pre className="mt-2 p-2 bg-paper rounded border-2 border-[#451a03]/30 text-[12.5px] leading-snug whitespace-pre-wrap break-words max-h-32 overflow-y-auto font-semibold">
+            <pre className="mt-2 p-2 bg-[#fef3c7] rounded border-2 border-[#451a03]/30 text-[12.5px] leading-snug whitespace-pre-wrap break-words max-h-32 overflow-y-auto font-semibold">
               {error.message || 'Tanpa pesan'}
             </pre>
           </details>

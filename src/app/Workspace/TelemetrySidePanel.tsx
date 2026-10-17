@@ -101,17 +101,17 @@ export default function TelemetrySidePanel() {
 
   // Status badges
   const quakeBadge = {
-    0: { label: 'TENANG (Aman)', bg: 'bg-success-container text-on-success-container border-emerald-300' },
+    0: { label: 'TENANG (Aman)', bg: 'bg-emerald-100 text-emerald-800 border-emerald-300' },
     1: { label: 'RINGAN (Waspada)', bg: 'bg-amber-100 text-amber-800 border-amber-300' },
     2: { label: 'SEDANG (Siaga)', bg: 'bg-orange-100 text-orange-800 border-orange-300' },
-    3: { label: 'KUAT (Darurat Evakuasi!)', bg: 'bg-error-container text-on-error-container border-red-300 animate-pulse' },
+    3: { label: 'KUAT (Darurat Evakuasi!)', bg: 'bg-red-100 text-red-800 border-red-300 animate-pulse' },
   }[seismicLevel];
 
   const volcanoBadge = {
-    NORMAL: { label: 'LEVEL I: NORMAL', bg: 'bg-success-container text-on-success-container border-emerald-400' },
+    NORMAL: { label: 'LEVEL I: NORMAL', bg: 'bg-emerald-100 text-emerald-800 border-emerald-400' },
     WASPADA: { label: 'LEVEL II: WASPADA', bg: 'bg-amber-100 text-amber-800 border-amber-400' },
     SIAGA: { label: 'LEVEL III: SIAGA', bg: 'bg-orange-100 text-orange-800 border-orange-400' },
-    AWAS: { label: 'LEVEL IV: AWAS', bg: 'bg-error-container text-on-error-container border-rose-500 animate-pulse' },
+    AWAS: { label: 'LEVEL IV: AWAS', bg: 'bg-rose-100 text-rose-800 border-rose-500 animate-pulse' },
   }[volcanoStatus];
 
   const isLembahSungai = selectedRoute.includes('Lembah Sungai');
@@ -162,17 +162,17 @@ export default function TelemetrySidePanel() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-paper-low text-on-accent-chip overflow-hidden select-none">
+    <div className="w-full h-full flex flex-col bg-[#fffbeb] text-[#1c1917] overflow-hidden select-none">
       {/* Panel Header */}
-      <div className="px-3.5 py-2.5 bg-paper border-b-2 border-accent-chip flex items-center justify-between shrink-0 shadow-sm">
+      <div className="px-3.5 py-2.5 bg-[#fef3c7] border-b-2 border-[#b45309] flex items-center justify-between shrink-0 shadow-sm">
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-[#10b981] animate-ping" />
           <div>
-            <div className="font-pixel text-[13px] sm:text-[16px] font-bold text-on-accent-chip leading-tight">Telemetri Digital Twin</div>
-            <div className="text-[13.5px] text-on-paper-soft font-semibold leading-none mt-0.5">Monitoring Merapi & EWS</div>
+            <div className="font-pixel text-[13px] sm:text-[16px] font-bold text-[#451a03] leading-tight">Telemetri Digital Twin</div>
+            <div className="text-[13.5px] text-[#78350f] font-semibold leading-none mt-0.5">Monitoring Merapi & EWS</div>
           </div>
         </div>
-        <div className="text-[13.5px] font-mono font-bold px-2 py-0.5 rounded bg-paper-deep text-on-paper-soft border border-accent-chip shadow-xs">
+        <div className="text-[13.5px] font-mono font-bold px-2 py-0.5 rounded bg-[#fde68a] text-[#78350f] border border-[#d97706] shadow-xs">
           STATUS AKTIF
         </div>
       </div>
@@ -180,9 +180,9 @@ export default function TelemetrySidePanel() {
       {/* Cards Container */}
       <div className="p-3 flex-1 flex flex-col gap-2.5 overflow-y-auto font-sans scrollbar-thin">
         {/* 1. SEISMOGRAF DINAMIS */}
-        <div className="bg-paper-low p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
+        <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[13px] font-bold text-on-accent-chip font-pixel">Seismograf Dinamis</span>
+            <span className="text-[13px] font-bold text-[#451a03] font-pixel">Seismograf Dinamis</span>
             <span className={`text-[13.5px] font-bold px-2 py-0.5 rounded border ${quakeBadge.bg}`}>
               {quakeBadge.label}
             </span>
@@ -193,7 +193,7 @@ export default function TelemetrySidePanel() {
           </div>
 
           <div className="flex justify-between items-center bg-[#fdf2e9] px-2.5 py-1 rounded border border-[#ea580c]/30 text-[13px] font-semibold">
-            <span className="text-[13px] text-on-paper-soft font-semibold">Skala Richter (ML):</span>
+            <span className="text-[13px] text-[#78350f] font-semibold">Skala Richter (ML):</span>
             <span className="font-mono font-bold text-[13px] sm:text-[15px] text-[#9a3412]">
               {richterScale.toFixed(1)} SR
             </span>
@@ -201,9 +201,9 @@ export default function TelemetrySidePanel() {
         </div>
 
         {/* 2. SUHU & STATUS GUNUNG MERAPI */}
-        <div className="bg-paper-low p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
+        <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[13px] font-bold text-on-accent-chip font-pixel">Kawah Gunung Merapi</span>
+            <span className="text-[13px] font-bold text-[#451a03] font-pixel">Kawah Gunung Merapi</span>
             <span className={`text-[13.5px] font-bold px-2 py-0.5 rounded border ${volcanoBadge.bg}`}>
               {volcanoBadge.label}
             </span>
@@ -212,7 +212,7 @@ export default function TelemetrySidePanel() {
           {/* Suhu Gauge Bar */}
           <div className="mb-2">
             <div className="flex justify-between text-[13px] font-semibold mb-1">
-              <span className="text-on-paper-soft">Suhu Termal Kawah:</span>
+              <span className="text-[#78350f]">Suhu Termal Kawah:</span>
               <span className="font-mono font-bold text-red-600 text-[13px]">{volcanoTemp.toFixed(1)}°C</span>
             </div>
             <div className="w-full bg-[#e2e8f0] h-2.5 rounded-full overflow-hidden border border-stone-300">
@@ -243,12 +243,12 @@ export default function TelemetrySidePanel() {
         </div>
 
         {/* 3. AKTIVITAS HARDWARE & AKTUATOR */}
-        <div className="bg-paper-low p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
-          <div className="text-[13px] font-bold text-on-accent-chip font-pixel mb-2">Status Aktuator Diorama</div>
+        <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
+          <div className="text-[13px] font-bold text-[#451a03] font-pixel mb-2">Status Aktuator Diorama</div>
           <div className="grid grid-cols-2 gap-2.5 text-center">
             {/* Lampu Status Terang Benderang */}
-            <div className="p-2 rounded-xl bg-paper-low border-2 border-stone-300/80 flex flex-col items-center justify-between gap-1.5 shadow-xs">
-              <span className="text-[13.5px] text-on-paper-soft font-bold">Lampu Status</span>
+            <div className="p-2 rounded-xl bg-[#fffbeb] border-2 border-stone-300/80 flex flex-col items-center justify-between gap-1.5 shadow-xs">
+              <span className="text-[13.5px] text-[#78350f] font-bold">Lampu Status</span>
               <div className="relative flex items-center justify-center p-1.5 rounded-full bg-stone-900/90 border border-stone-600 shadow-inner">
                 <span
                   className={`w-5 h-5 rounded-full block border border-white/60 transition-all duration-300 ${lightConfig.pulse ? 'animate-pulse' : ''}`}
@@ -264,8 +264,8 @@ export default function TelemetrySidePanel() {
             </div>
 
             {/* Sirine EWS */}
-            <div className="p-2 rounded-xl bg-paper-low border-2 border-stone-300/80 flex flex-col items-center justify-between gap-1.5 shadow-xs">
-              <span className="text-[13.5px] text-on-paper-soft font-bold">Sirine EWS</span>
+            <div className="p-2 rounded-xl bg-[#fffbeb] border-2 border-stone-300/80 flex flex-col items-center justify-between gap-1.5 shadow-xs">
+              <span className="text-[13.5px] text-[#78350f] font-bold">Sirine EWS</span>
               <div className="relative flex items-center justify-center p-1.5 rounded-full bg-stone-900/90 border border-stone-600 shadow-inner">
                 <span
                   className={`w-5 h-5 rounded-full block border border-white/60 transition-all duration-300 ${
@@ -296,19 +296,19 @@ export default function TelemetrySidePanel() {
         </div>
 
         {/* 4. PENENTUAN JALUR EVAKUASI & POSKO */}
-        <div className="bg-paper-low p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
-          <div className="text-[13px] font-bold text-on-accent-chip font-pixel mb-1.5">Manajemen Evakuasi Warga</div>
+        <div className="bg-[#fefce8] p-2.5 rounded-xl border border-[#b45309]/30 shadow-xs">
+          <div className="text-[13px] font-bold text-[#451a03] font-pixel mb-1.5">Manajemen Evakuasi Warga</div>
           <div className="space-y-1.5 text-[13px] font-semibold">
-            <div className="flex justify-between items-center px-2 py-1 rounded bg-paper-low border border-stone-200">
-              <span className="font-semibold text-on-paper-soft text-[14px]">Rute Evakuasi:</span>
+            <div className="flex justify-between items-center px-2 py-1 rounded bg-[#fffbeb] border border-stone-200">
+              <span className="font-semibold text-[#78350f] text-[14px]">Rute Evakuasi:</span>
               <span className={`font-bold px-2 py-0.5 rounded text-[14px] truncate max-w-[145px] ${
-                isLembahSungai ? 'bg-red-200 text-on-error-container border border-red-400' : 'bg-success-container text-on-success-container border border-emerald-300'
+                isLembahSungai ? 'bg-red-200 text-red-900 border border-red-400' : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
               }`}>
                 {selectedRoute}
               </span>
             </div>
-            <div className="flex justify-between items-center px-2 py-1 rounded bg-paper-low border border-stone-200">
-              <span className="font-semibold text-on-paper-soft text-[14px]">Posko Penampungan:</span>
+            <div className="flex justify-between items-center px-2 py-1 rounded bg-[#fffbeb] border border-stone-200">
+              <span className="font-semibold text-[#78350f] text-[14px]">Posko Penampungan:</span>
               <span className="font-bold text-stone-800 text-[14px] truncate max-w-[145px]">{activeShelter}</span>
             </div>
           </div>

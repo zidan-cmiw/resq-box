@@ -35,12 +35,12 @@ export const VolcanoRescueFailedModal: React.FC<VolcanoRescueFailedModalProps> =
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-sm select-none animate-fadeIn font-pixel">
-      <div className="relative w-full max-w-xl sm:max-w-2xl bg-paper border-4 border-paper-border rounded-3xl p-6 sm:p-8 shadow-[0_16px_0_var(--shadow-accent-deep)] text-on-accent-chip text-center">
+      <div className="relative w-full max-w-xl sm:max-w-2xl bg-[#fef3c7] border-4 border-[#78350f] rounded-3xl p-6 sm:p-8 shadow-[0_16px_0_#451a03] text-[#451a03] text-center">
         {/* Sudut dekoratif retro piksel */}
-        <div className="absolute top-2 left-2 w-3.5 h-3.5 bg-accent-chip" />
-        <div className="absolute top-2 right-2 w-3.5 h-3.5 bg-accent-chip" />
-        <div className="absolute bottom-2 left-2 w-3.5 h-3.5 bg-accent-chip" />
-        <div className="absolute bottom-2 right-2 w-3.5 h-3.5 bg-accent-chip" />
+        <div className="absolute top-2 left-2 w-3.5 h-3.5 bg-[#b45309]" />
+        <div className="absolute top-2 right-2 w-3.5 h-3.5 bg-[#b45309]" />
+        <div className="absolute bottom-2 left-2 w-3.5 h-3.5 bg-[#b45309]" />
+        <div className="absolute bottom-2 right-2 w-3.5 h-3.5 bg-[#b45309]" />
 
         {/* Ikon Peringatan Kritis */}
         <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#fee2e2] border-3 border-[#dc2626] flex items-center justify-center text-[#dc2626] font-pixel-title text-2xl font-bold shadow-[0_4px_0_#991b1b] animate-bounce">
@@ -53,16 +53,16 @@ export const VolcanoRescueFailedModal: React.FC<VolcanoRescueFailedModalProps> =
         </h3>
 
         {/* Deskripsi Alasan Gagal */}
-        <p className="font-sans text-base sm:text-lg md:text-xl font-bold text-on-accent-chip leading-relaxed mb-5">
+        <p className="font-sans text-base sm:text-lg md:text-xl font-bold text-[#451a03] leading-relaxed mb-5">
           {reason}
         </p>
 
         {/* Kotak Edukasi Tips Evakuasi Cepat */}
-        <div className="bg-paper-deep border-2 border-accent-chip rounded-2xl p-4 sm:p-5 mb-6 text-left shadow-[0_4px_0_var(--shadow-accent)]">
-          <div className="inline-block bg-accent-chip-strong text-[#fef3c7] font-pixel-title text-[13px] sm:text-[15px] px-3 py-1 rounded-md font-bold mb-2 tracking-wider">
+        <div className="bg-[#fef9c3] border-2 border-[#b45309] rounded-2xl p-4 sm:p-5 mb-6 text-left shadow-[0_4px_0_#78350f]">
+          <div className="inline-block bg-[#78350f] text-[#fef3c7] font-pixel-title text-[13px] sm:text-[15px] px-3 py-1 rounded-md font-bold mb-2 tracking-wider">
             [TIPS KESIAPSIAGAAN AWAS MERAPI]
           </div>
-          <p className="font-sans text-[15px] sm:text-base md:text-lg text-on-paper-soft leading-relaxed font-bold">
+          <p className="font-sans text-[15px] sm:text-base md:text-lg text-[#78350f] leading-relaxed font-bold">
             Saat sirine EWS Status Awas berbunyi, awan panas dapat meluncur turun lereng dengan sangat cepat! Segera dekati 3 warga dusun (Mbah Tejo, Bu Siti, dan Dani), tekan <span className="text-[#991b1b] font-extrabold">[E] / TAP</span> untuk menolong mereka agar ikut berbaris ke mobil evakuasi BPBD sebelum waktu 15 detik habis!
           </p>
         </div>

@@ -126,26 +126,26 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md select-none animate-fadeIn font-pixel">
       {/* Box Utama: Palet Perkamen Krem Hangat & Bingkai Kayu Retro Jati */}
-      <div className="relative w-full max-w-2xl sm:max-w-3xl bg-paper border-4 sm:border-[5px] border-ink rounded-2xl sm:rounded-3xl p-5 sm:p-7 md:p-8 shadow-[0_12px_0_#1c0d02] text-on-accent-chip flex flex-col gap-4 sm:gap-5">
+      <div className="relative w-full max-w-2xl sm:max-w-3xl bg-[#fef3c7] border-4 sm:border-[5px] border-[#451a03] rounded-2xl sm:rounded-3xl p-5 sm:p-7 md:p-8 shadow-[0_12px_0_#1c0d02] text-[#451a03] flex flex-col gap-4 sm:gap-5">
         {/* Dekorasi Siku Sudut Kayu Retro (Corner Brackets ┌ ┐ └ ┘) */}
-        <div className="absolute top-2 left-2 w-4 sm:w-5 h-4 sm:h-5 border-t-3 border-l-3 border-paper-border pointer-events-none" />
-        <div className="absolute top-2 right-2 w-4 sm:w-5 h-4 sm:h-5 border-t-3 border-r-3 border-paper-border pointer-events-none" />
-        <div className="absolute bottom-2 left-2 w-4 sm:w-5 h-4 sm:h-5 border-b-3 border-l-3 border-paper-border pointer-events-none" />
-        <div className="absolute bottom-2 right-2 w-4 sm:w-5 h-4 sm:h-5 border-b-3 border-r-3 border-paper-border pointer-events-none" />
+        <div className="absolute top-2 left-2 w-4 sm:w-5 h-4 sm:h-5 border-t-3 border-l-3 border-[#78350f] pointer-events-none" />
+        <div className="absolute top-2 right-2 w-4 sm:w-5 h-4 sm:h-5 border-t-3 border-r-3 border-[#78350f] pointer-events-none" />
+        <div className="absolute bottom-2 left-2 w-4 sm:w-5 h-4 sm:h-5 border-b-3 border-l-3 border-[#78350f] pointer-events-none" />
+        <div className="absolute bottom-2 right-2 w-4 sm:w-5 h-4 sm:h-5 border-b-3 border-r-3 border-[#78350f] pointer-events-none" />
 
         {/* 1. Header Pill */}
         <div className="text-center">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-accent-chip-strong border-2 border-ink text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider uppercase shadow-sm">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-[#78350f] border-2 border-[#451a03] text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider uppercase shadow-sm">
             {data.pill}
           </span>
         </div>
 
         {/* 2. Judul Fase Besar & Jelas (Font Pixel Title & Subtitle Hangat) */}
         <div className="text-center -mt-1 sm:-mt-2">
-          <h2 className="font-pixel-title text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-wide text-on-accent-chip drop-shadow-sm">
+          <h2 className="font-pixel-title text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-wide text-[#451a03] drop-shadow-sm">
             {data.title}
           </h2>
-          <p className="font-pixel text-[13px] sm:text-[15px] md:text-base font-bold text-on-paper-soft mt-1.5 uppercase tracking-wide">
+          <p className="font-pixel text-[13px] sm:text-[15px] md:text-base font-bold text-[#78350f] mt-1.5 uppercase tracking-wide">
             {data.subtitle}
           </p>
         </div>
@@ -153,17 +153,17 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
         {/* 3. Panel Konten: Karakteristik & Tindakan Mitigasi (Sesuai Gaya Kotak Materi & Fakta Kunci) */}
         <div className="flex flex-col gap-3.5 max-h-[54vh] overflow-y-auto pr-1">
           {/* Karakteristik / Tanda-Tanda Geologis */}
-          <div className="bg-paper-deep border-3 border-[#b45309]/60 rounded-2xl p-4 sm:p-5 shadow-sm text-on-paper">
+          <div className="bg-[#fef9c3] border-3 border-[#b45309]/60 rounded-2xl p-4 sm:p-5 shadow-sm text-[#291305]">
             <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-accent-chip text-on-accent-chip font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#b45309] text-amber-50 font-pixel-title text-[13px] sm:text-[15px] font-bold tracking-wider shadow-sm">
                 <PixelIcon name="volcano" size={17} className="text-amber-200 shrink-0" />
                 <span>CIRI &amp; INDIKATOR GEOLOGIS</span>
               </span>
             </div>
-            <ul className="grid grid-cols-1 gap-2.5 font-sans text-[15px] sm:text-base md:text-[19px] text-on-paper font-semibold leading-relaxed">
+            <ul className="grid grid-cols-1 gap-2.5 font-sans text-[15px] sm:text-base md:text-[19px] text-[#291305] font-semibold leading-relaxed">
               {data.characteristics.map((c, idx) => (
                 <li key={idx} className="flex items-start gap-3">
-                  <span className="text-accent-chip shrink-0 font-black text-lg select-none leading-none mt-0.5">•</span>
+                  <span className="text-[#b45309] shrink-0 font-black text-lg select-none leading-none mt-0.5">•</span>
                   <span>{c}</span>
                 </li>
               ))}
@@ -182,9 +182,9 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
               {data.actionItems.map((act, idx) => (
                 <li
                   key={idx}
-                  className="flex items-start gap-3 bg-paper-low px-3.5 py-2.5 rounded-xl border border-[#b45309]/40 shadow-xs text-on-paper"
+                  className="flex items-start gap-3 bg-[#fffbeb] px-3.5 py-2.5 rounded-xl border border-[#b45309]/40 shadow-xs text-[#291305]"
                 >
-                  <PixelIcon name="check" size={18} className="text-success shrink-0 mt-0.5" />
+                  <PixelIcon name="check" size={18} className="text-emerald-700 shrink-0 mt-0.5" />
                   <span>{act}</span>
                 </li>
               ))}
@@ -196,7 +196,7 @@ export const VolcanoPhaseModal: React.FC<VolcanoPhaseModalProps> = ({
         <div className="flex justify-center pt-1.5 border-t-2 border-[#b45309]/30">
           <button aria-label="Lanjutkan"
             onClick={handleProceed}
-            className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-ink shadow-[0_5px_0_var(--shadow-ink)] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center justify-center gap-2.5 transition-all font-medium"
+            className="w-full sm:w-auto px-8 sm:px-12 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-amber-50 border-3 sm:border-4 border-[#451a03] shadow-[0_5px_0_#231206] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-1 flex items-center justify-center gap-2.5 transition-all font-medium"
           >
             <PixelIcon name="check" size={18} className="text-amber-200" />
             <span>{data.buttonText}</span>

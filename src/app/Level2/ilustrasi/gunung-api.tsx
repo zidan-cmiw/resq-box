@@ -336,12 +336,12 @@ export function VolcanoStatusIllustration() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner Header */}
-      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-outline-variant shrink-0">
+      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800 shrink-0">
         <span className="text-[13px] sm:text-[15px] font-pixel-title text-rose-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="volcano" size={14} />
           4 TINGKAT STATUS AKTIVITAS GUNUNG API PVMBG &amp; KRB
         </span>
-        <span className="text-[13.5px] sm:text-[13px] text-on-surface-variant font-pixel font-semibold">
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel font-semibold">
           STANDAR RESMI PVMBG / KESDM
         </span>
       </div>
@@ -370,7 +370,7 @@ export function VolcanoStatusIllustration() {
               >
                 {/* Header Badge */}
                 <div
-                  className="w-full py-1.5 px-1.5 rounded-md text-on-accent-chip font-bold text-[13px] sm:text-[14px] font-pixel-title text-center mb-1"
+                  className="w-full py-1.5 px-1.5 rounded-md text-slate-950 font-bold text-[13px] sm:text-[14px] font-pixel-title text-center mb-1"
                   style={{ backgroundColor: l.color }}
                 >
                   LV.{l.lvl} {l.shortName}
@@ -382,8 +382,8 @@ export function VolcanoStatusIllustration() {
                 </div>
 
                 {/* Keterangan Karakteristik Visual */}
-                <div className="w-full bg-slate-950/80 rounded-md p-1.5 border border-outline-variant text-center">
-                  <p className="text-[15.5px] sm:text-[15px] text-on-chrome leading-snug font-sans font-medium line-clamp-3">
+                <div className="w-full bg-slate-950/80 rounded-md p-1.5 border border-slate-800 text-center">
+                  <p className="text-[15.5px] sm:text-[15px] text-slate-100 leading-snug font-sans font-medium line-clamp-3">
                     {l.visualFeature}
                   </p>
                 </div>
@@ -392,7 +392,7 @@ export function VolcanoStatusIllustration() {
           </div>
         ) : (
           /* TAMPILAN FOKUS DETAIL LEVEL TERTENTU (HERO VIEW) */
-          <div className="w-full h-full flex flex-col md:flex-row items-center justify-between gap-3 p-2 bg-slate-950/70 rounded-xl border border-outline-variant">
+          <div className="w-full h-full flex flex-col md:flex-row items-center justify-between gap-3 p-2 bg-slate-950/70 rounded-xl border border-slate-800">
             {/* Kiri: Artwork Vektor Resolusi Tinggi Gunung Berapi */}
             <div className="w-full md:w-1/2 h-[180px] md:h-full flex items-center justify-center p-2 relative bg-slate-900/50 rounded-lg border border-slate-800/80">
               {renderVolcanoArtwork(activeLevel as 1 | 2 | 3 | 4, false)}
@@ -404,7 +404,7 @@ export function VolcanoStatusIllustration() {
                 {/* Status Badge */}
                 <div className="flex items-center gap-2 mb-2">
                   <span
-                    className="px-3.5 py-1.5 rounded-md text-base sm:text-lg font-bold font-pixel-title text-on-accent-chip shadow-sm"
+                    className="px-3.5 py-1.5 rounded-md text-base sm:text-lg font-bold font-pixel-title text-slate-950 shadow-sm"
                     style={{ backgroundColor: currentLevelData.color }}
                   >
                     {currentLevelData.name}
@@ -412,19 +412,19 @@ export function VolcanoStatusIllustration() {
                 </div>
 
                 {/* Deskripsi Sains Resmi (Font Besar, Kontras Tinggi & Sangat Mudah Dibaca) */}
-                <p className="text-[17px] sm:text-[19px] md:text-[20px] text-on-chrome leading-relaxed mb-3.5 font-sans font-semibold">
+                <p className="text-[17px] sm:text-[19px] md:text-[20px] text-slate-100 leading-relaxed mb-3.5 font-sans font-semibold">
                   {currentLevelData.desc}
                 </p>
 
                 {/* Gejala Visual Spesifik */}
-                <div className="bg-slate-900/90 border border-outline-variant rounded-lg p-3 mb-3">
+                <div className="bg-slate-900/90 border border-slate-800 rounded-lg p-3 mb-3">
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <PixelIcon name="bulb" size={15} className="text-amber-400" />
                     <span className="text-[15px] sm:text-[17px] font-bold text-amber-300 font-pixel-title">
                       KARAKTERISTIK VISUAL:
                     </span>
                   </div>
-                  <p className="text-[16px] sm:text-[17.5px] text-on-chrome leading-relaxed font-sans font-medium">
+                  <p className="text-[16px] sm:text-[17.5px] text-slate-100 leading-relaxed font-sans font-medium">
                     {currentLevelData.visualFeature}
                   </p>
                 </div>
@@ -439,7 +439,7 @@ export function VolcanoStatusIllustration() {
                   <span style={{ color: currentLevelData.color }}>
                     <PixelIcon name="shield" size={17} />
                   </span>
-                  <span className="text-[15px] sm:text-base font-bold text-on-chrome font-sans">
+                  <span className="text-[15px] sm:text-base font-bold text-slate-100 font-sans">
                     ZONA BAHAYA:
                   </span>
                 </div>
@@ -462,8 +462,8 @@ export function VolcanoStatusIllustration() {
               setActiveLevel(l.lvl);
             }}
             className={`px-1.5 py-2.5 rounded-lg border-2 text-[13.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeLevel === l.lvl
-              ? 'text-on-accent-chip font-bold scale-[1.02] shadow-sm'
-              : 'bg-chrome text-on-chrome border-outline-variant hover:border-outline'
+              ? 'text-slate-950 font-bold scale-[1.02] shadow-sm'
+              : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-slate-500'
               }`}
             style={{
               backgroundColor: activeLevel === l.lvl ? l.color : undefined,
@@ -479,8 +479,8 @@ export function VolcanoStatusIllustration() {
             setActiveLevel('all');
           }}
           className={`px-1.5 py-2.5 rounded-lg border-2 text-[13.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeLevel === 'all'
-            ? 'bg-sky-400 text-on-accent-chip border-sky-300 font-bold scale-[1.02]'
-            : 'bg-chrome-raised text-sky-300 border-outline-variant hover:border-sky-400'
+            ? 'bg-sky-400 text-slate-950 border-sky-300 font-bold scale-[1.02]'
+            : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-400'
             }`}
         >
           SEMUA LEVEL
@@ -681,7 +681,7 @@ export function VolcanoResponseIllustration() {
               <line x1="121" y1="105" x2="148" y2="115" stroke="#facc15" strokeWidth="2.5" />
               <text x="77" y="118" textAnchor="middle" fill="#0284c7" fontSize="10" fontWeight="bold">N95 FILTER</text>
               <foreignObject x="8" y="152" width="138" height="114">
-                <p className="text-[14.5px] sm:text-[13px] text-on-chrome leading-snug font-sans text-center font-semibold">
+                <p className="text-[14.5px] sm:text-[13px] text-slate-200 leading-snug font-sans text-center font-semibold">
                   Menyaring <strong className="text-sky-300 font-bold">&ge; 95%</strong> partikel kristal silika tajam &lt; 2.5 µm pencegah silikosis &amp; ISPA akut.
                 </p>
               </foreignObject>
@@ -702,7 +702,7 @@ export function VolcanoResponseIllustration() {
               <circle cx="47" cy="94" r="6" fill="#ffffff" opacity="0.6" />
               <circle cx="107" cy="94" r="6" fill="#ffffff" opacity="0.6" />
               <foreignObject x="8" y="152" width="138" height="114">
-                <p className="text-[14.5px] sm:text-[13px] text-on-chrome leading-snug font-sans text-center font-semibold">
+                <p className="text-[14.5px] sm:text-[13px] text-slate-200 leading-snug font-sans text-center font-semibold">
                   Menutup rapat rongga mata. <strong className="text-rose-400 font-bold">Dilarang lensa kontak &amp; kucek mata</strong> karena abu adalah serpihan kaca!
                 </p>
               </foreignObject>
@@ -719,7 +719,7 @@ export function VolcanoResponseIllustration() {
               <line x1="77" y1="64" x2="77" y2="124" stroke="#a7f3d0" strokeWidth="2.5" />
               <line x1="54" y1="104" x2="100" y2="104" stroke="#facc15" strokeWidth="2.5" />
               <foreignObject x="8" y="152" width="138" height="114">
-                <p className="text-[14.5px] sm:text-[13px] text-on-chrome leading-snug font-sans text-center font-semibold">
+                <p className="text-[14.5px] sm:text-[13px] text-slate-200 leading-snug font-sans text-center font-semibold">
                   Baju lengan panjang, celana panjang, topi &amp; sepatu tertutup pelindung iritasi sulfur &amp; luka panas.
                 </p>
               </foreignObject>
@@ -729,7 +729,7 @@ export function VolcanoResponseIllustration() {
 
       case 'awanpanas':
         return (
-          <div className="w-full h-full flex items-center justify-center relative overflow-hidden bg-chrome">
+          <div className="w-full h-full flex items-center justify-center relative overflow-hidden bg-slate-950">
             <img
               src="/wedhus_gembel.jpg"
               onError={(e) => {
@@ -753,7 +753,7 @@ export function VolcanoResponseIllustration() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-rose-500/80 hover:border-rose-400 text-rose-300 hover:text-rose-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-chrome"
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-rose-500/80 hover:border-rose-400 text-rose-300 hover:text-rose-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
               title="Buka sumber dokumentasi: Kompas.com"
             >
               <span>Sumber: Kompas.com ↗</span>
@@ -780,7 +780,7 @@ export function VolcanoResponseIllustration() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-orange-400/80 hover:border-orange-300 text-orange-300 hover:text-orange-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-chrome"
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-orange-400/80 hover:border-orange-300 text-orange-300 hover:text-orange-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
               title="Buka sumber dokumentasi: Kompas.com"
             >
               <span>Sumber: Kompas.com ↗</span>
@@ -807,7 +807,7 @@ export function VolcanoResponseIllustration() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-amber-400/80 hover:border-amber-300 text-amber-300 hover:text-amber-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-chrome"
+              className="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-amber-400/80 hover:border-amber-300 text-amber-300 hover:text-amber-200 text-[13.5px] font-sans font-bold flex items-center gap-1.5 shadow-lg transition-all z-10 cursor-pointer hover:bg-slate-900"
               title="Buka sumber rujukan peta: syawal88.wordpress.com"
             >
               <span>Sumber: syawal88.wordpress.com ↗</span>
@@ -834,13 +834,13 @@ export function VolcanoResponseIllustration() {
             retroAudio.playSelect();
             setIsFullscreen(true);
           }}
-          className="w-full md:w-3/5 h-[230px] md:h-full bg-chrome rounded-xl border-2 border-slate-700/80 p-0 flex items-center justify-center relative overflow-hidden shadow-inner group cursor-pointer hover:border-amber-400 transition-all"
+          className="w-full md:w-3/5 h-[230px] md:h-full bg-slate-950 rounded-xl border-2 border-slate-700/80 p-0 flex items-center justify-center relative overflow-hidden shadow-inner group cursor-pointer hover:border-amber-400 transition-all"
           title="Klik gambar untuk melihat dalam tampilan penuh (fullscreen)"
         >
           {renderVisualContent(activeTab, false)}
 
           {/* Badge Tombol Klik Perbesar di Sudut Kanan Bawah */}
-          <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-outline-variant group-hover:border-amber-400 group-hover:text-amber-300 text-on-chrome text-[13px] font-pixel-title font-bold flex items-center gap-1.5 shadow-md transition-all">
+          <div className="absolute bottom-2 right-2 px-2.5 py-1 rounded-md bg-slate-950/90 backdrop-blur-sm border border-slate-700 group-hover:border-amber-400 group-hover:text-amber-300 text-slate-300 text-[13px] font-pixel-title font-bold flex items-center gap-1.5 shadow-md transition-all">
             <PixelIcon name="search" size={11} />
             <span>KLIK UNTUK PERBESAR</span>
           </div>
@@ -854,19 +854,19 @@ export function VolcanoResponseIllustration() {
               <span className={`text-base sm:text-lg md:text-xl ${currentTab.titleColor} font-bold font-pixel-title block leading-snug`}>
                 {currentTab.title}
               </span>
-              <span className="text-[13px] sm:text-[15px] text-on-chrome font-sans font-medium block mt-1">
+              <span className="text-[13px] sm:text-[15px] text-slate-200 font-sans font-medium block mt-1">
                 {currentTab.subtitle}
               </span>
             </div>
 
             {/* Daftar Poin Materi Edukasi */}
-            <div className="space-y-2.5 text-on-chrome">
+            <div className="space-y-2.5 text-slate-200">
               {currentTab.points.map((pt, idx) => (
-                <div key={idx} className="bg-slate-900/95 border border-outline-variant rounded-lg p-3 shadow-sm">
+                <div key={idx} className="bg-slate-900/95 border border-slate-800 rounded-lg p-3 shadow-sm">
                   <span className="font-bold font-pixel-title text-[17px] sm:text-[19px] block mb-1.5" style={{ color: currentTab.color }}>
                     {pt.title}
                   </span>
-                  <p className="text-[17px] sm:text-[18px] leading-relaxed text-on-chrome font-medium font-sans">
+                  <p className="text-[17px] sm:text-[18px] leading-relaxed text-slate-100 font-medium font-sans">
                     {pt.desc}
                   </p>
                 </div>
@@ -875,23 +875,23 @@ export function VolcanoResponseIllustration() {
 
             {/* Kotak Tindakan / Arahan Keselamatan */}
             <div
-              className="p-3 bg-slate-900/95 border-2 rounded-lg text-on-chrome mt-2.5 shadow-sm"
+              className="p-3 bg-slate-900/95 border-2 rounded-lg text-slate-100 mt-2.5 shadow-sm"
               style={{ borderColor: currentTab.color }}
             >
               <span className="font-bold text-[17px] sm:text-[19px] block mb-1 font-pixel-title" style={{ color: currentTab.color }}>
                 {currentTab.actionLabel}
               </span>
-              <p className="text-[16.5px] sm:text-[18px] leading-relaxed text-on-chrome font-medium font-sans">
+              <p className="text-[16.5px] sm:text-[18px] leading-relaxed text-slate-100 font-medium font-sans">
                 {currentTab.actionText}
               </p>
             </div>
 
             {/* Kotak Rujukan / Sumber Materi Edukasi */}
             {(currentTab as any).sourceUrl && (
-              <div className="p-2.5 bg-slate-900/95 border border-outline-variant rounded-lg text-on-chrome mt-2 shadow-sm flex items-center justify-between gap-2">
+              <div className="p-2.5 bg-slate-900/95 border border-slate-800 rounded-lg text-slate-200 mt-2 shadow-sm flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 overflow-hidden">
                   <span className="text-amber-400 font-pixel text-[13px] font-bold shrink-0">SUMBER:</span>
-                  <span className="text-[13px] text-on-chrome font-sans truncate font-semibold">
+                  <span className="text-[13px] text-slate-300 font-sans truncate font-semibold">
                     {(currentTab as any).sourceText}
                   </span>
                 </div>
@@ -919,8 +919,8 @@ export function VolcanoResponseIllustration() {
             setActiveTab('apd');
           }}
           className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'apd'
-            ? 'bg-sky-500 text-on-accent-chip border-sky-200 font-bold shadow-md scale-[1.02]'
-            : 'bg-chrome text-sky-300 border-outline-variant hover:border-sky-500'
+            ? 'bg-sky-500 text-slate-950 border-sky-200 font-bold shadow-md scale-[1.02]'
+            : 'bg-slate-900 text-sky-300 border-slate-700 hover:border-sky-500'
             }`}
         >
           1. APD MASKER & BAJU
@@ -932,7 +932,7 @@ export function VolcanoResponseIllustration() {
           }}
           className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'awanpanas'
             ? 'bg-rose-600 text-white border-rose-300 font-bold shadow-md scale-[1.02]'
-            : 'bg-chrome text-rose-300 border-outline-variant hover:border-rose-500'
+            : 'bg-slate-900 text-rose-300 border-slate-700 hover:border-rose-500'
             }`}
         >
           2. BAHAYA AWAN PANAS
@@ -944,7 +944,7 @@ export function VolcanoResponseIllustration() {
           }}
           className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'awanpanas2'
             ? 'bg-orange-600 text-white border-orange-300 font-bold shadow-md scale-[1.02]'
-            : 'bg-chrome text-orange-300 border-outline-variant hover:border-orange-500'
+            : 'bg-slate-900 text-orange-300 border-slate-700 hover:border-orange-500'
             }`}
         >
           3. AWAN PANAS DI LEMBAH SUNGAI
@@ -955,8 +955,8 @@ export function VolcanoResponseIllustration() {
             setActiveTab('krb');
           }}
           className={`px-2.5 py-2.5 rounded-lg border-2 text-[14.5px] sm:text-[13px] font-pixel-title cursor-pointer transition-all active:translate-y-0.5 text-center ${activeTab === 'krb'
-            ? 'bg-amber-500 text-on-accent-chip border-amber-200 font-bold shadow-md scale-[1.02]'
-            : 'bg-chrome text-amber-300 border-outline-variant hover:border-amber-500'
+            ? 'bg-amber-500 text-slate-950 border-amber-200 font-bold shadow-md scale-[1.02]'
+            : 'bg-slate-900 text-amber-300 border-slate-700 hover:border-amber-500'
             }`}
         >
           4. PETA ZONASI KRB
@@ -970,11 +970,11 @@ export function VolcanoResponseIllustration() {
           onClick={() => setIsFullscreen(false)}
         >
           <div onKeyDown={blokirRambatanTombol()}
-            className="relative w-full max-w-5xl max-h-[92vh] bg-chrome border-3 border-amber-600/90 rounded-2xl p-3 sm:p-5 flex flex-col items-center shadow-[0_0_60px_rgba(0,0,0,0.95)]"
+            className="relative w-full max-w-5xl max-h-[92vh] bg-slate-950 border-3 border-amber-600/90 rounded-2xl p-3 sm:p-5 flex flex-col items-center shadow-[0_0_60px_rgba(0,0,0,0.95)]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Modal Lightbox */}
-            <div className="w-full flex items-center justify-between pb-3 mb-2 border-b-2 border-outline-variant shrink-0">
+            <div className="w-full flex items-center justify-between pb-3 mb-2 border-b-2 border-slate-800 shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full animate-ping" style={{ backgroundColor: currentTab.color }} />
                 <h3 className="font-pixel-title text-[13px] sm:text-base md:text-lg text-amber-300 font-bold">
@@ -1000,8 +1000,8 @@ export function VolcanoResponseIllustration() {
             </div>
 
             {/* Footer Petunjuk & Sumber Rujukan */}
-            <div className="w-full pt-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[14.5px] text-on-chrome font-sans shrink-0 border-t border-slate-800/80 mt-1 font-semibold">
-              <span className="text-on-surface-variant">Klik tombol Tutup, tekan tombol [ESC], atau klik di luar kotak untuk kembali</span>
+            <div className="w-full pt-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[14.5px] text-slate-300 font-sans shrink-0 border-t border-slate-800/80 mt-1 font-semibold">
+              <span className="text-slate-400">Klik tombol Tutup, tekan tombol [ESC], atau klik di luar kotak untuk kembali</span>
               {(currentTab as any).sourceUrl ? (
                 <a
                   href={(currentTab as any).sourceUrl}
@@ -1060,12 +1060,12 @@ export function VolcanoPostAshIllustration() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
       {/* Top Banner */}
-      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-outline-variant">
+      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
         <span className="text-[13px] sm:text-[15px] font-pixel-title text-amber-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="shield" size={14} />
           PENANGANAN ABU VULKANIK &amp; PERLINDUNGAN ATAP
         </span>
-        <span className="text-[13.5px] sm:text-[13px] text-on-surface-variant font-pixel font-semibold">
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel font-semibold">
           STANDAR RESMI BNPB
         </span>
       </div>
@@ -1230,10 +1230,10 @@ export function VolcanoPostAshIllustration() {
       </div>
 
       {/* Description Box below Canvas */}
-      <div className="w-full bg-chrome border-2 border-outline-variant rounded-xl p-2.5 mb-2 shadow-inner">
+      <div className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl p-2.5 mb-2 shadow-inner">
         <div className="flex items-center gap-2 mb-1">
           <span
-            className="px-2 py-0.5 rounded text-[12.5px] font-pixel-title text-on-accent-chip font-bold"
+            className="px-2 py-0.5 rounded text-[12.5px] font-pixel-title text-slate-950 font-bold"
             style={{ backgroundColor: tabDetails[activeTab].color }}
           >
             {tabDetails[activeTab].badge}
@@ -1242,7 +1242,7 @@ export function VolcanoPostAshIllustration() {
             {tabDetails[activeTab].title}
           </h4>
         </div>
-        <p className="font-sans text-[13px] sm:text-[15px] text-on-chrome leading-relaxed font-medium">
+        <p className="font-sans text-[13px] sm:text-[15px] text-slate-200 leading-relaxed font-medium">
           {tabDetails[activeTab].desc}
         </p>
       </div>
@@ -1252,8 +1252,8 @@ export function VolcanoPostAshIllustration() {
         <button
           onClick={() => setActiveTab('atap')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'atap'
-            ? 'bg-orange-500 text-on-accent-chip border-orange-300 font-bold'
-            : 'bg-chrome-raised text-orange-300 border-outline-variant hover:border-orange-500'
+            ? 'bg-orange-500 text-slate-950 border-orange-300 font-bold'
+            : 'bg-slate-800 text-orange-300 border-slate-700 hover:border-orange-500'
             }`}
         >
           1. BERSIH ATAP RUMAH
@@ -1261,8 +1261,8 @@ export function VolcanoPostAshIllustration() {
         <button
           onClick={() => setActiveTab('kendaraan')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'kendaraan'
-            ? 'bg-amber-400 text-on-accent-chip border-amber-300 font-bold'
-            : 'bg-chrome-raised text-amber-300 border-outline-variant hover:border-amber-400'
+            ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
+            : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
             }`}
         >
           2. LARANGAN BERKENDARA
@@ -1270,8 +1270,8 @@ export function VolcanoPostAshIllustration() {
         <button
           onClick={() => setActiveTab('apd')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'apd'
-            ? 'bg-emerald-500 text-on-accent-chip border-emerald-300 font-bold'
-            : 'bg-chrome-raised text-emerald-300 border-outline-variant hover:border-emerald-500'
+            ? 'bg-emerald-500 text-slate-950 border-emerald-300 font-bold'
+            : 'bg-slate-800 text-emerald-300 border-slate-700 hover:border-emerald-500'
             }`}
         >
           3. APD BERSIH ABU
@@ -1314,12 +1314,12 @@ export function VolcanoPostSanitationIllustration() {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-between p-2 font-pixel">
-      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-outline-variant">
+      <div className="w-full flex items-center justify-between px-2 pb-1.5 border-b border-slate-800">
         <span className="text-[13px] sm:text-[15px] font-pixel-title text-sky-400 font-bold flex items-center gap-1.5">
           <PixelIcon name="heart" size={14} />
           SANITASI AIR BERSIH &amp; KESEHATAN PASCABENCANA
         </span>
-        <span className="text-[13.5px] sm:text-[13px] text-on-surface-variant font-pixel font-semibold">
+        <span className="text-[13.5px] sm:text-[13px] text-slate-400 font-pixel font-semibold">
           STANDAR MEDIS PMI &amp; BNPB
         </span>
       </div>
@@ -1464,10 +1464,10 @@ export function VolcanoPostSanitationIllustration() {
         </svg>
       </div>
 
-      <div className="w-full bg-chrome border-2 border-outline-variant rounded-xl p-2.5 mb-2 shadow-inner">
+      <div className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl p-2.5 mb-2 shadow-inner">
         <div className="flex items-center gap-2 mb-1">
           <span
-            className="px-2 py-0.5 rounded text-[12.5px] font-pixel-title text-on-accent-chip font-bold"
+            className="px-2 py-0.5 rounded text-[12.5px] font-pixel-title text-slate-950 font-bold"
             style={{ backgroundColor: tabDetails[activeTab].color }}
           >
             {tabDetails[activeTab].badge}
@@ -1476,7 +1476,7 @@ export function VolcanoPostSanitationIllustration() {
             {tabDetails[activeTab].title}
           </h4>
         </div>
-        <p className="font-sans text-[13px] sm:text-[15px] text-on-chrome leading-relaxed font-medium">
+        <p className="font-sans text-[13px] sm:text-[15px] text-slate-200 leading-relaxed font-medium">
           {tabDetails[activeTab].desc}
         </p>
       </div>
@@ -1485,8 +1485,8 @@ export function VolcanoPostSanitationIllustration() {
         <button
           onClick={() => setActiveTab('air')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'air'
-            ? 'bg-sky-500 text-on-accent-chip border-sky-300 font-bold'
-            : 'bg-chrome-raised text-sky-300 border-outline-variant hover:border-sky-500'
+            ? 'bg-sky-500 text-slate-950 border-sky-300 font-bold'
+            : 'bg-slate-800 text-sky-300 border-slate-700 hover:border-sky-500'
             }`}
         >
           1. AIR TERTUTUP
@@ -1494,8 +1494,8 @@ export function VolcanoPostSanitationIllustration() {
         <button
           onClick={() => setActiveTab('silika')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'silika'
-            ? 'bg-rose-500 text-on-accent-chip border-rose-300 font-bold'
-            : 'bg-chrome-raised text-rose-300 border-outline-variant hover:border-rose-500'
+            ? 'bg-rose-500 text-slate-950 border-rose-300 font-bold'
+            : 'bg-slate-800 text-rose-300 border-slate-700 hover:border-rose-500'
             }`}
         >
           2. BAHAYA SILIKA
@@ -1503,8 +1503,8 @@ export function VolcanoPostSanitationIllustration() {
         <button
           onClick={() => setActiveTab('mata')}
           className={`px-2 py-2 rounded-lg border-2 text-[13px] sm:text-[14.5px] font-pixel-title cursor-pointer transition-all ${activeTab === 'mata'
-            ? 'bg-amber-400 text-on-accent-chip border-amber-300 font-bold'
-            : 'bg-chrome-raised text-amber-300 border-outline-variant hover:border-amber-400'
+            ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold'
+            : 'bg-slate-800 text-amber-300 border-slate-700 hover:border-amber-400'
             }`}
         >
           3. CUCI MATA AIR
@@ -2029,10 +2029,10 @@ export function VolcanoPostPyroclasticIllustration() {
 
       {/* Modern Explanatory Information Card */}
       <div className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 my-1.5 shadow-xl backdrop-blur-md">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5 pb-1 border-b border-outline-variant">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5 pb-1 border-b border-slate-800">
           <div className="flex items-center gap-2">
             <span
-              className="px-2.5 py-0.5 rounded-full text-[13.5px] sm:text-[13px] font-black text-on-accent-chip tracking-wider uppercase"
+              className="px-2.5 py-0.5 rounded-full text-[13.5px] sm:text-[13px] font-black text-slate-950 tracking-wider uppercase"
               style={{ backgroundColor: tabDetails[activeTab].color }}
             >
               {tabDetails[activeTab].badge}
@@ -2046,7 +2046,7 @@ export function VolcanoPostPyroclasticIllustration() {
               href="https://lifestyle.kompas.com/read/2010/10/29/22092982/kecil-peluang-erupsi-merapi-eksplosif"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-2 py-0.5 bg-chrome-raised hover:bg-surface-container-highest border border-outline rounded text-amber-300 hover:text-amber-200 text-[13.5px] font-sans font-bold flex items-center gap-1 transition-all"
+              className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-amber-300 hover:text-amber-200 text-[13.5px] font-sans font-bold flex items-center gap-1 transition-all"
               title="Kunjungi sumber dokumentasi Kompas.com"
             >
               <span>Sumber: Kompas.com</span>
@@ -2054,7 +2054,7 @@ export function VolcanoPostPyroclasticIllustration() {
             </a>
           )}
         </div>
-        <p className="font-sans text-[13px] sm:text-[16px] text-on-chrome leading-relaxed font-semibold mb-2">
+        <p className="font-sans text-[13px] sm:text-[16px] text-slate-200 leading-relaxed font-semibold mb-2">
           {tabDetails[activeTab].desc}
         </p>
         <div className="bg-slate-950/60 rounded-lg px-2.5 py-1.5 border-l-3 border-amber-400 flex items-start gap-2">
@@ -2073,8 +2073,8 @@ export function VolcanoPostPyroclasticIllustration() {
         <button
           onClick={() => setActiveTab('mekanisme')}
           className={`px-3 py-2.5 rounded-xl border-2 text-[14.5px] sm:text-[13px] font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'mekanisme'
-            ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-on-accent-chip border-orange-300 font-black shadow-orange-900/40 scale-[1.02]'
-            : 'bg-slate-800/90 text-orange-300 border-outline-variant hover:border-orange-500/60 hover:bg-chrome-raised'
+            ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 border-orange-300 font-black shadow-orange-900/40 scale-[1.02]'
+            : 'bg-slate-800/90 text-orange-300 border-slate-700 hover:border-orange-500/60 hover:bg-slate-800'
             }`}
         >
           <PixelIcon name="wave" size={14} className="shrink-0" />
@@ -2084,8 +2084,8 @@ export function VolcanoPostPyroclasticIllustration() {
         <button
           onClick={() => setActiveTab('sungai')}
           className={`px-3 py-2.5 rounded-xl border-2 text-[14.5px] sm:text-[13px] font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'sungai'
-            ? 'bg-gradient-to-r from-red-500 to-rose-500 text-on-accent-chip border-red-300 font-black shadow-red-900/40 scale-[1.02]'
-            : 'bg-slate-800/90 text-red-300 border-outline-variant hover:border-red-500/60 hover:bg-chrome-raised'
+            ? 'bg-gradient-to-r from-red-500 to-rose-500 text-slate-950 border-red-300 font-black shadow-red-900/40 scale-[1.02]'
+            : 'bg-slate-800/90 text-red-300 border-slate-700 hover:border-red-500/60 hover:bg-slate-800'
             }`}
         >
           <PixelIcon name="warning" size={14} className="shrink-0" />
@@ -2095,8 +2095,8 @@ export function VolcanoPostPyroclasticIllustration() {
         <button
           onClick={() => setActiveTab('ews')}
           className={`px-3 py-2.5 rounded-xl border-2 text-[14.5px] sm:text-[13px] font-bold font-sans cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md ${activeTab === 'ews'
-            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-on-accent-chip border-blue-300 font-black shadow-blue-900/40 scale-[1.02]'
-            : 'bg-slate-800/90 text-blue-300 border-outline-variant hover:border-blue-500/60 hover:bg-chrome-raised'
+            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-slate-950 border-blue-300 font-black shadow-blue-900/40 scale-[1.02]'
+            : 'bg-slate-800/90 text-blue-300 border-slate-700 hover:border-blue-500/60 hover:bg-slate-800'
             }`}
         >
           <PixelIcon name="siren" size={14} className="shrink-0" />

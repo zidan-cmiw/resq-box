@@ -12,7 +12,7 @@ export default function EvacuationGame() {
   const isRunning = useRuntimeStore((s) => s.isRunning);
 
   return (
-    <div className="h-screen h-[100dvh] w-full safe-area-pad flex flex-col bg-ink text-white overflow-hidden">
+    <div className="h-screen h-[100dvh] w-full safe-area-pad flex flex-col bg-[#0f172a] text-white overflow-hidden">
       {/* Header */}
       <header className="shrink-0 h-14 flex items-center justify-between px-6 border-b border-white/10 bg-black/40 backdrop-blur">
         <div className="flex items-center gap-4">
