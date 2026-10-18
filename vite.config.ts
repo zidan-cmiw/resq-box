@@ -15,10 +15,17 @@ export default defineConfig({
         //
         // Catatan: seluruh paket yang tidak lagi diimpor kode sudah DIBUANG
         // dari `package.json` (xyflow, dnd-kit, lucide-react, page-flip,
-        // react-pageflip, motion, clsx, tailwind-merge, workbox-window).
+        // react-pageflip, motion, clsx, tailwind-merge).
         // Karena itu tidak ada lagi entri manualChunks untuknya — sebelumnya
         // ada cabang 'dnd-vendor', 'icons', dan 'chart-vendor' yang tidak
         // pernah menghasilkan chunk apa pun.
+        //
+        // ⚠️ `workbox-window` TIDAK termasuk yang dibuang. Paket itu memang
+        // tidak diimpor langsung oleh `src/`, tetapi dibutuhkan oleh modul
+        // virtual `virtual:pwa-register/react` yang dipakai `PWABadge.tsx`.
+        // Tanpa `workbox-window` di `dependencies`, build gagal dengan
+        // "Rolldown failed to resolve import \"workbox-window\"".
+        // Jangan hapus lagi.
         manualChunks(id: string) {
           if (!id.includes('node_modules')) return;
 
