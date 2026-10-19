@@ -38,6 +38,7 @@ import TelemetrySidePanel from './TelemetrySidePanel';
 
 import { MISSIONS } from '../../missions/data/missions';
 import { retroAudio } from '../../utils/retroAudio';
+import { koneksiDiorama } from './koneksiDiorama';
 import { useMissionStore } from '../../store/missionStore';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import { useRuntimeStore } from '../../store/runtimeStore';
@@ -109,95 +110,26 @@ export default function Workspace() {
   const [showWsModal, setShowWsModal] = useState(false);
   const [wsIp, setWsIp] = useState('192.168.4.1');
   const [wsStatus, setWsStatus] = useState<'idle' | 'connecting' | 'connected'>('idle');
-  const wsRef = useRef<WebSocket | null>(null);
 
   const connectMaket = () => {
     if (!wsIp) return;
-    setWsStatus('connecting');
     addLog(`[SISTEM] Menghubungkan ke Diorama Fisik (${wsIp})...`, 'system');
-
-    try {
-      const ws = new WebSocket(`ws://${wsIp}:81`);
-
-      ws.onopen = () => {
-        setWsStatus('connected');
-        setShowWsModal(false);
-        addLog(`[DIORAMA] Diorama Fisik Terhubung! Sinyal siap dikirim.`, 'success');
-        // Kunci mode Common Anode (default yom.ino) & matikan LED agar tidak menyala putih saat normal
-        ws.send('anode\n');
-        ws.send('rgb off\n');
-        ws.send('led off\n');
-      };
-
-      ws.onmessage = (event) => {
-        // Data sensor/tombol dari hardware via WiFi → perbarui Digital Twin.
-        String(event.data).split('\n').forEach((line) => {
-          const l = line.trim();
-          if (l) {
-            if (l.includes('CONNECTED_TO_ESP32') || l.includes('ESP32') || l.includes('SISTEM SIAP')) {
-              ws.send('anode\n');
-              ws.send('rgb off\n');
-              ws.send('led off\n');
-            }
-            handleHardwareLine(l);
-          }
-        });
-      };
-
-      ws.onclose = (ev) => {
-        setWsStatus('idle');
-
-        // MENGAPA PESANNYA DIBEDAKAN
-        //
-        // Sebelumnya setiap kegagalan hanya berbunyi "Gagal terhubung", tanpa
-        // menjelaskan sebabnya. Akibatnya penyebab yang sesungguhnya —
-        // Android memblokir ws:// karena kebijakan lalu lintas tidak
-        // terenkripsi — tidak pernah terlihat, dan pencarian masalahnya
-        // mengarah ke WiFi serta HTTPS yang sebenarnya sudah benar.
-        //
-        // Kode penutupan WebSocket membedakan sebabnya dengan jelas, jadi
-        // pesannya dibuat sesuai kode itu.
-        if (ev.code === 1000) {
-          addLog('[DIORAMA] Diorama Fisik Terputus.', 'warn');
-        } else if (ev.code === 1006) {
-          // 1006 = tertutup tanpa alasan yang dikirim server. Ini yang muncul
-          // ketika koneksi ditolak SEBELUM sampai ke server — misalnya
-          // diblokir kebijakan jaringan Android, atau alamat/port salah.
-          addLog(
-            `[DIORAMA] Tidak dapat menjangkau ${wsIp}:81. ` +
-              'Pastikan WiFi DIORAMA_ESP32 tersambung DAN aplikasi ini mengizinkan ' +
-              'koneksi tidak terenkripsi ke 192.168.4.1 (lihat network_security_config.xml). ' +
-              'Bila memakai versi web, jalankan lewat http://localhost.',
-            'error'
-          );
-        } else {
-          addLog(`[DIORAMA] Koneksi ditutup (kode ${ev.code}).`, 'warn');
-        }
-
-        wsRef.current = null;
-      };
-
-      ws.onerror = () => {
-        // Peristiwa `error` pada WebSocket tidak membawa keterangan apa pun
-        // menurut standar — hanya menandakan ada kegagalan. Keterangan yang
-        // berguna ada pada `onclose`, jadi penanganannya ada di sana.
-        setWsStatus('idle');
-      };
-
-      wsRef.current = ws;
-    } catch (e) {
-      setWsStatus('idle');
-      addLog(`[DIORAMA] Format IP salah: ${e instanceof Error ? e.message : String(e)}`, 'error');
-    }
+    // Objek WebSocket dikelola koneksiDiorama (tingkat modul) agar sambungan
+    // bertahan walau Workspace dibongkar saat siswa pindah misi.
+    koneksiDiorama.sambung(wsIp);
   };
 
   const disconnectMaket = () => {
-    if (wsRef.current) wsRef.current.close();
+    koneksiDiorama.putus();
   };
   // ─────────────────────────────────────────────────────────────
 
   // ── Web Serial (Kabel USB) Hardware Integration ────────────────
-  const [serialStatus, setSerialStatus] = useState<'idle' | 'connecting' | 'connected'>('idle');
+  // Dipulihkan dari modul webSerial: port USB bisa tetap terbuka walau
+  // Workspace dibongkar, jadi tombolnya tidak boleh terlihat "belum tersambung".
+  const [serialStatus, setSerialStatus] = useState<'idle' | 'connecting' | 'connected'>(
+    () => (isSerialConnected() ? 'connected' : 'idle'),
+  );
 
   const connectSerialPort = async () => {
     if (!isWebSerialSupported()) {
@@ -246,8 +178,7 @@ export default function Workspace() {
     let sentWs = false;
     let sentUsb = false;
 
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(cleanCmd + '\n');
+    if (koneksiDiorama.kirim(cleanCmd + '\n')) {
       sentWs = true;
     }
     if (isSerialConnected()) {
@@ -261,10 +192,49 @@ export default function Workspace() {
     }
   };
 
+  // ── Pendaftaran penangan koneksi diorama ─────────────────────────
+  // Sambungan (WiFi maupun USB) SENGAJA TIDAK ditutup saat Workspace
+  // dibongkar. Dulu ada `wsRef.current?.close()` dan `disconnectSerial()` di
+  // sini, sehingga siswa harus menyambungkan ulang diorama setiap kali pindah
+  // misi - karena memilih misi berikutnya berarti kembali dulu ke peta Level 3.
+  // Sekarang sambungan hidup di koneksiDiorama / webSerial (tingkat modul) dan
+  // hanya diputus lewat tombol putus.
   useEffect(() => {
+    koneksiDiorama.daftarkan({
+      pesan: (baris) => handleHardwareLine(baris),
+      status: (statusBaru, kodeTutup) => {
+        setWsStatus(statusBaru);
+
+        if (statusBaru === 'connected') {
+          setShowWsModal(false);
+          addLog('[DIORAMA] Diorama Fisik Terhubung! Sinyal siap dikirim.', 'success');
+          return;
+        }
+
+        if (statusBaru !== 'idle' || kodeTutup === 0) return;
+
+        if (kodeTutup === 1000) {
+          addLog('[DIORAMA] Diorama Fisik Terputus.', 'warn');
+        } else if (kodeTutup === 1006) {
+          addLog(
+            `[DIORAMA] Tidak dapat menjangkau ${koneksiDiorama.ip}:81. ` +
+              'Pastikan WiFi DIORAMA_ESP32 tersambung DAN aplikasi ini mengizinkan ' +
+              'koneksi tidak terenkripsi ke 192.168.4.1 (lihat network_security_config.xml). ' +
+              'Bila memakai versi web, jalankan lewat http://localhost.',
+            'error',
+          );
+        } else {
+          addLog(`[DIORAMA] Koneksi ditutup (kode ${kodeTutup}).`, 'warn');
+        }
+      },
+    });
+
+    // Tampilkan status yang SUDAH ada sebelum komponen ini dipasang, supaya
+    // tombol tidak terlihat "belum tersambung" padahal masih tersambung.
+    setWsStatus(koneksiDiorama.status);
+
     return () => {
-      if (wsRef.current) wsRef.current.close();
-      disconnectSerial();
+      koneksiDiorama.lepas();
     };
   }, []);
 
@@ -322,7 +292,7 @@ export default function Workspace() {
       runningRef.current = false;
       addLog('[INFO] Simulasi dihentikan oleh pengguna.', 'warn');
       addLog('[PETA] Dampak lingkungan pasca-bencana tetap dapat diamati di peta 3D. Klik tombol "↺ Reset Kondisi" di toolbar peta untuk mengembalikan ke kondisi awal.', 'info');
-      if (wsRef.current?.readyState === WebSocket.OPEN || isSerialConnected()) {
+      if (koneksiDiorama.siap() || isSerialConnected()) {
         sendHardware('stopall', true);
       }
       useRuntimeStore.getState().resetPinStates();
@@ -476,7 +446,7 @@ export default function Workspace() {
       },
       stopAll: () => {
         retroAudio.stopEwsSiren();
-        if (wsRef.current?.readyState === WebSocket.OPEN || isSerialConnected()) {
+        if (koneksiDiorama.siap() || isSerialConnected()) {
           sendHardware('stopall');
         }
         useRuntimeStore.getState().resetPinStates();
