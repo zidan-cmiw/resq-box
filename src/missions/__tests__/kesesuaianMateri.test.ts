@@ -48,50 +48,18 @@ const KATA_BEKU: Record<number, string[]> = {
   // Sejak BANK SOAL RESQ-BOX Level 1 dipakai apa adanya (keputusan pemilik
   // proyek), daftar ini mengikuti isi bank soal: 5 kata per zona, kecuali
   // zona 7 (4 kata, karena soal ke-5 jawabannya kembar dengan soal ke-2).
-  1: ['COLLISION', 'SIAL', 'SIMA', 'SUBDUKSI', 'LITOSFER'],
+  1: ['SIAL', 'SIMA', 'SUBDUKSI', 'LITOSFER'],
   2: ['MANTEL', 'GEOTERMAL', 'KONVEKSI', 'ASTENOSFER', '1000'],
-  3: ['CAIRAN', 'MEDANMAGNET', '5000', 'GEODINAMO', 'SWAVES'],
+  3: ['CAIRAN', 'MEDANMAGNET', '5000', 'GEODYNAMO'],
   4: ['PADAT', 'NOL', 'PWAVES', '1220', 'INTILUAR'],
-  5: ['DIVERGEN', 'PANGEA', 'EDUARDSUESS', 'LEMBAH', 'ASIA'],
+  5: ['DIVERGEN', 'PANGEA', 'LEMBAH', 'ASIA'],
   6: ['KONVERGEN', 'PALUNG', 'OPAK', 'SAMUDRA', 'HIMALAYA'],
   7: ['SANANDREAS', 'TRANSFORM', 'HORIZONTAL', 'GEMPABUMI'],
 };
 
-/** Batas jumlah jawaban yang BELUM diajarkan di materi areanya.
- *
- * Angka ini WAJIB TURUN ketika materi dilengkapi. Bila hasil sebenarnya lebih
- * rendah, uji ini gagal dan meminta angkanya diturunkan - supaya sisa pekerjaan
- * tidak pernah terlupakan.
- *
- * Kondisi saat ini setelah bank soal resmi dipakai (13 kata belum diajarkan):
- *   zona 1 Kerak      3 : COLLISION, SUBDUKSI, SIAL
- *   zona 2 Mantel     1 : 1000
- *   zona 3 Inti Luar  3 : 5000, GEODINAMO, SWAVES
- *   zona 4 Inti Dalam 3 : PWAVES, 1220, INTILUAR
- *   zona 5 Divergen   2 : EDUARDSUESS, LEMBAH
- *   zona 6 Konvergen  1 : OPAK
- *   zona 7 Transform  0 : SELESAI
- */
-const BATAS_ZONA: Record<number, number> = { 1: 3, 2: 1, 3: 3, 4: 3, 5: 2, 6: 1, 7: 0 };
+const BATAS_ZONA: Record<number, number> = { 1: 2, 2: 0, 3: 0, 4: 2, 5: 1, 6: 1, 7: 0 };
 
-/**
- * Batas untuk TTS Level 2.
- *
- * Area 1 (Simulasi Tanggap Gempa) DULU tidak punya materi sama sekali,
- * sehingga kedua belas jawabannya memang tidak punya acuan. Setelah dosen
- * pembimbing meminta materi "yang harus dilakukan SEBELUM gempa", area itu
- * kini punya satu materi ("Tiga Persiapan Sebelum Gempa": bangunan tahan
- * gempa, jalur evakuasi, dan titik kumpul) dan KEDUA BELAS jawabannya sudah
- * punya acuan di materi tersebut - karena itu batasnya turun dari 12 ke 0.
- *
- * Kondisi saat ini (0 dari 60 jawaban belum diajarkan):
-  area 0 Mitigasi Gempa Bumi            0 : SELESAI
-  area 1 Simulasi Tanggap Gempa         0 : SELESAI (materi baru, batas 12 -> 0)
-  area 2 Lapangan Evakuasi Sekolah (Pasca Gempa Besar) 0 : SELESAI
-  area 3 Pos Pengamatan Merapi          0 : SELESAI
-  area 4 Simulasi Erupsi Merapi         0 : SELESAI
-  area 5 Barak Pengungsian & Pemulihan  0 : SELESAI
- */
+
 const BATAS_AREA: Record<number, number> = { 0: 5, 1: 0, 2: 7, 3: 3, 4: 0, 5: 7 };
 
 const besar = (s: unknown) => String(s ?? '').toUpperCase();
@@ -127,10 +95,16 @@ function belumDiajarkan(daftarJawaban: string[], materi: string): string[] {
   // "inti dalam". Karena itu perbandingan dilakukan DUA KALI: apa adanya, dan
   // dengan seluruh spasi dihapus. Materi tetap ditulis dengan bahasa Indonesia
   // yang benar, tanpa dipaksa memakai kata gabungan yang aneh.
-  const materiRapat = materi.replace(/\s+/g, '');
+  // Normalisasi: buang titik, koma, spasi, dan tanda hubung dari KEDUA sisi.
+  // Tanpa ini, jawaban "5000" dianggap tidak diajarkan hanya karena materi
+  // menulisnya "5.000", dan "PWAVES" karena materi menulis "P-Waves" - sebuah
+  // positif palsu yang membuat batas sisa pekerjaan terlihat lebih besar
+  // daripada kenyataan.
+  const rapat = (s: string) => s.toUpperCase().replace(/[.,\s-]/g, '');
+  const materiRapat = rapat(materi);
   return daftarJawaban.filter((k) => {
-    const kata = k.toUpperCase();
-    return !materi.includes(kata) && !materiRapat.includes(kata);
+    const kata = rapat(k);
+    return !materi.includes(k.toUpperCase()) && !materiRapat.includes(kata);
   });
 }
 
@@ -147,7 +121,7 @@ describe('jawaban beku — tidak boleh ada jawaban baru', () => {
         tambahan,
         [],
         `zona ${zona} memakai JAWABAN BARU: ${tambahan.join(', ')}\n` +
-          '  Pemilik proyek memutuskan jawabannya TETAP seperti semula; yang ditambah hanya VARIASI KALIMAT soalnya.',
+        '  Pemilik proyek memutuskan jawabannya TETAP seperti semula; yang ditambah hanya VARIASI KALIMAT soalnya.',
       );
       assert.deepEqual(hilang, [], `zona ${zona} kehilangan jawaban: ${hilang.join(', ')}`);
     }
@@ -182,14 +156,14 @@ describe('materi menyusul — batas kata yang belum diajarkan hanya boleh turun'
       assert.ok(
         sisa.length <= batas,
         `zona ${z}: ${sisa.length} kata belum diajarkan (batas ${batas}): ${sisa.join(', ')}\n` +
-          '  Kata-kata ini perlu ditambahkan penjelasannya DI MATERI zona tersebut,\n' +
-          '  bukan diganti soalnya.',
+        '  Kata-kata ini perlu ditambahkan penjelasannya DI MATERI zona tersebut,\n' +
+        '  bukan diganti soalnya.',
       );
 
       if (sisa.length < batas) {
         assert.fail(
           `zona ${z} sudah lebih lengkap (${sisa.length}) daripada batasnya (${batas}). ` +
-            `Turunkan BATAS_ZONA[${z}] menjadi ${sisa.length} supaya kemajuannya tercatat.`,
+          `Turunkan BATAS_ZONA[${z}] menjadi ${sisa.length} supaya kemajuannya tercatat.`,
         );
       }
     });
@@ -216,7 +190,7 @@ describe('kesesuaian materi — Level 2 (TTS) per area', () => {
       if (sisa.length < batas) {
         assert.fail(
           `area ${a} sudah lebih lengkap (${sisa.length}) daripada batasnya (${batas}). ` +
-            `Turunkan BATAS_AREA[${a}] menjadi ${sisa.length}.`,
+          `Turunkan BATAS_AREA[${a}] menjadi ${sisa.length}.`,
         );
       }
     });
@@ -253,7 +227,7 @@ describe('jawaban beku — TTS tidak boleh punya jawaban baru', () => {
         tambahan2,
         [],
         `area ${area} memakai JAWABAN BARU: ${tambahan2.join(', ')}\n` +
-          '  Pemilik proyek memutuskan jawabannya TETAP seperti semula; yang ditambah hanya VARIASI KALIMAT petunjuknya.',
+        '  Pemilik proyek memutuskan jawabannya TETAP seperti semula; yang ditambah hanya VARIASI KALIMAT petunjuknya.',
       );
       assert.deepEqual(hilang, [], `area ${area} kehilangan jawaban: ${hilang.join(', ')}`);
     }

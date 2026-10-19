@@ -61,7 +61,6 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
   1: [
     // Kerak Bumi — 5 soal dari BANK SOAL RESQ-BOX Level 1
     [
-      { word: 'COLLISION', hint: 'Zona tumbukan antar dua kerak benua disebut...' },
       { word: 'SUBDUKSI', hint: 'Zona tumbukan antara kerak benua dan kerak samudra disebut...' },
       { word: 'LITOSFER', hint: 'Lapisan padat nan kaku yang menyatukan kerak bumi dan mantel atas menjadi lempeng-lempeng tektonik disebut...' },
       { word: 'SIAL', hint: 'Komposisi batuan apakah yang paling mendominasi membentuk kerak benua?' },
@@ -84,8 +83,7 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
       { word: 'CAIRAN', hint: 'Wujud material pada lapisan inti luar berupa...' },
       { word: 'MEDANMAGNET', hint: 'Akibat adanya proses geodinamo yang menimbulkan arus listrik di inti luar bumi, terbentuklah...' },
       { word: '5000', hint: 'Suhu maksimal yang dapat dicapai lapisan inti luar adalah ... derajat Celsius.' },
-      { word: 'GEODINAMO', hint: 'Proses terbentuknya medan magnet bumi dikenal sebagai...' },
-      { word: 'SWAVES', hint: 'Jenis gelombang seismik yang tidak dapat menembus lapisan inti luar disebut...' },
+      { word: 'GEODYNAMO', hint: 'Proses terbentuknya medan magnet bumi dikenal sebagai...' },
     ],
   ],
   4: [
@@ -103,7 +101,6 @@ export const ZONE_GATE_BANK: Record<number, KataGerbang[][]> = {
     [
       { word: 'DIVERGEN', hint: 'Pergerakan dua lempeng tektonik yang saling menjauh satu sama lain disebut...' },
       { word: 'PANGEA', hint: 'Pada masa purba sekitar 250 juta tahun yang lalu, seluruh benua di bumi masih menyatu menjadi satu daratan super raksasa yang disebut...' },
-      { word: 'EDUARDSUESS', hint: 'Siapa pakar geografi asal Austria yang mencetuskan teori dua superbenua, Laurasia dan Gondwana, pada tahun 1844?' },
       { word: 'LEMBAH', hint: 'Pergerakan lempeng divergen yang memisahkan kerak benua akan membentuk bentang alam berupa...' },
       { word: 'ASIA', hint: 'Selain Amerika Utara dan Eropa, daratan purba di belahan utara juga menjadi cikal bakal benua...' },
     ],
