@@ -9,17 +9,47 @@ import { retroAudio } from '../../utils/retroAudio';
 
 // Bank grid TTS: tiap area punya beberapa varian, dan satu varian diundi per
 // siswa supaya seluruh angkatan tidak mengisi teka-teki yang sama persis.
-import { undiGridTTS, petunjukTTSUntuk, type ClueTTS } from './bankTTS';
+import { varianTTS, petunjukTTSUntuk, type ClueTTS, type GridTTS } from './bankTTS';
 
 interface CrosswordModalProps {
   areaIndex?: number;
-  /** Id siswa. Dipakai untuk mengundi grid, supaya tiap siswa dapat teka-teki berbeda. */
+  /**
+   * Id siswa. Dulu dipakai mengundi grid; kini hanya memilih redaksi petunjuk
+   * (lihat `petunjukTTSUntuk`). Tidak lagi menentukan soal mana yang tampil.
+   */
   userId?: string;
   onSuccess: () => void;
   onClose: () => void;
 }
 
-export default function CrosswordModal({ areaIndex = 0, userId = 'guest', onSuccess, onClose }: CrosswordModalProps) {
+/**
+ * Satu soal TTS. Dipanggil bergantian oleh `CrosswordModal` untuk soal 1..5.
+ *
+ * Dipisah menjadi komponen sendiri dan diberi `key` per nomor soal, sehingga
+ * seluruh state isian (huruf, sel aktif, status selesai) otomatis direset saat
+ * pindah soal — tanpa perlu membersihkan state satu per satu.
+ */
+interface PuzzleSatuProps {
+  gridDasar: GridTTS;
+  areaIndex: number;
+  userId: string;
+  nomorSoal: number;
+  totalSoal: number;
+  labelLanjut: string;
+  onLanjut: () => void;
+  onClose: () => void;
+}
+
+function PuzzleSatu({
+  gridDasar,
+  areaIndex,
+  userId,
+  nomorSoal,
+  totalSoal,
+  labelLanjut,
+  onLanjut,
+  onClose,
+}: PuzzleSatuProps) {
   // Grid DIUNDI per siswa (lihat bankTTS.ts). Hasilnya berbeda antar-siswa,
   // tetapi tetap sama bila siswa yang sama membuka ulang area ini — sehingga
   // tidak ada yang bisa "mengundi ulang" dengan me-refresh halaman.
@@ -29,17 +59,19 @@ export default function CrosswordModal({ areaIndex = 0, userId = 'guest', onSucc
   // Grid DAN redaksi petunjuknya diundi per siswa: dua siswa yang kebetulan
   // mendapat kata yang sama tetap membaca kalimat soal yang berbeda, sehingga
   // menyalin jawaban tidak lagi berguna - sementara kuncinya tetap sama.
-  const gridTerpilih = useMemo(() => {
-    const grid = undiGridTTS(areaIndex, userId);
-    if (!grid) return null;
-    return {
-      ...grid,
-      clues: grid.clues.map((c) => ({
+  // Grid sudah ditentukan induk (soal ke-`nomorSoal`); di sini hanya redaksi
+  // petunjuknya yang dipilih. Tetap memakai useMemo agar tidak dihitung ulang
+  // pada setiap ketukan tombol.
+  const gridTerpilih = useMemo(
+    () => ({
+      ...gridDasar,
+      clues: gridDasar.clues.map((c) => ({
         ...c,
-        clue: petunjukTTSUntuk(c, areaIndex, userId ?? 'guest'),
+        clue: petunjukTTSUntuk(c, areaIndex, userId),
       })),
-    };
-  }, [areaIndex, userId]);
+    }),
+    [gridDasar, areaIndex, userId],
+  );
 
   const clues = useMemo(() => gridTerpilih?.clues ?? [], [gridTerpilih]);
   const rows = gridTerpilih?.rows ?? 10;
@@ -196,6 +228,11 @@ export default function CrosswordModal({ areaIndex = 0, userId = 'guest', onSucc
                         ? 'TEKA-TEKI SILANG: SIMULASI GEMPA BUMI'
                         : 'TEKA-TEKI SILANG: MITIGASI GEMPA BUMI'}
               </h2>
+              {/* Penanda soal ke berapa, karena tiap area berisi 5 soal
+                  (BANK SOAL RESQ-BOX) yang dikerjakan bergantian. */}
+              <p className="text-[11px] sm:text-xs text-[#92400e] font-semibold mt-0.5">
+                Soal {nomorSoal} dari {totalSoal}
+              </p>
             </div>
           </div>
           <button aria-label="Tutup"
@@ -345,20 +382,64 @@ export default function CrosswordModal({ areaIndex = 0, userId = 'guest', onSucc
             <button
               onClick={() => {
                 retroAudio.playSelect();
-                onSuccess();
+                onLanjut();
               }}
               className="px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white border-3 border-emerald-950 shadow-[0_4px_0_#064e3b] text-[15px] sm:text-base md:text-lg font-pixel-title cursor-pointer active:translate-y-0.5 flex items-center gap-2.5 animate-bounce font-bold"
             >
               <PixelIcon name="unlock" size={18} />
-              <span>
-                {areaIndex === 1
-                  ? 'SELESAIKAN EKSPEDISI LEVEL 2!'
-                  : 'BUKA GERBANG KE AREA SELANJUTNYA!'}
-              </span>
+              <span>{labelLanjut}</span>
             </button>
           )}
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Induk TTS Level 2.
+ *
+ * BANK SOAL RESQ-BOX memecah evaluasi tiap area menjadi 5 SOAL kecil, bukan
+ * satu teka-teki besar. Karena itu modal ini menampilkan soal 1..5 bergantian,
+ * dan `onSuccess` baru dipanggil setelah soal TERAKHIR selesai.
+ *
+ * Area yang tidak punya grid di bank (area 2 dan 5 — keduanya area simulasi)
+ * tidak pernah membuka modal ini; alurnya ditangani TectonicGame.
+ */
+export default function CrosswordModal({
+  areaIndex = 0,
+  userId = 'guest',
+  onSuccess,
+  onClose,
+}: CrosswordModalProps) {
+  const daftarSoal = useMemo(() => varianTTS(areaIndex), [areaIndex]);
+  const [soalIndex, setSoalIndex] = useState(0);
+
+  const gridDasar = daftarSoal[soalIndex];
+  if (!gridDasar) return null;
+
+  const terakhir = soalIndex + 1 >= daftarSoal.length;
+
+  return (
+    <PuzzleSatu
+      key={`${areaIndex}-${soalIndex}`}
+      gridDasar={gridDasar}
+      areaIndex={areaIndex}
+      userId={userId ?? 'guest'}
+      nomorSoal={soalIndex + 1}
+      totalSoal={daftarSoal.length}
+      labelLanjut={
+        terakhir
+          ? areaIndex === 5
+            ? 'SELESAIKAN EKSPEDISI LEVEL 2!'
+            : 'BUKA GERBANG KE AREA SELANJUTNYA!'
+          : `LANJUT KE SOAL ${soalIndex + 2}`
+      }
+      onLanjut={() => {
+        if (terakhir) onSuccess();
+        else setSoalIndex(soalIndex + 1);
+      }}
+      onClose={onClose}
+    />
   );
 }

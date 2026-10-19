@@ -5,6 +5,16 @@
 // HUD interaktif, pop-up temuan sains (DiscoveryModal), evaluasi Teka-Teki Silang (CrosswordModal),
 // serta integrasi sinkronisasi progres ke Teacher Dashboard.
 
+/**
+ * Area Level 2 yang punya soal TTS, mengikuti BANK SOAL RESQ-BOX:
+ * Kelas (0), Lapangan Evakuasi (2), Pos Pemantauan Merapi (3), Posko (5).
+ *
+ * Area SIMULASI — Simulasi Tanggap Gempa (1) dan Simulasi Erupsi Merapi (4) —
+ * sengaja TIDAK punya soal TTS karena penilaiannya sudah dilakukan oleh
+ * jalannya simulasi itu sendiri.
+ */
+const AreaBerTTS = new Set<number>([0, 2, 3, 5]);
+
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUkuranKanvas } from '../../../hooks/useUkuranKanvas';
@@ -681,7 +691,17 @@ export default function TectonicGame() {
 
         if (state.pendingCrossword) {
           if (!isCurrentGateUnlocked()) {
-            setShowCrossword(true);
+            if (AreaBerTTS.has(currentAreaIndex)) {
+              setShowCrossword(true);
+            } else if (currentAreaIndex === 1) {
+              // BANK SOAL RESQ-BOX memberi soal TTS hanya untuk 4 area:
+              // Kelas (0), Lapangan (2), Pos Pemantauan (3), Posko (5).
+              // Area 2 (Simulasi Tanggap Gempa) tidak punya evaluasi TTS,
+              // jadi gerbangnya langsung dibuka begitu trigger tersentuh.
+              handleCrosswordSuccess();
+            }
+            // Area 5 (index 4, Simulasi Erupsi) juga tanpa TTS; gerbangnya
+            // sudah dibuka oleh simulasi gunung di gameEngine, bukan di sini.
           }
           state.pendingCrossword = false;
         }

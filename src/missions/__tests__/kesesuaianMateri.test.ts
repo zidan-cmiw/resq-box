@@ -92,7 +92,7 @@ const BATAS_ZONA: Record<number, number> = { 1: 3, 2: 1, 3: 3, 4: 3, 5: 2, 6: 1,
   area 4 Simulasi Erupsi Merapi         0 : SELESAI
   area 5 Barak Pengungsian & Pemulihan  0 : SELESAI
  */
-const BATAS_AREA: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+const BATAS_AREA: Record<number, number> = { 0: 5, 1: 0, 2: 7, 3: 3, 4: 0, 5: 7 };
 
 const besar = (s: unknown) => String(s ?? '').toUpperCase();
 
@@ -231,12 +231,13 @@ describe('kesesuaian materi — Level 2 (TTS) per area', () => {
  * pemilik proyek. Yang boleh ditambah hanyalah VARIASI KALIMAT petunjuknya.
  */
 const JAWABAN_TTS_BEKU: Record<number, string[]> = {
-  0: ['BANGUNAN', 'BERLINDUNG', 'EVAKUASI', 'GEMPA', 'LATIHAN', 'MERUNDUK', 'PERSIAPAN', 'PETUGAS', 'RENCANA', 'RINGAN', 'SIAGA', 'UPAYA'],
-  1: ['BANGKU', 'BERTAHAN', 'GETARAN', 'JENDELA', 'KEPALA', 'KORIDOR', 'LAPANGAN', 'MENJAUH', 'MENUNDUK', 'TANGAN', 'TANGGA', 'TERTIB'],
-  2: ['AMBULANS', 'BERKUMPUL', 'BMKG', 'KEHADIRAN', 'KORBAN', 'LAPANGAN', 'MEDIS', 'PETUGAS', 'POSKO', 'RERUNTUHAN', 'SELAMAT', 'SUSULAN'],
-  3: ['AWAS', 'DEFORMASI', 'GAS', 'KABUT', 'MAGMA', 'MASKER', 'PANTAU', 'PVMBG', 'SEISMOGRAF', 'SIAGA', 'STATUS', 'WASPADA'],
-  4: ['BAHAYA', 'ERUPSI', 'GEMURUH', 'KRATER', 'LAHAR', 'LEDAKAN', 'MENGUNGSI', 'MENURUN', 'PERINGATAN', 'PIROKLASTIK', 'SUMBER', 'TUTUP'],
-  5: ['AMAN', 'ATAP', 'BANTUAN', 'BARAK', 'LANSIA', 'LOGISTIK', 'MEDIS', 'PAPAN', 'PENGUNGSI', 'SANITASI', 'TANDON', 'TRAUMA'],
+  // Mengikuti BANK SOAL RESQ-BOX (keputusan pemilik proyek). Hanya 4 area yang
+  // punya TTS: Kelas (0), Lapangan (2), Pos Pemantauan (3), Posko (5).
+  // Area 1 dan 4 adalah area SIMULASI, jadi tidak muncul di sini.
+  0: ['BERLINDUNG', 'BERTAHAN', 'BNPB', 'DOKUMEN', 'EVAKUASI', 'JENDELA', 'KEPALA', 'KURSI', 'LAPANGAN', 'MENGHINDAR', 'MERUNDUK', 'PANIK', 'PERBAN', 'SIMULASI', 'TANGGA', 'TASSIAGABENCANA', 'TENANG', 'TERTIB', 'TITIKUMPUL'],
+  2: ['AFTERSHOCK', 'AMBULANS', 'BERKUMPUL', 'BPBD', 'EVAKUASI', 'HOAX', 'KEHADIRAN', 'KORBAN', 'KORSELETING', 'MENINGGAL', 'MERAH', 'PENCEGAHAN', 'PMR', 'POSKO', 'RERUNTUHAN', 'SEKOLAH', 'TANDU', 'WASPADA'],
+  3: ['AWANPANAS', 'AWAS', 'DEFORMASI', 'EMPAT', 'ERUPSI', 'GOGGLE', 'KRB', 'LAVA', 'LETUSAN', 'MAGMA', 'MASKER', 'NORMAL', 'PVMBG', 'SEISMOGRAF', 'SIAGA', 'SOLFATARA', 'VULKANIK', 'WASPADA'],
+  5: ['ATAP', 'AWANPANAS', 'BARAK', 'BELERANG', 'CUCITANGAN', 'EFUSIF', 'EKSPLOSIF', 'KRATER', 'LAHAR', 'LANSIA', 'LOGISTIK', 'PENGUNGSI', 'REHABILITASI', 'REKONSTRUKSI', 'SANITASI', 'SILIKA', 'TANDON', 'TRAUMA'],
 };
 
 describe('jawaban beku — TTS tidak boleh punya jawaban baru', () => {

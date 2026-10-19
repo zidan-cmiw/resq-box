@@ -24,7 +24,13 @@ import { LEVEL2_AREAS } from '../level2Data.ts';
  * Ditulis tangan membuat daftar ini bisa basi begitu ada area baru - dan area
  * yang lupa didaftarkan justru area yang paling perlu diuji.
  */
-const AREA = LEVEL2_AREAS.map((_, i) => i);
+// Area yang PUNYA soal TTS, mengikuti BANK SOAL RESQ-BOX.
+// Area indeks 1 (Simulasi Tanggap Gempa) dan 4 (Simulasi Erupsi Merapi)
+// sengaja tidak punya TTS - penilaiannya lewat jalannya simulasi itu sendiri.
+const AREA = [0, 2, 3, 5];
+
+/** Area yang WAJIB punya soal TTS. Area simulasi (1 dan 4) tidak wajib. */
+const areaWajibBerTTS = (i: number) => i === 0 || i === 2 || i === 3 || i === 5;
 
 /** Jalankan validator atas seluruh bank, kumpulkan kegagalannya. */
 function semuaMasalah(): string[] {
@@ -152,6 +158,7 @@ describe('bank TTS — keabsahan isi', () => {
     // Daftar area diambil dari LEVEL2_AREAS supaya penjaga ini ikut menangkap
     // area baru yang ditambahkan kelak tanpa grid.
     const hilang = LEVEL2_AREAS.map((a, i) => ({ i, id: a.id }))
+      .filter(({ i }) => areaWajibBerTTS(i))
       .filter(({ i }) => varianTTS(i).length === 0)
       .map(({ i, id }) => `indeks ${i} (${id})`);
 
@@ -199,15 +206,25 @@ describe('bank TTS — keabsahan isi', () => {
     );
   });
 
-  test('JUMLAH KATA seragam di semua varian satu area (aturan keadilan beban)', () => {
-    const tidakSeragam: string[] = [];
+  test('setiap soal TTS berisi 3 atau 4 kata (sesuai bank soal)', () => {
+    // BANK SOAL memecah evaluasi tiap area menjadi 5 SOAL kecil, bukan satu
+    // teka-teki besar. Tiap soal memuat 2-3 petunjuk mendatar/menurun sehingga
+    // jumlah katanya 3 atau 4.
+    const aneh: string[] = [];
     for (const a of AREA) {
-      const jumlah = varianTTS(a).map((g) => g.clues.length);
-      if (new Set(jumlah).size > 1) {
-        tidakSeragam.push(`area ${a} (${jumlah.join(' kata, ')} kata)`);
-      }
+      varianTTS(a).forEach((g, i) => {
+        if (g.clues.length < 3 || g.clues.length > 4) {
+          aneh.push(`area ${a} soal ${i + 1} (${g.clues.length} kata)`);
+        }
+      });
     }
-    assert.deepEqual(tidakSeragam, [], `beban tidak adil antar-varian: ${tidakSeragam.join('; ')}`);
+    assert.deepEqual(aneh, [], `jumlah kata tidak wajar: ${aneh.join('; ')}`);
+  });
+
+  test('setiap area berTTS berisi TEPAT 5 soal', () => {
+    const salah = AREA.filter((a) => varianTTS(a).length !== 5)
+      .map((a) => `area ${a} (${varianTTS(a).length} soal)`);
+    assert.deepEqual(salah, [], `jumlah soal tidak lima: ${salah.join('; ')}`);
   });
 
   test('setiap jawaban berupa huruf kapital A-Z dan cukup panjang', () => {
