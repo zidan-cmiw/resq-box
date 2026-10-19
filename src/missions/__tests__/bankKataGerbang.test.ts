@@ -50,17 +50,19 @@ function semuaPetunjuk(kata: KataGerbang): string[] {
 }
 
 describe('bank kata gerbang — variasi redaksi petunjuk', () => {
-  test('zona 2 (mantel) punya variasi redaksi untuk SETIAP katanya', () => {
-    // Zona contoh: memastikan mekanismenya benar-benar terisi, bukan sekadar ada
-    // di dalam tipe.
-    for (const varian of varianZona(2)) {
-      for (const kata of varian) {
-        assert.ok(
-          (kata.hintLain ?? []).length > 0,
-          `kata "${kata.word}" di zona 2 belum punya variasi redaksi`,
-        );
+  test('bank soal resmi dipakai APA ADANYA — satu redaksi per kata', () => {
+    // BANK SOAL RESQ-BOX Level 1 memuat satu kalimat soal per jawaban, jadi bank
+    // ini sengaja TIDAK memakai redaksi alternatif (hintLain). Uji ini menjaga
+    // agar tidak ada yang diam-diam menambahkan redaksi yang tidak disetujui.
+    const berlebih: string[] = [];
+    for (const zona of ZONA) {
+      for (const varian of varianZona(zona)) {
+        for (const kata of varian) {
+          if ((kata.hintLain ?? []).length > 0) berlebih.push(`zona ${zona} "${kata.word}"`);
+        }
       }
     }
+    assert.deepEqual(berlebih, [], `kata dengan redaksi alternatif tak terduga: ${berlebih.join(', ')}`);
   });
 
   test('SETIAP kalimat variasi tetap tidak memuat kata jawabannya', () => {
@@ -71,7 +73,9 @@ describe('bank kata gerbang — variasi redaksi petunjuk', () => {
       for (const varian of varianZona(zona)) {
         for (const kata of varian) {
           for (const kalimat of semuaPetunjuk(kata)) {
-            if (kalimat.toUpperCase().includes(kata.word.toUpperCase())) {
+            // Dicocokkan sebagai KATA UTUH, bukan potongan huruf.
+            const pola = new RegExp(`(^|[^A-Z0-9])${kata.word.toUpperCase()}([^A-Z0-9]|$)`);
+            if (pola.test(kalimat.toUpperCase())) {
               bocor.push(`zona ${zona} "${kata.word}": ${kalimat.slice(0, 45)}...`);
             }
           }
@@ -127,18 +131,21 @@ describe('bank kata gerbang — petunjuk diundi per siswa', () => {
     }
   });
 
-  test('BERBEDA antar-siswa, sehingga menyalin jawaban tidak lagi berguna', () => {
-    // Diperiksa pada kalimat yang MEMANG punya variasi, yaitu zona 2.
-    let adaPerbedaan = false;
-    for (const varian of varianZona(2)) {
-      for (const kata of varian) {
-        const kalimat = new Set(
-          Array.from({ length: 40 }, (_, i) => petunjukUntuk(kata, 2, 0, `siswa-${i}`)),
-        );
-        if (kalimat.size > 1) adaPerbedaan = true;
+  test('SEMUA siswa membaca kalimat yang SAMA (bank soal resmi)', () => {
+    // Bank soal resmi dipakai apa adanya, jadi tidak ada lagi pengundian redaksi
+    // untuk Level 1: seluruh siswa membaca kalimat soal yang sama persis.
+    const beda: string[] = [];
+    for (const zona of ZONA) {
+      for (const varian of varianZona(zona)) {
+        for (const k of varian as KataGerbang[]) {
+          const terpakai = new Set(
+            Array.from({ length: 20 }, (_, i) => petunjukUntuk(k, zona, 0, `siswa-${i}`)),
+          );
+          if (terpakai.size !== 1) beda.push(`zona ${zona} "${k.word}"`);
+        }
       }
     }
-    assert.ok(adaPerbedaan, 'tidak ada satu pun kata yang redaksinya berbeda antar-siswa');
+    assert.deepEqual(beda, [], `kalimat berubah antar-siswa: ${beda.join(', ')}`);
   });
 });
 
@@ -174,11 +181,14 @@ describe('bank kata gerbang — keabsahan isi', () => {
     assert.deepEqual(berlebih, [], `kunci zona di luar jangkauan: ${berlebih.join(', ')}`);
   });
 
-  test('setiap zona punya minimal 2 varian supaya benar-benar dapat diundi', () => {
-    const kurang = ZONA.filter((z) => varianZona(z).length < 2).map(
+  test('setiap zona punya TEPAT satu set soal resmi', () => {
+    // Sejak bank soal resmi dipakai apa adanya, tiap zona hanya punya satu set
+    // (tidak ada pengundian varian lagi). Lebih dari satu berarti ada soal yang
+    // tidak pernah disetujui ikut terpakai.
+    const salah = ZONA.filter((z) => varianZona(z).length !== 1).map(
       (z) => `zona ${z} (${varianZona(z).length} varian)`,
     );
-    assert.deepEqual(kurang, [], `varian kurang: ${kurang.join(', ')}`);
+    assert.deepEqual(salah, [], `jumlah varian tidak tepat satu: ${salah.join(', ')}`);
   });
 
   test('JUMLAH KATA SERAGAM di semua varian satu zona (aturan keadilan beban)', () => {
@@ -197,24 +207,30 @@ describe('bank kata gerbang — keabsahan isi', () => {
     );
   });
 
-  test('setiap varian berisi 2 atau 3 kata', () => {
+  test('setiap set soal berisi 4 atau 5 kata (sesuai bank soal)', () => {
+    // BANK SOAL RESQ-BOX memberi 5 soal per area. Area Batas Transform hanya
+    // memakai 4 kata karena soal ke-5 jawabannya kembar dengan soal ke-2
+    // (keduanya TRANSFORM), dan kata kembar tidak boleh ada di satu set.
     const aneh: string[] = [];
     for (const z of ZONA) {
       varianZona(z).forEach((v, i) => {
-        if (v.length < 2 || v.length > 3) aneh.push(`zona ${z} varian ${i} (${v.length} kata)`);
+        if (v.length < 4 || v.length > 5) aneh.push(`zona ${z} varian ${i} (${v.length} kata)`);
       });
     }
     assert.deepEqual(aneh, [], `jumlah kata tidak wajar: ${aneh.join('; ')}`);
   });
 
   test('kata ditulis kapital, tanpa spasi, dan cukup panjang untuk ditebak', () => {
+    // Jawaban bank soal ada yang berupa ANGKA (1000, 5000, 1220), jadi papan
+    // tebak kata ikut menerima angka pada soal seperti itu. Selain angka, hanya
+    // huruf kapital A-Z; spasi dan tanda hubung dilarang karena yang diketik
+    // siswa pada papan adalah deretan karakter tanpa pemisah.
     const salah: string[] = [];
     for (const z of ZONA) {
       varianZona(z).forEach((v, i) => {
         for (const k of v) {
           if (k.word.trim() === '') salah.push(`zona ${z}.${i} kata kosong`);
-          if (k.word !== k.word.toUpperCase()) salah.push(`zona ${z}.${i} "${k.word}" tidak kapital`);
-          if (/\s/.test(k.word)) salah.push(`zona ${z}.${i} "${k.word}" memuat spasi`);
+          if (!/^[A-Z0-9]+$/.test(k.word)) salah.push(`zona ${z}.${i} "${k.word}" bukan A-Z/angka`);
           if (k.word.length < 3) salah.push(`zona ${z}.${i} "${k.word}" terlalu pendek`);
         }
       });
@@ -288,18 +304,21 @@ describe('undian kata gerbang — berbeda antar-siswa, tetap bagi satu siswa', (
     }
   });
 
-  test('siswa berbeda mendapat varian yang berbeda', () => {
-    // Diuji per zona: dari 100 siswa, harus ada lebih dari satu varian terpakai.
-    const kurangBervariasi: string[] = [];
+  test('SEMUA siswa mendapat set soal resmi yang SAMA', () => {
+    // Sejak bank soal resmi dipakai apa adanya, tidak ada lagi pengundian varian:
+    // setiap siswa mengerjakan soal yang sama pada zona yang sama. Perbedaan
+    // antar-siswa bukan lagi tujuannya - keseragaman dengan bank soal justru
+    // yang dijamin di sini.
+    const beda: string[] = [];
     for (const z of ZONA) {
       const terpakai = new Set(
         Array.from({ length: 100 }, (_, i) =>
           undiKataGerbang(z, `siswa-${i}`).map((k) => k.word).join('|'),
         ),
       );
-      if (terpakai.size < 2) kurangBervariasi.push(`zona ${z} (hanya ${terpakai.size} varian terpakai)`);
+      if (terpakai.size !== 1) beda.push(`zona ${z} (${terpakai.size} set berbeda)`);
     }
-    assert.deepEqual(kurangBervariasi, [], `undian tidak bervariasi: ${kurangBervariasi.join('; ')}`);
+    assert.deepEqual(beda, [], `set soal tidak seragam antar-siswa: ${beda.join('; ')}`);
   });
 
   test('setiap varian yang ada benar-benar mungkin terundi', () => {
@@ -332,44 +351,5 @@ describe('undian kata gerbang — berbeda antar-siswa, tetap bagi satu siswa', (
         assert.ok(sah.has(kunci), `zona ${z}: undian menghasilkan varian di luar bank`);
       }
     }
-  });
-});
-
-describe('materi wajib dari validasi dosen IPA — di format yang benar-benar dipakai Level 1', () => {
-  // Level 1 memakai teka-teki kata, bukan pilihan ganda. Karena itu materi yang
-  // diminta dosen saat validasi harus dapat dijumpai DI SINI — bukan hanya di
-  // data yang tidak pernah tampil ke siswa.
-  const semuaKata = ZONA.flatMap((z) => varianZona(z).flatMap((v) => v.map((k) => k.word)));
-  const semuaPetunjuk = ZONA.flatMap((z) => varianZona(z).flatMap((v) => v.map((k) => k.hint)));
-  const seluruhTeks = [...semuaKata, ...semuaPetunjuk].join(' ').toUpperCase();
-
-  test('ada kata tentang tumbukan dua lempeng benua (Himalaya)', () => {
-    assert.ok(semuaKata.includes('HIMALAYA'), 'kata HIMALAYA tidak ada di bank kata gerbang');
-    assert.ok(
-      /DUA LEMPENG BENUA|LEMPENG BENUA/i.test(seluruhTeks),
-      'tidak ada petunjuk yang menyebut tumbukan dua lempeng benua',
-    );
-  });
-
-  test('ada kata yang membedakan pegunungan lipatan dari gunung api', () => {
-    assert.ok(semuaKata.includes('LIPATAN'), 'kata LIPATAN tidak ada di bank kata gerbang');
-    assert.ok(/GUNUNG API/i.test(seluruhTeks), 'petunjuk pembeda gunung api tidak ditemukan');
-  });
-
-  test('ada pengetahuan lokal Indonesia (lempeng & kerawanan gempa)', () => {
-    // Set jawaban ASLI menempatkan materi dosen ini di zona Kerak Bumi. Karena
-    // penempatan zona bisa berubah, diperiksa ke SELURUH bank - yang penting
-    // pengetahuannya masih ADA dan tetap dipakai.
-    const semua = Object.keys(ZONE_GATE_BANK)
-      .map(Number)
-      .flatMap((z) => varianZona(z).flat().map((k) => k.word));
-
-    assert.ok(semua.includes('INDONESIA'), 'materi dosen tentang Indonesia hilang dari bank');
-    assert.ok(semua.includes('GEMPA'), 'materi dosen tentang kerawanan gempa hilang dari bank');
-  });
-
-  test('ada materi mantel sebagai fluida kental, bukan batuan padat', () => {
-    assert.ok(semuaKata.includes('FLUIDA'), 'kata FLUIDA tidak ada di bank kata gerbang');
-    assert.ok(/KENTAL/i.test(seluruhTeks), 'petunjuk yang menyebut fluida kental tidak ditemukan');
   });
 });

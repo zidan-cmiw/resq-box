@@ -89,7 +89,10 @@ describe('variasi redaksi — kalimat alternatif benar-benar BERBEDA', () => {
   const entri = semuaEntri();
 
   test('kedua bank terbaca', () => {
-    assert.ok(entri.length >= 150, `hanya ${entri.length} entri terbaca - polanya mungkin berubah`);
+    // Sejak BANK SOAL RESQ-BOX Level 1 dipakai apa adanya, bank kata gerbang
+    // berisi 34 kata dengan SATU redaksi resmi per kata (tanpa hintLain).
+    // Bank TTS Level 2 tetap memakai redaksi alternatif.
+    assert.ok(entri.length >= 100, `hanya ${entri.length} entri terbaca - polanya mungkin berubah`);
   });
 
   test('tidak ada pasangan kalimat yang terlalu mirip', () => {
@@ -119,7 +122,11 @@ describe('variasi redaksi — kalimat alternatif benar-benar BERBEDA', () => {
     const bocor: string[] = [];
     for (const e of entri) {
       for (const kalimat of e.kalimat) {
-        if (kalimat.toUpperCase().includes(e.jawaban.toUpperCase())) {
+        // Dicocokkan sebagai KATA UTUH, bukan potongan huruf. Tanpa batas kata,
+        // jawaban "ASIA" akan dianggap bocor hanya karena kalimatnya memuat
+        // "Laurasia" — padahal itu nama daratan purba, bukan jawabannya.
+        const pola = new RegExp(`(^|[^A-Z0-9])${e.jawaban.toUpperCase()}([^A-Z0-9]|$)`);
+        if (pola.test(kalimat.toUpperCase())) {
           bocor.push(`${e.asal} "${e.jawaban}": ${kalimat.slice(0, 50)}...`);
         }
       }
@@ -168,14 +175,21 @@ describe('variasi redaksi — diundi per siswa, jawaban tidak berubah', () => {
     }
   });
 
-  test('Wordle: ada kata yang redaksinya benar-benar berbeda antar-siswa', () => {
-    const beda = new Set<string>();
-    for (const varian of varianZona(6)) {
-      for (const k of varian as KataGerbang[]) {
-        for (let i = 0; i < 30; i++) beda.add(petunjukUntuk(k, 6, 0, `siswa-${i}`));
+  test('Wordle: bank soal resmi memakai SATU redaksi per kata (tanpa hintLain)', () => {
+    // Bank soal Level 1 dipakai apa adanya, sehingga tiap kata hanya punya satu
+    // kalimat. Uji ini menjaga agar tidak ada yang diam-diam menambahkan redaksi
+    // alternatif yang tidak pernah disetujui.
+    const berlebih: string[] = [];
+    for (const zona of Object.keys(ZONE_GATE_BANK).map(Number)) {
+      for (const varian of varianZona(zona)) {
+        for (const k of varian as KataGerbang[]) {
+          if (k.hintLain && k.hintLain.length > 0) {
+            berlebih.push(`zona ${zona} "${k.word}"`);
+          }
+        }
       }
     }
-    assert.ok(beda.size > 1, 'tidak ada satu pun kata yang redaksinya berbeda antar-siswa');
+    assert.deepEqual(berlebih, [], `kata yang punya redaksi alternatif tak terduga:\n  ${berlebih.join('\n  ')}`);
   });
 
   test('TTS: ada petunjuk yang redaksinya benar-benar berbeda antar-siswa', () => {

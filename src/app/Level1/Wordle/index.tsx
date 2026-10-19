@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../../store/teacherStore';
 import { retroAudio } from '../../../utils/retroAudio';
@@ -73,6 +73,24 @@ export default function Wordle({
   const currentHint = questions[currentQIdx]?.hint || '';
   const wordLength = targetWord.length || 5;
 
+  // Sebagian soal dari BANK SOAL jawabannya berupa ANGKA (mis. suhu 1000 °C,
+  // kedalaman 1220 km). Untuk soal seperti itu papan tebak kata ikut menerima
+  // angka, dan baris angka pada kibor layar baru ditampilkan.
+  const adaAngka = /[0-9]/.test(targetWord);
+  const polaHurufSah = useMemo(
+    () => (adaAngka ? /^[A-Z0-9]$/ : /^[A-Z]$/),
+    [adaAngka]
+  );
+  const keyboardRows = useMemo(() => {
+    const baris: string[][] = [
+      ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+      ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+    ];
+    if (adaAngka) baris.push(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']);
+    baris.push(['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'DEL']);
+    return baris;
+  }, [adaAngka]);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 2000);
@@ -105,12 +123,12 @@ export default function Wordle({
       } else if (key === 'BACKSPACE' || key === 'DEL') {
         retroAudio.playHover();
         setCurrentGuess((prev) => prev.slice(0, -1));
-      } else if (/^[A-Z]$/.test(key) && currentGuess.length < wordLength) {
+      } else if (polaHurufSah.test(key) && currentGuess.length < wordLength) {
         retroAudio.playHover();
         setCurrentGuess((prev) => prev + key);
       }
     },
-    [currentGuess, gameState, guesses, targetWord, wordLength]
+    [currentGuess, gameState, guesses, targetWord, wordLength, polaHurufSah]
   );
 
   useEffect(() => {
@@ -121,14 +139,14 @@ export default function Wordle({
         onKeyPress('BACKSPACE');
       } else {
         const key = e.key.toUpperCase();
-        if (/^[A-Z]$/.test(key)) {
+        if (polaHurufSah.test(key)) {
           onKeyPress(key);
         }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onKeyPress]);
+  }, [onKeyPress, polaHurufSah]);
 
   const handleNextQuestion = () => {
     retroAudio.playSelect();
@@ -188,13 +206,6 @@ export default function Wordle({
     if (word.includes(letter)) return 'present';
     return 'absent';
   };
-
-  // Keyboard layout rows
-  const keyboardRows = [
-    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'DEL'],
-  ];
 
   // Calculate used letter statuses
   const usedLetters: Record<string, GuessStatus> = {};

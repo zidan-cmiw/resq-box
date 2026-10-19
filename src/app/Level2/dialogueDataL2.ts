@@ -303,7 +303,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       node_3: {
         id: 'node_3',
         speakerId: 'resqy',
- text: 'PENTING: Di tiap area, kamu harus berkomunikasi dengan rekan timmu yang memiliki tanda kaca pembesar untuk membaca dan mempelajari modul mitigasi bencana!',
+        text: 'PENTING: Di tiap area, kamu harus berkomunikasi dengan rekan timmu yang memiliki tanda kaca pembesar untuk membaca dan mempelajari modul mitigasi bencana!',
         expression: 'thinking',
         choices: [
           {
@@ -313,7 +313,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
           },
           {
             id: 'c2',
- text: 'Siap, aku temui rekan-rekan tim yang bertanda kaca pembesar!',
+            text: 'Siap, aku temui rekan-rekan tim yang bertanda kaca pembesar!',
             nextNodeId: 'node_ready',
           },
         ],
@@ -378,13 +378,13 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       node_4: {
         id: 'node_4',
         speakerId: 'zidane',
- text: 'Tepat. Kesiapsiagaan tata ruang mencegah korban terjebak. Selanjutnya, temui Zahra di dekat meja depan. Dia membawa materi Tas Siaga Bencana yang ditandai kaca pembesar!',
+        text: 'Tepat. Kesiapsiagaan tata ruang mencegah korban terjebak. Selanjutnya, temui Zahra di dekat meja depan. Dia membawa materi Tas Siaga Bencana yang ditandai kaca pembesar!',
         expression: 'happy',
       },
       node_5: {
         id: 'node_5',
         speakerId: 'zidane',
- text: 'Zahra sedang meneliti isi Tas Siaga 72 Jam di depan, Ican mengawasi jalur mental, dan Lintang menyiapkan modul Drop-Cover-Hold On. Jangan lewatkan tanda kaca pembesar mereka ya.',
+        text: 'Zahra sedang meneliti isi Tas Siaga 72 Jam di depan, Ican mengawasi jalur mental, dan Lintang menyiapkan modul Drop-Cover-Hold On. Jangan lewatkan tanda kaca pembesar mereka ya.',
         expression: 'normal',
       },
     },
@@ -458,7 +458,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       node_open_tsb: {
         id: 'node_open_tsb',
         speakerId: 'zahra',
- text: 'Silakan dipelajari ya! Tanda kaca pembesar di atas kepalaku kini sudah tersimpan di analisismu. Lanjut ngobrol ke Ican dan Lintang ya!',
+        text: 'Silakan dipelajari ya! Tanda kaca pembesar di atas kepalaku kini sudah tersimpan di analisismu. Lanjut ngobrol ke Ican dan Lintang ya!',
         expression: 'happy',
       },
     },
@@ -555,7 +555,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       node_5: {
         id: 'node_5',
         speakerId: 'ican',
- text: 'Jangan lari dulu pas bumi lagi goyang! Langsung merunduk dan ngumpet di bawah meja. Cek Lintang deh di belakang, dia punya materi lengkapnya bertanda kaca pembesar!',
+        text: 'Jangan lari dulu pas bumi lagi goyang! Langsung merunduk dan ngumpet di bawah meja. Cek Lintang deh di belakang, dia punya materi lengkapnya bertanda kaca pembesar!',
         expression: 'normal',
       },
     },
@@ -1060,7 +1060,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       resqy_f_3: {
         id: 'resqy_f_3',
         speakerId: 'resqy',
- text: 'Di sini kita mempelajari SOP utilitas listrik/gas, triage pertolongan pertama (P3K), dan sistem komando darurat sekolah. Ingat cari tanda kaca pembesar pada rekanmu!',
+        text: 'Di sini kita mempelajari SOP utilitas listrik/gas, triage pertolongan pertama (P3K), dan sistem komando darurat sekolah. Ingat cari tanda kaca pembesar pada rekanmu!',
         expression: 'thinking',
         choices: [
           {
@@ -1122,7 +1122,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       alisa_teach: {
         id: 'alisa_teach',
         speakerId: 'zahra_medis',
- text: 'Hebat sekali semangat belajarmu! Tanda kaca pembesar di poskoku kini sudah kamu kuasai. Lanjut pelajari sistem komando di meja Lintang ya!',
+        text: 'Hebat sekali semangat belajarmu! Tanda kaca pembesar di poskoku kini sudah kamu kuasai. Lanjut pelajari sistem komando di meja Lintang ya!',
         expression: 'happy',
       },
     },
@@ -1417,7 +1417,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       resqy_v_3: {
         id: 'resqy_v_3',
         speakerId: 'resqy',
- text: 'Perhatikan tanda kaca pembesar pada rekanmu untuk membuka modul edukasi, lalu temui Bu Tyas di posko gerbang untuk evaluasi Teka-Teki Silang!',
+        text: 'Perhatikan tanda kaca pembesar pada rekanmu untuk membuka modul edukasi, lalu temui Bu Tyas di posko gerbang untuk evaluasi Teka-Teki Silang!',
         expression: 'happy',
       },
     },
@@ -1507,7 +1507,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       rina_v_1: {
         id: 'rina_v_1',
         speakerId: 'zahra',
-        text: 'Hai hai penjelajah! Selamat datang di Plaza Pemantauan Status Merapi! Papan digital besar di belakangku ini terhubung langsung dengan sensor PVMBG lho!',
+        text: 'Hai hai penjelajah! Selamat datang di Pos Pemantauan Merapi! Papan digital besar di belakangku ini terhubung langsung dengan sensor PVMBG lho!',
         expression: 'happy',
         nextNodeId: 'rina_v_2',
       },
@@ -1536,7 +1536,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       rina_v_teach: {
         id: 'rina_v_teach',
         speakerId: 'zahra',
- text: 'Hebat sekali! Tanda kaca pembesar di poskoku sudah kamu pelajari. Jangan lupa masuk ke pos observasi untuk melihat seismograf Zidane, dan temui Lintang di depan ya!',
+        text: 'Hebat sekali! Tanda kaca pembesar di poskoku sudah kamu pelajari. Jangan lupa masuk ke pos observasi untuk melihat seismograf Zidane, dan temui Lintang di depan ya!',
         expression: 'happy',
         nextNodeId: 'rina_v_extra',
       },
@@ -1588,7 +1588,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       joko_v_teach: {
         id: 'joko_v_teach',
         speakerId: 'lintang',
- text: 'Sangat bijak! Modul zonasi KRB bertanda kaca pembesar ini telah tersimpan di catatan analisismu. Sekarang temui Bu Tyas di posko gerbang untuk evaluasi Teka-Teki Silang!',
+        text: 'Sangat bijak! Modul zonasi KRB bertanda kaca pembesar ini telah tersimpan di catatan analisismu. Sekarang temui Bu Tyas di posko gerbang untuk evaluasi Teka-Teki Silang!',
         expression: 'happy',
       },
     },
@@ -1894,7 +1894,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       resqy_b6_3: {
         id: 'resqy_b6_3',
         speakerId: 'resqy',
- text: 'Ayo temui Zidane di pos penanganan abu dan barak, Zahra di posko medis sanitasi, Ican di posko logistik, dan Lintang di posko awan panas untuk mempelajari seluruh modul bertanda kaca pembesar sebelum menempuh evaluasi akhir bersama Bu Tyas!',
+        text: 'Ayo temui Zidane di pos penanganan abu dan barak, Zahra di posko medis sanitasi, Ican di posko logistik, dan Lintang di posko awan panas untuk mempelajari seluruh modul bertanda kaca pembesar sebelum menempuh evaluasi akhir bersama Bu Tyas!',
         expression: 'normal',
         choices: [
           {
@@ -1968,7 +1968,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       dini_motor_next: {
         id: 'dini_motor_next',
         speakerId: 'zidane',
- text: 'Karena itu, batasi mobilitas kendaraan dan selalu bersihkan atap rumah secara gotong royong. Mari kita pelajari panduan lengkapnya dari modul resmi BNPB bertanda kaca pembesar!',
+        text: 'Karena itu, batasi mobilitas kendaraan dan selalu bersihkan atap rumah secara gotong royong. Mari kita pelajari panduan lengkapnya dari modul resmi BNPB bertanda kaca pembesar!',
         expression: 'normal',
         choices: [
           {
@@ -2033,7 +2033,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       alisa_s_eye_next: {
         id: 'alisa_s_eye_next',
         speakerId: 'zahra',
- text: 'Pastikan juga penutup tandon air minum selalu terkunci rapat. Buka modul bertanda kaca pembesar di poskoku agar kamu paham fakta ilmiahnya!',
+        text: 'Pastikan juga penutup tandon air minum selalu terkunci rapat. Buka modul bertanda kaca pembesar di poskoku agar kamu paham fakta ilmiahnya!',
         expression: 'normal',
         choices: [
           {
@@ -2048,7 +2048,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       alisa_s_teach: {
         id: 'alisa_s_teach',
         speakerId: 'zahra',
- text: 'Keren banget pemahamanmu! Tanda kaca pembesar di poskoku sudah tersimpan. Sekarang temui Lintang untuk materi ancaman awan panas guguran ya!',
+        text: 'Keren banget pemahamanmu! Tanda kaca pembesar di poskoku sudah tersimpan. Sekarang temui Lintang untuk materi ancaman awan panas guguran ya!',
         expression: 'happy',
       },
     },
@@ -2098,7 +2098,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       slamet_river_next: {
         id: 'slamet_river_next',
         speakerId: 'lintang',
- text: 'Peralatan Early Warning System (EWS) sungai bekerja memicu sirine peringatan. Simak diagram mekanismenya di modul bertanda kaca pembesar ini!',
+        text: 'Peralatan Early Warning System (EWS) sungai bekerja memicu sirine peringatan. Simak diagram mekanismenya di modul bertanda kaca pembesar ini!',
         expression: 'normal',
         choices: [
           {
@@ -2175,7 +2175,7 @@ export const DIALOGUE_TREES_L2: Record<string, DialogueTreeL2> = {
       satria_sh_1: {
         id: 'satria_sh_1',
         speakerId: 'bu_tyas',
-        text: 'Kerja kepemimpinan yang sangat membanggakan, anak-anakku para penjelajah tangguh! Ibu mencatat kalian telah mempelajari ketiga modul pascabencana erupsi bersama Zidane, Zahra, Ican, dan Lintang dengan sangat tekun!',
+        text: 'Kerja bagus anak-anakku! Ibu melihat progres penjelajahanmu terkait dengan bencana geologis dan upaya mitigasi begitu mengagumkan. Siapkah kamu untuk penjelajahan berikutnya?',
         expression: 'happy',
         nextNodeId: 'satria_sh_2',
       },

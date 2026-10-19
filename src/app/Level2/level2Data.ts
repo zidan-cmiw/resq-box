@@ -501,7 +501,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-sanitation',
         title: 'Temuan 2: Kesehatan, Sanitasi & Perlindungan Air Minum',
         shortDesc:
-          'Abu vulkanik mengandung pecahan kaca silika tajam mikroskopis yang dapat merusak jaringan paru-paru dan melukai kornea mata. Selalu kenakan masker dan kacamata tertutup saat beraktivitas. Jika mata terkena debu, basuh dengan air mengalir dan jangan pernah mengucek mata. Pastikan seluruh tandon dan sumber air minum ditutup rapat agar tidak tercemar gas asam dan belerang beracun. Di barak pengungsian, jaga kebersihan air dan sanitasi agar tidak menimbulkan penyakit. Warga yang luka atau mengalami TRAUMA akibat bencana segera ditangani oleh tim MEDIS.',
+          'Abu vulkanik tersusun atas material silika yang menjadi komposisi dalam pembuatan kaca yang dapat merusak jaringan paru-paru dan melukai kornea mata. Selalu kenakan masker dan kacamata tertutup saat beraktivitas. Jika mata terkena debu, basuh dengan air mengalir dan jangan pernah mengucek mata. Pastikan seluruh tandon dan sumber air minum ditutup rapat agar tidak tercemar gas asam dan belerang beracun. Di barak pengungsian, jaga kebersihan air dan sanitasi agar tidak menimbulkan penyakit. Warga yang luka atau mengalami TRAUMA akibat bencana segera ditangani oleh tim MEDIS.',
         fact:
           'Air minum yang terpapar abu vulkanik dapat mengalami penurunan pH drastis (sangat asam) dan terkontaminasi senyawa belerang berbahaya. Tutup tandon air rapat-rapat dan gunakan air bersih higienis di posko pengungsian!',
         iconName: 'heart',

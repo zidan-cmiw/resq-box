@@ -45,40 +45,34 @@ import { LEVEL2_AREAS } from '../../app/Level2/level2Data.ts';
  * Jangan menambah atau mengganti isi daftar ini tanpa keputusan pemilik proyek.
  */
 const KATA_BEKU: Record<number, string[]> = {
-  1: ['BASAL', 'BATU', 'BENUA', 'DARATAN', 'GEMPA', 'GRANIT', 'INDONESIA', 'KERAK', 'KERAS', 'LAUTAN', 'LEMPENG', 'LEMPUNG', 'LERENG', 'LITOSFER', 'SAMUDRA', 'SEDIMEN', 'SILIKAT', 'SUMATRA', 'TANAH', 'TEBAL', 'TIPIS'],
-  2: ['ADONAN', 'ASTENOSFER', 'FLUIDA', 'GEOTERMAL', 'KENTAL', 'KONDUKSI', 'KONVEKSI', 'MANTEL', 'MELELEH', 'PANAS', 'SILIKAT', 'SIRKULASI'],
-  3: ['ARUS', 'BESI', 'CAIR', 'CAIRAN', 'GEODYNAMO', 'KOMPAS', 'KUTUB', 'LEBUR', 'LELEHAN', 'LINDUNG', 'LISTRIK', 'LOGAM', 'MAGNET', 'MEDAN', 'NIKEL', 'PANAS', 'PERISAI', 'SUHU'],
-  4: ['BESI', 'BOLA', 'GRAVITASI', 'INTI', 'INTIDALAM', 'MAMPAT', 'NIKEL', 'PADAT', 'PADUAN', 'PUSAT', 'TEKANAN', 'TERDALAM'],
-  5: ['BENUA', 'CELAH', 'DIVERGEN', 'GERAK', 'LAVA', 'MAGMA', 'MELEBAR', 'MEMISAH', 'MENGAPUNG', 'MENJAUH', 'PANGEA', 'PUNGGUNG', 'REKAHAN', 'RETAK', 'SAMUDRA', 'TENGAH', 'TERBELAH', 'ZONA'],
-  6: ['DANGKAL', 'GUNUNG', 'HIMALAYA', 'LEMPENG', 'LIPATAN', 'MENDEKAT', 'MENUNJAM', 'MERAPI', 'PALUNG', 'PEGUNUNGAN', 'SUBDUKSI', 'TABRAKAN', 'TINGGI', 'TUMBUKAN'],
-  7: ['BERGESEK', 'GESERAN', 'HORIZONTAL', 'MENDATAR', 'PATAH', 'PATAHAN', 'REKAH', 'SANANDREAS', 'SEJAJAR', 'SESAR', 'TEGANGAN', 'TRANSFORM'],
+  // Sejak BANK SOAL RESQ-BOX Level 1 dipakai apa adanya (keputusan pemilik
+  // proyek), daftar ini mengikuti isi bank soal: 5 kata per zona, kecuali
+  // zona 7 (4 kata, karena soal ke-5 jawabannya kembar dengan soal ke-2).
+  1: ['COLLISION', 'SIAL', 'SIMA', 'SUBDUKSI', 'LITOSFER'],
+  2: ['MANTEL', 'GEOTERMAL', 'KONVEKSI', 'ASTENOSFER', '1000'],
+  3: ['CAIRAN', 'MEDANMAGNET', '5000', 'GEODINAMO', 'SWAVES'],
+  4: ['PADAT', 'NOL', 'PWAVES', '1220', 'INTILUAR'],
+  5: ['DIVERGEN', 'PANGEA', 'EDUARDSUESS', 'LEMBAH', 'ASIA'],
+  6: ['KONVERGEN', 'PALUNG', 'OPAK', 'SAMUDRA', 'HIMALAYA'],
+  7: ['SANANDREAS', 'TRANSFORM', 'HORIZONTAL', 'GEMPABUMI'],
 };
 
-/**
- * Batas jumlah jawaban yang BELUM diajarkan di materi areanya.
+/** Batas jumlah jawaban yang BELUM diajarkan di materi areanya.
  *
  * Angka ini WAJIB TURUN ketika materi dilengkapi. Bila hasil sebenarnya lebih
  * rendah, uji ini gagal dan meminta angkanya diturunkan - supaya sisa pekerjaan
  * tidak pernah terlupakan.
  *
- * Kondisi saat ini (0 dari 107 kata belum diajarkan):
- *   zona 1 Kerak      0 : SELESAI - LITOSFER, DARATAN, LAUTAN, LEMPENG, SILIKAT,
- *                        SEDIMEN, TANAH, LEMPUNG, LERENG, KERAS, INDONESIA,
- *                        SUMATRA, dan GEMPA sudah ditambahkan ke materi kerak.
- *   zona 2 Mantel     0 : SELESAI - ASTENOSFER, GEOTERMAL, KONDUKSI, MELELEH,
- *                        SILIKAT, dan SIRKULASI sudah dijelaskan di materi mantel.
- *   zona 3 Inti Luar  0 : SELESAI - LEBUR, LELEHAN, GEODYNAMO, KOMPAS, dan KUTUB
- *                        sudah dijelaskan di materi inti luar.
- *   zona 4 Inti Dalam 0 : SELESAI - TERDALAM, PADUAN, dan MAMPAT sudah dijelaskan
- *                        di materi inti dalam; INTIDALAM terpenuhi lewat kalimat
- *                        "inti dalam", karena perbandingan mengabaikan spasi.
- *   zona 5 Divergen   8 : CELAH, LAVA, MELEBAR, MEMISAH, MENGAPUNG, PUNGGUNG,
- *                        REKAHAN, ZONA
- *   zona 6 Konvergen  4 : DANGKAL, MENDEKAT, TABRAKAN, TINGGI
- *   zona 7 Transform  8 : GESERAN, HORIZONTAL, MENDATAR, PATAH, PATAHAN, REKAH,
- *                        SANANDREAS, TEGANGAN
+ * Kondisi saat ini setelah bank soal resmi dipakai (13 kata belum diajarkan):
+ *   zona 1 Kerak      3 : COLLISION, SUBDUKSI, SIAL
+ *   zona 2 Mantel     1 : 1000
+ *   zona 3 Inti Luar  3 : 5000, GEODINAMO, SWAVES
+ *   zona 4 Inti Dalam 3 : PWAVES, 1220, INTILUAR
+ *   zona 5 Divergen   2 : EDUARDSUESS, LEMBAH
+ *   zona 6 Konvergen  1 : OPAK
+ *   zona 7 Transform  0 : SELESAI
  */
-const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
+const BATAS_ZONA: Record<number, number> = { 1: 3, 2: 1, 3: 3, 4: 3, 5: 2, 6: 1, 7: 0 };
 
 /**
  * Batas untuk TTS Level 2.

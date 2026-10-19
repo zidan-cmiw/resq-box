@@ -116,6 +116,40 @@ const INITIAL_TOOLBOX = {
   ],
 };
 
+/**
+ * Geser tong sampah (trashcan) Blockly ke TENGAH bawah area kerja.
+ *
+ * Bawaannya Blockly menaruh tong sampah di pojok KANAN bawah. Di sana ia
+ * tertutup tombol melayang "Panduan Resqy" dan tombol chatbot, sehingga siswa
+ * tidak bisa menghapus blok.
+ *
+ * Blockly memosisikannya lewat atribut SVG `transform`, sedangkan properti CSS
+ * `transform` MENANG atas atribut itu. Jadi cukup setel gaya sebaris: sumbu X
+ * dipaksa ke tengah, sumbu Y dibiarkan seperti hitungan Blockly supaya tetap
+ * menempel di bawah.
+ */
+function pusatkanTrashcan(ws: Blockly.WorkspaceSvg | null): void {
+  if (!ws) return;
+  const svg = ws.getParentSvg();
+  if (!svg) return;
+
+  const trash = svg.querySelector<SVGGElement>('.blocklyTrash');
+  if (!trash) return;
+
+  // Ambil Y yang sudah dihitung Blockly; kalau belum ada, jangan sentuh.
+  const cocok = /translate\(\s*(-?[\d.]+)[,\s]+(-?[\d.]+)\s*\)/.exec(
+    trash.getAttribute('transform') || ''
+  );
+  if (!cocok) return;
+
+  const lebarSvg = svg.getBoundingClientRect().width;
+  const lebarTrash = trash.getBoundingClientRect().width || 48;
+  const x = Math.max(0, lebarSvg / 2 - lebarTrash / 2);
+
+  trash.style.transformOrigin = '0 0';
+  trash.style.transform = `translate(${x}px, ${cocok[2]}px)`;
+}
+
 export default function BlocklyComponent({ contextId }: { contextId: string }) {
   const blocklyDiv = useRef<HTMLDivElement>(null);
   const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null);
@@ -176,6 +210,15 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
         }
       }
     }
+
+    // ── Tong sampah Blockly dipindah ke TENGAH bawah ──────────────────────
+    // Lihat penjelasan pada `pusatkanTrashcan` di atas berkas ini.
+    const pusatkanTrashcanSendiri = () => pusatkanTrashcan(workspaceRef.current);
+
+    pusatkanTrashcanSendiri();
+    // Blockly baru menaruh tong sampah setelah render pertama selesai.
+    const timerPusatkan = window.setTimeout(pusatkanTrashcanSendiri, 120);
+    window.addEventListener('resize', pusatkanTrashcanSendiri);
 
     // Load draft for this context, if any
     const draft = getActiveDraft();
@@ -238,6 +281,8 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
     setWorkspaceSiap(workspaceRef.current);
 
     return () => {
+      window.clearTimeout(timerPusatkan);
+      window.removeEventListener('resize', pusatkanTrashcanSendiri);
       if (workspaceRef.current) {
         workspaceRef.current.dispose();
       }
@@ -249,6 +294,8 @@ export default function BlocklyComponent({ contextId }: { contextId: string }) {
     const handleResize = () => {
       if (workspaceRef.current) {
         Blockly.svgResize(workspaceRef.current);
+        // svgResize menghitung ulang posisi tong sampah; pusatkan lagi.
+        pusatkanTrashcan(workspaceRef.current);
       }
     };
     window.addEventListener('resize', handleResize);
