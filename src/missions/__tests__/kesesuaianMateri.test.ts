@@ -57,10 +57,10 @@ const KATA_BEKU: Record<number, string[]> = {
   7: ['SANANDREAS', 'TRANSFORM', 'HORIZONTAL', 'GEMPABUMI'],
 };
 
-const BATAS_ZONA: Record<number, number> = { 1: 2, 2: 0, 3: 0, 4: 2, 5: 1, 6: 1, 7: 0 };
+const BATAS_ZONA: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
 
 
-const BATAS_AREA: Record<number, number> = { 0: 5, 1: 0, 2: 7, 3: 3, 4: 0, 5: 7 };
+const BATAS_AREA: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
 const besar = (s: unknown) => String(s ?? '').toUpperCase();
 
@@ -208,7 +208,7 @@ const JAWABAN_TTS_BEKU: Record<number, string[]> = {
   // Mengikuti BANK SOAL RESQ-BOX (keputusan pemilik proyek). Hanya 4 area yang
   // punya TTS: Kelas (0), Lapangan (2), Pos Pemantauan (3), Posko (5).
   // Area 1 dan 4 adalah area SIMULASI, jadi tidak muncul di sini.
-  0: ['BERLINDUNG', 'BERTAHAN', 'BNPB', 'DOKUMEN', 'EVAKUASI', 'JENDELA', 'KEPALA', 'KURSI', 'LAPANGAN', 'MENGHINDAR', 'MERUNDUK', 'PANIK', 'PERBAN', 'SIMULASI', 'TANGGA', 'TASSIAGABENCANA', 'TENANG', 'TERTIB', 'TITIKUMPUL'],
+  0: ['BERLINDUNG', 'BERTAHAN', 'BNPB', 'DOKUMEN', 'EVAKUASI', 'JENDELA', 'KEPALA', 'KURSI', 'LAPANGAN', 'MENGHINDAR', 'MERUNDUK', 'PANIK', 'PERBAN', 'SIMULASI', 'TANGGA', 'TASSIAGABENCANA', 'TENANG', 'TERTIB', 'TITIKKUMPUL'],
   2: ['AFTERSHOCK', 'AMBULANS', 'BERKUMPUL', 'BPBD', 'EVAKUASI', 'HOAX', 'KEHADIRAN', 'KORBAN', 'KORSELETING', 'MENINGGAL', 'MERAH', 'PENCEGAHAN', 'PMR', 'POSKO', 'RERUNTUHAN', 'SEKOLAH', 'TANDU', 'WASPADA'],
   3: ['AWANPANAS', 'AWAS', 'DEFORMASI', 'EMPAT', 'ERUPSI', 'GOGGLE', 'KRB', 'LAVA', 'LETUSAN', 'MAGMA', 'MASKER', 'NORMAL', 'PVMBG', 'SEISMOGRAF', 'SIAGA', 'SOLFATARA', 'VULKANIK', 'WASPADA'],
   5: ['ATAP', 'AWANPANAS', 'BARAK', 'BELERANG', 'CUCITANGAN', 'EFUSIF', 'EKSPLOSIF', 'KRATER', 'LAHAR', 'LANSIA', 'LOGISTIK', 'PENGUNGSI', 'REHABILITASI', 'REKONSTRUKSI', 'SANITASI', 'SILIKA', 'TANDON', 'TRAUMA'],

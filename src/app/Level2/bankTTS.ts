@@ -120,9 +120,9 @@ const VARIAN_AREA_0: GridTTS[] = [
   },
   {
     rows: 7,
-    cols: 12,
+    cols: 13,
     clues: [
-      { id: 'a0s5c1', number: 4, direction: 'across', answer: 'TITIKUMPUL', clue: 'Area aman yang telah ditetapkan secara khusus sebagai tempat berkumpulnya seluruh warga saat terjadinya bencana.', startRow: 5, startCol: 1 },
+      { id: 'a0s5c1', number: 4, direction: 'across', answer: 'TITIKKUMPUL', clue: 'Area aman yang telah ditetapkan secara khusus sebagai tempat berkumpulnya seluruh warga saat terjadinya bencana.', startRow: 5, startCol: 1 },
       { id: 'a0s5c2', number: 2, direction: 'down', answer: 'PANIK', clue: 'Reaksi emosional yang tidak boleh ditunjukkan ketika terjadinya bencana sehingga mengabaikan protokol keselamatan.', startRow: 1, startCol: 5 },
       { id: 'a0s5c3', number: 1, direction: 'across', answer: 'BNPB', clue: 'Lembaga resmi pemerintah di tingkat nasional yang bertugas mengeluarkan pedoman penanggulangan bencana di Indonesia.', startRow: 1, startCol: 3 },
       { id: 'a0s5c4', number: 3, direction: 'across', answer: 'LAPANGAN', clue: 'Area terbuka luas di lingkungan sekolah yang paling aman dan terbebas dari bahaya reruntuhan bangunan maupun tiang listrik untuk dijadikan lokasi evakuasi akhir.', startRow: 2, startCol: 2 },

@@ -301,7 +301,7 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-inti-dalam',
       title: 'Bola Besi Padat Sepanas Permukaan Matahari',
       shortDesc:
-        'Inti dalam adalah lapisan TERDALAM di bumi. Letaknya di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari PADUAN logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi yang amat dahsyat di pusat bumi. Tekanan sebesar itu membuat atom-atom besi menjadi MAMPAT, terpadatkan sangat rapat, sehingga tidak dapat meleleh walaupun suhunya sangat tinggi.',
+        'Inti dalam adalah lapisan TERDALAM di bumi. Letaknya di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari PADUAN logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi yang amat dahsyat di pusat bumi. Tekanan sebesar itu membuat atom-atom besi menjadi MAMPAT, terpadatkan sangat rapat, sehingga tidak dapat meleleh walaupun suhunya sangat tinggi. Inti dalam terletak tepat di bawah INTI LUAR yang berwujud cairan logam panas.',
       fact: 'Meskipun lebih panas daripada inti luar yang meleleh, inti dalam BUKANLAH cairan melainkan benar-benar padat. Apa yang mencegah logam meleleh? Hal ini disebabkan oleh tekanan luar biasa yang dialaminya!',
       iconName: 'trophy',
       imageSrc: '/images/geology/inner_core.jpg',
@@ -546,9 +546,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-crust-compare',
       title: 'Perbedaan Kerak Benua & Samudra',
       shortDesc:
-        'Kerak bumi adalah lapisan paling luar bumi dan tempat kita tinggal, dengan kedalaman 0–100 km dan suhu 25°C–500°C. Lapisan ini amat KERAS karena tersusun dari batuan padat, bukan zat alir. Kerak bumi bersama bagian paling atas mantel disebut LITOSFER, yaitu LEMPENG raksasa yang bergerak sangat perlahan. Ada dua jenis kerak. Pertama, kerak benua: berada di bawah DARATAN, tebal 30–100 km, tersusun dari batuan granit yang lebih ringan, dan banyak mengandung SILIKAT. Permukaannya tidak rata: ada LERENG gunung, TANAH di lembah, dan endapan SEDIMEN dari batuan yang lapuk. Batuan yang lapuk dan hancur itulah yang menjadi LEMPUNG, bahan dasar pembuatan batu bata. Kedua, kerak samudra: berada di bawah LAUTAN, hanya setebal 5–15 km, tersusun dari batuan basal yang lebih padat dan berat (SiMa).',
+        'Kerak bumi adalah lapisan paling luar bumi dan tempat kita tinggal, dengan kedalaman 0–100 km dan suhu 25°C–500°C. Lapisan ini amat KERAS karena tersusun dari batuan padat, bukan zat alir. Kerak bumi bersama bagian paling atas mantel disebut LITOSFER, yaitu LEMPENG raksasa yang bergerak sangat perlahan. Ada dua jenis kerak. Pertama, kerak benua: berada di bawah DARATAN, tebal 30–100 km, tersusun dari batuan granit yang lebih ringan (SiAl), dan banyak mengandung SILIKAT. Permukaannya tidak rata: ada LERENG gunung, TANAH di lembah, dan endapan SEDIMEN dari batuan yang lapuk. Batuan yang lapuk dan hancur itulah yang menjadi LEMPUNG, bahan dasar pembuatan batu bata. Kedua, kerak samudra: berada di bawah LAUTAN, hanya setebal 5–15 km, tersusun dari batuan basal yang lebih padat dan berat (SiMa).',
       fact:
-        'Kerak benua tebalnya sampai 100 km dan terbuat dari granit, sedangkan kerak samudra tipis (5–15 km) tetapi terbuat dari basal yang lebih padat dan berat. Karena lempeng kerak bumi terus bergerak dan saling bergesekan, INDONESIA menjadi salah satu negara paling rawan GEMPA. Salah satu contohnya di sepanjang pantai barat SUMATRA, tempat dua lempeng bertemu dan sering menimbulkan gempa serta tsunami.',
+        'Kerak benua tebalnya sampai 100 km dan terbuat dari granit, sedangkan kerak samudra tipis (5–15 km) tetapi terbuat dari basal yang lebih padat dan berat. Karena lempeng kerak bumi terus bergerak dan saling bergesekan, INDONESIA menjadi salah satu negara paling rawan GEMPA. Salah satu contohnya di sepanjang pantai barat SUMATRA, tempat dua lempeng bertemu dan sering menimbulkan gempa serta tsunami. Di zona tumbukan itu, lempeng samudra yang lebih berat menunjam ke bawah lempeng benua - peristiwa inilah yang disebut SUBDUKSI.',
       iconName: 'mountain',
       imageSrc: '/images/geology/crust.jpg',
       illustrationType: 'crust',
@@ -666,7 +666,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       shortDesc:
         'Inti dalam adalah lapisan TERDALAM di bumi. Letaknya di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari PADUAN logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi yang amat dahsyat di pusat bumi. Tekanan sebesar itu membuat atom-atom besi menjadi MAMPAT, terpadatkan sangat rapat, sehingga tidak dapat meleleh walaupun suhunya sangat tinggi.',
       fact:
-        'Meskipun sangat panas, inti dalam tetap berwujud PADAT! Tekanan luar biasa dahsyat dari seluruh bumi mengunci atom besi begitu rapat sehingga tidak bisa meleleh.',
+        'Meskipun sangat panas, inti dalam tetap berwujud PADAT! Tekanan luar biasa dahsyat dari seluruh bumi mengunci atom besi begitu rapat sehingga tidak bisa meleleh. Keberadaan lapisan ini diketahui dari gelombang gempa: gelombang PWAVES (gelombang P) masih dapat menembusnya, sedangkan gelombang S tidak dapat melewati inti luar yang cair.',
       iconName: 'trophy',
       imageSrc: '/images/geology/inner_core.jpg',
       illustrationType: 'inner-core',
@@ -712,7 +712,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-divergent-anim',
       title: 'Temuan 2: Dinamika Batas Divergen',
       shortDesc:
-        'Batas lempeng divergen terbentuk akibat pergerakan lempeng kulit bumi yang saling berlawanan atau saling menjauh. ZONA tempat dua lempeng saling menjauh ini disebut batas divergen. Ketika kedua lempeng MEMISAH, terbentuk CELAH dan REKAHAN pada kerak bumi. Dari celah itulah magma panas naik ke permukaan dan mendesak permukaan bumi, sehingga membentuk lapisan permukaan bumi dan daratan kerak baru. Karena kedua sisinya terus bergerak menjauh, dasar laut pun MELEBAR sedikit demi sedikit.',
+        'Batas lempeng divergen terbentuk akibat pergerakan lempeng kulit bumi yang saling berlawanan atau saling menjauh. ZONA tempat dua lempeng saling menjauh ini disebut batas divergen. Ketika kedua lempeng MEMISAH, terbentuk CELAH, REKAHAN, dan LEMBAH pada kerak bumi. Dari celah itulah magma panas naik ke permukaan dan mendesak permukaan bumi, sehingga membentuk lapisan permukaan bumi dan daratan kerak baru. Karena kedua sisinya terus bergerak menjauh, dasar laut pun MELEBAR sedikit demi sedikit.',
       fact:
         'Magma yang berhasil keluar ke permukaan disebut LAVA. Lava yang terus keluar mendingin dan mengeras, menciptakan PUNGGUNG tengah samudra (pematang tengah samudra, atau mid-ocean ridge) serta memperluas dasar laut! Kerak benua seolah MENGAPUNG di atas mantel yang kental, sehingga benua dapat bergerak perlahan walau tidak kita rasakan.',
       iconName: 'zap',
@@ -746,7 +746,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       shortDesc:
         'Batas konvergen adalah ZONA TABRAKAN antara dua lempeng tektonik. Batas ini terjadi ketika dua lempeng kulit bumi saling MENDEKAT lalu bertumbukan, sehingga salah satu lempeng tertekuk dan masuk ke bawah bagian lempeng lainnya. Gerakan dahsyat ini menimbulkan getaran gempa bumi yang sangat kuat, termasuk gempa DANGKAL yang terasa di dekat palung, dan dapat memicu tsunami, seperti gempa dan tsunami Aceh pada 26 Desember 2004.',
       fact:
-        'Batas konvergen terbagi menjadi 3 jenis. Subduksi: lempeng samudra menunjam ke bawah lempeng benua, membentuk deretan gunung api aktif dan palung laut. Contohnya di Indonesia: Gunung Merapi, Semeru, Bromo, Sinabung, dan Krakatau, serta Palung Jawa di dasar samudra. Kolisi: dua lempeng benua bertumbukan dan tidak saling menunjam, melainkan terlipat membentuk pegunungan. Contohnya Pegunungan Himalaya (tumbukan lempeng India dengan Eurasia) dan Pegunungan Ural. Obduksi: lempeng benua menunjam di bawah samudra.',
+        'Batas konvergen terbagi menjadi 3 jenis. Subduksi: lempeng samudra menunjam ke bawah lempeng benua, membentuk deretan gunung api aktif dan palung laut. Contohnya di Indonesia: Gunung Merapi, Semeru, Bromo, Sinabung, dan Krakatau, serta Palung Jawa di dasar samudra. Kolisi: dua lempeng benua bertumbukan dan tidak saling menunjam, melainkan terlipat membentuk pegunungan. Contohnya Pegunungan Himalaya (tumbukan lempeng India dengan Eurasia) dan Pegunungan Ural. Obduksi: lempeng benua menunjam di bawah samudra. Aktivitas konvergen juga memicu sesar aktif di daratan Pulau Jawa, salah satunya Sesar OPAK yang membentang di Yogyakarta dan sebagian Jawa Tengah.',
       iconName: 'convergent',
       imageSrc: '/images/geology/convergent.jpg',
       illustrationType: 'convergent-subduction',
