@@ -32,6 +32,10 @@ CARA MENJALANKAN
   Opsi:
     --kelas-nama "Kelas 8A"     nama kelas (bawaan: Kelas VIII-A)
     --sandi-guru <sandi>        pakai bila akun guru SUDAH ada
+    --pakai-kelas KODE          tambahkan siswa ke kelas yang SUDAH ADA,
+                                tanpa membuat kelas baru. Wajib dipakai saat
+                                mengulang, agar tidak muncul kelas kembar.
+    --izinkan-kelas-ganda       tetap buat kelas baru walau namanya sudah ada
     --reset-sandi               akun guru sudah ada tetapi kata sandinya tidak
                                 diketahui: buat sandi baru, cetak, setel peran
                                 teacher, lalu lanjut. Satu opsi menuntaskan
@@ -300,7 +304,7 @@ def main() -> int:
     # Opsi yang TIDAK mengambil nilai. Tanpa daftar ini, parser akan memakan
     # argumen berikutnya sebagai nilai, sehingga "--reset-sandi --kelas-nama X"
     # membuat --kelas-nama hilang dan X dianggap argumen posisi.
-    TANPA_NILAI = {"reset-sandi"}
+    TANPA_NILAI = {"reset-sandi", "izinkan-kelas-ganda"}
 
     opsi: dict[str, str] = {}
     posisi: list[str] = []
@@ -335,6 +339,8 @@ def main() -> int:
     # Diperiksa lewat kehadiran, bukan nilai: "--reset-sandi" di akhir perintah
     # tidak punya nilai, sehingga opsi.get() akan mengembalikan "" (falsy).
     reset = "reset-sandi" in opsi
+    kode_pakai = opsi.get("pakai-kelas")
+    izinkan_ganda = "izinkan-kelas-ganda" in opsi
 
     ka.pastikan_konfigurasi()
 
@@ -429,8 +435,36 @@ def main() -> int:
 
     # ── 3. Kelas ──
     print(f"\n  {'='*70}\n  3. KELAS\n  {'='*70}")
-    kode = buat_kelas(token, nama_kelas, sekolah)
-    print(f"  [v] Kelas `{nama_kelas}` dibuat dengan kode: {kode}")
+
+    if kode_pakai:
+        # Menyambung ke kelas yang SUDAH ADA. Tanpa opsi ini, menjalankan
+        # ulang skrip akan membuat kelas kedua dengan nama sama tetapi kode
+        # berbeda - dan siswa akan terpecah ke dua kelas itu.
+        kode = kode_pakai.upper().strip()
+        milik = ka.kelas_milik_guru(token, username)
+        nama_kelas = next((k.get("name") for k in milik if k["code"] == kode), nama_kelas)
+        print(f"  [i] Memakai kelas yang sudah ada: {nama_kelas} ({kode})")
+        print("      Tidak ada kelas baru yang dibuat.")
+    else:
+        # Cegah kelas ganda bernama sama. Kelas ganda membuat siswa terpecah
+        # dan progres kelas tidak pernah utuh.
+        daftar = ka.kelas_milik_guru(token, username)
+        kembar = [
+            k for k in daftar
+            if str(k.get("name") or "").strip().lower() == nama_kelas.strip().lower()
+        ]
+        if kembar and not izinkan_ganda:
+            print(f"  [!] Sudah ada {len(kembar)} kelas bernama `{nama_kelas}`:")
+            for k in kembar:
+                print(f"        - {k['code']}")
+            print("\n      Skrip berhenti supaya tidak membuat kelas KETIGA.")
+            print("      Untuk menambahkan siswa ke salah satu kelas itu, pakai:")
+            print(f"        --pakai-kelas {kembar[0]['code']}")
+            print("      Untuk tetap membuat kelas baru, tambahkan: --izinkan-kelas-ganda")
+            return 1
+
+        kode = buat_kelas(token, nama_kelas, sekolah)
+        print(f"  [v] Kelas `{nama_kelas}` dibuat dengan kode: {kode}")
 
     # ── 4. Akun siswa ──
     print(f"\n  {'='*70}\n  4. AKUN SISWA ({len(siswa)})\n  {'='*70}")
