@@ -32,6 +32,11 @@ CARA MENJALANKAN
   Opsi:
     --kelas-nama "Kelas 8A"     nama kelas (bawaan: Kelas VIII-A)
     --sandi-guru <sandi>        pakai bila akun guru SUDAH ada
+    --reset-sandi               akun guru sudah ada tetapi kata sandinya tidak
+                                diketahui: buat sandi baru, cetak, setel peran
+                                teacher, lalu lanjut. Satu opsi menuntaskan
+                                "Invalid login credentials" sekaligus
+                                "Hanya guru yang boleh membuat kelas".
     --sandi-siswa 123456        kata sandi siswa (bawaan 123456)
 
   Kunci service_role dibaca dari SUPABASE_SERVICE_ROLE_KEY, atau diminta
@@ -208,6 +213,21 @@ def tulis_metadata_guru(username: str, uid: str, kunci: str) -> bool:
     return status in (200, 201)
 
 
+def reset_sandi_dan_peran(username: str, uid: str, sandi: str, kunci: str) -> bool:
+    """
+    Menyetel ulang kata sandi DAN memastikan app_metadata berperan teacher.
+
+    Satu permintaan menuntaskan dua hal, karena keduanya memang dua sisi dari
+    masalah yang sama: akun lama yang kata sandinya tidak diketahui, dan
+    profilnya yang terlanjur berperan 'student'.
+    """
+    status, _ = admin(f"/auth/v1/admin/users/{uid}", kunci, "PUT", {
+        "password": sandi,
+        "app_metadata": {"role": "teacher", "username": username.lower()},
+    })
+    return status in (200, 201)
+
+
 def peran_profil(token: str) -> tuple[str, bool]:
     """Baca peran & status admin dari profil pemanggil."""
     status, hasil = ka._minta("/rest/v1/rpc/get_my_profile", "POST", {}, token=token)
@@ -228,9 +248,13 @@ def login(username: str, sandi: str):
         if isinstance(hasil, dict):
             pesan = hasil.get("error_description") or hasil.get("msg") or hasil.get("message") or ""
         raise SystemExit(
-            f"  [X] Gagal masuk sebagai `{username}` (HTTP {status}): {pesan}\n"
-            "      Akun guru mungkin belum siap. Tunggu beberapa detik lalu coba lagi,\n"
-            "      atau periksa dengan: python scripts/kelola_akun_guru.py periksa " + username
+            f"  [X] Gagal masuk sebagai `{username}` (HTTP {status}): {pesan}\n\n"
+            "      Artinya kata sandi akun itu TIDAK diketahui (atau akunnya belum ada).\n"
+            "      Bila kata sandinya sudah tidak diingat, reset sekaligus perbaiki\n"
+            "      perannya dengan menambahkan opsi berikut pada perintah ini:\n\n"
+            "        --reset-sandi\n\n"
+            "      Skrip akan membuat kata sandi baru, mencetaknya, dan menyetel\n"
+            "      peran teacher - lalu melanjutkan membuat kelas dan akun siswa."
         )
     return hasil["access_token"]
 
@@ -273,13 +297,23 @@ def main() -> int:
         print(__doc__)
         return 0
 
+    # Opsi yang TIDAK mengambil nilai. Tanpa daftar ini, parser akan memakan
+    # argumen berikutnya sebagai nilai, sehingga "--reset-sandi --kelas-nama X"
+    # membuat --kelas-nama hilang dan X dianggap argumen posisi.
+    TANPA_NILAI = {"reset-sandi"}
+
     opsi: dict[str, str] = {}
     posisi: list[str] = []
     i = 0
     while i < len(arg):
         if arg[i].startswith("--"):
-            opsi[arg[i][2:]] = arg[i + 1] if i + 1 < len(arg) else ""
-            i += 2
+            nama = arg[i][2:]
+            if nama in TANPA_NILAI:
+                opsi[nama] = "ya"
+                i += 1
+            else:
+                opsi[nama] = arg[i + 1] if i + 1 < len(arg) else ""
+                i += 2
         else:
             posisi.append(arg[i])
             i += 1
@@ -298,6 +332,9 @@ def main() -> int:
     nama_kelas = opsi.get("kelas-nama", NAMA_KELAS_BAWAAN)
     sandi_siswa = opsi.get("sandi-siswa", SANDI_SISWA_BAWAAN)
     sandi_guru = opsi.get("sandi-guru")
+    # Diperiksa lewat kehadiran, bukan nilai: "--reset-sandi" di akhir perintah
+    # tidak punya nilai, sehingga opsi.get() akan mengembalikan "" (falsy).
+    reset = "reset-sandi" in opsi
 
     ka.pastikan_konfigurasi()
 
@@ -314,7 +351,27 @@ def main() -> int:
     sandi = sandi_guru or kata_sandi_acak()
 
     uid_guru: str | None = None
-    if baru:
+
+    if reset:
+        uid_guru = cari_uid(username, kunci)
+        if not uid_guru:
+            print(f"  [X] Akun `{username}` tidak ditemukan, jadi tidak bisa direset.")
+            print("      Hapus --reset-sandi bila maksudnya membuat akun baru.")
+            return 1
+        sandi = kata_sandi_acak()
+        if not reset_sandi_dan_peran(username, uid_guru, sandi, kunci):
+            print("  [X] Gagal mereset kata sandi (Admin API menolak).")
+            return 1
+        baru = False
+        print(f"  [v] Kata sandi `{username}` direset, peran disetel teacher.")
+        print("")
+        print("  ┌──────────────────────────────────────────────────────────────┐")
+        print("  │  KATA SANDI GURU BARU — CATAT SEKARANG                       │")
+        print("  └──────────────────────────────────────────────────────────────┘")
+        print(f"      username : {username}")
+        print(f"      password : {sandi}")
+        print("")
+    elif baru:
         ok, info = buat_guru(username, nama_guru, sekolah, sandi, kunci)
         if ok:
             uid_guru = info
