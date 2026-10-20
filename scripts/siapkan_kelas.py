@@ -69,6 +69,18 @@ SANDI_SISWA_BAWAAN = "123456"
 NAMA_KELAS_BAWAAN = "Kelas VIII-A"
 
 
+def csv(teks: object) -> str:
+    """
+    Sel CSV yang aman.
+
+    Nama orang sering mengandung koma (mis. "Peni Dyah Arumsasi, S. Pd").
+    Tanpa pengapitan, koma itu memecah baris menjadi kolom tambahan sehingga
+    seluruh isi berkas bergeser dan sulit dibaca di Excel.
+    """
+    s = str(teks if teks is not None else "")
+    return '"' + s.replace('"', '""') + '"' 
+
+
 # ── Kunci layanan ─────────────────────────────────────────────────────────
 
 def kunci_layanan() -> str:
@@ -301,7 +313,7 @@ def main() -> int:
     with csv.open("w", encoding="utf-8-sig", newline="") as f:
         f.write("PERAN,NO,ABSEN,NAMA,USERNAME,KATA SANDI,STATUS,KODE KELAS\n")
         f.write(
-            f"GURU,,,{nama_guru},\"{username}\",{sandi},dibuat,{kode}\n"
+            f"GURU,,,{csv(nama_guru)},{csv(username)},{csv(sandi)},dibuat,{csv(kode)}\n"
         )
         for n, d in enumerate(data, 1):
             if d in berhasil:
@@ -311,8 +323,8 @@ def main() -> int:
             else:
                 st = "GAGAL"
             f.write(
-                f"SISWA,{n},{d['absen']},\"{d['nama']}\",{d['username']},"
-                f"{d['sandi']},{st},{kode}\n"
+                f"SISWA,{n},{d['absen']},{csv(d['nama'])},{csv(d['username'])},"
+                f"{csv(d['sandi'])},{st},{csv(kode)}\n"
             )
 
     # ── 6. Ringkasan ──

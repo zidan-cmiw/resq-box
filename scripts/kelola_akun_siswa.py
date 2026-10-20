@@ -365,8 +365,11 @@ def perintah_buat(berkas: Path, username_guru: str, kode_kelas: str | None,
                 st = "sudah ada"
             else:
                 st = "GAGAL"
+            # Nama diapit dan tanda kutip di dalamnya digandakan, supaya nama
+            # berkoma tidak menggeser kolom.
+            nama_aman = '"' + d['nama'].replace('"', '""') + '"'
             f.write(
-                f"{i},{d['absen']},\"{d['nama']}\",{d['username']},{d['sandi']},{st}\n"
+                f"{i},{d['absen']},{nama_aman},{d['username']},{d['sandi']},{st}\n"
             )
 
     print(f"\n  {'='*66}")
