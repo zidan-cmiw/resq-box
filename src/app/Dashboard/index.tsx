@@ -924,10 +924,6 @@ export default function Dashboard() {
                     </p>
                     <div className="text-[15px] sm:text-base md:text-[19px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
                       <div>
-                        <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
- <span className="font-bold text-[#200b01]">5 Karakter Ekspedisi &amp; Resqy, modul sains, kristal geotermal, kostum pelindung, dan avatar tracker 60 FPS.</span>
-                      </div>
-                      <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
                         <span className="font-bold text-[#200b01]">Pecahkan kuis tebak kata <strong className="font-black text-[#1a0800] underline decoration-amber-700/60">Wordle Sains</strong> bersama Bu Tyas di tiap gerbang strata untuk membuka akses ke <strong className="font-black text-[#1a0800]">Level 2</strong>!</span>
                       </div>
@@ -964,10 +960,6 @@ export default function Dashboard() {
                     </p>
                     <div className="text-[15px] sm:text-base md:text-[19px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
                       <div>
-                        <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
- <span className="font-bold text-[#200b01]">Visual Novel modul mitigasi BNPB, pemahaman zonasi KRB, dan rute keselamatan lereng gunung.</span>
-                      </div>
-                      <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
                         <span className="font-bold text-[#200b01]">Jawab seluruh <strong className="font-black text-[#1a0800] underline decoration-amber-700/60">Teka-Teki Silang (TTS Crossword Sains &amp; Mitigasi)</strong> di pos pengujian Bu Tyas untuk membuka akses ke <strong className="font-black text-[#1a0800]">Level 3</strong>!</span>
                       </div>
@@ -999,10 +991,6 @@ export default function Dashboard() {
                       Rakit logika sistem peringatan dini melalui <strong className="font-black text-[#1a0800]">Visual Block Coding Ramah Anak</strong> (Sensor ➔ Lampu 4 Warna ➔ Sirine EWS ➔ Tindakan Evakuasi) dan uji dampaknya pada maket <strong className="font-black text-[#1a0800]">Digital Twin 3D Merapi</strong> topografi STL asli.
                     </p>
                     <div className="text-[15px] sm:text-base md:text-[19px] leading-relaxed bg-[#fef08a] p-3.5 sm:p-4 rounded-xl border-2 border-amber-900/40 flex flex-col gap-2.5 font-bold text-[#1a0800] shadow-sm">
-                      <div>
-                        <strong className="font-black text-[#1a0800] uppercase tracking-wide">Fitur Kunci: </strong>
-                        <span className="font-bold text-[#200b01]">{TOTAL_MISSIONS} Misi Studi Kasus, Mode Bebas (Proyek Saya Sandbox), gempa 3-tingkat, erupsi eksplosif vs efusif, reaksi 75 AI warga, kontrol simulasi fleksibel, tombol Reset Kondisi, dan koneksi ESP32.</span>
-                      </div>
                       <div>
                         <strong className="font-black text-[#1a0800] uppercase tracking-wide">Misi Kelulusan: </strong>
                         <span className="font-bold text-[#200b01]">Tuntaskan {TOTAL_MISSIONS} Misi Studi Kasus; nilai otomatis tersinkronisasi ke Rapor Siswa di Posko Guru (/teacher)!</span>
