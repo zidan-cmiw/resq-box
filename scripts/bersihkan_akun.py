@@ -37,6 +37,14 @@ CARA MENJALANKAN
     python scripts/bersihkan_akun.py pindah RESQ-8A peni --nama "Kelas 8A"
     python scripts/bersihkan_akun.py pindah RESQ-8A peni --nama "Kelas 8A" --konfirmasi
 
+  PINDAHKAN SATU SISWA ke kelas lain (mis. akun demo supaya absennya bebas):
+
+    python scripts/bersihkan_akun.py pindah-siswa demo RESQ-DEMO123456 --konfirmasi
+
+  BUAT kelas kosong untuk seorang guru:
+
+    python scripts/bersihkan_akun.py buat-kelas guru "Kelas Demo" --konfirmasi
+
   HAPUS satu kelas beserta akun siswanya (untuk kelas kembar yang salah):
 
     python scripts/bersihkan_akun.py hapus-kelas RESQ-KELA932462
@@ -367,6 +375,135 @@ def perintah_hapus_kelas(kode: str, konfirmasi: bool, k: str) -> int:
     return 0 if not gagal else 1
 
 
+def _kode_kelas_baru(nama: str, k: str) -> str:
+    """Kode kelas bergaya server: RESQ-<4 huruf><6 angka>, dijamin belum dipakai."""
+    import random
+    awalan = "".join(ch for ch in nama.upper() if ch.isalnum())[:4] or "CLS"
+    for _ in range(25):
+        kode = f"RESQ-{awalan}{random.randint(100000, 999999)}"
+        st, ada = panggil(
+            f"/rest/v1/classrooms?select=code&code=eq.{urllib.parse.quote(kode)}", k
+        )
+        if st == 200 and not ada:
+            return kode
+    raise SystemExit("  [X] Gagal membuat kode kelas yang unik. Coba lagi.")
+
+
+def perintah_buat_kelas(guru: str, nama: str, kode: str | None,
+                        konfirmasi: bool, k: str) -> int:
+    """
+    Membuat kelas untuk seorang guru lewat service_role.
+
+    Dipakai ketika sebuah kelas perlu "rumah" tersendiri — misalnya kelas
+    untuk akun demo — supaya tidak berebut nomor absen dengan kelas asli.
+    """
+    st, prof = panggil(
+        f"/rest/v1/profiles?select=username,name,school_name,role,is_admin"
+        f"&username=eq.{urllib.parse.quote(guru)}", k
+    )
+    if st != 200:
+        raise SystemExit(f"  [X] Gagal membaca profil guru (HTTP {st}): {prof}")
+    if not prof:
+        raise SystemExit(f"  [X] Guru `{guru}` tidak ditemukan.")
+    sekolah = prof[0].get("school_name") or "SMP Negeri 1"
+
+    kode_final = kode.upper().strip() if kode else _kode_kelas_baru(nama, k)
+
+    print(f"\n  Kelas baru untuk `{guru}`")
+    print(f"    kode   : {kode_final}")
+    print(f"    nama   : {nama}")
+    print(f"    sekolah: {sekolah}")
+
+    if not konfirmasi:
+        print("\n  PRATINJAU SAJA — belum ada yang dibuat.")
+        print("  Untuk benar-benar membuat, ulangi dengan --konfirmasi\n")
+        return 0
+
+    st, hasil = panggil("/rest/v1/classrooms", k, "POST", {
+        "code": kode_final, "name": nama,
+        "teacher_username": guru, "school_name": sekolah,
+    }, header={"Prefer": "return=representation"})
+    if st not in (200, 201):
+        raise SystemExit(f"  [X] Gagal membuat kelas (HTTP {st}): {json.dumps(hasil)[:240]}")
+
+    print(f"\n  [v] Kelas {kode_final} dibuat untuk `{guru}`.\n")
+    return 0
+
+
+def perintah_pindah_siswa(username_siswa: str, kode_tujuan: str,
+                          absen: str | None, konfirmasi: bool, k: str) -> int:
+    """
+    Memindahkan SATU siswa ke kelas lain.
+
+    Aplikasi tidak menyediakan pemindahan siswa antar kelas: `classroom_code`
+    dikunci trigger agar klien tidak dapat memindah-mindah siswa. Pemindahan
+    di sini dilakukan lewat service_role, yang berjalan tanpa JWT klien
+    sehingga penjaga itu tidak aktif — inilah jalur resmi untuk kasus
+    "siswa sudah ada di kelas yang salah".
+
+    Nomor absen wajib unik per kelas, jadi konflik absen diperiksa lebih dulu.
+    """
+    username_siswa = username_siswa.lower().strip()
+    kode_tujuan = kode_tujuan.upper().strip()
+
+    st, prof = panggil(
+        f"/rest/v1/profiles?select=id,username,name,absent_number,classroom_code,role"
+        f"&username=eq.{urllib.parse.quote(username_siswa)}", k
+    )
+    if st != 200:
+        raise SystemExit(f"  [X] Gagal membaca siswa (HTTP {st}): {prof}")
+    if not prof:
+        raise SystemExit(f"  [X] Siswa `{username_siswa}` tidak ditemukan.")
+    siswa = prof[0]
+    if (siswa.get("role") or "") != "student":
+        raise SystemExit(f"  [X] `{username_siswa}` bukan akun siswa (peran: {siswa.get('role')}).")
+
+    st, kelas = panggil(
+        f"/rest/v1/classrooms?select=code,name,teacher_username"
+        f"&code=eq.{urllib.parse.quote(kode_tujuan)}", k
+    )
+    if st != 200:
+        raise SystemExit(f"  [X] Gagal membaca kelas tujuan (HTTP {st}): {kelas}")
+    if not kelas:
+        raise SystemExit(f"  [X] Kelas tujuan {kode_tujuan} tidak ditemukan.")
+
+    absen_final = str(absen if absen is not None else siswa.get("absent_number") or "1")
+
+    # Konflik absen di kelas tujuan?
+    st, bentrok = panggil(
+        f"/rest/v1/profiles?select=username,name&classroom_code=eq.{urllib.parse.quote(kode_tujuan)}"
+        f"&absent_number=eq.{urllib.parse.quote(absen_final)}", k
+    )
+    if st == 200 and bentrok:
+        lain = [b for b in bentrok if b.get("username") != username_siswa]
+        if lain:
+            raise SystemExit(
+                f"  [X] Absen {absen_final} di {kode_tujuan} sudah dipakai: "
+                f"{lain[0].get('username')} ({lain[0].get('name')}).\n"
+                "      Pindahkan dulu akun itu, atau pilih absen lain dengan --absen N."
+            )
+
+    print(f"\n  Siswa : {siswa.get('name')} ({username_siswa})")
+    print(f"  Absen : {siswa.get('absent_number')} -> {absen_final}")
+    print(f"  Kelas : {siswa.get('classroom_code') or '(tanpa kelas)'} -> {kode_tujuan} ({kelas[0].get('name')})")
+
+    if not konfirmasi:
+        print("\n  PRATINJAU SAJA — belum ada yang dipindahkan.")
+        print("  Untuk benar-benar memindahkan, ulangi dengan --konfirmasi\n")
+        return 0
+
+    st, hasil = panggil(
+        f"/rest/v1/profiles?id=eq.{siswa['id']}", k, "PATCH",
+        {"classroom_code": kode_tujuan, "absent_number": absen_final},
+        header={"Prefer": "return=representation"},
+    )
+    if st not in (200, 204):
+        raise SystemExit(f"  [X] Gagal memindahkan (HTTP {st}): {json.dumps(hasil)[:240]}")
+
+    print(f"\n  [v] {username_siswa} kini di kelas {kode_tujuan}, absen {absen_final}.\n")
+    return 0
+
+
 def main() -> int:
     arg = sys.argv[1:]
     if not arg or arg[0] in ("-h", "--help", "help"):
@@ -414,6 +551,20 @@ def main() -> int:
             k,
         )
 
+    if perintah == "buat-kelas":
+        if len(posisi) < 2:
+            raise SystemExit("  [X] Pemakaian: buat-kelas <username_guru> \"<Nama Kelas>\" [--kode KODE] [--konfirmasi]")
+        return perintah_buat_kelas(
+            posisi[0], posisi[1], opsi.get("kode"), "konfirmasi" in opsi, k
+        )
+
+    if perintah == "pindah-siswa":
+        if len(posisi) < 2:
+            raise SystemExit("  [X] Pemakaian: pindah-siswa <username_siswa> <KODE_KELAS> [--absen N] [--konfirmasi]")
+        return perintah_pindah_siswa(
+            posisi[0], posisi[1], opsi.get("absen"), "konfirmasi" in opsi, k
+        )
+
     if perintah == "pindah":
         if len(posisi) < 2:
             raise SystemExit("  [X] Pemakaian: pindah <KODE_KELAS> <username_guru> [--nama \"Kelas 8A\"] [--konfirmasi]")
@@ -428,7 +579,7 @@ def main() -> int:
 
     raise SystemExit(
         f"  [X] Perintah tidak dikenal: {perintah}\n"
-        "      Coba: daftar | pindah | hapus-kelas | hapus"
+        "      Coba: daftar | buat-kelas | pindah-siswa | pindah | hapus-kelas | hapus"
     )
 
 
