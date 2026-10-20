@@ -74,7 +74,7 @@ SANDI_SISWA_BAWAAN = "123456"
 NAMA_KELAS_BAWAAN = "Kelas VIII-A"
 
 
-def csv(teks: object) -> str:
+def sel_csv(teks: object) -> str:
     """
     Sel CSV yang aman.
 
@@ -455,11 +455,11 @@ def main() -> int:
             print(f"  [X] {d['absen']:>2}. {d['username']:<18} {d['nama']}  -> {pesan or status}")
 
     # ── 5. Berkas kredensial ──
-    csv = berkas.with_name(berkas.stem + "-akun.csv")
-    with csv.open("w", encoding="utf-8-sig", newline="") as f:
+    berkas_akun = berkas.with_name(berkas.stem + "-akun.csv")
+    with berkas_akun.open("w", encoding="utf-8-sig", newline="") as f:
         f.write("PERAN,NO,ABSEN,NAMA,USERNAME,KATA SANDI,STATUS,KODE KELAS\n")
         f.write(
-            f"GURU,,,{csv(nama_guru)},{csv(username)},{csv(sandi)},dibuat,{csv(kode)}\n"
+            f"GURU,,,{sel_csv(nama_guru)},{sel_csv(username)},{sel_csv(sandi)},dibuat,{sel_csv(kode)}\n"
         )
         for n, d in enumerate(data, 1):
             if d in berhasil:
@@ -469,8 +469,8 @@ def main() -> int:
             else:
                 st = "GAGAL"
             f.write(
-                f"SISWA,{n},{d['absen']},{csv(d['nama'])},{csv(d['username'])},"
-                f"{csv(d['sandi'])},{st},{csv(kode)}\n"
+                f"SISWA,{n},{d['absen']},{sel_csv(d['nama'])},{sel_csv(d['username'])},"
+                f"{sel_csv(d['sandi'])},{st},{sel_csv(kode)}\n"
             )
 
     # ── 6. Ringkasan ──
@@ -478,7 +478,7 @@ def main() -> int:
     print(f"  Guru  : {username} / {sandi}")
     print(f"  Kelas : {nama_kelas}  kode = {kode}")
     print(f"  Siswa : {len(berhasil)} dibuat, {len(sudah)} sudah ada, {len(gagal)} gagal")
-    print(f"  Kredensial: {csv}")
+    print(f"  Kredensial: {berkas_akun}")
 
     if gagal:
         print("\n  Yang GAGAL:")
