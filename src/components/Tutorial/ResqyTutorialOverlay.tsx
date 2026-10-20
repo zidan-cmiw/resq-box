@@ -12,6 +12,7 @@ import {
   isTutorialCompleted,
   setTutorialCompleted,
 } from './tutorialConfig';
+import { hitungPosisiKartu } from './posisiKartu';
 
 interface ResqyTutorialOverlayProps {
   tour: TutorialTourConfig;
@@ -162,167 +163,15 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
   // 3. Di mobile / tablet portrait, kartu dipusatkan horizontal dengan batasan tinggi adaptif.
   // 4. Di widescreen desktop, penempatan samping hanya aktif jika ruang samping benar-benar lega (>= 480px).
   const getCollisionFreePosition = () => {
-    const winW = winSize.width;
-    const winH = winSize.height;
-    const isMobile = winW < 640;
-    const edgePad = isMobile ? 10 : 16;
-
-    if (!highlightRect) {
-      // Langkah pembuka tanpa target: Di tengah layar
-      return {
-        containerClass:
-          'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-[90%] md:w-[86%] max-w-[680px]',
-        containerStyle: {
-          maxHeight: `${Math.min(winH - edgePad * 2, 600)}px`,
-        } as React.CSSProperties,
-      };
-    }
-
-    const targetTop = highlightRect.top;
-    const targetBottom = highlightRect.bottom;
-    const targetLeft = highlightRect.left;
-    const targetRight = highlightRect.right;
-    const targetCenterY = targetTop + highlightRect.height / 2;
-
-    const spaceRight = Math.max(0, winW - targetRight - edgePad);
-    const spaceLeft = Math.max(0, targetLeft - edgePad);
-
-    // ── 1. PENEMPATAN SAMPING (HANYA LAYAR WIDESCREEN >= 1150px DENGAN RUANG >= 480px) ──
-    const canSideWidescreen = winW >= 1150;
-    const canFitRight =
-      canSideWidescreen &&
-      spaceRight >= 480 &&
-      activeStep?.placement === 'right';
-    const canFitLeft =
-      canSideWidescreen &&
-      spaceLeft >= 480 &&
-      activeStep?.placement === 'left';
-
-    if (canFitRight) {
-      const cardW = Math.min(540, spaceRight - 16);
-      const idealTop = targetCenterY - 150;
-      const topPos = Math.max(edgePad, Math.min(winH - 360, idealTop));
-      const maxH = Math.max(240, winH - topPos - edgePad);
-      return {
-        containerClass: 'fixed',
-        containerStyle: {
-          left: `${targetRight + 14}px`,
-          top: `${topPos}px`,
-          width: `${cardW}px`,
-          maxHeight: `${maxH}px`,
-        } as React.CSSProperties,
-      };
-    }
-
-    if (canFitLeft) {
-      const cardW = Math.min(540, spaceLeft - 16);
-      const idealTop = targetCenterY - 150;
-      const topPos = Math.max(edgePad, Math.min(winH - 360, idealTop));
-      const maxH = Math.max(240, winH - topPos - edgePad);
-      const leftPos = Math.max(edgePad, targetLeft - cardW - 14);
-      return {
-        containerClass: 'fixed',
-        containerStyle: {
-          left: `${leftPos}px`,
-          top: `${topPos}px`,
-          width: `${cardW}px`,
-          maxHeight: `${maxH}px`,
-        } as React.CSSProperties,
-      };
-    }
-
-    // ── 2. PENEMPATAN VERTIKAL (STANDAR RESPONSIF UNTUK SEMUA UKURAN LAYAR) ──
-    const horizClass =
-      'fixed left-1/2 -translate-x-1/2 w-[95%] sm:w-[90%] md:w-[86%] max-w-[680px]';
-
-    /*
-      TINGGI MINIMUM DIALOG — MENGAPA INI PERLU
-
-      ═══════════════════════════════════════════════════════════════════════
-      CACAT YANG DIPERBAIKI
-      ═══════════════════════════════════════════════════════════════════════
-
-        Dilaporkan dari laptop: pada langkah 3 panduan, ISI TEKSNYA HILANG —
-        hanya tersisa celah kosong di antara judul dan tombol.
-
-        Diukur langsung di peramban pada layar 1690x849:
-
-            Langkah 1:  isi 199px dari 199px  -> teks MUAT
-            Langkah 2:  isi  96px dari  96px  -> teks MUAT
-            Langkah 3:  isi  35px dari  96px  -> TERPOTONG
-
-        Pada langkah 3, dialog hanya mendapat `max-height: 301px`. Dari 301px
-        itu, bagian JUDUL (tetap) dan bagian TOMBOL (tetap) menghabiskan
-        sekitar 200px, sehingga tersisa 35px untuk teks — sedangkan teksnya
-        memerlukan 96px.
-
-        Penyebabnya ada di sini: `Math.max(160, ...)` mengizinkan dialog
-        DIKOMPRES sampai 160px, padahal judul dan tombolnya saja sudah
-        memerlukan lebih dari itu. Bagian isi yang memakai `flex-1` lalu
-        menyusut mendekati nol, dan teksnya hilang dari pandangan.
-
-      ═══════════════════════════════════════════════════════════════════════
-      CARA MEMPERBAIKINYA
-      ═══════════════════════════════════════════════════════════════════════
-
-        1. Tinggi minimum dinaikkan menjadi 420px pada layar yang cukup
-           tinggi, atau 75% tinggi layar pada layar pendek. Dengan begitu
-           judul, isi, dan tombol selalu mendapat ruang yang layak.
-
-        2. Penempatan dipilih berdasarkan mana yang MEMBERI RUANG LEBIH
-           BANYAK, bukan sekadar "bawah bila muat". Dialog yang lebih tinggi
-           daripada sisa ruang di satu sisi akan dicoba di sisi lain.
-
-        3. Posisi tegak selalu dijepit agar dialog tetap berada di dalam
-           layar. Tanpa penjepitan ini, dialog tinggi dapat melewati tepi
-           bawah layar dan tombolnya menjadi tidak terjangkau.
-
-           MENEMPATI SEBAGIAN ELEMEN TARGET ITU WAJAR: sorotan target hanya
-           hiasan, sedangkan teks yang tidak terbaca membuat panduan tidak
-           berguna sama sekali.
-    */
-    const TINGGI_MIN_DIALOG = Math.min(420, Math.round(winH * 0.75));
-
-    // Hitung tinggi yang tersedia bila dialog ditaruh di tiap sisi.
-    const ruangBawah = Math.max(0, winH - (targetBottom + 12) - edgePad);
-    const ruangAtas = Math.max(0, (targetTop - 12) - edgePad);
-
-    const mauDiBawah =
-      activeStep?.placement === 'bottom'
-        ? true
-        : activeStep?.placement === 'top'
-          ? false
-          : ruangBawah >= ruangAtas;
-
-    // Pilih sisi yang memberi ruang lebih banyak BILA sisi pilihan pertama
-    // tidak cukup untuk tinggi minimum.
-    const sisiPilihan =
-      (mauDiBawah ? ruangBawah : ruangAtas) >= TINGGI_MIN_DIALOG
-        ? mauDiBawah
-        : ruangAtas > ruangBawah;
-
-    const pakaiBawah = sisiPilihan;
-    const ruangDiSisiItu = pakaiBawah ? ruangBawah : ruangAtas;
-
-    // Bila kedua sisi sama-sama sempit, pakai hampir seluruh tinggi layar
-    // supaya teksnya tetap terbaca.
-    const tinggiAkhir =
-      ruangDiSisiItu >= TINGGI_MIN_DIALOG
-        ? ruangDiSisiItu
-        : winH - edgePad * 2;
-
-    return {
-      containerClass: horizClass,
-      containerStyle: {
-        top: pakaiBawah
-          ? `${Math.max(edgePad, Math.min(targetBottom + 12, winH - tinggiAkhir - edgePad))}px`
-          : undefined,
-        bottom: pakaiBawah
-          ? undefined
-          : `${Math.max(edgePad, Math.min(winH - targetTop + 12, winH - tinggiAkhir - edgePad))}px`,
-        maxHeight: `${tinggiAkhir}px`,
-      } as React.CSSProperties,
-    };
+    // Seluruh perhitungan pemosisian dipindahkan ke `posisiKartu.ts` supaya
+    // dapat diuji tanpa merender React maupun DOM — termasuk jaminan bahwa
+    // kartu TIDAK PERNAH menutupi tombol yang sedang dijelaskannya.
+    return hitungPosisiKartu(
+      winSize.width,
+      winSize.height,
+      highlightRect,
+      activeStep?.placement,
+    ) as { containerClass: string; containerStyle: React.CSSProperties };
   };
 
   const isMobile = winSize.width < 640;
@@ -421,7 +270,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
           >
             {/* Main Parchment Board (Flex Col dengan Scroll Internal Halus) */}
             <div
-              className="relative bg-[#fef9c3] border-3 sm:border-4 md:border-[5px] border-[#78350f] rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 md:p-6 shadow-[0_6px_0_#451a03,0_16px_36px_rgba(0,0,0,0.65)] text-[#291305] flex flex-col justify-between w-full overflow-visible"
+              className="relative bg-[#fef9c3] border-3 sm:border-4 md:border-[5px] border-[#78350f] rounded-xl sm:rounded-2xl p-3 sm:p-3.5 md:p-4 shadow-[0_6px_0_#451a03,0_16px_36px_rgba(0,0,0,0.65)] text-[#291305] flex flex-col justify-between w-full overflow-visible"
               style={{ maxHeight: 'inherit' }}
             >
               {/* 1. Header Bar: Maskot + Badge + Judul + Tombol Tutup */}
@@ -456,7 +305,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
               <div className="flex items-center justify-between gap-1.5 sm:gap-2 pb-1.5 mb-1.5 sm:pb-3 sm:mb-2.5 border-b-2 sm:border-b-3 border-[#b45309]/30 shrink-0">
                 <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
                   <div className="shrink-0 drop-shadow-md">
-                    <ResqyMascot size={isMobile ? 30 : 52} talking={true} mood="wise" />
+                    <ResqyMascot size={isMobile ? 26 : 38} talking={true} mood="wise" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1 sm:gap-2 flex-wrap mb-0.5">
@@ -467,7 +316,7 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
                         ({currentStepIdx + 1}/{tour.steps.length})
                       </span>
                     </div>
-                    <h3 className="font-pixel-title text-[12px] sm:text-base md:text-lg lg:text-xl text-[#2e0e02] font-black leading-tight break-words">
+                    <h3 className="font-pixel-title text-[12px] sm:text-[13.5px] md:text-[15px] text-[#2e0e02] font-black leading-tight break-words">
                       {activeStep.title}
                     </h3>
                   </div>
@@ -485,16 +334,16 @@ export const ResqyTutorialOverlay: React.FC<ResqyTutorialOverlayProps> = ({
 
               {/* 2. Isi Narasi Utama & Petunjuk Aksi (Scrollable Internal) */}
               <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain pr-1 custom-scrollbar">
-                <p className="font-pixel text-[12.5px] sm:text-[15px] md:text-base lg:text-lg leading-snug sm:leading-relaxed text-[#1a0800] font-extrabold tracking-normal whitespace-pre-line py-0.5 sm:py-1">
+                <p className="font-pixel text-[12px] sm:text-[13px] md:text-[13.5px] leading-snug sm:leading-relaxed text-[#1a0800] font-extrabold tracking-normal whitespace-pre-line py-0.5 sm:py-1">
                   {activeStep.content}
                 </p>
 
                 {activeStep.actionHint && (
                   <div className="mt-1.5 pt-1.5 sm:mt-2.5 sm:pt-2.5 border-t-2 border-[#b45309]/25 flex items-start gap-1.5 sm:gap-2.5">
-                    <span className="px-1.5 sm:px-2 py-0.5 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[10px] sm:text-[14.5px] font-bold shrink-0 mt-0.5">
+                    <span className="px-1.5 sm:px-2 py-0.5 rounded-md bg-amber-700/20 text-[#78350f] border border-[#b45309]/40 font-pixel-title text-[10px] sm:text-[11px] font-bold shrink-0 mt-0.5">
                       PETUNJUK AKSI
                     </span>
-                    <p className="font-pixel text-[12.5px] sm:text-[15px] md:text-base leading-snug sm:leading-relaxed text-[#2e0e02] font-extrabold italic">
+                    <p className="font-pixel text-[12px] sm:text-[13px] md:text-[13.5px] leading-snug sm:leading-relaxed text-[#2e0e02] font-extrabold italic">
                       {activeStep.actionHint}
                     </p>
                   </div>
