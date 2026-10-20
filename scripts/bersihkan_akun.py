@@ -32,9 +32,15 @@ CARA MENJALANKAN
     python scripts/bersihkan_akun.py hapus guru --kecuali demo
     python scripts/bersihkan_akun.py hapus guru --kecuali demo --konfirmasi
 
-  Hapus juga kelasnya (boleh kelas kosong) setelah siswanya dihapus:
+  PINDAHKAN kelas ke guru lain — siswa ikut, tidak ada yang dihapus:
 
-    python scripts/bersihkan_akun.py hapus guru --kecuali demo --konfirmasi --hapus-kelas
+    python scripts/bersihkan_akun.py pindah RESQ-8A peni --nama "Kelas 8A"
+    python scripts/bersihkan_akun.py pindah RESQ-8A peni --nama "Kelas 8A" --konfirmasi
+
+  HAPUS satu kelas beserta akun siswanya (untuk kelas kembar yang salah):
+
+    python scripts/bersihkan_akun.py hapus-kelas RESQ-KELA932462
+    python scripts/bersihkan_akun.py hapus-kelas RESQ-KELA932462 --konfirmasi
 
 ═══════════════════════════════════════════════════════════════════════════
 KEAMANAN
@@ -105,12 +111,15 @@ def kunci() -> str:
     return k
 
 
-def panggil(jalur: str, k: str, metode: str = "GET", isi=None):
+def panggil(jalur: str, k: str, metode: str = "GET", isi=None,
+            header: dict | None = None):
     data = json.dumps(isi).encode() if isi is not None else None
     req = urllib.request.Request(f"{ALAMAT}{jalur}", method=metode, data=data)
     req.add_header("apikey", k)
     req.add_header("Authorization", f"Bearer {k}")
     req.add_header("Content-Type", "application/json")
+    for nama, nilai in (header or {}).items():
+        req.add_header(nama, nilai)
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
             teks = r.read().decode("utf-8", "ignore")
@@ -262,6 +271,102 @@ def perintah_hapus(kunci_guru: str, kecuali: set[str], kelas_diminta: str | None
     return 0 if not gagal else 1
 
 
+def perintah_pindah(kode: str, guru_baru: str, nama_baru: str | None,
+                    konfirmasi: bool, k: str) -> int:
+    """
+    Memindahkan kepemilikan kelas ke guru lain.
+
+    Kolom `classrooms.teacher_username` adalah TEXT biasa tanpa foreign key dan
+    tanpa trigger (diperiksa di migrasi 01), sehingga pemindahan tidak menyentuh
+    akun siswa sama sekali: `profiles.classroom_code` tetap, jadi seluruh siswa
+    ikut pindah bersama kelasnya.
+    """
+    kode = kode.upper().strip()
+    status, hasil = panggil(
+        f"/rest/v1/classrooms?select=code,name,teacher_username&code=eq.{urllib.parse.quote(kode)}", k
+    )
+    if status != 200:
+        raise SystemExit(f"  [X] Gagal membaca kelas (HTTP {status}): {hasil}")
+    if not hasil:
+        raise SystemExit(f"  [X] Kelas {kode} tidak ditemukan.")
+
+    kelas = hasil[0]
+    peta = siswa_per_kelas(k)
+    jumlah = len(peta.get(kode, []))
+
+    print(f"\n  Kelas  : {kelas.get('name')} ({kode})")
+    print(f"  Pemilik sekarang : {kelas.get('teacher_username')}")
+    print(f"  Pemilik baru     : {guru_baru}")
+    if nama_baru:
+        print(f"  Nama baru        : {nama_baru}")
+    print(f"  Siswa            : {jumlah} (ikut pindah, tidak dihapus)")
+
+    if (kelas.get("teacher_username") or "").lower() == guru_baru.lower() and not nama_baru:
+        print("\n  [i] Kelas ini sudah milik guru itu. Tidak ada yang diubah.\n")
+        return 0
+
+    if not konfirmasi:
+        print("\n  PRATINJAU SAJA — belum ada yang diubah.")
+        print("  Untuk benar-benar memindahkan, ulangi dengan --konfirmasi\n")
+        return 0
+
+    isi: dict[str, str] = {"teacher_username": guru_baru}
+    if nama_baru:
+        isi["name"] = nama_baru
+    status, hasil = panggil(
+        f"/rest/v1/classrooms?code=eq.{urllib.parse.quote(kode)}", k, "PATCH", isi,
+        header={"Prefer": "return=representation"},
+    )
+    if status not in (200, 204):
+        raise SystemExit(f"  [X] Gagal memindahkan (HTTP {status}): {json.dumps(hasil)[:240]}")
+
+    print(f"\n  [v] Kelas {kode} kini milik `{guru_baru}`, {jumlah} siswa ikut.\n")
+    return 0
+
+
+def perintah_hapus_kelas(kode: str, konfirmasi: bool, k: str) -> int:
+    """Menghapus kelas BESERTA akun siswanya (meniru delete_my_classroom)."""
+    kode = kode.upper().strip()
+    status, hasil = panggil(
+        f"/rest/v1/classrooms?select=code,name,teacher_username&code=eq.{urllib.parse.quote(kode)}", k
+    )
+    if status != 200:
+        raise SystemExit(f"  [X] Gagal membaca kelas (HTTP {status}): {hasil}")
+    if not hasil:
+        raise SystemExit(f"  [X] Kelas {kode} tidak ditemukan.")
+
+    kelas = hasil[0]
+    siswa = siswa_per_kelas(k).get(kode, [])
+
+    print(f"\n  Kelas  : {kelas.get('name')} ({kode})")
+    print(f"  Pemilik: {kelas.get('teacher_username')}")
+    print(f"  Siswa yang IKUT TERHAPUS: {len(siswa)}")
+    for s in siswa:
+        print(f"    - absen {str(s.get('absent_number') or '-'):>3}  {s.get('username'):<18} {s.get('name')}")
+
+    if not konfirmasi:
+        print("\n  PRATINJAU SAJA — belum ada yang dihapus.")
+        print("  Untuk benar-benar menghapus, ulangi dengan --konfirmasi\n")
+        return 0
+
+    gagal = 0
+    for s in siswa:
+        st, hs = panggil(f"/auth/v1/admin/users/{s['id']}", k, "DELETE")
+        if st not in (200, 204):
+            gagal += 1
+            print(f"  [X] {s.get('username')}: HTTP {st}")
+
+    st, hs = panggil(
+        f"/rest/v1/classrooms?code=eq.{urllib.parse.quote(kode)}", k, "DELETE"
+    )
+    if st not in (200, 204):
+        print(f"  [X] Gagal menghapus kelas: HTTP {st} {json.dumps(hs)[:160]}")
+        return 1
+
+    print(f"\n  [v] Kelas {kode} dihapus, {len(siswa) - gagal} akun siswa ikut terhapus.\n")
+    return 0 if not gagal else 1
+
+
 def main() -> int:
     arg = sys.argv[1:]
     if not arg or arg[0] in ("-h", "--help", "help"):
@@ -309,7 +414,22 @@ def main() -> int:
             k,
         )
 
-    raise SystemExit(f"  [X] Perintah tidak dikenal: {perintah}\n      Coba: daftar | hapus")
+    if perintah == "pindah":
+        if len(posisi) < 2:
+            raise SystemExit("  [X] Pemakaian: pindah <KODE_KELAS> <username_guru> [--nama \"Kelas 8A\"] [--konfirmasi]")
+        return perintah_pindah(
+            posisi[0], posisi[1], opsi.get("nama"), "konfirmasi" in opsi, k
+        )
+
+    if perintah == "hapus-kelas":
+        if not posisi:
+            raise SystemExit("  [X] Pemakaian: hapus-kelas <KODE_KELAS> [--konfirmasi]")
+        return perintah_hapus_kelas(posisi[0], "konfirmasi" in opsi, k)
+
+    raise SystemExit(
+        f"  [X] Perintah tidak dikenal: {perintah}\n"
+        "      Coba: daftar | pindah | hapus-kelas | hapus"
+    )
 
 
 if __name__ == "__main__":
