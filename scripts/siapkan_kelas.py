@@ -175,6 +175,47 @@ def buat_guru(username: str, nama: str, sekolah: str, sandi: str,
     return False, f"GAGAL (HTTP {status}): {pesan}"
 
 
+def cari_uid(username: str, kunci: str) -> str | None:
+    """Cari id pengguna auth dari username-nya."""
+    email = f"{username.lower()}@resqbox.local"
+    status, hasil = admin(
+        f"/auth/v1/admin/users?filter={urllib.parse.quote(email)}", kunci
+    )
+    if status != 200:
+        return None
+    daftar = hasil.get("users") if isinstance(hasil, dict) else hasil
+    for u in (daftar or []):
+        if str(u.get("email", "")).lower() == email:
+            return u.get("id")
+    return None
+
+
+def tulis_metadata_guru(username: str, uid: str, kunci: str) -> bool:
+    """
+    Menulis ulang app_metadata akun guru.
+
+    Ini BUKAN sekadar menyalin data: trigger `handle_new_auth_user` berjalan
+    pada UPDATE auth.users, dan di situ ia MENAIKKAN `profiles.role` menjadi
+    teacher bila app_metadata menyebutkannya (lihat ON CONFLICT ... role =
+    CASE WHEN EXCLUDED.role IN ('teacher','admin') THEN EXCLUDED.role).
+
+    Jadi menulis metadata adalah cara resmi memperbaiki profil yang terlanjur
+    berperan 'student' — tanpa perlu menyentuh tabel profiles langsung.
+    """
+    status, _ = admin(f"/auth/v1/admin/users/{uid}", kunci, "PUT", {
+        "app_metadata": {"role": "teacher", "username": username.lower()},
+    })
+    return status in (200, 201)
+
+
+def peran_profil(token: str) -> tuple[str, bool]:
+    """Baca peran & status admin dari profil pemanggil."""
+    status, hasil = ka._minta("/rest/v1/rpc/get_my_profile", "POST", {}, token=token)
+    if status != 200 or not isinstance(hasil, dict):
+        return "", False
+    return str(hasil.get("role") or ""), bool(hasil.get("is_admin"))
+
+
 # ── Langkah 2: login guru ─────────────────────────────────────────────────
 
 def login(username: str, sandi: str):
@@ -206,10 +247,21 @@ def buat_kelas(token: str, nama: str, sekolah: str) -> str:
     if status == 200 and isinstance(hasil, dict) and hasil.get("code"):
         return hasil["code"]
 
-    pesan = json.dumps(hasil)[:240] if hasil is not None else f"HTTP {status}"
+    pesan = json.dumps(hasil, ensure_ascii=False) if hasil is not None else f"HTTP {status}"
+
+    if status == 403 and "Hanya guru" in pesan:
+        raise SystemExit(
+            f"  [X] Gagal membuat kelas (HTTP {status}): {pesan}\n\n"
+            "      Artinya `profiles.role` akun ini BUKAN 'teacher'.\n"
+            "      Perbaiki dengan SQL berikut di Supabase SQL Editor:\n\n"
+            f"        UPDATE public.profiles SET role = 'teacher'\n"
+            f"        WHERE username = '{username}';\n\n"
+            "      Lalu jalankan ulang perintah ini dengan --sandi-guru."
+        )
+
     raise SystemExit(
         f"  [X] Gagal membuat kelas (HTTP {status}): {pesan}\n"
-        "      Bila pesannya soal migrasi/kolom, jalankan migrasi 12 lebih dahulu."
+        "      Bila pesannya soal fungsi/kolom yang tidak ada, jalankan migrasi 12."
     )
 
 
@@ -261,10 +313,23 @@ def main() -> int:
     baru = sandi_guru is None
     sandi = sandi_guru or kata_sandi_acak()
 
+    uid_guru: str | None = None
     if baru:
         ok, info = buat_guru(username, nama_guru, sekolah, sandi, kunci)
         if ok:
+            uid_guru = info
             print(f"  [v] Akun guru `{username}` dibuat (id {info})")
+            # Kata sandi dicetak SEKARANG, bukan hanya di ringkasan akhir.
+            # Bila langkah berikutnya gagal (mis. peran belum teacher), skrip
+            # berhenti sebelum ringkasan - dan kata sandi ini akan hilang
+            # selamanya bila baru dicetak di akhir.
+            print("")
+            print("  ┌──────────────────────────────────────────────────────────────┐")
+            print("  │  KATA SANDI GURU — CATAT SEKARANG, TIDAK DITAMPILKAN LAGI    │")
+            print("  └──────────────────────────────────────────────────────────────┘")
+            print(f"      username : {username}")
+            print(f"      password : {sandi}")
+            print("")
         elif info.startswith("SUDAH_ADA"):
             print(f"  [!] Akun `{username}` SUDAH ADA.")
             print("      Skrip tidak mengubah kata sandinya.")
@@ -280,6 +345,30 @@ def main() -> int:
     print(f"\n  {'='*70}\n  2. LOGIN GURU\n  {'='*70}")
     token = login(username, sandi)
     print(f"  [v] Berhasil masuk sebagai `{username}`")
+
+    # ── 2b. Pastikan profilnya benar-benar berperan teacher ──
+    #
+    # Membuat akun lewat Admin API tidak selalu langsung menghasilkan profil
+    # berperan teacher: bila akun itu SUDAH ADA lebih dulu (mis. pernah
+    # terdaftar sebagai siswa), baris profilnya sudah berperan 'student' dan
+    # tidak ikut berubah. Peran di `profiles` hanya dinaikkan oleh trigger
+    # saat metadata auth DITULIS, jadi metadata ditulis ulang agar trigger
+    # berjalan. Tanpa langkah ini, pembuatan kelas gagal dengan
+    # "Hanya guru yang boleh membuat kelas."
+    peran, admin_flag = peran_profil(token)
+    if peran and peran != "teacher" and not admin_flag:
+        print(f"  [!] Peran profil masih '{peran}'. Memperbaiki lewat app_metadata ...")
+        uid_guru = uid_guru or cari_uid(username, kunci)
+        if uid_guru and tulis_metadata_guru(username, uid_guru, kunci):
+            token = login(username, sandi)          # ambil token baru
+            peran, admin_flag = peran_profil(token)
+        if peran != "teacher" and not admin_flag:
+            print("\n  [X] Peran masih belum teacher setelah perbaikan.")
+            print("      Jalankan SQL ini di Supabase SQL Editor, lalu ulangi:")
+            print("        UPDATE public.profiles SET role = 'teacher'")
+            print(f"        WHERE username = '{username}';")
+            return 1
+        print("  [v] Peran guru diperbaiki menjadi teacher")
 
     # ── 3. Kelas ──
     print(f"\n  {'='*70}\n  3. KELAS\n  {'='*70}")
