@@ -139,6 +139,14 @@ def masuk_guru(username: str) -> tuple[str, str]:
     return hasil["access_token"], hasil["user"]["id"]
 
 
+def profil_saya(token: str) -> dict:
+    """Profil pemanggil, termasuk penanda admin."""
+    status, hasil = _minta("/rest/v1/rpc/get_my_profile", "POST", {}, token=token)
+    if status != 200 or not isinstance(hasil, dict):
+        return {}
+    return hasil
+
+
 def kelas_milik_guru(token: str, username_guru: str) -> list[dict]:
     q = urllib.parse.urlencode(
         {"select": "code,name", "teacher_username": f"eq.{username_guru.lower()}"}
@@ -281,12 +289,35 @@ def perintah_buat(berkas: Path, username_guru: str, kode_kelas: str | None,
     print(f"\n  {len(data)} siswa akan dibuatkan akun.")
     token, _ = masuk_guru(username_guru)
 
-    # Tentukan kelas
+    # Tentukan kelas.
+    #
+    # Pemilik kelas biasanya harus guru yang memanggil. Namun server juga
+    # mengizinkan ADMIN menambah murid ke kelas milik guru lain (lihat
+    # teacher_create_student: pemeriksaan kepemilikan dilewati bila
+    # v_me.is_admin). Tanpa cabang ini, admin yang menyebut --kelas milik
+    # orang lain akan ditolak skrip padahal server mengizinkannya.
     kelas = kelas_milik_guru(token, username_guru)
+    saya = profil_saya(token)
+    admin = bool(saya.get("is_admin")) or str(saya.get("role") or "") == "admin"
+
     if kode_kelas:
         kode = kode_kelas.upper()
         if not any(k["code"] == kode for k in kelas):
-            raise SystemExit(f"  [X] Kelas {kode} bukan milik guru `{username_guru}`.")
+            if admin:
+                print(f"  [i] Kelas {kode} bukan milik `{username_guru}`, tetapi akun ini ADMIN")
+                print("      sehingga diizinkan server. Kelas akan divalidasi saat pembuatan.")
+            else:
+                daftar = ", ".join(k["code"] for k in kelas) or "(tidak punya kelas)"
+                raise SystemExit(
+                    f"  [X] Kelas {kode} bukan milik `{username_guru}`.\n"
+                    f"      Kelas miliknya: {daftar}\n"
+                    "      Yang dapat menambah ke kelas guru lain hanyalah akun ADMIN."
+                )
+    elif len(kelas) == 0 and admin:
+        raise SystemExit(
+            "  [X] Akun ini admin dan tidak punya kelas sendiri.\n"
+            "      Sebutkan kelas tujuannya: --kelas RESQ-8A"
+        )
     elif len(kelas) == 1:
         kode = kelas[0]["code"]
         print(f"  Kelas terdeteksi: {kelas[0]['name']} ({kode})")
