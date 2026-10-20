@@ -114,7 +114,10 @@ def main() -> int:
                 catat("tinggi layar tanpa pendamping dvh", f, n, isi)
 
             # ── 2. Gaya sebaris lebar angka tetap ────────────────────────
-            if re.search(r"width:\s*['\"]?\d{3,}px", baris):
+            # `(?<![-a-z])` mencegah `max-width: 680px` dan `min-width: ...`
+            # ikut tertangkap. Keduanya BATAS ATAS/BAWAH, bukan lebar yang
+            # memaksa; banyak dipakai sah, termasuk pada CSS jendela cetak.
+            if re.search(r"(?<![-a-z])width:\s*['\"]?\d{3,}px", baris):
                 catat("gaya sebaris lebar tetap", f, n, isi)
 
             # ── 3. fixed bottom tanpa jarak kiri/kanan ───────────────────
@@ -162,8 +165,13 @@ def main() -> int:
         # tombol titik. Elemen itu ditandai oleh `-bottom-5`.
         if f.name == "JourneyProgressTracker.tsx":
             teks = f.read_text(encoding="utf-8", errors="ignore")
-            # Ambil setiap className="..." yang memuat -bottom-5 (label titik)
+            # Label titik dapat ditulis sebagai string biasa (`className="..."`)
+            # MAUPUN sebagai template literal (`className={`...`}`). Versi
+            # pertama pemeriksa ini hanya mengenali bentuk pertama, sehingga
+            # setelah label dipindah ke lapisan terpisah ia MELAPORKAN TEMUAN
+            # PALSU: "tidak ditemukan kelas label titik".
             label_titik = re.findall(r'className="([^"]*-bottom-5[^"]*)"', teks)
+            label_titik += re.findall(r'className=\{`([^`]*-bottom-5[^`]*)`\}', teks)
             if not label_titik:
                 catat(
                     "label pelacak tanpa batas lebar",
@@ -173,9 +181,16 @@ def main() -> int:
                 )
             else:
                 for kelas in label_titik:
-                    # Label titik harus punya batas lebar agar tidak memanjang
-                    # keluar bar. `w-[88%]` yang dipakai sekarang.
-                    if not re.search(r"w-\[\d+%\]", kelas):
+                    # Kriteria lulus (salah satu):
+                    #   a. ada batas lebar eksplisit (`w-[N%]`), ATAU
+                    #   b. memakai `truncate` — teks dipotong dengan "…"
+                    #      sehingga tidak dapat memanjang keluar bar.
+                    # Ditambah: label harus disembunyikan di layar sempit
+                    # (`hidden` + `md:block`), karena di sana tidak ada cara
+                    # delapan label muat.
+                    punya_batas = bool(re.search(r"w-\[\d+%\]", kelas)) or "truncate" in kelas
+                    disembunyikan = "hidden" in kelas and "md:block" in kelas
+                    if not (punya_batas and disembunyikan):
                         baris = teks.split("\n")
                         nomor = next(
                             (
