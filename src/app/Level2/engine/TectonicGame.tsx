@@ -1011,7 +1011,7 @@ export default function TectonicGame() {
   }, [isPaused]);
 
   return (
-    <div className="relative w-screen w-[100dvw] h-screen h-[100dvh] safe-area-pad overflow-hidden bg-[#09090b] select-none font-pixel">
+    <div className="relative w-screen w-[100dvw] h-screen h-[100dvh] safe-area-pad overflow-x-hidden bg-[#09090b] select-none font-pixel">
       {/* ── 1. GAME CANVAS ── */}
       <canvas
         ref={canvasRef}
@@ -1344,7 +1344,21 @@ export default function TectonicGame() {
       {(isTouchDevice || (typeof window !== 'undefined' && window.innerWidth <= 1024)) && (
         <div 
           onContextMenu={(e) => e.preventDefault()}
-          className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between pointer-events-none z-30 select-none touch-none"
+          /*
+            POSISI TOMBOL DISAMAKAN DENGAN LEVEL 1
+
+            Sebelumnya bilah ini memakai `absolute bottom-2.5` di dalam akar
+            permainan yang `overflow-hidden`. Di iPad, `100dvh` dapat lebih
+            pendek daripada kotak induknya sehingga bagian bawah — tepat tempat
+            tombol ini berada — TERPOTONG dan tombolnya tidak terlihat.
+
+            Level 1 terbukti tampil benar di iPad karena memakai `fixed`
+            (menempel pada layar, bukan pada kotak induk) dengan jarak
+            `bottom-3 / sm:bottom-4 / md:bottom-5`. Nilai itu disalin apa
+            adanya, ditambah `pb-[env(safe-area-inset-bottom)]` supaya tidak
+            tertutup bilah peramban bertanduk/berponi.
+          */
+          className="fixed bottom-3 sm:bottom-4 md:bottom-5 left-2.5 right-2.5 pb-[env(safe-area-inset-bottom)] flex items-end justify-between pointer-events-none z-30 select-none touch-none"
         >
           {/* Left 4-Way D-Pad (Atas, Bawah, Kiri, Kanan) */}
           <div className="flex flex-col items-center pointer-events-auto touch-none" onContextMenu={(e) => e.preventDefault()}>
