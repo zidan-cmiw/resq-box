@@ -290,7 +290,11 @@ function PuzzleSatu({
               style={{
                 gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
                 width: '100%',
-                maxWidth: areaIndex === 3 ? '540px' : areaIndex === 2 ? '500px' : areaIndex === 1 ? '480px' : '540px',
+                // Lebar papan DITURUNKAN dari jumlah kolom, bukan ditulis
+                // tetap per area. Sebelumnya semua area dibatasi 480-540px,
+                // sehingga papan 17 kolom (area 0 soal 3) mendapat sel hanya
+                // ~30px - terlalu kecil untuk diketuk dan terlihat berdesakan.
+                maxWidth: `${Math.min(720, Math.max(320, cols * 42))}px`,
               }}
             >
               {Array.from({ length: rows }).map((_, r) =>
