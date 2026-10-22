@@ -126,9 +126,11 @@ def main() -> int:
         return 1
 
     # ── 2. Seluruh pengiriman nilai ──
+    # Kolom waktunya bernama `completed_at`, BUKAN `created_at`
+    # (lihat CREATE TABLE public.level_submissions di migrasi 01).
     kiriman = ambil(
         "/rest/v1/level_submissions?select=student_id,student_name,classroom_code,"
-        "level_number,score,created_at&order=created_at.desc",
+        "level_number,score,completed_at,details&order=completed_at.desc",
         k,
     )
     if kiriman is None:
@@ -189,10 +191,55 @@ def main() -> int:
             + (", ".join(status) if status else "[v] sinkron")
         )
 
-    # ── 4. Kesimpulan ──
+    # ── 4. Bentuk `details` yang benar-benar tersimpan ──
+    #
+    #    Inilah yang menentukan apakah progres dapat dipulihkan di perangkat
+    #    lain. Kalau `details` kosong, membuat jalur baca tidak akan menolong.
+    print(f"\n  {'='*92}")
+    print("  BENTUK `details` TERBARU (dasar untuk memulihkan progres)")
+    print(f"  {'='*92}")
+
+    contoh_siswa = siswa if filter_user else siswa[:3]
+    ada_details = 0
+    kosong_details = 0
+
+    for s in contoh_siswa:
+        uid = str(s.get("id") or "")
+        rows = per_siswa.get(uid, [])
+        if not rows:
+            print(f"  {s.get('username'):<16} (belum ada kiriman)")
+            continue
+        terbaru: dict[int, dict] = {}
+        for r in rows:  # sudah urut terbaru -> terlama
+            lv = int(r.get("level_number") or 0)
+            terbaru.setdefault(lv, r)
+        for lv in sorted(terbaru):
+            r = terbaru[lv]
+            d = r.get("details") or {}
+            if isinstance(d, dict) and d:
+                ada_details += 1
+                daftar_kunci = ", ".join(sorted(d.keys())[:10])
+                print(f"  {s.get('username'):<16} L{lv} skor={r.get('score'):>3} "
+                      f"({str(r.get('completed_at'))[:16]})")
+                print(f"      kunci : {daftar_kunci}")
+                ringkas = json.dumps(d, ensure_ascii=False)
+                print(f"      isi   : {ringkas[:220]}")
+            else:
+                kosong_details += 1
+                print(f"  {s.get('username'):<16} L{lv} skor={r.get('score'):>3} "
+                      f"-> details KOSONG")
+
+    # ── 5. Kesimpulan ──
     print(f"\n  {'='*92}")
     print("  KESIMPULAN")
     print(f"  {'='*92}")
+
+    if ada_details == 0 and kosong_details > 0:
+        print("  [X] Semua `details` KOSONG. Progres tidak dapat dipulihkan dari")
+        print("      server walau jalur baca dibuat. Periksa dulu mengapa kiriman")
+        print("      tidak membawa details.")
+        print("")
+        return 0
 
     if belum_ada_nilai == len(siswa):
         print("  [X] TIDAK ADA satu pun nilai di server.")
