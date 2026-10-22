@@ -81,12 +81,12 @@ export interface GridTTS {
 const VARIAN_AREA_0: GridTTS[] = [
   {
     rows: 12,
-    cols: 10,
+    cols: 13,
     clues: [
-      { id: 'a0s1c1', number: 4, direction: 'across', answer: 'MERUNDUK', clue: 'Tindakan pertama yang dilakukan saat gempa dengan merendahkan tubuh mendekati lantai agar terhindar dari benda yang jatuh.', startRow: 7, startCol: 1 },
-      { id: 'a0s1c2', number: 3, direction: 'down', answer: 'EVAKUASI', clue: 'Tindakan penyelamatan diri dengan berjalan tertib lewat tangga darurat atau jalur yang ditentukan menuju titik kumpul di lapangan sekolah.', startRow: 3, startCol: 4 },
-      { id: 'a0s1c3', number: 2, direction: 'down', answer: 'BERLINDUNG', clue: 'Proses penyelamatan diri dari material yang berjatuhan dengan cara masuk ke bawah meja belajar yang kokoh.', startRow: 1, startCol: 6 },
-      { id: 'a0s1c4', number: 1, direction: 'down', answer: 'MENGHINDAR', clue: 'Tindakan yang wajib dilakukan murid agar tidak terkena benda-benda rawan pecah atau jatuh di kelas.', startRow: 1, startCol: 5 },
+      { id: 'a0s1c1', number: 4, direction: 'across', answer: 'EVAKUASI', clue: 'Tindakan penyelamatan diri dengan berjalan tertib lewat tangga darurat atau jalur yang ditentukan menuju titik kumpul di lapangan sekolah.', startRow: 9, startCol: 4 },
+      { id: 'a0s1c2', number: 2, direction: 'down', answer: 'MERUNDUK', clue: 'Tindakan pertama yang dilakukan saat gempa dengan merendahkan tubuh mendekati lantai agar terhindar dari benda yang jatuh.', startRow: 2, startCol: 7 },
+      { id: 'a0s1c3', number: 1, direction: 'down', answer: 'MENGHINDAR', clue: 'Tindakan yang wajib dilakukan murid agar tidak terkena benda-benda rawan pecah atau jatuh di kelas.', startRow: 1, startCol: 9 },
+      { id: 'a0s1c4', number: 3, direction: 'across', answer: 'BERLINDUNG', clue: 'Proses penyelamatan diri dari material yang berjatuhan dengan cara masuk ke bawah meja belajar yang kokoh.', startRow: 7, startCol: 1 },
     ],
   },
   {
@@ -110,12 +110,12 @@ const VARIAN_AREA_0: GridTTS[] = [
   },
   {
     rows: 10,
-    cols: 8,
+    cols: 10,
     clues: [
-      { id: 'a0s4c1', number: 4, direction: 'across', answer: 'PERBAN', clue: 'Salah satu perlengkapan medis bersama kasa steril dan plester di dalam Kotak P3K yang sangat dibutuhkan untuk menangani cedera atau luka saat keadaan darurat.', startRow: 6, startCol: 1 },
-      { id: 'a0s4c2', number: 3, direction: 'down', answer: 'TENANG', clue: 'Sikap mental yang sangat wajib dijaga oleh murid ketika merasakan guncangan dan menerima arahan dari guru agar tidak memicu kepanikan massal di dalam kelas.', startRow: 2, startCol: 6 },
-      { id: 'a0s4c3', number: 2, direction: 'down', answer: 'SIMULASI', clue: 'Kegiatan latihan praktik penyelamatan yang rutin dilakukan di lingkungan sekolah agar murid hafal langkah keselamatan dan rute evakuasi menuju titik kumpul.', startRow: 1, startCol: 5 },
-      { id: 'a0s4c4', number: 1, direction: 'down', answer: 'DOKUMEN', clue: 'Berkas penting seperti fotokopi Kartu Keluarga, KTP, ijazah, dan akta lahir yang wajib dilindungi di dalam kantong ziplock anti-air pada perlengkapan darurat.', startRow: 1, startCol: 2 },
+      { id: 'a0s4c1', number: 4, direction: 'across', answer: 'TENANG', clue: 'Sikap mental yang sangat wajib dijaga oleh murid ketika merasakan guncangan dan menerima arahan dari guru agar tidak memicu kepanikan massal di dalam kelas.', startRow: 8, startCol: 2 },
+      { id: 'a0s4c2', number: 2, direction: 'down', answer: 'DOKUMEN', clue: 'Berkas penting seperti fotokopi Kartu Keluarga, KTP, ijazah, dan akta lahir yang wajib dilindungi di dalam kantong ziplock anti-air pada perlengkapan darurat.', startRow: 2, startCol: 4 },
+      { id: 'a0s4c3', number: 3, direction: 'across', answer: 'SIMULASI', clue: 'Kegiatan latihan praktik penyelamatan yang rutin dilakukan di lingkungan sekolah agar murid hafal langkah keselamatan dan rute evakuasi menuju titik kumpul.', startRow: 5, startCol: 1 },
+      { id: 'a0s4c4', number: 1, direction: 'down', answer: 'PERBAN', clue: 'Salah satu perlengkapan medis bersama kasa steril dan plester di dalam Kotak P3K yang sangat dibutuhkan untuk menangani cedera atau luka saat keadaan darurat.', startRow: 1, startCol: 6 },
     ],
   },
   {
@@ -125,19 +125,19 @@ const VARIAN_AREA_0: GridTTS[] = [
       { id: 'a0s5c1', number: 4, direction: 'across', answer: 'TITIKKUMPUL', clue: 'Area aman yang telah ditetapkan secara khusus sebagai tempat berkumpulnya seluruh warga saat terjadinya bencana.', startRow: 5, startCol: 1 },
       { id: 'a0s5c2', number: 2, direction: 'down', answer: 'PANIK', clue: 'Reaksi emosional yang tidak boleh ditunjukkan ketika terjadinya bencana sehingga mengabaikan protokol keselamatan.', startRow: 1, startCol: 5 },
       { id: 'a0s5c3', number: 1, direction: 'across', answer: 'BNPB', clue: 'Lembaga resmi pemerintah di tingkat nasional yang bertugas mengeluarkan pedoman penanggulangan bencana di Indonesia.', startRow: 1, startCol: 3 },
-      { id: 'a0s5c4', number: 3, direction: 'across', answer: 'LAPANGAN', clue: 'Area terbuka luas di lingkungan sekolah yang paling aman dan terbebas dari bahaya reruntuhan bangunan maupun tiang listrik untuk dijadikan lokasi evakuasi akhir.', startRow: 2, startCol: 2 },
+      { id: 'a0s5c4', number: 3, direction: 'across', answer: 'LAPANGAN', clue: 'Area terbuka luas di lingkungan sekolah yang paling aman dan terbebas dari bahaya reruntuhan bangunan maupun tiang listrik untuk dijadikan lokasi evakuasi akhir.', startRow: 3, startCol: 1 },
     ],
   },
 ];
 
 const VARIAN_AREA_2: GridTTS[] = [
   {
-    rows: 16,
-    cols: 6,
+    rows: 10,
+    cols: 12,
     clues: [
       { id: 'a2s1c1', number: 2, direction: 'across', answer: 'BPBD', clue: 'Badan penanggulangan bencana di tingkat daerah yang menjadi sumber informasi dan instruksi resmi bagi para murid di lapangan agar tidak termakan kabar hoaks.', startRow: 3, startCol: 1 },
-      { id: 'a2s1c2', number: 3, direction: 'down', answer: 'AFTERSHOCK', clue: 'Istilah untuk rentetan gempa susulan yang masih sangat mungkin terjadi setelah getaran utama mereda.', startRow: 5, startCol: 1 },
-      { id: 'a2s1c3', number: 1, direction: 'down', answer: 'AMBULANS', clue: 'Kendaraan medis darurat yang harus segera dihubungi ketika terdapat korban gawat darurat yang harus ditangani.', startRow: 1, startCol: 3 },
+      { id: 'a2s1c2', number: 1, direction: 'down', answer: 'AMBULANS', clue: 'Kendaraan medis darurat yang harus segera dihubungi ketika terdapat korban gawat darurat yang harus ditangani.', startRow: 1, startCol: 1 },
+      { id: 'a2s1c3', number: 3, direction: 'across', answer: 'AFTERSHOCK', clue: 'Istilah untuk rentetan gempa susulan yang masih sangat mungkin terjadi setelah getaran utama mereda.', startRow: 6, startCol: 1 },
     ],
   },
   {
@@ -150,33 +150,33 @@ const VARIAN_AREA_2: GridTTS[] = [
     ],
   },
   {
-    rows: 8,
-    cols: 13,
+    rows: 14,
+    cols: 8,
     clues: [
-      { id: 'a2s3c1', number: 4, direction: 'across', answer: 'BERKUMPUL', clue: 'Tindakan yang dilakukan ketika berada di titik kumpul dan tidak boleh memisahkan diri setelah bencana sebelum ada arahan dari petugas.', startRow: 4, startCol: 3 },
-      { id: 'a2s3c2', number: 1, direction: 'down', answer: 'KORBAN', clue: 'Orang yang mengalami dampak buruk bencana seperti luka, cedera, atau ketakutan yang harus segera ditolong dan dirawat oleh petugas medis.', startRow: 1, startCol: 3 },
-      { id: 'a2s3c3', number: 2, direction: 'across', answer: 'HOAX', clue: 'Berita bohong atau kabar palsu yang dilarang keras untuk disebarkan karena hanya akan membuat semua orang di lapangan semakin panik.', startRow: 2, startCol: 2 },
-      { id: 'a2s3c4', number: 3, direction: 'across', answer: 'KORSELETING', clue: 'Kerusakan pada kabel atau tiang listrik akibat guncangan gempa yang sangat berbahaya karena bisa memicu timbulnya api kebakaran.', startRow: 3, startCol: 1 },
+      { id: 'a2s3c1', number: 4, direction: 'across', answer: 'KORBAN', clue: 'Orang yang mengalami dampak buruk bencana seperti luka, cedera, atau ketakutan yang harus segera ditolong dan dirawat oleh petugas medis.', startRow: 4, startCol: 1 },
+      { id: 'a2s3c2', number: 3, direction: 'down', answer: 'HOAX', clue: 'Berita bohong atau kabar palsu yang dilarang keras untuk disebarkan karena hanya akan membuat semua orang di lapangan semakin panik.', startRow: 2, startCol: 5 },
+      { id: 'a2s3c3', number: 1, direction: 'down', answer: 'BERKUMPUL', clue: 'Tindakan yang dilakukan ketika berada di titik kumpul dan tidak boleh memisahkan diri setelah bencana sebelum ada arahan dari petugas.', startRow: 1, startCol: 1 },
+      { id: 'a2s3c4', number: 2, direction: 'down', answer: 'KORSELETING', clue: 'Kerusakan pada kabel atau tiang listrik akibat guncangan gempa yang sangat berbahaya karena bisa memicu timbulnya api kebakaran.', startRow: 2, startCol: 3 },
     ],
   },
   {
-    rows: 7,
-    cols: 11,
+    rows: 14,
+    cols: 7,
     clues: [
-      { id: 'a2s4c1', number: 4, direction: 'across', answer: 'WASPADA', clue: 'Sikap berhati-hati dan selalu bersiap sedia yang wajib untuk mengantisipasi datangnya gempa susulan.', startRow: 4, startCol: 1 },
-      { id: 'a2s4c2', number: 1, direction: 'down', answer: 'MERAH', clue: 'Warna penanda dalam sistem triase medis yang dipasangkan pada korban dengan kondisi luka paling kritis agar mendapat pertolongan paling pertama.', startRow: 1, startCol: 2 },
-      { id: 'a2s4c3', number: 3, direction: 'across', answer: 'MENINGGAL', clue: 'Kondisi korban bencana yang sudah kehilangan nyawanya, yang dalam sistem penanganan medis di lapangan biasanya diberikan penanda label berwarna hitam.', startRow: 2, startCol: 1 },
-      { id: 'a2s4c4', number: 2, direction: 'down', answer: 'TANDU', clue: 'Alat bantu berupa bentangan alas dengan dua tongkat pegangan yang digunakan tim penolong untuk menggotong korban luka berat menuju ambulans atau tenda medis.', startRow: 1, startCol: 8 },
+      { id: 'a2s4c1', number: 4, direction: 'across', answer: 'TANDU', clue: 'Alat bantu berupa bentangan alas dengan dua tongkat pegangan yang digunakan tim penolong untuk menggotong korban luka berat menuju ambulans atau tenda medis.', startRow: 11, startCol: 1 },
+      { id: 'a2s4c2', number: 2, direction: 'down', answer: 'MENINGGAL', clue: 'Kondisi korban bencana yang sudah kehilangan nyawanya, yang dalam sistem penanganan medis di lapangan biasanya diberikan penanda label berwarna hitam.', startRow: 4, startCol: 2 },
+      { id: 'a2s4c3', number: 3, direction: 'across', answer: 'MERAH', clue: 'Warna penanda dalam sistem triase medis yang dipasangkan pada korban dengan kondisi luka paling kritis agar mendapat pertolongan paling pertama.', startRow: 5, startCol: 1 },
+      { id: 'a2s4c4', number: 1, direction: 'down', answer: 'WASPADA', clue: 'Sikap berhati-hati dan selalu bersiap sedia yang wajib untuk mengantisipasi datangnya gempa susulan.', startRow: 1, startCol: 4 },
     ],
   },
   {
-    rows: 12,
-    cols: 9,
+    rows: 9,
+    cols: 12,
     clues: [
-      { id: 'a2s5c1', number: 3, direction: 'across', answer: 'SEKOLAH', clue: 'Bangunan yang dilarang keras untuk dimasuki kembali pasca gempa demi mengambil barang yang tertinggal.', startRow: 5, startCol: 1 },
-      { id: 'a2s5c2', number: 4, direction: 'down', answer: 'PMR', clue: 'Organisasi murid di sekolah yang anggotanya sering ditugaskan sebagai tim medis darurat untuk memberikan pertolongan pertama pada korban luka di lapangan.', startRow: 7, startCol: 1 },
-      { id: 'a2s5c3', number: 2, direction: 'down', answer: 'EVAKUASI', clue: 'Proses menyelamatkan diri secara tertib dari area yang berbahaya menuju titik kumpul yang aman di lapangan.', startRow: 2, startCol: 3 },
-      { id: 'a2s5c4', number: 1, direction: 'down', answer: 'PENCEGAHAN', clue: 'Segala tindakan persiapan, aturan, dan latihan yang dilakukan jauh sebelum bencana terjadi untuk meminimalkan jumlah korban luka.', startRow: 1, startCol: 2 },
+      { id: 'a2s5c1', number: 3, direction: 'across', answer: 'PMR', clue: 'Organisasi murid di sekolah yang anggotanya sering ditugaskan sebagai tim medis darurat untuk memberikan pertolongan pertama pada korban luka di lapangan.', startRow: 5, startCol: 1 },
+      { id: 'a2s5c2', number: 4, direction: 'across', answer: 'PENCEGAHAN', clue: 'Segala tindakan persiapan, aturan, dan latihan yang dilakukan jauh sebelum bencana terjadi untuk meminimalkan jumlah korban luka.', startRow: 7, startCol: 1 },
+      { id: 'a2s5c3', number: 2, direction: 'down', answer: 'SEKOLAH', clue: 'Bangunan yang dilarang keras untuk dimasuki kembali pasca gempa demi mengambil barang yang tertinggal.', startRow: 1, startCol: 8 },
+      { id: 'a2s5c4', number: 1, direction: 'across', answer: 'EVAKUASI', clue: 'Proses menyelamatkan diri secara tertib dari area yang berbahaya menuju titik kumpul yang aman di lapangan.', startRow: 1, startCol: 2 },
     ],
   },
 ];
@@ -202,32 +202,32 @@ const VARIAN_AREA_3: GridTTS[] = [
   },
   {
     rows: 11,
-    cols: 7,
+    cols: 8,
     clues: [
-      { id: 'a3s3c1', number: 4, direction: 'across', answer: 'PVMBG', clue: 'Lembaga resmi milik pemerintah pusat yang memiliki wewenang untuk memantau aktivitas gunung api dan menetapkan tingkat status bahayanya di Indonesia.', startRow: 5, startCol: 1 },
-      { id: 'a3s3c2', number: 1, direction: 'down', answer: 'AWANPANAS', clue: 'Material vulkanik mematikan berupa gumpalan campuran gas, abu, dan bebatuan bersuhu ratusan derajat celcius yang meluncur deras menuruni lereng, oleh masyarakat lokal sering disebut wedhus gembel.', startRow: 1, startCol: 1 },
-      { id: 'a3s3c3', number: 3, direction: 'down', answer: 'SIAGA', clue: 'Tingkat status gunung api Level III yang menunjukkan peningkatan aktivitas secara nyata sehingga warga harus mulai menyiapkan tas darurat.', startRow: 2, startCol: 5 },
-      { id: 'a3s3c4', number: 2, direction: 'down', answer: 'NORMAL', clue: 'Tingkatan status aktivitas gunung api paling dasar (Level I) yang berarti kondisi gunung tenang dan aman untuk kegiatan masyarakat.', startRow: 2, startCol: 3 },
+      { id: 'a3s3c1', number: 4, direction: 'across', answer: 'SIAGA', clue: 'Tingkat status gunung api Level III yang menunjukkan peningkatan aktivitas secara nyata sehingga warga harus mulai menyiapkan tas darurat.', startRow: 9, startCol: 1 },
+      { id: 'a3s3c2', number: 2, direction: 'down', answer: 'PVMBG', clue: 'Lembaga resmi milik pemerintah pusat yang memiliki wewenang untuk memantau aktivitas gunung api dan menetapkan tingkat status bahayanya di Indonesia.', startRow: 5, startCol: 4 },
+      { id: 'a3s3c3', number: 1, direction: 'down', answer: 'AWANPANAS', clue: 'Material vulkanik mematikan berupa gumpalan campuran gas, abu, dan bebatuan bersuhu ratusan derajat celcius yang meluncur deras menuruni lereng, oleh masyarakat lokal sering disebut wedhus gembel.', startRow: 1, startCol: 1 },
+      { id: 'a3s3c4', number: 3, direction: 'across', answer: 'NORMAL', clue: 'Tingkatan status aktivitas gunung api paling dasar (Level I) yang berarti kondisi gunung tenang dan aman untuk kegiatan masyarakat.', startRow: 7, startCol: 1 },
     ],
   },
   {
     rows: 11,
-    cols: 8,
+    cols: 10,
     clues: [
-      { id: 'a3s4c1', number: 4, direction: 'across', answer: 'ERUPSI', clue: 'Peristiwa semburan dahsyat yang mengeluarkan material vulkanik seperti magma, batu, dan abu dari dalam kawah ketika status gunung api sudah mencapai level Awas.', startRow: 8, startCol: 1 },
-      { id: 'a3s4c2', number: 3, direction: 'down', answer: 'GOGGLE', clue: 'Jenis kacamata pelindung yang didesain tertutup rapat dan wajib digunakan warga saat terjadi hujan abu vulkanik agar mata tidak kelilipan material silika tajam.', startRow: 3, startCol: 1 },
-      { id: 'a3s4c3', number: 1, direction: 'down', answer: 'SOLFATARA', clue: 'Asap atau uap belerang yang mulai mengepul keluar dari rekahan kubah kawah ketika gunung api mengalami peningkatan aktivitas pada status waspada.', startRow: 1, startCol: 2 },
-      { id: 'a3s4c4', number: 2, direction: 'down', answer: 'VULKANIK', clue: 'Jenis gempa yang terjadi ketika gunung akan atau sedang erupsi.', startRow: 2, startCol: 6 },
+      { id: 'a3s4c1', number: 3, direction: 'across', answer: 'GOGGLE', clue: 'Jenis kacamata pelindung yang didesain tertutup rapat dan wajib digunakan warga saat terjadi hujan abu vulkanik agar mata tidak kelilipan material silika tajam.', startRow: 3, startCol: 1 },
+      { id: 'a3s4c2', number: 2, direction: 'down', answer: 'SOLFATARA', clue: 'Asap atau uap belerang yang mulai mengepul keluar dari rekahan kubah kawah ketika gunung api mengalami peningkatan aktivitas pada status waspada.', startRow: 1, startCol: 5 },
+      { id: 'a3s4c3', number: 1, direction: 'across', answer: 'ERUPSI', clue: 'Peristiwa semburan dahsyat yang mengeluarkan material vulkanik seperti magma, batu, dan abu dari dalam kawah ketika status gunung api sudah mencapai level Awas.', startRow: 1, startCol: 1 },
+      { id: 'a3s4c4', number: 4, direction: 'across', answer: 'VULKANIK', clue: 'Jenis gempa yang terjadi ketika gunung akan atau sedang erupsi.', startRow: 5, startCol: 1 },
     ],
   },
   {
     rows: 9,
     cols: 7,
     clues: [
-      { id: 'a3s5c1', number: 3, direction: 'across', answer: 'EMPAT', clue: 'Jumlah keseluruhan tingkatan level status aktivitas gunung api yang ditetapkan oleh PVMBG di Indonesia, yang dimulai dari Normal hingga Awas.', startRow: 3, startCol: 1 },
-      { id: 'a3s5c2', number: 4, direction: 'across', answer: 'KRB', clue: 'Singkatan dari Kawasan Rawan Bencana, yaitu pembagian wilayah di sekitar gunung api yang dipetakan menjadi tiga zona berdasarkan tingkat ancaman bahayanya.', startRow: 5, startCol: 1 },
-      { id: 'a3s5c3', number: 1, direction: 'down', answer: 'LETUSAN', clue: 'Istilah lain dari peristiwa gunung meletus, di mana material panas dari dalam bumi seperti magma, batuan, dan gas terdorong keluar menuju permukaan.', startRow: 1, startCol: 5 },
-      { id: 'a3s5c4', number: 2, direction: 'down', answer: 'LAVA', clue: 'Wujud magma pijar encer maupun kental yang sudah berhasil keluar mencapai permukaan bumi dan mengalir menyusuri lereng gunung saat letusan terjadi.', startRow: 2, startCol: 4 },
+      { id: 'a3s5c1', number: 1, direction: 'across', answer: 'KRB', clue: 'Singkatan dari Kawasan Rawan Bencana, yaitu pembagian wilayah di sekitar gunung api yang dipetakan menjadi tiga zona berdasarkan tingkat ancaman bahayanya.', startRow: 1, startCol: 1 },
+      { id: 'a3s5c2', number: 3, direction: 'across', answer: 'EMPAT', clue: 'Jumlah keseluruhan tingkatan level status aktivitas gunung api yang ditetapkan oleh PVMBG di Indonesia, yang dimulai dari Normal hingga Awas.', startRow: 3, startCol: 1 },
+      { id: 'a3s5c3', number: 2, direction: 'down', answer: 'LETUSAN', clue: 'Istilah lain dari peristiwa gunung meletus, di mana material panas dari dalam bumi seperti magma, batuan, dan gas terdorong keluar menuju permukaan.', startRow: 1, startCol: 5 },
+      { id: 'a3s5c4', number: 4, direction: 'across', answer: 'LAVA', clue: 'Wujud magma pijar encer maupun kental yang sudah berhasil keluar mencapai permukaan bumi dan mengalir menyusuri lereng gunung saat letusan terjadi.', startRow: 6, startCol: 2 },
     ],
   },
 ];
@@ -257,28 +257,28 @@ const VARIAN_AREA_5: GridTTS[] = [
     clues: [
       { id: 'a5s3c1', number: 4, direction: 'across', answer: 'TRAUMA', clue: 'Kondisi psikologis yang ditandai dengan rasa takut mendalam yang dialami korban pascabencana, sehingga memerlukan penanganan khusus dari psikolog atau psikiater.', startRow: 6, startCol: 1 },
       { id: 'a5s3c2', number: 3, direction: 'down', answer: 'PENGUNGSI', clue: 'Sebutan untuk masyarakat yang tinggal sementara di tempat penampungan darurat akibat rumah mereka terdampak letusan gunung api.', startRow: 2, startCol: 4 },
-      { id: 'a5s3c3', number: 2, direction: 'down', answer: 'AWANPANAS', clue: 'Jenis bahaya lanjutan pasca erupsi yang berisiko menerjang kawasan lereng meskipun letusan utama telah usai.', startRow: 1, startCol: 3 },
-      { id: 'a5s3c4', number: 1, direction: 'across', answer: 'LAHAR', clue: 'Material endapan vulkanik berupa campuran pasir, abu, dan batuan yang menyatu dengan air hujan, lalu mengalir sangat deras menyapu apa saja yang ada di alur sungai.', startRow: 1, startCol: 2 },
+      { id: 'a5s3c3', number: 1, direction: 'down', answer: 'AWANPANAS', clue: 'Jenis bahaya lanjutan pasca erupsi yang berisiko menerjang kawasan lereng meskipun letusan utama telah usai.', startRow: 1, startCol: 6 },
+      { id: 'a5s3c4', number: 2, direction: 'down', answer: 'LAHAR', clue: 'Material endapan vulkanik berupa campuran pasir, abu, dan batuan yang menyatu dengan air hujan, lalu mengalir sangat deras menyapu apa saja yang ada di alur sungai.', startRow: 2, startCol: 2 },
     ],
   },
   {
-    rows: 8,
+    rows: 10,
     cols: 14,
     clues: [
-      { id: 'a5s4c1', number: 4, direction: 'across', answer: 'BELERANG', clue: 'Zat gas vulkanik berbau sangat menyengat yang sering terbawa oleh abu vulkanik dan dapat mencemari persediaan air bersih di area pengungsian.', startRow: 6, startCol: 1 },
-      { id: 'a5s4c2', number: 1, direction: 'down', answer: 'SILIKA', clue: 'Material abu vulkanik yang tajam menyerupai pecahan kaca, sangat halus dan bisa melukai kornea mata serta merusak paru-paru jika terhirup.', startRow: 1, startCol: 6 },
-      { id: 'a5s4c3', number: 2, direction: 'across', answer: 'CUCITANGAN', clue: 'Langkah kebersihan dasar menggunakan air mengalir dan sabun yang wajib dilakukan sebelum makan oleh warga di barak untuk mencegah penularan penyakit.', startRow: 2, startCol: 3 },
-      { id: 'a5s4c4', number: 3, direction: 'across', answer: 'REHABILITASI', clue: 'Manajemen pemulihan suatu wilayah yang terkena bencana agar kehidupan masyarakat kembali normal.', startRow: 4, startCol: 1 },
+      { id: 'a5s4c1', number: 4, direction: 'across', answer: 'CUCITANGAN', clue: 'Langkah kebersihan dasar menggunakan air mengalir dan sabun yang wajib dilakukan sebelum makan oleh warga di barak untuk mencegah penularan penyakit.', startRow: 8, startCol: 3 },
+      { id: 'a5s4c2', number: 1, direction: 'down', answer: 'BELERANG', clue: 'Zat gas vulkanik berbau sangat menyengat yang sering terbawa oleh abu vulkanik dan dapat mencemari persediaan air bersih di area pengungsian.', startRow: 1, startCol: 10 },
+      { id: 'a5s4c3', number: 2, direction: 'down', answer: 'SILIKA', clue: 'Material abu vulkanik yang tajam menyerupai pecahan kaca, sangat halus dan bisa melukai kornea mata serta merusak paru-paru jika terhirup.', startRow: 3, startCol: 8 },
+      { id: 'a5s4c4', number: 3, direction: 'across', answer: 'REHABILITASI', clue: 'Manajemen pemulihan suatu wilayah yang terkena bencana agar kehidupan masyarakat kembali normal.', startRow: 6, startCol: 1 },
     ],
   },
   {
-    rows: 8,
-    cols: 14,
+    rows: 14,
+    cols: 11,
     clues: [
-      { id: 'a5s5c1', number: 4, direction: 'across', answer: 'EKSPLOSIF', clue: 'Jenis letusan gunung api yang terjadi secara meledak-ledak dan sangat dahsyat hingga mampu melontarkan material abu dan batuan vulkanik jauh tinggi ke udara.', startRow: 5, startCol: 3 },
-      { id: 'a5s5c2', number: 3, direction: 'down', answer: 'KRATER', clue: 'Cekungan atau lubang besar di bagian puncak gunung berapi yang menjadi tempat utama menyemburnya magma, gas, dan awan panas saat erupsi terjadi.', startRow: 1, startCol: 3 },
-      { id: 'a5s5c3', number: 1, direction: 'across', answer: 'REKONSTRUKSI', clue: 'Manajemen pemulihan dengan membangun kembali sarana dan prasarana dengan standar yang lebih baik untuk meminimalkan dampak erupsi di masa depan.', startRow: 1, startCol: 1 },
-      { id: 'a5s5c4', number: 2, direction: 'down', answer: 'EFUSIF', clue: 'Jenis letusan gunung api yang terjadi tanpa disertai ledakan dahsyat melainkan hanya berupa lelehan lava panas yang mengalir perlahan menyusuri lereng.', startRow: 1, startCol: 2 },
+      { id: 'a5s5c1', number: 2, direction: 'across', answer: 'KRATER', clue: 'Cekungan atau lubang besar di bagian puncak gunung berapi yang menjadi tempat utama menyemburnya magma, gas, dan awan panas saat erupsi terjadi.', startRow: 3, startCol: 3 },
+      { id: 'a5s5c2', number: 3, direction: 'down', answer: 'EFUSIF', clue: 'Jenis letusan gunung api yang terjadi tanpa disertai ledakan dahsyat melainkan hanya berupa lelehan lava panas yang mengalir perlahan menyusuri lereng.', startRow: 3, startCol: 7 },
+      { id: 'a5s5c3', number: 1, direction: 'down', answer: 'REKONSTRUKSI', clue: 'Manajemen pemulihan dengan membangun kembali sarana dan prasarana dengan standar yang lebih baik untuk meminimalkan dampak erupsi di masa depan.', startRow: 1, startCol: 3 },
+      { id: 'a5s5c4', number: 4, direction: 'across', answer: 'EKSPLOSIF', clue: 'Jenis letusan gunung api yang terjadi secara meledak-ledak dan sangat dahsyat hingga mampu melontarkan material abu dan batuan vulkanik jauh tinggi ke udara.', startRow: 6, startCol: 1 },
     ],
   },
 ];
@@ -395,6 +395,49 @@ export function periksaGrid(grid: GridTTS): string[] {
         if (selX.has(`${r}-${k}`)) {
           masalah.push(`dua kata searah saling menimpa di kotak (${r},${k}): ${x.id} dan ${y.id}`);
         }
+      }
+    }
+  }
+
+
+  // ── KATA SEJAJAR TIDAK BOLEH BERDAMPINGAN ─────────────────────────────
+  //
+  // Dua kata yang searah dan berdiri bersebelahan (jarak 1 sel pada sumbu
+  // tegak lurus) membuat kotak-kotaknya menyatu menjadi satu blok. Di layar
+  // blok itu terbaca sebagai "kotak yang menempel-nempel", dan siswa tidak
+  // dapat lagi melihat batas tiap kata.
+  //
+  // Ini bukan sekadar soal kerapian: kata yang berdampingan tanpa kotak
+  // pemisah membuat nomor dan arah petunjuk tampak bertumpuk, sehingga siswa
+  // salah mengira rentang sebuah kata.
+  //
+  // Aturan ini yang dipakai penyusun grid, dan di sini diperiksa ulang supaya
+  // grid yang disunting tangan pun tidak dapat melanggarnya.
+  for (let a = 0; a < grid.clues.length; a++) {
+    for (let b = a + 1; b < grid.clues.length; b++) {
+      const x = grid.clues[a];
+      const y = grid.clues[b];
+      if (x.direction !== y.direction) continue;
+
+      // Jarak pada sumbu tegak lurus arah kata.
+      const jarakTegakLurus =
+        x.direction === 'down'
+          ? Math.abs(x.startCol - y.startCol)
+          : Math.abs(x.startRow - y.startRow);
+      if (jarakTegakLurus !== 1) continue;
+
+      // Hanya menjadi masalah bila rentang sepanjang arah katanya beririsan.
+      const awalX = x.direction === 'down' ? x.startRow : x.startCol;
+      const akhirX = awalX + x.answer.length - 1;
+      const awalY = y.direction === 'down' ? y.startRow : y.startCol;
+      const akhirY = awalY + y.answer.length - 1;
+      const beririsan = awalX <= akhirY && awalY <= akhirX;
+
+      if (beririsan) {
+        masalah.push(
+          `kata sejajar berdampingan: ${x.id} ("${x.answer}") dan ${y.id} ("${y.answer}") ` +
+            `hanya berjarak 1 kotak sehingga kotaknya menyatu`,
+        );
       }
     }
   }

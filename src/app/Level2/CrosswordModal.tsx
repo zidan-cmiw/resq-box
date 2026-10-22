@@ -286,7 +286,7 @@ function PuzzleSatu({
           {/* ── CROSSWORD GRID (7 cols on desktop) ── */}
           <div className="lg:col-span-7 bg-[#0f172a] p-4 sm:p-5 rounded-2xl border-3 sm:border-4 border-[#451a03] shadow-inner flex flex-col items-center justify-center overflow-x-auto">
             <div
-              className="grid gap-1.5"
+              className="grid gap-1.5 sm:gap-2"
               style={{
                 gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
                 width: '100%',
@@ -333,7 +333,7 @@ function PuzzleSatu({
                           if (otherClue) setActiveClueId(otherClue.id);
                         }
                       }}
-                      className={`relative aspect-square rounded-lg border-2 sm:border-3 font-pixel-title text-base sm:text-lg md:text-xl font-bold flex items-center justify-center transition-all cursor-pointer min-h-[42px] sm:min-h-[48px] ${isSelected
+                      className={`relative aspect-square rounded-lg border-2 sm:border-3 font-pixel-title text-base sm:text-lg md:text-xl font-bold flex items-center justify-center transition-all cursor-pointer ${isSelected
                         ? 'bg-amber-400 text-amber-950 border-amber-300 ring-3 ring-amber-400 scale-105 z-10 shadow-lg'
                         : letter
                           ? 'bg-[#fef3c7] text-[#451a03] border-amber-600 shadow-xs'

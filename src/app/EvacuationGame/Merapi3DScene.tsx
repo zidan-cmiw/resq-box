@@ -40,14 +40,13 @@ export default function Merapi3DScene() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showKrbZones, setShowKrbZones] = useState<boolean>(true);
   const [hasDisasterImpact, setHasDisasterImpact] = useState<boolean>(false);
-  const [eruptionStageText, setEruptionStageText] = useState<string>('');
+  const [, setEruptionStageText] = useState<string>('');
   const eruptionStageTextRef = useRef<string>('');
 
   // Runtime Store Telemetry
   const volcanoStatus = useRuntimeStore((s) => s.volcanoStatus);
   const eruptionType = useRuntimeStore((s) => s.eruptionType);
   const seismicLevel = useRuntimeStore((s) => s.seismicLevel);
-  const richterScale = useRuntimeStore((s) => s.richterScale);
   const rgbColor = useRuntimeStore((s) => s.rgbColor);
   const selectedRoute = useRuntimeStore((s) => s.selectedRoute);
   const activeShelter = useRuntimeStore((s) => s.activeShelter);
@@ -5900,28 +5899,8 @@ export default function Merapi3DScene() {
             </span>
           )}
 
-          {/* Peringatan Gempa Bumi Aktif */}
-          {seismicLevel > 0 && (
-            <div className="flex flex-col gap-1">
-              <span className="text-[13.5px] font-bold font-pixel px-2.5 py-1.5 rounded-xl border bg-red-950/90 text-red-200 border-red-500 shadow-xl backdrop-blur-md animate-pulse">
- ⚠ GEMPA {richterScale.toFixed(1)} SR [{seismicLevel === 3 ? 'KUAT' : seismicLevel === 2 ? 'SEDANG' : 'RINGAN'}]
-              </span>
-              <span className="text-[12.5px] font-semibold font-sans px-2 py-0.5 rounded-lg bg-black/70 text-slate-300 border border-slate-700/80 backdrop-blur-xs w-fit">
-                {seismicLevel === 1 && 'Status: Panic • NPC Menuju Lapangan (1.5x) • Bangunan Aman (HP 100%)'}
-                {seismicLevel === 2 && 'Status: Extreme Panic • Merunduk 3s & Lari (2x) • Dinding Retak (HP 60%) • Tiang Miring'}
-                {seismicLevel === 3 && 'Status: Kolaps Total • Warga Tiarap/Reruntuhan • Bangunan Runtuh Amblas • Tiang Roboh'}
-              </span>
-            </div>
-          )}
         </div>
 
-        {/* Indikator Tahap Erupsi Riil (Timeline Eksplosif / Efusif) */}
-        {eruptionStageText && volcanoStatus !== 'NORMAL' && (
-          <div className="flex items-center gap-1.5 bg-rose-950/90 border border-rose-500/80 rounded-xl px-2.5 py-1 text-[13.5px] font-bold font-pixel text-rose-200 shadow-xl backdrop-blur-md animate-pulse w-fit">
-            <span className="w-2 h-2 rounded-full bg-rose-400 animate-ping shrink-0" />
-            <span>TAHAP: {eruptionStageText}</span>
-          </div>
-        )}
 
         {/* Banner Notifikasi Rute Evakuasi Aktif */}
         {selectedRoute !== 'Belum Ditentukan' && (

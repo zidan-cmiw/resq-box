@@ -147,6 +147,66 @@ describe('bank TTS — setiap grid WAJIB dapat diselesaikan', () => {  test('tid
   });
 });
 
+describe('bank TTS — kotak tidak boleh menempel', () => {
+  // Aturan ini ditambahkan karena tampilan TTS sempat "berantakan": tiga kata
+  // MENURUN berdiri di kolom bersebelahan, sehingga kotak-kotaknya menyatu
+  // menjadi satu blok dan batas tiap kata tidak terlihat lagi.
+  //
+  // Uji ini membuktikan validator BENAR-BENAR MENANGKAP pelanggarannya;
+  // tanpa bukti itu, "tidak ada temuan" pada seluruh bank tidak bermakna.
+
+  test('validator menangkap dua kata MENURUN yang berdampingan', () => {
+    const grid = {
+      rows: 8,
+      cols: 4,
+      clues: [
+        { id: 'a', number: 1, direction: 'down' as const, answer: 'MAMA',
+          clue: 'contoh', startRow: 0, startCol: 0 },
+        { id: 'b', number: 2, direction: 'down' as const, answer: 'PAPA',
+          clue: 'contoh', startRow: 0, startCol: 1 },
+      ],
+    };
+    const masalah = periksaGrid(grid);
+    assert.ok(
+      masalah.some((m) => m.includes('berdampingan')),
+      `validator harus melaporkan kata berdampingan, tetapi hasilnya: ${JSON.stringify(masalah)}`,
+    );
+  });
+
+  test('validator menangkap dua kata MENDATAR yang berdampingan', () => {
+    const grid = {
+      rows: 4,
+      cols: 8,
+      clues: [
+        { id: 'a', number: 1, direction: 'across' as const, answer: 'MAMA',
+          clue: 'contoh', startRow: 0, startCol: 0 },
+        { id: 'b', number: 2, direction: 'across' as const, answer: 'PAPA',
+          clue: 'contoh', startRow: 1, startCol: 0 },
+      ],
+    };
+    const masalah = periksaGrid(grid);
+    assert.ok(masalah.some((m) => m.includes('berdampingan')));
+  });
+
+  test('validator TIDAK menuduh kata yang berjarak cukup', () => {
+    const grid = {
+      rows: 8,
+      cols: 4,
+      clues: [
+        { id: 'a', number: 1, direction: 'down' as const, answer: 'MAMA',
+          clue: 'contoh', startRow: 0, startCol: 0 },
+        { id: 'b', number: 2, direction: 'down' as const, answer: 'PAPA',
+          clue: 'contoh', startRow: 0, startCol: 2 },
+      ],
+    };
+    const masalah = periksaGrid(grid);
+    assert.ok(
+      !masalah.some((m) => m.includes('berdampingan')),
+      'kata berjarak 2 kolom tidak boleh dilaporkan berdampingan',
+    );
+  });
+});
+
 describe('bank TTS — keabsahan isi', () => {
   test('SETIAP area Level 2 punya grid di bank — tidak ada yang jatuh ke cadangan', () => {
     // Inilah penjaga terpenting berkas ini.
