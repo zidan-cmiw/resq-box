@@ -207,6 +207,66 @@ describe('bank TTS — kotak tidak boleh menempel', () => {
   });
 });
 
+describe('bank TTS — satu soal per siswa, dipilih berbenih', () => {
+  // Yang diinginkan pemilik proyek:
+  //   - tiap siswa cukup SATU soal per area,
+  //   - soal yang diterima BERBEDA antar-siswa supaya tidak saling menyalin,
+  //   - tetapi tetap diambil dari 5 soal resmi (bukan diacak bebas),
+  //   - dan siswa yang sama selalu mendapat soal yang sama.
+  const PESERTA = [
+    'abimanyu', 'ahmad', 'amemayu', 'andrew', 'arfadhilla',
+    'aufa', 'bilqis', 'chesta', 'daffa', 'damar',
+  ];
+
+  for (const area of AREA) {
+    test(`area ${area}: grid yang diundi SELALU berasal dari bank area itu`, () => {
+      for (const siswa of PESERTA) {
+        const g = undiGridTTS(area, siswa);
+        assert.ok(g, `undiGridTTS(${area}, "${siswa}") mengembalikan null`);
+        assert.ok(
+          varianTTS(area).includes(g),
+          `grid untuk "${siswa}" bukan salah satu dari bank area ${area}`,
+        );
+      }
+    });
+
+    test(`area ${area}: siswa berbeda mendapat grid berbeda`, () => {
+      const terpilih = new Set(
+        PESERTA.map((s) => {
+          const g = undiGridTTS(area, s);
+          // null tidak mungkin terjadi (diuji terpisah), tetapi dijaga supaya
+          // tipe tetap aman tanpa menghentikan pengujian.
+          return g ? varianTTS(area).indexOf(g) : -1;
+        }),
+      );
+      assert.ok(
+        terpilih.size >= 2,
+        `seluruh ${PESERTA.length} siswa hanya mendapat ${terpilih.size} grid berbeda`,
+      );
+    });
+
+    test(`area ${area}: siswa yang sama selalu mendapat grid yang sama`, () => {
+      for (const siswa of PESERTA) {
+        const a = undiGridTTS(area, siswa);
+        const b = undiGridTTS(area, siswa);
+        assert.equal(a, b, `grid untuk "${siswa}" berubah antar-pemanggilan`);
+      }
+    });
+
+    test(`area ${area}: grid hasil undian tetap LOLOS validasi`, () => {
+      for (const siswa of PESERTA) {
+        const g = undiGridTTS(area, siswa);
+        assert.ok(g);
+        assert.deepEqual(
+          periksaGrid(g),
+          [],
+          `grid untuk "${siswa}" cacat: ${periksaGrid(g).join('; ')}`,
+        );
+      }
+    });
+  }
+});
+
 describe('bank TTS — keabsahan isi', () => {
   test('SETIAP area Level 2 punya grid di bank — tidak ada yang jatuh ke cadangan', () => {
     // Inilah penjaga terpenting berkas ini.

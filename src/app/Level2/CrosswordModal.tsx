@@ -9,7 +9,7 @@ import { retroAudio } from '../../utils/retroAudio';
 
 // Bank grid TTS: tiap area punya beberapa varian, dan satu varian diundi per
 // siswa supaya seluruh angkatan tidak mengisi teka-teki yang sama persis.
-import { varianTTS, petunjukTTSUntuk, type ClueTTS, type GridTTS } from './bankTTS';
+import { varianTTS, undiGridTTS, petunjukTTSUntuk, type ClueTTS, type GridTTS } from './bankTTS';
 
 interface CrosswordModalProps {
   areaIndex?: number;
@@ -237,10 +237,13 @@ function PuzzleSatu({
                         ? 'TEKA-TEKI SILANG: SIMULASI GEMPA BUMI'
                         : 'TEKA-TEKI SILANG: MITIGASI GEMPA BUMI'}
               </h2>
-              {/* Penanda soal ke berapa, karena tiap area berisi 5 soal
-                  (BANK SOAL RESQ-BOX) yang dikerjakan bergantian. */}
+              {/* Keterangan soal.
+                  Setiap siswa mengerjakan SATU soal per area (dipilih
+                  berbenih dari ID siswa), sehingga "Soal 1 dari 1" tidak
+                  informatif. Saat hanya satu soal, yang ditulis adalah
+                  penanda bahwa ini tantangan miliknya. */}
               <p className="text-[11px] sm:text-xs text-[#92400e] font-semibold mt-0.5">
-                Soal {nomorSoal} dari {totalSoal}
+                {totalSoal > 1 ? `Soal ${nomorSoal} dari ${totalSoal}` : 'Tantangan TTS untukmu'}
               </p>
             </div>
           </div>
@@ -461,14 +464,30 @@ function PuzzleSatu({
 }
 
 /**
- * Induk TTS Level 2.
+ * Induk TTS Level 2 — SATU soal per siswa.
  *
- * BANK SOAL RESQ-BOX memecah evaluasi tiap area menjadi 5 SOAL kecil, bukan
- * satu teka-teki besar. Karena itu modal ini menampilkan soal 1..5 bergantian,
- * dan `onSuccess` baru dipanggil setelah soal TERAKHIR selesai.
+ * ═══════════════════════════════════════════════════════════════════════════
+ * MENGAPA HANYA SATU SOAL
+ * ═══════════════════════════════════════════════════════════════════════════
  *
- * Area yang tidak punya grid di bank (area 2 dan 5 — keduanya area simulasi)
- * tidak pernah membuka modal ini; alurnya ditangani TectonicGame.
+ *   Versi sebelumnya menampilkan soal 1..5 BERURUTAN kepada semua siswa,
+ *   sehingga seluruh angkatan mengerjakan lima teka-teki yang sama persis.
+ *
+ *   Yang diinginkan pemilik proyek:
+ *     - tiap siswa cukup SATU soal per area,
+ *     - soal yang diterima BERBEDA antar-siswa, supaya tidak saling menyalin,
+ *     - tetapi isinya tetap dari 5 soal resmi itu (bukan diacak bebas), dan
+ *     - susunan/kotak tiap soal tetap seperti yang sudah disahkan.
+ *
+ *   `undiGridTTS(areaIndex, userId)` sudah memenuhi semuanya: ia memilih satu
+ *   grid dari 5 dengan benih dari ID siswa, sehingga
+ *     - siswa berbeda mendapat grid berbeda,
+ *     - siswa yang sama selalu mendapat grid yang sama (tidak bisa "mengundi
+ *       ulang" dengan me-refresh),
+ *     - guru dapat memeriksa ulang dengan benih yang sama.
+ *
+ *   Area yang tidak punya grid di bank (area 2 dan 5 — keduanya area simulasi)
+ *   tidak pernah membuka modal ini; alurnya ditangani TectonicGame.
  */
 export default function CrosswordModal({
   areaIndex = 0,
@@ -476,33 +495,29 @@ export default function CrosswordModal({
   onSuccess,
   onClose,
 }: CrosswordModalProps) {
-  const daftarSoal = useMemo(() => varianTTS(areaIndex), [areaIndex]);
-  const [soalIndex, setSoalIndex] = useState(0);
+  const peserta = userId || 'guest';
 
-  const gridDasar = daftarSoal[soalIndex];
-  if (!gridDasar) return null;
+  // Grid dipilih SEKALI per (area, siswa). Tidak berubah selama modal terbuka,
+  // dan tidak berubah bila siswa membuka ulang area yang sama.
+  const gridTerpilih = useMemo(
+    () => undiGridTTS(areaIndex, peserta) ?? varianTTS(areaIndex)[0] ?? null,
+    [areaIndex, peserta],
+  );
 
-  const terakhir = soalIndex + 1 >= daftarSoal.length;
+  if (!gridTerpilih) return null;
 
   return (
     <PuzzleSatu
-      key={`${areaIndex}-${soalIndex}`}
-      gridDasar={gridDasar}
+      key={`${areaIndex}-${peserta}`}
+      gridDasar={gridTerpilih}
       areaIndex={areaIndex}
-      userId={userId ?? 'guest'}
-      nomorSoal={soalIndex + 1}
-      totalSoal={daftarSoal.length}
+      userId={peserta}
+      nomorSoal={1}
+      totalSoal={1}
       labelLanjut={
-        terakhir
-          ? areaIndex === 5
-            ? 'SELESAIKAN EKSPEDISI LEVEL 2!'
-            : 'BUKA GERBANG KE AREA SELANJUTNYA!'
-          : `LANJUT KE SOAL ${soalIndex + 2}`
+        areaIndex === 5 ? 'SELESAIKAN EKSPEDISI LEVEL 2!' : 'BUKA GERBANG KE AREA SELANJUTNYA!'
       }
-      onLanjut={() => {
-        if (terakhir) onSuccess();
-        else setSoalIndex(soalIndex + 1);
-      }}
+      onLanjut={onSuccess}
       onClose={onClose}
     />
   );
