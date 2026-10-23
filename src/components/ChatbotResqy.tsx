@@ -27,6 +27,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { jawabPertanyaan, pertanyaanContoh } from '../missions/engine/pencocokanQA';
+import { tanyaResqy, type RiwayatAI } from '../ai/klienAI';
 import PixelIcon from './PixelIcon';
 
 interface Pesan {
@@ -159,6 +160,8 @@ export default function ChatbotResqy() {
   const [pesan, setPesan] = useState<Pesan[]>([SAPAAN]);
   const [input, setInput] = useState('');
   const [gaya, setGaya] = useState<GayaPosisi | null>(null);
+  // Benar selama menunggu jawaban AI, supaya tombol kirim tidak ditekan ganda.
+  const [memuat, setMemuat] = useState(false);
   const daftarRef = useRef<HTMLDivElement>(null);
 
   // Ukur ulang saat layar berubah ukuran (putar layar / jendela diubah) dan
@@ -209,26 +212,51 @@ export default function ChatbotResqy() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [pesan, terbuka]);
 
-  const kirim = (teks: string) => {
+  const kirim = async (teks: string) => {
     const pertanyaan = teks.trim();
-    if (pertanyaan === '') return;
+    if (pertanyaan === '' || memuat) return;
 
     setInput('');
+    setPesan((lama) => [...lama, { dari: 'siswa', teks: pertanyaan }]);
 
-    // Pencocokan berjalan SINKRON di perangkat — tidak ada permintaan jaringan.
+    // Riwayat dikirim supaya AI menyambung percakapan, bukan menjawab lepas.
+    // Enam pesan terakhir saja - cukup untuk konteks, tidak memboroskan token.
+    const riwayat: RiwayatAI[] = pesan
+      .slice(-6)
+      .map((p) => ({ peran: p.dari, isi: p.teks }));
+
+    setMemuat(true);
+    const ai = await tanyaResqy(pertanyaan, riwayat);
+    setMemuat(false);
+
+    if (ai.ok && ai.balasan) {
+      setPesan((lama) => [...lama, { dari: 'resqy', teks: ai.balasan as string }]);
+      return;
+    }
+
+    // ── Cadangan: catatan guru di perangkat ──
+    //
+    // Dipakai saat luring, kuota AI habis, atau layanan AI sedang bermasalah.
+    // Siswa tetap mendapat jawaban, dan diberi tahu bahwa jawabannya berasal
+    // dari catatan, bukan dari AI.
     const hasil = jawabPertanyaan(pertanyaan);
+    if (hasil.jenis === 'jawaban') {
+      setPesan((lama) => [...lama, { dari: 'resqy', teks: hasil.entri.jawaban }]);
+      return;
+    }
 
-    const balasan: Pesan =
-      hasil.jenis === 'jawaban'
-        ? { dari: 'resqy', teks: hasil.entri.jawaban }
-        : {
-            dari: 'resqy',
-            teks:
-              'Maaf, aku belum punya catatan untuk pertanyaan itu. Aku tidak mau menebak-nebak untuk materi kebencanaan, karena jawaban yang salah bisa berbahaya. Coba tanyakan dengan kata lain, atau tanyakan langsung kepada gurumu.',
-            saran: hasil.saran,
-          };
-
-    setPesan((lama) => [...lama, { dari: 'siswa', teks: pertanyaan }, balasan]);
+    setPesan((lama) => [
+      ...lama,
+      {
+        dari: 'resqy',
+        teks:
+          (ai.galat ? `(${ai.galat}) ` : '') +
+          'Aku belum punya catatan untuk pertanyaan itu, dan AI sedang tidak dapat dihubungi. ' +
+          'Aku tidak mau menebak-nebak untuk materi kebencanaan, karena jawaban yang salah bisa berbahaya. ' +
+          'Coba tanyakan dengan kata lain, atau tanyakan langsung kepada gurumu.',
+        saran: hasil.saran,
+      },
+    ]);
   };
 
   return (
@@ -251,7 +279,7 @@ export default function ChatbotResqy() {
             <div className="min-w-0">
               <p className="font-pixel-title font-bold text-[14px] leading-tight">Tanya Resqy</p>
               <p className="text-[11.5px] text-amber-100/80 leading-tight">
-                Jawaban dari catatan guru — tanpa internet
+                Dibantu AI DeepSeek · cadangan catatan guru
               </p>
             </div>
           </div>
@@ -302,7 +330,7 @@ export default function ChatbotResqy() {
                 {contoh.map((c) => (
                   <button
                     key={c}
-                    onClick={() => kirim(c)}
+                    onClick={() => void kirim(c)}
                     className="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 border border-[#b45309]/40 text-[11.5px] font-sans text-[#451a03] cursor-pointer text-left"
                   >
                     {c}
@@ -316,24 +344,25 @@ export default function ChatbotResqy() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              kirim(input);
+              void kirim(input);
             }}
             className="flex items-center gap-2 px-3 py-2.5 bg-[#fef3c7] border-t-3 border-[#451a03]"
           >
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Tulis pertanyaanmu..."
+              placeholder={memuat ? 'Resqy sedang mengetik...' : 'Tulis pertanyaanmu...'}
+              disabled={memuat}
               aria-label="Pertanyaan untuk Resqy"
               className="flex-1 min-w-0 px-3 py-2 rounded-xl border-2 border-[#b45309]/50 bg-white text-[13px] font-sans text-[#291305] outline-none focus:border-[#b45309]"
             />
             <button
               type="submit"
-              disabled={input.trim() === ''}
+              disabled={input.trim() === '' || memuat}
               aria-label="Kirim pertanyaan"
               className="px-3 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-40 disabled:cursor-not-allowed text-white border-2 border-[#451a03] font-pixel-title font-bold text-[13px] cursor-pointer active:translate-y-0.5"
             >
-              KIRIM
+              {memuat ? '...' : 'KIRIM'}
             </button>
           </form>
         </div>

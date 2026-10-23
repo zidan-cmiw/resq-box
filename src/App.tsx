@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import AppLayout from './app/AppLayout';
 import Dashboard from './app/Dashboard';
 import { useAuthStore, levelTertinggiYangBoleh } from './store/teacherStore';
+import { useEvaluasiStore } from './store/evaluasiStore';
 import AppErrorBoundary from './components/AppErrorBoundary';
 import ChatbotResqy from './components/ChatbotResqy';
 import { setMonitoringContext } from './utils/monitoring';
@@ -99,9 +100,15 @@ const RUTE_SISWA = ['/', '/level1', '/level2', '/level3', '/workspace', '/profil
 function ChatbotSiswa() {
   const location = useLocation();
   const currentUser = useAuthStore((state) => state.currentUser);
+  const sedangEvaluasi = useEvaluasiStore((state) => state.aktif > 0);
 
   if (!currentUser || currentUser.role === 'teacher') return null;
   if (!RUTE_SISWA.includes(location.pathname)) return null;
+
+  // Selama siswa mengerjakan evaluasi (Wordle Level 1 atau TTS Level 2),
+  // tombol chatbot DISEMBUNYIKAN supaya jawabannya tidak dicari lewat AI.
+  // Pemilik proyek yang meminta aturan ini.
+  if (sedangEvaluasi) return null;
 
   return <ChatbotResqy />;
 }

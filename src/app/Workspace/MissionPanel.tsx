@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { MISSIONS, CATEGORIES } from '../../missions/data/missions';
 import { useMissionStore } from '../../store/missionStore';
 import { validateMission } from '../../missions/engine/validationEngine';
+import UmpanBalikAI from '../../components/UmpanBalikAI';
+import { useUmpanBalik } from '../../ai/useUmpanBalik';
 import * as Blockly from 'blockly/core';
 import { javascriptGenerator } from '../../engine/blockly/jsGenerator';
 import { useWorkspaceStore } from '../../store/workspaceStore';
@@ -39,6 +41,23 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
       const generatedCode = javascriptGenerator.workspaceToCode(workspace);
 
       const result = validateMission(mission, workspace, generatedCode);
+
+      // Ringkasan blok untuk AI. Dibatasi 24 blok pertama supaya prompt tetap
+      // ringkas dan tidak memboroskan token.
+      const daftarBlok = workspace
+        ? workspace.getAllBlocks(false).slice(0, 24).map((b) => ({
+            kategori: String(b.type).split('_')[0],
+            isi: b.toString(70),
+          }))
+        : [];
+
+      setDataUmpanBlok({
+        misi: `${mission.title} — ${mission.objective}`,
+        target: `${mission.objective}. ${step?.description ?? ''}`.trim(),
+        blok: daftarBlok,
+        pesanKesalahan: result.passed ? '' : (result.failureReason ?? ''),
+      });
+
       if (result.passed) {
         completeMission(mission.id);
         retroAudio.playWin();
@@ -59,6 +78,13 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
   const isChecking = validationStatus === 'checking';
   const isPassed = validationStatus === 'pass';
   const isFailed = validationStatus === 'fail';
+
+  // ── Umpan balik AI untuk susunan blok ─────────────────────────────
+  // Dikirim saat VALIDASI MISI dijalankan: bila lulus, Resqy menjelaskan
+  // mengapa susunan itu bekerja; bila belum, Resqy menunjukkan bagian alur
+  // yang perlu diperbaiki TANPA menuliskan susunan blok yang siap dipakai.
+  const [dataUmpanBlok, setDataUmpanBlok] = useState<Record<string, unknown> | null>(null);
+  const umpanBlok = useUmpanBalik('blok', isPassed, dataUmpanBlok, dataUmpanBlok !== null);
 
   const categoryObj = CATEGORIES.find((c) => c.id === mission.category);
 
@@ -177,6 +203,15 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
               <p className="text-[13px] sm:text-[15px] leading-relaxed font-medium">
                 {validationMessage}
               </p>
+
+              {/* Umpan balik AI atas susunan blok. Diletakkan di dalam kotak
+                  hasil supaya terbaca sebagai lanjutan dari pesan validator,
+                  bukan sebagai pengumuman terpisah. */}
+              {dataUmpanBlok && (
+                <div className="mt-2.5">
+                  <UmpanBalikAI benar={isPassed} keadaan={umpanBlok} />
+                </div>
+              )}
             </div>
           </div>
         )}

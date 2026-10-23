@@ -7,6 +7,9 @@ import { submitLevelProgress } from '../../../utils/supabaseClient';
 // Bank kata beserta petunjuknya. Dipisah ke modul tersendiri supaya dapat diuji
 // otomatis — termasuk pemeriksaan bahwa petunjuknya tidak membocorkan jawaban.
 import { WORD_BANK } from './kataWordle';
+import { tandaiEvaluasi } from '../../../store/evaluasiStore';
+import UmpanBalikAI from '../../../components/UmpanBalikAI';
+import { useUmpanBalik } from '../../../ai/useUmpanBalik';
 
 function seededRandom(seed: number) {
   let t = seed + 0x6d2b79f5;
@@ -36,6 +39,9 @@ export default function Wordle({
   onSuccess,
   onClose,
 }: WordleProps = {}) {
+  // Selama Wordle terbuka, tombol chatbot disembunyikan (lihat App.tsx).
+  useEffect(() => tandaiEvaluasi(), []);
+
   const navigate = useNavigate();
   const student = useAuthStore((state) => state.student);
   const unlockLevel = useAuthStore((state) => state.unlockLevel);
@@ -221,6 +227,34 @@ export default function Wordle({
       }
     });
   });
+
+  // ── Umpan balik AI ────────────────────────────────────────────────
+  // Diminta sekali saat kata ini selesai (benar atau kesempatan habis).
+  // Saat siswa gagal, JAWABAN BENAR TIDAK DIKIRIM ke AI - hanya tebakan
+  // siswa dan warna petunjuknya. Server pun tidak menambahkannya.
+  const dataUmpanBalik = useMemo(() => {
+    if (gameState !== 'won' && gameState !== 'lost') return null;
+    const tebakanTerakhir = guesses[guesses.length - 1] ?? '';
+    const warna = tebakanTerakhir
+      .split('')
+      .map((ch, i) => `${ch}=${getLetterStatus(ch, i, targetWord)}`)
+      .join(', ');
+    return {
+      zona: gateTitle ?? `Kata ${currentQIdx + 1}`,
+      panjang: wordLength,
+      tebakan: tebakanTerakhir,
+      percobaan: guesses.length,
+      petunjukWarna: warna,
+      jawaban: gameState === 'won' ? targetWord : undefined,
+    } as Record<string, unknown>;
+  }, [gameState, guesses, targetWord, gateTitle, currentQIdx, wordLength]);
+
+  const umpanBalik = useUmpanBalik(
+    'wordle',
+    gameState === 'won',
+    dataUmpanBalik,
+    dataUmpanBalik !== null,
+  );
 
   if (questions.length === 0) {
     return (
@@ -506,6 +540,13 @@ export default function Wordle({
           >
             {currentQIdx < questions.length - 1 ? 'SOAL BERIKUTNYA ➔' : 'SELESAI ✓'}
           </button>
+        </div>
+      )}
+
+      {/* Umpan balik AI: menjelaskan mengapa benar, atau apa yang perlu ditinjau */}
+      {dataUmpanBalik && (
+        <div className="w-full mt-2.5">
+          <UmpanBalikAI benar={gameState === 'won'} keadaan={umpanBalik} />
         </div>
       )}
 

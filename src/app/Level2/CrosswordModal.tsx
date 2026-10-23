@@ -4,6 +4,9 @@
 // Evaluasi akhir zona sebelum gerbang terbuka menuju area berikutnya atau kelulusan level
 
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { tandaiEvaluasi } from '../../store/evaluasiStore';
+import UmpanBalikAI from '../../components/UmpanBalikAI';
+import { useUmpanBalik } from '../../ai/useUmpanBalik';
 import PixelIcon from '../../components/PixelIcon';
 import { retroAudio } from '../../utils/retroAudio';
 
@@ -96,8 +99,37 @@ function PuzzleSatu({
     r: initialClue.startRow,
     c: initialClue.startCol,
   });
+  // Selama TTS terbuka, tombol chatbot disembunyikan (lihat App.tsx).
+  useEffect(() => tandaiEvaluasi(), []);
+
   const [isCompleted, setIsCompleted] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  // Isian yang belum tepat, dipakai untuk umpan balik AI. SENGAJA tidak
+  // memuat jawaban benar - server pun tidak menambahkannya.
+  const [isianSalah, setIsianSalah] = useState<
+    { nomor: number; arah: string; panjang: number; isian: string }[]
+  >([]);
+
+  // ── Umpan balik AI ────────────────────────────────────────────────
+  // Diminta SEKALI setelah siswa menekan CEK JAWABAN: saat benar maupun saat
+  // ada isian yang belum tepat. Untuk yang belum tepat, `isianSalah` hanya
+  // memuat isian siswa sendiri - jawaban benar tidak dikirim ke AI.
+  const dataUmpanBalik = useMemo(() => {
+    if (!isCompleted && isianSalah.length === 0) return null;
+    return {
+      area: `Area ${areaIndex + 1}`,
+      petunjuk: clues.slice(0, 6).map((c) => ({
+        nomor: c.number,
+        arah: c.direction === 'across' ? 'MENDATAR' : 'MENURUN',
+        panjang: c.answer.length,
+        teks: c.clue,
+      })),
+      isianSalah,
+      kata: isCompleted ? clues.map((c) => c.answer) : undefined,
+    } as Record<string, unknown>;
+  }, [isCompleted, isianSalah, clues, areaIndex]);
+
+  const umpanBalik = useUmpanBalik('tts', isCompleted, dataUmpanBalik, dataUmpanBalik !== null);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -184,19 +216,29 @@ function PuzzleSatu({
   // Check Solution
   const handleCheckSolution = () => {
     let allCorrect = true;
+    const salah: { nomor: number; arah: string; panjang: number; isian: string }[] = [];
 
     for (const c of clues) {
+      let isianKata = '';
       for (let i = 0; i < c.answer.length; i++) {
         const r = c.direction === 'across' ? c.startRow : c.startRow + i;
         const col = c.direction === 'across' ? c.startCol + i : c.startCol;
         const entered = grid[`${r}-${col}`]?.toUpperCase() || '';
+        isianKata += entered;
         if (entered !== c.answer[i]) {
           allCorrect = false;
-          break;
         }
       }
-      if (!allCorrect) break;
+      if (isianKata !== c.answer) {
+        salah.push({
+          nomor: c.number,
+          arah: c.direction === 'across' ? 'MENDATAR' : 'MENURUN',
+          panjang: c.answer.length,
+          isian: isianKata,
+        });
+      }
     }
+    setIsianSalah(allCorrect ? [] : salah.slice(0, 6));
 
     if (allCorrect) {
       retroAudio.playWin();
@@ -429,6 +471,13 @@ function PuzzleSatu({
         {validationError && (
           <div className="mb-4 p-3.5 rounded-xl bg-rose-100 border-2 border-rose-500 text-rose-900 text-[15px] sm:text-base font-bold text-center">
             {validationError}
+          </div>
+        )}
+
+        {/* Umpan balik AI setelah CEK JAWABAN */}
+        {dataUmpanBalik && (
+          <div className="mb-4">
+            <UmpanBalikAI benar={isCompleted} keadaan={umpanBalik} />
           </div>
         )}
 
