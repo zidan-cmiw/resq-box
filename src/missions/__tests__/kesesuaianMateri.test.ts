@@ -233,3 +233,73 @@ describe('jawaban beku — TTS tidak boleh punya jawaban baru', () => {
     }
   });
 });
+
+
+// ══════════════════════════════════════════════════════════════════════════
+// PETUNJUK TTS HARUS DIDUKUNG MATERI
+// ══════════════════════════════════════════════════════════════════════════
+//
+// Keluhan pemilik proyek:
+//
+//   "Soal-soal di level 2 ini kayak susah-susah gitu ya, kayak gaada materinya
+//    di webnya."
+//
+// Pemeriksaan yang lama hanya memastikan JAWABANNYA disebut di materi. Itu
+// tidak cukup: sebuah petunjuk dapat memakai kata yang sama sekali berbeda
+// dari materi, sehingga siswa tidak punya jalan untuk menyimpulkannya.
+//
+// Contoh nyata sebelum perbaikan: jawaban TRAUMA hanya 7% kata kuncinya ada di
+// materi, karena petunjuknya berbunyi "kondisi psikologis yang ditandai rasa
+// takut" sementara materi hanya menyebut kata "trauma" sekali.
+//
+// Uji ini mengukur bagian kata kunci petunjuk (kata 4 huruf atau lebih, tanpa
+// kata umum) yang benar-benar muncul di materi area itu, lalu menetapkan batas
+// bawah. Angka 50% dipilih karena hasil terendah saat ini 60%, sehingga masih
+// ada ruang aman namun kemunduran besar akan langsung tertangkap.
+
+const KATA_UMUM = new Set([
+  'YANG', 'DENGAN', 'UNTUK', 'DARI', 'PADA', 'DALAM', 'ATAU', 'JUGA', 'TIDAK',
+  'AGAR', 'SAAT', 'KETIKA', 'AKAN', 'TELAH', 'SUDAH', 'ADALAH', 'IALAH',
+  'DISEBUT', 'MERUPAKAN', 'SEBAGAI', 'BAGI', 'OLEH', 'INI', 'ITU', 'TERSEBUT',
+  'HARUS', 'DAPAT', 'BISA', 'LEBIH', 'SANGAT', 'PALING', 'SERTA', 'KEPADA',
+  'ANTARA', 'TANPA', 'MAKA', 'JIKA', 'BILA', 'KARENA', 'SEHINGGA', 'SECARA',
+  'PARA', 'SUATU', 'SATU', 'DUA', 'TIGA', 'EMPAT', 'LIMA', 'SEMUA', 'SELURUH',
+  'SETIAP', 'MASIH', 'BELUM', 'HANYA', 'SAJA',
+]);
+
+/** Kata kunci dalam sebuah petunjuk: 4 huruf ke atas, bukan kata umum. */
+function kataKunci(teks: string): string[] {
+  const kata = teks.toUpperCase().match(/[A-Z]{4,}/g) ?? [];
+  return [...new Set(kata.filter((k) => !KATA_UMUM.has(k)))];
+}
+
+describe('petunjuk TTS didukung materi area-nya', () => {
+  for (const area of [0, 2, 3, 5]) {
+    test(`area ${area}: kata kunci tiap petunjuk muncul di materi`, () => {
+      const materi = besar(materiArea(area));
+      const kataMateri = new Set(materi.match(/[A-Z]{4,}/g) ?? []);
+      const lemah: string[] = [];
+
+      for (const grid of varianTTS(area)) {
+        for (const c of grid.clues) {
+          const kunci = kataKunci(c.clue);
+          if (kunci.length === 0) continue;
+          const ada = kunci.filter((k) => kataMateri.has(k));
+          const persen = Math.round((ada.length / kunci.length) * 100);
+          if (persen < 50) {
+            const hilang = kunci.filter((k) => !kataMateri.has(k));
+            lemah.push(`${c.answer} (${persen}%): hilang ${hilang.join(', ')}`);
+          }
+        }
+      }
+
+      assert.deepEqual(
+        lemah,
+        [],
+        'Petunjuk berikut memakai kata yang tidak ada di materi area ini.\n' +
+          '  Tambahkan penjelasannya DI MATERI, bukan menyederhanakan soalnya.\n  ' +
+          lemah.join('\n  '),
+      );
+    });
+  }
+});

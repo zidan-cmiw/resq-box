@@ -134,6 +134,17 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         iconName: 'shield',
         illustrationType: 'earthquake-mitigation-prep',
       },
+      // Temuan 3: istilah penting yang dipakai soal TTS area ini.
+      {
+        id: 'disc-terms-mitigasi',
+        title: 'Temuan 4: Istilah Penting Saat Gempa',
+        shortDesc:
+          'Beberapa istilah berikut sering muncul saat gempa terjadi. Merunduk berarti merendahkan tubuh mendekati lantai agar terhindar dari benda yang jatuh. Berlindung adalah proses penyelamatan diri dengan masuk ke bawah meja belajar yang kokoh, atau memakai kursi sebagai tempat berlindung dan menunduk apabila kolong meja sudah tidak muat. Saat berjalan keluar dari koridor kelas, murid wajib menjaga sikap tertib, yaitu berbaris rapi tanpa kepanikan dan tidak saling mendorong. Sikap tenang juga wajib dijaga ketika merasakan guncangan dan menerima arahan dari guru, agar tidak memicu panik, yakni reaksi emosional yang membuat orang mengabaikan protokol keselamatan. BNPB adalah lembaga resmi pemerintah di tingkat nasional yang bertugas mengeluarkan pedoman penanggulangan bencana di Indonesia. Setelah keluar, seluruh warga menuju lapangan, yaitu area terbuka luas yang terbebas dari reruntuhan bangunan maupun tiang listrik, lalu berkumpul di titik kumpul yang telah ditetapkan secara khusus sebagai tempat berkumpulnya seluruh warga. Jendela adalah bagian dari ruang kelas yang biasanya terbuat dari kaca, dan wajib dijauhi saat gempa karena rawan pecah. Di dalam Kotak P3K, perban disimpan bersama kasa steril dan plester untuk menangani cedera atau luka saat keadaan darurat.',
+        fact:
+          'Urutan yang benar saat gempa: merunduk, berlindung, bertahan, lalu berjalan tertib menuju titik kumpul di lapangan. Panik hanya menambah risiko cedera.',
+        iconName: 'clipboard',
+        illustrationType: 'earthquake-prep',
+      },
     ],
     challenge: {
       id: 'chall-gate-gempa',
@@ -288,6 +299,17 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         iconName: 'clipboard',
         illustrationType: 'earthquake-post-coordination',
       },
+      // Temuan 3: istilah penting yang dipakai soal TTS area ini.
+      {
+        id: 'disc-terms-lapangan',
+        title: 'Istilah Penting di Lapangan Evakuasi',
+        shortDesc:
+          'Di lapangan evakuasi, BPBD adalah badan penanggulangan bencana di tingkat daerah yang menjadi sumber informasi dan instruksi resmi, sehingga murid tidak termakan hoax, yaitu berita bohong atau kabar palsu yang dilarang disebarkan karena membuat orang semakin panik. Murid wajib menjauhi reruntuhan, yakni sisa puing bangunan atau struktur dinding yang sudah retak, dan memeriksa potensi korsleting, yaitu kerusakan pada kabel atau tiang listrik yang dapat memicu api kebakaran. Korban adalah orang yang mengalami dampak buruk bencana, seperti luka, cedera, atau ketakutan, dan harus segera ditolong. Korban luka berat diangkut memakai tandu, yaitu bentangan alas dengan dua tongkat pegangan, menuju ambulans, kendaraan medis darurat yang harus segera dihubungi. Korban yang meninggal, yakni sudah kehilangan nyawanya, biasanya diberi penanda label berwarna hitam. Selama gempa susulan masih mungkin terjadi, seluruh warga harus tetap waspada, yaitu sikap berhati-hati dan selalu bersiap sedia. Pencegahan adalah segala tindakan persiapan, aturan, dan latihan yang dilakukan jauh sebelum bencana terjadi untuk meminimalkan jumlah korban luka.',
+        fact:
+          'Urutan pertolongan di lapangan: amankan diri, jauhi reruntuhan, minta bantuan medis melalui ambulans, lalu catat kondisi setiap korban.',
+        iconName: 'clipboard',
+        illustrationType: 'earthquake-post-safety',
+      },
     ],
     challenge: {
       id: 'chall-gate-pascabencana',
@@ -361,6 +383,17 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
           'KRB III adalah zona larangan hunian tetap karena selalu terancam awan panas (wedhus gembel). Saat status Awas (Level IV), seluruh warga di KRB III wajib segera dievakuasi total!',
         iconName: 'shield',
         illustrationType: 'volcano-response',
+      },
+      // Temuan 3: istilah penting yang dipakai soal TTS area ini.
+      {
+        id: 'disc-terms-merapi',
+        title: 'Temuan 3: Istilah Penting di Pos Pengamatan',
+        shortDesc:
+          'Status gunung api dibagi menjadi empat tingkat. Normal adalah tingkatan paling dasar (Level I), yang berarti kondisi gunung tenang dan aman untuk kegiatan masyarakat. Waspada adalah tingkat satu langkah di atas normal, ditandai dengan peringatan agar warga menjauh dua sampai tiga kilometer dari kawah aktif. KRB adalah singkatan dari Kawasan Rawan Bencana, yaitu pembagian wilayah di sekitar gunung api menjadi tiga zona berdasarkan tingkat ancaman bahayanya. Erupsi atau letusan adalah peristiwa semburan material vulkanik dari dalam kawah. Magma adalah batuan cair yang sangat panas di dalam perut bumi; setelah berhasil keluar mencapai permukaan, ia disebut lava dan mengalir menyusuri lereng. Awan panas adalah material vulkanik mematikan berupa gumpalan campuran gas, abu, dan bebatuan bersuhu ratusan derajat Celsius yang meluncur deras menuruni lereng, dan oleh masyarakat setempat sering disebut wedhus gembel. Untuk melindungi diri, warga memakai masker, yaitu alat pelindung pernapasan untuk menyaring partikel debu vulkanik yang tajam, serta goggle, yaitu kacamata pelindung yang tertutup rapat agar mata tidak kelilipan material silika. Petugas memantau gunung dengan seismograf, yaitu alat khusus di pos pengamatan yang digunakan untuk mencatat getaran atau gelombang seismik dari tubuh gunung api.',
+        fact:
+          'Saat status mencapai Awas, jangan menunggu. Ikuti jalur evakuasi, karena awan panas dapat meluncur lebih cepat daripada kendaraan di lereng.',
+        iconName: 'clipboard',
+        illustrationType: 'volcano-status',
       },
     ],
     challenge: {
@@ -517,6 +550,17 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
           'BNPB & PVMBG mengimbau masyarakat untuk menjauhi lembah dan bantaran sungai yang berhulu di puncak gunung berapi, serta mematuhi sirene Early Warning System (EWS) sungai yang memantau getaran dan aliran awan panas!',
         iconName: 'mountain',
         illustrationType: 'volcano-post-pyroclastic',
+      },
+      // Temuan 4: istilah penting yang dipakai soal TTS area ini.
+      {
+        id: 'disc-terms-posko',
+        title: 'Temuan 4: Istilah Penting di Barak Pengungsian',
+        shortDesc:
+          'Di barak pengungsian, istilah berikut perlu dipahami. Barak adalah tempat penampungan darurat terpadu di zona aman (KRB I) sebagai tempat tinggal sementara bagi warga yang rumahnya terdampak erupsi. Trauma adalah kondisi psikologis yang ditandai rasa takut mendalam pada korban pascabencana, sehingga memerlukan penanganan khusus dari psikolog atau psikiater. Air bersih di posko dapat tercemar belerang, yaitu zat gas vulkanik berbau sangat menyengat yang sering terbawa abu vulkanik. Bahaya lanjutan pascaerupsi tetap ada: awan panas dapat menerjang kawasan lereng meskipun letusan utama telah usai. Krater adalah cekungan atau lubang besar di puncak gunung yang menjadi tempat menyemburnya magma, gas, dan awan panas. Letusan eksplosif terjadi secara meledak-ledak dan sangat dahsyat, mampu melontarkan abu dan batuan vulkanik tinggi ke udara. Setelah keadaan dinyatakan aman, tahap rekonstruksi adalah manajemen pemulihan dengan membangun kembali sarana dan prasarana agar standarnya lebih baik, sehingga dampak erupsi di masa depan dapat diminimalkan.',
+        fact:
+          'Trauma bukan kelemahan, melainkan kondisi psikologis yang membutuhkan pendampingan. Jangan ragu merujuk korban kepada psikolog.',
+        iconName: 'clipboard',
+        illustrationType: 'volcano-post-ash',
       },
     ],
     challenge: {
