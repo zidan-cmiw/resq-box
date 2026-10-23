@@ -150,13 +150,13 @@ const VARIAN_AREA_2: GridTTS[] = [
     ],
   },
   {
-    rows: 14,
+    rows: 13,
     cols: 8,
     clues: [
       { id: 'a2s3c1', number: 4, direction: 'across', answer: 'KORBAN', clue: 'Orang yang mengalami dampak buruk bencana seperti luka, cedera, atau ketakutan yang harus segera ditolong dan dirawat oleh petugas medis.', startRow: 4, startCol: 1 },
       { id: 'a2s3c2', number: 3, direction: 'down', answer: 'HOAX', clue: 'Berita bohong atau kabar palsu yang dilarang keras untuk disebarkan karena hanya akan membuat semua orang di lapangan semakin panik.', startRow: 2, startCol: 5 },
       { id: 'a2s3c3', number: 1, direction: 'down', answer: 'BERKUMPUL', clue: 'Tindakan yang dilakukan ketika berada di titik kumpul dan tidak boleh memisahkan diri setelah bencana sebelum ada arahan dari petugas.', startRow: 1, startCol: 1 },
-      { id: 'a2s3c4', number: 2, direction: 'down', answer: 'KORSELETING', clue: 'Kerusakan pada kabel atau tiang listrik akibat guncangan gempa yang sangat berbahaya karena bisa memicu timbulnya api kebakaran.', startRow: 2, startCol: 3 },
+      { id: 'a2s3c4', number: 2, direction: 'down', answer: 'KORSLETING', clue: 'Kerusakan pada kabel atau tiang listrik akibat guncangan gempa yang sangat berbahaya karena bisa memicu timbulnya api kebakaran.', startRow: 2, startCol: 3 },
     ],
   },
   {
