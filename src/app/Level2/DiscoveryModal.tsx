@@ -73,7 +73,7 @@ export default function DiscoveryModal({
               MATERI PEMBELAJARAN
             </span>
           </div>
-          <p className="font-sans text-base sm:text-lg md:text-xl leading-relaxed text-[#291305] font-bold tracking-wide">
+          <p className="font-sans text-base sm:text-lg md:text-xl leading-relaxed text-[#291305] font-bold tracking-wide whitespace-pre-line">
             {discovery.shortDesc}
           </p>
 
