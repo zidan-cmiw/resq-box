@@ -77,6 +77,33 @@ export default function DiscoveryModal({
             {discovery.shortDesc}
           </p>
 
+          {/* ── KARTU ISTILAH ──────────────────────────────────────────
+              Sebagian materi menjelaskan banyak istilah sekaligus. Bila
+              ditulis sebagai paragraf, hasilnya menjadi blok teks 200+ kata
+              yang melelahkan dibaca siswa SMP.
+
+              Kartu membuat setiap istilah berdiri sendiri: nama istilah di
+              atas, penjelasan satu kalimat di bawahnya. Jauh lebih mudah
+              dipindai, dan siswa dapat mencari istilah tertentu tanpa harus
+              membaca berurutan. */}
+          {discovery.istilah && discovery.istilah.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+              {discovery.istilah.map((it) => (
+                <div
+                  key={it.istilah}
+                  className="bg-amber-100/90 border-2 border-[#b45309]/50 rounded-xl p-3 shadow-sm flex flex-col gap-1 hover:bg-amber-100 transition-colors"
+                >
+                  <span className="font-pixel-title text-[13px] sm:text-[15px] font-bold text-[#78350f]">
+                    {it.istilah}
+                  </span>
+                  <p className="font-sans text-[13px] sm:text-[15px] leading-snug text-[#291305] font-semibold">
+                    {it.arti}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Khusus untuk earthquake-prep: 4 Pilar Isi Tas Siaga Bencana (72 Jam) */}
           {discovery.illustrationType === 'earthquake-prep' && (
             <div className="mt-3 pt-3.5 border-t-2 border-[#b45309]/30 space-y-3">

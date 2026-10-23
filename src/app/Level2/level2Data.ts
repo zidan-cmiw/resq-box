@@ -9,6 +9,12 @@ export interface DiscoveryPointL2 {
   title: string;
   shortDesc: string;
   fact: string;
+  /**
+   * Daftar istilah penting, ditampilkan sebagai KARTU (bukan paragraf).
+   * Dipakai materi yang menjelaskan banyak istilah sekaligus: kartu lebih
+   * mudah dipindai daripada blok teks, terutama bagi siswa SMP.
+   */
+  istilah?: { istilah: string; arti: string }[];
   iconName: string;
   illustrationType:
   | 'earthquake-prep'
@@ -139,7 +145,20 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-terms-mitigasi',
         title: 'Temuan 4: Istilah Penting Saat Gempa',
         shortDesc:
-          'Beberapa istilah berikut sering muncul saat gempa terjadi. Merunduk berarti merendahkan tubuh mendekati lantai agar terhindar dari benda yang jatuh.\n\nBerlindung adalah proses penyelamatan diri dengan masuk ke bawah meja belajar yang kokoh, atau memakai kursi sebagai tempat berlindung dan menunduk apabila kolong meja sudah tidak muat.\n\nSaat berjalan keluar dari koridor kelas, murid wajib menjaga sikap tertib, yaitu berbaris rapi tanpa kepanikan dan tidak saling mendorong.\n\nSikap tenang juga wajib dijaga ketika merasakan guncangan dan menerima arahan dari guru, agar tidak memicu panik, yakni reaksi emosional yang membuat orang mengabaikan protokol keselamatan.\n\nBNPB adalah lembaga resmi pemerintah di tingkat nasional yang bertugas mengeluarkan pedoman penanggulangan bencana di Indonesia.\n\nSetelah keluar, seluruh warga menuju lapangan, yaitu area terbuka luas yang terbebas dari reruntuhan bangunan maupun tiang listrik, lalu berkumpul di titik kumpul yang telah ditetapkan secara khusus sebagai tempat berkumpulnya seluruh warga.\n\nMenghindar adalah tindakan wajib bagi murid agar tidak terkena benda rawan pecah atau jatuh di kelas, misalnya menjauhi jendela kaca dan lemari tinggi.\n\nJendela adalah bagian dari ruang kelas yang biasanya terbuat dari kaca, dan wajib dijauhi saat gempa karena rawan pecah.\n\nDi dalam Kotak P3K, perban disimpan bersama kasa steril dan plester untuk menangani cedera atau luka saat keadaan darurat.',
+          'Guru dan petugas memakai istilah berikut saat gempa terjadi. Pahami artinya agar kamu tahu apa yang harus dilakukan.',
+        istilah: [
+          { istilah: 'Menghindar', arti: 'Tindakan wajib agar tidak terkena benda rawan pecah atau jatuh di kelas, misalnya menjauhi jendela kaca dan lemari tinggi.' },
+          { istilah: 'Merunduk', arti: 'Merendahkan tubuh mendekati lantai agar terhindar dari benda yang jatuh.' },
+          { istilah: 'Berlindung', arti: 'Proses penyelamatan diri dari material yang berjatuhan dengan cara masuk ke bawah meja belajar yang kokoh, atau memakai kursi lalu menunduk.' },
+          { istilah: 'Tertib', arti: 'Berbaris rapi tanpa kepanikan dan tidak saling mendorong saat keluar dari koridor kelas.' },
+          { istilah: 'Tenang', arti: 'Sikap mental yang wajib dijaga saat menerima arahan guru, agar tidak memicu panik.' },
+          { istilah: 'Panik', arti: 'Reaksi emosional yang membuat orang mengabaikan protokol keselamatan.' },
+          { istilah: 'Titik kumpul', arti: 'Area aman yang ditetapkan sebagai tempat berkumpulnya seluruh warga.' },
+          { istilah: 'Lapangan', arti: 'Area terbuka luas yang terbebas dari reruntuhan bangunan maupun tiang listrik.' },
+          { istilah: 'BNPB', arti: 'Lembaga resmi pemerintah di tingkat nasional yang mengeluarkan pedoman penanggulangan bencana.' },
+          { istilah: 'Perban', arti: 'Perlengkapan medis di Kotak P3K, bersama kasa steril dan plester, untuk menangani luka.' },
+          { istilah: 'Jendela', arti: 'Bagian ruang kelas yang biasanya terbuat dari kaca dan rawan pecah saat gempa.' },
+        ],
         fact:
           'Urutan yang benar saat gempa: merunduk, berlindung, bertahan, lalu berjalan tertib menuju titik kumpul di lapangan. Panik hanya menambah risiko cedera.',
         iconName: 'clipboard',
@@ -304,7 +323,23 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-terms-lapangan',
         title: 'Istilah Penting di Lapangan Evakuasi',
         shortDesc:
-          'Di lapangan evakuasi, BPBD adalah badan penanggulangan bencana di tingkat daerah yang menjadi sumber informasi dan instruksi resmi, sehingga murid tidak termakan hoax, yaitu berita bohong atau kabar palsu yang dilarang disebarkan karena membuat orang semakin panik.\n\nMurid wajib menjauhi reruntuhan, yakni sisa puing bangunan atau struktur dinding yang sudah retak, dan memeriksa potensi korsleting, yaitu kerusakan pada kabel atau tiang listrik yang dapat memicu api kebakaran.\n\nKorban adalah orang yang mengalami dampak buruk bencana, seperti luka, cedera, atau ketakutan, dan harus segera ditolong.\n\nKorban luka berat diangkut memakai tandu, yaitu bentangan alas dengan dua tongkat pegangan, menuju ambulans, kendaraan medis darurat yang harus segera dihubungi.\n\nKorban yang meninggal, yakni sudah kehilangan nyawanya, biasanya diberi penanda label berwarna hitam.\n\nSelama gempa susulan masih mungkin terjadi, seluruh warga harus tetap waspada, yaitu sikap berhati-hati dan selalu bersiap sedia.\n\nPencegahan adalah segala tindakan persiapan, aturan, dan latihan yang dilakukan jauh sebelum bencana terjadi untuk meminimalkan jumlah korban luka.\n\nPosko adalah tenda utama di lapangan yang berfungsi sebagai tempat berkumpulnya warga dan petugas, sekaligus tempat mencatat kehadiran dan melaporkan keadaan.\n\nPMR, singkatan dari Palang Merah Remaja, adalah organisasi murid di sekolah yang anggotanya bertugas sebagai tim medis darurat untuk memberikan pertolongan pertama.\n\nEvakuasi adalah proses menyelamatkan diri secara tertib dari area yang berbahaya menuju titik kumpul yang aman.\n\nKehadiran seluruh warga diperiksa dan dicatat secara menyeluruh agar tidak ada orang yang tertinggal di dalam gedung.',
+          'Di lapangan evakuasi, istilah berikut dipakai tim dan guru. Pahami artinya agar kamu tidak salah bertindak.',
+        istilah: [
+          { istilah: 'BPBD', arti: 'Badan penanggulangan bencana di tingkat daerah, sumber informasi dan instruksi resmi.' },
+          { istilah: 'Hoax', arti: 'Berita bohong atau kabar palsu yang dilarang disebarkan karena membuat orang semakin panik.' },
+          { istilah: 'Reruntuhan', arti: 'Sisa puing bangunan atau struktur dinding yang sudah retak dan wajib dijauhi.' },
+          { istilah: 'Korsleting', arti: 'Kerusakan pada kabel atau tiang listrik yang dapat memicu api kebakaran.' },
+          { istilah: 'Korban', arti: 'Orang yang mengalami dampak buruk bencana dan harus segera ditolong.' },
+          { istilah: 'Tandu', arti: 'Bentangan alas dengan dua tongkat pegangan untuk menggotong korban luka berat.' },
+          { istilah: 'Ambulans', arti: 'Kendaraan medis darurat yang harus segera dihubungi.' },
+          { istilah: 'Meninggal', arti: 'Kondisi korban yang sudah kehilangan nyawanya, biasanya diberi label hitam.' },
+          { istilah: 'Waspada', arti: 'Sikap berhati-hati dan selalu bersiap sedia terhadap gempa susulan.' },
+          { istilah: 'Pencegahan', arti: 'Segala tindakan persiapan, aturan, dan latihan jauh sebelum bencana terjadi.' },
+          { istilah: 'Posko', arti: 'Tenda utama di lapangan, tempat berkumpul warga dan petugas sekaligus mencatat kehadiran.' },
+          { istilah: 'PMR', arti: 'Palang Merah Remaja, organisasi murid yang bertugas sebagai tim medis darurat.' },
+          { istilah: 'Evakuasi', arti: 'Proses menyelamatkan diri secara tertib menuju titik kumpul yang aman.' },
+          { istilah: 'Kehadiran', arti: 'Pemeriksaan dan pencatatan seluruh warga agar tidak ada yang tertinggal.' },
+        ],
         fact:
           'Urutan pertolongan di lapangan: amankan diri, jauhi reruntuhan, minta bantuan medis melalui ambulans, lalu catat kondisi setiap korban.',
         iconName: 'clipboard',
@@ -389,7 +424,21 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-terms-merapi',
         title: 'Temuan 3: Istilah Penting di Pos Pengamatan',
         shortDesc:
-          'Status gunung api dibagi menjadi empat tingkat. Normal adalah tingkatan paling dasar (Level I), yang berarti kondisi gunung tenang dan aman untuk kegiatan masyarakat.\n\nWaspada adalah tingkat satu langkah di atas normal, ditandai dengan peringatan agar warga menjauh dua sampai tiga kilometer dari kawah aktif.\n\nKRB adalah singkatan dari Kawasan Rawan Bencana, yaitu pembagian wilayah di sekitar gunung api menjadi tiga zona berdasarkan tingkat ancaman bahayanya.\n\nErupsi atau letusan adalah peristiwa semburan material vulkanik dari dalam kawah.\n\nMagma adalah batuan cair yang sangat panas di dalam perut bumi; setelah berhasil keluar mencapai permukaan, ia disebut lava dan mengalir menyusuri lereng.\n\nAwan panas adalah material vulkanik mematikan berupa gumpalan campuran gas, abu, dan bebatuan bersuhu ratusan derajat Celsius yang meluncur deras menuruni lereng, dan oleh masyarakat setempat sering disebut wedhus gembel.\n\nUntuk melindungi diri, warga memakai masker, yaitu alat pelindung pernapasan untuk menyaring partikel debu vulkanik yang tajam, serta goggle, yaitu kacamata pelindung yang tertutup rapat agar mata tidak kelilipan material silika.\n\nPetugas memantau gunung dengan seismograf, yaitu alat khusus di pos pengamatan yang digunakan untuk mencatat getaran atau gelombang seismik dari tubuh gunung api.\n\nGempa vulkanik adalah jenis gempa yang terjadi ketika gunung akan atau sedang erupsi, berbeda dari gempa tektonik yang berasal dari pergeseran lempeng bumi.',
+          'Pos pengamatan memakai istilah berikut untuk menyebut status dan bahaya gunung api.',
+        istilah: [
+          { istilah: 'Status Normal', arti: 'Tingkat paling dasar (Level I): gunung tenang dan aman untuk kegiatan masyarakat.' },
+          { istilah: 'Status Waspada', arti: 'Satu langkah di atas normal; warga diminta menjauh dua sampai tiga kilometer dari kawah aktif.' },
+          { istilah: 'KRB', arti: 'Kawasan Rawan Bencana, yaitu pembagian wilayah sekitar gunung api menjadi tiga zona ancaman.' },
+          { istilah: 'Erupsi', arti: 'Peristiwa semburan material vulkanik dari dalam kawah.' },
+          { istilah: 'Letusan', arti: 'Istilah lain untuk erupsi; material panas terdorong keluar menuju permukaan.' },
+          { istilah: 'Magma', arti: 'Batuan cair yang sangat panas di dalam perut bumi.' },
+          { istilah: 'Lava', arti: 'Magma yang sudah keluar mencapai permukaan dan mengalir menyusuri lereng.' },
+          { istilah: 'Awan panas', arti: 'Gumpalan gas, abu, dan bebatuan bersuhu ratusan derajat Celsius yang meluncur menuruni lereng; disebut juga wedhus gembel.' },
+          { istilah: 'Masker', arti: 'Alat pelindung pernapasan untuk menyaring partikel debu vulkanik yang tajam.' },
+          { istilah: 'Goggle', arti: 'Kacamata pelindung tertutup rapat agar mata tidak kelilipan material silika.' },
+          { istilah: 'Seismograf', arti: 'Alat khusus di pos pengamatan untuk mencatat getaran atau gelombang seismik.' },
+          { istilah: 'Gempa vulkanik', arti: 'Gempa yang terjadi ketika gunung akan atau sedang erupsi.' },
+        ],
         fact:
           'Saat status mencapai Awas, jangan menunggu. Ikuti jalur evakuasi, karena awan panas dapat meluncur lebih cepat daripada kendaraan di lereng.',
         iconName: 'clipboard',
@@ -556,7 +605,16 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-terms-posko',
         title: 'Temuan 4: Istilah Penting di Barak Pengungsian',
         shortDesc:
-          'Di barak pengungsian, istilah berikut perlu dipahami. Barak adalah tempat penampungan darurat terpadu di zona aman (KRB I) sebagai tempat tinggal sementara bagi warga yang rumahnya terdampak erupsi.\n\nTrauma adalah kondisi psikologis yang ditandai rasa takut mendalam pada korban pascabencana, sehingga memerlukan penanganan khusus dari psikolog atau psikiater.\n\nAir bersih di posko dapat tercemar belerang, yaitu zat gas vulkanik berbau sangat menyengat yang sering terbawa abu vulkanik.\n\nBahaya lanjutan pascaerupsi tetap ada: awan panas dapat menerjang kawasan lereng meskipun letusan utama telah usai.\n\nKrater adalah cekungan atau lubang besar di puncak gunung yang menjadi tempat menyemburnya magma, gas, dan awan panas.\n\nLetusan eksplosif terjadi secara meledak-ledak dan sangat dahsyat, mampu melontarkan abu dan batuan vulkanik tinggi ke udara. Setelah keadaan dinyatakan aman, tahap rekonstruksi adalah manajemen pemulihan dengan membangun kembali sarana dan prasarana agar standarnya lebih baik, sehingga dampak erupsi di masa depan dapat diminimalkan.',
+          'Di barak pengungsian, istilah berikut sering dipakai para petugas dan relawan.',
+        istilah: [
+          { istilah: 'Barak', arti: 'Tempat penampungan darurat terpadu di zona aman (KRB I) bagi warga terdampak erupsi.' },
+          { istilah: 'Trauma', arti: 'Kondisi psikologis berupa rasa takut mendalam pada korban pascabencana; perlu pendampingan psikolog.' },
+          { istilah: 'Awan panas', arti: 'Bahaya lanjutan pascaerupsi yang tetap berisiko menerjang lereng meski letusan utama telah usai.' },
+          { istilah: 'Belerang', arti: 'Gas vulkanik berbau menyengat yang terbawa abu dan dapat mencemari air bersih.' },
+          { istilah: 'Krater', arti: 'Cekungan atau lubang besar di puncak gunung, tempat menyemburnya magma dan gas.' },
+          { istilah: 'Eksplosif', arti: 'Letusan yang terjadi secara meledak-ledak dan sangat dahsyat, melontarkan abu serta batuan tinggi ke udara.' },
+          { istilah: 'Rekonstruksi', arti: 'Manajemen pemulihan dengan membangun kembali sarana dan prasarana ke standar yang lebih baik.' },
+        ],
         fact:
           'Trauma bukan kelemahan, melainkan kondisi psikologis yang membutuhkan pendampingan. Jangan ragu merujuk korban kepada psikolog.',
         iconName: 'clipboard',

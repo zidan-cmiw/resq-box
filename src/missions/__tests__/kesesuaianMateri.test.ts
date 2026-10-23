@@ -83,7 +83,16 @@ function materiArea(area: number): string {
   const a = LEVEL2_AREAS[area];
   return besar(
     (a?.discoveries ?? [])
-      .map((d) => `${d.title ?? ''} ${d.shortDesc ?? ''} ${d.fact ?? ''}`)
+      // Kartu istilah WAJIB ikut dihitung sebagai materi. Sejak materi
+      // berbentuk kartu, sebagian definisi hanya ada di sana - kalau tidak
+      // diikutkan, pemeriksaan ini akan melaporkan "tidak ada di materi"
+      // padahal justru kartu itulah tempat penjelasannya.
+      .map((d) => {
+        const kartu = (d.istilah ?? [])
+          .map((it) => `${it.istilah} ${it.arti}`)
+          .join(' ');
+        return `${d.title ?? ''} ${d.shortDesc ?? ''} ${d.fact ?? ''} ${kartu}`;
+      })
       .join(' '),
   );
 }
