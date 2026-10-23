@@ -32,8 +32,22 @@
 export interface Env {
   DEEPSEEK_API_KEY: string;
   DEEPSEEK_MODEL?: string;
+  /**
+   * Supabase boleh memakai nama tanpa awalan VITE_ atau dengan awalan.
+   *
+   * Alasannya: variabel VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY sudah
+   * terpasang di Cloudflare sejak situs ini pertama kali dibangun. Membaca
+   * nama itu juga berarti pemilik proyek TIDAK perlu menyalin nilainya lagi -
+   * cukup menambahkan kunci DeepSeek satu-satunya.
+   *
+   * Cloudflare memberikan SEMUA variabel kepada Functions, bukan hanya yang
+   * berawalan VITE_. Awalan VITE_ hanya berpengaruh pada apa yang disisipkan
+   * Vite ke dalam bundle peramban.
+   */
   SUPABASE_URL?: string;
   SUPABASE_ANON_KEY?: string;
+  VITE_SUPABASE_URL?: string;
+  VITE_SUPABASE_ANON_KEY?: string;
 }
 
 export interface PesanAI {

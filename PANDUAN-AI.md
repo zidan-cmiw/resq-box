@@ -59,9 +59,12 @@ Cloudflare → Pages → **resq-box** → Settings → **Environment variables**
 | Nama | Isi | Wajib |
 |---|---|---|
 `DEEPSEEK_API_KEY` | kunci API DeepSeek | **ya** |
-`SUPABASE_URL` | `https://miwfotsnkikozqhvewtw.supabase.co` | **ya** |
-`SUPABASE_ANON_KEY` | kunci anon (bukan service_role) | **ya** |
 `DEEPSEEK_MODEL` | `deepseek-chat` (bawaan) | tidak |
+
+**Cukup satu variabel.** `SUPABASE_URL` dan `SUPABASE_ANON_KEY` tidak perlu
+ditambahkan: Function membaca `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY`
+yang sudah terpasang sejak situs ini pertama dibangun. Kalau suatu saat kamu
+ingin memisahkannya, nama tanpa awalan tetap didahulukan.
 
 `DEEPSEEK_API_KEY` **wajib** ditandai *Secret* (encrypt). Setelah disimpan,
 nilainya tidak dapat dibaca lagi — hanya bisa diganti.

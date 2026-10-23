@@ -199,10 +199,19 @@ export const onRequestPost = async (context: {
     );
   }
 
-  const alamat = env.SUPABASE_URL ?? '';
-  const anon = env.SUPABASE_ANON_KEY ?? '';
+  // Nama tanpa awalan diutamakan; bila kosong, pakai yang berawalan VITE_
+  // (biasanya sudah terpasang untuk kebutuhan build).
+  const alamat = env.SUPABASE_URL || env.VITE_SUPABASE_URL || '';
+  const anon = env.SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY || '';
   if (!alamat || !anon) {
-    return json({ galat: 'Layanan AI belum disiapkan: SUPABASE_URL atau SUPABASE_ANON_KEY kosong.' }, 503);
+    return json(
+      {
+        galat:
+          'Layanan AI belum disiapkan: SUPABASE_URL/SUPABASE_ANON_KEY (atau VITE_SUPABASE_URL/' +
+          'VITE_SUPABASE_ANON_KEY) belum terbaca di Cloudflare.',
+      },
+      503,
+    );
   }
 
   const otorisasi = request.headers.get('Authorization') ?? '';
