@@ -97,7 +97,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-earthquake-prep',
         title: 'Temuan 1: Kesiapsiagaan & Tas Siaga Bencana (72 Jam)',
         shortDesc:
-          'Kesiapsiagaan dimulai sebelum gempa terjadi. Ada beberapa UPAYA yang dapat kita lakukan. Pertama, PERSIAPAN sejak jauh sebelum gempa: mengenali denah darurat dan menata perabot berat agar tidak roboh. Pilih juga perabot yang RINGAN untuk dipasang di dinding, supaya tidak membahayakan bila jatuh. Kedua, menyusun RENCANA evakuasi bersama keluarga, lalu mengikuti LATIHAN atau simulasi gempa secara berkala. Ketiga, memastikan BANGUNAN rumah dan sekolah cukup kuat. Keempat, menyiapkan Tas Siaga Bencana (Survival Kit 72 Jam) yang memuat 4 kebutuhan vital: Air Minum & Ransum Makanan Darurat, Kotak P3K (kasa steril, PERBAN, dan plester), Senter & Peluit SAR, serta Dokumen Penting (KK, KTP, Ijazah, Akta Lahir) & Uang Tunai dalam kantong ziplock anti-air. Saat gempa benar-benar terjadi, ikuti arahan PETUGAS yang bertugas.',
+          'Kesiapsiagaan dimulai sebelum gempa terjadi. Ada beberapa upaya yang dapat kita lakukan. Pertama, persiapan sejak jauh sebelum gempa: mengenali denah darurat dan menata perabot berat agar tidak roboh. Pilih juga perabot yang ringan untuk dipasang di dinding, supaya tidak membahayakan bila jatuh. Kedua, menyusun rencana evakuasi bersama keluarga, lalu mengikuti latihan atau simulasi gempa secara berkala. Ketiga, memastikan bangunan rumah dan sekolah cukup kuat. Keempat, menyiapkan Tas Siaga Bencana (Survival Kit 72 Jam) yang memuat 4 kebutuhan vital: Air Minum & Ransum Makanan Darurat, Kotak P3K (kasa steril, perban, dan plester), Senter & Peluit SAR, serta Dokumen Penting (KK, KTP, Ijazah, Akta Lahir) & Uang Tunai dalam kantong ziplock anti-air. Saat gempa benar-benar terjadi, ikuti arahan petugas yang bertugas.',
         fact:
           'Tas Siaga Bencana wajib diletakkan di tempat strategis yang mudah dijangkau saat evakuasi darurat, berisi air minum, makanan tahan lama, P3K, senter, peluit, serta fotokopi dokumen penting (KK, KTP, ijazah, akta lahir) dan uang tunai secukupnya!',
         iconName: 'shield',
@@ -108,7 +108,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-earthquake-action',
         title: 'Temuan 2: Aksi Keselamatan Gempa (Merunduk, Berlindung, Bertahan)',
         shortDesc:
-          'Saat guncangan terjadi: Segera Merunduk/berlutut ke lantai (Drop), Berlindung di bawah meja belajar atau KURSI kokoh untuk mendekap kepala dan tengkuk (Cover), dan Bertahan memegang erat kaki meja (Hold On). Setelah guncangan mereda: segera evakuasi tertib tanpa lift menyusuri tangga darurat menuju titik kumpul. Tetap TENANG dan MENGHINDAR dari jendela kaca agar tidak terluka oleh pecahannya.',
+          'Saat guncangan terjadi: Segera Merunduk/berlutut ke lantai (Drop), Berlindung di bawah meja belajar atau kursi kokoh untuk mendekap kepala dan tengkuk (Cover), dan Bertahan memegang erat kaki meja (Hold On). Setelah guncangan mereda: segera evakuasi tertib tanpa lift menyusuri tangga darurat menuju titik kumpul. Tetap tenang dan menghindar dari jendela kaca agar tidak terluka oleh pecahannya.',
         fact:
           'Jangan gunakan lift saat gempa bumi! Selalu gunakan tangga darurat dan waspadai kemungkinan gempa bumi susulan serta bahaya korsleting listrik.',
         iconName: 'zap',
@@ -128,9 +128,9 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: MATERI_PERSIAPAN_GEMPA_ID,
         title: 'Temuan 3: Tiga Persiapan Sebelum Gempa — Bangunan Tahan Gempa, Jalur Evakuasi & Titik Kumpul',
         shortDesc:
-          'Gempa belum bisa diramalkan, jadi persiapan harus dilakukan SEBELUM gempa terjadi. Pertama, membangun BANGUNAN TAHAN GEMPA: kolom, balok, dan rangka beton bertulang yang kuat, atap dari bahan ringan, serta lemari, rak, dan papan tulis yang dipaku atau disekrup menempel ke dinding supaya tidak roboh menimpa kita. Kedua, menyiapkan JALUR EVAKUASI: rute keluar yang ditandai tanda panah hijau dan selalu bebas dari barang, menyusuri KORIDOR kelas lalu menuruni TANGGA darurat, serta letaknya MENJAUH dari JENDELA kaca besar, cermin, dan lemari tinggi yang mudah pecah atau jatuh. Ketiga, menyiapkan TITIK KUMPUL: tempat terbuka seperti LAPANGAN sekolah yang jauh dari gedung, tiang listrik, dan pohon besar. Supaya semua hafal, kita berlatih simulasi evakuasi secara TERTIB: saat sirine berbunyi kita MENUNDUK rendah di bawah BANGKU, melindungi KEPALA dan tengkuk dengan kedua TANGAN, lalu BERTAHAN memegang kaki meja sampai GETARAN berhenti, barulah berjalan tertib menuju titik kumpul.',
+          'Gempa belum bisa diramalkan, jadi persiapan harus dilakukan sebelum gempa terjadi. Pertama, membangun bangunan tahan gempa: kolom, balok, dan rangka beton bertulang yang kuat, atap dari bahan ringan, serta lemari, rak, dan papan tulis yang dipaku atau disekrup menempel ke dinding supaya tidak roboh menimpa kita. Kedua, menyiapkan jalur evakuasi: rute keluar yang ditandai tanda panah hijau dan selalu bebas dari barang, menyusuri koridor kelas lalu menuruni tangga darurat, serta letaknya menjauh dari jendela kaca besar, cermin, dan lemari tinggi yang mudah pecah atau jatuh. Ketiga, menyiapkan titik kumpul: tempat terbuka seperti lapangan sekolah yang jauh dari gedung, tiang listrik, dan pohon besar. Supaya semua hafal, kita berlatih simulasi evakuasi secara tertib: saat sirine berbunyi kita menunduk rendah di bawah bangku, melindungi kepala dan tengkuk dengan kedua tangan, lalu bertahan memegang kaki meja sampai getaran berhenti, barulah berjalan tertib menuju titik kumpul.',
         fact:
-          'Jalur evakuasi dan titik kumpul harus DIKENALI dan DILATIH seluruh penghuni bangunan JAUH SEBELUM gempa terjadi — bukan saat guncangan sudah berlangsung. BNPB & BMKG menekankan tiga persiapan ini agar saat gempa kita tinggal mengikuti rute yang sudah hafal, tanpa berpikir panik dan tanpa memakai lift!',
+          'Jalur evakuasi dan titik kumpul harus dikenali dan dilatih seluruh penghuni bangunan jauh sebelum gempa terjadi — bukan saat guncangan sudah berlangsung. BNPB & BMKG menekankan tiga persiapan ini agar saat gempa kita tinggal mengikuti rute yang sudah hafal, tanpa berpikir panik dan tanpa memakai lift!',
         iconName: 'shield',
         illustrationType: 'earthquake-mitigation-prep',
       },
@@ -210,9 +210,9 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: MATERI_PERSIAPAN_GEMPA_ID,
         title: 'Temuan 1: Tiga Persiapan Sebelum Gempa — Bangunan Tahan Gempa, Jalur Evakuasi & Titik Kumpul',
         shortDesc:
-          'Gempa belum bisa diramalkan, jadi persiapan harus dilakukan SEBELUM gempa terjadi. Pertama, membangun BANGUNAN TAHAN GEMPA: kolom, balok, dan rangka beton bertulang yang kuat, atap dari bahan ringan, serta lemari, rak, dan papan tulis yang dipaku atau disekrup menempel ke dinding supaya tidak roboh menimpa kita. Kedua, menyiapkan JALUR EVAKUASI: rute keluar yang ditandai tanda panah hijau dan selalu bebas dari barang, menyusuri KORIDOR kelas lalu menuruni TANGGA darurat, serta letaknya MENJAUH dari JENDELA kaca besar, cermin, dan lemari tinggi yang mudah pecah atau jatuh. Ketiga, menyiapkan TITIK KUMPUL: tempat terbuka seperti LAPANGAN sekolah yang jauh dari gedung, tiang listrik, dan pohon besar. Supaya semua hafal, kita berlatih simulasi evakuasi secara TERTIB: saat sirine berbunyi kita MENUNDUK rendah di bawah BANGKU, melindungi KEPALA dan tengkuk dengan kedua TANGAN, lalu BERTAHAN memegang kaki meja sampai GETARAN berhenti, barulah berjalan tertib menuju titik kumpul.',
+          'Gempa belum bisa diramalkan, jadi persiapan harus dilakukan sebelum gempa terjadi. Pertama, membangun bangunan tahan gempa: kolom, balok, dan rangka beton bertulang yang kuat, atap dari bahan ringan, serta lemari, rak, dan papan tulis yang dipaku atau disekrup menempel ke dinding supaya tidak roboh menimpa kita. Kedua, menyiapkan jalur evakuasi: rute keluar yang ditandai tanda panah hijau dan selalu bebas dari barang, menyusuri koridor kelas lalu menuruni tangga darurat, serta letaknya menjauh dari jendela kaca besar, cermin, dan lemari tinggi yang mudah pecah atau jatuh. Ketiga, menyiapkan titik kumpul: tempat terbuka seperti lapangan sekolah yang jauh dari gedung, tiang listrik, dan pohon besar. Supaya semua hafal, kita berlatih simulasi evakuasi secara tertib: saat sirine berbunyi kita menunduk rendah di bawah bangku, melindungi kepala dan tengkuk dengan kedua tangan, lalu bertahan memegang kaki meja sampai getaran berhenti, barulah berjalan tertib menuju titik kumpul.',
         fact:
-          'Jalur evakuasi dan titik kumpul harus DIKENALI dan DILATIH seluruh penghuni bangunan JAUH SEBELUM gempa terjadi — bukan saat guncangan sudah berlangsung. BNPB & BMKG menekankan tiga persiapan ini agar saat gempa kita tinggal mengikuti rute yang sudah hafal, tanpa berpikir panik dan tanpa memakai lift!',
+          'Jalur evakuasi dan titik kumpul harus dikenali dan dilatih seluruh penghuni bangunan jauh sebelum gempa terjadi — bukan saat guncangan sudah berlangsung. BNPB & BMKG menekankan tiga persiapan ini agar saat gempa kita tinggal mengikuti rute yang sudah hafal, tanpa berpikir panik dan tanpa memakai lift!',
         iconName: 'shield',
         illustrationType: 'earthquake-mitigation-prep',
       },
@@ -272,7 +272,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-safety',
         title: 'Prosedur Keselamatan & Medis Pascabencana',
         shortDesc:
-          'Setelah getaran gempa berhenti, keselamatan tetap menjadi prioritas utama. Waspadai bahaya gempa susulan (aftershock) dan hindari mendekati bangunan yang retak atau RERUNTUHAN bangunan yang masih bisa roboh. Prioritaskan pertolongan pertama (P3K) bagi korban yang terluka, lalu hubungi AMBULANS atau tim medis bila lukanya cukup berat. Para PETUGAS dan guru mengarahkan warga agar tetap tenang dan tidak panik. Korban dengan luka paling kritis diberi penanda MERAH agar ditolong lebih dulu; korban yang tidak dapat berjalan diangkut memakai TANDU menuju ambulans. Seluruh tindakan PENCEGAHAN ini bertujuan menekan jumlah korban.',
+          'Setelah getaran gempa berhenti, keselamatan tetap menjadi prioritas utama. Waspadai bahaya gempa susulan (aftershock) dan hindari mendekati bangunan yang retak atau reruntuhan bangunan yang masih bisa roboh. Prioritaskan pertolongan pertama (P3K) bagi korban yang terluka, lalu hubungi ambulans atau tim medis bila lukanya cukup berat. Para petugas dan guru mengarahkan warga agar tetap tenang dan tidak panik. Korban dengan luka paling kritis diberi penanda merah agar ditolong lebih dulu; korban yang tidak dapat berjalan diangkut memakai tandu menuju ambulans. Seluruh tindakan pencegahan ini bertujuan menekan jumlah korban.',
         fact:
           'BNPB menginstruksikan warga untuk tetap berada di tempat terbuka jauh dari tiang, kabel listrik, dan pohon, serta memeriksa potensi korsleting listrik atau kebocoran gas sebelum meninggalkan area.',
         iconName: 'shield',
@@ -282,7 +282,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-coordination',
         title: 'Manajemen Titik Kumpul & Komunikasi Resmi',
         shortDesc:
-          'Di titik kumpul (assembly point) yang biasanya berupa LAPANGAN terbuka, koordinator bencana dan guru melakukan presensi menyeluruh untuk memastikan tidak ada siswa yang tertinggal di dalam gedung. Seluruh warga diminta BERKUMPUL di tempat itu dan tidak berpencar. Hasil KEHADIRAN dicatat, lalu dilaporkan ke POSKO utama. Dengarkan instruksi resmi dari BMKG atau BPBD, hindari menyebarkan HOAX, periksa potensi KORSELETING listrik, dan biarkan anggota PMR membantu tim medis selama proses EVAKUASI berlangsung.',
+          'Di titik kumpul (assembly point) yang biasanya berupa lapangan terbuka, koordinator bencana dan guru melakukan presensi menyeluruh untuk memastikan tidak ada siswa yang tertinggal di dalam gedung. Seluruh warga diminta berkumpul di tempat itu dan tidak berpencar. Hasil kehadiran dicatat, lalu dilaporkan ke posko utama. Dengarkan instruksi resmi dari BMKG atau BPBD, hindari menyebarkan hoax, periksa potensi korseleting listrik, dan biarkan anggota PMR membantu tim medis selama proses evakuasi berlangsung.',
         fact:
           'Jangan pernah kembali masuk ke dalam gedung sekolah yang retak untuk mengambil barang yang tertinggal hingga tim ahli menyatakan struktur bangunan sudah aman.',
         iconName: 'clipboard',
@@ -343,9 +343,9 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
       // Temuan 1: Tingkat Status Aktivitas Gunung Api (Level I-IV) & MAGMA Indonesia
       {
         id: 'disc-volcano-status',
-        title: 'Temuan 1: 4 Tingkat Status Aktivitas Gunung Api & MAGMA Indonesia',
+        title: 'Temuan 1: 4 Tingkat Status Aktivitas Gunung Api & magma Indonesia',
         shortDesc:
-          'PVMBG menetapkan 4 status gunung api: Level I (Normal - hijau), Level II (Waspada - kuning), Level III (Siaga - oranye), dan Level IV (Awas - merah). Pantau info resmi lewat aplikasi MAGMA Indonesia. Di pos pengamatan, petugas memantau gunung dengan beberapa alat. SEISMOGRAF merekam getaran atau gempa tremor di dalam gunung. Alat lain mengukur DEFORMASI, yaitu perubahan bentuk tubuh gunung yang mengembung karena magma naik ke bawah kawah. Petugas juga memeriksa GAS vulkanik yang keluar dari kawah, karena gas beracun berbahaya bagi warga. Pengamatan kadang terhambat KABUT tebal yang menutupi puncak, sehingga petugas mengandalkan kamera pemantau. Pada status Waspada, asap SOLFATARA putih mulai mengepul dari kawah. Bila tekanan terus meningkat, ERUPSI dapat terjadi dan LAVA panas mengalir menuruni lereng.',
+          'PVMBG menetapkan 4 status gunung api: Level I (Normal - hijau), Level II (Waspada - kuning), Level III (Siaga - oranye), dan Level IV (Awas - merah). Pantau info resmi lewat aplikasi magma Indonesia. Di pos pengamatan, petugas memantau gunung dengan beberapa alat. seismograf merekam getaran atau gempa tremor di dalam gunung. Alat lain mengukur deformasi, yaitu perubahan bentuk tubuh gunung yang mengembung karena magma naik ke bawah kawah. Petugas juga memeriksa gas vulkanik yang keluar dari kawah, karena gas beracun berbahaya bagi warga. Pengamatan kadang terhambat kabut tebal yang menutupi puncak, sehingga petugas mengandalkan kamera pemantau. Pada status Waspada, asap solfatara putih mulai mengepul dari kawah. Bila tekanan terus meningkat, erupsi dapat terjadi dan lava panas mengalir menuruni lereng.',
         fact:
           'Pada Level IV (AWAS), letusan utama sedang atau segera terjadi. Warga di Kawasan Rawan Bencana III (KRB III) wajib segera evakuasi mandiri!',
         iconName: 'mountain',
@@ -418,9 +418,9 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-volcano-sim-signs',
         title: 'Temuan 1: Urutan Tanda Alam Erupsi & Status PVMBG',
         shortDesc:
-          'Erupsi gunung api tidak datang tiba-tiba. Sebelumnya ada tanda-tanda alam yang berurutan. Mula-mula muncul gempa tremor dan asap putih dari KRATER di puncak (status WASPADA), lalu PVMBG memberi PERINGATAN kepada warga. Selanjutnya asap berubah kelabu pekat, terdengar GEMURUH, satwa panik MENURUN dari gunung, dan tumbuhan layu akibat panas tanah (status SIAGA). Puncaknya terjadi LEDAKAN yang menyemburkan muntahan magma (status AWAS). SUMBER bahaya seperti awan panas PIROKLASTIK dan LAHAR mengancam lereng gunung.',
+          'Erupsi gunung api tidak datang tiba-tiba. Sebelumnya ada tanda-tanda alam yang berurutan. Mula-mula muncul gempa tremor dan asap putih dari krater di puncak (status WASPADA), lalu PVMBG memberi peringatan kepada warga. Selanjutnya asap berubah kelabu pekat, terdengar gemuruh, satwa panik menurun dari gunung, dan tumbuhan layu akibat panas tanah (status SIAGA). Puncaknya terjadi ledakan yang menyemburkan muntahan magma (status AWAS). sumber bahaya seperti awan panas piroklastik dan lahar mengancam lereng gunung.',
         fact:
-          'Hewan liar memiliki kepekaan insting terhadap gelombang mikro seismik dan perubahan suhu tanah sehingga selalu bermigrasi menjauhi puncak sebelum letusan terjadi. Tanda-tanda alam inilah yang menjadi peringatan dini bagi warga agar segera menjauh dari BAHAYA.',
+          'Hewan liar memiliki kepekaan insting terhadap gelombang mikro seismik dan perubahan suhu tanah sehingga selalu bermigrasi menjauhi puncak sebelum letusan terjadi. Tanda-tanda alam inilah yang menjadi peringatan dini bagi warga agar segera menjauh dari bahaya.',
         iconName: 'mountain',
         illustrationType: 'volcano-status',
       },
@@ -428,7 +428,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-volcano-sim-evac',
         title: 'Temuan 2: Protokol Evakuasi Mandiri & Penggunaan APD',
         shortDesc:
-          'Saat status SIAGA, siapkan tas siaga dan kenakan masker serta kacamata tertutup untuk menyaring abu vulkanik. Saat status AWAS, segera MENGUNGSI dan tinggalkan zona KRB III menggunakan kendaraan evakuasi menuju Tempat Evakuasi Akhir (TEA).',
+          'Saat status SIAGA, siapkan tas siaga dan kenakan masker serta kacamata tertutup untuk menyaring abu vulkanik. Saat status AWAS, segera mengungsi dan tinggalkan zona KRB III menggunakan kendaraan evakuasi menuju Tempat Evakuasi Akhir (TEA).',
         fact:
           'Abu vulkanik sangat tajam seperti pecahan kaca mikroskopis. Jangan pernah mengucek mata yang terkena abu dan segera gunakan air mengalir.',
         iconName: 'shield',
@@ -490,7 +490,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-ash',
         title: 'Temuan 1: Penanganan Abu Vulkanik & Pembersihan Atap Rumah',
         shortDesc:
-          'Endapan debu vulkanik tebal di atap rumah wajib dibersihkan secara gotong royong agar atap tidak ambruk akibat beban abu yang sangat berat (terutama saat basah terkena hujan). Selain itu, hindari mengendarai motor atau mobil dengan kecepatan tinggi di jalanan berabu karena jalan sangat licin dan partikel abu menyumbat serta merusak mesin kendaraan. Setelah petugas menyatakan wilayah sudah AMAN, warga yang rumahnya rusak tinggal sementara di BARAK pengungsian. Di sana BANTUAN LOGISTIK seperti makanan, selimut, dan air bersih disalurkan setiap hari. Kelompok yang perlu didahulukan, misalnya LANSIA dan anak-anak, didata oleh petugas. Jadwal pembagian bantuan dan informasi penting ditempel di PAPAN pengumuman barak agar semua warga mengetahuinya. Setelah keadaan dinyatakan aman, tahap REHABILITASI memulihkan kehidupan warga, lalu REKONSTRUKSI membangun kembali sarana dengan standar yang lebih baik.',
+          'Endapan debu vulkanik tebal di atap rumah wajib dibersihkan secara gotong royong agar atap tidak ambruk akibat beban abu yang sangat berat (terutama saat basah terkena hujan). Selain itu, hindari mengendarai motor atau mobil dengan kecepatan tinggi di jalanan berabu karena jalan sangat licin dan partikel abu menyumbat serta merusak mesin kendaraan. Setelah petugas menyatakan wilayah sudah aman, warga yang rumahnya rusak tinggal sementara di barak pengungsian. Di sana bantuan logistik seperti makanan, selimut, dan air bersih disalurkan setiap hari. Kelompok yang perlu didahulukan, misalnya lansia dan anak-anak, didata oleh petugas. Jadwal pembagian bantuan dan informasi penting ditempel di papan pengumuman barak agar semua warga mengetahuinya. Setelah keadaan dinyatakan aman, tahap rehabilitasi memulihkan kehidupan warga, lalu rekonstruksi membangun kembali sarana dengan standar yang lebih baik.',
         fact:
           'Buku Saku BNPB menegaskan: Bersihkan atap dari timbunan debu vulkanik karena beratnya bisa merobohkan dan merusak atap rumah atau bangunan. Kurangi paparan abu dan hindari berkendara di jalan berabu!',
         iconName: 'shield',
@@ -501,7 +501,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-sanitation',
         title: 'Temuan 2: Kesehatan, Sanitasi & Perlindungan Air Minum',
         shortDesc:
-          'Abu vulkanik tersusun atas material silika yang menjadi komposisi dalam pembuatan kaca yang dapat merusak jaringan paru-paru dan melukai kornea mata. Selalu kenakan masker dan kacamata tertutup saat beraktivitas. Jika mata terkena debu, basuh dengan air mengalir dan jangan pernah mengucek mata. Pastikan seluruh tandon dan sumber air minum ditutup rapat agar tidak tercemar gas asam dan belerang beracun. Di barak pengungsian, jaga kebersihan air dan sanitasi agar tidak menimbulkan penyakit. Warga yang luka atau mengalami TRAUMA akibat bencana segera ditangani oleh tim MEDIS. Biasakan CUCITANGAN memakai air mengalir dan sabun sebelum makan.',
+          'Abu vulkanik tersusun atas material silika yang menjadi komposisi dalam pembuatan kaca yang dapat merusak jaringan paru-paru dan melukai kornea mata. Selalu kenakan masker dan kacamata tertutup saat beraktivitas. Jika mata terkena debu, basuh dengan air mengalir dan jangan pernah mengucek mata. Pastikan seluruh tandon dan sumber air minum ditutup rapat agar tidak tercemar gas asam dan belerang beracun. Di barak pengungsian, jaga kebersihan air dan sanitasi agar tidak menimbulkan penyakit. Warga yang luka atau mengalami trauma akibat bencana segera ditangani oleh tim medis. Biasakan cucitangan memakai air mengalir dan sabun sebelum makan.',
         fact:
           'Air minum yang terpapar abu vulkanik dapat mengalami penurunan pH drastis (sangat asam) dan terkontaminasi senyawa belerang berbahaya. Tutup tandon air rapat-rapat dan gunakan air bersih higienis di posko pengungsian!',
         iconName: 'heart',
@@ -512,7 +512,7 @@ export const LEVEL2_AREAS: TectonicAreaConfig[] = [
         id: 'disc-post-pyroclastic',
         title: 'Temuan 3: Bahaya Sekunder — Waspada Awan Panas Guguran di Lembah Sungai',
         shortDesc:
-          'Bahaya letusan gunung api belum berakhir saat erupsi reda! Awan panas guguran (wedhus gembel) berisi gas dan material vulkanik panas bersuhu 300-700 °C dapat meluncur deras menyusuri lembah sungai yang berhulu di Merapi, menghancurkan jembatan dan sabo dam di alurnya. Material vulkanik yang bercampur air hujan mengalir sebagai LAHAR. Letusan EKSPLOSIF menyemburkan material dari KRATER, sedangkan erupsi EFUSIF hanya mengeluarkan lelehan lava yang mengalir perlahan.',
+          'Bahaya letusan gunung api belum berakhir saat erupsi reda! Awan panas guguran (wedhus gembel) berisi gas dan material vulkanik panas bersuhu 300-700 °C dapat meluncur deras menyusuri lembah sungai yang berhulu di Merapi, menghancurkan jembatan dan sabo dam di alurnya. Material vulkanik yang bercampur air hujan mengalir sebagai lahar. Letusan eksplosif menyemburkan material dari krater, sedangkan erupsi efusif hanya mengeluarkan lelehan lava yang mengalir perlahan.',
         fact:
           'BNPB & PVMBG mengimbau masyarakat untuk menjauhi lembah dan bantaran sungai yang berhulu di puncak gunung berapi, serta mematuhi sirene Early Warning System (EWS) sungai yang memantau getaran dan aliran awan panas!',
         iconName: 'mountain',

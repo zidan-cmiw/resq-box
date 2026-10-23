@@ -205,8 +205,8 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-mantel-bawah',
       title: 'Lapisan Tertebal Bumi & Arus Konveksi Panas',
       shortDesc:
-        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, materialnya berwujud FLUIDA KENTAL seperti adonan: bukan batuan padat yang kaku, dan tidak mengalir seperti air. Karena kentalnya, ia hanya mampu mengalir sangat lambat — namun justru dialah mesin penggerak lempeng bumi.',
-      fact: 'Material mantel berwujud FLUIDA KENTAL seperti adonan, bukan batuan padat yang kaku dan bukan pula cairan encer. Karena sangat kental, ia mengalir sangat lambat — hanya beberapa sentimeter per tahun — karena didorong arus konveksi panas dari inti bumi. Tepi luarnya bersuhu >1.000°C dan bagian terdalamnya >3.700°C.',
+        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, materialnya berwujud fluida kental seperti adonan: bukan batuan padat yang kaku, dan tidak mengalir seperti air. Karena kentalnya, ia hanya mampu mengalir sangat lambat — namun justru dialah mesin penggerak lempeng bumi.',
+      fact: 'Material mantel berwujud fluida kental seperti adonan, bukan batuan padat yang kaku dan bukan pula cairan encer. Karena sangat kental, ia mengalir sangat lambat — hanya beberapa sentimeter per tahun — karena didorong arus konveksi panas dari inti bumi. Tepi luarnya bersuhu >1.000°C dan bagian terdalamnya >3.700°C.',
       iconName: 'earthquake',
       imageSrc: '/images/geology/mantle.jpg',
       illustrationType: 'deep-mantle',
@@ -253,7 +253,7 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-inti-luar',
       title: 'Lautan Logam Meleleh pada Suhu 5.000°C',
       shortDesc:
-        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang MELEBUR karena panas ekstrem. LELEHAN logam panas itulah yang mengalir dan berputar. Perputaran aliran logam cair ini membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron dari atomnya, atau disebut ionisasi. Lepasnya elektron membuat muncul arus listrik yang mengalir di dalam inti luar. Arus listrik inilah yang akhirnya menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
+        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang melebur karena panas ekstrem. lelehan logam panas itulah yang mengalir dan berputar. Perputaran aliran logam cair ini membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron dari atomnya, atau disebut ionisasi. Lepasnya elektron membuat muncul arus listrik yang mengalir di dalam inti luar. Arus listrik inilah yang akhirnya menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
       fact: 'Suhu 5.000°C di inti luar jauh melampaui titik leleh logam besi dan nikel! Akibatnya, inti luar bukanlah batuan padat seperti kerak atau mantel, melainkan logam cair yang terus berputar. Perputaran itu membuat atom besi dan nikel bergesekan, lalu terionisasi dan menimbulkan arus listrik. Barulah dari arus listrik itu terbentuk medan magnet bumi.',
       iconName: 'shield',
       imageSrc: '/images/geology/outer_core.jpg',
@@ -301,8 +301,8 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-inti-dalam',
       title: 'Bola Besi Padat Sepanas Permukaan Matahari',
       shortDesc:
-        'Inti dalam adalah lapisan TERDALAM di bumi. Letaknya di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari PADUAN logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi yang amat dahsyat di pusat bumi. Tekanan sebesar itu membuat atom-atom besi menjadi MAMPAT, terpadatkan sangat rapat, sehingga tidak dapat meleleh walaupun suhunya sangat tinggi. Inti dalam terletak tepat di bawah INTI LUAR yang berwujud cairan logam panas.',
-      fact: 'Meskipun lebih panas daripada inti luar yang meleleh, inti dalam BUKANLAH cairan melainkan benar-benar padat. Apa yang mencegah logam meleleh? Hal ini disebabkan oleh tekanan luar biasa yang dialaminya!',
+        'Inti dalam adalah lapisan terdalam di bumi. Letaknya di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari paduan logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi yang amat dahsyat di pusat bumi. Tekanan sebesar itu membuat atom-atom besi menjadi mampat, terpadatkan sangat rapat, sehingga tidak dapat meleleh walaupun suhunya sangat tinggi. Inti dalam terletak tepat di bawah inti luar yang berwujud cairan logam panas.',
+      fact: 'Meskipun lebih panas daripada inti luar yang meleleh, inti dalam bukanlah cairan melainkan benar-benar padat. Apa yang mencegah logam meleleh? Hal ini disebabkan oleh tekanan luar biasa yang dialaminya!',
       iconName: 'trophy',
       imageSrc: '/images/geology/inner_core.jpg',
       illustrationType: 'inner-core',
@@ -348,7 +348,7 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
     discovery: {
       id: 'disc-pangea',
       title: 'Pangea & Pemekaran Lempeng Divergen',
-      shortDesc: 'Batas divergen adalah zona tempat dua lempeng tektonik bergerak saling MENJAUH satu sama lain. Pangea, daratan raksasa yang menyatukan seluruh benua, mulai retak dan hanyut terpisah sejak sekitar 250 juta tahun lalu. Perpecahannya bertahap: 250 juta tahun lalu masih satu daratan Pangea; 200 juta tahun lalu terbelah dua menjadi Laurasia di utara dan Gondwana di selatan; 150 juta tahun lalu keduanya terpecah lagi dan benua-benua mulai berjauhan; 65 juta tahun lalu samudra baru terbentuk di antara benua yang makin menjauh; dan sekarang kita mengenal tujuh benua terpisah.',
+      shortDesc: 'Batas divergen adalah zona tempat dua lempeng tektonik bergerak saling menjauh satu sama lain. Pangea, daratan raksasa yang menyatukan seluruh benua, mulai retak dan hanyut terpisah sejak sekitar 250 juta tahun lalu. Perpecahannya bertahap: 250 juta tahun lalu masih satu daratan Pangea; 200 juta tahun lalu terbelah dua menjadi Laurasia di utara dan Gondwana di selatan; 150 juta tahun lalu keduanya terpecah lagi dan benua-benua mulai berjauhan; 65 juta tahun lalu samudra baru terbentuk di antara benua yang makin menjauh; dan sekarang kita mengenal tujuh benua terpisah.',
       fact: 'Gaya tarikan membelah benua purba Pangea dan membentuk kerak dasar samudra baru melalui naiknya magma panas. Buktinya, garis pantai benua saling cocok seperti potongan puzzle - misalnya pantai timur Amerika Selatan dengan pantai barat Afrika.',
       iconName: 'mountain',
       imageSrc: '/images/geology/divergent.jpg',
@@ -447,7 +447,7 @@ export const EARTH_STRATA_DATA: EarthStrata[] = [
       id: 'disc-transform-sanandreas',
       title: 'Batas Transform',
       shortDesc:
-        'Batas lempeng sesar atau transform adalah batas lempeng yang menyebabkan terjadinya gerakan lempeng kulit bumi yang sejajar. Hal ini terjadi apabila lempengan bumi bergesek dalam posisi yang sama datar, sejajar, dan selalu bergerak. Karena bergerak sejajar, arah geraknya HORIZONTAL dan saling MENDATAR, bukan saling menjauh atau saling bertumbukan. Gesekan yang terus-menerus membuat batuan di sepanjang sesar menjadi TEGANGAN. Ketika batuan sudah tidak kuat lagi menahan tegangan itu, batuan akan PATAH lalu bergeser. Batuan yang REKAH dan PATAHAN inilah yang kita sebut sesar, dan GESERAN mendadak di sepanjang sesar itulah yang menimbulkan gempa bumi.',
+        'Batas lempeng sesar atau transform adalah batas lempeng yang menyebabkan terjadinya gerakan lempeng kulit bumi yang sejajar. Hal ini terjadi apabila lempengan bumi bergesek dalam posisi yang sama datar, sejajar, dan selalu bergerak. Karena bergerak sejajar, arah geraknya horizontal dan saling mendatar, bukan saling menjauh atau saling bertumbukan. Gesekan yang terus-menerus membuat batuan di sepanjang sesar menjadi tegangan. Ketika batuan sudah tidak kuat lagi menahan tegangan itu, batuan akan patah lalu bergeser. Batuan yang rekah dan patahan inilah yang kita sebut sesar, dan geseran mendadak di sepanjang sesar itulah yang menimbulkan gempa bumi.',
       fact:
         'Sesar San Andreas di Kalifornia bergeser sekitar 2 inci (5 cm) per tahun, memicu gempa dangkal saat energi gesekan batuan terlepas!',
       iconName: 'compass',
@@ -546,9 +546,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-crust-compare',
       title: 'Perbedaan Kerak Benua & Samudra',
       shortDesc:
-        'Kerak bumi adalah lapisan paling luar bumi dan tempat kita tinggal, dengan kedalaman 0–100 km dan suhu 25°C–500°C. Lapisan ini amat KERAS karena tersusun dari batuan padat, bukan zat alir. Kerak bumi bersama bagian paling atas mantel disebut LITOSFER, yaitu LEMPENG raksasa yang bergerak sangat perlahan. Ada dua jenis kerak. Pertama, kerak benua: berada di bawah DARATAN, tebal 30–100 km, tersusun dari batuan granit yang lebih ringan (SiAl), dan banyak mengandung SILIKAT. Permukaannya tidak rata: ada LERENG gunung, TANAH di lembah, dan endapan SEDIMEN dari batuan yang lapuk. Batuan yang lapuk dan hancur itulah yang menjadi LEMPUNG, bahan dasar pembuatan batu bata. Kedua, kerak samudra: berada di bawah LAUTAN, hanya setebal 5–15 km, tersusun dari batuan basal yang lebih padat dan berat (SiMa).',
+        'Kerak bumi adalah lapisan paling luar bumi dan tempat kita tinggal, dengan kedalaman 0–100 km dan suhu 25°C–500°C. Lapisan ini amat keras karena tersusun dari batuan padat, bukan zat alir. Kerak bumi bersama bagian paling atas mantel disebut litosfer, yaitu lempeng raksasa yang bergerak sangat perlahan. Ada dua jenis kerak. Pertama, kerak benua: berada di bawah daratan, tebal 30–100 km, tersusun dari batuan granit yang lebih ringan (SiAl), dan banyak mengandung silikat. Permukaannya tidak rata: ada lereng gunung, tanah di lembah, dan endapan sedimen dari batuan yang lapuk. Batuan yang lapuk dan hancur itulah yang menjadi lempung, bahan dasar pembuatan batu bata. Kedua, kerak samudra: berada di bawah lautan, hanya setebal 5–15 km, tersusun dari batuan basal yang lebih padat dan berat (SiMa).',
       fact:
-        'Kerak benua tebalnya sampai 100 km dan terbuat dari granit, sedangkan kerak samudra tipis (5–15 km) tetapi terbuat dari basal yang lebih padat dan berat. Karena lempeng kerak bumi terus bergerak dan saling bergesekan, INDONESIA menjadi salah satu negara paling rawan GEMPA. Salah satu contohnya di sepanjang pantai barat SUMATRA, tempat dua lempeng bertemu dan sering menimbulkan gempa serta tsunami. Di zona tumbukan itu, lempeng samudra yang lebih berat menunjam ke bawah lempeng benua - peristiwa inilah yang disebut SUBDUKSI.',
+        'Kerak benua tebalnya sampai 100 km dan terbuat dari granit, sedangkan kerak samudra tipis (5–15 km) tetapi terbuat dari basal yang lebih padat dan berat. Karena lempeng kerak bumi terus bergerak dan saling bergesekan, Indonesia menjadi salah satu negara paling rawan gempa. Salah satu contohnya di sepanjang pantai barat Sumatra, tempat dua lempeng bertemu dan sering menimbulkan gempa serta tsunami. Di zona tumbukan itu, lempeng samudra yang lebih berat menunjam ke bawah lempeng benua - peristiwa inilah yang disebut subduksi.',
       iconName: 'mountain',
       imageSrc: '/images/geology/crust.jpg',
       illustrationType: 'crust',
@@ -609,9 +609,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-mantel-bawah',
       title: 'Arus Panas Mantel Bumi (Konveksi)',
       shortDesc:
-        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, materialnya berwujud fluida kental seperti adonan sehingga mengalir sangat lambat. Batuan mantel kaya SILIKAT, yaitu senyawa penyusun batuan yang paling banyak terdapat di bumi. Bagian paling atas mantel yang lunak dan lentur disebut ASTENOSFER; di lapisan inilah lempeng kerak bumi seolah mengapung dan bergerak perlahan. Panas yang berasal dari dalam bumi disebut panas GEOTERMAL. Panas itu berpindah dengan dua cara. Cara pertama KONDUKSI, yaitu hantaran panas melalui persentuhan langsung antarbatuan. Cara kedua konveksi, yaitu aliran panas yang naik lalu turun kembali. Di bagian atas mantel, batuan yang sangat panas dapat MELELEH sebagian dan berubah menjadi magma. Aliran panas yang naik-turun itu disebut arus konveksi, yaitu SIRKULASI panas yang menjadi mesin penggerak lempeng bumi.',
+        'Mantel bumi terletak di bawah kerak hingga batas inti pada kedalaman 660–2.900 km, dengan ketebalan 2.900 km menjadikannya lapisan tertebal di bumi. Bersuhu 1.000°C–3.700°C, materialnya berwujud fluida kental seperti adonan sehingga mengalir sangat lambat. Batuan mantel kaya silikat, yaitu senyawa penyusun batuan yang paling banyak terdapat di bumi. Bagian paling atas mantel yang lunak dan lentur disebut astenosfer; di lapisan inilah lempeng kerak bumi seolah mengapung dan bergerak perlahan. Panas yang berasal dari dalam bumi disebut panas geotermal. Panas itu berpindah dengan dua cara. Cara pertama konduksi, yaitu hantaran panas melalui persentuhan langsung antarbatuan. Cara kedua konveksi, yaitu aliran panas yang naik lalu turun kembali. Di bagian atas mantel, batuan yang sangat panas dapat meleleh sebagian dan berubah menjadi magma. Aliran panas yang naik-turun itu disebut arus konveksi, yaitu sirkulasi panas yang menjadi mesin penggerak lempeng bumi.',
       fact:
-        'Arus panas yang berputar di dalam mantel disebut arus konveksi, bekerja seperti air mendidih di panci. SIRKULASI inilah yang menjadi mesin penggerak lempeng bumi di permukaan!',
+        'Arus panas yang berputar di dalam mantel disebut arus konveksi, bekerja seperti air mendidih di panci. sirkulasi inilah yang menjadi mesin penggerak lempeng bumi di permukaan!',
       iconName: 'volcano',
       imageSrc: '/images/geology/mantle.jpg',
       illustrationType: 'mantle-convection',
@@ -632,9 +632,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-inti-luar',
       title: 'Inti Luar: Lautan Logam Cair',
       shortDesc:
-        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang MELEBUR karena panas ekstrem. LELEHAN logam panas itulah yang mengalir dan berputar. Perputaran aliran logam cair ini membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron dari atomnya, atau disebut ionisasi. Lepasnya elektron membuat muncul arus listrik yang mengalir di dalam inti luar. Arus listrik inilah yang akhirnya menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
+        'Inti luar terletak di bawah mantel pada kedalaman 2.900–5.150 km, dengan ketebalan sekitar 2.250 km dan suhu 4.000°C–5.000°C. Karakteristiknya berwujud cairan logam besi dan nikel yang melebur karena panas ekstrem. lelehan logam panas itulah yang mengalir dan berputar. Perputaran aliran logam cair ini membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron dari atomnya, atau disebut ionisasi. Lepasnya elektron membuat muncul arus listrik yang mengalir di dalam inti luar. Arus listrik inilah yang akhirnya menghasilkan medan magnet yang melindungi bumi dari radiasi matahari.',
       fact:
-        'Suhu 5.000°C di inti luar jauh melampaui titik LEBUR logam besi dan nikel! Akibatnya, inti luar bukanlah batuan padat seperti kerak atau mantel, melainkan logam cair yang MELEBUR dan terus berputar. Perputaran itu membuat atom besi dan nikel bergesekan, lalu terionisasi dan menimbulkan arus listrik. Barulah dari arus listrik itu terbentuk medan magnet bumi.',
+        'Suhu 5.000°C di inti luar jauh melampaui titik lebur logam besi dan nikel! Akibatnya, inti luar bukanlah batuan padat seperti kerak atau mantel, melainkan logam cair yang melebur dan terus berputar. Perputaran itu membuat atom besi dan nikel bergesekan, lalu terionisasi dan menimbulkan arus listrik. Barulah dari arus listrik itu terbentuk medan magnet bumi.',
       iconName: 'shield',
       imageSrc: '/images/geology/outer_core.jpg',
       illustrationType: 'molten-metal',
@@ -648,7 +648,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-geodynamo',
       title: 'Medan Magnet Pelindung Bumi',
       shortDesc:
-        'Terletak di lapisan inti luar pada kedalaman 2.900–5.150 km dengan suhu 4.000°C–5.000°C. Perputaran aliran logam cair membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron (ionisasi), sehingga muncul arus listrik yang terus mengalir. Arus listrik inilah yang bekerja seperti dinamo raksasa dan menghasilkan medan magnet pelindung yang menjaga bumi dari badai radiasi matahari. Jadi urutannya: atom bergesekan, terionisasi, timbul arus listrik, barulah muncul medan magnet. Cara kerja inti luar yang menyerupai dinamo ini disebut GEODYNAMO. Buktinya bisa kita lihat pada KOMPAS: jarum kompas selalu menunjuk ke arah KUTUB utara dan KUTUB selatan bumi.',
+        'Terletak di lapisan inti luar pada kedalaman 2.900–5.150 km dengan suhu 4.000°C–5.000°C. Perputaran aliran logam cair membuat atom besi dan nikel saling bergesekan. Gesekan itu melepaskan elektron (ionisasi), sehingga muncul arus listrik yang terus mengalir. Arus listrik inilah yang bekerja seperti dinamo raksasa dan menghasilkan medan magnet pelindung yang menjaga bumi dari badai radiasi matahari. Jadi urutannya: atom bergesekan, terionisasi, timbul arus listrik, barulah muncul medan magnet. Cara kerja inti luar yang menyerupai dinamo ini disebut geodynamo. Buktinya bisa kita lihat pada kompas: jarum kompas selalu menunjuk ke arah Kutub utara dan Kutub selatan bumi.',
       fact:
         'Ingat urutannya: atom besi dan nikel bergesekan, terjadi ionisasi, muncul arus listrik, barulah terbentuk medan magnet. Medan magnet ini menjadi perisai utama bumi! Perisai ini membelokkan radiasi berbahaya dari badai matahari sehingga kehidupan di bumi tetap terlindungi dengan aman.',
       iconName: 'shield',
@@ -664,9 +664,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-inti-dalam',
       title: 'Inti Dalam: Bola Besi Padat',
       shortDesc:
-        'Inti dalam adalah lapisan TERDALAM di bumi. Letaknya di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari PADUAN logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi yang amat dahsyat di pusat bumi. Tekanan sebesar itu membuat atom-atom besi menjadi MAMPAT, terpadatkan sangat rapat, sehingga tidak dapat meleleh walaupun suhunya sangat tinggi.',
+        'Inti dalam adalah lapisan terdalam di bumi. Letaknya di pusat bumi pada kedalaman 5.150–6.371 km, berupa bola padat berdiameter sekitar 1.220 km dengan suhu 5.500°C–6.000°C. Karakteristiknya tersusun dari paduan logam besi dan nikel yang tetap berwujud padat karena tekanan gravitasi yang amat dahsyat di pusat bumi. Tekanan sebesar itu membuat atom-atom besi menjadi mampat, terpadatkan sangat rapat, sehingga tidak dapat meleleh walaupun suhunya sangat tinggi.',
       fact:
-        'Meskipun sangat panas, inti dalam tetap berwujud PADAT! Tekanan luar biasa dahsyat dari seluruh bumi mengunci atom besi begitu rapat sehingga tidak bisa meleleh. Keberadaan lapisan ini diketahui dari gelombang gempa: gelombang PWAVES (gelombang P) masih dapat menembusnya, sedangkan gelombang S tidak dapat melewati inti luar yang cair.',
+        'Meskipun sangat panas, inti dalam tetap berwujud padat! Tekanan luar biasa dahsyat dari seluruh bumi mengunci atom besi begitu rapat sehingga tidak bisa meleleh. Keberadaan lapisan ini diketahui dari gelombang gempa: gelombang pwaves (gelombang P) masih dapat menembusnya, sedangkan gelombang S tidak dapat melewati inti luar yang cair.',
       iconName: 'trophy',
       imageSrc: '/images/geology/inner_core.jpg',
       illustrationType: 'inner-core',
@@ -678,7 +678,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
   9: {
     discovery: {
       id: 'disc-inti-dalam-center',
-      title: 'Pusat Bumi 6.371 KM & Gravitasi Nol',
+      title: 'Pusat Bumi 6.371 km & Gravitasi Nol',
       shortDesc:
         'Terletak persis di pusat gravitasi bumi pada kedalaman 6.371 km dengan suhu 6.000°C. Karakteristik di titik pusat ini adalah gaya tarikan gravitasi saling meniadakan secara seimbang dari segala arah sehingga gaya gravitasi di sini bernilai nol.',
       fact:
@@ -696,7 +696,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-wegener-pangea',
       title: 'Temuan 1: Alfred Wegener & Teori Pangea',
       shortDesc:
-        'Sekitar 250 juta tahun lalu, seluruh benua di bumi MASIH MENYATU menjadi satu daratan raksasa yang disebut PANGEA. Ilmuwan Alfred Wegener pada 1912 menyadari bahwa benua-benua ini dulu pernah bersatu, lalu perlahan retak dan hanyut terpisah. Perpecahan Pangea berjalan bertahap, tidak sekaligus. 250 juta tahun lalu: masih satu daratan Pangea. 200 juta tahun lalu: Pangea terbelah dua menjadi Laurasia di utara dan Gondwana di selatan. 150 juta tahun lalu: keduanya terpecah lagi menjadi beberapa benua yang mulai berjauhan. 65 juta tahun lalu: benua-benua makin menjauh dan samudra baru terbentuk di antaranya. Sekarang: kita mengenal tujuh benua terpisah seperti pada peta dunia hari ini.',
+        'Sekitar 250 juta tahun lalu, seluruh benua di bumi masih menyatu menjadi satu daratan raksasa yang disebut Pangea. Ilmuwan Alfred Wegener pada 1912 menyadari bahwa benua-benua ini dulu pernah bersatu, lalu perlahan retak dan hanyut terpisah. Perpecahan Pangea berjalan bertahap, tidak sekaligus. 250 juta tahun lalu: masih satu daratan Pangea. 200 juta tahun lalu: Pangea terbelah dua menjadi Laurasia di utara dan Gondwana di selatan. 150 juta tahun lalu: keduanya terpecah lagi menjadi beberapa benua yang mulai berjauhan. 65 juta tahun lalu: benua-benua makin menjauh dan samudra baru terbentuk di antaranya. Sekarang: kita mengenal tujuh benua terpisah seperti pada peta dunia hari ini.',
       fact:
         'Bukti yang dipakai Wegener: garis pantai benua saling cocok seperti potongan puzzle, misalnya pantai timur Amerika Selatan dengan pantai barat Afrika. Fosil dan jenis batuan yang sama juga ditemukan di benua yang sekarang terpisah jauh oleh lautan. Jadi bumi kita tidak padat membatu utuh, melainkan terpecah menjadi lempeng-lempeng tektonik yang terus bergerak perlahan di atas mantel bumi!',
       iconName: 'globe',
@@ -712,9 +712,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-divergent-anim',
       title: 'Temuan 2: Dinamika Batas Divergen',
       shortDesc:
-        'Batas lempeng divergen terbentuk akibat pergerakan lempeng kulit bumi yang saling berlawanan atau saling menjauh. ZONA tempat dua lempeng saling menjauh ini disebut batas divergen. Ketika kedua lempeng MEMISAH, terbentuk CELAH, REKAHAN, dan LEMBAH pada kerak bumi. Dari celah itulah magma panas naik ke permukaan dan mendesak permukaan bumi, sehingga membentuk lapisan permukaan bumi dan daratan kerak baru. Karena kedua sisinya terus bergerak menjauh, dasar laut pun MELEBAR sedikit demi sedikit.',
+        'Batas lempeng divergen terbentuk akibat pergerakan lempeng kulit bumi yang saling berlawanan atau saling menjauh. zona tempat dua lempeng saling menjauh ini disebut batas divergen. Ketika kedua lempeng memisah, terbentuk celah, rekahan, dan lembah pada kerak bumi. Dari celah itulah magma panas naik ke permukaan dan mendesak permukaan bumi, sehingga membentuk lapisan permukaan bumi dan daratan kerak baru. Karena kedua sisinya terus bergerak menjauh, dasar laut pun melebar sedikit demi sedikit.',
       fact:
-        'Magma yang berhasil keluar ke permukaan disebut LAVA. Lava yang terus keluar mendingin dan mengeras, menciptakan PUNGGUNG tengah samudra (pematang tengah samudra, atau mid-ocean ridge) serta memperluas dasar laut! Kerak benua seolah MENGAPUNG di atas mantel yang kental, sehingga benua dapat bergerak perlahan walau tidak kita rasakan.',
+        'Magma yang berhasil keluar ke permukaan disebut lava. Lava yang terus keluar mendingin dan mengeras, menciptakan punggung tengah samudra (pematang tengah samudra, atau mid-ocean ridge) serta memperluas dasar laut! Kerak benua seolah mengapung di atas mantel yang kental, sehingga benua dapat bergerak perlahan walau tidak kita rasakan.',
       iconName: 'zap',
       imageSrc: '/images/geology/divergent.jpg',
       illustrationType: 'divergent-anim',
@@ -744,9 +744,9 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-convergent-subduction',
       title: 'Temuan 1: Dinamika Batas Konvergen',
       shortDesc:
-        'Batas konvergen adalah ZONA TABRAKAN antara dua lempeng tektonik. Batas ini terjadi ketika dua lempeng kulit bumi saling MENDEKAT lalu bertumbukan, sehingga salah satu lempeng tertekuk dan masuk ke bawah bagian lempeng lainnya. Gerakan dahsyat ini menimbulkan getaran gempa bumi yang sangat kuat, termasuk gempa DANGKAL yang terasa di dekat palung, dan dapat memicu tsunami, seperti gempa dan tsunami Aceh pada 26 Desember 2004.',
+        'Batas konvergen adalah zona tabrakan antara dua lempeng tektonik. Batas ini terjadi ketika dua lempeng kulit bumi saling mendekat lalu bertumbukan, sehingga salah satu lempeng tertekuk dan masuk ke bawah bagian lempeng lainnya. Gerakan dahsyat ini menimbulkan getaran gempa bumi yang sangat kuat, termasuk gempa dangkal yang terasa di dekat palung, dan dapat memicu tsunami, seperti gempa dan tsunami Aceh pada 26 Desember 2004.',
       fact:
-        'Batas konvergen terbagi menjadi 3 jenis. Subduksi: lempeng samudra menunjam ke bawah lempeng benua, membentuk deretan gunung api aktif dan palung laut. Contohnya di Indonesia: Gunung Merapi, Semeru, Bromo, Sinabung, dan Krakatau, serta Palung Jawa di dasar samudra. Kolisi: dua lempeng benua bertumbukan dan tidak saling menunjam, melainkan terlipat membentuk pegunungan. Contohnya Pegunungan Himalaya (tumbukan lempeng India dengan Eurasia) dan Pegunungan Ural. Obduksi: lempeng benua menunjam di bawah samudra. Aktivitas konvergen juga memicu sesar aktif di daratan Pulau Jawa, salah satunya Sesar OPAK yang membentang di Yogyakarta dan sebagian Jawa Tengah.',
+        'Batas konvergen terbagi menjadi 3 jenis. Subduksi: lempeng samudra menunjam ke bawah lempeng benua, membentuk deretan gunung api aktif dan palung laut. Contohnya di Indonesia: Gunung Merapi, Semeru, Bromo, Sinabung, dan Krakatau, serta Palung Jawa di dasar samudra. Kolisi: dua lempeng benua bertumbukan dan tidak saling menunjam, melainkan terlipat membentuk pegunungan. Contohnya Pegunungan Himalaya (tumbukan lempeng India dengan Eurasia) dan Pegunungan Ural. Obduksi: lempeng benua menunjam di bawah samudra. Aktivitas konvergen juga memicu sesar aktif di daratan Pulau Jawa, salah satunya Sesar Opak yang membentang di Yogyakarta dan sebagian Jawa Tengah.',
       iconName: 'convergent',
       imageSrc: '/images/geology/convergent.jpg',
       illustrationType: 'convergent-subduction',
@@ -760,7 +760,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-convergent-landforms',
       title: 'Temuan 2: Tiga Bentang Alam Hasil Tumbukan Lempeng',
       shortDesc:
-        'Tumbukan lempeng konvergen menghasilkan 3 bentang alam utama di bumi: (1) Palung Laut Dalam, (2) Pegunungan Lipatan, yaitu rangkaian pegunungan yang menjulang TINGGI, dan (3) Busur Gunung Berapi aktif.',
+        'Tumbukan lempeng konvergen menghasilkan 3 bentang alam utama di bumi: (1) Palung Laut Dalam, (2) Pegunungan Lipatan, yaitu rangkaian pegunungan yang menjulang tinggi, dan (3) Busur Gunung Berapi aktif.',
       fact:
         'Kepulauan Indonesia terbentuk dari jalur subduksi lempeng aktif, melahirkan Palung Jawa di dasar samudra serta deretan gunung berapi aktif seperti Gunung Merapi, Semeru, Bromo, Sinabung, dan Krakatau. Sementara Pegunungan Himalaya terbentuk dari tumbukan dua lempeng benua, yaitu lempeng India dan lempeng Eurasia, tanpa proses penunjaman.',
       iconName: 'volcano',
@@ -792,7 +792,7 @@ export const ALL_DISCOVERY_CATALOG: Record<number, { discovery: DiscoveryPoint; 
       id: 'disc-transform-sanandreas',
       title: 'Batas Transform',
       shortDesc:
-        'Batas lempeng sesar atau transform adalah batas lempeng yang menyebabkan terjadinya gerakan lempeng kulit bumi yang sejajar. Hal ini terjadi apabila lempengan bumi bergesek dalam posisi yang sama datar, sejajar, dan selalu bergerak. Karena bergerak sejajar, arah geraknya HORIZONTAL dan saling MENDATAR, bukan saling menjauh atau saling bertumbukan. Gesekan yang terus-menerus membuat batuan di sepanjang sesar menjadi TEGANGAN. Ketika batuan sudah tidak kuat lagi menahan tegangan itu, batuan akan PATAH lalu bergeser. Batuan yang REKAH dan PATAHAN inilah yang kita sebut sesar, dan GESERAN mendadak di sepanjang sesar itulah yang menimbulkan gempa bumi.',
+        'Batas lempeng sesar atau transform adalah batas lempeng yang menyebabkan terjadinya gerakan lempeng kulit bumi yang sejajar. Hal ini terjadi apabila lempengan bumi bergesek dalam posisi yang sama datar, sejajar, dan selalu bergerak. Karena bergerak sejajar, arah geraknya horizontal dan saling mendatar, bukan saling menjauh atau saling bertumbukan. Gesekan yang terus-menerus membuat batuan di sepanjang sesar menjadi tegangan. Ketika batuan sudah tidak kuat lagi menahan tegangan itu, batuan akan patah lalu bergeser. Batuan yang rekah dan patahan inilah yang kita sebut sesar, dan geseran mendadak di sepanjang sesar itulah yang menimbulkan gempa bumi.',
       fact:
         'Sesar San Andreas di Kalifornia bergeser sekitar 2 inci (5 cm) per tahun, memicu gempa dangkal saat energi gesekan batuan terlepas!',
       iconName: 'compass',
