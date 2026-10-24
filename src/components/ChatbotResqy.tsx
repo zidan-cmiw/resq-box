@@ -278,9 +278,6 @@ export default function ChatbotResqy() {
             <PixelIcon name="bulb" size={18} />
             <div className="min-w-0">
               <p className="font-pixel-title font-bold text-[14px] leading-tight">Tanya Resqy</p>
-              <p className="text-[11.5px] text-amber-100/80 leading-tight">
-                Dibantu AI DeepSeek · cadangan catatan guru
-              </p>
             </div>
           </div>
 
@@ -289,11 +286,10 @@ export default function ChatbotResqy() {
             {pesan.map((p, i) => (
               <div key={i} className={p.dari === 'siswa' ? 'flex justify-end' : 'flex justify-start'}>
                 <div
-                  className={`max-w-[85%] px-3 py-2 rounded-xl border-2 text-[13px] sm:text-[13.5px] font-sans leading-relaxed ${
-                    p.dari === 'siswa'
+                  className={`max-w-[85%] px-3 py-2 rounded-xl border-2 text-[13px] sm:text-[13.5px] font-sans leading-relaxed ${p.dari === 'siswa'
                       ? 'bg-amber-600 text-white border-amber-900'
                       : 'bg-white text-[#291305] border-[#b45309]/40'
-                  }`}
+                    }`}
                 >
                   <p>{p.teks}</p>
 
