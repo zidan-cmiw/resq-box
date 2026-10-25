@@ -17,6 +17,20 @@ export default defineConfig({
   },
 
   server: {
+    // DENGARKAN DI SEMUA ANTARMUKA, BUKAN HANYA IPv6.
+    //
+    // Tanpa ini, Vite 8 mengikat server ke `localhost`, dan Node menerjemahkan
+    // `localhost` menjadi ::1 lebih dahulu. Akibatnya server hanya melayani
+    // alamat IPv6, sedangkan peramban yang mencoba 127.0.0.1 mendapat
+    // "tidak dapat tersambung" — persis gejala "localhost tidak bisa dibuka
+    // padahal sudah dijalankan".
+    //
+    // Dengan `true`, server melayani IPv4 dan IPv6 sekaligus, sehingga
+    // localhost, 127.0.0.1, dan alamat IP komputer di jaringan lokal
+    // semuanya dapat dibuka. Alamat IP lokal itu yang dipakai untuk menguji
+    // tampilan di iPad atau HP.
+    host: true,
+
     // Berkas yang hampir pasti dibuka lebih dahulu diubah lebih awal, supaya
     // klik pertama tidak menunggu.
     warmup: {
