@@ -4,6 +4,34 @@ import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  // ── Pemuatan awal saat dev ────────────────────────────────────────────────
+  // Blockly dan Three.js masing-masing tersusun atas RATUSAN berkas kecil.
+  // Tanpa optimizeDeps, Vite mengubah tiap berkas itu satu per satu pada
+  // permintaan pertama, sehingga membuka Level 3 atau peta Merapi terasa
+  // menggantung beberapa detik.
+  //
+  // Dengan daftar ini, keduanya digabung sekali di awal lalu disajikan cepat.
+  // Tidak berpengaruh apa pun pada hasil build produksi.
+  optimizeDeps: {
+    include: ['blockly', 'blockly/core', 'three'],
+  },
+
+  server: {
+    // Berkas yang hampir pasti dibuka lebih dahulu diubah lebih awal, supaya
+    // klik pertama tidak menunggu.
+    warmup: {
+      clientFiles: [
+        './src/main.tsx',
+        './src/App.tsx',
+        './src/app/Dashboard/index.tsx',
+        './src/app/Login/index.tsx',
+        './src/app/Level1/index.tsx',
+        './src/app/Level2/index.tsx',
+        './src/app/Level3/index.tsx',
+      ],
+    },
+  },
+
   build: {
     chunkSizeWarningLimit: 800,
     rollupOptions: {
@@ -75,7 +103,18 @@ export default defineConfig({
       // membuka web akan selalu melihat versi terbaru tanpa perlu hard refresh.
       registerType: 'autoUpdate',
       devOptions: {
-        enabled: true,
+        // MATI saat dev — dulu `true`.
+        //
+        // Dengan service worker hidup di localhost, setiap permintaan melewati
+        // Workbox lebih dulu. Akibatnya:
+        //   1. halaman terasa lambat, terutama saat pertama dibuka,
+        //   2. perubahan kode tidak muncul walau server sudah rekompilasi,
+        //      karena yang dilayani adalah berkas dari cache.
+        // Kedua gejala itu dilaporkan sebagai "localhost lemot".
+        //
+        // PWA tetap aktif pada hasil build produksi, jadi kemampuan luring
+        // tidak berkurang.
+        enabled: false,
       },
       workbox: {
         // `webp` wajib ada di sini: latar belakang halaman Login & Posko Guru
