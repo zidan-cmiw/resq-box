@@ -41,6 +41,17 @@ export default function Merapi3DScene() {
   const [showKrbZones, setShowKrbZones] = useState<boolean>(true);
   const [hasDisasterImpact, setHasDisasterImpact] = useState<boolean>(false);
   const [, setEruptionStageText] = useState<string>('');
+  // Hasil evakuasi untuk HUD. Sebelumnya jumlah selamat dan korban TIDAK PERNAH
+  // dihitung, padahal butir 17 dan 21 instrumen observasi menuntut angka itu,
+  // dan LKPD Tahap 4 meminta siswa mencatat 75 warga beserta korban.
+  const [hasilEvakuasi, setHasilEvakuasi] = useState<{
+    selamat: number;
+    korban: number;
+    total: number;
+    detik: number;
+  }>({ selamat: 0, korban: 0, total: 0, detik: 0 });
+  const frameHudRef = useRef(0);
+  const mulaiBencanaRef = useRef<number | null>(null);
   const eruptionStageTextRef = useRef<string>('');
 
   // Runtime Store Telemetry
@@ -4325,7 +4336,23 @@ export default function Merapi3DScene() {
           x: (((i * 7) % 17) / 16 - 0.5) * 8.5,
           z: (((i * 11) % 17) / 16 - 0.5) * 8.5,
         };
-        const personalSpeedMod = 0.85 + ((i * 13) % 9) * 0.05;
+        // ── BATASAN FISIK PER WARGA ──
+        //
+        // Sebelumnya pengali kecepatan hanya bergantung nomor urut, sehingga
+        // warga lansia bisa berlari lebih cepat daripada pemuda — tidak masuk
+        // akal, dan butir 3 instrumen observasi menuntut adanya perbedaan ini.
+        //
+        // Sekarang kecepatan mengikuti peran: lansia paling lambat, pelajar
+        // paling gesit. Variasi kecil di dalam peran tetap ada agar kerumunan
+        // tidak bergerak seragam.
+        const personalSpeedMod =
+          role === 'elder'
+            ? 0.52 + ((i * 7) % 4) * 0.03
+            : role === 'student'
+              ? 1.08 + ((i * 5) % 4) * 0.03
+              : role === 'officer'
+                ? 1.12
+                : 0.92 + ((i * 3) % 4) * 0.03;
 
         scene.add(group);
         npcs.push({
@@ -5300,6 +5327,20 @@ export default function Merapi3DScene() {
           continue;
         }
 
+        // ── WAKTU REAKSI WARGA ──
+        // Butir 3 instrumen menuntut siswa memperhitungkan waktu reaksi warga.
+        // Tanpa jeda, seluruh warga bergerak pada bingkai yang sama seolah
+        // mendapat perintah serentak. Jeda dibatasi 3 detik pertama saja agar
+        // warga tidak pernah benar-benar membeku.
+        if (isDisaster && mulaiBencanaRef.current !== null) {
+          const sejakBencana = elapsed - mulaiBencanaRef.current;
+          const reaksiDetik = 0.4 + ((npc.id * 11) % 12) * 0.12;
+          if (sejakBencana < reaksiDetik) {
+            npc.mesh.rotation.x = 0;
+            continue;
+          }
+        }
+
         const npcSpeedMultiplier = baseSpeedMultiplier * npc.personalSpeedMod;
         const nA = NODE_MAP.get(npc.fromNode)!;
         const nB = NODE_MAP.get(npc.toNode)!;
@@ -5759,6 +5800,28 @@ export default function Merapi3DScene() {
         sirenLightRef.current.intensity = Math.sin(elapsed * 20) > 0 ? 8.0 : 0;
       }
 
+      // ── HITUNG HASIL EVAKUASI ──
+      // Dipindai dari keadaan nyata warga: `evacuated` untuk selamat dan
+      // `isKnockedOut` untuk korban. Dihitung tiap 20 bingkai, bukan tiap
+      // bingkai, supaya tidak memicu render React terus-menerus.
+      if (isDisaster && mulaiBencanaRef.current === null) {
+        mulaiBencanaRef.current = elapsed;
+      }
+      frameHudRef.current += 1;
+      if (frameHudRef.current % 20 === 0) {
+        const jumlahSelamat = npcs.reduce((a, x) => a + (x.evacuated ? 1 : 0), 0);
+        const jumlahKorban = npcs.reduce((a, x) => a + (x.isKnockedOut && !x.evacuated ? 1 : 0), 0);
+        const detik = mulaiBencanaRef.current === null ? 0 : Math.round(elapsed - mulaiBencanaRef.current);
+        setHasilEvakuasi((lama) =>
+          lama.selamat === jumlahSelamat &&
+          lama.korban === jumlahKorban &&
+          lama.total === npcs.length &&
+          lama.detik === detik
+            ? lama
+            : { selamat: jumlahSelamat, korban: jumlahKorban, total: npcs.length, detik },
+        );
+      }
+
       renderer.render(scene, camera);
     }
 
@@ -5867,6 +5930,31 @@ export default function Merapi3DScene() {
   return (
     <div className="relative w-full h-full overflow-hidden bg-[#060913] select-none">
       <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+
+      {/* ── HUD HASIL EVAKUASI ──────────────────────────────────────
+          Angka ini sebelumnya tidak ada sama sekali. Butir 17 dan 21
+          instrumen observasi menuntut siswa dapat melihat jumlah korban,
+          rasio warga selamat, dan waktu tanggap. Tanpa HUD, tabel 75 warga
+          di LKPD Tahap 4 juga tidak dapat diisi dengan jujur. */}
+      {hasilEvakuasi.total > 0 && (
+        <div className="absolute left-3 top-3 z-20 rounded-xl bg-black/75 border-2 border-amber-400/70 px-3 py-2 font-pixel text-white shadow-lg pointer-events-none">
+          <p className="text-[11px] text-amber-300 font-bold uppercase tracking-wider mb-1">
+            Hasil Simulasi
+          </p>
+          <p className="text-[13px] font-bold leading-snug">
+            Selamat {hasilEvakuasi.selamat} dari {hasilEvakuasi.total} warga
+          </p>
+          <p className="text-[13px] font-bold leading-snug text-rose-300">
+            Korban {hasilEvakuasi.korban} warga
+          </p>
+          <p className="text-[13px] font-bold leading-snug">
+            Rasio selamat {Math.round((hasilEvakuasi.selamat / hasilEvakuasi.total) * 100)}%
+          </p>
+          <p className="text-[12px] text-amber-100 leading-snug">
+            Waktu tanggap {hasilEvakuasi.detik} detik
+          </p>
+        </div>
+      )}
 
       {isLoading && (
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#060913]/90 backdrop-blur-md">

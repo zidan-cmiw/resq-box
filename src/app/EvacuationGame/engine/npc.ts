@@ -1,3 +1,21 @@
+/**
+ * ⚠️ PERHATIAN: BERKAS INI TIDAK DIPAKAI APLIKASI YANG BERJALAN.
+ *
+ *  Simulasi warga yang benar-benar tampil di layar berada di dalam
+ *  `Merapi3DScene.tsx`, yang memiliki logika NPC sendiri. Berkas ini beserta
+ *  `pathfinder.ts` hanya diimpor oleh `__tests__/wargaEvakuasi.test.ts`.
+ *
+ *  Akibatnya, uji di berkas itu menguji algoritme yang tidak dijalankan
+ *  pengguna. Lulusnya uji tersebut TIDAK menjamin perilaku simulasi di layar.
+ *
+ *  Dua kemungkinan tindakan, keduanya sah:
+ *    1. Menyambungkan berkas ini ke adegan, lalu membuang logika NPC di dalam
+ *       Merapi3DScene — pekerjaan besar, tetapi menghapus kebenaran ganda.
+ *    2. Menghapus berkas ini beserta ujinya bila memang tidak akan dipakai.
+ *
+ *  Jangan menambah fitur di sini sebelum salah satu tindakan di atas dipilih.
+ */
+
 // ── npc.ts ─────────────────────────────────────────────────────────
 // Kelas NPC — warga desa yang akan bergerak otomatis menuju
 // Titik Kumpul saat kondisi darurat terpicu (lampu merah / sirine).
