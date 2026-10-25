@@ -1335,28 +1335,6 @@ export default function Level3() {
               </p>
             </div>
 
-            {/* Mission Objective */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border-3 border-emerald-600/70 shadow-xs">
-              <span className="text-[13px] sm:text-[15px] font-black text-emerald-800 uppercase tracking-wider mb-1.5 flex items-center gap-2">
-                TARGET MISI PENYELAMATAN
-              </span>
-              <p className="text-[15px] sm:text-base font-bold leading-relaxed text-emerald-950">
-                {selectedMission.objective}
-              </p>
-            </div>
-
-            {/* Mission Block Location Guide */}
-            {selectedMission.hint && (
-              <div className="p-4 sm:p-5 rounded-2xl bg-cyan-50 border-3 border-cyan-600/70 shadow-xs">
-                <span className="text-[13px] sm:text-[15px] font-black text-cyan-800 uppercase tracking-wider mb-1.5 flex items-center gap-2">
-                  PANDUAN KATEGORI BLOK
-                </span>
-                <p className="text-[15px] sm:text-base font-semibold leading-relaxed text-cyan-950">
-                  {selectedMission.hint}
-                </p>
-              </div>
-            )}
-
             {/* Steps Count & Status */}
             <div className="flex items-center justify-between text-[13px] sm:text-[15px] font-bold text-[#78350f] px-1">
               <span className="flex items-center gap-1.5">
