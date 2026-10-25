@@ -29,33 +29,17 @@ const MAP_HEIGHT = 1000;
 
 // Nodes positioned organically like an expedition trail across Merapi biomes (20 Levels, 5 per Sector)
 const MAP_NODE_POSITIONS = [
-  // ── SEKTOR 1: FONDASI EWS & SEISMIK (Level 1 - 5) ──
-  { x: 220, y: 640, labelPos: 'top' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
-  { x: 440, y: 550, labelPos: 'bottom' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
-  { x: 660, y: 630, labelPos: 'top' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
-  { x: 880, y: 540, labelPos: 'bottom' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
-  { x: 1100, y: 620, labelPos: 'top' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
-
-  // ── SEKTOR 2: MITIGASI GEMPA SEKOLAH & RUMAH (Level 6 - 10) ──
-  { x: 1320, y: 530, labelPos: 'bottom' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
-  { x: 1540, y: 440, labelPos: 'top' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
-  { x: 1760, y: 540, labelPos: 'bottom' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
-  { x: 1980, y: 630, labelPos: 'top' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
-  { x: 2200, y: 530, labelPos: 'bottom' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
-
-  // ── SEKTOR 3: VULKANOLOGI & ERUPSI MERAPI (Level 11 - 15) ──
-  { x: 2420, y: 440, labelPos: 'top' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
-  { x: 2640, y: 530, labelPos: 'bottom' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
-  { x: 2860, y: 620, labelPos: 'top' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
-  { x: 3080, y: 510, labelPos: 'bottom' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
-  { x: 3300, y: 420, labelPos: 'top' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
-
-  // ── SEKTOR 4: JALUR EVAKUASI & GRAND CHALLENGE (Level 16 - 20) ──
-  { x: 3520, y: 510, labelPos: 'bottom' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
-  { x: 3740, y: 600, labelPos: 'top' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
-  { x: 3960, y: 500, labelPos: 'bottom' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
-  { x: 4180, y: 420, labelPos: 'top' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
-  { x: 4400, y: 500, labelPos: 'bottom' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
+  // Lima titik, satu per misi pengantar. Posisi disebar sepanjang peta supaya
+  // perjalanan tetap terasa seperti ekspedisi, bukan menumpuk di satu sudut.
+  //
+  // URUTAN SEKTOR HARUS SAMA DENGAN URUTAN KATEGORI MISI. Ada uji yang
+  // membandingkan keduanya; kalau tidak sepadan, titik peta dan daftar misi
+  // akan menunjuk sektor berbeda.
+  { x: 420, y: 610, labelPos: 'top' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
+  { x: 1250, y: 520, labelPos: 'bottom' as const, sector: 'lembah' as const, sectorTitle: 'Fondasi EWS & Seismik' },
+  { x: 2150, y: 620, labelPos: 'top' as const, sector: 'gempa' as const, sectorTitle: 'Mitigasi Gempa' },
+  { x: 3050, y: 530, labelPos: 'bottom' as const, sector: 'gunung' as const, sectorTitle: 'Erupsi Merapi' },
+  { x: 3900, y: 590, labelPos: 'top' as const, sector: 'proyek' as const, sectorTitle: 'Jalur Evakuasi' },
 ];
 
 // Smooth Catmull-Rom to Cubic Bezier spline generator (Tactical expedition trail style)

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MISSIONS, CATEGORIES } from '../../missions/data/missions';
+import { kompetensiMisi, kalimatKompetensi } from '../../missions/data/kompetensi';
 import { useMissionStore } from '../../store/missionStore';
 import { validateMission } from '../../missions/engine/validationEngine';
 import UmpanBalikAI from '../../components/UmpanBalikAI';
@@ -88,8 +89,37 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
 
   const categoryObj = CATEGORIES.find((c) => c.id === mission.category);
 
+  // ── Kompetensi yang dicapai misi ini ──────────────────────────────
+  // Nomor misi sama dengan nomor urut pada PETA_MISI (1..5).
+  const kompetensi = kompetensiMisi(mission.level);
+  const kalimatKomp = kalimatKompetensi(mission.level);
+
   return (
     <aside aria-label="Panduan Misi" className="w-80 max-w-[85vw] bg-[#fffbeb] border-r-4 border-[#78350f] flex flex-col overflow-hidden shrink-0 font-pixel text-[#1c1917] shadow-xl">
+      {/* ── KOMPETENSI MISI ──────────────────────────────────────────
+          Pemilik proyek meminta popup pembuka menampilkan KOMPETENSI yang
+          dicapai, bukan lagi ringkasan misi. Tujuannya agar siswa tahu apa
+          yang akan ia kuasai, dan guru tahu apa yang sedang dilatih. */}
+      {kompetensi.length > 0 && (
+        <div className="p-3.5 border-b-2 border-[#b45309] bg-[#ecfdf5]">
+          <p className="text-[12.5px] font-bold text-[#065f46] leading-snug mb-2">
+            {kalimatKomp}
+          </p>
+          <ul className="space-y-1.5">
+            {kompetensi.map((k) => (
+              <li key={k.kode} className="flex items-start gap-1.5">
+                <span className="shrink-0 mt-0.5 px-1.5 py-0.5 rounded bg-[#059669] text-white text-[11px] font-bold">
+                  {k.kode}
+                </span>
+                <span className="text-[12.5px] text-[#064e3b] font-semibold leading-snug">
+                  {k.nama}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* ── 1. HEADER MISSION CARD (SS 3 Warm Parchment) ── */}
       <div className="p-3.5 border-b-2 border-[#b45309] bg-[#fef3c7]">
         <div className="flex items-center justify-between gap-1 mb-1.5">
