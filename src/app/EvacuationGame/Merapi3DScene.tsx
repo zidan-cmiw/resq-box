@@ -2247,6 +2247,12 @@ export default function Merapi3DScene() {
         npc.bodyMesh.scale.y = 1.0;
         npc.headMesh.position.y = npc.role === 'student' ? 0.48 : 0.60;
       });
+      // HUD hasil evakuasi WAJIB ikut direset. Sebelumnya penghitung waktu
+      // memakai cap waktu yang tidak dibersihkan, sehingga setelah siswa
+      // menekan reset, angka detik tetap melanjutkan hitungan lama.
+      mulaiBencanaRef.current = null;
+      frameHudRef.current = 0;
+      setHasilEvakuasi({ selamat: 0, korban: 0, total: 0, detik: 0 });
       if (evacVehicle) {
         evacVehicle.isActive = false;
         evacVehicle.currentZ = evacVehicle.initialZ;
@@ -4336,23 +4342,7 @@ export default function Merapi3DScene() {
           x: (((i * 7) % 17) / 16 - 0.5) * 8.5,
           z: (((i * 11) % 17) / 16 - 0.5) * 8.5,
         };
-        // ── BATASAN FISIK PER WARGA ──
-        //
-        // Sebelumnya pengali kecepatan hanya bergantung nomor urut, sehingga
-        // warga lansia bisa berlari lebih cepat daripada pemuda — tidak masuk
-        // akal, dan butir 3 instrumen observasi menuntut adanya perbedaan ini.
-        //
-        // Sekarang kecepatan mengikuti peran: lansia paling lambat, pelajar
-        // paling gesit. Variasi kecil di dalam peran tetap ada agar kerumunan
-        // tidak bergerak seragam.
-        const personalSpeedMod =
-          role === 'elder'
-            ? 0.52 + ((i * 7) % 4) * 0.03
-            : role === 'student'
-              ? 1.08 + ((i * 5) % 4) * 0.03
-              : role === 'officer'
-                ? 1.12
-                : 0.92 + ((i * 3) % 4) * 0.03;
+        const personalSpeedMod = 0.85 + ((i * 13) % 9) * 0.05;
 
         scene.add(group);
         npcs.push({
@@ -5325,20 +5315,6 @@ export default function Merapi3DScene() {
         if (npc.evacuated) {
           npc.mesh.visible = false;
           continue;
-        }
-
-        // ── WAKTU REAKSI WARGA ──
-        // Butir 3 instrumen menuntut siswa memperhitungkan waktu reaksi warga.
-        // Tanpa jeda, seluruh warga bergerak pada bingkai yang sama seolah
-        // mendapat perintah serentak. Jeda dibatasi 3 detik pertama saja agar
-        // warga tidak pernah benar-benar membeku.
-        if (isDisaster && mulaiBencanaRef.current !== null) {
-          const sejakBencana = elapsed - mulaiBencanaRef.current;
-          const reaksiDetik = 0.4 + ((npc.id * 11) % 12) * 0.12;
-          if (sejakBencana < reaksiDetik) {
-            npc.mesh.rotation.x = 0;
-            continue;
-          }
         }
 
         const npcSpeedMultiplier = baseSpeedMultiplier * npc.personalSpeedMod;
