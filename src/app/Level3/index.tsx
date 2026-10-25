@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MISSIONS, CATEGORIES, type Mission } from '../../missions/data/missions';
+import { kompetensiMisi, kalimatKompetensi } from '../../missions/data/kompetensi';
 import { useMissionStore, loadMissionsForUser } from '../../store/missionStore';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import { useAuthStore, getActiveCustomAvatar } from '../../store/teacherStore';
@@ -1032,8 +1033,9 @@ export default function Level3() {
                     ? 'scale-110'
                     : 'hover:scale-108 hover:-translate-y-1'
                     }`}
-                  title={`${node.levelNumber}. ${node.mission.title} (${isCompleted ? 'Selesai' : isLevelUnlocked ? 'Terbuka' : 'Terkunci'
-                    })`}
+                  title={`${node.levelNumber}. ${node.mission.title} — Kompetensi: ${
+                    kompetensiMisi(node.levelNumber).map((k) => k.kode).join(', ') || '-'
+                  } (${isCompleted ? 'Selesai' : isLevelUnlocked ? 'Terbuka' : 'Terkunci'})`}
                 >
                   {/* Outer Bevel Rim */}
                   <div className={`absolute inset-0 rounded-2xl border-4 transition-all ${theme.rim}`} />
@@ -1290,6 +1292,38 @@ export default function Level3() {
                 <PixelIcon name="cross" size={14} />
               </button>
             </div>
+
+            {/* ── KOMPETENSI MISI ──────────────────────────────────────
+                Ditampilkan di halaman daftar, bukan hanya di dalam misi,
+                supaya siswa tahu apa yang akan dikuasai SEBELUM masuk, dan
+                guru dapat memeriksa cakupan kompetensi tanpa membuka misi. */}
+            {(() => {
+              const nomor = pathNodes.find((n) => n.mission.id === selectedMission.id)?.levelNumber ?? 0;
+              const komp = kompetensiMisi(nomor);
+              if (komp.length === 0) return null;
+              return (
+                <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border-3 border-emerald-600/70 shadow-xs">
+                  <span className="text-[13px] sm:text-[15px] font-black text-emerald-800 uppercase tracking-wider mb-1.5 flex items-center gap-2">
+                    KOMPETENSI YANG DICAPAI
+                  </span>
+                  <p className="text-[14px] sm:text-[15px] font-bold text-emerald-900 leading-snug mb-2.5">
+                    {kalimatKompetensi(nomor)}
+                  </p>
+                  <ul className="space-y-1.5">
+                    {komp.map((k) => (
+                      <li key={k.kode} className="flex items-start gap-2">
+                        <span className="shrink-0 mt-0.5 px-1.5 py-0.5 rounded bg-[#059669] text-white text-[11px] font-black">
+                          {k.kode}
+                        </span>
+                        <span className="text-[13.5px] sm:text-[14.5px] text-emerald-950 font-semibold leading-snug">
+                          {k.nama}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })()}
 
             {/* Scenario Story */}
             <div className="p-4 sm:p-5 rounded-2xl bg-amber-100/90 border-3 border-[#b45309]/40 shadow-xs">
