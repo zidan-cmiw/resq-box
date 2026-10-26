@@ -52,6 +52,9 @@ export default function Merapi3DScene() {
   }>({ selamat: 0, korban: 0, total: 0, detik: 0 });
   const frameHudRef = useRef(0);
   const mulaiBencanaRef = useRef<number | null>(null);
+  // Untuk memulangkan warga dan membekukan HUD setelah bencana usai.
+  const pernahBencanaRef = useRef(false);
+  const bencanaSelesaiRef = useRef<number | null>(null);
   const eruptionStageTextRef = useRef<string>('');
 
   // Runtime Store Telemetry
@@ -2251,6 +2254,8 @@ export default function Merapi3DScene() {
       // memakai cap waktu yang tidak dibersihkan, sehingga setelah siswa
       // menekan reset, angka detik tetap melanjutkan hitungan lama.
       mulaiBencanaRef.current = null;
+      pernahBencanaRef.current = false;
+      bencanaSelesaiRef.current = null;
       frameHudRef.current = 0;
       setHasilEvakuasi({ selamat: 0, korban: 0, total: 0, detik: 0 });
       if (evacVehicle) {
@@ -5310,12 +5315,41 @@ export default function Merapi3DScene() {
         npcStepRate = 13;
       }
 
+      // ── SIRINE MEMBERI AKIBAT NYATA ──
+      // Durasi sirine diatur siswa lewat blok resq_sirine_ews. Sebelumnya
+      // durasi itu tidak berpengaruh apa pun terhadap warga: 1 detik dan 60
+      // detik menghasilkan hasil identik. Kini selama sirine berbunyi, warga
+      // bergerak lebih gesit menuju tujuan evakuasi.
+      if (isBuzzer && currentEvacCmd !== 'NONE') {
+        baseSpeedMultiplier *= 1.25;
+      }
+
+      // Daftar posisi frame ini, dipakai untuk menjaga jarak antar warga.
+      const posisiWarga: { x: number; z: number }[] = [];
+
       for (let i = 0; i < npcs.length; i++) {
         const npc = npcs[i];
         if (npc.evacuated) {
-          npc.mesh.visible = false;
-          continue;
+          // Warga yang sudah keluar peta kembali ke rumah setelah keadaan
+          // dinyatakan aman, supaya peta tidak kosong selamanya.
+          const sudahAman =
+            !isDisaster &&
+            bencanaSelesaiRef.current !== null &&
+            elapsed - bencanaSelesaiRef.current > 5 &&
+            currentEvacCmd === 'NONE';
+          if (sudahAman) {
+            const titik = NODE_MAP.get(npc.fromNode);
+            npc.evacuated = false;
+            if (titik) {
+              npc.mesh.position.set(titik.x, sampleTerrain(titik.x, titik.z) + 0.18, titik.z);
+            }
+            npc.mesh.visible = true;
+          } else {
+            npc.mesh.visible = false;
+            continue;
+          }
         }
+
 
         const npcSpeedMultiplier = baseSpeedMultiplier * npc.personalSpeedMod;
         const nA = NODE_MAP.get(npc.fromNode)!;
@@ -5362,7 +5396,14 @@ export default function Merapi3DScene() {
             posX = bldg.x + panX;
             posZ = bldg.z + panZ;
             posY = sampleTerrain(posX, posZ) + 0.18;
-          } else if (currentEvacCmd === 'KELUAR_BANGUNAN' || currentEvacCmd === 'TANAH_LAPANG' || currentEvacCmd === 'KRB1' || currentEvacCmd === 'KRB2' || currentEvacCmd === 'LUAR_MAP') {
+          } else if (
+            currentEvacCmd === 'KELUAR_BANGUNAN' ||
+            currentEvacCmd === 'TANAH_LAPANG' ||
+            currentEvacCmd === 'KRB1' ||
+            currentEvacCmd === 'KRB2' ||
+            currentEvacCmd === 'LUAR_MAP' ||
+            currentEvacCmd === 'JAUHI_SUNGAI'
+          ) {
             // Evakuasi keluar bangunan aktif! NPC keluar melalui pintu tanpa menembus dinding
             npc.exitProgress = Math.min(1.0, npc.exitProgress + dt * 1.8);
             posX = THREE.MathUtils.lerp(bldg.x, doorX, npc.exitProgress);
@@ -5413,7 +5454,13 @@ export default function Merapi3DScene() {
         }
 
         // ── EVAKUASI MENJAUH DARI KRB I KELUAR PETA (HILANG DARI PETA) ──
-        if ((currentEvacCmd === 'LUAR_MAP' || isAwas || isExplosive) && posZ >= 103.5) {
+        // HANYA PERINTAH SISWA YANG MENYELAMATKAN WARGA.
+        //
+        // Sebelumnya status Awas atau letusan eksplosif saja sudah membuat
+        // warga yang berjalan melewati batas selatan dihitung selamat, tanpa
+        // siswa memasang blok evakuasi apa pun. Akibatnya rasio selamat bisa
+        // tinggi meski siswa tidak mengerjakan apa-apa.
+        if (currentEvacCmd === 'LUAR_MAP' && posZ >= 103.5) {
           // NPC mencapai batas selatan peta: menghilang (de-spawn) seolah keluar dari jangkauan map
           npc.evacuated = true;
           npc.mesh.visible = false;
@@ -5462,6 +5509,15 @@ export default function Merapi3DScene() {
               const dbz = posZ - bomb.mesh.position.z;
               const dBomb = Math.hypot(dbx, dbz);
               if (dBomb < 8.5 && bomb.mesh.position.y < 22 && bomb.vel.y < 0) {
+                // Bom yang jatuh sangat dekat melukai warga, bukan sekadar
+                // membuatnya menghindar. Sebelumnya bom sama sekali tidak
+                // berbahaya sehingga ledakan terasa tanpa akibat.
+                if (dBomb < 3.2) {
+                  npc.isKnockedOut = true;
+                  npc.mesh.rotation.x = Math.PI / 2;
+                  npc.mesh.position.set(posX, posY + 0.06, posZ);
+                  break;
+                }
                 npc.dodgeTimer = 1.4;
                 const dodgeDir = dbx >= 0 ? 1 : -1;
                 npc.dodgeOffset = dodgeDir * 1.6;
@@ -5510,8 +5566,17 @@ export default function Merapi3DScene() {
             continue;
           }
         } else {
-          if (npc.isKnockedOut || npc.isProne) {
-            npc.isKnockedOut = false;
+          // KORBAN TIDAK DIHIDUPKAN KEMBALI.
+          //
+          // Sebelumnya cabang ini mengosongkan `isKnockedOut` pada setiap
+          // bingkai ketika kondisinya bukan "gempa besar tanpa Awas". Karena
+          // saat erupsi `isAwas` bernilai benar, warga yang tersapu awan panas
+          // bangun lagi beberapa bingkai kemudian. Akibatnya angka korban pada
+          // HUD naik-turun dan tabel 75 warga di LKPD tidak dapat diisi.
+          //
+          // Sekarang hanya tiarap yang dinaikkan kembali; korban tetap tumbang
+          // sampai simulasi direset.
+          if (npc.isProne) {
             npc.isProne = false;
             npc.mesh.rotation.x = 0;
             npc.bodyMesh.scale.y = 1.0;
@@ -5705,6 +5770,22 @@ export default function Merapi3DScene() {
           }
         }
 
+        // ── JARAK MINIMAL ANTAR WARGA ──
+        // Sebelumnya 75 warga saling menembus sehingga kerumunan terlihat
+        // seperti satu tubuh. Pemisahan sederhana ini cukup untuk menghindari
+        // tumpang tindih tanpa perlu perhitungan fisika.
+        for (let w = 0; w < posisiWarga.length; w++) {
+          const q = posisiWarga[w];
+          const dxw = posX - q.x;
+          const dzw = posZ - q.z;
+          const dw = Math.hypot(dxw, dzw);
+          if (dw > 0.001 && dw < 0.42) {
+            const dorong = (0.42 - dw) * 0.5;
+            posX += (dxw / dw) * dorong;
+            posZ += (dzw / dw) * dorong;
+          }
+        }
+
         // Posisi & Rotasi Akhir
         npc.mesh.position.set(posX, posY, posZ);
 
@@ -5721,8 +5802,13 @@ export default function Merapi3DScene() {
         }
 
         // Ayunan langkah kaki alami (desinkronisasi fase per individu)
-        const stepBob = Math.abs(Math.sin(elapsed * npcStepRate + npc.walkPhase)) * 0.06;
+        // Status NPC kini berpengaruh pada animasi: warga yang panik melangkah
+        // lebih tinggi. Sebelumnya status hanya dibaca di satu tempat sehingga
+        // nilai PANIC dan ALERT nyaris tidak terlihat bedanya.
+        const sedangPanik = npc.status === 'PANIC' || npc.status === 'EXTREME_PANIC';
+        const stepBob = Math.abs(Math.sin(elapsed * npcStepRate + npc.walkPhase)) * (sedangPanik ? 0.11 : 0.06);
         npc.mesh.position.y += stepBob;
+        posisiWarga.push({ x: posX, z: posZ });
       }
 
       // 4. UPDATE PARTIKEL ASAP KAWAH
@@ -5783,10 +5869,28 @@ export default function Merapi3DScene() {
       if (isDisaster && mulaiBencanaRef.current === null) {
         mulaiBencanaRef.current = elapsed;
       }
+      // Catat kapan bencana usai, untuk memulangkan warga dan membekukan HUD.
+      if (isDisaster) {
+        pernahBencanaRef.current = true;
+        bencanaSelesaiRef.current = null;
+      } else if (pernahBencanaRef.current && bencanaSelesaiRef.current === null) {
+        bencanaSelesaiRef.current = elapsed;
+      }
       frameHudRef.current += 1;
-      if (frameHudRef.current % 20 === 0) {
-        const jumlahSelamat = npcs.reduce((a, x) => a + (x.evacuated ? 1 : 0), 0);
-        const jumlahKorban = npcs.reduce((a, x) => a + (x.isKnockedOut && !x.evacuated ? 1 : 0), 0);
+      // Setelah bencana usai, angka dibekukan pada hasil akhir. Tanpa ini,
+      // warga yang kembali ke rumah akan mengurangi angka selamat dan hasil
+      // yang dibaca siswa berubah-ubah.
+      if (frameHudRef.current % 20 === 0 && (isDisaster || !pernahBencanaRef.current)) {
+        // SELAMAT = WARGA YANG TIDAK MENJADI KORBAN.
+        //
+        // Semula "selamat" hanya menghitung warga yang keluar dari peta
+        // (`evacuated`). Akibatnya misi yang memerintahkan evakuasi ke tanah
+        // lapang atau ke zona KRB selalu menampilkan 0 warga selamat, padahal
+        // warganya berdiri aman di lapangan. Yang benar: seluruh warga yang
+        // tidak tumbang dihitung selamat, dan jumlahnya harus sama dengan
+        // 75 dikurangi korban.
+        const jumlahKorban = npcs.reduce((a, x) => a + (x.isKnockedOut ? 1 : 0), 0);
+        const jumlahSelamat = npcs.length - jumlahKorban;
         const detik = mulaiBencanaRef.current === null ? 0 : Math.round(elapsed - mulaiBencanaRef.current);
         setHasilEvakuasi((lama) =>
           lama.selamat === jumlahSelamat &&
