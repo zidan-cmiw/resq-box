@@ -5,6 +5,7 @@ Revisi dilakukan agar butir yang TIDAK didukung aplikasi tidak lagi
 menuntut observer mengamati hal yang tidak ada. Setiap perubahan butir
 dicatat pada bagian "Catatan Revisi" beserta alasannya.
 """
+import sys
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -46,10 +47,10 @@ DIMENSI = [
 
 BUTIR = [
     ("A", "EMPATHY", "Empati terhadap keselamatan manusia dan lingkungan", [
-        "Mengidentifikasi warga yang paling berisiko berdasarkan peran warga pada simulasi, yaitu lansia dan pelajar, serta menandai fasilitas publik di lereng gunung api seperti sekolah, mushola, tenda pengungsian, dan permukiman warga.",
+        "Mengidentifikasi warga yang paling berisiko berdasarkan peran warga pada simulasi, yaitu lansia dan pelajar, serta menandai fasilitas publik di lereng gunung api seperti sekolah, tenda pengungsian, rumah sakit, dan permukiman warga.",
         "Menentukan aksi evakuasi yang sesuai dengan arah bahaya, yaitu keluar bangunan, menuju tanah lapang, menjauhi wilayah sungai, menuju zona KRB, atau keluar area peta.",
         "Memperhitungkan durasi sirine peringatan dini yang dipasang pada blok agar warga memiliki waktu mencapai tujuan evakuasi sebelum bahaya tiba.",
-        "Menunjukkan kepedulian terhadap warga yang tertinggal atau terlambat bergerak ketika mengevaluasi hasil simulasi pada panel Hasil Simulasi.",
+        "Menunjukkan kepedulian terhadap warga yang menjadi korban dengan menelaah jumlah korban dan rasio selamat pada panel Hasil Simulasi.",
         "Merumuskan urutan langkah tindakan penyelamatan diri manual secara runtut sebelum sistem otomatisasi sempat merespons.",
     ]),
     ("B", "COLLABORATION", "Kolaborasi kerja dan pembagian peran kelompok", [
@@ -84,9 +85,10 @@ BUTIR = [
 
 REVISI = [
     ("Butir 1",
-     "Semula menuntut menemukan \u201ctitik kerentanan warga\u201d dan \u201cfasilitas publik\u201d.",
-     "Aplikasi memiliki fasilitas publik pada peta, tetapi tidak menyediakan lapisan data titik kerentanan. "
-     "Butir diubah agar mengacu pada peran warga yang benar-benar ada, yaitu lansia dan pelajar."),
+     "Semula menuntut menemukan titik kerentanan warga dan menyebut mushola sebagai fasilitas publik.",
+     "Aplikasi tidak menyediakan lapisan data titik kerentanan, dan mushola tidak dirender pada peta 3D. "
+     "Butir diubah agar mengacu pada peran warga yang benar-benar ada, yaitu lansia dan pelajar, serta pada "
+     "fasilitas yang benar-benar tampak, yaitu sekolah, tenda pengungsian, rumah sakit, dan permukiman."),
     ("Butir 2",
      "Semula \u201cmenentukan lokasi titik kumpul dan jalur evakuasi\u201d.",
      "Aplikasi mengarahkan warga melalui aksi evakuasi, bukan melalui penetapan titik kumpul pada peta. "
@@ -95,6 +97,11 @@ REVISI = [
      "Semula mencakup \u201cpembukaan gerbang evakuasi\u201d.",
      "Gerbang tidak digunakan pada adegan yang berjalan dan belum ada blok yang membukanya. "
      "Butir dibatasi pada durasi sirine, yang memang dapat diatur siswa."),
+    ("Butir 4",
+     "Semula menuntut mengamati warga yang tertinggal atau terlambat bergerak.",
+     "Panel Hasil Simulasi hanya menampilkan jumlah selamat, jumlah korban, rasio selamat, dan waktu tanggap. "
+     "Tidak ada indikator warga tertinggal. Butir disandarkan pada jumlah korban dan rasio selamat yang "
+     "memang terlihat siswa."),
     ("Butir 8",
      "Semula \u201cambang batas sensor\u201d.",
      "Aplikasi belum memiliki blok sensor bernilai angka. Butir diarahkan pada ambang kondisi bahaya, "
@@ -430,7 +437,10 @@ p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 r = p.add_run("Instrumen Observasi Design Thinking • RESQ-BOX Kit")
 r.italic = True; r.font.size = Pt(9); r.font.color.rgb = WARNA_ABU
 
-keluaran = r"C:\github\lidm buatan vincent\RESQ-BOX\lampiran-buku\INSTRUMEN-OBSERVASI-DT-REVISI.docx"
+keluaran = (
+    sys.argv[1] if len(sys.argv) > 1
+    else r"C:\github\lidm buatan vincent\RESQ-BOX\lampiran-buku\INSTRUMEN-OBSERVASI-DT-REVISI.docx"
+)
 doc.save(keluaran)
 print(f"  [v] tersimpan: {keluaran}")
 
