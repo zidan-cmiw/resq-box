@@ -117,36 +117,6 @@ export const KOMPETENSI_LEVEL3: Kompetensi[] = [
   },
   {
     kode: 'K5',
-    nama: 'Membedakan karakteristik erupsi efusif dan eksplosif',
-    aspek: 'kebumian',
-    indikator: [
-      'Menyebutkan ciri erupsi efusif berupa lelehan lava yang mengalir.',
-      'Menyebutkan ciri erupsi eksplosif berupa lontaran material dan awan panas.',
-      'Memilih tindakan mitigasi yang berbeda untuk kedua jenis erupsi.',
-    ],
-  },
-  {
-    kode: 'K6',
-    nama: 'Mengidentifikasi bahaya ikutan erupsi',
-    aspek: 'kebumian',
-    indikator: [
-      'Menyebutkan bahaya ikutan: awan panas, lahar, dan abu vulkanik.',
-      'Menjelaskan arah dan penyebab terjadinya masing-masing bahaya.',
-      'Menentukan bentuk perlindungan yang sesuai untuk tiap bahaya.',
-    ],
-  },
-  {
-    kode: 'K7',
-    nama: 'Menafsirkan status gunung api dan zona KRB',
-    aspek: 'mitigasi',
-    indikator: [
-      'Menyebutkan arti KRB I, KRB II, dan KRB III.',
-      'Menghubungkan kenaikan status dengan meluasnya radius bahaya.',
-      'Menentukan zona evakuasi yang tepat sesuai status yang berlaku.',
-    ],
-  },
-  {
-    kode: 'K8',
     nama: 'Menghubungkan pergerakan lempeng dengan terjadinya gempa bumi',
     aspek: 'kebumian',
     indikator: [
@@ -156,7 +126,7 @@ export const KOMPETENSI_LEVEL3: Kompetensi[] = [
     ],
   },
   {
-    kode: 'K9',
+    kode: 'K6',
     nama: 'Menjelaskan hubungan kekuatan guncangan dengan tingkat kerusakan',
     aspek: 'kebumian',
     indikator: [
@@ -166,13 +136,43 @@ export const KOMPETENSI_LEVEL3: Kompetensi[] = [
     ],
   },
   {
-    kode: 'K10',
+    kode: 'K7',
     nama: 'Menetapkan ambang batas kondisi dan logika percabangan',
     aspek: 'komputasional',
     indikator: [
       'Membedakan gempa sedang dan gempa besar berdasarkan angka yang diberikan.',
       'Menempatkan kondisi pada blok Kalau–Maka, bukan di luar keputusan.',
       'Memastikan hanya satu cabang yang berjalan untuk satu kondisi.',
+    ],
+  },
+  {
+    kode: 'K8',
+    nama: 'Membedakan karakteristik erupsi efusif dan eksplosif',
+    aspek: 'kebumian',
+    indikator: [
+      'Menyebutkan ciri erupsi efusif berupa lelehan lava yang mengalir.',
+      'Menyebutkan ciri erupsi eksplosif berupa lontaran material dan awan panas.',
+      'Memilih tindakan mitigasi yang berbeda untuk kedua jenis erupsi.',
+    ],
+  },
+  {
+    kode: 'K9',
+    nama: 'Mengidentifikasi bahaya ikutan erupsi',
+    aspek: 'kebumian',
+    indikator: [
+      'Menyebutkan bahaya ikutan: awan panas, lahar, dan abu vulkanik.',
+      'Menjelaskan arah dan penyebab terjadinya masing-masing bahaya.',
+      'Menentukan bentuk perlindungan yang sesuai untuk tiap bahaya.',
+    ],
+  },
+  {
+    kode: 'K10',
+    nama: 'Menafsirkan status gunung api dan zona KRB',
+    aspek: 'mitigasi',
+    indikator: [
+      'Menyebutkan arti KRB I, KRB II, dan KRB III.',
+      'Menghubungkan kenaikan status dengan meluasnya radius bahaya.',
+      'Menentukan zona evakuasi yang tepat sesuai status yang berlaku.',
     ],
   },
   {
