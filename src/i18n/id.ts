@@ -271,6 +271,18 @@ export const id = {
     back: 'KEMBALI',
     active: 'AKTIF',
   },
+
+  // ── Panel misi ──
+  mission: {
+    case: 'KASUS',
+    previous: 'SEBELUM',
+    checking: 'MENGECEK...',
+    validate: 'VALIDASI MISI!',
+    passed: 'MISI BERHASIL TUNTAS!',
+    failed: 'PERLU PENYESUAIAN BLOK',
+    guideLabel: 'PANDUAN LOKASI BLOK:',
+    feedbackTitle: 'Umpan balik Resqy',
+  },
 } as const;
 
 export type IdDictionary = typeof id;

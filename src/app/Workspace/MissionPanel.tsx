@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useI18n } from '../../i18n';
 import { useNavigate } from 'react-router-dom';
 import { MISSIONS, CATEGORIES } from '../../missions/data/missions';
 import { kompetensiMisi, kalimatKompetensi } from '../../missions/data/kompetensi';
@@ -87,6 +88,8 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
   const [dataUmpanBlok, setDataUmpanBlok] = useState<Record<string, unknown> | null>(null);
   const umpanBlok = useUmpanBalik('blok', isPassed, dataUmpanBlok, dataUmpanBlok !== null);
 
+  const { t } = useI18n();
+
   const categoryObj = CATEGORIES.find((c) => c.id === mission.category);
 
   // ── Kompetensi yang dicapai misi ini ──────────────────────────────
@@ -125,7 +128,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
         <div className="flex items-center justify-between gap-1 mb-1.5">
           <div className="flex items-center gap-1.5">
             <span className="px-2 py-0.5 rounded text-[13.5px] font-bold uppercase tracking-wider bg-[#b45309] text-white shadow-sm font-pixel">
-              {categoryObj?.title.toUpperCase()} • {mission.category === 'proyek' ? 'KASUS' : 'LEVEL'} {mission.level}
+              {categoryObj?.title.toUpperCase()} • {mission.category === 'proyek' ? t('mission.case') : 'LEVEL'} {mission.level}
             </span>
           </div>
 
@@ -206,7 +209,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
           <div className="flex items-start gap-2 bg-[#ecfdf5] border-2 border-[#059669] rounded-xl p-3 text-[#065f46] shadow-sm">
             <div>
               <span className="text-[14.5px] font-black uppercase tracking-wider block text-[#047857] mb-0.5">
-                PANDUAN LOKASI BLOK:
+                {t('mission.guideLabel')}
               </span>
               <p className="text-[13px] sm:text-[15px] font-semibold leading-relaxed text-[#064e3b]">
                 {mission.hint}
@@ -228,7 +231,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
             </span>
             <div className="flex-1">
               <p className="text-[15px] font-bold leading-tight mb-1">
-                {isPassed ? 'MISI BERHASIL TUNTAS!' : 'PERLU PENYESUAIAN BLOK'}
+                {isPassed ? t('mission.passed') : t('mission.failed')}
               </p>
               <p className="text-[13px] sm:text-[15px] leading-relaxed font-medium">
                 {validationMessage}
@@ -264,7 +267,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
                 }`}
             >
               <span>◀</span>
-              <span>SEBELUM</span>
+              <span>{t('mission.previous')}</span>
             </button>
 
             {isLastStep ? (
@@ -277,7 +280,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
                   : 'bg-gradient-to-r from-[#c2410c] to-[#b45309] hover:from-[#ea580c] hover:to-[#c2410c] text-white'
                   }`}
               >
-                <span>{isChecking ? 'MENGECEK...' : 'VALIDASI MISI!'}</span>
+                <span>{isChecking ? t('mission.checking') : t('mission.validate')}</span>
               </button>
             ) : (
 
@@ -288,7 +291,7 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
                 }}
                 className="flex-[2] py-2.5 px-3.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-[13px] sm:text-[15px] rounded-lg shadow-md flex items-center justify-center gap-1 border-2 border-emerald-700"
               >
-                <span>LANJUT</span>
+                <span>{t('common.next')}</span>
                 <span>➔</span>
               </button>
             )}

@@ -253,4 +253,16 @@ export const en = {
     back: 'BACK',
     active: 'ACTIVE',
   },
+
+  // ── Panel misi ──
+  mission: {
+    case: 'CASE',
+    previous: 'PREVIOUS',
+    checking: 'CHECKING...',
+    validate: 'CHECK MISSION!',
+    passed: 'MISSION COMPLETE!',
+    failed: 'BLOCKS NEED FIXING',
+    guideLabel: 'BLOCK LOCATION GUIDE:',
+    feedbackTitle: 'Resqy feedback',
+  },
 } as const;
