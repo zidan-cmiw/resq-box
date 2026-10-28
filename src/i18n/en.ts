@@ -199,6 +199,12 @@ export const en = {
 
   // ── Workspace & diorama ─────────────────────────────────────────────────
   workspace: {
+    levelMap: 'LEVEL 3 MAP',
+    mission: 'MISSION',
+    start: 'START',
+    mapLoading: 'LOADING THE 3D DISASTER MAP...',
+    reloadMap: 'Reload Map',
+    mapError: 'SOMETHING WENT WRONG WITH THE DIORAMA MAP.',
     title: 'WORKSPACE',
     connectDiorama: 'CONNECT DIORAMA',
     disconnect: 'DISCONNECT',

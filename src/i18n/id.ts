@@ -217,6 +217,12 @@ export const id = {
 
   // ── Ruang kerja & diorama ───────────────────────────────────────────────
   workspace: {
+    levelMap: 'PETA LEVEL 3',
+    mission: 'MISI',
+    start: 'MULAI',
+    mapLoading: 'MEMUAT PETA DIORAMA 3D MITIGASI BENCANA...',
+    reloadMap: 'Muat Ulang Peta',
+    mapError: 'TERJADI KENDALA PADA TAMPILAN PETA DIORAMA.',
     title: 'RUANG KERJA',
     connectDiorama: 'HUBUNGKAN DIORAMA',
     disconnect: 'PUTUSKAN',

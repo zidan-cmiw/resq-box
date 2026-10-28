@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, lazy, Suspense, Component, type ReactNode } from 'react';
+import { useI18n, t as tStatis } from '../../i18n';
 
 const EvacuationCanvas = lazy(() => import('../EvacuationGame/EvacuationCanvas'));
 
@@ -17,12 +18,12 @@ class CanvasErrorBoundary extends Component<{ children: ReactNode }, { hasError:
     if (this.state.hasError) {
       return (
         <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel p-4 bg-amber-50 font-semibold">
-          <span>TERJADI KENDALA PADA TAMPILAN PETA DIORAMA.</span>
+          <span>{tStatis('workspace.mapError')}</span>
           <button
             onClick={() => this.setState({ hasError: false })}
             className="px-3 py-1 bg-amber-600 text-white rounded font-sans text-[13px] font-bold hover:bg-amber-700 mt-2"
           >
-            Muat Ulang Peta
+            {tStatis('workspace.reloadMap')}
           </button>
         </div>
       );
@@ -77,6 +78,7 @@ function handleHardwareLine(line: string) {
 }
 
 export default function Workspace() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const missionParam = searchParams.get('mission');
@@ -559,7 +561,7 @@ export default function Workspace() {
             className="pixel-btn-wood-compact text-[13px] sm:text-[15px] py-2 px-3 text-amber-100 hover:text-white flex items-center gap-1.5 shrink-0 shadow-sm font-semibold"
             title="Kembali ke Peta Level 3"
           >
-            <span className="hidden sm:inline">PETA LEVEL 3</span>
+            <span className="hidden sm:inline">{t('workspace.levelMap')}</span>
           </button>
 
           {activeMission && (
@@ -574,7 +576,7 @@ export default function Workspace() {
               title="Tampilkan / Sembunyikan Panduan Misi"
             >
               <span className="material-symbols-outlined text-[15px] font-semibold">assignment</span>
-              <span className="hidden sm:inline">MISI</span>
+              <span className="hidden sm:inline">{t('workspace.mission')}</span>
             </button>
           )}
 
@@ -755,7 +757,7 @@ export default function Workspace() {
               }`}
           >
             <span>{isRunning ? '⏹' : '▶'}</span>
-            <span>{isRunning ? 'BERHENTI' : 'MULAI'}</span>
+            <span>{isRunning ? t('workspace.stop') : t('workspace.start')}</span>
           </button>
         </div>
       </header>
@@ -811,7 +813,7 @@ export default function Workspace() {
               <CanvasErrorBoundary>
                 <Suspense fallback={
                   <div className="flex items-center justify-center h-full text-[#78350f] text-[13px] flex-col gap-2 font-pixel font-semibold">
-                    <span>MEMUAT PETA DIORAMA 3D MITIGASI BENCANA...</span>
+                    <span>{t('workspace.mapLoading')}</span>
                   </div>
                 }>
                   <EvacuationCanvas />
