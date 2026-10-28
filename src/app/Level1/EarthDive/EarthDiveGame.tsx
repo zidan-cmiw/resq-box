@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useI18n } from '../../../i18n';
 import { useNavigate } from 'react-router-dom';
 import {
   EARTH_STRATA_DATA,
@@ -74,6 +75,7 @@ interface ActiveChallengeState {
 }
 
 export default function EarthDiveGame() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<GameState | null>(null);
@@ -2252,7 +2254,7 @@ export default function EarthDiveGame() {
               onClick={() => setIsRadarOpen(false)}
               className="mt-2 w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-amber-50 border-2 border-[#451a03] font-pixel-title text-[13px] font-bold cursor-pointer active:translate-y-0.5"
             >
-              TUTUP
+              {t('common.close')}
             </button>
           </div>
         </div>
@@ -2265,4 +2267,4 @@ export default function EarthDiveGame() {
       />
     </div>
   );
-}
+}

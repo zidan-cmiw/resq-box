@@ -1362,7 +1362,7 @@ export default function Level3() {
                 }}
                 className="flex-1 py-3 px-5 rounded-xl bg-[#b45309] hover:bg-[#92400e] text-amber-100 font-bold text-[15px] border-2 border-[#451a03] shadow-[0_3px_0_#451a03] active:translate-y-1 active:shadow-none transition-all cursor-pointer"
               >
-                KEMBALI
+                {t('common.back')}
               </button>
 
               <button
@@ -1566,7 +1566,7 @@ export default function Level3() {
               onClick={() => setShowProjectsModal(false)}
               className="w-full py-3 sm:py-3.5 rounded-xl bg-[#853507] hover:bg-[#6c2803] text-white font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base border-2 border-[#451a03] shadow-[0_3px_0_#2b0d00] cursor-pointer active:translate-y-0.5"
             >
-              TUTUP
+              {t('common.close')}
             </button>
           </div>
         </div>

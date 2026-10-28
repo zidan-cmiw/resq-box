@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useI18n } from '../../i18n';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
@@ -42,6 +43,7 @@ function escapeHtml(str: string): string {
 }
 
 export default function TeacherDashboard() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const currentUser = useAuthStore((state) => state.currentUser);
   const logout = useAuthStore((state) => state.logout);
@@ -1795,7 +1797,7 @@ export default function TeacherDashboard() {
                 onClick={() => setStudentToDelete(null)}
                 className="px-3.5 py-1.5 rounded-xl bg-amber-200 text-amber-950 font-pixel-title font-bold text-[13px] border border-amber-950 cursor-pointer"
               >
-                BATAL
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleDeleteStudent}
@@ -1888,7 +1890,7 @@ export default function TeacherDashboard() {
                   onClick={() => setShowTeacherProfileModal(false)}
                   className="flex-1 px-3 py-2 rounded-xl bg-amber-200 text-amber-950 font-pixel-title font-bold text-[13px] border-2 border-amber-950/60 cursor-pointer"
                 >
-                  BATAL
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
