@@ -130,6 +130,8 @@ export const id = {
     dataSaverNote:
       'Materi pelajaran tetap lengkap. Yang diringankan hanya tampilan: scene 3D gunung dan animasi berat tidak dimuat, sehingga lebih cepat dan lebih hemat kuota.',
     progress: 'PROGRES BELAJAR',
+    language: 'BAHASA',
+    languageHint: 'Pilih bahasa tampilan untuk menu, tombol, dan pesan.',
   },
 
   // ── Posko Guru ──────────────────────────────────────────────────────────

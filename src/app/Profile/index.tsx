@@ -12,11 +12,13 @@ import PixelIcon from '../../components/PixelIcon';
 import { ResqyTutorialOverlay } from '../../components/Tutorial/ResqyTutorialOverlay';
 import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 import { useDataSaver, setDataSaverMode, describeReason } from '../../utils/dataSaver';
+import { useI18n, setLocale, AVAILABLE_LOCALES } from '../../i18n';
 import {
   supabase,
 } from '../../utils/supabaseClient';
 
 export default function Profile() {
+  const { t, locale } = useI18n();
   const navigate = useNavigate();
   const student = useAuthStore((state) => state.student);
   const currentUser = useAuthStore((state) => state.currentUser);
@@ -393,12 +395,45 @@ export default function Profile() {
             </div>
           </div>
 
+          {/* Pilihan bahasa antarmuka.
+              Teks yang tampil di sini berasal dari kamus, bukan ditulis
+              langsung, supaya ikut berganti saat bahasa dipilih. */}
+          <div className="p-3.5 bg-amber-900/10 rounded-xl border-2 border-amber-950/30 space-y-2.5">
+            <div>
+              <span className="text-[13px] font-bold text-amber-950 block">
+                {t('profile.language')}
+              </span>
+              <span className="text-[13.5px] text-amber-900/80 leading-snug block font-semibold">
+                {t('profile.languageHint')}
+              </span>
+            </div>
+            <div className="flex gap-2">
+              {AVAILABLE_LOCALES.map((b) => (
+                <button
+                  key={b.code}
+                  type="button"
+                  onClick={() => {
+                    retroAudio.playSelect();
+                    setLocale(b.code);
+                  }}
+                  className={`flex-1 px-3 py-2 rounded-lg border-2 font-pixel-title font-bold text-[14px] cursor-pointer transition-colors ${
+                    locale === b.code
+                      ? 'bg-amber-600 text-amber-50 border-amber-950'
+                      : 'bg-amber-50 text-amber-950 border-amber-950/40 hover:bg-amber-100'
+                  }`}
+                >
+                  {b.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Mode Hemat Data — untuk sekolah dengan kuota/koneksi terbatas */}
           <div className="p-3.5 bg-amber-900/10 rounded-xl border-2 border-amber-950/30 space-y-2.5">
             <div className="flex items-center justify-between gap-2">
               <div>
                 <span className="text-[13px] font-bold text-amber-950 block">
-                  MODE HEMAT DATA
+                  {t('profile.dataSaver')}
                 </span>
                 <span className="text-[13.5px] text-amber-900/80 leading-snug block font-semibold">
                   {describeReason(dataSaver.reason)}
@@ -411,7 +446,7 @@ export default function Profile() {
                     : 'bg-amber-200 border-amber-950/40 text-amber-950'
                 }`}
               >
-                {dataSaver.active ? 'AKTIF' : 'MATI'}
+                {dataSaver.active ? t('profile.dataSaverOn') : t('profile.dataSaverOff')}
               </span>
             </div>
 

@@ -27,13 +27,27 @@
 
 import { useSyncExternalStore } from 'react';
 import { id } from './id';
+import { en } from './en';
 
-/** Kamus Bahasa Indonesia — menjadi acuan bentuk kunci. */
-export type Dictionary = typeof id;
+/**
+ * Bentuk kamus: kunci dan susunannya WAJIB sama dengan `id`, tetapi isi
+ * teksnya boleh berbeda bahasa.
+ *
+ * Sebelumnya tipe ini ditulis `typeof id`. Karena `id` memakai `as const`,
+ * nilai teksnya menjadi tipe literal, sehingga kamus Inggris langsung ditolak
+ * TypeScript — padahal justru itu yang diinginkan: semua kunci wajib ada.
+ * `DeepString` melonggarkan nilainya menjadi `string` dan tetap memaksa
+ * setiap kunci tersedia.
+ */
+type DeepString<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepString<T[K]>;
+};
+
+export type Dictionary = DeepString<typeof id>;
 
 const LOCALES: Record<string, Dictionary> = {
   id,
-  // en: en,   ← tambahkan di sini setelah menerjemahkan
+  en,
 };
 
 /** Bahasa yang dianggap cocok dengan Bahasa Indonesia (awalan kode). */
@@ -80,6 +94,7 @@ function getSnapshot(): LocaleCode {
 /** Daftar bahasa yang tersedia, untuk ditampilkan di pengaturan. */
 export const AVAILABLE_LOCALES: { code: LocaleCode; label: string }[] = [
   { code: 'id', label: 'Bahasa Indonesia' },
+  { code: 'en', label: 'English' },
 ];
 
 export function getLocale(): LocaleCode {
