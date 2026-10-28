@@ -73,6 +73,12 @@ export const id = {
 
   // ── Halaman masuk & daftar ──────────────────────────────────────────────
   login: {
+    studentTab: 'AKUN SISWA',
+    teacherTab: 'AKUN GURU',
+    noAccount: 'Belum punya akun?',
+    guestPlay: 'COBA TANPA LOGIN',
+    guestNote: 'Mainkan semua level tanpa akun. Kemajuan tidak tersimpan.',
+    downloadHint: 'Unduh aplikasi untuk diorama fisik',
     title: 'MASUK RESQ-BOX',
     // CATATAN: kunci berikut sudah TIDAK ADA karena fiturnya dihapus.
     //   loginTab, registerTab  -> tab [ MASUK ] / [ DAFTAR AKUN BARU ] dihapus
@@ -241,6 +247,29 @@ export const id = {
     unflipCard: 'Balikkan kembali kartu ke sisi depan',
     skipTyping: 'Tampilkan seluruh teks sekarang',
     openMaterial: 'Buka materi {name}',
+  },
+
+  // ── Dasbor & Level 3 ──
+  dashboard: {
+    teacherPost: 'POSKO GURU',
+    switchAccount: 'GANTI AKUN',
+    tagline: 'Media Pembelajaran Lempeng Tektonik',
+    guide: 'PANDUAN & MISI',
+    learningGuide: 'PETUNJUK BELAJAR',
+    about: 'TENTANG PLATFORM',
+    credits: 'CREDITS',
+  },
+
+  // ── Dasbor & Level 3 ──
+  level3: {
+    mainMenu: 'MENU UTAMA',
+    myProject: 'PROYEK SAYA',
+    competency: 'KOMPETENSI YANG DICAPAI',
+    situation: 'SITUASI KEBENCANAAN',
+    statusDone: 'STATUS: SUDAH SELESAI',
+    statusReady: 'STATUS: SIAP DIKERJAKAN',
+    back: 'KEMBALI',
+    active: 'AKTIF',
   },
 } as const;
 

@@ -71,6 +71,12 @@ export const en = {
 
   // ── Sign-in page ────────────────────────────────────────────────────────
   login: {
+    studentTab: 'STUDENT ACCOUNT',
+    teacherTab: 'TEACHER ACCOUNT',
+    noAccount: 'No account yet?',
+    guestPlay: 'TRY WITHOUT SIGNING IN',
+    guestNote: 'Play every level without an account. Your progress is not saved.',
+    downloadHint: 'Download the app for the physical diorama',
     title: 'SIGN IN TO RESQ-BOX',
     roleStudent: 'Student',
     roleTeacher: 'Teacher',
@@ -223,5 +229,28 @@ export const en = {
     unflipCard: 'Flip the card back',
     skipTyping: 'Show all the text now',
     openMaterial: 'Open material {name}',
+  },
+
+  // ── Dashboard & Level 3 ──
+  dashboard: {
+    teacherPost: 'TEACHER POST',
+    switchAccount: 'SWITCH ACCOUNT',
+    tagline: 'Tectonic Plates Learning Media',
+    guide: 'GUIDE & MISSIONS',
+    learningGuide: 'LEARNING GUIDE',
+    about: 'ABOUT THE PLATFORM',
+    credits: 'CREDITS',
+  },
+
+  // ── Dashboard & Level 3 ──
+  level3: {
+    mainMenu: 'MAIN MENU',
+    myProject: 'MY PROJECT',
+    competency: 'SKILLS YOU WILL GAIN',
+    situation: 'DISASTER SITUATION',
+    statusDone: 'STATUS: COMPLETED',
+    statusReady: 'STATUS: READY',
+    back: 'BACK',
+    active: 'ACTIVE',
   },
 } as const;

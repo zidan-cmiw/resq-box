@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useI18n } from '../../i18n';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore, levelTertinggiYangBoleh } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
@@ -15,6 +16,7 @@ import { blokirRambatanTombol } from '../../utils/keyboard';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const student = useAuthStore((state) => state.student);
   const currentUser = useAuthStore((state) => state.currentUser);
   const logout = useAuthStore((state) => state.logout);
@@ -558,7 +560,7 @@ export default function Dashboard() {
             title="Ganti Akun / Masuk"
           >
             <PixelIcon name="user" size={13} />
-            <span className="hidden sm:inline">GANTI AKUN</span>
+            <span className="hidden sm:inline">{t('dashboard.switchAccount')}</span>
           </button>
 
           {/* Sound toggle button */}
@@ -605,7 +607,7 @@ export default function Dashboard() {
           </h1>
           <div className="inline-block mt-2 px-4 py-1.5 rounded-md bg-amber-950/90 border-2 border-amber-500 shadow-[0_4px_0_#231206]">
             <p className="font-pixel text-[13px] md:text-[15px] text-amber-200 uppercase tracking-wider font-bold">
-              Media Pembelajaran Lempeng Tektonik
+              {t('dashboard.tagline')}
             </p>
           </div>
         </div>
@@ -703,7 +705,7 @@ export default function Dashboard() {
             onMouseEnter={() => retroAudio.playHover()}
             className="pixel-btn-wood-plank cursor-pointer"
           >
-            <span>PANDUAN & MISI</span>
+            <span>{t('dashboard.guide')}</span>
           </button>
 
           {/* Button 5: Profil Siswa */}
@@ -747,7 +749,7 @@ export default function Dashboard() {
           >
             <span className="material-symbols-outlined text-amber-300 text-base font-medium">signpost</span>
             <span className="font-pixel text-[13px] font-bold text-amber-200 flex items-center gap-1">
-              <span>PETUNJUK BELAJAR</span>
+              <span>{t('dashboard.learningGuide')}</span>
               <span className="font-bold">&gt;</span>
             </span>
           </button>
@@ -868,7 +870,7 @@ export default function Dashboard() {
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         <span className="px-3 py-1 rounded-md bg-amber-900 text-amber-100 font-pixel-title text-[13px] sm:text-[15px] font-bold shadow-[0_1px_0_#231206]">
-                          TENTANG PLATFORM
+                          {t('dashboard.about')}
                         </span>
                         <h4 className="font-pixel-title font-black text-[13px] sm:text-[15px] md:text-base lg:text-[19px] text-[#260c02]">
                           SELAMAT DATANG DI RESQ-BOX!

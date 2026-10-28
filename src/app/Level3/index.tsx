@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useI18n } from '../../i18n';
 import { useNavigate } from 'react-router-dom';
 import { MISSIONS, CATEGORIES, type Mission } from '../../missions/data/missions';
 import { kompetensiMisi, kalimatKompetensi } from '../../missions/data/kompetensi';
@@ -65,6 +66,7 @@ function generateExpeditionTrailRibbon(points: { x: number; y: number }[]): stri
 
 export default function Level3() {
 
+  const { t } = useI18n();
   /*
     APAKAH LAYAR SEMPIT (HP)?
 
@@ -308,7 +310,7 @@ export default function Level3() {
           className="pixel-btn-wood-compact text-[13px] sm:text-[15px] py-2 px-3.5 text-amber-100 hover:text-white flex items-center gap-2 shadow-2xl backdrop-blur-md cursor-pointer font-bold"
         >
           <PixelIcon name="chevron-left" size={16} />
-          <span>MENU UTAMA</span>
+          <span>{t('level3.mainMenu')}</span>
         </button>
       </div>
 
@@ -339,7 +341,7 @@ export default function Level3() {
           title="Proyek Saya (Sandbox)"
         >
           <PixelIcon name="folder" size={16} />
-          <span>PROYEK SAYA</span>
+          <span>{t('level3.myProject')}</span>
         </button>
 
         {/* Sound toggle */}
@@ -1304,7 +1306,7 @@ export default function Level3() {
               return (
                 <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border-3 border-emerald-600/70 shadow-xs">
                   <span className="text-[13px] sm:text-[15px] font-black text-emerald-800 uppercase tracking-wider mb-1.5 flex items-center gap-2">
-                    KOMPETENSI YANG DICAPAI
+                    {t('level3.competency')}
                   </span>
                   <p className="text-[14px] sm:text-[15px] font-bold text-emerald-900 leading-snug mb-2.5">
                     {kalimatKompetensi(nomor)}
@@ -1328,7 +1330,7 @@ export default function Level3() {
             {/* Scenario Story */}
             <div className="p-4 sm:p-5 rounded-2xl bg-amber-100/90 border-3 border-[#b45309]/40 shadow-xs">
               <span className="text-[13px] sm:text-[15px] font-black text-[#78350f] uppercase tracking-wider mb-1.5 flex items-center gap-2">
-                SITUASI KEBENCANAAN
+                {t('level3.situation')}
               </span>
               <p className="text-[15px] sm:text-base font-semibold leading-relaxed text-[#291305]">
                 {selectedMission.scenario}
@@ -1342,11 +1344,11 @@ export default function Level3() {
               </span>
               {completedMissionIds.includes(selectedMission.id) ? (
                 <span className="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-900 border-2 border-emerald-600 font-black">
-                  STATUS: SUDAH SELESAI
+                  {t('level3.statusDone')}
                 </span>
               ) : (
                 <span className="px-3 py-1 rounded-xl bg-amber-200 text-amber-950 border-2 border-amber-700 font-black">
-                  STATUS: SIAP DIKERJAKAN
+                  {t('level3.statusReady')}
                 </span>
               )}
             </div>

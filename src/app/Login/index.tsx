@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useI18n } from '../../i18n';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../../store/teacherStore';
 import { retroAudio } from '../../utils/retroAudio';
@@ -46,6 +47,7 @@ export const TAUTAN_UNDUH = {
 
 export default function Login() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [searchParams] = useSearchParams();
   const initialRole = searchParams.get('role') === 'teacher' ? 'teacher' : 'student';
 
@@ -268,7 +270,7 @@ export default function Login() {
                 }`}
             >
               <PixelIcon name="backpack" size={16} />
-              <span>AKUN SISWA</span>
+              <span>{t('login.studentTab')}</span>
             </button>
 
             <button
@@ -284,7 +286,7 @@ export default function Login() {
                 }`}
             >
               <PixelIcon name="clipboard" size={16} />
-              <span>AKUN GURU</span>
+              <span>{t('login.teacherTab')}</span>
             </button>
           </div>
 
@@ -399,7 +401,7 @@ export default function Login() {
             {role === 'student' && (
               <div className="p-2.5 rounded-lg bg-amber-100/80 border-2 border-amber-950/50">
                 <p className="text-[13px] font-bold text-amber-950">
-                  Belum punya akun?
+                  {t('login.noAccount')}
                 </p>
                 <p className="mt-1 text-[12.5px] text-amber-900 font-semibold leading-relaxed">
                   Akun siswa dibuat oleh guru. Mintalah gurumu membuka Posko Guru
@@ -412,7 +414,7 @@ export default function Login() {
 
           {/*
             ═══════════════════════════════════════════════════════════════════
-            COBA TANPA LOGIN
+            {t('login.guestPlay')}
             ═══════════════════════════════════════════════════════════════════
 
             MENGAPA DI LUAR <form>
@@ -486,7 +488,7 @@ export default function Login() {
           {sedangDiWeb() && (
             <div className="mt-4 pt-3.5 border-t-2 border-amber-950/25">
               <p className="text-[12px] sm:text-[13px] font-bold text-amber-950 mb-2 text-center">
-                Unduh aplikasi untuk diorama fisik
+                {t('login.downloadHint')}
               </p>
               <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
                 <a
