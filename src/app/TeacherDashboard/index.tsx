@@ -869,7 +869,7 @@ export default function TeacherDashboard() {
             }}
             className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-pixel-title text-[13px] font-bold border-2 border-emerald-950 shadow-[0_3px_0_#064e3b] cursor-pointer flex items-center gap-1.5 whitespace-nowrap transition-transform active:translate-y-0.5"
           >
-            <span>+ BUAT KELAS BARU</span>
+            <span>+ {t('teacher.newClass')}</span>
           </button>
         </div>
 
@@ -1431,7 +1431,7 @@ export default function TeacherDashboard() {
                       }}
                       className="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white border-2 border-emerald-900 font-pixel-title text-[13px] font-bold cursor-pointer active:translate-y-0.5"
                     >
-                      + BUAT KELAS SEKARANG
+                      + {t('teacher.createNow')}
                     </button>
                   </div>
                 )}
@@ -1565,7 +1565,7 @@ export default function TeacherDashboard() {
                 type="submit"
                 className="pixel-btn-wood-plank !w-full !h-11 !text-[13px] cursor-pointer flex items-center justify-center gap-2 font-semibold"
               >
-                <span>BUAT KELAS & KODE BARU</span>
+                <span>{t('teacher.createClassCode')}</span>
                 <span>&gt;</span>
               </button>
             </form>
