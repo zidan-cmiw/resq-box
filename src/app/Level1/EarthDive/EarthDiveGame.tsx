@@ -1581,7 +1581,7 @@ export default function EarthDiveGame() {
                   >
                     <span className="flex items-center gap-1 font-bold whitespace-nowrap">
                       <PixelIcon name="globe" size={13} />
-                      <span className="tracking-wide">RADAR BUMI</span>
+                      <span className="tracking-wide">{t('level1.radar')}</span>
                     </span>
                     <span className="text-amber-500 hover:text-amber-300 text-[12.5px] sm:text-[13.5px] font-bold ml-1.5">
                       {isRadarOpen ? '▲' : '▼'}
@@ -1612,7 +1612,7 @@ export default function EarthDiveGame() {
                     }`}
                   title="Kondisi 1 (Daratan): Dua lempeng benua bertabrakan, lempeng terlipat membentuk pegunungan megah"
                 >
-                  <span>DARATAN (TUMBUKAN BENUA)</span>
+                  <span>{t('level1.land')}</span>
                   {convergentMode === 'land' && (
                     <span className="text-[12.5px] bg-amber-950/90 text-yellow-300 px-1.5 py-0.5 rounded font-bold uppercase">
                       AKTIF
@@ -1629,7 +1629,7 @@ export default function EarthDiveGame() {
                     }`}
                   title="Kondisi 2 (Lautan & Pantai): Lempeng samudra menunjam membentuk palung laut, lempeng benua kanan berupa pantai"
                 >
-                  <span>LAUTAN & PANTAI (PALUNG)</span>
+                  <span>{t('level1.ocean')}</span>
                   {convergentMode === 'ocean' && (
                     <span className="text-[12.5px] bg-cyan-950/90 text-cyan-200 px-1.5 py-0.5 rounded font-bold uppercase">
                       AKTIF
@@ -1653,7 +1653,7 @@ export default function EarthDiveGame() {
                   title="Ulangi Animasi Tumbukan Lempeng Konvergen"
                 >
                   <span className="text-amber-400 font-bold">↺</span>
-                  <span>ULANG</span>
+                  <span>{t('level1.reset')}</span>
                 </button>
               </div>
             )}
@@ -1672,7 +1672,7 @@ export default function EarthDiveGame() {
                   title="Ulangi Animasi Pemekaran Lempeng & Pembekuan Magma"
                 >
                   <span className="text-rose-400 font-bold">↺</span>
-                  <span>ULANG ANIMASI</span>
+                  <span>{t('level1.replay')}</span>
                 </button>
               </div>
             )}
@@ -1711,7 +1711,7 @@ export default function EarthDiveGame() {
       {isPaused && (
         <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-black/80 px-4 py-1.5 rounded-full text-amber-300 font-pixel text-[13.5px] tracking-wider z-20 border border-amber-500/60 flex items-center gap-1.5 shadow-lg font-semibold">
           <PixelIcon name="pause" size={10} />
-          <span>SIMULASI DIJEDA</span>
+          <span>{t('level1.paused')}</span>
         </div>
       )}
 
@@ -2010,7 +2010,7 @@ export default function EarthDiveGame() {
               }}
               className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 font-medium"
             >
-              <span>SIAP, SELESAIKAN TANTANGAN PENELITI DULU</span>
+              <span>{t('common.readyHint')}</span>
             </button>
           </div>
         </div>

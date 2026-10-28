@@ -20,6 +20,7 @@
 export const id = {
   // ── Umum ────────────────────────────────────────────────────────────────
   common: {
+    readyHint: 'SIAP, SELESAIKAN TANTANGAN PENELITI DULU',
     appName: 'RESQ-BOX',
     tagline: 'Media Pembelajaran Mitigasi Bencana',
     loading: 'Memuat…',
@@ -288,6 +289,21 @@ export const id = {
     failed: 'PERLU PENYESUAIAN BLOK',
     guideLabel: 'PANDUAN LOKASI BLOK:',
     feedbackTitle: 'Umpan balik Resqy',
+  },
+
+  // ── Level 1 & 2 ──
+  level1: {
+    radar: 'RADAR BUMI',
+    land: 'DARATAN (TUMBUKAN BENUA)',
+    ocean: 'LAUTAN & PANTAI (PALUNG)',
+    reset: 'ULANG',
+    replay: 'ULANG ANIMASI',
+    paused: 'SIMULASI DIJEDA',
+  },
+
+  level2: {
+    replaySim: 'ULANG SIMULASI',
+    jump: 'LONCAT',
   },
 } as const;
 

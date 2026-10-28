@@ -18,6 +18,7 @@
 export const en = {
   // ── Common ──────────────────────────────────────────────────────────────
   common: {
+    readyHint: 'NOT YET — FINISH THE RESEARCHER CHALLENGE FIRST',
     appName: 'RESQ-BOX',
     tagline: 'Disaster Safety Learning Media',
     loading: 'Loading…',
@@ -270,5 +271,20 @@ export const en = {
     failed: 'BLOCKS NEED FIXING',
     guideLabel: 'BLOCK LOCATION GUIDE:',
     feedbackTitle: 'Resqy feedback',
+  },
+
+  // ── Level 1 & 2 ──
+  level1: {
+    radar: 'EARTH RADAR',
+    land: 'LAND (CONTINENT COLLISION)',
+    ocean: 'OCEAN & COAST (TRENCH)',
+    reset: 'RESET',
+    replay: 'REPLAY ANIMATION',
+    paused: 'SIMULATION PAUSED',
+  },
+
+  level2: {
+    replaySim: 'REPLAY SIMULATION',
+    jump: 'JUMP',
   },
 } as const;

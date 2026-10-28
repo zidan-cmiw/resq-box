@@ -16,6 +16,7 @@
 const AreaBerTTS = new Set<number>([0, 2, 3, 5]);
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useI18n } from '../../../i18n';
 import { useNavigate } from 'react-router-dom';
 import { useUkuranKanvas } from '../../../hooks/useUkuranKanvas';
 import { sifatTombol } from '../../../utils/keyboard';
@@ -70,6 +71,7 @@ import ResqyTutorialOverlay from '../../../components/Tutorial/ResqyTutorialOver
 import { TUTORIAL_TOURS } from '../../../components/Tutorial/tutorialConfig';
 
 export default function TectonicGame() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameStateRef = useRef<GameStateL2 | null>(null);
@@ -1086,7 +1088,7 @@ export default function TectonicGame() {
                 title="Ulangi Simulasi dari Awal"
               >
                 <span className="text-rose-400 font-bold">↺</span>
-                <span className="hidden 2xl:inline">ULANG SIMULASI</span>
+                <span className="hidden 2xl:inline">{t('level2.replaySim')}</span>
                 <span className="hidden sm:inline 2xl:hidden">ULANG</span>
               </button>
             )}
@@ -1422,7 +1424,7 @@ export default function TectonicGame() {
               title="Lompat"
             >
               <span className="text-[15px] font-bold leading-none">▲</span>
-              <span className="text-[12.5px] font-pixel-title mt-0.5 tracking-wider font-semibold">LONCAT</span>
+              <span className="text-[12.5px] font-pixel-title mt-0.5 tracking-wider font-semibold">{t('level2.jump')}</span>
             </button>
 
             {/* Tombol Interaksi [E] AKSI */}
@@ -1460,7 +1462,7 @@ export default function TectonicGame() {
               }}
               className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-amber-50 border-3 border-[#451a03] shadow-[0_5px_0_#231206] text-[13px] sm:text-[15px] md:text-base font-pixel-title flex items-center justify-center gap-2 cursor-pointer transition-transform active:translate-y-0.5 font-medium"
             >
-              <span>SIAP, SELESAIKAN TANTANGAN PENELITI DULU</span>
+              <span>{t('common.readyHint')}</span>
             </button>
           </div>
         </div>
