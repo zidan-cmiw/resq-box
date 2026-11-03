@@ -28,6 +28,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { jawabPertanyaan, pertanyaanContoh } from '../missions/engine/pencocokanQA';
 import { tanyaResqy, type RiwayatAI } from '../ai/klienAI';
+import { deteksiPola, cobaMintaJawaban, BALASAN_TOLAK_JAWABAN } from '../ai/polaPertanyaan';
 import PixelIcon from './PixelIcon';
 
 interface Pesan {
@@ -218,6 +219,24 @@ export default function ChatbotResqy() {
 
     setInput('');
     setPesan((lama) => [...lama, { dari: 'siswa', teks: pertanyaan }]);
+
+    // ── Jalur 1: permintaan jawaban langsung ──────────────────────────────
+    // Diperiksa paling awal supaya pertanyaan seperti "kunci jawaban TTS
+    // nomor 3" tidak pernah sampai ke AI. Model bahasa bisa menjawabnya,
+    // dan itu yang harus dicegah.
+    if (cobaMintaJawaban(pertanyaan)) {
+      setPesan((lama) => [...lama, { dari: 'resqy', teks: BALASAN_TOLAK_JAWABAN }]);
+      return;
+    }
+
+    // ── Jalur 2: pertanyaan yang jawabannya sudah pasti ───────────────────
+    // "Cara buka level 2", "gimana ganti password", dan sejenisnya dijawab
+    // dari pola regex. Tidak memakai kuota AI dan jawabannya selalu sama.
+    const pola = deteksiPola(pertanyaan);
+    if (pola) {
+      setPesan((lama) => [...lama, { dari: 'resqy', teks: pola.balasan }]);
+      return;
+    }
 
     // Riwayat dikirim supaya AI menyambung percakapan, bukan menjawab lepas.
     // Enam pesan terakhir saja - cukup untuk konteks, tidak memboroskan token.
