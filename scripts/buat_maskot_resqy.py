@@ -44,18 +44,18 @@ def elips(cx, cy, rx, ry, c):
 
 
 # ── tubuh dan kepala ──
-elips(13, 20.0, 7.2, 7.6, "o")
-elips(13, 20.0, 6.4, 6.8, "b")
-elips(13, 22.0, 3.6, 3.6, "w")
+elips(13, 20.5, 6.6, 7.4, "o")
+elips(13, 20.5, 5.8, 6.6, "b")
+elips(13, 22.5, 3.2, 3.4, "w")
 
-elips(13, 8.6, 7.4, 6.8, "o")
-elips(13, 8.6, 6.6, 6.0, "b")
+elips(13, 8.4, 6.8, 6.4, "o")
+elips(13, 8.4, 6.0, 5.6, "b")
 
 # ── sayap ──
-elips(5.6, 20.0, 2.2, 5.0, "o")
-elips(5.6, 20.0, 1.6, 4.4, "d")
-elips(20.4, 20.0, 2.2, 5.0, "o")
-elips(20.4, 20.0, 1.6, 4.4, "d")
+elips(6.4, 20.5, 2.0, 4.8, "o")
+elips(6.4, 20.5, 1.4, 4.2, "d")
+elips(19.6, 20.5, 2.0, 4.8, "o")
+elips(19.6, 20.5, 1.4, 4.2, "d")
 
 # ── topi proyek ──
 for y in range(0, 8):
@@ -76,8 +76,8 @@ for y in range(3, 5):
         isi(x, y, "y")
 
 # ── kacamata ──
-for y in range(9, 13):
-    for x in range(5, 22):
+for y in range(9, 12):
+    for x in range(6, 21):
         isi(x, y, "g")
 for bulat in (8.5, 17.5):
     for y in range(9, 12):
@@ -88,27 +88,30 @@ for bulat in (8.5, 17.5):
     isi(int(bulat) - 1, 11, "p")
 
 # ── paruh ──
-for x, y in ((12, 13), (13, 13), (12, 14), (13, 14)):
+for x, y in ((12, 13), (13, 13), (12, 14), (13, 14), (13, 15)):
     isi(x, y, "n")
 
 # ── rompi ──
 for y in range(15, 23):
-    jangkau = 5 if y < 17 else 6
+    jangkau = 4 if y < 17 else 5
     for x in range(13 - jangkau, 13 + jangkau):
         if kisi[y][x] in ("b", "w"):
             isi(x, y, "v")
-for y in (16, 19):
+for y in (17, 20):
     for x in range(6, 21):
         if kisi[y][x] == "v":
             isi(x, y, "V")
+for x in range(8, 19):
+    if kisi[22][x] == "v":
+        isi(x, 22, "o")
 
 # ── kaki ──
-for kaki_x in (8, 15):
+for kaki_x in (9, 14):
     for x in range(kaki_x, kaki_x + 3):
-        isi(x, 25, "f")
         isi(x, 26, "f")
-    for x in range(kaki_x - 1, kaki_x + 4):
         isi(x, 27, "f")
+    for x in range(kaki_x - 1, kaki_x + 3):
+        isi(x, 28, "f")
 
 # ── garis luar bawah tubuh ──
 for x in range(5, 22):
