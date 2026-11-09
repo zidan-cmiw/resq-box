@@ -204,19 +204,11 @@ export default function MissionPanel({ missionId, onClose }: { missionId: string
           </div>
         )}
 
-        {/* Quick Toolbox Category Guide */}
-        {mission.hint && (
-          <div className="flex items-start gap-2 bg-[#ecfdf5] border-2 border-[#059669] rounded-xl p-3 text-[#065f46] shadow-sm">
-            <div>
-              <span className="text-[14.5px] font-black uppercase tracking-wider block text-[#047857] mb-0.5">
-                {t('mission.guideLabel')}
-              </span>
-              <p className="text-[13px] sm:text-[15px] font-semibold leading-relaxed text-[#064e3b]">
-                {mission.hint}
-              </p>
-            </div>
-          </div>
-        )}
+        {/*
+          Kotak "Panduan Lokasi Blok" sudah dihapus atas permintaan pengguna.
+          Petunjuk lokasi blok kini cukup lewat langkah misi dan Panduan Resqy,
+          agar panel tidak terlalu padat dan siswa tetap membaca langkahnya.
+        */}
 
         {/* Validation Result Box */}
         {isLastStep && (isPassed || isFailed) && (

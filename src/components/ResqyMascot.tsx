@@ -1,6 +1,10 @@
 // ── src/components/ResqyMascot.tsx ─────────────────────────────────────
-// Maskot Resmi RESQ-BOX: Resqy Burung Hantu Bijak 2D Pixel Art
-// Digunakan untuk dialog panduan, tutorial in-game, dan asisten pembelajaran.
+// Maskot Resmi RESQ-BOX: Resqy, burung hantu pemandu ekspedisi geologi.
+// Topi proyek dengan lampu, kacamata, rompi keselamatan, dan ransel antena.
+//
+// Bentuk disimpan sebagai kisi karakter (pixel art). Satu karakter = satu
+// kotak SVG, sehingga maskot tetap tajam pada ukuran 22 px maupun 120 px.
+// Untuk mengubah bentuk, sunting KISI di bawah — tidak perlu menyentuh SVG.
 
 import React from 'react';
 
@@ -11,110 +15,115 @@ interface ResqyMascotProps {
   mood?: 'happy' | 'thinking' | 'excited' | 'wise';
 }
 
+const PALET: Record<string, string> = {
+  H: '#ff8a3d',
+  V: '#ffffff',
+  b: '#b06b2c',
+  d: '#7a4518',
+  e: '#ffffff',
+  f: '#f7a53b',
+  g: '#2b2b2b',
+  h: '#f26522',
+  k: '#1a1a1a',
+  n: '#ffb02e',
+  o: '#3d1f0c',
+  p: '#3a2a12',
+  v: '#ff8c1a',
+  w: '#f0e2cd',
+  y: '#ffd23f'
+};
+
+const KISI: string[] = [
+  '..........................',
+  '...........hhhhh..........',
+  '.........hhhhhhhhh........',
+  '.......hhhhkyyykhhhh......',
+  '......hhhhhkyyykhhhhh.....',
+  '......hhhhhkkkkkhhhhh.....',
+  '.....hHHHHHHHHHHHHHHHh....',
+  '....hhhhhhhhhhhhhhhhhhh...',
+  '......obbbbbbbbbbbbbo.....',
+  '.....eeeeeegggeeeeeegg....',
+  '.....eeppeegggeeppeegg....',
+  '.....eepeeegggeepeeegg....',
+  '.....ggggggggggggggggg....',
+  '........obbbnnbbbbo.......',
+  '.........oobnnbboo........',
+  '........ovvooooovvo.......',
+  '.....ddoVVVVVVVVVVbodd....',
+  '....oddovvvvvvvvvvvoddo...',
+  '....odddvvvvvvvvvvvdddo...',
+  '....odddVVVVVVVVVVVdddo...',
+  '....ddddvvvvvvvvvvvdddo...',
+  '....odddvvvvvvvvvvvdddo...',
+  '....odddvvvvvvvvvvvdddo...',
+  '....oddobbwwwwwwwbboddo...',
+  '.....ddoooowwwwwoooodd....',
+  '........fffbwwwfffo.......',
+  '........fffbbbbfff........',
+  '.......fffffoofffff.......',
+  '..........................',
+  '..........................'
+];
+
+const LEBAR = 26;
+const TINGGI = 30;
+
+/** Ubah kisi sesuai pose. Hanya mata yang berbeda. */
+function kisiPose(mood: NonNullable<ResqyMascotProps['mood']>): string[] {
+  const salin = [...KISI];
+  const ganti = (baris: number, dari: string, ke: string) => {
+    const i = salin[baris].indexOf(dari);
+    if (i >= 0) {
+      salin[baris] = salin[baris].slice(0, i) + ke + salin[baris].slice(i + dari.length);
+    }
+  };
+
+  if (mood === 'happy') {
+    ganti(11, 'p', 'e');
+  } else if (mood === 'thinking') {
+    ganti(10, 'e', 'w');
+  } else if (mood === 'excited') {
+    ganti(10, 'p', 'e');
+    ganti(11, 'p', 'e');
+  }
+  return salin;
+}
+
 export const ResqyMascot: React.FC<ResqyMascotProps> = ({
   size = 56,
   className = '',
   talking = false,
   mood = 'wise',
 }) => {
+  const kisi = kisiPose(mood);
+
   return (
     <div
       className={`inline-flex items-center justify-center select-none relative ${className}`}
       style={{ width: size, height: size }}
-      title="Resqy — Maskot Burung Hantu Bijak RESQ-BOX"
+      title="Resqy — burung hantu pemandu RESQ-BOX"
     >
       <svg
-        viewBox="0 0 36 36"
+        viewBox={`0 0 ${LEBAR} ${TINGGI}`}
         width={size}
         height={size}
-        className={`w-full h-full drop-shadow-[0_3px_0_rgba(35,18,6,0.6)] ${
+        className={`w-full h-full drop-shadow-[0_3px_0_rgba(35,18,6,0.55)] ${
           talking ? 'animate-bounce-subtle' : ''
         }`}
         shapeRendering="crispEdges"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* 1. Sparkles di sekitar Resqy */}
-        <rect x="3" y="5" width="2" height="2" fill="#fde047" className="animate-pulse" />
-        <rect x="31" y="7" width="2" height="2" fill="#67e8f9" className="animate-pulse" />
-        <rect x="32" y="24" width="2" height="2" fill="#fde047" opacity="0.8" />
-        <rect x="2" y="22" width="2" height="2" fill="#67e8f9" opacity="0.8" />
-
-        {/* 2. Bayangan / Outline Luar Cokelat Tua Gelap */}
-        <rect x="9" y="6" width="18" height="24" fill="#451a03" />
-        <rect x="7" y="9" width="22" height="20" fill="#451a03" />
-
-        {/* 3. Telinga Bulu Burung Hantu (Ear Tufts) */}
-        <rect x="9" y="3" width="4" height="5" fill="#78350f" />
-        <rect x="10" y="2" width="3" height="3" fill="#451a03" />
-        <rect x="10" y="4" width="2" height="3" fill="#b45309" />
-
-        <rect x="23" y="3" width="4" height="5" fill="#78350f" />
-        <rect x="23" y="2" width="3" height="3" fill="#451a03" />
-        <rect x="24" y="4" width="2" height="3" fill="#b45309" />
-
-        {/* 4. Tubuh Utama Berbulu Cokelat Keemasan (Tawny Body) */}
-        <rect x="8" y="8" width="20" height="20" fill="#b45309" />
-        <rect x="10" y="7" width="16" height="21" fill="#d97706" />
-
-        {/* 5. Sayap Kiri & Kanan (Flapping Wings) */}
-        <g className={talking ? 'animate-wing-left' : ''}>
-          <rect x="5" y="12" width="4" height="13" fill="#78350f" />
-          <rect x="6" y="13" width="3" height="11" fill="#92400e" />
-          <rect x="7" y="15" width="2" height="7" fill="#b45309" />
-        </g>
-        <g className={talking ? 'animate-wing-right' : ''}>
-          <rect x="27" y="12" width="4" height="13" fill="#78350f" />
-          <rect x="27" y="13" width="3" height="11" fill="#92400e" />
-          <rect x="27" y="15" width="2" height="7" fill="#b45309" />
-        </g>
-
-        {/* 6. Dada Bulu Lembut Krem / Beige */}
-        <rect x="12" y="15" width="12" height="12" fill="#fef3c7" />
-        <rect x="13" y="16" width="10" height="10" fill="#fde68a" />
-        {/* V-Chevron Feather Markings di dada */}
-        <rect x="14" y="18" width="2" height="1" fill="#b45309" />
-        <rect x="20" y="18" width="2" height="1" fill="#b45309" />
-        <rect x="16" y="21" width="4" height="1" fill="#b45309" />
-        <rect x="17" y="24" width="2" height="1" fill="#b45309" />
-
-        {/* 7. Kacamata Peneliti Emas (Scholar Spectacles) */}
-        <rect x="9" y="9" width="8" height="8" fill="#d97706" />
-        <rect x="19" y="9" width="8" height="8" fill="#d97706" />
-        <rect x="16" y="12" width="4" height="2" fill="#d97706" />
-
-        {/* 8. Mata Bulat Burung Hantu yang Bijak */}
-        <rect x="10" y="10" width="6" height="6" fill="#fef08a" />
-        <rect x="20" y="10" width="6" height="6" fill="#fef08a" />
-        {/* Pupil Mata Hitam */}
-        <rect x="12" y="11" width="3" height="4" fill="#0f172a" />
-        <rect x="21" y="11" width="3" height="4" fill="#0f172a" />
-        {/* Kilauan Cahaya Mata (Specular Glint) */}
-        <rect x="12" y="11" width="1" height="1" fill="#ffffff" />
-        <rect x="21" y="11" width="1" height="1" fill="#ffffff" />
-
-        {/* 9. Paruh Segitiga Oranye (Beak) */}
-        <rect x="16" y="14" width="4" height="4" fill="#ea580c" />
-        <rect x="17" y="15" width="2" height="2" fill="#f97316" />
-        {talking && (
-          <rect x="17" y="17" width="2" height="2" fill="#9a3412" />
+        {kisi.map((baris, y) =>
+          baris.split('').map((k, x) => {
+            const warna = PALET[k];
+            if (!warna) return null;
+            return <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={warna} />;
+          }),
         )}
-
-        {/* 10. Topi Wisudawan / Pet Peneliti Opsional bila mode 'wise' */}
-        {mood === 'wise' && (
-          <>
-            <rect x="13" y="1" width="10" height="2" fill="#1e293b" />
-            <rect x="11" y="3" width="14" height="2" fill="#0f172a" />
-            <rect x="17" y="0" width="2" height="2" fill="#f59e0b" />
-            <rect x="23" y="3" width="2" height="3" fill="#f59e0b" />
-          </>
-        )}
-
-        {/* 11. Cakar Burung Hantu Kecil di Bawah */}
-        <rect x="12" y="29" width="4" height="2" fill="#f59e0b" />
-        <rect x="20" y="29" width="4" height="2" fill="#f59e0b" />
-        <rect x="13" y="30" width="2" height="2" fill="#d97706" />
-        <rect x="21" y="30" width="2" height="2" fill="#d97706" />
       </svg>
     </div>
   );
 };
+
+export default ResqyMascot;
