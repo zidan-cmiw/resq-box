@@ -279,7 +279,16 @@ def main() -> int:
         uid = hasil.get("id")
         print(f"  [v] Akun dibuat (id {uid})")
 
-    absen = (profil_lama or {}).get("absent_number") or nomor_absen_baru(kelas["code"], k)
+    # Nomor absen lama hanya boleh dipakai ulang bila profil itu MEMANG sudah
+    # berada di kelas tujuan. Kalau profil lama ada di kelas lain (atau belum
+    # punya kelas), nomor lamanya bisa bentrok dengan siswa lain di kelas baru —
+    # inilah yang memicu galat 23505 pada percobaan pertama.
+    lama_absen = (profil_lama or {}).get("absent_number")
+    lama_kelas = (profil_lama or {}).get("classroom_code")
+    if lama_absen and lama_kelas == kelas["code"]:
+        absen = lama_absen
+    else:
+        absen = nomor_absen_baru(kelas["code"], k)
 
     # ── 2. Profil: level, kelas, nama ──
     #
@@ -295,6 +304,24 @@ def main() -> int:
         },
         header={"Prefer": "return=representation"},
     )
+    # Bila nomor absen ternyata sudah dipakai siswa lain, ambil nomor berikutnya
+    # dan coba lagi. Paling banyak lima percobaan agar tidak berputar tanpa henti.
+    percobaan = 0
+    while st == 409 and "23505" in json.dumps(hasil) and percobaan < 5:
+        percobaan += 1
+        absen = nomor_absen_baru(kelas["code"], k)
+        print(f"  [i] Nomor absen bentrok — mencoba nomor {absen}")
+        st, hasil = panggil(
+            f"/rest/v1/profiles?username=eq.{urllib.parse.quote(username)}", k, "PATCH",
+            {
+                "unlocked_level": level,
+                "classroom_code": kelas["code"],
+                "name": nama,
+                "absent_number": absen,
+            },
+            header={"Prefer": "return=representation"},
+        )
+
     if st not in (200, 204):
         raise SystemExit(f"  [X] Gagal memperbarui profil (HTTP {st}): {json.dumps(hasil)[:200]}")
 
