@@ -21,7 +21,7 @@ export interface TutorialTourConfig {
 // Jumlah misi dan poin per misi diambil dari datanya, TIDAK ditulis tetap di
 // dalam teks. Teks panduan yang menyebut angkanya langsung akan berbohong begitu
 // jumlah misi berubah - dan tidak ada error yang menandainya.
-import { TOTAL_MISSIONS, POIN_PER_MISI } from '../../missions/data/missions';
+import { TOTAL_MISSIONS, POIN_PER_MISI, CATEGORIES } from '../../missions/data/missions';
 
 // ── LOCAL STORAGE PERSISTENCE HELPERS ──
 const STORAGE_PREFIX = 'resqbox_tour_completed_';
@@ -410,7 +410,10 @@ export const TUTORIAL_TOURS: Record<string, TutorialTourConfig> = {
         badge: 'SEKTOR MISI',
         placement: 'center',
         content:
-          'Terdapat ' + TOTAL_MISSIONS + ' Misi Studi Kasus dalam 4 sektor pembelajaran mitigasi:\n• Sektor 1: Pengenalan Peringatan Dini (EWS) & Deteksi Tanda Bahaya Bencana\n• Sektor 2: Kesiapsiagaan Gempa Bumi (Ringan, Sedang, Kuat)\n• Sektor 3: Mitigasi Erupsi Efusif (Lelehan Lava & Alur Awan Panas)\n• Sektor 4: Mitigasi Erupsi Eksplosif (Awan Panas) & Tantangan Terpadu Penyelamatan.',
+          'Terdapat ' + TOTAL_MISSIONS + ' Misi Studi Kasus dalam ' + CATEGORIES.length +
+          ' sektor pembelajaran mitigasi:\n' +
+          CATEGORIES.map((k, i) => '• Sektor ' + (i + 1) + ' (' + k.missions + ' misi): ' + k.title).join('\n') +
+          '.',
       },
       {
         id: 'l3_blockly',

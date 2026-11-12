@@ -11,7 +11,7 @@ import { TUTORIAL_TOURS } from '../../components/Tutorial/tutorialConfig';
 import { tutupModalDenganKeyboard } from '../../utils/keyboard';
 // Angka jumlah misi dan poin per misi diambil dari datanya, TIDAK ditulis tetap.
 // Teks yang menyebut angkanya langsung akan berbohong begitu jumlah misi berubah.
-import { TOTAL_MISSIONS, POIN_PER_MISI } from '../../missions/data/missions';
+import { TOTAL_MISSIONS, POIN_PER_MISI, CATEGORIES } from '../../missions/data/missions';
 import { blokirRambatanTombol } from '../../utils/keyboard';
 
 export default function Dashboard() {
@@ -1132,21 +1132,20 @@ export default function Dashboard() {
                   <div className="p-4 sm:p-5 bg-amber-100/90 border-2 sm:border-3 border-amber-900/40 rounded-2xl space-y-3 shadow-sm">
                     <h5 className="font-pixel-title font-bold text-[13px] sm:text-[15px] md:text-base text-[#260c02] flex items-center gap-2">
                       <PixelIcon name="map" size={16} />
-                      <span>{TOTAL_MISSIONS} Misi Studi Kasus Terbagi dalam 4 Sektor:</span>
+                      <span>{TOTAL_MISSIONS} Misi Studi Kasus Terbagi dalam {CATEGORIES.length} Sektor:</span>
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[13px] sm:text-[15px] md:text-base leading-relaxed text-[#1a0800] font-bold">
-                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
-                        <strong className="font-black text-[#1a0800]">Sektor 1 (Misi 1–5):</strong> Pengenalan EWS &amp; Pembacaan Sensor Bencana (piezo seismik, suhu kawah, lampu EWS).
-                      </div>
-                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
-                        <strong className="font-black text-[#1a0800]">Sektor 2 (Misi 6–10):</strong> Mitigasi Gempa Bumi 3 Tingkat (Ringan: lari santai, Sedang: duck &amp; cover, Kuat: tiarap).
-                      </div>
-                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
-                        <strong className="font-black text-[#1a0800]">Sektor 3 (Misi 11–15):</strong> Mitigasi Erupsi Efusif (Pemantauan kubah lava &amp; evakuasi menjauhi alur sungai Kali Gendol/Kuning).
-                      </div>
-                      <div className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25">
-                        <strong className="font-black text-[#1a0800]">Sektor 4 (Misi 16–20):</strong> Mitigasi Erupsi Eksplosif (Awan panas wedhus gembel, bom lava, &amp; Grand Challenge).
-                      </div>
+                      {CATEGORIES.map((kategori, i) => (
+                        <div
+                          key={kategori.id}
+                          className="bg-amber-50/95 p-3.5 rounded-xl border-2 border-amber-900/25"
+                        >
+                          <strong className="font-black text-[#1a0800]">
+                            Sektor {i + 1} ({kategori.missions} misi):
+                          </strong>{' '}
+                          {kategori.title} — {kategori.ringkas}
+                        </div>
+                      ))}
                     </div>
                   </div>
 

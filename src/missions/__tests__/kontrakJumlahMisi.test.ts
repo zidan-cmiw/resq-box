@@ -71,6 +71,11 @@ const POLA_MENGHITUNG: { nama: string; pola: RegExp }[] = [
   { nama: 'pembagian nilai dengan 20', pola: /\/\s*20\s*\)\s*\*\s*100/ },
   { nama: 'kemajuan "/20 Misi"', pola: /\/\s*20\s+Misi/ },
   { nama: 'status "20/20"', pola: /20\s*\/\s*20/ },
+  // Rentang misi yang ditulis tangan pasti basi begitu jumlah misi berubah.
+  // Kasus nyata: "Sektor 4 (Misi 16–20)" dan "Sektor 1 (Misi 1–5)" masih tampil
+  // di panduan Level 3 padahal misinya sudah lima.
+  { nama: 'rentang "Misi 1–5"', pola: /Misi\s+\d{1,2}\s*[–-]\s*\d{1,2}/ },
+  { nama: 'jumlah sektor ditulis tetap', pola: /dalam\s+4\s+[Ss]ektor/ },
 ];
 
 /**

@@ -25,30 +25,52 @@ export interface MissionStep {
 
 export type MissionCategory = 'pengenalan' | 'gempa' | 'gunung' | 'proyek';
 
-export const CATEGORIES: { id: MissionCategory; title: string; icon: string; missions: number }[] = [
+/**
+ * Kategori misi Level 3.
+ *
+ * `ringkas` dipakai halaman Beranda dan Panduan Resqy sebagai penjelas satu
+ * baris. Sebelumnya penjelasan itu ditulis terpisah di dua tempat dan sempat
+ * menyebut pembagian misi versi lama yang sudah tidak berlaku. Dengan disimpan di sini,
+ * penjelasan selalu ikut berubah bila misi ditambah atau dihapus.
+ */
+export const CATEGORIES: {
+  id: MissionCategory;
+  title: string;
+  icon: string;
+  missions: number;
+  ringkas: string;
+}[] = [
   {
     id: 'pengenalan',
     title: 'Fondasi EWS & Seismik',
     icon: 'school',
     missions: 2,
+    ringkas:
+      'Mengenali alur peringatan dini: lampu status di pos pengamatan dan pesan singkat untuk warga.',
   },
   {
     id: 'gempa',
     title: 'Mitigasi Gempa Sekolah & Rumah',
     icon: 'landslide',
     missions: 1,
+    ringkas:
+      'Membedakan gempa sedang dan gempa besar, lalu menetapkan tindakan yang sepadan dengan kondisinya.',
   },
   {
     id: 'gunung',
     title: 'Vulkanologi & Erupsi Merapi',
     icon: 'volcano',
     missions: 1,
+    ringkas:
+      'Menyesuaikan lampu status dengan status gunung api dan zona KRB yang berlaku.',
   },
   {
     id: 'proyek',
     title: 'Jalur Evakuasi & Grand Challenge',
     icon: 'emoji_objects',
     missions: 1,
+    ringkas:
+      'Membunyikan sirine dan mengarahkan warga keluar bangunan menuju zona aman.',
   },
 ];
 
