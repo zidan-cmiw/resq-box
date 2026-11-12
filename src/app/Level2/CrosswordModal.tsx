@@ -13,6 +13,7 @@ import { retroAudio } from '../../utils/retroAudio';
 // Bank grid TTS: tiap area punya beberapa varian, dan satu varian diundi per
 // siswa supaya seluruh angkatan tidak mengisi teka-teki yang sama persis.
 import { varianTTS, undiGridTTS, petunjukTTSUntuk, type ClueTTS, type GridTTS } from './bankTTS';
+import { modeDemoAktif, AREA_DEMO_TTS } from '../../demo/modeDemo';
 
 interface CrosswordModalProps {
   areaIndex?: number;
@@ -548,10 +549,15 @@ export default function CrosswordModal({
 
   // Grid dipilih SEKALI per (area, siswa). Tidak berubah selama modal terbuka,
   // dan tidak berubah bila siswa membuka ulang area yang sama.
-  const gridTerpilih = useMemo(
-    () => undiGridTTS(areaIndex, peserta) ?? varianTTS(areaIndex)[0] ?? null,
-    [areaIndex, peserta],
-  );
+  const gridTerpilih = useMemo(() => {
+    // Mode demo: selalu soal pertama Area 1, tanpa undian, agar jawaban yang
+    // disiapkan saat presentasi selalu cocok dengan yang tampil.
+    if (modeDemoAktif()) {
+      const tetap = varianTTS(AREA_DEMO_TTS)[0];
+      if (tetap) return tetap;
+    }
+    return undiGridTTS(areaIndex, peserta) ?? varianTTS(areaIndex)[0] ?? null;
+  }, [areaIndex, peserta]);
 
   if (!gridTerpilih) return null;
 

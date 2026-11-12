@@ -7,6 +7,7 @@ import { submitLevelProgress } from '../../../utils/supabaseClient';
 // Bank kata beserta petunjuknya. Dipisah ke modul tersendiri supaya dapat diuji
 // otomatis — termasuk pemeriksaan bahwa petunjuknya tidak membocorkan jawaban.
 import { WORD_BANK } from './kataWordle';
+import { modeDemoAktif, KATA_DEMO } from '../../../demo/modeDemo';
 import { tandaiEvaluasi } from '../../../store/evaluasiStore';
 import UmpanBalikAI from '../../../components/UmpanBalikAI';
 import { useUmpanBalik } from '../../../ai/useUmpanBalik';
@@ -55,6 +56,16 @@ export default function Wordle({
 
   // Initialize randomized questions deterministically for student or use custom strata words
   useEffect(() => {
+    // Mode demo: satu kata tetap, apa pun area dan akunnya. Ditaruh paling awal
+    // supaya kata kiriman area (customWords) tidak menimpanya.
+    if (modeDemoAktif()) {
+      const kata = WORD_BANK.find((k) => k.word === KATA_DEMO);
+      if (kata) {
+        setQuestions([kata]);
+        return;
+      }
+    }
+
     if (customWords && customWords.length > 0) {
       setQuestions(customWords.slice(0, targetCount));
       return;
