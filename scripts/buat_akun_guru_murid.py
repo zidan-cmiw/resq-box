@@ -24,8 +24,11 @@ CARA MENJALANKAN
   python scripts\\buat_akun_guru_murid.py --guru pakbudi --murid 30 ^
       --sandi-guru Guru#2026 --sandi-murid Murid#2026
 
-  # hanya memeriksa apa yang sudah ada
+  # hanya memeriksa apa yang sudah ada (dikelompokkan per kelas)
   python scripts\\buat_akun_guru_murid.py --periksa
+
+  # menyetel ulang kata sandi akun yang SUDAH ada
+  python scripts\\buat_akun_guru_murid.py --guru guru --murid 5 --paksa
 
 ═══════════════════════════════════════════════════════════════════════════
 YANG DIBUAT
@@ -38,6 +41,10 @@ YANG DIBUAT
 
   Keluaran tambahan: akun-kelas.csv dan akun-kelas.md di folder yang sama
   dengan skrip dijalankan, berisi username dan kata sandi.
+
+  Akun yang SUDAH ADA dilewati, sehingga skrip aman dijalankan berulang kali
+  dan tidak menimpa kata sandi yang sudah dibagikan. Pakai --paksa bila ingin
+  menyetel ulang kata sandi akun lama.
 """
 from __future__ import annotations
 
@@ -130,10 +137,18 @@ def pastikan_kelas(kode: str, nama: str, guru: str, k: str) -> None:
 
 
 def buat_akun(username: str, sandi: str, nama: str, peran: str, kode_kelas: str | None,
-              absen: str | None, level: int, k: str) -> tuple[bool, str]:
-    """Membuat akun auth + profil. Mengembalikan (berhasil, pesan)."""
+              absen: str | None, level: int, k: str, paksa: bool = False) -> tuple[bool, str, bool]:
+    """Membuat akun auth + profil.
+
+    Mengembalikan (berhasil, pesan, dilewati). Akun yang sudah ada TIDAK
+    diubah kata sandinya kecuali `paksa` dinyatakan, supaya menjalankan skrip
+    berulang kali tidak menimpa kata sandi yang mungkin sudah dibagikan.
+    """
     email = f"{username}@resqbox.local"
     uid = cari_uid(username, k)
+
+    if uid and not paksa:
+        return True, "sudah ada — dilewati", True
 
     if uid:
         st, hasil = panggil(f"/auth/v1/admin/users/{uid}", k, "PUT", {
@@ -143,7 +158,7 @@ def buat_akun(username: str, sandi: str, nama: str, peran: str, kode_kelas: str 
             "user_metadata": {"name": nama, "username": username},
         })
         if st not in (200, 201):
-            return False, f"gagal menyetel ulang sandi (HTTP {st}): {json.dumps(hasil)[:120]}"
+            return False, f"gagal menyetel ulang sandi (HTTP {st}): {json.dumps(hasil)[:120]}", False
     else:
         st, hasil = panggil("/auth/v1/admin/users", k, "POST", {
             "email": email,
@@ -153,7 +168,7 @@ def buat_akun(username: str, sandi: str, nama: str, peran: str, kode_kelas: str 
             "user_metadata": {"name": nama, "username": username},
         })
         if st not in (200, 201):
-            return False, f"gagal membuat akun (HTTP {st}): {json.dumps(hasil)[:120]}"
+            return False, f"gagal membuat akun (HTTP {st}): {json.dumps(hasil)[:120]}", False
         uid = hasil.get("id")
 
     isi = {
@@ -181,9 +196,9 @@ def buat_akun(username: str, sandi: str, nama: str, peran: str, kode_kelas: str 
         )
 
     if st not in (200, 204):
-        return False, f"gagal memperbarui profil (HTTP {st}): {json.dumps(hasil)[:120]}"
+        return False, f"gagal memperbarui profil (HTTP {st}): {json.dumps(hasil)[:120]}", False
 
-    return True, "ok"
+    return True, "ok", False
 
 
 def sandi_acak(n: int = 8) -> str:
@@ -214,18 +229,32 @@ def main() -> int:
     k = kunci()
 
     if "periksa" in opsi:
-        st, guru = panggil(
-            "/rest/v1/profiles?select=username,name,classroom_code&role=eq.teacher", k)
-        st2, murid = panggil(
-            "/rest/v1/profiles?select=username,name,classroom_code,absent_number,unlocked_level"
-            "&role=eq.student&order=absent_number", k)
-        print("\n  GURU")
-        for g in (guru or []):
-            print(f"    {g['username']:<14} kelas {g.get('classroom_code') or '-'}")
-        print(f"\n  MURID ({len(murid or [])} akun)")
-        for m in (murid or [])[:40]:
-            print(f"    {m['username']:<14} absen {m.get('absent_number'):<4} "
-                  f"kelas {m.get('classroom_code') or '-'} level {m.get('unlocked_level')}")
+        st, semua = panggil(
+            "/rest/v1/profiles?select=username,name,role,classroom_code,absent_number,"
+            "unlocked_level&order=classroom_code,absent_number", k)
+        if st != 200:
+            raise SystemExit(f"  [X] Gagal membaca daftar akun (HTTP {st}): {json.dumps(semua)[:200]}")
+
+        semua = semua or []
+        kelas: dict[str, list] = {}
+        for akun in semua:
+            kelas.setdefault(akun.get("classroom_code") or "(tanpa kelas)", []).append(akun)
+
+        print(f"\n  TOTAL AKUN: {len(semua)} "
+              f"({sum(1 for a in semua if a['role'] == 'teacher')} guru, "
+              f"{sum(1 for a in semua if a['role'] == 'student')} murid)")
+
+        for kode in sorted(kelas):
+            isi = kelas[kode]
+            print(f"\n  KELAS {kode}")
+            for a in isi:
+                if a["role"] == "teacher":
+                    print(f"    [GURU ] {a['username']:<16} {a.get('name') or '-'}")
+            murid_kelas = [a for a in isi if a["role"] == "student"]
+            print(f"    murid : {len(murid_kelas)} akun")
+            for a in murid_kelas:
+                absen = a.get("absent_number") or "-"
+                print(f"      {a['username']:<16} absen {absen:<4} level {a.get('unlocked_level')}")
         return 0
 
     guru = (opsi.get("guru") or "guru").lower().strip()
@@ -247,22 +276,53 @@ def main() -> int:
 
     catatan: list[dict] = []
 
-    ok, pesan = buat_akun(guru, sandi_guru, f"Guru {nama_kelas}", "teacher",
-                          kode_kelas, None, 3, k)
+    paksa = "paksa" in opsi
+
+    # Tampilkan dulu apa yang sudah ada, supaya jelas mana yang baru.
+    st, sudah = panggil(
+        "/rest/v1/profiles?select=username,role,absent_number&"
+        f"classroom_code=eq.{urllib.parse.quote(kode_kelas)}&order=role,absent_number", k)
+    sudah = sudah if st == 200 and isinstance(sudah, list) else []
+    if sudah:
+        guru_ada = [a["username"] for a in sudah if a.get("role") == "teacher"]
+        murid_ada = [a["username"] for a in sudah if a.get("role") == "student"]
+        print(f"  [i] Sudah ada di {kode_kelas}: {len(sudah)} akun")
+        if guru_ada:
+            print(f"      guru  : {', '.join(guru_ada)}")
+        if murid_ada:
+            print(f"      murid : {', '.join(murid_ada[:12])}"
+                  + (" …" if len(murid_ada) > 12 else ""))
+        if not paksa:
+            print("      akun lama dilewati; pakai --paksa untuk menyetel ulang kata sandinya")
+    else:
+        print(f"  [i] Belum ada akun di {kode_kelas}")
+
+    baru = dilewati = gagal = 0
+
+    ok, pesan, skip = buat_akun(guru, sandi_guru, f"Guru {nama_kelas}", "teacher",
+                                kode_kelas, None, 3, k, paksa=paksa)
     print(f"  {'[v]' if ok else '[X]'} guru {guru:<12} {pesan}")
     if ok:
+        baru += 0 if skip else 1
+        dilewati += 1 if skip else 0
         catatan.append({"peran": "guru", "username": guru, "sandi": sandi_guru,
                         "nama": f"Guru {nama_kelas}", "absen": "", "kelas": kode_kelas})
+    else:
+        gagal += 1
 
     for n in range(1, jumlah + 1):
         username = f"{awalan}{n}"
         nama = f"Murid {n}"
-        ok, pesan = buat_akun(username, sandi_murid, nama, "student",
-                              kode_kelas, str(n), level, k)
+        ok, pesan, skip = buat_akun(username, sandi_murid, nama, "student",
+                                    kode_kelas, str(n), level, k, paksa=paksa)
         print(f"  {'[v]' if ok else '[X]'} {username:<12} {pesan}")
         if ok:
+            baru += 0 if skip else 1
+            dilewati += 1 if skip else 0
             catatan.append({"peran": "murid", "username": username, "sandi": sandi_murid,
                             "nama": nama, "absen": str(n), "kelas": kode_kelas})
+        else:
+            gagal += 1
 
     csv_path = Path("akun-kelas.csv")
     with csv_path.open("w", newline="", encoding="utf-8") as f:
@@ -278,7 +338,8 @@ def main() -> int:
         baris.append(f"| {c['peran']} | `{c['username']}` | `{c['sandi']}` | {c['absen']} |")
     md_path.write_text("\n".join(baris) + "\n", encoding="utf-8")
 
-    print(f"\n  [v] {len(catatan)} akun siap — daftar tersimpan di {csv_path.name} dan {md_path.name}")
+    print(f"\n  RINGKASAN: {baru} baru · {dilewati} dilewati · {gagal} gagal")
+    print(f"  [v] {len(catatan)} akun tercatat — lihat {csv_path.name} dan {md_path.name}")
     print(f"      Guru masuk dengan `{guru}` / `{sandi_guru}`")
     print(f"      Murid masuk dengan `{awalan}1` … `{awalan}{jumlah}` / `{sandi_murid}`")
     return 0
